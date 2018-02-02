@@ -1,0 +1,32 @@
+Précédence des Opérateurs Dominique Revuz
+
+\begin{longtable}[c]{@{}ll@{}}
+\toprule
+Operator & Description\tabularnewline
+\midrule
+\endhead
+lambda & Lambda expression\tabularnewline
+if -- else & Conditional expression\tabularnewline
+or & Boolean OR\tabularnewline
+and & Boolean AND\tabularnewline
+not x & Boolean NOT\tabularnewline
+in, not in, is, is not, \textless{}, \textless{}=, \textgreater{},
+\textgreater{}=, !=, == & Comparisons, including membership tests and
+identity tests\tabularnewline
+\textbar{} & Bitwise OR\tabularnewline
+\^{} & Bitwise XOR\tabularnewline
+\& & Bitwise AND\tabularnewline
+\textless{}\textless{}, \textgreater{}\textgreater{} &
+Shifts\tabularnewline
++, - & Addition and subtraction\tabularnewline
+*, /, //, \% & Multiplication, division, remainder\tabularnewline
++x, -x, \textasciitilde{}x & Positive, negative, bitwise
+NOT\tabularnewline
+** & Exponentiation\tabularnewline
+x{[}index{]}, x{[}index:index{]}, x(arguments\ldots{}), x.attribute &
+Subscription, slicing, call, attribute reference\tabularnewline
+(expressions\ldots{}), {[}expressions\ldots{}{]}, \{key:
+value\ldots{}\}, \{expressions\ldots{}\} & Binding or tuple display,
+list display, dictionary display, set display\tabularnewline
+\bottomrule
+\end{longtable}

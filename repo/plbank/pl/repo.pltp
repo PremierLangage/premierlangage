@@ -1,0 +1,19 @@
+
+author=Dominique dot Revuz dot u-pem dot fr 
+title=repo.pltp 
+
+introduction==
+
+# Elements de syntaxe
+
+Dans un contexte plus général les références peuvent contenir un repository :
+
+	builderpl=@ plbank:/pl/basic/builder.pl
+	template= plbank:/python/0PLG/template.pl
+un repository étant une arborescence d'exercice 
+
+==
+
+concept==function
+@ /pl/repo/reporef.pl
+==

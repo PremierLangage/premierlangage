@@ -1,0 +1,11 @@
+<!-- LOADING -->
+{% load admin_static %}
+{% load index %}
+
+<!-- CONTENT -->
+{% csrf_token %}
+VOus avez été identifié par LTI:
+<hr>pseudo: {{ username }}
+<hr>nom: {{ user_lastname }}
+<hr>prenom: {{ user_firstname }}
+<hr>mail: {{ user_email }}

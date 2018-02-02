@@ -1,0 +1,347 @@
+.block-chart {
+  overflow:hidden;
+  margin:10px auto;
+  position:relative;
+}
+
+.block {
+  background:white;
+  display:block;
+  float:left;
+  height:9%;
+  margin:0.5%;
+  position:relative;
+  width:9%;
+  min-width: 20px;
+  min-height: 20px;
+  -webkit-animation: twistin 0.8s;
+  -moz-animation: twistin 0.8s;
+  -ms-animation: twistin 0.8s;
+  -o-animation: twistin 0.8s;
+  animation: twistin 0.8s;
+}
+
+.block:hover:before {
+  background: -moz-radial-gradient(center, ellipse cover,  rgba(0,0,0,0) 0%, rgba(0,0,0,0) 1%, rgba(0,0,0,0.65) 100%); /* FF3.6+ */
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(0,0,0,0)), color-stop(1%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.65))); /* Chrome,Safari4+ */
+  background: -webkit-radial-gradient(center, ellipse cover,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 1%,rgba(0,0,0,0.65) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-radial-gradient(center, ellipse cover,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 1%,rgba(0,0,0,0.65) 100%); /* Opera 12+ */
+  background: -ms-radial-gradient(center, ellipse cover,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 1%,rgba(0,0,0,0.65) 100%); /* IE10+ */
+  background: radial-gradient(ellipse at center,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 1%,rgba(0,0,0,0.65) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#a6000000',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+  content:"";
+  height:100%;
+  opacity:0.5;
+  position:absolute;
+    top:0;
+    left:0;
+  width:100%;
+}
+
+.block p {
+  background:black;
+  background: rgba(0,0,0,0.7);
+  color:white;
+  display:none;
+  font-family:sans-serif;
+  font-size:1em;
+  margin:-1em 0 0 -0.1em;
+  padding:0.2em;
+  position:absolute;
+    top:0;
+  text-align:center;
+  width:auto;
+  z-index:101;
+}
+
+.block:nth-child(-n+10) p{
+  top:100%;
+}
+
+.block:nth-child(-n+10) p:after{
+  border-style: solid;
+  border-width: 0 5px 5px 5px;
+  border-color: transparent transparent #000000 transparent;
+  border-color: transparent transparent rgba(0,0,0,0.7) transparent;
+  height: 0;
+  margin-top:-5px;
+  top:0;
+  width: 0;
+}
+
+.block:nth-child(10n) p, .block:nth-child(10n-1) p, .block:nth-child(10n-2) p {
+  right:0;
+  margin:-1em -0.1em 0 0;
+}
+
+.block:nth-child(10n) p:after,.block:nth-child(10n-1) p:after,.block:nth-child(10n-2) p:after { left:initial; right:0.2em; }
+
+.block:hover p { display:block; }
+
+.long-one .block:hover p { display:none; }
+
+.block p:after{
+  border-style: solid;
+  border-width: 5px 5px 0 5px;
+  border-color: #000000 transparent transparent transparent;
+  border-color: rgba(0,0,0,0.7) transparent transparent transparent;
+  content:"";
+  position:absolute;
+    top:100%; 
+    left:0.2em;
+  width: 0;
+}
+
+
+
+.type1 { background:#44cc44; } /* For successful exercice */
+.type2 { background:#cc2925; } /* For failed exercise */
+.type3 { background:#ec971f; } /* For started exercise */
+.type4 { background:#DDDDDD; } /* For unstarted exercise */
+
+.btn-type1, .btn-type1.active{ /* For successful exercice */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color: #44cc44 !important;
+}
+.btn-type1:hover, .btn-type1:focus { /* For successful exercice */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color: #338c33 !important;
+}
+
+.btn-type2, .btn-type2.active { /* For failed exercise */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color:#cc2925 !important;
+}
+.btn-type2:hover, .btn-type2:focus { /* For failed exercise */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color:#9b1814 !important;
+}
+
+.btn-type3, .btn-type3.active { /* For started exercise */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color:#ec971f !important;
+}
+.btn-type3:hover, .btn-type3:focus { /* For started exercise */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color:#db871e !important;
+}
+
+.btn-type4, .btn-type4.active { /* For unstarted exercise */
+    color: #333 !important;
+    border-color: #adadad !important;
+    background-color:#DDDDDD !important;
+}
+.btn-type4:hover, .btn-type4:focus { /* For unstarted exercise */
+    color: #333 !important;
+    border-color: #adadad !important;
+    background-color:#AAAAAA !important;
+}
+
+/* Deuteranopia */
+.type1-protanopia { background:#cc00cc; } /* For successful exercice */
+.type2-protanopia { background:#000000; } /* For failed exercise */
+.type3-protanopia { background:#cccc00; } /* For started exercise */
+.type4-protanopia { background:#DDDDDD; } /* For unstarted exercise */
+
+.btn-type1-protanopia, .btn-type1-protanopia.active{ /* For successful exercice */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color: #cc00cc !important;
+}
+.btn-type1-protanopia:hover, .btn-type1-protanopia:focus { /* For successful exercice */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color: #770077 !important;
+}
+
+.btn-type2-protanopia, .btn-type2-protanopia.active { /* For failed exercise */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color:#000000 !important;
+}
+.btn-type2-protanopia:hover, .btn-type2-protanopia:focus { /* For failed exercise */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color:#333333 !important;
+}
+
+.btn-type3-protanopia, .btn-type3-protanopia.active { /* For started exercise */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color:#aaaa00 !important;
+}
+.btn-type3-protanopia:hover, .btn-type3-protanopia:focus { /* For started exercise */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color:#666600 !important;
+}
+
+.btn-type4-protanopia, .btn-type4-protanopia.active { /* For unstarted exercise */
+    color: #333 !important;
+    border-color: #adadad !important;
+    background-color:#DDDDDD !important;
+}
+.btn-type4-protanopia:hover, .btn-type4-protanopia:focus { /* For unstarted exercise */
+    color: #333 !important;
+    border-color: #adadad !important;
+    background-color:#AAAAAA !important;
+}
+
+
+/* Deuteranopia */
+.type1-deuteranopia { background:#0000ff; } /* For successful exercice */
+.type2-deuteranopia { background:#000000; } /* For failed exercise */
+.type3-deuteranopia { background:#cccc00; } /* For started exercise */
+.type4-deuteranopia { background:#DDDDDD; } /* For unstarted exercise */
+
+.btn-type1-deuteranopia, .btn-type1-deuteranopia.active{ /* For successful exercice */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color: #0000dd !important;
+}
+.btn-type1-deuteranopia:hover, .btn-type1-deuteranopia:focus { /* For successful exercice */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color: #000088 !important;
+}
+
+.btn-type2-deuteranopia, .btn-type2-deuteranopia.active { /* For failed exercise */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color:#000000 !important;
+}
+.btn-type2-deuteranopia:hover, .btn-type2-deuteranopia:focus { /* For failed exercise */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color:#333333 !important;
+}
+
+.btn-type3-deuteranopia, .btn-type3-deuteranopia.active { /* For started exercise */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color:#aaaa00 !important;
+}
+.btn-type3-deuteranopia:hover, .btn-type3-deuteranopia:focus { /* For started exercise */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color:#666600 !important;
+}
+
+.btn-type4-deuteranopia, .btn-type4-deuteranopia.active { /* For unstarted exercise */
+    color: #333 !important;
+    border-color: #adadad !important;
+    background-color:#DDDDDD !important;
+}
+.btn-type4-deuteranopia:hover, .btn-type4-deuteranopia:focus { /* For unstarted exercise */
+    color: #333 !important;
+    border-color: #adadad !important;
+    background-color:#AAAAAA !important;
+}
+
+
+/* Tritanopia */
+.type1-tritanopia { background:#00ffff; } /* For successful exercice */
+.type2-tritanopia { background:#ff0000; } /* For failed exercise */
+.type3-tritanopia { background:#9933ff; } /* For started exercise */
+.type4-tritanopia { background:#DDDDDD; } /* For unstarted exercise */
+
+.btn-type1-tritanopia, .btn-type1-tritanopia.active{ /* For successful exercice */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color: #00cccc !important;
+}
+.btn-type1-tritanopia:hover, .btn-type1-tritanopia:focus { /* For successful exercice */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color: #008888 !important;
+}
+
+.btn-type2-tritanopia, .btn-type2-tritanopia.active { /* For failed exercise */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color:#CC0000 !important;
+}
+.btn-type2-tritanopia:hover, .btn-type2-tritanopia:focus { /* For failed exercise */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color:#880000 !important;
+}
+
+.btn-type3-tritanopia, .btn-type3-tritanopia.active { /* For started exercise */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color:#9933ff !important;
+}
+.btn-type3-tritanopia:hover, .btn-type3-tritanopia:focus { /* For started exercise */
+    color: #FFFFFF !important;
+    border-color: #adadad !important;
+    background-color:#7711dd !important;
+}
+
+.btn-type4-tritanopia, .btn-type4-tritanopia.active { /* For unstarted exercise */
+    color: #333 !important;
+    border-color: #adadad !important;
+    background-color:#DDDDDD !important;
+}
+.btn-type4-tritanopia:hover, .btn-type4-tritanopia:focus { /* For unstarted exercise */
+    color: #333 !important;
+    border-color: #adadad !important;
+    background-color:#AAAAAA !important;
+}
+
+
+
+@keyframes twistin {
+  from {
+    transform:rotateY(90deg);
+  }
+  to {
+    transform:rotateY(0deg);
+  }
+}
+/* Firefox < 16 */
+
+@-moz-keyframes twistin {
+  from {
+    transform:rotateY(90deg);
+  }
+  to {
+    transform:rotateY(0deg);
+  }
+}
+/* Safari, Chrome and Opera > 12.1 */
+
+@-webkit-keyframes twistin {
+  from {
+    transform:rotateY(90deg);
+  }
+  to {
+    transform:rotateY(0deg);
+  }
+}
+/* Internet Explorer */
+
+@-ms-keyframes twistin {
+  from {
+    transform:rotateY(90deg);
+  }
+  to {
+    transform:rotateY(0deg);
+  }
+}
+/* Opera < 12.1 */
+
+@-o-keyframes twistin {
+  from {
+    transform:rotateY(90deg);
+  }
+  to {
+    transform:rotateY(0deg);
+  }
+}

@@ -1,0 +1,23 @@
+django == 1.10
+gitpython
+django-markdown-deux
+mock
+gunicorn
+dj-database-url
+whitenoise
+psycopg2
+oauth2
+django-bootstrap3
+jsonfield
+requests
+jinja2
+pytest
+pytest-django
+sympy
+yattag
+markdown
+pytest-selenium
+sphinx
+recommonmark
+mkdocs
+-e git://github.com/qcoumes/timeout-decorator.git#egg=timeout-decorator

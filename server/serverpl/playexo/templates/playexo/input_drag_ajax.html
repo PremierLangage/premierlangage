@@ -1,0 +1,8 @@
+<div class = 'source'
+	id = 'origin_{{ name }}'
+	ondrop="drop(event, 'origin_{{ name }}')"
+	ondragover='allowDrop(event)'
+	style = '{{style_boite}}'>
+	<div class = 'drag-contenu' id='{{ name }}' draggable='true' ondragstart='drag(event)' style = '{{style_contenu}}'> {{ display }} </div>
+</div>
+<input type=hidden  id='form_drg_{{ name }}'>

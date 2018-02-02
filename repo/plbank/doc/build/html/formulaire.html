@@ -1,0 +1,483 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Écriture d&#39;un Formulaire &#8212; documentation Premier langage </title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Recherche" href="search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Index général"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">documentation Premier langage </a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="ecriture-d-un-formulaire">
+<span id="ecriture-d-un-formulaire"></span><h1>Écriture d'un Formulaire<a class="headerlink" href="#ecriture-d-un-formulaire" title="Lien permanent vers ce titre">¶</a></h1>
+<p>Une partie importante de l'exercice est le formulaire. Cette partie permet de définir la manière de répondre de l'utilisateur (champs de saisie, boutons radios, éditeur...). Bien que divers formulaires existent déjà, il se peut qu'il ne vous conviennent pas et que vous souhaitez en écrire un personalisé.</p>
+<p>Un formulaire peut être relativement simple, par exemple:</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span>form==
+<span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;input-group-addon&quot;</span><span class="p">&gt;</span>Réponse<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;form_txt_answer&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;form-control&quot;</span> <span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;&quot;</span> <span class="na">required</span><span class="p">&gt;</span>
+==
+</pre></div>
+</div>
+<p>Ou bien plus compliqué:</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span>form==
+<span class="p">&lt;</span><span class="nt">center</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;display: inline-block; vertical-align: middle;&quot;</span><span class="p">&gt;</span>
+        {% for item in question_list %}
+            <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;input&quot;</span><span class="p">&gt;</span>{{item}}:<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">select</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;form_txt_{{item}}&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;selectpicker&quot;</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;display: inline-block; vertical-align: middle;&quot;</span> <span class="na">title</span><span class="o">=</span><span class="s">&quot;Réponse&quot;</span> <span class="na">required</span><span class="p">&gt;</span>
+                {% for item2 in answer_list %}
+                    <span class="p">&lt;</span><span class="nt">option</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;{{ item2 }}&quot;</span><span class="p">&gt;</span>{{item2}}<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
+                {% endfor %}
+            <span class="p">&lt;/</span><span class="nt">select</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+        {% endfor %}
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">center</span><span class="p">&gt;</span>
+==
+</pre></div>
+</div>
+<p>Comme vous pouvez le voir, des connaissances de bases en <strong>HTML</strong> sont nécessaires, je vous invites à vous rendre sur la page correpsondante de <a class="reference external" href="https://www.w3schools.com/html/html_forms.asp">w3schools</a> si besoin d'une piqûre de rappel.</p>
+<p>Pour des formulaire plus compliqués, des connaissances sur les <strong>gabarits Django</strong> (<strong>jinja2</strong> simplifié) seront aussi nécessaire.</p>
+<p>Enfin, si l'écriture d'une <a class="reference external" href="./build.html">fonction build</a> est nécessaire, des connaissances en Python 3 seront requis.
+Ce guide vous guidera pas-à-pas dans l'écriture d'un formulaire personnalisé.</p>
+<div class="section" id="les-bases">
+<span id="les-bases"></span><h2>Les Bases<a class="headerlink" href="#les-bases" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Un formulaire est déclaré dans un PL grâce à la clé <em>form</em>. Il doit être écrit en <em>html</em>, et peut, si besoin, se servir de css/js externe.
+Ce formulaire ne doit contenir ni de balises <strong>&lt;form&gt;&lt;/form&gt;</strong>, ni de bouton <strong>submit</strong>, ceux-ci étant ajouté après par la plateforme.</p>
+<p>Il est possible d'utiliser n'importe quelle type d'<em>input</em> accépté par <em>HTML5</em>, <strong>excepté</strong>  <strong><em>submit</em></strong>:</p>
+<ul class="simple">
+<li>text</li>
+<li>radio</li>
+<li>checkbox</li>
+<li>button</li>
+<li>color</li>
+<li>date</li>
+<li>datetime-local</li>
+<li>email</li>
+<li>month</li>
+<li>number</li>
+<li>range</li>
+<li>search</li>
+<li>tel</li>
+<li>time</li>
+<li>url</li>
+<li>week</li>
+</ul>
+<p>Voir <a class="reference external" href="https://www.w3schools.com/html/html_form_input_types.asp">les types d'inputs sur w3schools</a></p>
+<p>Pour que la plateform accepte les réponses de ses <em>inputs</em>, ils doivent posséder une idée de la forme: <strong>form_XXX_YYYYY</strong>
+Où <em>xxx</em> est le type d'input sur 3 lettres (txt, int, flt, etc...; cette carastéristique n'est pas encore implémentée et importe donc peu pour le moment) et <em>yyyyy</em> le nom de l'<em>input</em></p>
+<p>Le champs name n'est donc requis pour aucun <em>input</em>, <strong>excepté</strong> celui de type <em>radio</em>, n'autorisant ainsi seulement une case d'un groupe de case radio portant le même nom d'être cochée.</p>
+<p>Lors de la validation du formulaire par l'élève, la plateforme créera un dictionnaire contenant chaque <em>input</em> en tant que clés et la réponse de l'utilisateur en tant que valeur. Par exemple avec le formulaire suivant:</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span>form==
+<span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;form_txt_answer1&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;form-control&quot;</span> <span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;&quot;</span> <span class="na">required</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;form_txt_answer2&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;form-control&quot;</span> <span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;&quot;</span> <span class="na">required</span><span class="p">&gt;</span>
+==
+</pre></div>
+</div>
+<p>Si l'élève réponds respectivement &quot;Oui&quot; et &quot;Pomme&quot;, la plateforme enverra à la fonction d'évaluation:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;answer1&quot;</span><span class="p">:</span> <span class="s2">&quot;Oui&quot;</span>
+    <span class="s2">&quot;answer2&quot;</span><span class="p">:</span> <span class="s2">&quot;Pomme&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Tout les <em>inputs</em> retourne un seul élément, que ce soit un mot, une date (dd-mm-yyyy) une couleur (#XXXXXX), etc...
+La seul exception est le type <strong>checkbox</strong>, celui-ci renverra une liste associée au nom de l'input:</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span>    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;form_txt_langage&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;c&quot;</span><span class="p">&gt;</span> C
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;form_txt_langage&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;python&quot;</span><span class="p">&gt;</span> Python
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;form_txt_langage&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;caml&quot;</span><span class="p">&gt;</span> Caml
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;form_txt_langage&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;java&quot;</span><span class="p">&gt;</span> Java
+</pre></div>
+</div>
+<p>Enverra, si l'utilisateur choisi C, Python et Java:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;langage&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;python&quot;</span><span class="p">,</span> <span class="s2">&quot;java&quot;</span><span class="p">,]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Si l'utilisateur choisi juste C:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;langage&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;c&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="css">
+<span id="css"></span><h2>CSS<a class="headerlink" href="#css" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Il est tout à fait possible d'ajouter du css avec la balise <strong>style=&quot;<em>attribut</em>: <em>valeur;</em></strong>&quot;
+<strong><em>VOIR AVEC M. REVUZ SI LAISSÉ LES PROFS IMPORTÉ DU CSS, AU RISQUE D'ÉCRASER CELUI DU SITE</em></strong></p>
+</div>
+<div class="section" id="formulaire-reutilisable">
+<span id="formulaire-reutilisable"></span><h2>Formulaire Réutilisable<a class="headerlink" href="#formulaire-reutilisable" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Jusqu'ici, la plupart des formulaires montrés en exemple n'étaient utilisables qu'avec un seul exercice, la valeur des réponses étant rentré en dur. Afin de créer des formulaire réutilisable (ce qui est bien évidemment recommandé), il est nécessaire de connaitre le <strong>Django Template Language</strong> (<em>Langage de Gabarit Django</em>), je vous invite pour cela à jeter un coup d'oeil à ces deux pages:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://docs.djangoproject.com/fr/1.10/topics/templates/#variables">Gabarits Django</a> Pour comprendre l'utilisation des variables.</li>
+<li><a class="reference external" href="https://docs.djangoproject.com/fr/1.10/ref/templates/builtins/#ref-templates-builtins-tags">Référence des Balises Django</a> Pour comprendre l'utilisation des balises <em>if</em>, <em>else</em> et <em>for</em>.</li>
+</ul>
+<p>Ce langage permet donc d'utiliser les variables du <em>contexte django</em> pour remplir votre formulaire html. Cela tombe très bien car <strong>toutes</strong> les variables déclarées dans votre PL, ainsi que celle créée par la fonction <em>build</em>, si déclarée, se trouve dans le contexte. Il est donc possible de remplir un formulaire grâce au variables déclaré dans un PL. Pour bien comprendre, voici un exemple de formulaire permettant de choisir entre deux réponses:</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span>form==
+<span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;form_txt_answer&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;radio&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;{{answer1}}&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;answer&quot;</span> <span class="na">required</span><span class="p">&gt;</span> {{answer1}}
+<span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;form_txt_answer&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;radio&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;{{answer2}}&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;answer&quot;</span><span class="p">&gt;</span>{{answer2}}
+==
+</pre></div>
+</div>
+<p>Dans cet exemple, les mots <em>{{answer1}}</em> et  <em>{{answer2}}</em> seront remplacés par les valeurs des clés <em>answer1</em> et <em>answer2</em> déclaré dans votre PL. Par exemple avec ce PL:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>title=Couleur
+text==
+Quelle couleur préférez-vous entre:
+* Le bleu?
+* Le rouge?
+==
+answer1=rouge
+answer2=bleu
+include=chemin/vers/votre/formulaire.pl
+</pre></div>
+</div>
+<p>Le formulaire devient:</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;form_txt_answer&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;radio&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;rouge&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;answer&quot;</span> <span class="na">required</span><span class="p">&gt;</span> rouge
+<span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;form_txt_answer&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;radio&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;bleu&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;answer&quot;</span><span class="p">&gt;</span> bleu
+</pre></div>
+</div>
+<p>Ce formulaire permet donc maintenant de répondre à n'importe quelle question demandant un choix entre <strong>deux réponses</strong>.</p>
+<p>Deux réponses ? Voilà qui limite bien ce formulaire, améliorons-le afin qu'il puisse maintenant accepter un nombre non indéfinis de réponses.
+Nous aurons pour cela besoin d'une <a class="reference external" href="./build.html">fonction build</a>.</p>
+<p>Supposons que nous souhaitons pouvoir rentrer un nombre infinis de réponses grâce à des champs <em>answerX</em> où <em>X</em> représente un nombre entier, il nous dans un premier temps mettre l'ensemble de ces réponses dans une liste, c'est là qu'intervient la fonction build:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">dic</span><span class="p">):</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">1</span>
+    <span class="n">answer</span><span class="o">=</span><span class="nb">list</span><span class="p">()</span>
+    <span class="k">while</span> <span class="p">(</span><span class="s1">&#39;answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">):</span>
+        <span class="n">answer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span>
+        <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">answer</span>
+    <span class="k">return</span> <span class="n">dic</span>
+</pre></div>
+</div>
+<p>Cette fonction permet donc d'ajouter dans le contexte une liste nommer <em>answer</em> contenant chacune des réponses, ils nous suffit alors de boucler dessus dans notre formulaire:</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span>{% for item in answer %}
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;form_txt_answer&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;radio&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;{{item}}&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;answer&quot;</span> <span class="na">required</span><span class="p">&gt;</span>{{item}}
+{% endfor %}
+</pre></div>
+</div>
+<p>Voilà maintenant un formulaire qui permet de répondre à une question demandant de choisir une réponse sur X réponses proposées.</p>
+</div>
+<div class="section" id="exemple">
+<span id="exemple"></span><h2>Exemple<a class="headerlink" href="#exemple" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Voici les formulaires (ansi que fonctions <a class="reference external" href="build">./build.html</a> associées, si existantes) de divers types d'exercices.</p>
+<div class="section" id="vrai-faux">
+<span id="vrai-faux"></span><h3>Vrai / Faux<a class="headerlink" href="#vrai-faux" title="Lien permanent vers ce titre">¶</a></h3>
+<p>PL:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">title</span><span class="o">=</span><span class="n">Vrai</span> <span class="o">/</span> <span class="n">Faux</span>
+<span class="n">text</span><span class="o">=</span><span class="n">Grant</span> <span class="n">a</span> <span class="n">été</span> <span class="n">enterré</span> <span class="n">à</span> <span class="n">New</span> <span class="n">York</span><span class="o">.</span>
+<span class="n">answer</span><span class="o">=</span><span class="kc">True</span>
+<span class="n">extends</span><span class="o">=/</span><span class="n">gift</span><span class="o">/</span><span class="n">template</span><span class="o">/</span><span class="n">truefalse_template</span><span class="o">.</span><span class="n">pl</span>
+</pre></div>
+</div>
+<p>Formulaire</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span>form==
+<span class="p">&lt;</span><span class="nt">center</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">label</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;radio-inline&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;form_txt_answer&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;radio&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;True&quot;</span> <span class="na">required</span><span class="p">&gt;</span> Vrai
+    <span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">label</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;radio-inline&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;form_txt_answer&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;radio&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;False&quot;</span> <span class="p">&gt;</span> Faux
+    <span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">center</span><span class="p">&gt;</span>
+==
+</pre></div>
+</div>
+<p>Rendu:</p>
+<p><img alt="Exemple Bool" src="_images/exemple_bool.png" /></p>
+</div>
+<div class="section" id="qcm-a-reponse-unique">
+<span id="qcm-a-reponse-unique"></span><h3>QCM a Réponse Unique<a class="headerlink" href="#qcm-a-reponse-unique" title="Lien permanent vers ce titre">¶</a></h3>
+<p>PL:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>title=QCM
+text=Qui est enterré dans la tombe de Grant?
+extends=/gift/template/select_template.pl
+answer1=Grant
+answer2=Personne
+answer3=Napoleon
+answer4=Churchill
+answer5=Mother Teresa
+right_answer=Grant
+</pre></div>
+</div>
+<p>Build:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">build</span><span class="o">==</span>
+<span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">dic</span><span class="p">):</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">1</span>
+    <span class="n">answer</span><span class="o">=</span><span class="nb">list</span><span class="p">()</span>
+    <span class="k">while</span> <span class="p">(</span><span class="s1">&#39;answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">):</span>
+        <span class="n">answer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span>
+        <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">answer</span>
+    <span class="k">return</span> <span class="n">dic</span>
+<span class="o">==</span>
+</pre></div>
+</div>
+<p>Formulaire:</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span>form==
+<span class="p">&lt;</span><span class="nt">center</span><span class="p">&gt;</span>
+    {% for item in answer %}
+        <span class="p">&lt;</span><span class="nt">label</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;radio-inline&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;form_txt_answer&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;radio&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;{{item}}&quot;</span> <span class="na">required</span><span class="p">&gt;</span>{{item}}
+        <span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+    {% endfor %}
+<span class="p">&lt;/</span><span class="nt">center</span><span class="p">&gt;</span>
+==
+</pre></div>
+</div>
+<p>Rendu:</p>
+<p><img alt="Exemple Select" src="_images/exemple_select.png" /></p>
+</div>
+<div class="section" id="reponse-courte">
+<span id="reponse-courte"></span><h3>Réponse Courte<a class="headerlink" href="#reponse-courte" title="Lien permanent vers ce titre">¶</a></h3>
+<p>PL::</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>title=Short
+text=Deep Thought said:
+extends=/gift/template/short_template.pl
+answer=forty two
+correct_feedback=Correct according to The Hitchhiker&#39;s Guide to the Galaxy!
+wrong_feedback=Incorrect !
+</pre></div>
+</div>
+<p>Formulaire:</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span>form==
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;input-group&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;input-group-addon&quot;</span><span class="p">&gt;</span>Réponse<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;form_txt_answer&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;form-control&quot;</span> <span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;&quot;</span> <span class="na">required</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+==
+</pre></div>
+</div>
+<p>Rendu:</p>
+<p><img alt="Exemple Courte" src="_images/exemple_short.png" /></p>
+</div>
+<div class="section" id="reponse-numerique">
+<span id="reponse-numerique"></span><h3>Réponse Numérique<a class="headerlink" href="#reponse-numerique" title="Lien permanent vers ce titre">¶</a></h3>
+<p>PL:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">title</span><span class="o">=</span><span class="n">Intervalle</span>
+<span class="n">text</span><span class="o">=</span><span class="n">Donnez</span> <span class="n">un</span> <span class="n">nombre</span> <span class="n">entre</span> <span class="mi">1</span> <span class="n">et</span> <span class="mf">5.</span>
+<span class="n">extends</span><span class="o">=/</span><span class="n">gift</span><span class="o">/</span><span class="n">template</span><span class="o">/</span><span class="n">numeric_template</span><span class="o">.</span><span class="n">pl</span>
+<span class="n">mini</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">maxi</span><span class="o">=</span><span class="mi">5</span>
+</pre></div>
+</div>
+<p>Formulaire:</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span>form==
+<span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;input-group&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;input-group-addon&quot;</span><span class="p">&gt;</span>Réponse<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;form_txt_answer&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;form-control&quot;</span> <span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;&quot;</span> <span class="na">required</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+==
+</pre></div>
+</div>
+<p>Rendu:</p>
+<p><img alt="Exemple Numérique" src="_images/exemple_numerical.png" /></p>
+</div>
+<div class="section" id="qcm">
+<span id="qcm"></span><h3>QCM<a class="headerlink" href="#qcm" title="Lien permanent vers ce titre">¶</a></h3>
+<p>PL:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>title=La Tombe de Grant
+
+text==
+Qui sont les personnes enterrés dans la tombe de Grant?
+
+(Indice: 2 personnes)
+==
+
+type=direct
+template=/gift/template/multiplechoices_template.pl
+answer1=La mère de Grant
+answer2=Grant
+answer3=La femme de Grant
+answer4=Le père de Grant
+right_answer1=Grant
+right_answer2=La femme de Grant
+</pre></div>
+</div>
+<p>Build:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">build</span><span class="o">==</span>
+<span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">dic</span><span class="p">):</span>
+    <span class="n">d</span><span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">1</span>
+    <span class="n">question</span><span class="o">=</span><span class="nb">list</span><span class="p">()</span>
+    <span class="n">answer</span><span class="o">=</span><span class="nb">list</span><span class="p">()</span>
+    <span class="k">while</span> <span class="p">(</span><span class="s1">&#39;answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">):</span>
+        <span class="n">question</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span>
+        <span class="k">if</span> <span class="s1">&#39;right_answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+            <span class="n">answer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;right_answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span>
+        <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;question&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">question</span>
+    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">answer</span>
+    <span class="k">return</span> <span class="n">d</span>
+<span class="o">==</span>
+</pre></div>
+</div>
+<p>Formulaire:</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span>form==
+<span class="p">&lt;</span><span class="nt">center</span><span class="p">&gt;</span>
+    {% for item in question %}
+        <span class="p">&lt;</span><span class="nt">label</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;checkbox-inline&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;checkbox&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;form_txt_answer&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;{{item}}&quot;</span><span class="p">&gt;</span> {{item}}
+        <span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+    {% endfor %}
+<span class="p">&lt;/</span><span class="nt">center</span><span class="p">&gt;</span>
+==
+</pre></div>
+</div>
+<p>Rendu:</p>
+<p><img alt="Exemple QCM" src="_images/exemple_PL.png" /></p>
+</div>
+<div class="section" id="correspondance">
+<span id="correspondance"></span><h3>Correspondance<a class="headerlink" href="#correspondance" title="Lien permanent vers ce titre">¶</a></h3>
+<p>PL:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>title=Match
+text=Which animal eats which food?
+template=/gift/template/match_template.pl
+question1=cat 
+question2=dog 
+answer1= cat food
+answer2= dog food
+</pre></div>
+</div>
+<p>Build:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">build</span><span class="o">==</span>
+<span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">dic</span><span class="p">):</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">1</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">question_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">answer_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">while</span> <span class="p">(</span><span class="s1">&#39;answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">):</span>
+        <span class="n">answer_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span>
+        <span class="n">question_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;question&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span>
+        <span class="n">answer</span><span class="p">[</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;question&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)]]</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+        <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">answer</span>
+    <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">answer_list</span>
+    <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;question_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">question_list</span>
+    <span class="k">return</span> <span class="n">dic</span>
+<span class="o">==</span>
+</pre></div>
+</div>
+<p>Formulaire:</p>
+<div class="highlight-html"><div class="highlight"><pre><span></span>form==
+<span class="p">&lt;</span><span class="nt">center</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;display: inline-block; vertical-align: middle;&quot;</span><span class="p">&gt;</span>
+        {% for item in question_list %}
+            <span class="p">&lt;</span><span class="nt">span</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;input&quot;</span><span class="p">&gt;</span>{{item}}:<span class="p">&lt;/</span><span class="nt">span</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">select</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;form_txt_{{item}}&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;selectpicker&quot;</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;display: inline-block; vertical-align: middle;&quot;</span> <span class="na">title</span><span class="o">=</span><span class="s">&quot;Réponse&quot;</span> <span class="na">required</span><span class="p">&gt;</span>
+                {% for item2 in answer_list %}
+                    <span class="p">&lt;</span><span class="nt">option</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;{{ item2 }}&quot;</span><span class="p">&gt;</span>{{item2}}<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;</span>
+                {% endfor %}
+            <span class="p">&lt;/</span><span class="nt">select</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+        {% endfor %}
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">center</span><span class="p">&gt;</span>
+==
+</pre></div>
+</div>
+<p>Rendu:</p>
+<p><img alt="Exemple Match" src="_images/exemple_match.png" /></p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table des Matières</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Écriture d'un Formulaire</a><ul>
+<li><a class="reference internal" href="#les-bases">Les Bases</a></li>
+<li><a class="reference internal" href="#css">CSS</a></li>
+<li><a class="reference internal" href="#formulaire-reutilisable">Formulaire Réutilisable</a></li>
+<li><a class="reference internal" href="#exemple">Exemple</a><ul>
+<li><a class="reference internal" href="#vrai-faux">Vrai / Faux</a></li>
+<li><a class="reference internal" href="#qcm-a-reponse-unique">QCM a Réponse Unique</a></li>
+<li><a class="reference internal" href="#reponse-courte">Réponse Courte</a></li>
+<li><a class="reference internal" href="#reponse-numerique">Réponse Numérique</a></li>
+<li><a class="reference internal" href="#qcm">QCM</a></li>
+<li><a class="reference internal" href="#correspondance">Correspondance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>Cette page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/formulaire.md.txt"
+            rel="nofollow">Montrer le code source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Recherche rapide</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Index général"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">documentation Premier langage </a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Coumes Quentin.
+      Créé avec <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

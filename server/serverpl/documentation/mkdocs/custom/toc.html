@@ -1,0 +1,13 @@
+<div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav" style="display: inline;">
+    {%- for toc_item in page.toc %}
+        <li class="main {% if toc_item.active %}active-toc{% endif %}"><h3 style="margin-left: 15px"><a href="{{ toc_item.url }}">{{ toc_item.title }}</a></h4></li>
+        {%- for toc_item1 in toc_item.children %}
+            <li class="{% if toc_item1.active %}active-toc{% endif %}"><h4 style="margin-left: 30px"><a href="{{ toc_item1.url }}">{{ toc_item1.title }}</a></h5></li>
+            {%- for toc_item2 in toc_item1.children %}
+                <li class="{% if toc_item2.active %}active-toc{% endif %}"><h5 style="margin-left: 45px"><a href="{{ toc_item2.url }}">{{ toc_item2.title }}</a></h6></li>
+            {%- endfor %}
+        {%- endfor %}
+    {%- endfor %}
+    </ul>
+</div>

@@ -1,0 +1,38 @@
+<div class="panel-group" id="accordion" style="position: fixed;">
+    {% if nav|length>1 %}
+        <ul>
+        {% for nav_item in nav %}
+            {% if nav_item.children %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ loop.index }}">{{ nav_item.title }}</a>
+                        </h4>
+                    </div>
+                    <div id="collapse{{ loop.index }}" class="panel-collapse collapse in">
+                        <div class="panel-body">
+                            <table class="table">
+                                {% for nav_item in nav_item.children %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ nav_item.url }}">{{ nav_item.title }}</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a href="{{ nav_item.url }}">{{ nav_item.title }}</a>
+                        </h4>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+        </ul>
+    {% endif %}
+</div>

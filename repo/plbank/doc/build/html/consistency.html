@@ -1,0 +1,178 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>La clé consistency &#8212; documentation Premier langage </title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Recherche" href="search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Index général"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">documentation Premier langage </a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="la-cle-consistency">
+<span id="la-cle-consistency"></span><h1>La clé consistency<a class="headerlink" href="#la-cle-consistency" title="Lien permanent vers ce titre">¶</a></h1>
+<p>La valeur de la clé consistency est une fonction python qui permet de vérifier la cohérence entre les questions/propositions et les réponses d'un exercice.</p>
+<p>La fonction étant déclarer en <strong>python 3</strong>, il est nécessaire d'avoir des connaissances en python.</p>
+<p>Il s'agit d'une fonction que l'on nomme <em>check_consistency</em> et qui prend en paramètre le dictionnaire de l'exercice après le passage par la fonction <a class="reference external" href="./build.html"><em>build()</em></a>.</p>
+<div class="section" id="les-bases">
+<span id="les-bases"></span><h2>Les Bases<a class="headerlink" href="#les-bases" title="Lien permanent vers ce titre">¶</a></h2>
+<p>La fonction <em>check_consistency()</em> doit être écrit en <strong>python 3</strong> et respecter un prototype précis:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">check_consistency</span><span class="p">(</span><span class="n">dic</span><span class="p">):</span>
+    <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="bp">True</span><span class="o">/</span><span class="bp">False</span><span class="p">],</span> <span class="n">error_message</span>
+</pre></div>
+</div>
+<p>Le type de retour est donc un tuple composé d'un booléen ( True si la cohérence est vérifiée, False sinon ) ainsi que le message d'erreur associé à l'éventuel problème de cohérence. Si la cohérence est vérifiée, le message ne sera pas affiché et il est donc d'usage de ne renvoyer qu'une chaîne vide.</p>
+</div>
+<div class="section" id="modules-et-fonctions-secondaires">
+<span id="modules-et-fonctions-secondaires"></span><h2>Modules et Fonctions Secondaires<a class="headerlink" href="#modules-et-fonctions-secondaires" title="Lien permanent vers ce titre">¶</a></h2>
+<p>N'importe quel module, (excepté <em>os</em> et <em>sys</em>) peut être importé avant la déclaration de build, de même, plusieurs fonctions annexes peuvenr être déclarées avant la fonction <em>check_consistency()</em> et être appelée par celle-ci. (voir exemples plus bas)</p>
+</div>
+<div class="section" id="exemples">
+<span id="exemples"></span><h2>Exemples<a class="headerlink" href="#exemples" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Ci dessous plusieurs exemples sur des modèles d'exercice existants</p>
+<div class="section" id="phrase-a-un-trou">
+<span id="phrase-a-un-trou"></span><h3>Phrase à un trou<a class="headerlink" href="#phrase-a-un-trou" title="Lien permanent vers ce titre">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">consistency</span><span class="o">==</span>
+<span class="k">def</span> <span class="nf">check_consistency</span><span class="p">(</span><span class="n">dic</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="s1">&#39;answer&#39;</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+    <span class="nb">list</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="k">while</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">list</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="s2">&quot;You must give consecutive numbers to your answers&quot;</span>
+        <span class="n">n</span> <span class="o">+=</span><span class="mi">1</span>
+    
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="s1">&#39;text&#39;</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+    <span class="nb">list</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="k">while</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">list</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="s2">&quot;You must give consecutive numbers to your text pieces&quot;</span>
+        <span class="n">n</span> <span class="o">+=</span><span class="mi">1</span>
+        
+    <span class="k">return</span> <span class="bp">True</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+<span class="o">==</span>
+</pre></div>
+</div>
+<p>On vérifie ici que la numérotation des parties de la phrase ainsi que des réponses possibles est bien une numérotation consécutive. (text 1, text2 et non pas text1 et text3)</p>
+</div>
+<div class="section" id="qcm">
+<span id="qcm"></span><h3>QCM<a class="headerlink" href="#qcm" title="Lien permanent vers ce titre">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">consistency</span><span class="o">==</span>
+
+<span class="k">def</span> <span class="nf">check_aux</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">txt</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="nb">list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">x</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">txt</span><span class="p">]</span>
+    <span class="nb">list</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="k">while</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">list</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">[</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="s2">&quot;You must give consecutive numbers to your &quot;</span><span class="o">+</span><span class="n">txt</span><span class="o">+</span><span class="s1">&#39;s&#39;</span>
+        <span class="n">n</span> <span class="o">+=</span><span class="mi">1</span>
+
+
+<span class="k">def</span> <span class="nf">check_consistency</span><span class="p">(</span><span class="n">dic</span><span class="p">):</span>
+    <span class="n">check_aux</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="s1">&#39;answer&#39;</span><span class="p">)</span>
+    <span class="n">check_aux</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="s1">&#39;right_answer&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]</span> <span class="p">:</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;question&#39;</span><span class="p">]:</span>
+            <span class="bp">False</span><span class="p">,</span> <span class="s2">&quot;right_answer must be a possible answer&quot;</span>
+    <span class="k">return</span> <span class="bp">True</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+
+<span class="o">==</span>
+</pre></div>
+</div>
+<p>Ici on vérifie également la numérotation des réponses, mais aussi l'appartenance des bonnes réponses à l'ensemble des réponses proposées. En effet ce modèle d'exercice nous oblige à proposer au moins une bonne réponse parmi les choix qui s'affichent, il serait incohérent d'avoir un couple clé valeur de la sorte right_answer1=réponse_qui_ne figure_pas_dans_les_choix.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table des Matières</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">La clé consistency</a><ul>
+<li><a class="reference internal" href="#les-bases">Les Bases</a></li>
+<li><a class="reference internal" href="#modules-et-fonctions-secondaires">Modules et Fonctions Secondaires</a></li>
+<li><a class="reference internal" href="#exemples">Exemples</a><ul>
+<li><a class="reference internal" href="#phrase-a-un-trou">Phrase à un trou</a></li>
+<li><a class="reference internal" href="#qcm">QCM</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>Cette page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/consistency.md.txt"
+            rel="nofollow">Montrer le code source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Recherche rapide</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Index général"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">documentation Premier langage </a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Coumes Quentin.
+      Créé avec <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

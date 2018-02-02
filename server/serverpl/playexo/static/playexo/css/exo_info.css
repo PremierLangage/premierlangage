@@ -1,0 +1,120 @@
+h1{
+	text-align: center;
+}
+
+blockquote{
+	font-style: italic;
+}
+
+#separating_line{
+	margin-left: 6%;
+	width: 35%;
+	border-radius: 8px;
+	border-bottom: 3px ridge #ACC7FF;
+}
+
+#eval{
+	width: 25%;
+	margin-left: 5%;
+	
+}
+
+.row {
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+}
+
+#_Eval {
+	display:inline-block;
+    background-color: #6082DA; 
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    width: 18%;
+	margin-top: 1%;
+	margin-left: 78%;
+    font-size: 2em;
+}
+#_Eval:hover{
+	box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+#_Eval:active {
+  background-color: #2767A5;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+
+span.red-circle {
+    display: block;
+    height: 10px;
+    width: 10px;
+    line-height: 60px;
+    
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+
+    background-color: red;
+}
+
+span.grey-circle {
+    display: block;
+    height: 10px;
+    width: 10px;
+    line-height: 60px;
+    vertical-align: middle;
+    
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+
+    background-color: grey;
+}
+
+span.yellow-circle {
+    display: block;
+    height: 10px;
+    width: 10px;
+    line-height: 60px;
+    
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+
+    background-color: yellow;
+}
+
+span.green-circle {
+    display: block;
+    height: 10px;
+    width: 10px;
+    line-height: 60px;
+
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+
+    background-color: green;
+}
+
+.panel-primary{
+    border-color:#428bca;
+}
+
+.panel-primary>.panel-heading{
+    color:#ffffff;
+    background-color:#428bca;
+    border-color:#428bca;
+    border-radius:5px 5px 0px 0px;
+    -webkit-border-radius:5px 5px 0px 0px;
+    -moz-border-radius:5px 5px 0px 0px;
+
+}
+
+.panel-primary > .panel-body{
+    border:1px solid #428bca;
+    border-radius:0px 0px 5px 5px;
+    -webkit-border-radius:0px 0px 5px 5px;
+    -moz-border-radius:0px 0px 5px 5px
+}

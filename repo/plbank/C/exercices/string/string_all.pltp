@@ -1,0 +1,15 @@
+author=Nicolas Borie
+
+title=Les chaînes de caractères en C
+
+introduction==
+
+Voici les exercices à propos des chaînes de caractères en C
+
+==
+
+tag=string
+
+concept==
+@ /C/exercices/string/strlenght.pl
+==

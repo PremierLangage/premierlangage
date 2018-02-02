@@ -1,0 +1,79 @@
+{% extends "playexo/base.html" %}
+
+{% block tag %}
+    {% load bootstrap3 %}
+    {% load static %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <div class="panel panel-primary">
+
+            <div class="panel-body">
+                <h1>Edition de {{ filename }}</h1>
+                <hr>
+        
+                <div id="editor" style="height: 400px;">{% if not remotely_changed %}{{ file_content }}{% else %}{{ changed_content }}{% endif %}</div>
+                
+                <br>
+                
+                <form action="/gitload/edit_file/" method="post">
+                    {% csrf_token %}
+                    <div class="input-group has-feedback">
+                        <span class="input-group-addon">Commit:</span>
+                        <input type="text" class="form-control" name="commit" required>
+                    </div>
+                    <br>
+                    <div class="input-group has-feedback">
+                        <span class="input-group-addon">Login:</span>
+                        <input type="text" class="form-control" name="username" required>
+                        <span style="margin-left: 5px;" class="input-group-addon">Mot de Passe:</span>
+                        <input type="password" class="form-control" name="password" required>
+                    </div>
+                    <input type="hidden" name="code" style="display: none;">
+                    <input type="hidden" name="file_path" value="{{ filepath }}" style="display: none;">
+                    <input type="hidden" name="file_content" value="{% if remotely_changed %}{{ changed_content }}{% else %}{{ file_content }}{% endif %}" style="display: none;">
+                    <br>
+                    <center><button class="btn btn-lg btn-info" type="submit"><span class="glyphicon glyphicon-floppy-disk"> Sauvegarder & Push</input></center>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+</div>
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        {% if remotely_changed %}
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h1>Vos changements</h1>
+                    <hr>
+                    <div id="editorRO" style="height: 400px;">{{ file_content }}</div>
+                </div>
+            </div>
+        {% endif %} 
+    </div>
+    <div class="col-md-1"></div>
+</div>
+
+<script src="{% static 'ace/ace.js' %}" type="text/javascript" charset="utf-8"></script>
+    <script>
+        var editor = ace.edit('editor');
+            editor.session.setMode("ace/mode/python");
+            editor.setTheme("ace/theme/monokai");
+
+        var input = $('input[name="code"]');
+            editor.getSession().on("change", function () {
+            input.val(editor.getSession().getValue());
+        });
+        
+        {% if remotely_changed %}
+            var editorRO = ace.edit('editorRO');
+            editorRO.session.setMode("ace/mode/python");
+            editorRO.setReadOnly(true);
+        {% endif %}
+    </script>
+{% endblock %}

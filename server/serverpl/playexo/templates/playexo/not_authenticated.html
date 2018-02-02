@@ -1,0 +1,30 @@
+{% extends "playexo/base.html" %}
+
+
+{% block header_script %}
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#Modal').modal({backdrop: 'static', keyboard: false});
+            $("#Modal").modal('show', {backdrop: 'static', keyboard: false});
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+    <div id="Modal" class="modal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <center><h2 class="modal-title">Vous n'êtes actuellement pas identifié.</h4></center>
+                </div>
+                <div class="modal-body">
+                    <center>
+                        <h4>Merci de vous connecter à ce site depuis la plateforme d'apprentissage en ligne de votre université (Moodle, E-Learning, Canvas...).</h4>
+                        <br><br>
+                        <h6>Si vous êtes administrateur, Vous pouvez vous connecter depuis la <a href="/admin">page d'administration</a>.</h6>
+                    </center>
+                </div>
+            </div>
+        </div>
+{% endblock %}

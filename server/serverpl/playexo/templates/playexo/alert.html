@@ -1,0 +1,34 @@
+{% comment "Info" %}
+    A inclure dans la plupart des template après la top barre.
+    Permet d'afficher des message d'alerte (petit pop up fermable juste en dessous de la top barre) afin
+    d'avertir/donner des informations à l'utilisateurs.
+    Pour créer une alerte, simplement faire un:
+        - from django.contrib import messages puis
+            - messages.success(request, msg) ou
+            - messages.info(request, msg) ou
+            - messages.warning(request, msg) ou
+            - messages.error(request, msg)
+    dans la vue correspondante.
+{% endcomment %}
+
+<div class="row">
+    <div class=col-md-2></div>
+    <div class=col-md-8>
+        {% for message in messages %}
+            <div id="message" class="alert alert-{{ message.tags }} alert-dismissable" style="margin-top: -20px">
+                {% if message.tags == "danger" %}
+                    <span class="glyphicon glyphicon-fire"></span>
+                {% elif message.tags == "success" %}
+                    <span class="glyphicon glyphicon-ok"></span>
+                {% elif message.tags == "info" %}
+                    <span class="glyphicon glyphicon-bullhorn"></span>
+                {% else %}
+                    <span class="glyphicon glyphicon-alert"></span>
+                {% endif %}
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                &emsp;{{ message|safe }}
+            </div>
+        {% endfor %}
+    </div>
+    <div class=col-md-2></div>
+</div>

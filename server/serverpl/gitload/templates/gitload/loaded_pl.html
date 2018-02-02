@@ -1,0 +1,51 @@
+
+
+{% extends "gitload/base.html" %}
+
+{% block content %}
+    <div class="row">
+        <div class=col-md-1></div>
+        <div class=col-md-10>
+        
+        <ul class="nav nav-tabs nav-justified">
+          <li class="nav-item"><a href="/gitload/loaded_pltp">PLTP</a></li>
+          <li class="nav-item active"><a href="/gitload/loaded_pl">PL</a></li>
+          <li class="nav-item"><a href="/gitload/activity">Activité</a></li>
+        </ul>
+        <br>
+        <br>
+        <div class="container">
+            <a class="btn btn-primary" href="/gitload/browse/"><span class="glyphicon glyphicon-arrow-left"></span>&emsp;Retour</a>
+            <h2>PL(s) Chargé(s):</h2>
+            <div class="row">
+                {% if pl %}       
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Dépot</th>
+                                <th>Chemin Relatif</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tp in pl %}
+                                <tr>
+                                    <td>{{ tp.name }}</td>
+                                    <td>{% if tp.repository.name %}{{ tp.repository.name }}{% else %}N/A{% endif %}</td>
+                                    <td>{% if tp.repository.name %}{{ tp.rel_path }}{% else %}N/A{% endif %}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="alert alert-danger">
+                        Aucun PL actuellement chargé.
+                    </div>
+                {% endif %}
+            </div>
+            <a class="btn btn-primary" href="/gitload/browse/"><span class="glyphicon glyphicon-arrow-left"></span>&emsp;Retour</a>
+        </div>
+        
+        <div class=col-md-1></div>
+    </div>
+{% endblock %}

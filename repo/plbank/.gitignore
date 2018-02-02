@@ -1,0 +1,7 @@
+__pycache__
+.cache
+*.json
+*.pyc
+__init__.py
+*.old
+*~

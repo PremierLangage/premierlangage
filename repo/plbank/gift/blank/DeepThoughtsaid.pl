@@ -1,0 +1,11 @@
+feedback3=Correct!
+feedback2=Correct, as told to Loonquawl and Phouchg
+text1=Deep Thought said "
+type=direct
+title=Deep Thought said " 
+feedback1=Correct according to The Hitchhiker's Guide to the Galaxy!
+answer1=42
+answer2=forty-two
+template=/gift/template/fill_the_blank_template.pl
+answer3=forty two
+text2=is the Ultimate Answer to the Ultimate Question of Life, The Universe, and Everything."

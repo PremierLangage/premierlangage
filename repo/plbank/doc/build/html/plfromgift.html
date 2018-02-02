@@ -1,0 +1,141 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Commande plfromgift &#8212; documentation Premier langage </title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Recherche" href="search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Index général"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">documentation Premier langage </a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="commande-plfromgift">
+<span id="commande-plfromgift"></span><h1>Commande plfromgift<a class="headerlink" href="#commande-plfromgift" title="Lien permanent vers ce titre">¶</a></h1>
+<div class="section" id="installation">
+<span id="installation"></span><h2>Installation<a class="headerlink" href="#installation" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Pour installer la commande et ainsi l'utiliser aisément il vous faut modifier le fichier ~/.bashrc
+Pour cela, il faut lancer depuis un terminal</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">gedit</span> <span class="o">~/.</span><span class="n">bashrc</span>
+</pre></div>
+</div>
+<p>Ceci va ouvrir le fichier correspondant, ensuite il vous faut ajouter la ligne suivante à ce fichier :</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>export PATH=$PATH:/home/premierlangage/repo/plbank/bin
+</pre></div>
+</div>
+</div>
+<div class="section" id="utilisation">
+<span id="utilisation"></span><h2>Utilisation<a class="headerlink" href="#utilisation" title="Lien permanent vers ce titre">¶</a></h2>
+<p>La commande se nomme plfromgift.sh s’utilise en écrivant depuis n'importe où dans le terminal</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>    <span class="n">pltpfromgift</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="n">OPTION</span><span class="p">]</span><span class="o">...</span><span class="p">[</span><span class="n">fichier</span><span class="o">.</span><span class="n">gift</span><span class="p">]</span><span class="o">...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="description">
+<span id="description"></span><h2>Description<a class="headerlink" href="#description" title="Lien permanent vers ce titre">¶</a></h2>
+<p>La commande sert à transformer les questions d'un fichier.gift en des pl et créer un pltp nommé fichier.pltp qui contient tous ces pl.</p>
+<p>Tous les types des Questions gift sont compatibles excepté le type Essay</p>
+</div>
+<div class="section" id="options">
+<span id="options"></span><h2>Options<a class="headerlink" href="#options" title="Lien permanent vers ce titre">¶</a></h2>
+<p>-r=[destination]
+Pour renseigner l'endroit où vous désirer ranger le dossier qui contiendra votre pltp et vos pl, <strong>par defaut la destination est plbank</strong></p>
+<p>-d=[dir_gift]
+Pour renseigner dans quel répertoire de l'endroit où vous souhaitez ranger votre dossier qui contiendra votre pltp et vos pl, par défaut dir_gift = gift/</p>
+</div>
+<div class="section" id="informations-complementaires">
+<span id="informations-complementaires"></span><h2>Informations complémentaires<a class="headerlink" href="#informations-complementaires" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Il est nécessaire de renseigner, soit le chemin absolu vers fichier.gift, soit le chemin relatif jusqu'à fichier.gift
+Le fichier pltp, qui portera le nom du fichier.gift, ainsi que les fichiers pl créés seront rangés automatiquement dans destination/dir_gift/nomdufichiergift</p>
+<p>Par exemple si vous avez un fichier quizz.gift qui se trouve dans /home/gift/ et qui contient trois questions nommées Q1, Q2 et Q3
+Alors la commande pltpfromgift.py /home/gift/quizz.gift créera, dans plbank/gift/, un dossier nommé quizz qui contiendra les fichiers : quizz.pltp, Q1.pl, Q2.pl et Q3.pl</p>
+<p><strong>Attention, si vous décidez d’écrire en gift avant de convertir votre fichier en pl, sachez que PL ne note qu’avec des points entiers. Vos demi points seront ignorés et chaque bonne réponse vaudra un point, chaque mauvaise réponse vaudra 0 point.</strong></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table des Matières</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Commande plfromgift</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#utilisation">Utilisation</a></li>
+<li><a class="reference internal" href="#description">Description</a></li>
+<li><a class="reference internal" href="#options">Options</a></li>
+<li><a class="reference internal" href="#informations-complementaires">Informations complémentaires</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>Cette page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/plfromgift.md.txt"
+            rel="nofollow">Montrer le code source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Recherche rapide</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Index général"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">documentation Premier langage </a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Coumes Quentin.
+      Créé avec <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        
+        <!-- Header info -->
+        {% block head %}{% endblock %}
+        
+        <!-- Title -->
+        <title>{% block title %}UPEM - PL 2017/2018{% endblock %}</title>
+        
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+       
+        <!-- Load the tag library -->
+        {% load bootstrap3 %}
+        {% load static %}
+        {% block tag %}{% endblock %}
+        
+        <!-- Load CSS and JavaScript for Bootstrap-->
+        {% bootstrap_css %}
+        {% bootstrap_javascript %}
+        
+        <!-- favicon -->
+        <link rel="shortcut icon" href="{% static 'playexo/favicon.ico' %}" />       
+        
+        <!-- Loading CSS and JS -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        
+        {% block header_script %}{% endblock %}
+        {% block css %}{% endblock %}
+        <link rel="stylesheet" href="{% static 'playexo/css/exo_info.css' %}" />
+        <link rel="stylesheet" href="{% static 'playexo/css/pywims_exos.css' %}">
+        <link rel="stylesheet" href="{% static 'playexo/css/footer.css' %}">
+        <link rel="stylesheet" href="{% static 'css/classmanagement.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/block_chart.css' %}" />
+    
+    </head>
+    
+    <body>
+        <div id="header">
+            {% block topbar %}{% include "playexo/top_bar.html" %}{% endblock %}
+        </div>
+        <div id="content">
+            {% block alert %}{% include "playexo/alert.html" %}{% endblock %}
+            
+            {% block content %}
+                <!-- State -->
+                {% block state %}
+                {% endblock %}
+                
+
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-2">
+                        <!-- Navigation -->
+                        {% block navigation %}
+                        {% endblock %}
+                    </div>
+                    <div class="col-md-8">
+                        <!-- Exo -->
+                        {% block exo %}
+                        {% endblock %}
+                    </div>
+                    <div class="col-md-1"></div>
+                </div>
+            {% endblock %}
+            
+            {% block end_script %}{% endblock %}
+            <script src="{% static 'playexo/js/footer.js' %}"></script> 
+        </div>
+        <div id="footer">
+            <footer class="footer">
+                {% block footer %}{% include "playexo/footer.html" %}{% endblock %}
+            </footer>
+        </div>
+    </body>
+</html>

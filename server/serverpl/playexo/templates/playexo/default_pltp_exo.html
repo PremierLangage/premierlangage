@@ -1,0 +1,22 @@
+{% extends custom_nav %}
+
+{% block tag %}
+    {% load markdown_deux_tags %}
+    {% load bootstrap3 %}
+    {% load static %}
+{% endblock %}
+
+
+{% block exo %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="text-center"><h1>{% if 'title'%}{{ title }}{% endif %}</h1></div>
+            <div class="text-left">{% if 'author' %}{{ author }}{% endif %}</div>
+        </div>
+        
+        <div class="panel-body">
+            {% if "introduction" %}{{ introduction|markdown }}{% endif %}
+            {% if "introduction" %}{{ introductionh|safe }}{% endif %}
+        </div>
+    </div>
+{% endblock %}

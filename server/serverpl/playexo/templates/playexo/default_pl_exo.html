@@ -1,0 +1,176 @@
+{% extends custom_nav %}
+
+
+{% block tag %}
+    {% load markdown_deux_tags %}
+    {% load bootstrap3 %}
+    {% load static %}
+{% endblock %}
+
+{% block header_script %}
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [['\\(','\\)'],],
+            skipTags: ["script","noscript","style"],
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+{% endblock %}
+
+
+{% block exo %}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="text-center"><h1>{% if 'title'%}{{ title }}{% endif %}</h1></div>
+            <div class="text-left">{% if 'author' %}{{ author }}{% endif %}</div>
+        </div>
+        
+        <div class="panel-body">
+            {% if 'text'%}{{ text|markdown }}{% endif %}
+            {% if 'texth'%}{{ texth|safe }}{% endif %}
+            
+            {% block feedback %}
+                <div id="feedback_success" class="alert alert-success feedback" style="display: None"></div>
+                <div id="feedback_info" class="alert alert-info feedback" style="display: None"></div>
+                <div id="feedback_danger" class="alert alert-danger feedback" style="display: None"></div>
+            {% endblock %}
+            <br>
+            
+            {% csrf_token %}
+            <div id="form">
+                {% block form %}{% endblock %}
+            </div>
+            
+            <br>
+            <center>
+                <div id="default_button" class="btn-group">
+                        <a type=button class="btn btn-warning" href="/playexo/activity/?action=reset"><span class="glyphicon glyphicon-refresh"></span> Réinitialiser</a>
+                        <button id="save_button" class="btn btn-default btn-info"><span class="glyphicon glyphicon-floppy-disk"></span> Sauvegarder</button>
+                        <button id="submit_button" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> Valider</button>
+                </div>
+                <div id="next_button" style="display: None; color: white;">
+                    <a type="button" class="btn btn-lg btn-success" href="/playexo/activity/?action=next">
+                        Suivant&emsp;<span class="glyphicon glyphicon-arrow-right"></span>
+                    </a>
+                </div>
+            </center>
+            <br>
+        </div>
+    </div>
+{% endblock %}
+
+{% block end_script %}
+<!--  script executed after page is loaded -->
+<script>
+$( document ).ready(function(){
+    if(window.top != window.self) {
+        $('#home-link').remove();
+    }
+
+    $( "#submit_button" ).click(function() {
+        var inputs = getInputs();
+
+        var status = {requested_action: 'submit', inputs: inputs};
+        $.ajax({
+            type : "POST",
+            url : "/playexo/activity/",
+            data: JSON.stringify(status, null, '\t'),
+            contentType: 'application/json;charset=UTF-8',
+            success: function(returned_status) {
+                status = returned_status;
+                onReturn(status.feedback_type, status.feedback);
+            }
+        });
+    });
+    
+    $( "#save_button" ).click(function() {
+        var inputs = getInputs();
+
+        var status = {requested_action: 'save', inputs: inputs};
+        $.ajax({
+            type : "POST",
+            url : "/playexo/activity/",
+            data: JSON.stringify(status, null, '\t'),
+            contentType: 'application/json;charset=UTF-8',
+            success: function(returned_status) {
+                status = returned_status;
+                onReturn(status.feedback_type, status.feedback);
+            }
+        });
+    });
+});
+
+</script>
+
+<script>
+function wait(ms){
+    var start = new Date().getTime();
+    var end = start;
+    while(end < start + ms) {
+        end = new Date().getTime();
+    }
+}
+
+function getInputs(){
+    var inputs = {};
+    $( "[id^='form_']" ).each(function() {
+        var type = this.id.slice(5,8); // type of field, a 3 letter code, cf input tag defs
+        var id = this.id.slice(9); // name of the variable
+        var value = $(this).val();
+        if ($(this).is(':radio')) {
+            if($(this).is(':checked')) {
+                inputs[id]=value;
+            }
+        }
+        else if ($(this).is(':checkbox')) {
+            if($(this).is(':checked')) {
+                if (id in inputs) {
+                    inputs[id].push(value);
+                }
+                else {
+                    inputs[id] = [value]
+                }
+            }
+        }
+        else {
+            inputs[id]=value;
+        }
+    });
+    return inputs;
+}
+
+function onReturn(feedback_type, feedback) {
+    $( "#feedback_success" ).hide();
+    $( "#feedback_success").css('animation', 'fadeOut 1s forwards');
+    $( "#feedback_info" ).hide();
+    $( "#feedback_info").css('animation', 'fadeOut 1s forwards');
+    $( "#feedback_danger" ).hide();
+    $( "#feedback_danger").css('animation', 'fadeOut 1s forwards');
+    
+    $('#navigation').load(document.URL + " #navigation>*","");
+    if (feedback_type == "success") {
+        $( "#default_button" ).toggle();
+        $( "#next_button" ).toggle();
+        $( "#feedback_success" ).html(feedback);
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub,feedback_success]);
+        $( "#feedback_success" ).toggle();
+        $( "#feedback_success").css('animation', 'growIn 1s forwards');
+    }
+    else if (feedback_type == "info") {
+        $( "#feedback_info" ).html(feedback);
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub,feedback_info]);
+        $( "#feedback_info" ).toggle();
+        $( "#feedback_info").css('animation', 'growIn 1s forwards');
+    }
+    else {
+        $( "#feedback_danger" ).html(feedback);
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub,feedback_danger]);
+        $( "#feedback_danger" ).toggle();
+        $( "#feedback_danger").css('animation', 'growIn 1s forwards');
+    }
+}
+</script>
+{% endblock %}

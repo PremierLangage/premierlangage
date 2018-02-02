@@ -1,0 +1,33 @@
+extends=fileinthblank
+
+nbvar=2
+
+patron==
+Completeter l'égalité suivante
+5 //3  == {% saisie reponse  area %} . 
+
+Donner le nom du nevey de donald {% saisie reponse  area %}
+
+
+==
+
+answer1=(two,toto)
+anwser0=(2,titi)
+
+
+
+
+builder==
+if count('%',dico["patron"]) == 0 :
+
+str = dico["patron"] % (
+dico[text]==Template(dico(patron)).render(dico)
+==
+
+evaluator==
+def evaluate(dic,reponse):
+    nbvar= int(dic["nbvar"])
+
+
+==> 
+Two plus <input type="text" name="reponse" > eqauls four. 

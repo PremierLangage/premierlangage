@@ -1,0 +1,15 @@
+title=all
+concept==gift
+@ /gift/all/SelectWithFeedback.pl
+@ /gift/all/SelectSet.pl
+@ /gift/all/Short.pl
+@ /gift/all/TrueFalse1.pl
+@ /gift/all/TruFalse2.pl
+@ /gift/all/Filltheblank.pl
+@ /gift/all/Match.pl
+@ /gift/all/MultipleGoodAnswers.pl
+@ /gift/all/MultipleNumeric.pl
+@ /gift/all/Description.pl
+@ /gift/all/RangeAvecTolerance.pl
+@ /gift/all/RangeAvecIntervalle.pl
+==

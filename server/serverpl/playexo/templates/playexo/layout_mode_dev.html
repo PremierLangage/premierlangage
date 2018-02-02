@@ -1,0 +1,146 @@
+{% extends "pywims_exos/layout_appli.html" %}
+{% load json_filter %}
+{% block contenu  %}
+
+ <!--This is a comment. Comments are not displayed in the browser-->
+
+<script src="https://ajaxorg.github.io/ace-builds/src/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+$( document ).ready(function(){
+  $( "#apres" ).toggle();
+ var editor = ace.edit("editeur");
+ var status = {{ status|tojson }};
+ editor.setTheme("ace/theme/tomorrow");
+ editor.getSession().setMode("ace/mode/"+ status.langage);
+ editor.getSession().setUseWrapMode(true);
+ editor.getSession().setValue(status.exo[status['current_code']]);
+ document.getElementById('editeur').style.fontSize='14px';
+ editor.setAutoScrollEditorIntoView(true);
+ editor.resize();
+ if (status.exo['layout'] != 'GGB') $( "#ggb_commands_button" ).hide();
+
+ $( "#"+status['current_code']+"_button").attr('class', 'dev-onglet-sel');
+
+ $( "#preview_button, #home_button" ).click(function() {
+   status.exo[status['current_code']] = editor.getValue();
+   // on enlève '_button' au nom du bouton pour obtenir l'action requise
+   status['requested_action'] = this.id.slice(0, -7);
+   $.ajax({
+     type : "POST",
+     url : "{% url 'dev_exo' pk=pk %}",
+     data: JSON.stringify(status, null, '\t'),
+     contentType: 'application/json;charset=UTF-8',
+     success: function(returned_status) {
+       status = returned_status;
+       if (status['requested_action'] == 'preview')
+       document.getElementById('frame_exo').contentWindow.location.reload();
+       if (status['requested_action'] == 'home')
+       window.location.replace("{% url 'liste_exos' %}");
+     }
+   });
+ });
+
+ $( "#layout_select" ).val(status.exo.layout);
+ $( "#layout_select" ).on( "change" , function() {
+   status['requested_action'] = "update-layout";
+   console.log(".val" + $( this ).val());
+   status.exo['layout'] = $( this ).val();
+   console.log(".val" + $( this ).val());
+   $.ajax({
+     type : "POST",
+     url : "{% url 'dev_exo' pk=pk %}",
+     data: JSON.stringify(status, null, '\t'),
+     contentType: 'application/json;charset=UTF-8',
+     success: function(returned_status) {
+       status = returned_status;
+     }
+   });
+ });
+ $( "#ggb_file_button" ).on( "click", function() {
+ });
+
+ $( "#avant_button, #apres_button, #enonce_button, #reponse_button, #ggb_commands_button" ).on( "click", function() {
+   $( "#"+status['current_code']+"_button").attr('class', 'dev-onglet');
+   status.exo[status['current_code']] = editor.getValue();
+   // on enlève '_button' au nom du bouton pour obtenir la partie du code à afficher
+   status['current_code'] = this.id.slice(0, -7);
+   if ((status['current_code'] == 'avant') || (status['current_code'] == 'apres'))
+   status['langage'] = 'python';
+   else status['langage'] = 'django';
+
+   editor.setValue(status.exo[status['current_code']], -1);
+   editor.getSession().setMode("ace/mode/"+ status['langage']);
+   $( "#"+status['current_code']+"_button").attr('class', 'dev-onglet-sel');
+ });
+
+ // rendre le titre de l'exo modifiable
+ $( "#titre-pencil" ).on( "click", function() {
+    if ($( "#titre" ).attr('contentEditable') != 'true') {
+      $( "#titre" ).attr('contentEditable', 'true');
+      $( "#titre" ).css({"border-color": "#white",
+             "border-width":"1px",
+             "border-style":"solid"});
+    }
+    $( "#titre" ).focus();
+  });
+
+  $( "#titre" ).bind('keypress', function(e) {
+    var code = e.keyCode || e.which;
+
+    if ((code == 13) || (code == 27)) {
+      $( "#titre" ).attr('contentEditable', 'false');
+      $( "#titre" ).css({'border': 'none'});
+    }
+
+    if (code == 13) {  // touche enter : on enregistre le nouveau titre
+      status.exo['title'] = $( "#titre" ).html();
+      status['requested_action'] = 'update-title';
+      $.ajax({
+        type : "POST",
+        url : "{% url 'dev_exo' pk=pk %}",
+        data: JSON.stringify(status, null, '\t'),
+        contentType: 'application/json;charset=UTF-8',
+        success: function(returned_status) {}
+      });
+    }
+    // touche escape : on revient au titre initial
+    if (code == 27) $( "#titre" ).html(status.exo['title']);
+  });
+});
+
+
+</script>
+
+<div class = 'dev_exos'>
+  <div class = 'dev-volet-editeur'>
+    <div class='dev-menu'>
+      <div  style = 'display:inline-block'>
+          <button class = 'dev-titre' type="button" id = 'titre'> {{ status.exo.title }} </button>
+          <button class = 'dev-titre' id = 'titre-pencil'><span class="fa fa-pencil"></span></button>
+          <br>
+          <button class = 'dev-onglet' type='button' id = 'layout_button'> Type:</button>
+          <select id = "layout_select" >
+            {% for first, second in LAYOUTS %}
+            <option value='{{ first }}'> {{ second }} </option>
+            {% endfor %}
+          </select>
+          <button class = 'dev-onglet' type="button" title = "charger la construction initiale depuis un fichier .ggb" id = 'ggb_file_button'>
+            <span class="fa fa-upload"></span>
+          </button>
+          <button class = 'dev-onglet' type="button" id = 'avant_button'> Avant </button>
+          <button class = 'dev-onglet' type="button" id = 'ggb_commands_button'> Geogebra </button>
+          <button class = 'dev-onglet' type="button" id = 'enonce_button'> Enoncé </button>
+          <button class = 'dev-onglet' type="button" id = 'apres_button'> Après </button>
+          <button class = 'dev-onglet' type="button" id = 'reponse_button'> Réponse </button>
+      </div>
+      <div  style = 'display:inline-flex; align-content:center'>
+        <button class=  'dev-glyph' type="button" id='home_button'><span class="fa fa-home"></span></button>
+        <button class = 'dev-glyph' type="button" id='preview_button'><span class="fa fa-play"></span> </button>
+      </div>
+    </div>
+    <div class='editeur' id='apres' > </div>
+    <div class='editeur' id='editeur' > </div>
+    </div>
+    <iframe class='exo' id = 'frame_exo' src="{% url 'run_exo' pk=pk %}"></iframe>
+</div>
+ {% endblock %}

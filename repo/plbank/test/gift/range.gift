@@ -1,0 +1,5 @@
+// math range question
+::RangeAvecTolerance:: What is a number from 1 to 5? {#3:2}
+
+// math range question
+::RangeAvecIntervalle:: What is a number from 1 to 5? {#1..5}

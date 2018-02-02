@@ -1,0 +1,32 @@
+author=Nicolas Borie
+
+title=TP autour des premiers exercices en C, notion de programme.
+
+introduction==
+
+Un programme C existe sou deux formes :
+
+* le code source que le programmeur tape humainement placé dans un
+  fichier d'extension `.c`
+
+* le programme exécutable que l'on obtient à partir des sources en
+  utilisant un compilateur pour le langage C.
+
+Durant ce TP, vous produirez vos premières sources de programmes sous
+forme d'exercices à trous dans un premiers temps. Lisez bien les
+consignes. À partir des codes sources que vous proposez à la
+plate-forme, cette dernière va générer automatiquement les exécutables
+associés. Ces exécutables seront testés avec des arguments bien
+choisis. La plateforme vous conseillera pour la compilation ainsi que
+pour les tests. L'objectif est ici de produire du code correct
+respectant certains standards sur lesquels nous reviendrons plus tard.
+
+Bon courage.
+==
+
+tag=program
+
+concept==
+@ /C/exercices/program/hello.pl
+@ /C/exercices/program/order_calls.pl
+==

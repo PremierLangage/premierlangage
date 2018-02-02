@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+</head>
+<body>
+<p>Liste des concepts Dominique Revuz # -<em>- coding: utf-8 -</em>-</p>
+<ul>
+<li>encoding ‘‘‘python # -<em>- coding: <encoding-name> -</em>- ‘‘‘</li>
+<li>indentation ‘‘‘python def perm(l): # error: first line indented for i in range(len(l)): # error: not indented s = l[:i] + l[i+1:] p = perm(l[:i] + l[i+1:]) # error: unexpected indent for x in p: r.append(l[i:i+1] + x) return r # error: inconsistent dedent ‘‘‘</li>
+</ul>
+<p>+commande le langage de commande analyse des lignes</p>
+<p>+script la possibilité d'ecrire des programmes avec un éditeur</p>
+<p>+lecture d'une ligne</p>
+<pre><code> Line structure
+ Other tokens</code></pre>
+<p>+Identifiers(identificateurs) Dans la description des identificateurs d'un langage de programmation on trouve souvent une formule bizare: [a-zA-Z_][0-9a-zA-Z_]* Cette formule se lit de la façon suivante entre [] = un premier caractère qui appartient soit à l'interval 'a' à 'z' soit 'A' à 'Z' plus le caractère '<em>' souligné. les zéro à n caractères []* suivants appartient soit à l'interval 'a' à 'z' soit 'A' à 'Z' soit '0' à '9' plus le caractère '</em>' souligné. La taille des identificateurs est d'aumoins un caractère et aussi longue que vous le souhaitez, attention la case (majuscule /minuscule) est importante.</p>
+<p>+keywords(mots clefs) C'est des mots auquels une signification à été donnée par les créateurs du langage il sont donc reconnu et ne peuvent pas êtres utilisés comme identificateurs</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Table</th>
+<th align="left">des</th>
+<th align="left">mots</th>
+<th align="left">clefs</th>
+<th align="left">python</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">False</td>
+<td align="left">class</td>
+<td align="left">finally</td>
+<td align="left">is</td>
+<td align="left">return</td>
+</tr>
+<tr class="even">
+<td align="left">None</td>
+<td align="left">continue</td>
+<td align="left">for</td>
+<td align="left">lambda</td>
+<td align="left">try</td>
+</tr>
+<tr class="odd">
+<td align="left">True</td>
+<td align="left">def</td>
+<td align="left">from</td>
+<td align="left">nonlocal</td>
+<td align="left">while</td>
+</tr>
+<tr class="even">
+<td align="left">and</td>
+<td align="left">del</td>
+<td align="left">global</td>
+<td align="left">not</td>
+<td align="left">with</td>
+</tr>
+<tr class="odd">
+<td align="left">as</td>
+<td align="left">elif</td>
+<td align="left">if</td>
+<td align="left">or</td>
+<td align="left">yield</td>
+</tr>
+<tr class="even">
+<td align="left">assert</td>
+<td align="left">else</td>
+<td align="left">import</td>
+<td align="left">pass</td>
+</tr>
+<tr class="odd">
+<td align="left">break</td>
+<td align="left">except</td>
+<td align="left">in</td>
+<td align="left">raise</td>
+</tr>
+</tbody>
+</table>
+<pre><code> Literals
+ Operators
+ Delimiters
+Data model
+ Objects, values and types
+ The standard type hierarchy
+ Special method names
+Execution model
+ Structure of a program
+ Naming and binding
+ Exceptions
+The import system
+ importlib
+ Packages
+ Searching
+ Loading
+ The Path Based Finder
+ Replacing the standard import system
+ Special considerations for __main__
+ Open issues
+ References
+Expressions
+ Arithmetic conversions
+ Atoms
+ Primaries
+ The power operator
+ Unary arithmetic and bitwise operations
+ Binary arithmetic operations
+ Shifting operations
+ Binary bitwise operations
+ Comparisons
+ Boolean operations
+ Conditional expressions
+ Lambdas
+ Expression lists
+ Evaluation order
+ Operator precedence
+Simple statements
+ Expression statements
+ Assignment statements
+ The assert statement
+ The pass statement
+ The del statement
+ The return statement
+ The yield statement
+ The raise statement
+ The break statement
+ The continue statement
+ The import statement
+ The global statement
+ The nonlocal statement
+Compound statements
+ The if statement
+ The while statement
+ The for statement
+ The try statement
+ The with statement
+ Function definitions
+ Class definitions
+Top-level components
+ Complete Python programs
+ File input
+ Interactive input
+ Expression input
+
+ Full Grammar specification</code></pre>
+</body>
+</html>

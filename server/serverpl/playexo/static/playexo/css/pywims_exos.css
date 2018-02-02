@@ -1,0 +1,260 @@
+﻿/* Général */
+
+button.glyph:hover, button.dev-glyph:hover, button.dev-onglet:hover, a.list-glyph:hover {
+	    color: Grey; /* Couleur des glyphs quand on passe dessus */
+  }
+
+/* le titre-bandeau en haut de page */
+div.titre h1, div.titre h1 a, div.titre h1 a:visited, div.titre h1 a:active {
+	color: #ffffff;
+	font-size: 24pt;
+	text-decoration: none;
+}
+div.titre {
+	background-color: #ff9400;
+	margin-top: 0;
+  margin-bottom: 20px;
+	padding: 10px 10px 10px 20px;
+	display:flex;
+	justify-content: space-between;
+}
+
+/* View Liste-exos */
+
+.glyph, .glyph-visited, .dev-glyph,.dev-glyph:visited {
+	background:inherit;
+	border:none;
+	color: #ffffff; /* ce sont des glyphs blancs */
+	font-size: 20pt;
+	margin-right: 20px;
+	align-self:center;
+}
+
+div.item-liste{
+	display:flex;
+	margin-top: 10px;
+}
+div.item-liste h1, input.item-liste {
+	font-size: 18pt;
+	color: SteelBlue;
+	margin: 0px;
+}
+
+.list-glyph, .list-glyph:hover, .list-glyph:visited,.list-title, .list-title:hover, .list-title:visited {
+	color: #ff9400;
+	float: left;
+	font-size: 18pt;
+	margin-right: 10px;
+	align-self:top;
+}
+
+/* Conteneur de l'applet geogebra */
+
+div.ggb_applet_container{
+  padding-left: 20px;
+}
+
+/* View mode développement: conteneur des deux volets */
+
+div.dev_exos {
+	background: #eee;
+	display :flex;
+	justify-content:center;
+	flex-flow: row wrap;
+	margin:0;
+	border: none;
+	height:100vh;
+}
+
+/* View mode développement : volet éditeur */
+
+div.dev-volet-editeur {/* OBSOLETE */
+	flex:1.6;
+	display:flex;
+	flex-direction:column;
+	align-items:stretch;
+	height:100vh;
+	min-width:300px;
+	border-right: 4px solid Plum;
+}
+
+div.dev-menu {/* OBSOLETE */
+	display:flex;
+ 	background:Plum;
+ 	font-size: 12px;
+	justify-content: space-between;
+}
+
+div.editeur {/* OBSOLETE */
+	height:100%;
+	background: White;
+  border-top:1px solid Black;
+  border-right:1px solid Black;
+}
+
+button.dev-onglet, button.dev-onglet-sel {/* OBSOLETE */
+	border:none;
+	color: black;
+	background:Plum;
+	padding: 3px 5px;
+	margin: 0px 0px 0px 10px;
+	text-align: center;
+	text-decoration: none;
+  font-family: 'Crete Round', serif;
+	font-size:11pt;
+}
+
+button.dev-onglet-sel {/* OBSOLETE */
+  border-top:2px solid Black;
+}
+
+button.dev-titre, span.dev-titre { /* titre de l'exo */
+  font-family: 'Crete Round', serif;
+	font-size:14pt;
+  border:none;
+  color:white;
+  white-space: pre; /* nécessaire pour pouvoir enter des espaces */
+	background:inherit;
+  padding: 3px 5px;
+  margin: 0px 0px 10px 10px;
+}
+
+/* View mode développement : volet preview exo */
+
+iframe.exo {
+  margin:none;
+  border:none;
+  padding:0px 0px 0px 0px;
+	height:100vh;
+  width:100%;
+}
+
+/* Les exos */
+
+.form-enonce { /* l'exo lui-même */
+  display: inline-block;
+  margin-left: 2em;
+	text-align:left;
+  font-size: 12pt;
+}
+.validation-enonce {  /* le bandeau du bouton validation */
+	font-size: 1em;
+	padding: 0.3em;
+	margin-top: 1em;
+	background: WhiteSmoke;
+	border-bottom: 1px solid LightGrey;
+	text-align:right;
+}
+
+@keyframes growIn { 
+    0% { 
+        transform: scale(0.2) rotateX(0deg); 
+        opacity:0;
+    } 
+    30% { 
+        transform: scale(1.1) rotateX(0deg); 
+    } 
+    100% { 
+        transform: scale(1) rotateX(0deg); 
+        opacity:1;
+    } 
+}
+
+@keyframes fadeOut { 
+    0% { 
+        transform: scale(1) rotateX(0deg); 
+        opacity:1;
+    } 
+    30% { 
+        transform: scale(1.1) rotateX(0deg); 
+    } 
+    100% { 
+        transform: scale(0.2) rotateX(0deg); 
+        opacity:0;
+    } 
+}
+
+.feedback  {  /* le div qui contient le feedback après correction */
+	font:  italic  bold 1em  Georgia,serif;
+	margin:0;
+	padding:0.5em;
+}
+
+/* Les champs input */
+/* Tout ce qui contient OK ou NotOK est OBSOLETE */
+.cible, .source, .drag-contenu, .cibleOK, .cibleNotOK {
+	border : 2px solid Black;
+	border-radius:8px;
+	font-style: italic;
+	font-size: 12pt;
+	color:black;
+	width: auto;
+	z-index:10;
+	}
+	
+.absolute{
+  position: absolute;
+  }
+  
+.phantom {
+  opacity : 0;
+  z-index: 0;
+}
+
+div.cible, div.source, div.cibleOk, div.cibleNotOk { /* les divs qui contiennent les champs drag-drop */
+  display: inline-flex;
+  border:none;
+	width: 10em;
+	height: auto;
+	margin : 6px;
+  vertical-align:top;
+	justify-content: center;
+	align-items: center;
+	text-align:center;
+}
+div.cible  {
+	background:AntiqueWhite;
+}
+div.cibleOk {
+	background:LightGreen;
+}
+div.cibleNotOk  {
+	background:LightPink;
+}
+div.source  {
+	background:Burlywood;
+}
+.drag-contenu {
+	display:flex;
+  position:absolute;
+	background:inherit;
+	height:inherit;
+	width:inherit;
+	justify-content: center;
+	align-items: center;
+	text-align:center;
+	font-size: 1em;
+}
+span.bonne_reponse {/* OBSOLETE */
+	background:LightGreen;
+}
+span.mauvaise_reponse {/* OBSOLETE */
+	background:LightPink;
+}
+
+
+/* Menu développement bootstrap */
+div.dev-titre { /* titre de l'exo */
+  display:inline-block;
+  margin:5px;
+	font-size:12pt;
+  color:white;
+  white-space: pre; /* nécessaire pour pouvoir enter des espaces */
+}
+
+div.dev-top {
+}
+
+div.edit-pane {
+  height:100%;
+}

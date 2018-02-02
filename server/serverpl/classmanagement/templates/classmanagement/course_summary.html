@@ -1,0 +1,73 @@
+
+
+{% extends "gitload/base.html" %}
+
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/block_chart.css' %}" />
+<link rel="stylesheet" href="{% static 'css/classmanagement.css' %}" />
+{% endblock %}
+
+{% block header_script %}
+<script src="{% static 'js/block_chart.js' %}"></script> 
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="panel panel-default">
+        
+        <div class="panel-body">
+            <h1>{{name}}</h1><br>
+            <div class="course-instructor-action">
+                <a href="/courses/course/{{course_id}}/">Retour</a>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th><div class="block course-block type1{% if request.user.pluser.color_blindness == 'TR' %}-tritanopia{% elif request.user.pluser.color_blindness == 'DE' %}-deuteranopia{%elif request.user.pluser.color_blindness == 'PR'%}-protanopia{% endif %}" style="width: 20px; height: 20px;"></div>&emsp;Réussi</th>
+                        <th><div class="block course-block type2{% if request.user.pluser.color_blindness == 'TR' %}-tritanopia{% elif request.user.pluser.color_blindness == 'DE' %}-deuteranopia{%elif request.user.pluser.color_blindness == 'PR'%}-protanopia{% endif %}" style="width: 20px; height: 20px;"></div>&emsp;Échoué</th>
+                        <th><div class="block course-block type3{% if request.user.pluser.color_blindness == 'TR' %}-tritanopia{% elif request.user.pluser.color_blindness == 'DE' %}-deuteranopia{%elif request.user.pluser.color_blindness == 'PR'%}-protanopia{% endif %}" style="width: 20px; height: 20px;"></div>&emsp;Commencé</th>
+                        <th><div class="block course-block type4{% if request.user.pluser.color_blindness == 'TR' %}-tritanopia{% elif request.user.pluser.color_blindness == 'DE' %}-deuteranopia{%elif request.user.pluser.color_blindness == 'PR'%}-protanopia{% endif %}" style="width: 20px; height: 20px;"></div>&emsp;Non Commencé</th>
+                    </tr>
+                </thead>
+            </table>
+            <div class="table-responsive table-hover">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="student-th">Élève</th>
+                            {% for i in range_tp %}
+                                <th><center>{{ forloop.counter }}{% if forloop.counter < 10 %}&nbsp;{% endif %}</center></th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for elem in student %}
+                            <tr>
+                                <td class="summary-td"><a href="/courses/course/{{course_id}}/student/{{elem.id}}/summary/">{% if elem.name %} {{ elem.name }} {% else %} N/A {% endif %}</a></td>
+                                {% for item in elem.activities %}
+                                    <center>
+                                        <td class="summary-td">
+                                            <p>{{item.name}}</p>
+                                            <a class="progress progress-summary" href="/courses/course/{{course_id}}/{{item.activity_name}}/summary/">
+                                                <div class="progress-bar type1{% if request.user.pluser.color_blindness == 'TR' %}-tritanopia{% elif request.user.pluser.color_blindness == 'DE' %}-deuteranopia{%elif request.user.pluser.color_blindness == 'PR'%}-protanopia{% endif %}" role="progressbar" style="width: {{item.state.succeeded.0}}%" aria-valuenow="{{item.state.succeeded.0}}" aria-valuemin="0" aria-valuemax="100">{{item.state.succeeded.1}}</div>
+                                                <div class="progress-bar type2{% if request.user.pluser.color_blindness == 'TR' %}-tritanopia{% elif request.user.pluser.color_blindness == 'DE' %}-deuteranopia{%elif request.user.pluser.color_blindness == 'PR'%}-protanopia{% endif %}" role="progressbar" style="width: {{item.state.failed.0}}%" aria-valuenow="{{item.state.failed.0}}" aria-valuemin="0" aria-valuemax="100">{{item.state.failed.1}}</div>
+                                                <div class="progress-bar type3{% if request.user.pluser.color_blindness == 'TR' %}-tritanopia{% elif request.user.pluser.color_blindness == 'DE' %}-deuteranopia{%elif request.user.pluser.color_blindness == 'PR'%}-protanopia{% endif %}" role="progressbar" style="width: {{item.state.started.0}}%" aria-valuenow="{{item.state.started.0}}" aria-valuemin="0" aria-valuemax="100">{{item.state.started.1}}</div>
+                                                <div class="progress-bar bg-grey" role="progressbar" style="width: {{item.state.not_started.0}}%" aria-valuenow="{{item.state.not_started.0}}" aria-valuemin="0" aria-valuemax="100">{{item.state.not_started.1}}</div>
+                                            </a>
+                                        </td>
+                                    </center>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                      <tr>
+                    </tbody>
+                </table>
+            </div> 
+        </div>
+        
+    </div>
+</div>
+
+{% endblock %}

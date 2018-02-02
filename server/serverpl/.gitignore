@@ -1,0 +1,17 @@
+serverpl/settings.py
+*pyc
+__pycache__/
+serverpl/tmp/*
+!serverpl/tmp/.gitignore 
+serverpl/staticfiles/*
+serverpl/static/*
+staticfiles/*
+sandbox/env/*
+db.sql*
+*.json
+*.log
+doc/
+.cache/*
+.coverage/*
+documentation/templates/documentation/*
+documentation/static/documentation/*

@@ -1,0 +1,9 @@
+<!-- CONTENT -->
+{% block content %}
+    <h2>{{ filename }}</h2>
+    <hr>
+    {% for line in lines %}
+        {{ line }}<br>
+    {% endfor %}
+{% endblock %}
+

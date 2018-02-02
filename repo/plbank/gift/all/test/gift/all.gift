@@ -1,0 +1,48 @@
+::SelectWithFeedback:: What's between orange and green in the spectrum?
+{ =yellow # right; good! ~red # wrong, it's yellow ~blue # wrong, it's yellow }
+
+::SelectSet::Who's buried in Grant's tomb?{=Grant ~no one ~Napoleon ~Churchill ~Mother Teresa }
+
+//From The Hitchhiker's Guide to the Galaxy
+::Short::Deep Thought said " {
+=forty two#Correct according to The Hitchhiker's Guide to the Galaxy!
+=42#Correct, as told to Loonquawl and Phouchg
+=forty-two#Correct!
+} is the Ultimate Answer to the Ultimate Question of Life, The Universe, and Everything."
+
+// TrueFalse1: 0 name: TrueStatement using {T} style
+::TrueFalse1::Grant was buried in a tomb in New York City.{T}
+
+// TrueFalse2: 0 name: FalseStatement using {FALSE} style
+::TruFalse2::The sun rises in the West.{FALSE}
+
+
+// fill-in-the-blank
+::Fill-the-blank:: Two plus {=two =2} equals four.
+
+// matching
+::Match:: Which animal eats which food? { =cat -> cat food =dog -> dog food }
+
+::MultipleGoodAnswers::What two people are entombed in Grant's tomb? {
+~No one
+~%50%Grant
+~%50%Grant's wife
+~Grant's father
+}
+
+// multiple numeric answers with partial credit and feedback
+::MultipleNumeric:: When was Ulysses S. Grant born? {#
+=%50%1822:2 # He was born in 1822. Half credit for being close.
+=1822:0 # Correct! Full credit.
+}
+
+::Description::You can use your pencil and paper for these next math questions.
+
+// essay
+::essay:: How are you? {}
+
+// math range question
+::RangeAvecTolerance:: What is a number from 1 to 5? {#3:2}
+
+// math range question
+::RangeAvecIntervalle:: What is a number from 1 to 5? {#1..5}
