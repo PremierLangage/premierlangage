@@ -12,7 +12,7 @@ from gitload.models import PLTP, PL
 class Activity(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=200, null=False)
-    pltp = models.ForeignKey(PLTP, null=False)
+    pltp = models.ForeignKey(PLTP, null=False, on_delete=models.CASCADE)
     open = models.BooleanField(null = False, default = True)
     
     def __str__(self):
@@ -21,7 +21,7 @@ class Activity(models.Model):
 
 class ActivityTest(models.Model):
     name = models.CharField(max_length=200, null=False)
-    pltp = models.ForeignKey(PLTP, null=False)
+    pltp = models.ForeignKey(PLTP, null=False,  on_delete=models.CASCADE)
     date = models.DateTimeField(null=False, default=timezone.now)
     
     
@@ -52,8 +52,8 @@ class Answer(models.Model):
     )
     
     value = models.TextField(max_length = 50000, null = False)
-    user = models.ForeignKey(User, null = False)
-    pl = models.ForeignKey(PL, null = False)
+    user = models.ForeignKey(User, null=False, on_delete=models.CASCADE)
+    pl = models.ForeignKey(PL, null=False, on_delete=models.CASCADE)
     seed = models.CharField(max_length=50, null=True)
     date = models.DateTimeField(null = False, default=timezone.now)
     state = models.CharField(max_length=2, choices=STATE, null=False, default=STARTED)

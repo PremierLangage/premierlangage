@@ -29,23 +29,23 @@ class LTIAuthBackend(ModelBackend):
 
     def authenticate(self, request):
         logout(request)
-        logger.info("about to begin authentication process")
+        logger.info("Beginning authentication process")
 
         request_key = request.POST.get('oauth_consumer_key', None)
 
         if request_key is None:
-            logger.error("Request doesn't contain an oauth_consumer_key; can't continue.")
+            logger.warning("Authentification aborted: Request doesn't contain an oauth_consumer_key; can't continue.")
             raise PermissionDenied("Request doesn't contain an oauth_consumer_key; can't continue.")
             return None
         
         if not settings.LTI_OAUTH_CREDENTIALS:
-            logger.error("Missing LTI_OAUTH_CREDENTIALS in settings")
+            logger.warning("Authentification aborted: Missing LTI_OAUTH_CREDENTIALS in settings")
             raise PermissionDenied("Missing LTI_OAUTH_CREDENTIALS in settings.")
 
         secret = settings.LTI_OAUTH_CREDENTIALS.get(request_key)
 
         if secret is None:
-            logger.error("Could not get a secret for key %s" % request_key)
+            logger.warning("Authentification aborted: Could not get a secret for key %s" % request_key)
             raise PermissionDenied("Could not get a secret for key %s" % request_key)
 
         logger.debug('using key/secret %s/%s' % (request_key, secret))
@@ -60,7 +60,6 @@ class LTIAuthBackend(ModelBackend):
         for key in request.META:
             logger.debug('META %s: %s' % (key, request.META.get(key)))
 
-        logger.info("about to check the signature")
 
         try:
             request_is_valid = is_valid_request(request_key, secret, request)
@@ -70,15 +69,9 @@ class LTIAuthBackend(ModelBackend):
             request_is_valid = False
 
         if not request_is_valid:
-            logger.error("Invalid request: signature check failed.")
+            logger.warning("Authentification aborted: signature check failed.")
             raise PermissionDenied("Invalid request: signature check failed.")
-
-        logger.info("done checking the signature")
-
-        # (this is where we should check the nonce)
-
-        # if we got this far, the user is good
-
+        
         user = None
         
         email = request.POST.get("lis_person_contact_email_primary")
@@ -88,10 +81,7 @@ class LTIAuthBackend(ModelBackend):
         # Retrieve username from LTI parameter or default to an overridable function return value
         username = (first_name[0].lower() + last_name.lower())
         username = self.clean_username(username)  # Clean it
-
-
-        logger.info("We have a valid username: %s" % username)
-
+    
         UserModel = get_user_model()
 
         # Note that this could be accomplished in one try-except clause, but
@@ -102,9 +92,9 @@ class LTIAuthBackend(ModelBackend):
                 UserModel.USERNAME_FIELD: username,
             })
             if created:
-                logger.debug('authenticate created a new user for %s' % username)
+                logger.info('authenticate created a new user for %s' % username)
             else:
-                logger.debug('authenticate found an existing user for %s' % username)
+                logger.info('authenticate found an existing user for %s' % username)
 
         else:
             logger.debug(
@@ -125,7 +115,7 @@ class LTIAuthBackend(ModelBackend):
             user.last_name = last_name
 
         user.save()
-
+        logger.info("User '"+username+"' has been autenticated")
         return user
 
     def clean_username(self, username):

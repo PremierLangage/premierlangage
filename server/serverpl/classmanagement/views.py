@@ -78,13 +78,15 @@ def course_view(request, id):
     except:
         raise Http404("Impossible d'accéder à la page, cette classe n'existe pas.")
     if not request.user in course.user.all() and not request.user.pluser.is_admin():
+        logger.warning("User '"+request.user.username+"' denied to access course'"+course.name+"'.")
         raise PermissionDenied("Vous n'appartenez pas à cette classe et ne pouve donc y accéder.")
     
     
     if request.method == 'GET':
         if request.GET.get("action", None) == "toggle_activity":
             if not request.user.pluser.can_load():
-                raise PermissionDenied("Vous n'avez pas les droits pour fermer/ouvrir cette activité.")
+                logger.warning("User '"+request.user.username+"' denied to access course'"+course.name+"'.")
+                raise PermissionDenied("Vous n'avez pas les droits nécessaires pour fermer/ouvrir cette activité.")
             try: 
                 act = Activity.objects.get(id=request.GET.get("id", None))
                 act.open = not act.open
@@ -143,6 +145,7 @@ def course_summary(request, id):
     except:
         raise Http404("Impossible d'accéder à la page, cette classe n'existe pas.")
     if not request.user.pluser.is_admin() and (not request.user in course.user.all() or not request.user.pluser.have_role(Role.INSTRUCTOR)):
+        logger.warning("User '"+request.user.username+"' denied to access course'"+course.name+"'.")
         raise PermissionDenied("Vous n'êtes pas professeur de cette classe.")
     
     activities = course.activity.all().order_by("id")
@@ -182,6 +185,7 @@ def activity_summary(request, id, name):
     except:
         raise Http404("Impossible d'accéder à la page, cette classe n'existe pas.")
     if not request.user.pluser.is_admin() and (not request.user in course.user.all() or not request.user.pluser.have_role(Role.INSTRUCTOR)):
+        logger.warning("User '"+request.user.username+"' denied to access course'"+course.name+"'.")
         raise PermissionDenied("Vous n'êtes pas professeur de cette classe.")
     
     activity = Activity.objects.get(name=name)
@@ -221,6 +225,7 @@ def student_summary(request, course_id, student_id):
     except:
         raise Http404("Impossible d'accéder à la page, cette classe n'existe pas.")
     if not request.user.pluser.is_admin() and (not request.user in course.user.all() or not request.user.pluser.have_role(Role.INSTRUCTOR)):
+        logger.warning("User '"+request.user.username+"' denied to access course'"+course.name+"'.")
         raise PermissionDenied("Vous n'êtes pas professeur de cette classe.")
         
     student = User.objects.get(id=student_id)
@@ -260,6 +265,9 @@ def redirect_activity(request, activity_id):
 
 @login_required
 def cycle_color_blindness(request):
+    if request.META["REQUEST_METHOD"] != "GET":
+        return HttpResponse('405 Method ' + request.META["REQUEST_METHOD"] + ' Not Allowed', status=405)
+    
     request.user.pluser.color_blindness = PLUser.COLOR_BLINDNESS[(PLUser.COLOR_BLINDNESS.index((request.user.pluser.color_blindness, request.user.pluser.get_color_blindness_display()))+1)%len(PLUser.COLOR_BLINDNESS)][0]
     request.user.pluser.save()
     redirect_url = request.GET.get('from', None)

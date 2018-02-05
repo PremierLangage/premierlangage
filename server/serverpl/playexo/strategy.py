@@ -229,7 +229,6 @@ class StrategyAPI():
 
 def strategy(request, activity):
     """ Process request to determine what do to. Should return an HttpResponse. """
-    
     strat = StrategyAPI(activity)
     if request.method == 'GET': # Request change which exercise will be loaded
         action = request.GET.get("action", None)
@@ -240,6 +239,7 @@ def strategy(request, activity):
             strat.set_pl(None, request)
     
     dic = strat.get_pl_dic(strat.get_current_pl(request))
+    seed = None
     if dic and 'oneshot' in dic and dic['oneshot'] == 'True':
         seed = None
     else:

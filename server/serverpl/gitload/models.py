@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-import os, shutil, subprocess, git, hashlib
+
+
+import os, shutil, subprocess, git, hashlib, logging
 
 from os.path import basename
 
@@ -11,7 +13,7 @@ from django.db import models
 
 from pathlib import Path
 
-
+logger = logging.getLogger(__name__)
 
 
 
@@ -23,6 +25,7 @@ class Repository(models.Model):
     
     def delete(self, *args, **kwargs):
         """ Overriding delete() to also delete the local repository """
+        logger.info("Repository '"+self.name+"' has been deleted")
         if os.path.isdir(DIRREPO+'/'+self.name):
             shutil.rmtree(DIRREPO+'/'+self.name)
         super(Repository, self).delete(*args, **kwargs)
@@ -99,8 +102,10 @@ class PLTP(models.Model):
     def delete(self, *args, **kwargs):
         """ Overriding delete() to also delete his PL if they're not with any other PLTP """
         pl_list = self.pl.all()
+        logger.info("PLTP '"+self.sha1+" ("+self.name+")' has been deleted")
         for pl in pl_list:
             if len(pl.pltp_set.all()) == 1:
+                logger.info("PL '"+pl.sha1+" ("+pl.name+")' has been deleted since it wasn't link to any PLTPs")
                 pl.delete()
         super(PLTP, self).delete(*args, **kwargs)
 

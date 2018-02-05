@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-import shutil
+import shutil, logging
 from os.path import basename, splitext
 
 from django.shortcuts import render, redirect
@@ -19,12 +19,8 @@ from playexo.views import try_pl
 from serverpl.settings import DIRREPO
 from serverpl.decorator import can_gitload
 
+logger = logging.getLogger(__name__)
 
-@login_required
-@can_gitload
-def home(request):
-    return render(request, 'gitload/home.html', {
-    })
 
 @login_required
 @can_gitload
@@ -42,8 +38,9 @@ def index(request):
             try:
                 Repository.objects.get(name=repo_delete).delete()
                 messages.warning(request, "Le dépot <b>"+repo_delete+"</b> a bien été supprimé !")
-            except:
-                messages.error(request, "Erreur lors de la suppression du dépot <b>"+repo_delete+"</b>...")
+            except Exception as e:
+                logger.warning("Failed to delete repository '"+repo_delete+":", exec_info=True)
+                messages.error(request, "Erreur lors de la suppression du dépot <b>"+repo_delete+"</b>... Si l'erreur persiste, merci de contacter un administrateur")
             
         elif (repo_url != ""): #If new repository
             repo_name = splitext(basename(repo_url))[0]
@@ -51,12 +48,16 @@ def index(request):
                 repo, created = Repository.objects.get_or_create(name=repo_name, url=repo_url, owner=request.user.get_username())
                 browser = Browser(repo)
                 if (not browser.get_repo()):
-                    shutil.rmtree(browser.root)
+                    try:
+                        shutil.rmtree(browser.root)
+                    except:
+                        pass
                     error_url = True
                     messages.error(request, "Dépot <b>" + browser.url + "</b> introuvable. Merci de vérifier l'adresse ou votre connexion internet.")
                     repo.delete()
                 else:
                     messages.success(request, "Dépot <b>" + browser.url + "</b> ajouté avec succès !")
+                    logger.info("Repository '"+repo.name+" ("+browser.url+")' has been added to the database.")
             except IntegrityError:
                 messages.error(request, 'Un dépot avec pour nom "' + repo_name + '" existe déjà. Si ce n\'est pas celui que vous souhaitez ajouter, merci de changer le nom de votre dépot.')
                 

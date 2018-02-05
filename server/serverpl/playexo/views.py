@@ -6,7 +6,7 @@
 #  Created: 2017-07-05
 #  Last Modified: 2017-11-16
 
-import json, traceback
+import json, traceback, logging
 
 from sympy import evaluate
 
@@ -28,7 +28,7 @@ from playexo.strategy import strategy as default_strategy
 from classmanagement.models import Course
 
 
-
+logger = logging.getLogger(__name__)
 
 
 @csrf_exempt
@@ -78,6 +78,7 @@ def lti_receiver(request, activity_name, pltp_sha1):
             raise Http404("Impossible de charger le TP associé à cette activité, celle-ci n'existe peut être plus sur la plateforme, merci de contacter votre professeur")
         activity = Activity(name=activity_name, pltp=pltp, id=activity_id)
         activity.save()
+        logger.info("New activity created: '"+activity_name+" ("+str(activity_id)+")' and added to course of id "+str(course_id))
     Course.objects.get(id=course_id).activity.add(activity)
     
     request.session['current_activity'] = activity_id

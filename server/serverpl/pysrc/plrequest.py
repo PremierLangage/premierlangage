@@ -25,10 +25,12 @@ import hashlib
 import json
 import shutil
 import os
-
+import logging
 
 from pleditor import get_zip_value
 from sandbox.models import Sandbox
+
+logger = logging.getLogger(__name__)
 
 class PlMissingSoluceError(Exception):
     """ Raised if an error occured during parsing a PL """
@@ -119,7 +121,7 @@ class SandboxCheck:
 
 
 class SandboxSession:
-    def __init__(self, dic, studentfile, timeout=1):
+    def __init__(self, dic, studentfile, timeout=3):
         sandboxes = Sandbox.objects.all().order_by("priority")
         if not sandboxes:
             raise NotImplementedError("No sandbox has been added to the database. Add one throught Administration -> Sandbox -> New")
@@ -136,9 +138,12 @@ class SandboxSession:
             except:
                 tried += "- "+str(sandbox)+"<br>"
                 pass
+                
         if not found:
+            logger.warning("Couldn't join any sandbox of the database")
             raise NotImplementedError("Couldn't join any sandbox of the database.<br><br>"+tried)        
         
+        logger.info("Executing on sandbox '"+sandbox.url+" ("+sandbox.name+")'.");
         self.dic = dic
         self.zipvalue = pleditor.createzipfile(dic['basefiles'])
         self.studentfile = studentfile

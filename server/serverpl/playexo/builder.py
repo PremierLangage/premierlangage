@@ -12,9 +12,6 @@ from gitload.models import PL
 from playexo.models import Activity
 from playexo.exercise import Exercise, ExerciseTest
 
-
-
-
 class Builder():
     """ Parent class for every builder. methods '__create_template()' and '__create_context()' should be implemented in every child class. """
     def __init__(self, request, activity, pl=None, seed=None):

@@ -31,3 +31,17 @@
 - Run the server (*python manage.py runserver*)
 - Go to Administration -> Users -> [Your Super User] -> Scroll down to *Role* -> Add **AD** Role -> Save
 - Add a least one valid Sandbox with a corresponding priority (0 - 2147483647, the **smallest** number have the **highest** piority), a sandbox is available [here](https://git-etud.u-pem.fr/pl-sandbox.git)
+
+
+
+# Logging
+Default facility used for syslog is local7.
+To enable logging on a custom log file, you should created a new file ending by .conf in '/etc/rsyslog.d/' containing:
+
+  local7.*	/var/log/django.log # 'replace django.log with whatever you want'
+  $EscapeControlCharactersOnReceive off
+  & stop
+
+And restart syslog and rsyslog services
+
+Configure mails option in settings.py to enable the logger to sent mail.

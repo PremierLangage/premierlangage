@@ -57,7 +57,8 @@ class Browser():
                 repo = git.Repo.init(self.root)
             
             repo.git.pull(self.url)
-        except:
+        except Exception as e:
+            logger.warning("Failed to clone/pull repository:", exc_info=True)
             return False
 
         self.version = repo.heads.master.commit.name_rev[:40]

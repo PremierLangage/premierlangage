@@ -6,13 +6,17 @@
 #  Copyright 2017 Dominique Revuz <dr@univ-mlv.fr>
 #  
 
+import logging, hashlib
+
 from pleditor import check_dic_pl, check_dic_pltp, get_zip_value
+
 from gitload.models import Repository, PL, PLTP
 
 from plparser import dicFromFile
 
 from os.path import splitext,basename
-import hashlib
+
+logger = logging.getLogger(__name__)
 
 
 
@@ -67,10 +71,12 @@ def loadPLTP(rel_path, repo, force=False):
     
     for pl in pl_list:
         pl.save()
+        logger.info("PL '"+pl.sha1+" ("+pl.name+")' has been added to the database")
 
     
-    pltp = PLTP(name=name, sha1= sha1, json= dic, repository= repo, rel_path=rel_path)
+    pltp = PLTP(name=name, sha1=sha1, json=dic, repository=repo, rel_path=rel_path)
     pltp.save()
+    logger.info("PLTP '"+sha1+" ("+name+")' has been added to the database")
     for pl in pl_list:
         pltp.pl.add(pl)
     
@@ -164,16 +170,18 @@ def updatePLTP(rel_path, repo):
     existing.name = name
     existing.json = dic
     existing.save
-    
+    logger.info("PLTP '"+existing.sha1+" ("+existing.name+")' has been updated")
     #Updating PL data
     for pl in pl_list:
         try:
             existing_pl = PL.objects.get(sha1=pl.sha1)
         except:
-            return None, "Le PLTP ne peut être rechargé car son PL '"+pl.rel_path+"' n'est plus trouvable dans la base de données."
+            logger.warning("PLTP '"+existing.sha1+" ("+existing.name+")' couldn't be updated since its PL '"+pl.sha1+" ("+pl.name+")' can't be found in the databsae")
+            return None, "Le PLTP ne peut être rechargé car son PL '"+pl.name+"' n'est plus trouvable dans la base de données."
         existing_pl.name = pl.name
         existing_pl.json = pl.json
         existing_pl.zip_value = pl.zipvalue
         existing_pl.save()
-    
+        logger.info("PLTP '"+pl.sha1+" ("+pl.name+")' has been updated")
+        
     return existing, warning

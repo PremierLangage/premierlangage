@@ -120,6 +120,7 @@ class MultiLTILaunchAuthMiddleware(MiddlewareMixin):
                 
                 course = Course.objects.filter(id=course_id) 
                 if not course:
+                    logger.info("New course created: '"+course_name+" ("+str(course_id)+")'.")
                     course = Course(id=course_id, name=course_name, label=course_label)
                     course.save()
                 else:
@@ -160,17 +161,11 @@ class MultiLTILaunchAuthMiddleware(MiddlewareMixin):
                 if not lti_launches:
                     lti_launches = OrderedDict()
                     request.session['LTI_LAUNCH'] = lti_launches
-
-                # Limit the number of LTI launches stored in the session
-                if len(lti_launches.keys()) >= getattr(settings, 'LTI_AUTH_MAX_LAUNCHES', 10):
-                    invalidated_launch = lti_launches.popitem(last=False)
-                    logger.info("LTI launch invalidated: %s", json.dumps(invalidated_launch, indent=4))
-
+                
                 lti_launches[resource_link_id] = lti_launch
-                logger.info("LTI launch added to session: %s", json.dumps(lti_launch, indent=4))
             else:
                 # User could not be authenticated!
-                logger.warning('user could not be authenticated via LTI params; let the request continue in case another auth plugin is configured')
+                logger.warning('LTI authentication failed')
         else:
             resource_link_id = request.GET.get('resource_link_id', None)
 
