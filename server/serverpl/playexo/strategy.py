@@ -240,7 +240,7 @@ def strategy(request, activity):
             strat.set_pl(None, request)
     
     dic = strat.get_pl_dic(strat.get_current_pl(request))
-    if 'oneshot' in dic and dic['oneshot'] == 'True':
+    if dic and 'oneshot' in dic and dic['oneshot'] == 'True':
         seed = None
     else:
         seed = strat.get_seed_from_answer(strat.get_last_answer(strat.get_current_pl(request), request))

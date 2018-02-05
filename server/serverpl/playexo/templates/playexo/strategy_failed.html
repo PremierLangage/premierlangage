@@ -1,0 +1,32 @@
+
+
+{% extends "gitload/base.html" %}
+
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/block_chart.css' %}" />
+{% endblock %}
+
+{% block header_script %}
+<script src="{% static 'js/classmanagement.js' %}"></script> 
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="jumbotron">
+        <h1 class="display-3">L'exercice n'a pas pu être chargé</h1>
+        <center>
+            <h2>Erreur: la fonction stratégie de cette exercice est mal définie</h2>
+        </center>
+        {% if request.user.pluser.can_load %}
+        <p class="lead">{{ exc_type }}: {{ exc_msg }}</p>
+        <p>{{ exc_trace|safe }} </p>
+        <p>
+            <button class="btn btn-lg btn-default" onclick="window.history.go(-1)">Retour</button>
+        </p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

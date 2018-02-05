@@ -6,7 +6,7 @@
 #  Created: 2017-07-05
 #  Last Modified: 2017-11-16
 
-import json
+import json, traceback
 
 from sympy import evaluate
 
@@ -50,14 +50,14 @@ def activity_view(request):
             exec(dic["strategy"], globals())
             strategy = globals()['strategy']
         except Exception as e:
-            return HttpResponse("/!\ ATTENTION: La fonction strategy de cet exercice est incorrecte.\nMerci de contacter votre prefesseur.\n\nError - "+str(type(e)).replace("<", "[").replace(">", "]")+": "+str(e), 400)
+            return render(request, 'playexo/strategy_failed.html', {'exc_type': str(type(e)), 'exc_msg': str(e), 'exc_trace': traceback.format_exc().replace('\n', '<br>')})
     else:
-         strategy = default_strategy
+        strategy = default_strategy
     
     try:
         return strategy(request, activity)
     except Exception as e:
-        return HttpResponse("/!\ ATTENTION: La fonction strategy de cet exercice est incorrecte.\nMerci de contacter votre prefesseur.\n\nError - "+str(type(e)).replace("<", "[").replace(">", "]")+": "+str(e), 400)
+        return render(request, 'playexo/strategy_failed.html', {'exc_type': str(type(e)), 'exc_msg': str(e), 'exc_trace': traceback.format_exc().replace('\n', '<br>')})
     
 
 
@@ -144,4 +144,3 @@ def try_pl(request, pl=None, warning=None):
 def not_authenticated(request):
     logout(request)
     return render(request, 'playexo/not_authenticated.html', {})
-    
