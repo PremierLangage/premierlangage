@@ -7,12 +7,33 @@
 
 ### Installation
 
-- Run server/serverpl/install_local.sh
+
+- install a virtual environement with the following :
+
+  cd ~
+  python -m venv  nameofvirtual
+  source ~/nameofvirtual/bin/activate 
+
+Return in the where you clone the project
+
+- Run the installation script :
+
+  server/serverpl/install_local.sh
+
 - Create a super user for the server by entering informations when prompted
+
 - create directories *premierlangage/../tmp* and *premierlangage/../log*
+
+  mkdir  premierlangage/../tmp premierlangage/../log
+
 - Run the server (*python manage.py runserver*)
+
+  cd server/serverpl/
+  ./run
+ 
+ On the server with a browser http://127.0.0.1:8000:
 -  Go to Administration -> Users -> [Your Super User] -> Scroll down to *Role* -> Add **AD** Role -> Save
--  Go to Administration -> Sandbox -> Create a new sandbox with url: "http://127.0.0.1:8000/sandbox/?action=execute", the name you want, priority don't matter here.
+-  Go to Administration -> Sandbox -> Create a new sandbox with url: "http://127.0.0.1:8000/sandbox/?action=execute", use any name you want, and priority don't matter in the local case.
 
 
 
