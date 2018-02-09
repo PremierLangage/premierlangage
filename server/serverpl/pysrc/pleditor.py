@@ -6,7 +6,7 @@
 #  Copyright 2017 Dominique Revuz <dr@univ-mlv.fr>
 #  
 
-import tempfile, cd, subprocess, random, time
+import tempfile, cd, subprocess, random, time, traceback
 
 from serverpl.settings import DIRREPO
 
@@ -89,4 +89,4 @@ def check_dic_pl(dic):
     except IOError:
         return False, "Error: Couldn't find the file relative to '"+dic['type']+"' type."
     except Exception as e:
-        return False, "Error in file "+typefilename + " "+str(type(e)) + ": "+str(e)
+        return False, "Error in file "+typefilename + " "+str(type(e)).replace("<", "[").replace(">", "]") + ": "+str(e) + " - " + traceback.format_exc().replace('\n', '<br>')

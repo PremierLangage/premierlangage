@@ -49,13 +49,12 @@ def loadPLTP(rel_path, repo, force=False):
     if warning_msg:
         warning += rel_path+": "+warning_msg+'\n'
     if not dic:
-        return None, rel_path+" - "+warning_msg.replace("<", "[").replace(">", "]")
-    
+        return None, rel_path+" - "+warning_msg
     state, warning_msg = check_dic_pltp(dic)
     if warning_msg:
-            warning += rel_path+": "+warning_msg.replace("<", "[").replace(">", "]")+'\n'
+            warning += rel_path+": "+warning_msg+'\n'
     if not state:
-        return None, rel_path+" - "+warning_msg.replace("<", "[").replace(">", "]")
+        return None, rel_path+" - "+warning_msg
             
     pl_list=list()
     
@@ -65,7 +64,7 @@ def loadPLTP(rel_path, repo, force=False):
         if warning_msg:
             warning += lname+": "+warning_msg+'\n'
         if not pl:
-            return None, warning_msg.replace("<", "[").replace(">", "]") #Returning only the error of the current PL if the loading failed
+            return None, warning_msg #Returning only the error of the current PL if the loading failed
         pl_list.append(pl)
     del dic['conceptl']
     
@@ -96,13 +95,13 @@ def loadPL(rel_path, repo):
     
     dic, warning_msg = dicFromFile(rel_path,repo)
     if (not dic):
-        return None, rel_path+" - "+warning_msg.replace("<", "[").replace(">", "]")
+        return None, rel_path+" - "+warning_msg
     if warning_msg:
             warning += warning_msg+'\n'
     
     state, warning_msg = check_dic_pl(dic)
     if (not state):
-        return None, rel_path+" - "+warning_msg.replace("<", "[").replace(">", "]")
+        return None, rel_path+" - "+warning_msg
     if warning_msg:
             warning += warning_msg+'\n'
     
@@ -118,6 +117,7 @@ def loadPL(rel_path, repo):
     sha1 = hasher.hexdigest()
     pl = PL(name= name, sha1=sha1, json=dic , zipvalue=zipvalue, repository=repo, rel_path=rel_path)
     return pl, warning
+
 
 def updatePLTP(rel_path, repo):
     """ reload the PLTP and its PL by checking theis integrity and add them to the database without compromising DB depedencies.
@@ -144,13 +144,13 @@ def updatePLTP(rel_path, repo):
     if warning_msg:
         warning += rel_path+": "+warning_msg+'\n'
     if not dic:
-        return None, rel_path+" - "+warning_msg.replace("<", "[").replace(">", "]")
+        return None, rel_path+" - "+warning_msg
         
     state, warning_msg = check_dic_pltp(dic)
     if warning_msg:
-            warning += rel_path+": "+warning_msg.replace("<", "[").replace(">", "]")+'\n'
+            warning += rel_path+": "+warning_msg
     if not state:
-        return None, rel_path+" - "+warning_msg.replace("<", "[").replace(">", "]")
+        return None, rel_path+" - "+warning_msg
     pl_list=list()
     
     for lname,reponame in dic['conceptl']:
@@ -159,7 +159,7 @@ def updatePLTP(rel_path, repo):
         if warning_msg:
             warning += lname+": "+warning_msg+'\n'
         if not pl:
-            return None, warning_msg.replace("<", "[").replace(">", "]") #Returning only the error of the current PL if the loading failed
+            return None, warning_msg
         pl_list.append(pl)
     del dic['conceptl']
     
