@@ -6,7 +6,7 @@
 #  Copyright 2017 Dominique Revuz <dr@univ-mlv.fr>
 #  
 
-import tempfile, cd, subprocess, random, time, traceback
+import tempfile, cd, subprocess, random, time, traceback, timeout_decorator, time
 
 from serverpl.settings import DIRREPO
 
@@ -66,6 +66,7 @@ def check_dic_pltp(dic):
     return True, None
     
     
+@timeout_decorator.timeout(5)
 def check_dic_pl(dic):
     """ Check if the dic contains every needed key according to dic['type'], can return:
         - False, error_msg

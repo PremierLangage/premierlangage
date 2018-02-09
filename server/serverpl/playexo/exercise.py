@@ -6,7 +6,7 @@
 #  Created: 2017-07-03
 #  Last Modified: 2017-07-03
 
-import json
+import json, timeout_decorator, time
 
 from django.template import Template, RequestContext
 from gitload.models import PLTP
@@ -39,6 +39,7 @@ class Exercise:
         except Exception as e:
             return None, ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte, merci de prévenir votre professeur:<br>Error - "+str(type(e)).replace("<", "[").replace(">", "]")+": "+str(e))
     
+    @timeout_decorator.timeout(5)
     def __build(self):
         if 'build' in self.dic:
             exec(self.dic['build'], globals())
