@@ -51,7 +51,8 @@ You may need to restart the env to ensure pip is working properly:
     source env/bin/activate
 
 ## Local/Dev
-To install the project
+To use the project on localhost:
+
 - Run install.sh
 - Create a super user for the server by entering informations when prompted
 - Run the server (*python manage.py runserver*)
