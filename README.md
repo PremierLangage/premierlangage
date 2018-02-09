@@ -51,16 +51,17 @@ You may need to restart the env to ensure pip is working properly:
     source env/bin/activate
 
 ## Local/Dev
-
+To install the project
 - Run install.sh
 - Create a super user for the server by entering informations when prompted
 - Run the server (*python manage.py runserver*)
--  Go to Administration -> Users -> ***Your Username*** -> Scroll down to *Role* -> Add **AD** Role -> Save
--  Go to Administration -> Sandbox -> Create a new sandbox with url: "http://127.0.0.1:8000/sandbox/?action=execute", the name you want, priority don't matter here.
+- Go to Administration -> Users -> ***Your Username*** -> Scroll down to *Role* -> Add **AD** Role -> Save
+- Go to Administration -> Sandbox -> Create a new sandbox with url: "http://127.0.0.1:8000/sandbox/?action=execute", the name you want, priority don't matter here.
 
 ## Deployment
 - Run server/serverpl/install_release.sh
 - Create a super user for the server by entering informations when prompted
+- Change important settings in server/serverpl/serverpl/settings.py (like SECRET_KEY)
 - Run the server (*python manage.py runserver*)
 - Go to Administration -> Users -> [Your Super User] -> Scroll down to *Role* -> Add **AD** Role -> Save
 - Add a least one valid Sandbox with a corresponding priority (0 - 2147483647, the **smallest** number have the **highest** piority), a sandbox is available [here](https://git-etud.u-pem.fr/pl-sandbox.git)
