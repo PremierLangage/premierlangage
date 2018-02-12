@@ -39,7 +39,7 @@ class Exercise:
         except Exception as e:
             return None, ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte, merci de prévenir votre professeur:<br>Error - "+str(type(e)).replace("<", "[").replace(">", "]")+": "+str(e))
     
-    @timeout_decorator.timeout(5)
+    @timeout_decorator.timeout(5, use_signals=False)
     def __build(self):
         if 'build' in self.dic:
             exec(self.dic['build'], globals())

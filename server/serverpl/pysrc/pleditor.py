@@ -66,7 +66,7 @@ def check_dic_pltp(dic):
     return True, None
     
     
-@timeout_decorator.timeout(5)
+@timeout_decorator.timeout(5, use_signals=False)
 def check_dic_pl(dic):
     """ Check if the dic contains every needed key according to dic['type'], can return:
         - False, error_msg
