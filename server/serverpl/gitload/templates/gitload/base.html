@@ -8,26 +8,22 @@
         <!-- Title -->
         <title>{% block title %}UPEM - PL 2017/2018{% endblock %}</title>
         
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"/>
-        <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+        
        
         <!-- Load the tag library -->
-        {% load bootstrap3 %}
         {% load static %}
         {% block tag %}{% endblock %}
-        
-        <!-- Load CSS and JavaScript for Bootstrap-->
-        {% bootstrap_css %}
-        {% bootstrap_javascript %}
         
         <!-- favicon -->
         <link rel="shortcut icon" href="{% static 'playexo/favicon.ico' %}" />  
         
         <!-- Loading CSS and JS -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="{% static 'js/jquery_3.1.1.js' %}" ></script>
+        <link rel="stylesheet" href="{% static '/css/bootstrap_4.css' %}" />
+        <script src="{% static 'js/bootstrap_4.js' %}" ></script>
+        
+        <link rel="stylesheet" href="{% static '/css/bootstrap_3.3.7.css' %}" />
+        <script src="{% static 'js/bootstrap_3.3.7.js' %}" ></script>
         {% block header_script %}{% endblock %}
         {% block css %}{% endblock %}
         <link rel="stylesheet" href="{% static 'playexo/css/exo_info.css' %}" />

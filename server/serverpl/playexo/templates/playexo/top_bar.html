@@ -1,3 +1,4 @@
+{% load static %}
 
 <nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" style="height: 50px">
@@ -5,7 +6,7 @@
     </button>
     
     <div class="navbar-left" style="width: 350px">
-        <img alt="" src="https://www.u-pem.fr/fileadmin/templates/template_web_040509/common/images/structures/UPEM_LOGO.png" height="44" width="88" /> 
+        <img alt="UPEM" src="{% static 'img/upem.png' %}" height="44" width="88" /> 
         <a class="navbar-brand" href="/">Premier Langage</a>
     </div>
     <div class="collapse navbar-collapse" id="navbar">        
