@@ -54,14 +54,14 @@ You may need to restart the env to ensure pip is working properly:
 ## Local/Dev
 To use the project on localhost:
 
-- Run install.sh
+- Move to premierlangage/server/serverpl/ and run install_local.sh
 - Create a super user for the server by entering informations when prompted
 - Run the server (*python manage.py runserver*)
 - Go to Administration -> Users -> ***Your Username*** -> Scroll down to *Role* -> Add **AD** Role -> Save
 - Go to Administration -> Sandbox -> Create a new sandbox with url: "http://127.0.0.1:8000/sandbox/?action=execute", the name you want, priority don't matter here.
 
 ## Deployment
-- move to premierlangage/server/serverpl/ and run install_release.sh
+- Move to premierlangage/server/serverpl/ and run install_release.sh
 - Create a super user for the server by entering informations when prompted
 - Change important settings in server/serverpl/serverpl/settings.py (like SECRET_KEY)
 - Run the server (*python manage.py runserver*)
