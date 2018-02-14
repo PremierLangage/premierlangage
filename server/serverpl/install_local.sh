@@ -50,12 +50,6 @@ fi
 if [ ! -f "../../../tmp/README" ]; then
 	echo "Directory used by premier langage, do not remove." > ../../../tmp/README
 fi
-if [ ! -d "../../../log" ]; then
-	mkdir ../../../log || { echo>&2 "ERROR: Can't create ../../../log" ; exit 1; }
-fi
-if [ ! -f "../../../log/README" ]; then
-	echo "Directory used by premier langage, do not remove." > ../../../log/README
-fi
 
 #Building database
 echo ""
