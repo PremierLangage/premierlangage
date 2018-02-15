@@ -15,7 +15,6 @@
         <!-- favicon -->
         <link rel="shortcut icon" href="{% static 'playexo/favicon.ico' %}" />       
         
-        {% block header_script %}{% endblock %}
         {% block css %}{% endblock %}
         <script src="{% static 'js/jquery_3.1.1.js' %}" ></script>
         <link rel="stylesheet" href="{% static '/css/bootstrap_4.css' %}" />
@@ -28,6 +27,7 @@
         <link rel="stylesheet" href="{% static 'playexo/css/footer.css' %}">
         <link rel="stylesheet" href="{% static 'css/classmanagement.css' %}" />
         <link rel="stylesheet" href="{% static 'css/block_chart.css' %}" />
+        {% block header_script %}{% endblock %}
     
     </head>
     
