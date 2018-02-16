@@ -55,6 +55,10 @@ class StrategyAPI():
         request.session["strategy_session"][key] = value
     
     
+    def add_db_entry(self, exercise, request):
+        Answer(value='User clicked on the PL', user=request.user, pl=PL.objects.get(sha1=exercise.dic['pl_sha1']), seed=exercise.dic['seed'], state=Answer.STARTED).save()
+    
+    
     def get_from_session(self, request, key):
         """ Return the element assign to key in the session """
         if key in request.session["strategy_session"]:
@@ -152,7 +156,7 @@ class StrategyAPI():
     def evaluate(self, exercise, request):
         """ 
             Return the evaluation of the user's answer in the form of a tuple:
-                - 'success'/'fail'/'info': The user succeeded / The user failed / An error occured
+                - 'success'/'fail'/'info': The user succeeded / The user failed / Save or An error occured
                 - Feedback
             
             Return None, None if the request doesn't contain any AJAX request.
@@ -258,6 +262,8 @@ def strategy(request, activity):
         state, feedback = strat.evaluate(exercise, request)
         return strat.send_evaluate_feedback(state, feedback)
     
+    if strat.get_current_pl(request):
+        strat.add_db_entry(exercise, request)
     return strat.render(exercise, request)
 
 
