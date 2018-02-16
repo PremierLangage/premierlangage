@@ -54,8 +54,6 @@ def _openandsplit(filename,repo):
         with open(filename,"r") as f:
             return f.read().split("\n")
     except Exception as e:
-        print("openandsplit: Can't open file '"+ filename+"': "+str(e))
-        traceback.print_stack(file=sys.stdout)
         raise ErrorPL("openandsplit: Can't open file '"+ filename+"': "+str(e))
 
 
@@ -215,8 +213,6 @@ def _makefileName(filename,repo="plbank"):
     try:
         '''if filename.startswith(getRepoByName(repo)):
             return filename'''
-        
-        print('####### ' + getRepoByName(repo) + "/" + filename + ' #######')
         return getRepoByName(repo) + "/" + filename
     except Exception as e:
         print("impossible de trouver le repo : "+ str(repo)+ " " + str(e))
