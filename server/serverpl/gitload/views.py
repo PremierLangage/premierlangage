@@ -96,7 +96,7 @@ def browse(request):
         elif plx_path: # Loading a PLTP / Testing PL
             repo_object = Repository.objects.get(name=browser.name)
             force = (request.POST.get('force', "False") == "True")
-                
+            
             if plx_path.endswith(".pltp"):
                 plx, msg = browser.load_pltp(plx_path, repo_object, force)
                 filetype = "PLTP"

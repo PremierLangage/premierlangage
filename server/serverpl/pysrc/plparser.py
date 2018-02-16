@@ -12,7 +12,7 @@ from pathlib import Path
 import sys,traceback # for printstack
 
 from pl import ErrorPL, PlSyntaxError, PlMultilineError, InvalidExtensionError, dicfusion
-
+from serverpl.settings import REPO_ROOT
 import cd
 
 import subprocess
@@ -34,14 +34,7 @@ def getRepoByName(name):
     >>> getRepoByName("plbank").endswith("/premierlangage/repo/plbank")
     True
     """
-    if name==None:
-        name="plbank"
-    with cd.cd(os.path.dirname(__file__)):
-        prems = subprocess.Popen(['git', 'rev-parse', '--show-toplevel'],stdout=subprocess.PIPE).communicate()[0].rstrip().decode("utf-8")
-    p = Path(prems+"/repo/"+name)
-    if not p.exists():
-        raise Exception(str(p)+" doesn't exist")
-    return str(p)
+    return REPO_ROOT + '/' + name
 
 def localrepo(repo,name):
     if ':' in name:
@@ -222,6 +215,8 @@ def _makefileName(filename,repo="plbank"):
     try:
         '''if filename.startswith(getRepoByName(repo)):
             return filename'''
+        
+        print('####### ' + getRepoByName(repo) + "/" + filename + ' #######')
         return getRepoByName(repo) + "/" + filename
     except Exception as e:
         print("impossible de trouver le repo : "+ str(repo)+ " " + str(e))

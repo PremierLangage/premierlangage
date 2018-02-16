@@ -24,7 +24,7 @@
                     <a class="nav-link" href="/documentation/">Documentation</a>
                 </li>
             {% endif %}
-            {% if request.user.pluser.is_admin %}
+            {% if request.user.pluser.is_admin or request.user.is_superuser %}
                 <li class="nav-item">
                     <a class="nav-link" href="/admin/">Administration</a>
                 </li>
