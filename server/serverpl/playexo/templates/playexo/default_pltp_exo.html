@@ -17,6 +17,10 @@
         <div class="panel-body">
             {% if "introduction" %}{{ introduction|markdown }}{% endif %}
             {% if "introduction" %}{{ introductionh|safe }}{% endif %}
+            <br>
+            <center<a style="white-space: normal;" href="{{ request.path }}?action=pl&pl_sha1={{pl_list.0.0.sha1}}" type="button" class="btn btn-success btn-lg">
+                Commencer
+            </a></center>
         </div>
     </div>
 {% endblock %}
