@@ -31,6 +31,8 @@ def index(request):
     
     if (request.method == 'POST'):
         repo_url = request.POST.get('repo_url', "")
+        repo_username = request.POST.get('username', "")
+        repo_password = request.POST.get('password', "")
         repo_name = request.POST.get('repo_name', "")
         repo_delete = request.POST.get('repo_delete', "")
         
@@ -47,16 +49,17 @@ def index(request):
             try:
                 repo, created = Repository.objects.get_or_create(name=repo_name, url=repo_url, owner=request.user.get_username())
                 browser = Browser(repo)
-                if (not browser.get_repo()):
+                cloned, feedback = browser.get_repo(repo_username, repo_password)
+                if (not cloned):
                     try:
-                        shutil.rmtree(browser.root)
+                        shutil.rmtree(browser.root, ignore_errors=True)
                     except:
                         pass
                     error_url = True
-                    messages.error(request, "Dépot <b>" + browser.url + "</b> introuvable. Merci de vérifier l'adresse ou votre connexion internet.")
+                    messages.error(request, feedback)
                     repo.delete()
                 else:
-                    messages.success(request, "Dépot <b>" + browser.url + "</b> ajouté avec succès !")
+                    messages.success(request, "Dépot <b>" + browser.url + "</b> ajouté avec succès ! " + feedback)
                     logger.info("Repository '"+repo.name+" ("+browser.url+")' has been added to the database.")
             except IntegrityError:
                 messages.error(request, 'Un dépot avec pour nom "' + repo_name + '" existe déjà. Si ce n\'est pas celui que vous souhaitez ajouter, merci de changer le nom de votre dépot.')
@@ -124,10 +127,6 @@ def browse(request):
                     url_lti = request.scheme + "://" + request.get_host()+"/playexo/lti/"+plx.name+"/"+plx.sha1+"/"
                     url_test = "/playexo/activity/test/"+plx.name+"/"+plx.sha1+"/"
                     messages.success(request, "L'activité <b>'"+plx.name+"'</b> a bien été créée et a pour URL LTI: <br>&emsp;&emsp;&emsp;'"+url_lti+"' <p id=\"url\" hidden>"+url_lti+"</p><button style=\"height: 25px;padding: 0 5px;\" class=\"btn btn-success\" onclick=\"copyToClipboard('#url')\"><span class=\"glyphicon glyphicon-edit\"></span> Copier</button><br>Elle apparaitra dans la liste ci-dessous lorsqu'une personne cliquera sur le lien depuis un client LTI. Pour la tester en local, cliquez <a target=\"_blank\" href=\""+url_test+"\">ici</a>.""")
-            
-        
-        elif (request.POST.get('refresh', False)):
-            browser.get_repo()
     
     browser.parse_content()
     request.session["browser"] = browser.__dict__

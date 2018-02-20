@@ -3,7 +3,9 @@
 #
 #
 
-import os, git, logging, re, subprocess
+import os, git, logging, re, subprocess, sys
+
+from urllib.parse import urlparse
 
 from serverpl.settings import DIRREPO
 
@@ -44,28 +46,34 @@ class Browser():
                 setattr(self, k, v)
     
     
-    def get_repo(self):
+    def get_repo(self, username=None, password=None):
         """ Create or replace self.path with a new clone of self.url
             Update self.version """
         if self.name == 'plbank':
-            return True
+            return True, ""
+        
+        cwd = os.getcwd()
+        url = urlparse(self.url)
         
         try:
-            if not os.path.isdir(self.root):
-                repo = git.Repo.clone_from(self.url, self.root)
+            os.chdir(DIRREPO)
+            if username and password:
+                p = subprocess.Popen('git clone ' +url.scheme+'://'+username+":"+password+"@"+url.netloc+url.path, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             else:
-                repo = git.Repo.init(self.root)
+                p = subprocess.Popen('GIT_TERMINAL_PROMPT=0 git clone ' + self.url, stdin=subprocess.PIPE,  stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            out, err = p.communicate()
             
-            repo.git.pull(self.url)
+            if p.returncode:
+                if "terminal prompts disabled" in err.decode("utf-8"): # Repo is private and needs credentials
+                    return False, "Ce dépot et privé, merci d'entrer vos identifiants correspondant à celui-ci"
+                return False, out.decode("utf-8").replace(password,10*'•').replace('\n','<br>') + '\n' + err.decode("utf-8").replace(password,10*'•').replace('\n','<br>')
+        
         except Exception as e:
-            logger.warning("Failed to clone/pull repository:", exc_info=True)
-            return False
-
-        self.version = repo.heads.master.commit.name_rev[:40]
-        repo_object = Repository.objects.get(name=self.name)
-        repo_object.version = self.version
-        repo_object.save()
-        return True
+            return False, str(type(e)).replace(password,10*'•').replace('<', '[').replace('>', ']') + " : " + str(e)
+        
+        finally:
+            os.chdir(cwd)
+        return True, ""
     
     
     
@@ -88,7 +96,7 @@ class Browser():
         if exit_code:
             os.system("git reset HEAD~")
             os.chdir(cwd)
-            return out.decode("utf-8").replace(password,len(password)*'x').replace('\n','<br>') + err.decode("utf-8").replace(password,len(password)*'x').replace('\n','<br>')
+            return out.decode("utf-8").replace(password,10*'•').replace('\n','<br>') + err.decode("utf-8").replace(password,10*'•').replace('\n','<br>')
         
         os.chdir(cwd)
         return None

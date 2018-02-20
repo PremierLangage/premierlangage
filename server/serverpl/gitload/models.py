@@ -27,7 +27,7 @@ class Repository(models.Model):
         """ Overriding delete() to also delete the local repository """
         logger.info("Repository '"+self.name+"' has been deleted")
         if os.path.isdir(DIRREPO+'/'+self.name):
-            shutil.rmtree(DIRREPO+'/'+self.name)
+            shutil.rmtree(DIRREPO+'/'+self.name, ignore_errors=True)
         super(Repository, self).delete(*args, **kwargs)
     
     def __str__(self):

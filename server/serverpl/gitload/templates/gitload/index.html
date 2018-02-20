@@ -82,7 +82,7 @@
                                             </button>
                                         </center>
                                     </div>
-                                    <div class="col-sm-7">
+                                    <div class="col-sm-4">
                                         {% if error_url %}
                                             <div class="input-group has-error has-feedback">
                                                 <span class="input-group-addon">URL:</span>
@@ -90,10 +90,22 @@
                                             </div>
                                         {% else %}
                                             <div class="input-group">
-                                                <span class="input-group-addon">URL:</span>
+                                                <span class="input-group-addon">URL*:</span>
                                                 <input id="msg" type="text" class="form-control" name="repo_url" placeholder="https://githost.com/repository.git" required>
                                             </div>
                                         {% endif %}
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">Login:</span>
+                                            <input type="text" class="form-control" name="username" placeholder="username">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">Mot de Passe:</span>
+                                            <input type="password" class="form-control" name="password" placeholder="password">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
