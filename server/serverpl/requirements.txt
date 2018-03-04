@@ -1,3 +1,4 @@
+wheel
 django
 gitpython
 django-markdown-deux
