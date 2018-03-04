@@ -12,6 +12,5 @@ pages:
 - Convertir .gift to .pl: 'plfromgift.md'
 
 theme: null
-theme_dir: custom
 
 site_dir: ../templates/documentation/doc
