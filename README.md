@@ -11,7 +11,7 @@ sure that PL's packages will not conflict with your already installed packages.
 
 You can install virtualenv by using:
 
-    apt-get install python3-virtualenv
+    apt-get install python3-virtualenv python3-venv
 
 Then simply use:
 
@@ -34,7 +34,7 @@ Every module installed with pip while running a python environment will be insta
 ##### troubleshooting
 When using
 
-    python3 -m venv ***env_name**
+    python3 -m venv **env_name**
 
 you can encounter a bug:
 
