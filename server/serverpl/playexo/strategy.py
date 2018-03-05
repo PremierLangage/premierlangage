@@ -56,7 +56,7 @@ class StrategyAPI():
     
     
     def add_db_entry(self, exercise, request):
-        Answer(value='User clicked on the PL', user=request.user, pl=PL.objects.get(sha1=exercise.dic['pl_sha1']), seed=exercise.dic['seed'], state=Answer.STARTED).save()
+        Answer(value='', user=request.user, pl=PL.objects.get(sha1=exercise.dic['pl_sha1']), seed=exercise.dic['seed'], state=Answer.STARTED).save()
     
     
     def get_from_session(self, request, key):
