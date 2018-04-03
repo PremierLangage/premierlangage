@@ -33,4 +33,6 @@ et qu'a la fin la (les) notion(s) importantes soit comprises.
 L'hétérogénéité des élèves veux dire que certains execices sont utiles pour des élèves et pas pour d'autre, 
 le langage de descriptions de feuilles vas vous permettre de "coder" ces différences.
 
+# Participer au projet 
+
 
