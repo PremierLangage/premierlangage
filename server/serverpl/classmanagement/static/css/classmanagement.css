@@ -95,21 +95,6 @@
     width: 160px;
 }
 
-.nav-link {
-    margin: 0 15px;
-    font-size: 16px;
-}
-
-.navbar-brand {
-    float: initial;
-}
-
-.navbar .navbar-nav {
-    display: inline-block;
-    float: none;
-    vertical-align: top;
-}
-
 .progress-summary {
     height: 40px;
     margin-bottom: 0px;

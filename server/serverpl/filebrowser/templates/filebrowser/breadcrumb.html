@@ -1,0 +1,11 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb no-margin">
+        {% for elem in fb.breadcrumb %}
+            <li class="breadcrumb-item {% if forloop.last %}active{% endif %}">
+                <a {% if not forloop.last %}href="?cd={{ elem.link }}"{% endif %}>
+                    {% if forloop.first %}<i class="fas fa-home"></i>{% else %}{{ elem.name }}{% endif %}
+                </a>
+            </li>
+        {% endfor %}
+    </ol>
+</nav>

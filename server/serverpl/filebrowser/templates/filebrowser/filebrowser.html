@@ -1,0 +1,50 @@
+{% extends "classmanagement/base.html" %}
+
+{% load static %}
+{% load filebrowser_filter %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static '/css/filebrowser.css' %}" />
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="card">
+            
+            <div class="card-header no-padding">
+                <div class="row no-margin">
+                    
+                    <!-- Breadcrumb -->
+                    <div class="col-sm-11 no-padding">
+                        {% include 'filebrowser/breadcrumb.html' %}
+                    </div>
+                    
+                    <!-- Directory's Options -->
+                    <div class="col-sm-1 no-padding">
+                        {% include 'filebrowser/dir_options.html' %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Entries -->
+            <div class="card-body no-padding">
+                <table class="table table-hover" style="table-layout: fixed">
+                    <tbody>
+                        {% if not fb.directory %}
+                            {% include 'filebrowser/directories.html' %}
+                        {% else %}
+                            {% include 'filebrowser/entries.html' %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+            {% if fb.directory and fb.directory.remote %}<footer class="blockquote-footer">{{ fb.directory.remote }}</footer>{% endif %}
+                {% for option in fb.directory_options %}
+                {% if option|opt_filter:fb.relative %}
+                    {% if not option.form and option.require_confirmation %}{% include 'filebrowser/confirmation_dir_modal.html' %}{% endif %}
+                    {% if option.form %}{% include 'filebrowser/default_dir_modal.html' %}{% endif %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

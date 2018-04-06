@@ -1,15 +1,76 @@
 {% load static %}
 
-<nav class="navbar navbar-toggleable-md navbar-inverse bg-inverse">
-    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" style="height: 50px">
-        <span class="navbar-toggler-icon" style="height; 40px"></span>
-    </button>
-    
-    <div class="navbar-left" style="width: 350px">
-        <img alt="UPEM" src="{% static 'img/upem.png' %}" height="44" width="88" /> 
-        <a class="navbar-brand" href="/">Premier Langage</a>
+
+
+
+<header class="header-nav">
+    <div class="fixmenu">
+       <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+           
+           <!-- Brand -->
+           <a class="navbar-brand" href="/">
+                <img class="nav-img" width="135" height="70" src="{% static 'img/upem.png' %}" />
+                Premier Langage
+            </a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbar">        
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="fas fa-graduation-cap"></i> Mes Cours</a>
+                    </li>
+                    {% if request.user.pluser.can_load %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/filebrowser/"><i class="fas fa-cloud"></i> Gitload</a>
+                        </li>
+                    {% endif %}
+                    {% if request.user.pluser.can_load %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/documentation/"></i><i class="fas fa-book"></i> Documentation</a>
+                        </li>
+                    {% endif %}
+                    {% if request.user.pluser.is_admin or request.user.is_superuser %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/"><i class="fas fa-cog"></i> Administration</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            
+                <ul class="navbar-nav navbar-right">
+                    <li class="nav-item dropdown">
+                        <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#">
+                            <i class="fas fa-user"></i>
+                            {% firstof request.user.get_full_name request.user.get_username "Non Connecté" %}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a class="dropdown-item"><i class="fas fa-envelope"></i>&emsp;{% firstof user.email "N/A" %}</a>
+                            <a class="dropdown-item" href="/courses/cycle_color_blindness/?from={{ request.path|urlencode }}" ><i class="fas fa-eye"></i>&emsp;Daltonisme: {{ request.user.pluser.get_color_blindness_display }}</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/playexo/not_authenticated/"><i class="fas fa-power-off fa-lg"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
     </div>
-    <div class="collapse navbar-collapse" id="navbar">        
+</header>
+                    
+<!--
+
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">
+        <img src="{% static 'img/upem.png'%}" width="30" height="30" class="d-inline-block align-top" alt="">
+        Premier Langage
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+      <div class="collapse " id="navbar">        
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
                 <a class="nav-link" href="/">Mes Cours</a>
@@ -48,3 +109,4 @@
         </ul>
     </div>
 </nav>
+-->

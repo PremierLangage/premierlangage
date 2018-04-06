@@ -5,19 +5,19 @@
 {% block navigation %}
     <div id="navigation" class="btn-group-vertical" style="width: 100%; margin-bottom: 15px;">
         <!-- PLTP -->
-        {% if pl_sha1 %}
-            <a style="white-space: normal;" href="{{ request.path }}?action=pltp" type="button" class="btn btn-default  btn-lg">{{ pltp_title }}</a>
+        {% if pl_id %}
+            <a style="white-space: normal;" href="{{ request.path }}?action=pltp" type="button" class="btn btn-secondary  btn-lg">{{ pltp_title }}</a>
         {% else %}
-            <a style="white-space: normal;" href="{{ request.path }}?action=pltp" type="button" class="btn btn-default  btn-lg active">{{ pltp_title }}</a>
+            <a style="white-space: normal;" href="{{ request.path }}?action=pltp" type="button" class="btn btn-secondary  btn-lg active">{{ pltp_title }}</a>
         {% endif %}
         <!-- Every PL -->
         {% for item  in pl_list %} 
-            {% if pl_sha1 == item.0.sha1 %}
-                <a style="white-space: normal;" href="{{ request.path }}?action=pl&pl_sha1={{item.0.sha1}}" type="button" class="btn btn-default btn-type{{ item.1 }} btn-lg active">
+            {% if pl_id == item.0.id %}
+                <a style="white-space: normal;" href="{{ request.path }}?action=pl&pl_id={{item.0.id}}" type="button" class="btn btn-secondary btn-type{{ item.1 }} btn-lg active">
                     {{ item.2 }}
                 </a>
             {% else %}
-                <a style="white-space: normal;" href="{{ request.path }}?action=pl&pl_sha1={{item.0.sha1}}" type="button" class="btn btn-default btn-type{{ item.1 }} btn-lg">
+                <a style="white-space: normal;" href="{{ request.path }}?action=pl&pl_id={{item.0.id}}" type="button" class="btn btn-secondary btn-type{{ item.1 }} btn-lg">
                     {{ item.2 }}
                 </a>
             {% endif %}

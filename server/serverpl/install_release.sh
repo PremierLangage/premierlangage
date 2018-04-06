@@ -26,6 +26,7 @@ echo "pip3: OK !"
 #Getting requirement
 echo ""
 echo "Installing requirements..."
+pip3 install wheel  || { echo>&2 "ERROR: pip3 install wheel failed" ; exit 1; }
 pip3 install -r requirements.txt || { echo>&2 "ERROR: pip3 install -r requirements.txt failed" ; exit 1; }
 echo "Done !"
 

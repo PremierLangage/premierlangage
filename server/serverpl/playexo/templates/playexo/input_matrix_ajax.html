@@ -1,0 +1,33 @@
+{% load json_filter %}
+<!-- hidden input declares the matrix so it can be later populated -->
+<style>
+.cell {
+  height: {{ cell_height }};
+  width: {{ cell_width }};
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items:center;
+  position:relative;
+}
+</style>
+
+<input type = 'hidden' id = 'form_dec_{{ name }}' value = '{{ matrix|tojson }}'/>
+<table class="matrix">
+{% for line in matrix %}
+<tr>
+    {% for element in line %}
+    <td>
+        <div class='cell' style='{{ cell_style }}'>
+        <input class='input_matrix absolute_center'  id ='form_txt_{{ name }}[{{forloop.parentloop.counter0}}][{{forloop.counter0}}]' 
+        value = '{{ element|default_if_none:"" }}' style='{{ input_style }}'/>
+        <!-- Phantom prevents animations from disrupting page layout -->
+        <input class='input_matrix absolute_center phantom'  
+            id ='phantom_txt_{{ name }}[{{forloop.parentloop.counter0}}][{{forloop.counter0}}]' 
+            style='{{ input_style }}' disabled = 'disabled'/>
+        </div>
+    </td>
+    {% endfor %}
+</tr>
+{% endfor %}
+</table>

@@ -9,7 +9,7 @@ tag=compile|error
 # le code d'évaluation de votre exercice
 # vous pouvez votre propre code d'évaluation
 # pour le moment utilisez le template standard
-template=/python/0PLG/template
+template=/python/0PLG/template.pl
 
 # ceci est le text de l'énoncé de l'exercice affiché à l'élève
 # la syntaxe est du markdown à la mode github 
@@ -69,5 +69,6 @@ C'est un classique de l'erreur **SyntaxError**  qui est juste une indication que
 Il faut en général regarder la ligne au-dessus pour trouver l'erreur de syntaxe.
 
 ==
+
 
 

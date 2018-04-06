@@ -18,7 +18,7 @@ from playexo.exercise import Exercise, ExerciseTest
 from playexo.builder import PythonBuilder, PythonBuilderTest
 from playexo.models import Activity, ActivityTest, Answer
 
-from gitload.models import PLTP, PL
+from loader.models import PLTP, PL
 from playexo.models import Answer
 
 
@@ -30,7 +30,7 @@ class StrategyAPI():
     
     def get_pltp_dic(self):
         """ Return the PLTP dictionnary """
-        return json.loads(self.activity.pltp.json)
+        return self.activity.pltp.json
     
     def get_pl_list(self):
         """ Return the list of the PLs object sorted in the same order as in the PLTP """
@@ -42,12 +42,12 @@ class StrategyAPI():
         return self.activity.pltp.pl.all()[index]
     
     
-    def get_pl_sha1(self, pl_sha1):
-        """ Return PL object corresponding to pl_sha1 """
+    def get_pl_id(self, pl_id):
+        """ Return PL object corresponding to pl_id """
         for item in self.activity.pltp.pl.all():
-            if pl_sha1 == item.sha1:
+            if int(pl_id) == item.id:
                 return item;
-        raise ValueError(str(pl_sha1) + "does not correspond to any PL's sha1 of this PLTP")
+        raise ValueError(str(pl_id) + " does not correspond to any PL's id of this PLTP")
     
     
     def add_to_session(self, request, key, value):
@@ -56,7 +56,7 @@ class StrategyAPI():
     
     
     def add_db_entry(self, exercise, request):
-        Answer(value='', user=request.user, pl=PL.objects.get(sha1=exercise.dic['pl_sha1']), seed=exercise.dic['seed'], state=Answer.STARTED).save()
+        Answer(value='', user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id']), seed=exercise.dic['seed'], state=Answer.STARTED).save()
     
     
     def get_from_session(self, request, key):
@@ -68,37 +68,37 @@ class StrategyAPI():
     
     def get_current_pl(self, request):
         """ Return the user's current PL, None if the user is on the PLTP introduction """
-        pl_sha1 = request.session.get("current_pl", None)
-        if pl_sha1:
-            return self.get_pl_sha1(pl_sha1)
+        pl_id = request.session.get("current_pl", None)
+        if pl_id:
+            return self.get_pl_id(pl_id)
         return None
     
     
     def get_previous_pl(self, request):
         """ Return the PL preceding current PL. None if current PL is None or the first one """
-        pl_sha1 = request.session.get("current_pl", None)
+        pl_id = request.session.get("current_pl", None)
         
         pls = self.get_pl_list()
-        if not pl_sha1:
+        if not pl_id:
             return None
         previous = pls[0]
         for pl in pls[1:]:
-            if pl.sha1 == pl_sha1:
+            if pl.id == pl_id:
                 return previous
             previous = pl
         return None
         
     def get_next_pl(self, request):
         """ Return a PL object corresponding to the next PL in the PLTP order, the first PL if current one is None, None if current PL is the last one or current PL couldn't be find. """
-        pl_sha1 = request.session.get("current_pl", None)
+        pl_id = request.session.get("current_pl", None)
         pls = self.get_pl_list()
-        if not pl_sha1:
+        if not pl_id:
             return pls[0]
         current = False
         for pl in pls:
             if current:
                 return pl
-            if pl.sha1 == pl_sha1:
+            if pl.id == pl_id:
                 current = True
         return None
     
@@ -108,13 +108,13 @@ class StrategyAPI():
         if not pl:
             return None
         for item in self.activity.pltp.pl.all():
-            if pl.sha1 == item.sha1:
-                return json.loads(item.json);
+            if pl.id == item.id:
+                return item.json;
     
     
     def get_pl_dic_by_index(self, index):
         """ Return the dictionnary of the PL corresponding to its index in the PLTP. """
-        return json.loads(self.activity.pltp.pl.all()[index].json)
+        return self.activity.pltp.pl.all()[index].json
     
     
     def get_answers(self, pl, request):
@@ -172,13 +172,13 @@ class StrategyAPI():
                 value = ""
             if success == None:
                 feedback_type = "info"
-                Answer(value=value, user=request.user, pl=PL.objects.get(sha1=exercise.dic['pl_sha1']), seed=exercise.dic['seed'], state=Answer.STARTED).save()
+                Answer(value=value, user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id']), seed=exercise.dic['seed'], state=Answer.STARTED).save()
             elif success:
                 feedback_type = "success"
-                Answer(value=value, user=request.user, pl=PL.objects.get(sha1=exercise.dic['pl_sha1']), seed=exercise.dic['seed'], state=Answer.SUCCEEDED).save()
+                Answer(value=value, user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id']), seed=exercise.dic['seed'], state=Answer.SUCCEEDED).save()
             else:
                 feedback_type = "fail"
-                Answer(value=value, user=request.user, pl=PL.objects.get(sha1=exercise.dic['pl_sha1']), seed=exercise.dic['seed'], state=Answer.FAILED).save()
+                Answer(value=value, user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id']), seed=exercise.dic['seed'], state=Answer.FAILED).save()
             return feedback_type, feedback
                     
         elif status['requested_action'] == 'save': # Save
@@ -186,7 +186,7 @@ class StrategyAPI():
                 value = status['inputs']['answer']
             else:
                 value = ""
-            Answer(value=value, user=request.user, pl=PL.objects.get(sha1=exercise.dic['pl_sha1']), seed=exercise.dic['seed'], state=Answer.STARTED).save()
+            Answer(value=value, user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id']), seed=exercise.dic['seed'], state=Answer.STARTED).save()
             return 'info', "Votre réponse à bien été enregistrée."
         return None, None # Not an AJAX request
     
@@ -198,13 +198,13 @@ class StrategyAPI():
     
     def set_pl(self, pl, request):
         """ Set the user current exercice to the given PL, can be set to None to load the PLTP. """
-        request.session["current_pl"] = pl.sha1 if pl else None
+        request.session["current_pl"] = pl.id if pl else None
     
     
-    def reset_pl(self, exercice):
+    def reset_pl(self, exercise, request):
         """ Reset the PL to the default code """
         value = "" if 'code' not in exercise.dic else exercise.dic["code"]
-        Answer(value=value, user=request.user, pl=PL.objects.get(sha1=exercise.dic['pl_sha1']), seed=exercise.dic['seed'], state=Answer.STARTED).save()
+        Answer(value=value, user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id']), seed=exercise.dic['seed'], state=Answer.STARTED).save()
     
     def load_exercise(self, request, seed=None):
         """ 
@@ -213,8 +213,8 @@ class StrategyAPI():
         """
         pl = None
         if request.session["current_pl"]:
-            pl = PL.objects.get(sha1=request.session["current_pl"])
-            dic = json.loads(pl.json)
+            pl = PL.objects.get(id=request.session["current_pl"])
+            dic = pl.json
         return PythonBuilder(request, self.activity, pl, seed).get_exercise()
     
     
@@ -237,7 +237,7 @@ def strategy(request, activity):
     if request.method == 'GET': # Request change which exercise will be loaded
         action = request.GET.get("action", None)
         if action == "pl":
-            strat.set_pl(strat.get_pl_sha1(request.GET.get("pl_sha1", None)), request)
+            strat.set_pl(strat.get_pl_id(request.GET.get("pl_id", None)), request)
             return HttpResponseRedirect("/playexo/activity/") # Remove get parameters from url
         elif action == "pltp":
             strat.set_pl(None, request)
@@ -252,7 +252,7 @@ def strategy(request, activity):
     
     if request.method == 'GET': # Request changing or interacting an exercise
         if action == "reset":
-            strat.reset_pl(exercise)
+            strat.reset_pl(exercise, request)
         elif action == "next":
             strat.set_pl(strat.get_next_pl(request), request)
             exercise = strat.load_exercise(request, seed)

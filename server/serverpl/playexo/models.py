@@ -5,7 +5,7 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-from gitload.models import PLTP, PL
+from loader.models import PLTP, PL
 
 
 
@@ -88,11 +88,11 @@ class Answer(models.Model):
     
     @staticmethod
     def pltp_state(pltp, user):
-        """ Return a list of tuples (pl_sha1, state) where state follow pl_state() rules. """
+        """ Return a list of tuples (pl_id, state) where state follow pl_state() rules. """
         
         lst = list()
         for pl in pltp.pl.all():
-            lst.append((pl.sha1, Answer.pl_state(pl, user)))
+            lst.append((pl.id, Answer.pl_state(pl, user)))
             
         return lst
     
@@ -143,7 +143,7 @@ class Answer(models.Model):
             {
                 'user_id': id,
                 'pltp_sha1' sha1,
-                'pl': list(pl_sha1, state)
+                'pl': list(pl_id, state)
             }
             where 'state' follow pl_state() rules.
         """

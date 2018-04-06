@@ -48,18 +48,20 @@ L'Equipe Premier langage.
 tag=print|input|variables|identifieurs
 
 
-concept==debug
+concept=debug
+
 @ /python/0PLG/TPE/error.pl
 @ /python/0PLG/TPE/function001.pl
 @ /python/0PLG/TPE/operator001.pl
 @ /python/0PLG/TPE/identificateurs.pl
-==
+
 
 
 
 
 
 title= Tests de plgrader
+
 
 
 

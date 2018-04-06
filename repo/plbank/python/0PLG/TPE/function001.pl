@@ -3,7 +3,7 @@ title=fonction
 author=Dominique Revuz 
 name= Une fonction bob
 tag=function 
-template=/python/0PLG/template
+template=/python/0PLG/template.pl
 text==
 # Fonctions 
 
@@ -31,5 +31,6 @@ testcode==
 def bob():
     return 1238
 ==
+
 
 

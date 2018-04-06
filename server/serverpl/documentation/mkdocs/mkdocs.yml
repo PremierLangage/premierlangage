@@ -7,10 +7,16 @@ pages:
 - Ecrire un exercice:
     - 'Bases': 'ecrire_pl.md'
     - 'Ecrire un formulaire': 'formulaire.md'
-    - 'Ecrire une fonction d''évaluation': 'evaluator.md'
-    - 'Ecrire une fonction build': 'build.md'
-- Convertir .gift to .pl: 'plfromgift.md'
+    - 'Ecrire un script d''évaluation': 'evaluator.md'
+    - 'Ecrire un script build': 'build.md'
+- Parseur:
+    - 'Ecrire un parseur': 'parser.md'
+    - 'Exceptions prédéfinies': 'parser_exception.md'
+    - 'Exemple': 'parser_exemple.md'
 
-theme: null
+
+theme:
+    name: null
+    custom_dir: 'custom'
 
 site_dir: ../templates/documentation/doc

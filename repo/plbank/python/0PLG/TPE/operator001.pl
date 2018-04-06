@@ -3,7 +3,7 @@ author=Dominique Revuz
 name= Boites d'oeufs (Operateurs)
 title= Modulo et Diviser
 tag= print|input|operator.mod|operator.floordiv
-template=/python/0PLG/soluce
+template=/python/0PLG/soluce.pl
 text==
 
 # Operator  // et % 
@@ -47,4 +47,5 @@ print( b , "boites,")
 print("et il restera ", r , "oeufs.") 
 
 ==
+
 

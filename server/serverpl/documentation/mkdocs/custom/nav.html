@@ -3,14 +3,12 @@
         <ul>
         {% for nav_item in nav %}
             {% if nav_item.children %}
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ loop.index }}">{{ nav_item.title }}</a>
-                        </h4>
+                <div class="card">
+                    <div class="card-header">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ loop.index }}"><i class="fas fa-bars"></i> &emsp; {{ nav_item.title }}</a>
                     </div>
                     <div id="collapse{{ loop.index }}" class="panel-collapse collapse in">
-                        <div class="panel-body">
+                        <div class="card-body">
                             <table class="table">
                                 {% for nav_item in nav_item.children %}
                                 <tr>
@@ -24,11 +22,9 @@
                     </div>
                 </div>
             {% else %}
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a href="{{ nav_item.url }}">{{ nav_item.title }}</a>
-                        </h4>
+                <div class="card">
+                    <div class="card-header">
+                        <a href="{{ nav_item.url }}">{{ nav_item.title }}</a>
                     </div>
                 </div>
             {% endif %}

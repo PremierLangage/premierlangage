@@ -1,33 +1,31 @@
 # plbank
 
+la banque d'outils pl "librairie standard" du projet d'exercice.
+la publication dans cette banque suit un protocol spécifique.
 
-Banque d'exercices pl
-
-# Accès
-
-Demander à Dominique Revuz at upem fr.
-
-# plbank
-Banque de question pl ''python''
+la plbank est installé automatiquement avec le server premierlangage. 
+Par défaut elle n'est pas accessible en écriture.
 
 
-
-# Arborescence
+## organisation 
 
 Quelques remarques avant de commencer sur l'organisation des fichiers.
 
-l'arborescence est découpé en deux parties,
-- une partie documentation ''doc''
-- une partie langage par exemple ''python'', ''C''
-- une partie Maths ''pywims''
-- une partie code qui permet aux developpeurs d'étendre PL : ''pysrc/src/''
+template contient les templates génériques que vous pouvez réutiliser grace à la commande extend.
 
-La structure de l'arborescence sous le langage est laisé à l'appréciation de l'équipe enseignante.
+pysrc contient des codes python utilisable dans les balises build et evaluator (PYTHONPATH).
 
-Une approche est par **concept** ou les retpertoire structure les exercices par  les //prod// c'est à dire des exercice qui permetent à un élève d'aquérir le concept en question.
 
-Une approche est par **tp** ou feuille de tp. l'idée est que tous les exercices d'une feuille plmtp sont mis dans le m^eme répertoire ce qui simplie les échanges entre repository.
+## principe de révision
 
-Personnellement (DR) je privilègie la deuxième approche.
+Les fichiers dans plbank doivent submire un processus de revue.
+1) il doivent être associé à un test fonctionnel unitaire 
+2) il doivent avoir été revus (qualité du code)
+3) le python doit  vérifier le pep8
+4) les Principes SOLID doivent avoir été utilisés.
+
+
+
+
 
 

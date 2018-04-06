@@ -7,7 +7,7 @@
 #  Last Modified: 2017-07-30
 
 
-import json, logging
+import logging
 
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
@@ -111,7 +111,7 @@ def course_view(request, id):
         pl = list()
         for elem in item.pltp.pl.all():
             pl.append({
-                'name': json.loads(elem.json)['title'],
+                'name': elem.json['title'],
                 'state': STATE[Answer.pl_state(elem, request.user)]+BLINDNESS[request.user.pluser.color_blindness],
             })
         
@@ -120,7 +120,7 @@ def course_view(request, id):
         activity.append({
             'name': item.name,
             'pltp_sha1': item.pltp.sha1,
-            'title': json.loads(item.pltp.json)['title'],
+            'title': item.pltp.json['title'],
             'pl': pl,
             'id': item.id,
             'open': item.open,
@@ -155,7 +155,7 @@ def course_summary(request, id):
         for activity in activities:
             tp.append({
                 'state': Answer.pltp_summary(activity.pltp, user),
-                'name': json.loads(activity.pltp.json)['title'],
+                'name': activity.pltp.json['title'],
                 'activity_name': activity.name,
             })
         student.append({
@@ -194,7 +194,7 @@ def activity_summary(request, id, name):
         tp = list()
         for pl in activity.pltp.pl.all():
             tp.append({
-                'name': json.loads(pl.json)['title'],
+                'name': pl.json['title'],
                 'state': STATE[Answer.pl_state(pl, user)]+BLINDNESS[request.user.pluser.color_blindness],
             })
         student.append({
@@ -238,11 +238,11 @@ def student_summary(request, course_id, student_id):
             state = STATE[Answer.pl_state(pl, student)]+BLINDNESS[request.user.pluser.color_blindness]
             question.append({
                 'state': state,
-                'name':  json.loads(pl.json)['title'],
+                'name':  pl.json['title'],
             })
         len_tp = len(question) if len(question) else 1
         tp.append({
-            'name': json.loads(activity.pltp.json)['title'],
+            'name': activity.pltp.json['title'],
             'activity_name': activity.name,
             'width': str(100/len_tp),
             'pl': question,

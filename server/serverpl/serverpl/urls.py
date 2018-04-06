@@ -20,10 +20,10 @@ from classmanagement.views import index
 
 urlpatterns = [
     url(r'^$', index ),
-    url(r'^gitload/', include('gitload.urls')),
     url(r'^courses/', include('classmanagement.urls')),
     url(r'^playexo/', include('playexo.urls')),
     url(r'^sandbox/',include('sandbox.urls')),
     url(r'^documentation/',include('documentation.urls')),
+    url(r'^filebrowser/',include('filebrowser.urls')),
     url(r'^admin/', admin.site.urls),
 ]

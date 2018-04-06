@@ -68,8 +68,8 @@ class Course(models.Model):
     id = models.CharField(max_length=30, primary_key=True, null = False)
     name = models.CharField(max_length=200, null = False)
     label = models.CharField(max_length=20, null = False)
-    user = models.ManyToManyField(User)
-    activity = models.ManyToManyField(Activity)
+    user = models.ManyToManyField(User, blank=True)
+    activity = models.ManyToManyField(Activity, blank=True)
             
     def __str__(self):
         return str(self.id)+": ["+self.label+"] "+self.name

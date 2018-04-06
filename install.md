@@ -4,6 +4,7 @@
 - python >= 3.5
 - pip3
 - zip
+- rabbitmq-server
 
 ### Python
 We recommend you to use [python virtual environment](https://docs.python.org/3/tutorial/venv.html) to make a clean install and to be 
@@ -58,7 +59,8 @@ To use the project on localhost:
 - Create a super user for the server by entering informations when prompted
 - Run the server (*python3 manage.py runserver*)
 - Go to Administration -> Users -> ***Your Username*** -> Scroll down to *Role* -> Add **AD** Role -> Save
-- Go to Administration -> Sandbox -> Create a new sandbox with url: "http://127.0.0.1:8000/sandbox/?action=execute", the name you want, priority don't matter here.
+- Go to Administration -> Sandboxs -> Create a new sandbox with url: "http://127.0.0.1:8000/sandbox/?action=execute", the name you want, priority don't matter here.
+- Go to Administration -> Directorys -> Add a new directory with name = 'plbank' and set owner to yourself
 
 ## Deployment
 - Move to premierlangage/server/serverpl/ and run install_release.sh
@@ -66,8 +68,9 @@ To use the project on localhost:
 - Change important settings in server/serverpl/serverpl/settings.py (like SECRET_KEY)
 - Run the server (*python3 manage.py collectstatic*)
 - Run the server (*python3 manage.py runserver*)
-- Go to Administration -> Users -> [Your Super User] -> Scroll down to *Role* -> Add **AD** Role -> Save
+- Go to Administration -> Users -> ***Your Username*** -> Scroll down to *Role* -> Add **AD** Role -> Save
 - Add a least one valid Sandbox with a corresponding priority (0 - 2147483647, the **smallest** number have the **highest** piority), a sandbox is available [here](https://git-etud.u-pem.fr/pl-sandbox.git)
+- Go to Administration -> Directorys -> Add a new directory with name = 'plbank' and set owner to yourself
 
 ### Logging
 Default facility used for syslog is local7.

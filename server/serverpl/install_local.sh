@@ -8,7 +8,7 @@ echo "zip: OK !"
 
 #Checking if python >= 3.5 is installed
 if ! hash python3; then
-    echo "ERROR: Python >= 3.5 should be installed."
+    echo "ERROR: Python >= 3.5 should be installed. Try 'apt-get install python3'"
     exit 1
 fi
 
@@ -28,6 +28,7 @@ echo "pip3: OK !"
 #Getting requirement
 echo ""
 echo "Installing requirements..."
+pip3 install wheel  || { echo>&2 "ERROR: pip3 install wheel failed" ; exit 1; }
 pip3 install -r requirements.txt || { echo>&2 "ERROR: pip3 install -r requirements.txt failed" ; exit 1; }
 echo "Done !"
 

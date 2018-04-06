@@ -7,7 +7,7 @@
 #  Last Modified: 2017-09-30
 
 
-import json, os, tarfile, uuid, timeout_decorator, time, zipfile, subprocess
+import json, os, tarfile, uuid, timeout_decorator, time, subprocess
 
 from django.conf import settings
 
@@ -33,24 +33,22 @@ class Executor:
     def _create_dir(self):
         """ Create the directory where the code will be executed"""
         
-        for key in ['environment.zip', 'grader.py', 'student.py']:
-            if not key in self.files:
-                raise KeyError('Key "'+key+'" not found in request.files')
+        if not 'environment.tgz' in self.files:
+            raise KeyError('environment.tgz not found in request.files')
         os.mkdir(self.dirname)
-        for filename in self.files.keys():
+        for filename in self.files:
             with open(self.dirname+"/"+filename, 'wb') as f:
                 f.write(self.files[filename].read())
                 
     
     @timeout_decorator.timeout(use_signals=False, use_class_attribute=True)
     def _evaluate(self):
-        """ Unzip environment.zip and execute grader.py, returning the result. """
+        """ Untar environment.tar.gz and execute grader.py, returning the result. """
         try:
             cwd = os.getcwd()
             os.chdir(self.dirname)
-            zip_ref = zipfile.ZipFile(self.dirname+"/environment.zip", 'r')
-            zip_ref.extractall(self.dirname)
-            zip_ref.close()
+            with tarfile.open(self.dirname+"/environment.tgz", 'r:gz') as tar:
+                tar.extractall(self.dirname)
             result =  subprocess.check_output(['python3','grader.py'])
             os.chdir(cwd)
             return result
@@ -108,7 +106,7 @@ class Executor:
             }
         
         except Exception as e: #Unknown error
-            error_message={
+            error_message= {
                 'feedback':"Erreur de la plateforme. Si le problème persiste, merci de contacter votre professeur.<br> "+str(type(e)).replace('<', '[').replace('>', ']')+": "+str(e),
                 'success': "info",
             }

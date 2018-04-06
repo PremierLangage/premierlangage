@@ -1,0 +1,24 @@
+<div id="defaultModalDir{{forloop.counter0}}" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{ option.text }}?</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form action="apply_option/post" class="form-group" method="post" enctype="multipart/form-data"> 
+                {% csrf_token %}
+                <input type="hidden" name="relative_h" value="{{ fb.relative }}"/>
+                <input type="hidden" name="name_h" value="{{ fb.directory.name }}"/>
+                <input type="hidden" name="option_h" value="{{ forloop.counter0 }}"/>
+                <input type="hidden" name="type_h" value="directory"/>
+                <input type="hidden" name="relative" value="{{ fb.relative }}"/>
+                {{ option.form.as_p }}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fas fa-times"></i>&emsp;Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i>&emsp;Yes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

@@ -2,19 +2,22 @@
 # -*- coding: utf-8 -*-
 # Python 3.5.4
 #
-#  Author: Coumes Quentin     Mail: qcoumes@etud.u-pem.fr
-#  Created: 2017-07-03
-#  Last Modified: 2017-07-03
+#  Author: Coumes Quentin
+
 
 import json, timeout_decorator, time
 
 from django.template import Template, RequestContext
-from gitload.models import PLTP
+
+from loader.models import PLTP
+
 from playexo.models import Answer
+from playexo.request import SandboxSession
 from classmanagement.models import PLUser
 
+
 lang = ['abap', 'abc', 'actionscript', 'ada', 'apache_conf', 'applescript', 'asciidoc', 'assembly_x86', 'autohotkey', 'batchfile', 'bro', 'c9search', 'c_cpp', 'cirru', 'clojure', 'cobol', 'coffee', 'coldfusion', 'csharp', 'csound_document', 'csound_orchestra', 'csound_score', 'css', 'curly', 'd', 'dart', 'diff', 'django', 'dockerfile', 'dot', 'drools', 'eiffel', 'ejs', 'elixir', 'elm', 'erlang', 'forth', 'fortran', 'ftl', 'gcode', 'gherkin', 'gitignore', 'glsl', 'gobstones', 'golang', 'graphqlschema', 'groovy', 'haml', 'handlebars', 'haskell', 'haskell_cabal', 'haxe', 'hjson', 'html', 'html_elixir', 'html_ruby', 'ini', 'io', 'jack', 'jade', 'java', 'javascript', 'json', 'jsoniq', 'jsp', 'jssm', 'jsx', 'julia', 'kotlin', 'latex', 'lean', 'less', 'liquid', 'lisp', 'live_script', 'livescript', 'logiql', 'lsl', 'lua', 'luapage', 'lucene', 'makefile', 'markdown', 'mask', 'matlab', 'maze', 'mel', 'mips_assembler', 'mipsassembler', 'mushcode', 'mysql', 'nix', 'nsis', 'objectivec', 'ocaml', 'pascal', 'perl', 'pgsql', 'php', 'pig', 'plain_text', 'powershell', 'praat', 'prolog', 'properties', 'protobuf', 'python', 'r', 'razor', 'rdoc', 'red', 'rhtml', 'rst', 'ruby', 'rust', 'sass', 'scad', 'scala', 'scheme', 'scss', 'sh', 'sjs', 'smarty', 'snippets', 'soy_template', 'space', 'sparql', 'sql', 'sqlserver', 'stylus', 'svg', 'swift', 'swig', 'tcl', 'tex', 'text', 'textile', 'toml', 'tsx', 'turtle', 'twig', 'typescript', 'vala', 'vbscript', 'velocity', 'verilog', 'vhdl', 'wollok', 'xml', 'xquery', 'yaml']
-default_load = '{% load bootstrap3 %}{% load static %}{% load markdown_deux_tags %}{% load input_fields_ajax %}{% load json_filter %}'
+default_load = '{% load static %}{% load markdown_deux_tags %}{% load input_fields_ajax %}{% load json_filter %}'
 pls_known = [
     ('form', 'form'), ('css', 'css'), ('pl', 'exo'),
     ('pltp', 'exo'), ('navigation', 'navigation'),
@@ -22,30 +25,57 @@ pls_known = [
     ('header_script', 'header_script')
 ]
 
+
+
+
 class Exercise:
     def __init__(self, pl_dic):
         self.dic = pl_dic
-        self.dic['authorized_lang'] = lang
     
-    def evaluate(self, answer):
-        try:
-            exec(self.dic['evaluator'], globals())
-            dic = self.__build()
-            state, feedback = evaluator(answer, dic)
-            if (not isinstance(state, bool) and state != None) or (not isinstance(feedback, str)):
-                return None, ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte, merci de prévenir votre professeur:\n"
-                              "Function evaluator() should return a tuple (bool, str).")
-            return state, feedback
-        except Exception as e:
-            return None, ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte, merci de prévenir votre professeur:<br>Error - "+str(type(e)).replace("<", "[").replace(">", "]")+": "+str(e))
     
-    @timeout_decorator.timeout(5, use_signals=False)
-    def __build(self):
+    def evaluate(self, response):
+        if 'evaluator' not in self.dic:
+            try:
+                if 'timeout' in locals():
+                    sandbox_session = SandboxSession(self.dic, response['answer'], timeout=timeout)
+                sandbox_session = SandboxSession(self.dic, response['answer'])
+                feedback = json.loads(sandbox_session.call())
+                if feedback['grade']['success'] == "info":
+                    return (None, feedback['grade']['feedback'])
+                elif feedback['grade']['success']:
+                    return (True, feedback['grade']['feedback'])
+                return (False, feedback['grade']['feedback'])
+            except ValueError as e:
+                return (None, "La réponse reçu part la sandbox n'est pas au bon format.")
+            except Exception as e:
+                return None, ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte, \
+        merci de prévenir votre professeur:<br>Error - "+str(type(e)).replace("<", "[").replace(">", "]")+": "+str(e))
+        else:
+            try:
+                _var= dict(self.dic)
+                _var['response']=response
+                exec(_var['before'],_var)
+                exec(_var['evaluator'],_var)
+                if not 'grade' in _var \
+                 or (not isinstance(_var['grade'][0], bool) \
+                and _var['grade'][0] != None) or (not isinstance(_var['grade'][1], str)):
+                    return None, ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte, merci de prévenir votre professeur:\n"
+                                  "Evaluator should declare a tuple called 'grade' (bool, str).")
+                return _var['grade']
+            except Exception as e:
+                return None, ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte, merci de prévenir votre professeur:<br>Error - "+str(type(e)).replace("<", "[").replace(">", "]")+": "+str(e))
+
+    #@timeout_decorator.timeout(5, use_signals=False)
+    def intern_build(self):
         if 'build' in self.dic:
             exec(self.dic['build'], globals())
-            return build(self.dic)
+            self.dic = build(self.dic)
+        elif 'before' in self.dic:
+            print("Bande de mules")
+            exec(self.dic['before'],self.dic)
         return self.dic
-            
+    
+    
     def __get_context(self, request, feedback=None, success=None):
         #Bootstrap class corresponding to every state.
         color = { 
@@ -65,21 +95,21 @@ class Exercise:
 
         
         pltp = PLTP.objects.get(sha1=self.dic['pltp_sha1'])
-        pltp_json = json.loads(pltp.json)
+        pltp_json = pltp.json
         pl_list = list()
         for item in pltp.pl.all():
             state = Answer.pl_state(item, request.user)
 
             is_pl=False
-            if 'pl_sha1' in self.dic and item.sha1 == self.dic['pl_sha1']:
+            if 'pl_id' in self.dic and item.id == self.dic['pl_id']:
                 if state != Answer.NOT_STARTED:
                     self.dic['student_answer'] = Answer.objects.filter(user=request.user, pl=item).order_by('-date')[0].value
                 is_pl = True
-            content = json.loads(item.json)
+            content = item.json
             pl_list.append((item, color[state]+blindness[request.user.pluser.color_blindness], content["title"]))
                 
         context = RequestContext(request)
-        dic = self.__build()
+        dic = self.intern_build()
         context.update(dic)
         context['is_pl'] = is_pl
         context['pl_list'] = pl_list
@@ -97,7 +127,7 @@ class Exercise:
     
     def __get_template(self):
         
-        if 'pl_sha1' in self.dic:
+        if 'pl_id' in self.dic:
             raw = '{% extends "playexo/default_pl_exo.html" %}'+default_load
             for key, block_name in pls_known:
                 if key in self.dic:
@@ -118,10 +148,22 @@ class ExerciseTest(Exercise):
     def __init__(self, pl_dic):
         super().__init__(pl_dic)
     
-    def __build(self):
+    # @timeout_decorator.timeout(5, use_signals=False)
+    def intern_build(self):
         if 'build' in self.dic:
             exec(self.dic['build'], globals())
             return build(self.dic)
+        
+        if 'before' in self.dic:
+            for _key in self.dic: 
+                exec(_key+'=self.dic["'+_key+'"]')
+            exec(self.dic['before'])
+            _var = locals()
+            del _var['self']
+            if '_key' in _var:
+                del _var['_key']
+            return _var
+            
         return self.dic
     
     def __get_template(self): 
@@ -133,7 +175,7 @@ class ExerciseTest(Exercise):
     
     def __get_context(self, request, feedback=None, success=None):
         context = RequestContext(request)
-        dic = self.__build()
+        dic = self.intern_build()
         context.update(dic)
         if success:
             context['success'] = success

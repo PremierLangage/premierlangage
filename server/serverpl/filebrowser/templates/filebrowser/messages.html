@@ -1,0 +1,19 @@
+<div class="row no-margin">
+    <div class=col-md-12>
+        {% for message in messages %}
+            <div id="message" class="alert alert-{% if message.tags == "error" %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissable" {% if not forloop.first %}style="margin-top: -20px"{% endif %}>
+                {% if message.tags == "error" %}
+                    <i class="fas fa-fire"></i>
+                {% elif message.tags == "success" %}
+                    <i class="fas fa-check"></i>
+                {% elif message.tags == "info" %}
+                    <i class="fas fa-bullhorn"></i>
+                {% else %}
+                    <i class="fas fa-exclamation-triangle"></i>
+                {% endif %}
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                &emsp;{{ message|safe }}
+            </div>
+        {% endfor %}
+    </div>
+</div>

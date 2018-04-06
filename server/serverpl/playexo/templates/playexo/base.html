@@ -1,34 +1,31 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
     <head>
-        
-        <!-- Header info -->
-        {% block head %}{% endblock %}
-        
         <!-- Title -->
-        <title>{% block title %}UPEM - PL 2017/2018{% endblock %}</title>
+        <title>{% block title %}UPEM - PL{% endblock %}</title>
         
         <!-- Load the tag library -->
         {% load static %}
         {% block tag %}{% endblock %}
         
         <!-- favicon -->
-        <link rel="shortcut icon" href="{% static 'playexo/favicon.ico' %}" />       
+        <link rel="shortcut icon" href="{% static 'playexo/favicon.ico' %}" />  
         
-        {% block css %}{% endblock %}
-        <script src="{% static 'js/jquery_3.1.1.js' %}" ></script>
-        <link rel="stylesheet" href="{% static '/css/bootstrap_4.css' %}" />
-        <script src="{% static 'js/bootstrap_4.js' %}" ></script>
-        
-        <link rel="stylesheet" href="{% static '/css/bootstrap_3.3.7.css' %}" />
-        <script src="{% static 'js/bootstrap_3.3.7.js' %}" ></script>
-        <link rel="stylesheet" href="{% static 'playexo/css/exo_info.css' %}" />
-        <link rel="stylesheet" href="{% static 'playexo/css/pywims_exos.css' %}">
-        <link rel="stylesheet" href="{% static 'playexo/css/footer.css' %}">
-        <link rel="stylesheet" href="{% static 'css/classmanagement.css' %}" />
+        <!-- CSS -->
+        <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/nav.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/pl.css' %}" />
         <link rel="stylesheet" href="{% static 'css/block_chart.css' %}" />
+        {% block css %}{% endblock %}
+        
+        
+        <!-- JS -->
+        <script src="{% static 'js/jquery_3.1.1.js' %}" ></script>
+        <script src="{% static 'js/tether.min.js' %}" ></script>
+        <script src="{% static 'js/popper.js' %}" ></script>
+        <script src="{% static 'js/bootstrap.js' %}" ></script>
+        <script src="{% static 'js/fontawesome-all.js' %}" ></script>
         {% block header_script %}{% endblock %}
-    
     </head>
     
     <body>
@@ -61,7 +58,6 @@
             {% endblock %}
             
             {% block end_script %}{% endblock %}
-            <script src="{% static 'playexo/js/footer.js' %}"></script> 
         </div>
         <div id="footer">
             <footer class="footer">

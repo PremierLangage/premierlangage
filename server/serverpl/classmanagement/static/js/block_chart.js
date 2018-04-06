@@ -35,7 +35,6 @@ $(document).ready(function(){
   
     function addBlocks(id, noOfBlocks, masterArray, blockArray, nb_line, div_height){
         blindness = "";
-        console.log(masterArray[0][2])
         if (masterArray[0][2] === "PR")
             blindness = "-protanopia";
         else if (masterArray[0][2] === "TR")

@@ -4,13 +4,12 @@ mkdocs build
 cd -
 
 if [ -d documentation/static/ ]; then
-    rm -R documentation/static/
+    rm -Rf documentation/static/
 fi
 
 mkdir -p documentation/static/documentation
 
-mv documentation/templates/documentation/doc/css documentation/static/documentation/css
-mv documentation/templates/documentation/doc/js documentation/static/documentation/js
-mv documentation/templates/documentation/doc/fonts documentation/static/documentation/fonts
-mv documentation/templates/documentation/doc/img documentation/static/documentation/img
-mv documentation/templates/documentation/doc/images documentation/static/documentation/images
+cp -r documentation/mkdocs/custom/css documentation/static/documentation/css
+cp -r documentation/mkdocs/custom/js documentation/static/documentation/js
+cp -r documentation/mkdocs/custom/fonts documentation/static/documentation/fonts
+cp -r documentation/mkdocs/custom/img documentation/static/documentation/img

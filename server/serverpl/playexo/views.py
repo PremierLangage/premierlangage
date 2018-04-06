@@ -18,7 +18,7 @@ from django.contrib.auth import logout
 from django.urls import reverse
 from django.contrib import messages
 
-from gitload.models import PLTP, PL
+from loader.models import PLTP, PL
 
 from playexo.exercise import Exercise, ExerciseTest
 from playexo.builder import PythonBuilder, PythonBuilderTest
@@ -43,7 +43,7 @@ def activity_view(request):
     else:
         activity = get_object_or_404(Activity, id=activity_id)
     
-    dic = json.loads(activity.pltp.json)
+    dic = activity.pltp.json
     if "strategy" in dic:
         request.session["test_strategy"] = True
         try:
@@ -106,7 +106,7 @@ def test_receiver(request, activity_name, pltp_sha1):
 
 @login_required
 @csrf_exempt
-def try_pl(request, pl=None, warning=None):
+def try_pl(request, pl=None, warnings=list()):
     with evaluate(False):
         exercise = request.session.get('exercise', None)
     success = None
@@ -114,8 +114,9 @@ def try_pl(request, pl=None, warning=None):
     
     if pl:
         messages.success(request, "Le PL <b>"+pl.name+"</b> a bien été chargé.")
-        messages.warning(request, warning)
-        messages.error(request, "Attention, ceci est une session de test, les réponses ne seront pas enregistrer après la fermeture de la fenêtre (Pensez à copier/coller).")
+        for item in warnings:
+            messages.warning(request, item)
+        messages.info(request, "Attention, ceci est une session de test, les réponses ne seront pas enregistrer après la fermeture de la fenêtre (Pensez à copier/coller).")
     
     if not exercise:
         pl_dic = pl.json
@@ -131,7 +132,9 @@ def try_pl(request, pl=None, warning=None):
             pass
         if status and status['requested_action'] == 'submit' :
             success, feedback = exercise.evaluate(status['inputs'])
-            if (success):
+            if (success == None):
+                feedback_type = "info"
+            elif success:
                 feedback_type = "success"
             else:
                 feedback_type = "failed"

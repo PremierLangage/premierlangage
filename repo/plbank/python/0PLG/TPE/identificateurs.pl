@@ -137,6 +137,7 @@ __truc__
 
 
 
-evaluator=@ /pysrc/functions/sandboxevaluator.py
+
 
 form=@ /python/form/editorform.html
+

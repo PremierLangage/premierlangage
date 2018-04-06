@@ -19,13 +19,23 @@ text==
 ==
 
 evaluator==
-def evaluator(response, dic):
-    if int(response['answer']) == dic["op1"] + dic["op2"]:
-        return True, "Bonne réponse"
-    return False, "Mauvaise réponse"
+if int(response['answer']) == op1 + op2:
+    grade = (True, "Bonne réponse")
+else:
+    grade = (False, "Mauvaise réponse")
 ==
 
-build==
+before==
+import random
+random.seed(seed)
+op1 = random.randint(0, 100)
+op2 = random.randint(0, 100)
+==
+
+
+
+
+buildX==
 import random
 def build(dic):
     random.seed(dic["seed"])
@@ -33,3 +43,9 @@ def build(dic):
     dic["op2"] = random.randint(0, 100)
     return dic
 ==
+
+
+
+
+
+

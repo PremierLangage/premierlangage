@@ -1,34 +1,41 @@
 # Écriture d'une Fonction d'Évaluation
 
-La fonction *evaluator()* est la fonction qui sera appelé avec la réponse de l'élève afin de la corriger.
+La clé **evaluator** contient le script qui sera appelée avec la réponse de l'élève afin de le corriger.
 
-La fonction étant déclarer en **python 3**, il est nécessaire d'avoir des connaissances en python.
+Ce script étant déclarer en **python 3**, il est nécessaire d'avoir des connaissances en python.
 
-La fonction *evaluator()*, reçoit, en plus de la réponse de l'élève, le dictionnaire de l'exercice après un passage par la fonction [*build()*](./build.html), et peut donc se servir de l'ensemble des variables déclarées/créées afin de corriger l'élève.
+
+Le script **evalutor** permet d'évaluer la réponse d'un utilisateur à l'exercice.
+Pour cela est défini un dictionnaire  **response** contenant tout les éléments de réponse de l'élève. 
+
+Toutes les clefs de l'exercice (y compris les celles créer par **build**) sont acessibles comme des variables locales dans l'evaluator. 
+
 
 ## Les Bases
-La fonction *evaluator()* doit être écrit en **python 3** et respecter un prototype précis:
-```python
-def evaluator(reponse, dic):
-    [...]
-    return [True/False], feedback
-```
 
-Où *réponse* est le dictionaire contenant l'ensemble des réponses (voir [Écrire un Formulaire](./formulaire.html)), et *dic* est le dictionnaire de l'exercice qui contient donc l'ensemble des variables déclaré dans le fichier PL associé.
+Pour fournir l'évaluation à la plateforme 
+Le script doit définir un itérable (tuple, list...) appelé ***grade***.
+Cet itérable doit contenir deux élement:
 
-La fonction doit retourner un tuple contenant un booléen indiquant la réussite de l'élève ainsi qu'un *feedback* qui sera affiché à l'élève (en vert si le booléen est Vrai, rouge si Faux).
+* fraction : L'élève à réussi (1 à 100) ou échoué (0) l'exercice. Affiche d'une information, abandon, problèmes, etc (négatif).
+* feedback : String contenant le feedback de l'évaluation qui sera affiché à l'élève (ou l'information pour négatif).
 
-Elle doit être déclarée dans le PL grâce à la clé *evaluator*:
+Ce script doit être déclaré dans le PL grâce à la clé **evaluator**, dans l'exemple suivant l'exercice demande une réponse simple
+la réponse de l'élève est stocker dans response['answer'] (voire l'input dans la balise form voir [formulaire](./formulaire/),
+la bonne réponse à été placéé directement dans l'énoncé du pl ou placée par *build* :
 ```python
 evaluator==
-def evaluator(reponse, dic):
-    [...]
-    return [True/False], feedback
+if response['answer'] == answer:
+    grade = (True, "Bonne réponse")
+else:
+    grade = (False, "Mauvaise réponse)
 ==
 ```
+
+<i class="fas fa-exclamation-triangle"></i> **Attention :** Il est important de faire attention au nom donné aux variables, celles-ci pouvant écraser les clés du PL, il est donc possible d'écraser des clés importantes (telle que *form*) par mégarde.
 
 ## Modules et Fonctions Secondaires
-N'importe quel module, (excepté *os* et *sys*) peut être importé avant la déclaration de build, de même, plusieurs fonctions annexes peuvenr être déclarées avant la fonction *evaluator()* et être appelée par celle-ci:
+N'importe quel module peut être importé dans le script, de même, plusieurs fonctions annexes peuvent être déclarées et être appelée par celui-ci. Par exemple, avec un PL déclarant un **n** aléatoire et l'élève devant donner la racine carré de ce **n**:
 ```python
 evaluator==
 import math
@@ -36,75 +43,19 @@ import math
 def is_sqrt(i, j):
     return math.pow(i,2) == j
 
-def evaluator(reponse, dic):
-    if is_sqrt(reponse['answer'], int(dic['n'])):
-        return True, "Bonne réponse"
-    else:
-        return False, "Mauvaise réponse, "+str(reponse['answer'])+"*"+str(reponse['answer'])+" = "+str(reponse['answer']**2)+ " et non"+ dic['n']+"."
+try:
+    if is_sqrt(int(reponse['square']), n):
+        grade = (True, "Bonne réponse")
+    else
+        grade = (False, "Mauvaise Réponse")
+except:
+    grade = (None, "Merci de rentrer un entier")
 ==
 ```
 
-## Fonctions d'Évaluation Avancées
+Il est important de noter que les fonctions et les modules sont aussi des variables en python, il faut donc encore une fois faire attention au nom utilisé.
 
-Il est ausi possible de déclarer/écraser des clés de l'exercice dans l'évaluator. Cela peut par exemple être utile si on veut par exemple modifié le formulaire de réponse (surligné des champs en vert/rouge, ajouté des indices, etc...). 
 
-```python
-evaluator==
-import math
+## Exercice de Programmation
 
-form_fail = """
-<div class="input-group">
-    <red><span class="input-group-addon">Réponse</span></red>
-    <input id="form_txt_answer" type="number" class="form-control" placeholder="" required>
-</div>
-"""
-
-def is_sqrt(i, j):
-    return math.pow(i,2) == j
-
-def evaluator(reponse, dic):
-    if is_sqrt(reponse['answer'], int(dic['n'])):
-        return True, "Bonne réponse"
-    else:
-        dic['form'] = form_fail
-        return False, "Mauvaise réponse, "+str(reponse['answer'])+"*"+str(reponse['answer'])+" = "+str(reponse['answer']**2)+ " et non"+ dic['n']+"."
-==
-```
-
-## Exemples
-Voici divers exemples de fonction *evaluator()*:
-
-#### Vrai / Faux
-```python
-evaluator==
-def evaluator(reponse, dic):
-    if (str(dic['answer']) == reponse['answer']):
-        return True, str(dic['feedback_correct'])
-    return False, str(dic['feedback_wrong'])
-==
-```
-
-#### QCM
-```python
-evaluator==
-def evaluator(reponse, dic):
-    if not 'answer' in reponse:
-        return False, "Merci de cocher au moins une case"
-    if len(reponse['answer']) == len(dic['answer']):
-        for answer in dic['answer']:
-            if not answer in reponse['answer']:
-                return False, "Réponse incorrect"
-        return True, "Bonne réponse"
-    return False, "Réponse incorrect"
-==
-```
-
-#### Match
-```python
-evaluator==
-def evaluator(reponse, dic):
-    if (reponse == dic['answer']):
-        return True, "Bien joué"
-    return False, "Mauvais matching"
-==
-```
+Pour les exercice de programmation, il ne faut pour l'instant fournir aucun evaluator, le plateforme effectuera la correction d'elle même.

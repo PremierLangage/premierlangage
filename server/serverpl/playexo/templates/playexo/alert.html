@@ -11,24 +11,20 @@
     dans la vue correspondante.
 {% endcomment %}
 
-<div class="row">
-    <div class=col-md-2></div>
-    <div class=col-md-8>
-        {% for message in messages %}
-            <div id="message" class="alert alert-{{ message.tags }} alert-dismissable" style="margin-top: -20px">
-                {% if message.tags == "danger" %}
-                    <span class="glyphicon glyphicon-fire"></span>
-                {% elif message.tags == "success" %}
-                    <span class="glyphicon glyphicon-ok"></span>
-                {% elif message.tags == "info" %}
-                    <span class="glyphicon glyphicon-bullhorn"></span>
-                {% else %}
-                    <span class="glyphicon glyphicon-alert"></span>
-                {% endif %}
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                &emsp;{{ message|safe }}
-            </div>
-        {% endfor %}
-    </div>
-    <div class=col-md-2></div>
+<div class="container">
+    {% for message in messages %}
+        <div id="message" class="alert alert-{{ message.tags }} alert-dismissable" style="margin-top: -20px">
+            {% if message.tags == "danger" %}
+                <i class="fas fa-fire"></i>
+            {% elif message.tags == "success" %}
+                <i class="fas fa-check"></i>
+            {% elif message.tags == "info" %}
+                <i class="fas fa-bullhorn"></i>
+            {% else %}
+                <i class="fas fa-exclamation-triangle"></i>
+            {% endif %}
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            &emsp;{{ message|safe }}
+        </div>
+    {% endfor %}
 </div>

@@ -162,7 +162,7 @@ class Grader:
         return True
 
     def inputsoluce(self):
-        if  not "soluceX" in self.pld:
+        if  not "soluce" in self.pld:
             return False
         si="input0"
         i= 0
@@ -264,6 +264,9 @@ class Grader:
         input/soluce
         pltest
         """
+        if "soluce" in  self.pld:
+            with open("soluce.py","w") as sol:
+                 print(self.pld["soluce"],file=sol)
         if self.direct():
             return self.doOutput()
         elif not self.compilestudent():

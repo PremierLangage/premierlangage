@@ -40,13 +40,13 @@ ADMINS = [
 
 # Application definition
 INSTALLED_APPS = [
-    'gitload',
+    'filebrowser',
     'playexo',
+    'loader',
     'classmanagement',
     'sandbox',
     'documentation',
     'markdown_deux',
-    'bootstrap3',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -203,7 +203,7 @@ LOGGING = {
             'handlers': ['console', 'syslog', 'mail_admins'],
             'level': 'INFO',
         },
-        'gitload':{
+        'filebrowser':{
             'handlers': ['console', 'syslog', 'mail_admins'],
             'level': 'INFO',
         },
@@ -246,6 +246,21 @@ USE_L10N = True
 USE_TZ = True
 
 
+# Celery application definition
+# http://docs.celeryproject.org/en/v4.0.2/userguide/configuration.html
+#from celery.schedules import crontab
+#CELERY_RESULT_BACKEND = 'amqp://'
+#CELERY_BROKER_URL = 'amqp://'
+#CELERY_ACCEPT_CONTENT = ['application/json']
+#CELERY_RESULT_SERIALIZER = 'json'
+#CELERY_TASK_SERIALIZER = 'json'
+#CELERY_TIMEZONE = 'Europe/Paris'
+#CELERY_BEAT_SCHEDULE = {
+    #'task-number-one': {
+        #'task': 'loader.tasks.load_pl_and_pltp_extensions',
+        #'schedule': crontab(minute=10)
+    #},
+#}
 
 
 # Static files (CSS, JavaScript, Images)
@@ -266,4 +281,7 @@ PYSRCDIR = os.path.dirname(PROJECT_DIR + "/../pysrc/")
 if not PYSRCDIR in sys.path:
     sys.path.append(PYSRCDIR)
 
-DIRREPO = REPO_ROOT # TODO: replace every occurence of DIRREPO with REPO_ROOT
+FILEBROWSER_ROOT = REPO_ROOT
+
+PARSERS_ROOT = os.path.join(PROJECT_DIR,'../loader/parsers/')
+PARSERS_MODULE = 'loader.parsers'

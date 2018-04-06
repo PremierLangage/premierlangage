@@ -1,0 +1,29 @@
+<html>
+    
+    <head>
+        {% load static %}
+        <link rel="stylesheet" href="{% static '/css/filebrowser.css' %}" />
+    </head>
+
+    <body>
+        <h1>{{ filename }}</h1>
+        <hr/>
+        <div class="autoscroll">
+            <table class="filecontent">
+                <tbody>
+                    {% for line in file %}
+                        <tr>
+                            <th class="line-num">
+                                {{ forloop.counter }}
+                            </th>
+                            <td class="line-code">
+                                <pre class="line no-margin">{{ line }}</pre>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </body>
+
+</html>

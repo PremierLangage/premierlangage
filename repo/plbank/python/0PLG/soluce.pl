@@ -14,13 +14,11 @@ g=Grader()
 print(g.grade())
 ==
 
-sandbox=@/pysrc/src/__init__.py
-sandbox=@/pysrc/src/plgrader.py
-sandbox=@/pysrc/src/feedback.py
-sandbox=@/pysrc/src/plutils.py
-files=@/pysrc/src/__init__.py
-files=@/pysrc/src/plgrader.py
-files=@/pysrc/src/feedback.py
+@/pysrc/src/__init__.py
+@/pysrc/src/plgrader.py
+@/pysrc/src/feedback.py
+@/pysrc/src/plutils.py
+
 
 type=sandbox
 
@@ -30,9 +28,11 @@ build==
 def build(bob):
     return bob
 ==
-# un évaluateur de base qui fait appel à la sandbox
-evaluator=@ /pysrc/functions/sandboxevaluator.py
+
+
 
 
 # une interface standard d'exercice avec un editeur pour la réponse
 form=@ /python/form/editorform.html
+
+

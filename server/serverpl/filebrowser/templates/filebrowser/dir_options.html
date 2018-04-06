@@ -1,0 +1,39 @@
+{% load filebrowser_filter %}
+
+{% if fb.directory %}
+    <div class="dropdown">
+        <button class="btn btn-secondary btn-dir-options dropdown-toggle" type="button" data-toggle="dropdown">
+            <i class="fas fa-cog"></i>
+        </button>
+        <ul class="dropdown-menu no-padding">
+            <div class="btn-group-vertical btn-block" role="group" aria-label="Directory Options">
+                {% for option in fb.directory_options %}
+                    {% if option|opt_filter:fb.relative %}
+                        {% if option.authorization == 'write' and fb.directory|can_write:request.user or option.authorization == 'read' and fb.directory|can_read:request.user or option.authorization == 'owner' and fb.directory.owner == request.user %}
+                            <{{ option.type }}
+                                type="button" class="btn btn-{{ option.outline }}{{ option.color }}" title="{{ option.text }}"
+                                {% if not option.form and option.require_confirmation %}
+                                    data-toggle="modal" data-target="#confirmationModalDir{{forloop.counter0}}" 
+                                {% endif %}
+                                {% if option.form %}
+                                    data-toggle="modal" data-target="#defaultModalDir{{forloop.counter0}}"
+                                {% endif %}
+                                {% if option.method == 'GET' %}
+                                    href="apply_option/?option_h={{forloop.counter0}}&relative_h={{fb.relative}}&type_h=directory&name_h={{fb.directory.name}}"
+                                {% endif %}
+                                >
+                                <i class="{{ option.fa_icon }} fa-fw"></i>&emsp; {{ option.text }}
+                            </{{ option.type }}>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </ul>
+    </div>
+{% else %}
+    <button class="btn btn-secondary btn-dir-options" data-toggle="modal" data-target="#newDirModal">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    {% include 'filebrowser/new_dir_modal.html' %}
+{% endif %}

@@ -1,0 +1,71 @@
+@font-face {
+  font-family: Aller;
+  src: url('../fonts/Aller_Rg.ttf');
+}
+
+.body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    min-height: 100%;
+}
+
+.header-nav {
+    min-height: 130px;
+}
+
+.fixmenu {
+    width: 100%;
+    height: 94px;
+    margin: 0 auto;
+    top: 0;
+    background: #C5C1B7 none repeat scroll 0 0;
+}
+
+.navbar-brand {
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 24px;
+    color: white;
+    font-family: Aller;
+    margin-right: 2rem;
+} 
+
+.navbar-brand:hover {
+    text-decoration: none;
+    color: white;
+}
+
+.navbar-collapse {
+    text-decoration: none;
+    font-size: 18px;
+    line-height: initial;
+    font-family: Aller;
+}
+
+li {
+    font-size: initial;
+    line-height: 20px;
+}
+.nav-item {
+    margin-right: 10px;
+}
+
+.nav-link {
+    text-decoration: none;
+    font-family: Aller;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.nav-link:hover {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.dropdown-menu {
+    left: -76px;
+}
+
+.nav-img {
+    margin-right: 20px;
+}

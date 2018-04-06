@@ -4,28 +4,25 @@
 <head>
 <title>{% block title %}{% endblock %}</title>
 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-
 <!-- Load the tag library -->
-{% load bootstrap3 %}
 {% load static %}
 {% block tag %}{% endblock %}
 
-<!-- Load CSS and JavaScript for Bootstrap-->
-{% bootstrap_css %}
-{% bootstrap_javascript %}
+
+<!-- favicon -->
+<link rel="shortcut icon" href="{% static 'playexo/favicon.ico' %}" />  
 
 <!-- Loading CSS and JS -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-{% block header_script %}{% endblock %}
-{% block css %}{% endblock %}
-<link rel="stylesheet" href="{% static 'playexo/css/exo_info.css' %}" />
-<link rel="stylesheet" href="{% static 'css/classmanagement.css' %}" />
-<link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "admin/css/base.css" %}{% endblock %}" />
+
+<script src="{% static 'js/jquery_3.1.1.js' %}" ></script>
+<script src="{% static 'js/tether.min.js' %}" ></script>
+<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+<script src="{% static 'js/bootstrap.js' %}" ></script>
+<script src="{% static 'js/fontawesome-all.js' %}" ></script>
+
+
+<link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static 'admin/css/base.css' %}{% endblock %}" />
+<link rel="stylesheet" href="{% static 'css/nav.css' %}" />
 
 {% block extrastyle %}{% endblock %}
 {% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}" />{% endif %}

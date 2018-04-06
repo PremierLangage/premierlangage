@@ -1,0 +1,59 @@
+{% load filebrowser_filter %}
+
+{% for entry in fb.list %}
+    <tr>
+        <td style="width: 20%{% if entry.path|isdir %};cursor: pointer;" onclick="window.location='?cd={{ fb.relative }}/{{ entry.name }}';"{% else %};{%endif%}>
+            &emsp;<i class="{{ entry.path|icon }}"></i>&emsp;{{ entry.name }}
+        </td>
+        <td>
+            <div class="btn-group" role="group" aria-label="Entry Options Big">
+                {% for option in fb.entry_options %}
+                    {% if option|opt_filter:entry.path and option.size == "big" %}
+                        {% if option.authorization == 'write' and fb.directory|can_write:request.user or option.authorization == 'read' and fb.directory|can_read:request.user or option.authorization == 'owner' and fb.directory|is_owner:request.user %}
+                            <{% if option.authorization == 'write' and not fb.directory|can_write:request.user or option.authorization == 'read' and not fb.directory|can_read:request.user or option.authorization == 'owner' and not fb.directory.owner == request.user %}button{% else %}{{ option.type }}{% endif %}
+                                type="button" class="btn btn-{{ option.outline }}{{ option.color }}" title="{{ option.text }}"
+                                {% if not option.form and option.require_confirmation %}
+                                    data-toggle="modal" data-target="#confirmationModal{{forloop.parentloop.counter0}}_{{forloop.counter0}}"
+                                {% endif %}
+                                {% if option.form %}
+                                    data-toggle="modal" data-target="#defaultModal{{forloop.parentloop.counter0}}_{{forloop.counter0}}"
+                                {% endif %}
+                                {% if option.method == 'GET' %}
+                                    href="apply_option/?option_h={{forloop.counter0}}&name_h={{entry.name}}&relative_h={{fb.relative}}&type_h=entry"
+                                {% endif %}
+                                {% for elem in option.balise %} {{ elem }} {% endfor %}
+                                >
+                                <i class="{{ option.fa_icon }} fa-fw"></i> {{ option.text}}
+                            </{{ option.type }}>
+                            {% if not option.form and option.require_confirmation %}{% include 'filebrowser/confirmation_modal.html' %}{% endif %}
+                            {% if option.form %}{% include 'filebrowser/default_modal.html' %}{% endif %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                {% for option in fb.entry_options %}
+                    {% if option|opt_filter:entry.path and option.size == "small" %}
+                        {% if option.authorization == 'write' and fb.directory|can_write:request.user or option.authorization == 'read' and fb.directory|can_read:request.user or option.authorization == 'owner' and fb.directory|is_owner:request.user %}
+                            <{% if option.authorization == 'write' and not fb.directory|can_write:request.user or option.authorization == 'read' and not fb.directory|can_read:request.user or option.authorization == 'owner' and not fb.directory.owner == request.user %}button{% else %}{{ option.type }}{% endif %}
+                                type="button" class="btn btn-{{ option.outline }}{{ option.color }}" title="{{ option.text }}"
+                                {% if not option.form and option.require_confirmation %}
+                                    data-toggle="modal" data-target="#confirmationModal{{forloop.parentloop.counter0}}_{{forloop.counter0}}"
+                                {% endif %}
+                                {% if option.form %}
+                                    data-toggle="modal" data-target="#defaultModal{{forloop.parentloop.counter0}}_{{forloop.counter0}}"
+                                {% endif %}
+                                {% if option.method == 'GET' %}
+                                    href="apply_option/?option_h={{forloop.counter0}}&name_h={{entry.name}}&relative_h={{fb.relative}}&type_h=entry"
+                                {% endif %}
+                                {% for elem in option.balise %} {{ elem }} {% endfor %}
+                                >
+                                <i class="{{ option.fa_icon }} fa-fw"></i>
+                            </{{ option.type }}>
+                            {% if not option.form and option.require_confirmation %}{% include 'filebrowser/confirmation_modal.html' %}{% endif %}
+                            {% if option.form %}{% include 'filebrowser/default_modal.html' %}{% endif %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </td>
+    </tr>
+{% endfor %}

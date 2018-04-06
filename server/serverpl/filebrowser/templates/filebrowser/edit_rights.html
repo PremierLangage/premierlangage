@@ -1,0 +1,40 @@
+{% extends "classmanagement/base.html" %}
+
+{% load static %}
+
+{% block header_script %}
+    <script src="{% static 'js/jquery-3.3.1.js' %}" ></script>
+    <script src="{% static 'js/bootstrap.js' %}" ></script>
+    <script src="{% static 'js/fontawesome-all.js' %}" ></script>
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static '/css/bootstrap.css' %}" />
+    <link rel="stylesheet" href="{% static '/css/filebrowser.css' %}" />
+{% endblock %}
+
+{% block content %}
+    <div class="row no-margin">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <h1>Editing {{ directory }}'s rights</h1>
+            <hr/>
+            <form action="/filebrowser/edit_rights/" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="directory" value="{{ directory }}"/>
+                {{ form.as_p }}
+                <hr/>
+                <center>
+                    <a type="button" class="btn btn-warning" href="/filebrowser">
+                        <i class="fas fa-times"></i>&emsp; Cancel
+                    </a>
+                    &emsp;
+                    <button class="btn btn-primary" type="submit">
+                        <i class="fas fa-save"></i>&emsp; Save
+                    </button>
+                </center>
+            </form> 
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+{% endblock %}
