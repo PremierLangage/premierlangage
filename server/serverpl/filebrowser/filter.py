@@ -32,13 +32,12 @@ def is_not_directory_object(path):
 
 
 def is_remote(path):
-    if FILEBROWSER_ROOT in path:
-        path = path.replace(FILEBROWSER_ROOT, '')
+    path = path if FILEBROWSER_ROOT not in path else path.replace(FILEBROWSER_ROOT+'/', '')
     parts = path.split('/')
-    
+
     directory = None
     try:
-        directory = Directory.objects.get(name=parts[2])
+        directory = Directory.objects.get(name=parts[1])
     except:
         pass
     return True if directory and directory.remote else False

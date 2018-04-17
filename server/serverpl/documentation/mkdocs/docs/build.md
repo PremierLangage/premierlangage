@@ -1,10 +1,12 @@
 # Écriture d'un Build
 
-Le script *before* permet de rajouter à l'exercice des variables ne pouvant être ajoutées par la syntaxe PL : des listes, nombres aléatoires, objet python, etc...
+Dans l'exercice pl si l'on souhaite utiliser un build, il faut soit déclarer une fonction **build** dans une balise **build** soit déclarer un script dans la balise *before*.
 
-Ce script étant déclarer en **python 3**, il est nécessaire d'avoir des connaissances en python.
+Ce script doit être écrit en **python 3**, il est nécessaire d'avoir des connaissances en python, proportionelles à vos objectifs.
 
-Chacune des variables déclarées dans le script sera alors disponible dans le [formulaire](./formulaire/) et l'[évaluateur](./evaluator/).
+L'intéret du script **before** ou de la fonction **build** est de pouvoir modifier l'exercice avant qu'il soit présenté à l'élève.
+
+En particulier le script *before* permet d'ajouter de l'aléatoire dans les valeurs numérique ou dans l'énoncé, enfin il permet de déclarer des variables accessibles dans le [formulaire](./formulaire/) et l'[évaluateur](./evaluator/).
 
 ## Les Bases
 
@@ -32,9 +34,11 @@ La clé *titre* du PL vaut maintenant *Nouveau titre*.
 <i class="fas fa-exclamation-triangle"></i> **Attention :** Il est important de faire attention au nom donné aux variables, celles-ci pouvant écraser les clés du PL, il est donc possible d'écraser des clés importantes (telle que *form*) par mégarde.
 
 
-
 ## Modules et Fonctions Secondaires
-N'importe quel module peut être importé avant la déclaration de before, de même, plusieurs fonctions annexes peuvent être déclarées dans le script *build* et être appelée par celui-ci:
+N'importe quel module installé peut être importé avant la déclaration de before, de même, plusieurs fonctions annexes peuvent être déclarées dans le script *build* et être appelée par celui-ci:
+
+	Instalation de modules suplémentaire.
+	Le fichier server/serverpl/additionalrequirements.txt contient les modules suplémentaires spécifiques à votre instalation. 
 
 ```python
 import time

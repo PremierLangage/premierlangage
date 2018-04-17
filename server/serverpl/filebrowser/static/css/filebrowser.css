@@ -65,3 +65,7 @@
     font-family: Consolas, Menlo, "Liberation Mono", Courier, monospace;
     font-size: 12px;
 }
+
+.btn-dir {
+    text-align: left;
+}

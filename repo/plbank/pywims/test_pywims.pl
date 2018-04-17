@@ -4,6 +4,8 @@ title=Premier PyWims
 template=/pywims/pywims_template.pl
 
 before==
+import math, random
+from sympy import *
 # random.randint(4,7) est un entier aléatoire choisi parmi 4, 5, 6, 7
 n = random.randint(4,7)
 m = random.randint(4,7)
@@ -41,7 +43,7 @@ choix_reponse = ['Choisir', 'oui', 'non']
 
 form==
 La matrice  
-$$ {{ A }} $$
+$% {{ A }} %$
  est-elle échelonnée ? 
 {% input_select 'reponse' choix_reponse %}
 ==
@@ -53,8 +55,15 @@ if reponse == bonne_reponse :
 if reponse != bonne_reponse :
     success = False
     feedback = 'Mauvaise réponse, recommencez'
+
+grade=(sucess,feedback)
+
 ==
 
 feedback==
 {{ feedback }}
 ==
+
+
+
+

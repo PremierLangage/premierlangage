@@ -24,7 +24,7 @@
 
 import os
 
-from os.path import basename, join
+from os.path import basename, join, dirname
 
 from django.shortcuts import render, redirect, reverse
 from django.contrib import messages
@@ -34,6 +34,7 @@ from django.http import HttpResponseBadRequest, HttpResponseNotAllowed
 from filebrowser.filebrowser import Filebrowser
 from filebrowser.models import Directory
 from filebrowser.filebrowser_option import ENTRY_OPTIONS, DIRECTORY_OPTIONS
+from filebrowser.utils import redirect_fb
 
 from serverpl.settings import FILEBROWSER_ROOT
 
@@ -41,19 +42,9 @@ from serverpl.settings import FILEBROWSER_ROOT
 
 def index(request):
     if request.method == 'GET':
-        path = request.GET.get('cd', '')
-        if path != '':
-            request.method = None
-            request.session['FB_CD_GET_PATH'] = path
-            return redirect(reverse(index))
+        path = request.GET.get('cd', '.')
     
-    path = request.session.get('FB_CD_GET_PATH', '.')
-    if path != '.': 
-        del request.session['FB_CD_GET_PATH']
-        
-    fb = Filebrowser(path=path)
-    
-    return render(request, 'filebrowser/filebrowser.html', {'fb': fb})
+    return render(request, 'filebrowser/filebrowser.html', {'fb': Filebrowser(path=path)})
 
 
 
@@ -66,11 +57,9 @@ def apply_option_get(request):
     option = request.GET.get('option_h', None)
     typ = request.GET.get('type_h', None)
     
-    
     if not (name and path and option and typ):
         return HttpResponseBadRequest()
     
-    request.session['FB_CD_GET_PATH'] = path
     if typ == 'directory':
         path = '.'
     fb = Filebrowser(path=path)
@@ -84,7 +73,7 @@ def apply_option_get(request):
     except Exception as e:
         messages.error(request, "Impossible to apply the option "+str(option)+" : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e))
     
-    return redirect(reverse(index))
+    return redirect_fb(path)
 
 
 
@@ -100,20 +89,19 @@ def apply_option_post(request):
     if not (name and path and option and typ):
         return HttpResponseBadRequest()
     
-    request.session['FB_CD_GET_PATH'] = path
     if typ == 'directory':
         path = '.'
     fb = Filebrowser(path=path)
     
     try:
         if typ == "entry":
-            return ENTRY_OPTIONS[int(option)].process_option(request, fb, name)
+            return ENTRY_OPTIONS[int(option)].process_option(request, fb, name, )
         else:
             return DIRECTORY_OPTIONS[int(option)].process_option(request, fb, name)
     except Exception as e:
         messages.error(request, "Impossible to apply the option "+option+" : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e))
     
-    return redirect(reverse(index))
+    return redirect_fb(path)
 
 
 
@@ -146,7 +134,8 @@ def new_directory(request):
         os.mkdir(join(FILEBROWSER_ROOT,name))
         Directory(name=name, owner=request.user).save()
         messages.success(request, "Directory '" + name + "' successfully created.")
-    return redirect(reverse(index))
+    
+    return redirect_fb()
 
 
 
@@ -167,7 +156,30 @@ def edit_receiver(request):
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT, "")
         messages.error(request, msg)
-    return redirect(reverse(index))
+    
+    return redirect_fb(dirname(path))
+
+
+
+def new_file_receiver(request):
+    if not request.method == 'POST':
+        return HttpResponseNotAllowed(['POST'])
+        
+    content = request.POST.get('content', '')
+    path = request.POST.get('path', '')
+    
+    try:
+        if content:
+            with open(path, 'w+') as f:
+                print(content, file=f)
+        messages.success(request, "File '"+basename(path)+"' successfully created")
+    except Exception as e:
+        msg = "Impossible to modify '"+basename(path)+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        if FILEBROWSER_ROOT in msg:
+            msg = msg.replace(FILEBROWSER_ROOT, "")
+        messages.error(request, msg)
+    
+    return redirect_fb(dirname(path))
 
 
 

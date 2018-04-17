@@ -120,9 +120,9 @@ ENTRY_OPTIONS = [
 
 DIRECTORY_OPTIONS = [
     FilebrowserOption("fas fa-pencil-alt",  "Rename",        rename_option,   form=RenameForm, authorization=OWNER),
-    FilebrowserOption("fas fa-unlock-alt",  "Edit access rights", rights_option, method=GET, authorization=OWNER),
     FilebrowserOption("fas fa-folder",      "New directory", mkdir_option,    form=RenameForm),
-    FilebrowserOption("fas fa-upload",      "Upload File  ", upload_option,    form=UploadForm),
+    FilebrowserOption("fas fa-edit",        "New PL",        new_pl_option,   form=RenameForm),
+    FilebrowserOption("fas fa-upload",      "Upload File  ", upload_option,   form=UploadForm),
     FilebrowserOption("fas fa-download",    "Download",      download_option, method=GET, authorization=READ),
     FilebrowserOption("fas fa-plus",        "Add & Commit",  add_commit_option, form=AddCommitForm, color=GREEN, filter=is_remote),
     FilebrowserOption("fas fa-info-circle", "Status",        status_option, color=LIGHT_BLUE, filter=is_remote, method=GET),

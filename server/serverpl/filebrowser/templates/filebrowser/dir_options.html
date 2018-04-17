@@ -11,7 +11,7 @@
                     {% if option|opt_filter:fb.relative %}
                         {% if option.authorization == 'write' and fb.directory|can_write:request.user or option.authorization == 'read' and fb.directory|can_read:request.user or option.authorization == 'owner' and fb.directory.owner == request.user %}
                             <{{ option.type }}
-                                type="button" class="btn btn-{{ option.outline }}{{ option.color }}" title="{{ option.text }}"
+                                type="button" class="btn btn-dir btn-{{ option.outline }}{{ option.color }}" title="{{ option.text }}"
                                 {% if not option.form and option.require_confirmation %}
                                     data-toggle="modal" data-target="#confirmationModalDir{{forloop.counter0}}" 
                                 {% endif %}
@@ -22,7 +22,7 @@
                                     href="apply_option/?option_h={{forloop.counter0}}&relative_h={{fb.relative}}&type_h=directory&name_h={{fb.directory.name}}"
                                 {% endif %}
                                 >
-                                <i class="{{ option.fa_icon }} fa-fw"></i>&emsp; {{ option.text }}
+                                <i class="{{ option.fa_icon }} fa-fw"></i>&emsp;{{ option.text }}
                             </{{ option.type }}>
                         {% endif %}
                     {% endif %}

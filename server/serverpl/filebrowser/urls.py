@@ -33,5 +33,6 @@ urlpatterns = [
     url(r'^apply_option/post$', views.apply_option_post),
     url(r'^apply_option/$', views.apply_option_get),
     url(r'^edit_file/$', views.edit_receiver),
+    url(r'^new_file/$', views.new_file_receiver),
     url(r'^edit_rights/$', views.right_edit),
 ]

@@ -31,7 +31,9 @@ pip3 install -r requirements.txt || { echo>&2 "ERROR: pip3 install -r requiremen
 echo "Done !"
 
 #Getting release settings.py
+echo "creating setting and secret key"
 cp -f serverpl/install/settings_release.py serverpl/settings.py
+python3 serverpl/genkey.py >>settings.py
 
 #Creating documentation
 echo ""

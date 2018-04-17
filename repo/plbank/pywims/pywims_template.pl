@@ -122,5 +122,8 @@ def evaluator(reponse, dic):
     feedback = Template(dic['feedback']).render(Context(for_template(dic)))
 
     return dic["success"], feedback
+
+grade=evaluator(reponse,locals())
 ==
+
 

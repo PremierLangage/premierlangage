@@ -20,16 +20,12 @@
             <h1>Editing {{ filename }}</h1>
             <hr/>
             <div id="editor" style="height: 400px;">{{ file_content }}</div>
-            <form action="/filebrowser/edit_file/" method="post">
+            <form action="{{ action }}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="content" style="display: none;"/>
                 <input type="hidden" name="path" value="{{ filepath }}" style="display: none;"/>
                 <hr/>
                 <center>
-                    <a type="button" class="btn btn-warning" href="/filebrowser">
-                        <i class="fas fa-times"></i>&emsp; Cancel
-                    </a>
-                    &emsp;
                     <button class="btn btn-primary" type="submit">
                         <i class="fas fa-save"></i>&emsp; Save
                     </button>

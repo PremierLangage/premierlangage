@@ -7,7 +7,7 @@
 
 import json, timeout_decorator, time
 
-from django.template import Template, RequestContext
+from django.template import Template, RequestContext, Context
 
 from loader.models import PLTP
 
@@ -176,6 +176,11 @@ class ExerciseTest(Exercise):
     def __get_context(self, request, feedback=None, success=None):
         context = RequestContext(request)
         dic = self.intern_build()
+        
+        for key in ['text', 'texth', 'introduction', 'introductionh']:
+            if key in dic:
+                dic[key] = Template(dic[key]).render(Context(dic))
+        
         context.update(dic)
         if success:
             context['success'] = success
