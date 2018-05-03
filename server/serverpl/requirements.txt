@@ -25,3 +25,4 @@ sympy
 whitenoise
 yattag
 -e git://github.com/qcoumes/timeout-decorator.git#egg=timeout-decorator
+-e git://github.com/qcoumes/django-enumfields.git#egg=django-enumfields

@@ -26,10 +26,9 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th><div class="block course-block type1{% if request.user.pluser.color_blindness == 'TR' %}-tritanopia{% elif request.user.pluser.color_blindness == 'DE' %}-deuteranopia{%elif request.user.pluser.color_blindness == 'PR'%}-protanopia{% endif %}" style="width: 20px; height: 20px;"></div>&emsp;Réussi</th>
-                        <th><div class="block course-block type2{% if request.user.pluser.color_blindness == 'TR' %}-tritanopia{% elif request.user.pluser.color_blindness == 'DE' %}-deuteranopia{%elif request.user.pluser.color_blindness == 'PR'%}-protanopia{% endif %}" style="width: 20px; height: 20px;"></div>&emsp;Échoué</th>
-                        <th><div class="block course-block type3{% if request.user.pluser.color_blindness == 'TR' %}-tritanopia{% elif request.user.pluser.color_blindness == 'DE' %}-deuteranopia{%elif request.user.pluser.color_blindness == 'PR'%}-protanopia{% endif %}" style="width: 20px; height: 20px;"></div>&emsp;Commencé</th>
-                        <th><div class="block course-block type4{% if request.user.pluser.color_blindness == 'TR' %}-tritanopia{% elif request.user.pluser.color_blindness == 'DE' %}-deuteranopia{%elif request.user.pluser.color_blindness == 'PR'%}-protanopia{% endif %}" style="width: 20px; height: 20px;"></div>&emsp;Non Commencé</th>
+                        {% for item in state %}
+                            <th><div class="block course-block {{item.template}}" style="width: 20px; height: 20px;"></div>&emsp;{{item}}</th>
+                        {% endfor %}
                     </tr>
                 </thead>
             </table>
@@ -46,11 +45,11 @@
                     <tbody>
                         {% for elem in student %}
                             <tr>
-                                <td class="summary-td"><a href="/courses/course/{{course_id}}/student/{{elem.id}}/summary/">{% if elem.name %} {{ elem.name }} {% else %} N/A {% endif %}</a></td>
+                                <td class="summary-td"><a href="/courses/course/{{course_id}}/student/{{elem.id}}/summary/">{% firstof elem.object.get_full_name elem.object.username %}</a></td>
                                 {% for item in elem.question %}
                                     <center>
                                         <td class="summary-pl">
-                                            <div class="block course-block type{{item.state}}"><p>{{ item.name }}</p></div>
+                                            <div class="block course-block {{item.state.template}}"><p>{{ item.name }}</p></div>
                                         </td>
                                     </center>
                                 {% endfor %}

@@ -56,7 +56,7 @@ class StrategyAPI():
     
     
     def add_db_entry(self, exercise, request):
-        Answer(value='', user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id']), seed=exercise.dic['seed'], state=Answer.STARTED).save()
+        Answer(value='', user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id']), seed=exercise.dic['seed'], grade=-1).save()
     
     
     def get_from_session(self, request, key):
@@ -125,7 +125,7 @@ class StrategyAPI():
     def get_last_good_answer(self, pl, request):
         """ Return the most recent good answer for this PL, None if none exists """
         for answer in self.get_answers(pl, request):
-            if answer.state == Answer.SUCCEEDED:
+            if answer.state > 0:
                 return answer
         return None
     
@@ -133,7 +133,7 @@ class StrategyAPI():
     def get_last_wrong_answer(self, pl, request):
         """ Return the most recent wrong answer for this PL, None if none exists """
         for answer in self.get_answers(pl, request):
-            if answer.state == Answer.FAILED:
+            if answer.state == 0:
                 return answer
         return None
     
@@ -172,13 +172,13 @@ class StrategyAPI():
                 value = ""
             if success == None:
                 feedback_type = "info"
-                Answer(value=value, user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id']), seed=exercise.dic['seed'], state=Answer.STARTED).save()
+                Answer(value=value, user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id']), seed=exercise.dic['seed'], state=-1).save()
             elif success:
                 feedback_type = "success"
-                Answer(value=value, user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id']), seed=exercise.dic['seed'], state=Answer.SUCCEEDED).save()
+                Answer(value=value, user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id']), seed=exercise.dic['seed'], state=100).save()
             else:
                 feedback_type = "fail"
-                Answer(value=value, user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id']), seed=exercise.dic['seed'], state=Answer.FAILED).save()
+                Answer(value=value, user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id']), seed=exercise.dic['seed'], state=0).save()
             return feedback_type, feedback
                     
         elif status['requested_action'] == 'save': # Save
@@ -186,7 +186,7 @@ class StrategyAPI():
                 value = status['inputs']['answer']
             else:
                 value = ""
-            Answer(value=value, user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id']), seed=exercise.dic['seed'], state=Answer.STARTED).save()
+            Answer(value=value, user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id']), seed=exercise.dic['seed'], state=-1).save()
             return 'info', "Votre réponse à bien été enregistrée."
         return None, None # Not an AJAX request
     
@@ -204,7 +204,7 @@ class StrategyAPI():
     def reset_pl(self, exercise, request):
         """ Reset the PL to the default code """
         value = "" if 'code' not in exercise.dic else exercise.dic["code"]
-        Answer(value=value, user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id']), seed=exercise.dic['seed'], state=Answer.STARTED).save()
+        Answer(value=value, user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id']), seed=exercise.dic['seed'], state=-1).save()
     
     def load_exercise(self, request, seed=None):
         """ 

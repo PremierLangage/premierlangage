@@ -1,4 +1,4 @@
-{% extends custom_nav %}
+{% extends 'playexo/default_nav.html' %}
 
 
 {% load markdown_deux_tags %}
@@ -47,25 +47,19 @@
                         <a type=button class="btn btn-warning" href="/playexo/activity/?action=reset">
                             <i class="fas fa-undo"></i></span> Réinitialiser
                         </a>
-                        <button id="save_button" class="btn btn-default btn-info">
-                            <i class="fas fa-save"></i> Sauvegarder
-                        </button>
+                        {% if code %}
+                            <button id="save_button" class="btn btn-default btn-info">
+                                <i class="fas fa-save"></i> Sauvegarder
+                            </button>
+                        {% endif %}
                         <button id="submit_button" class="btn btn-primary">
                             <i class="fas fa-check"></i> Valider
                         </button>
                 </div>
                 <div id="next_button" style="display: None; color: white;">
-                    <a type=button class="btn btn-warning" href="/playexo/activity/?action=reset">
-                        <i class="fas fa-undo"></i></span> Réinitialiser
-                    </a>
-                    <button id="save_button" class="btn btn-default btn-info">
-                        <i class="fas fa-save"></i> Sauvegarder
-                    </button>
-                    <button id="submit_button" class="btn btn-primary">
-                        <i class="fas fa-check"></i> Valider
-                    </button>
+                    <br>
                     <a type="button" class="btn btn-lg btn-success" href="/playexo/activity/?action=next">
-                        Suivant&emsp;<span class="glyphicon glyphicon-arrow-right"></span>
+                        Suivant<span class="glyphicon glyphicon-arrow-right"></span>
                     </a>
                 </div>
             </center>
@@ -77,10 +71,6 @@
 <!--  script executed after page is loaded -->
 <script>
 $( document ).ready(function(){
-    if(window.top != window.self) {
-        $('#home-link').remove();
-    }
-
     $( "#submit_button" ).click(function() {
         var inputs = getInputs();
 
@@ -163,7 +153,6 @@ function onReturn(feedback_type, feedback) {
     
     $('#navigation').load(document.URL + " #navigation>*","");
     if (feedback_type == "success") {
-        $( "#default_button" ).toggle();
         $( "#next_button" ).toggle();
         $( "#feedback_success" ).html(feedback);
         MathJax.Hub.Queue(["Typeset",MathJax.Hub,feedback_success]);

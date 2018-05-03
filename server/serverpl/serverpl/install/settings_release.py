@@ -42,6 +42,7 @@ ADMINS = [
 INSTALLED_APPS = [
     'filebrowser',
     'playexo',
+    'user_profile',
     'loader',
     'classmanagement',
     'sandbox',

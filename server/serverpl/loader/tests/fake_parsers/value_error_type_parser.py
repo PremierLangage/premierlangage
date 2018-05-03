@@ -5,5 +5,5 @@ class Parser:
     def parse(self):
         return {}, []
 
-def get_parser(): return {'ext': ['.pltp'], 'parser': Parser, 'type': 'windows'}
+def get_parser(): return {'ext': ['.pltp'], 'parser': Parser, 'type': 'test'}
 

@@ -13,11 +13,12 @@
 
 {% block content %}
 <div class="container">
-    <div class="panel panel-default">
-        
-        <div class="panel-body">
-            <h1>{{name}}</h1><br>
-            {% if instructor or request.user.pluser.is_admin%}
+    <div class="card">
+        <div class="card-header">
+            <h1><center>{{name}}</center></h1>
+        </div>
+        <div class="card-body">
+            {% if instructor or request.user.profile.is_admin%}
                 <div class="course-instructor-action">
                     <a href="/courses/course/{{course_id}}/summary/">- Voir l'avancement des élèves pour ce cours</a>
                 </div>
@@ -26,64 +27,61 @@
             <div class="course-instructors">
                 <strong>Professeur:</strong><br>
                 <div class="row">    
-                    {% for item2 in prof %}
-                        <div class="col-sm-4" style="margin-left: 10px;">{{ item2 }}</div>
+                    {% for item in teacher %}
+                        <div class="col-md-6" style="margin-left: 10px;">{% firstof item.get_full_name item.username %} - &lt;{{item.email}}&gt;</div>
                     {% endfor %}
                 </div>
             </div>
             
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th><div class="block course-block type1{% if request.user.pluser.color_blindness == 'TR' %}-tritanopia{% elif request.user.pluser.color_blindness == 'DE' %}-deuteranopia{%elif request.user.pluser.color_blindness == 'PR'%}-protanopia{% endif %}" style="width: 20px; height: 20px;"></div>&emsp;Réussi</th>
-                        <th><div class="block course-block type2{% if request.user.pluser.color_blindness == 'TR' %}-tritanopia{% elif request.user.pluser.color_blindness == 'DE' %}-deuteranopia{%elif request.user.pluser.color_blindness == 'PR'%}-protanopia{% endif %}" style="width: 20px; height: 20px;"></div>&emsp;Échoué</th>
-                        <th><div class="block course-block type3{% if request.user.pluser.color_blindness == 'TR' %}-tritanopia{% elif request.user.pluser.color_blindness == 'DE' %}-deuteranopia{%elif request.user.pluser.color_blindness == 'PR'%}-protanopia{% endif %}" style="width: 20px; height: 20px;"></div>&emsp;Commencé</th>
-                        <th><div class="block course-block type4{% if request.user.pluser.color_blindness == 'TR' %}-tritanopia{% elif request.user.pluser.color_blindness == 'DE' %}-deuteranopia{%elif request.user.pluser.color_blindness == 'PR'%}-protanopia{% endif %}" style="width: 20px; height: 20px;"></div>&emsp;Non Commencé</th>
-                    </tr>
-                </thead>
-            </table>
-            
             {% for item in activity %}
-                <div class="panel panel-default course-panel{% if instructor %}-instructor{%endif%}">
-                        <div style="width: 80%; float: left; height: 40px;">
-                            <h4 class="course-activity-title">
-                                <a{% if item.open %} href="/courses/redirect/{{item.id}}"{% endif %}>
-                                    {{ forloop.counter }}. {{ item.title }}
-                                </a>
-                            </h4>
-                        </div>
-                        <div style="width: 20%; float: left; height: 40px;" class="text-right pull-right">
-                                <h5 style="margin: 10px 20px;"><i>
+                <div class="card course-panel{% if instructor %}-instructor{%endif%}">
+                    <div class="card-body">
+                        <div class="row">
+                            <div style="width: calc(100% - 60px); float: left; height: 40px;">
+                                <h4 class="course-activity-title">
+                                    <a{% if item.open %} href="/courses/redirect/{{item.id}}"{% endif %}>
+                                        {{ forloop.counter }}. {{ item.title }}
+                                    </a>
+                                </h4>
+                            </div>
+                        
+                            <div style="width: 60px; float: left; height: 40px;" class="text-right pull-right">
+                                <h3>
                                     {% if not item.open %}
-                                        (fermée)
+                                        {% if instructor or request.user.profile.is_admin %}
+                                            &emsp;<a href="{{ request.path }}?action=toggle_activity&id={{item.id}}"><i class="fas fa-toggle-off"></i></a>
+                                        {% else %}
+                                            <i class="fas fa-toggle-off">
+                                        {% endif %}
                                     {% elif item.open and instructor or request.user.pluser.is_admin %}
-                                        (ouvert)
+                                        {% if instructor or request.user.profile.is_admin %}
+                                            &emsp;<a href="{{ request.path }}?action=toggle_activity&id={{item.id}}"><i class="fas fa-toggle-on"></i></a>
+                                        {% else %}
+                                            <i class="fas fa-toggle-on">
+                                        {% endif %}
                                     {% endif %}
-                                    {% if instructor or request.user.pluser.is_admin%}
-                                        &emsp;<a href="{{ request.path }}?action=toggle_activity&id={{item.id}}"><span class="glyphicon glyphicon-refresh"></span></a>
-                                    {% endif %}
-                                </i></h5>
+                                    
+                                </h3>
+                            </div>
                         </div>
-                    
-                    <hr class="course-activity-hr">
-                    <div class="course-activity-chart">
-                        {% for elem in item.pl %}
-                            <div class="block course-block type{{elem.state}}" style="width: calc({{item.width}}% - 2px);"><p>{{ elem.name }}</p></div>
-                        {% endfor %}
+                        
+                        <div class="row">
+                            <div class="course-activity-chart">
+                                {% for elem in item.pl %}
+                                    <div class="block course-block {{elem.state.template}}" style="width: calc({{item.width}}% - 2px);"><p>{{ elem.name }}</p></div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        {% if instructor %}
+                            <div>
+                                <a href="/courses/course/{{course_id}}/{{item.name}}/summary/">- Voir l'avancement des élèves pour cette activité</a>
+                            </div>
+                        {% endif %}
                     </div>
-                    {% if instructor %}
-                        <div class="activity-instructor-action">
-                            <a href="/courses/course/{{course_id}}/{{item.name}}/summary/">- Voir l'avancement des élèves pour cette activité</a>
-                        </div>
-                    {% endif %}
                 </div>
             {% endfor %}
-            {% if instructor or request.user.pluser.is_admin %}
-            <hr>
-            <a href="/filebrowser/">Créer une nouvelle activité</a>
-            {% endif %}
         </div>
-        
     </div>
 </div>
 

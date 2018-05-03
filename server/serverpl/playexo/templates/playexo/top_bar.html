@@ -3,7 +3,7 @@
 
 
 
-<header class="header-nav">
+<div class="header-nav">
     <div class="fixmenu">
        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
            
@@ -13,7 +13,7 @@
                 Premier Langage
             </a>
 
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <button id="navbarToggler" class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             
@@ -22,12 +22,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/"><i class="fas fa-graduation-cap"></i> Mes Cours</a>
                     </li>
-                    {% if request.user.pluser.can_load %}
+                    {% if request.user.profile.can_load %}
                         <li class="nav-item">
                             <a class="nav-link" href="/filebrowser/"><i class="fas fa-cloud"></i> Gitload</a>
                         </li>
                     {% endif %}
-                    {% if request.user.pluser.can_load %}
+                    {% if request.user.profile.can_load %}
                         <li class="nav-item">
                             <a class="nav-link" href="/documentation/"></i><i class="fas fa-book"></i> Documentation</a>
                         </li>
@@ -47,7 +47,7 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                             <a class="dropdown-item"><i class="fas fa-envelope"></i>&emsp;{% firstof user.email "N/A" %}</a>
-                            <a class="dropdown-item" href="/courses/cycle_color_blindness/?from={{ request.path|urlencode }}" ><i class="fas fa-eye"></i>&emsp;Daltonisme: {{ request.user.pluser.get_color_blindness_display }}</a>
+                            <a class="dropdown-item" href="/profile/" style="color: inherit;"><i class="fas fa-cog"></i>&emsp;Paramètres</a>
                         </div>
                     </li>
                     <li class="nav-item">
@@ -57,56 +57,4 @@
             </div>
         </nav>
     </div>
-</header>
-                    
-<!--
-
-<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">
-        <img src="{% static 'img/upem.png'%}" width="30" height="30" class="d-inline-block align-top" alt="">
-        Premier Langage
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample03" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-      <div class="collapse " id="navbar">        
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="/">Mes Cours</a>
-            </li>
-            {% if request.user.pluser.can_load %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/gitload/">Gitload</a>
-                </li>
-            {% endif %}
-            {% if request.user.pluser.can_load %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/documentation/">Documentation</a>
-                </li>
-            {% endif %}
-            {% if request.user.pluser.is_admin or request.user.is_superuser %}
-                <li class="nav-item">
-                    <a class="nav-link" href="/admin/">Administration</a>
-                </li>
-            {% endif %}
-        </ul>
-        
-        <ul class="nav navbar-nav navbar-right">
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <span class="glyphicon glyphicon-user"></span>
-                    {% firstof request.user.get_full_name request.user.get_username "Non Connecté" %}
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item"><span class="glyphicon glyphicon-envelope"></span>&emsp;{% firstof user.email "N/A" %}</a>
-                    <a class="dropdown-item" href="/courses/cycle_color_blindness/?from={{ request.path|urlencode }}" ><span class="glyphicon glyphicon-eye-close"></span>&emsp;Daltonisme: {{ request.user.pluser.get_color_blindness_display }}</a>
-                </div>
-            </li>
-            <li class="nav-item">
-                <a href="/playexo/not_authenticated/"><span class="glyphicon glyphicon-off"></span></a>
-            </li>
-        </ul>
-    </div>
-</nav>
--->
+</div>

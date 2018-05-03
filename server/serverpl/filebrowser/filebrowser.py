@@ -59,10 +59,12 @@ class Filebrowser():
     
     
     def full_path(self):
+        """Return the absolute path of the current position of the filebrowser."""
         return os.path.join(self.root, self.relative)
     
     
     def breadcrumb(self):
+        """Return the breadcrumb corresponding to the current position o the filebrowser"""
         bc = list()
         path = ""
         for elem in self.relative.split('/'):
@@ -73,6 +75,7 @@ class Filebrowser():
     
     
     def list(self):
+        """Return a list of tuple (name, path) corresponding to every entry at the current possition of the filebrowser."""
         if not self.directory:
             return sorted(Directory.objects.all(), key=lambda k: k.name)
         

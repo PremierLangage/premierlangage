@@ -4,6 +4,7 @@
 
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/block_chart.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/classmanagement.css' %}" />
 {% endblock %}
 
 {% block header_script %}
@@ -18,7 +19,7 @@
                 <div class="card course-card">
                     <h1 class="card-title"><a href="/courses/course/{{ item.id }}"> {{ item.name }} </a></h1>
                     <center>
-                        <div class="block-chart index-chart" data-numbers='[[{{item.nb_square}}, 200, "{{request.user.pluser.color_blindness}}"]{% for elem in item.completion %}, ["{{elem.name}}", {{elem.count}}]{% endfor %}]'></div>
+                        <div class="block-chart index-chart" data-numbers='[[{{item.nb_square}}, 200, "{{request.user.profile.color_blindness}}"]{% for elem in item.completion %}, ["{{elem.name}}", {{elem.count}}, "{{elem.class}}"]{% endfor %}]'></div>
                         <a class="btn btn-primary btn-large" href="/courses/course/{{ item.id }}">Continuer</a>
                     </center>
                 </div>

@@ -7,6 +7,9 @@
         <!-- Title -->
         <title>{% block title %}UPEM - PL{% endblock %}</title>
         
+        <!-- Other -->
+        {% block head_elements %}{% endblock %}
+        
         <!-- Load the tag library -->
         {% load static %}
         {% block tag %}{% endblock %}
@@ -37,13 +40,17 @@
             {% block alert %}{% include "playexo/alert.html" %}{% endblock %}
             {% block content %}{% endblock %}
         </div>
+<!--
         <div id="footer">
             <footer class="footer">
                 {% block footer %}{% include "playexo/footer.html" %}{% endblock %}
             </footer>
-            {% block end_script %}{% endblock %}
             <script src="{% static 'playexo/js/footer.js' %}"></script> 
         </div>
+-->
+    
+    <script src="{% static 'js/pl.js' %}" ></script>
+    {% block end_script %}{% endblock %}
     </body>
 </html>
 

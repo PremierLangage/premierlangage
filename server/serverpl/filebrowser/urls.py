@@ -35,4 +35,5 @@ urlpatterns = [
     url(r'^edit_file/$', views.edit_receiver),
     url(r'^new_file/$', views.new_file_receiver),
     url(r'^edit_rights/$', views.right_edit),
+    url(r'^preview_pl/$', views.preview_pl),
 ]

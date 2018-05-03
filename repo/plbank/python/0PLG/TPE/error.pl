@@ -19,13 +19,8 @@ template=/python/0PLG/template.pl
 #   <span style="color: red" > Du text en rouge </span>
 #   le latex $\frac{A}{B}$ devrai aussi fonctionner 
 text==
-
-# Erreurs de Compilation
-
-Corrigez l'erreur qui fait que le code suivant ne peut être interprété. 
-
+Corrigez l'erreur qui fait que le code suivant ne peut être interprété correctement. 
 ==
-
 # ceci est le code initial dans l'éditeur interactive qu'utilise les
 # élèves.
 
@@ -69,6 +64,70 @@ C'est un classique de l'erreur **SyntaxError**  qui est juste une indication que
 Il faut en général regarder la ligne au-dessus pour trouver l'erreur de syntaxe.
 
 ==
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

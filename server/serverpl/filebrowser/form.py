@@ -5,28 +5,12 @@
 #  
 #  Copyright 2018 Coumes Quentin
 #  
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#  
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#  
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
-#  
-#  
 
 
 from django import forms
 from django.contrib.auth.models import User
 
-from classmanagement.models import Role
+from user_profile.enums import Role
 
 
 class RenameForm(forms.Form):
@@ -46,12 +30,12 @@ class AddCommitForm(forms.Form):
 
 
 class LoginForm(forms.Form):
-    password = forms.CharField(max_length=4096, required=False, help_text="*Optionnal", widget=forms.PasswordInput)
     username = forms.CharField(max_length=4096, required=False, help_text="*Optionnal")
+    password = forms.CharField(max_length=4096, required=False, help_text="*Optionnal", widget=forms.PasswordInput)
 
 
 class RightForm(forms.Form):
-    USER = User.objects.filter(pluser__role__in=[Role.ADMINISTRATOR, Role.INSTRUCTOR, Role.CONTENT_DEVELOPER])
+    USER = User.objects.filter(profile__role__lte = Role.INSTRUCTOR)
     write = forms.ModelMultipleChoiceField(USER, widget=forms.CheckboxSelectMultiple(), required=False, help_text="*User with writing right can do everything you can but delete, rename and change the rights of your directory")
     read =  forms.ModelMultipleChoiceField(USER, widget=forms.CheckboxSelectMultiple(), required=False, help_text="*User with reading right can do everything that do not modify your file (I.E. display, download...)")
 

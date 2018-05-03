@@ -99,7 +99,7 @@
 
         {% if 'search' in config['plugins'] %}{%- include "search-modal.html" %}{% endif %}
         {%- include "keyboard-modal.html" %}
-
+    {% raw %}<script src="{% static 'js/pl.js' %}" ></script>{% endraw %}
     </body>
 </html>
 {% if page and page.is_homepage %}

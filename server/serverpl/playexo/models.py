@@ -1,11 +1,22 @@
-# coding: utf-8
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+#  models.py
+#  
+#  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
+#  
 
 from datetime import datetime
+
+from enumfields import EnumIntegerField
 
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+
 from loader.models import PLTP, PL
+
+from playexo.enums import State
 
 
 
@@ -51,87 +62,75 @@ class Answer(models.Model):
         (SUCCEEDED, 'Réussi'),
     )
     
-    value = models.TextField(max_length = 50000, null = False)
+    value = models.TextField(max_length = 50000, null=False)
     user = models.ForeignKey(User, null=False, on_delete=models.CASCADE)
     pl = models.ForeignKey(PL, null=False, on_delete=models.CASCADE)
     seed = models.CharField(max_length=50, null=True)
-    date = models.DateTimeField(null = False, default=timezone.now)
-    state = models.CharField(max_length=2, choices=STATE, null=False, default=STARTED)
+    date = models.DateTimeField(null=False, default=timezone.now)
+    grade = models.IntegerField(null=False)
+    
+    
+    @staticmethod
+    def last_seed(pl, user):
+        answers = Answer.objects.filter(pl=pl, user=user).order_by("-date")
+        return None if not answers else answers[0].seed
+    
+    
+    @staticmethod
+    def last_answer(pl, user):
+        answers = Answer.objects.filter(pl=pl, user=user).order_by("-date")
+        if not answers:
+            return None
+        for answer in [i.value for i in answers]:
+            if answer:
+                return answer
+        return None
     
     
     @staticmethod
     def pl_state(pl, user):
-        """
-            Return the state of the answer associated to this pl and user following these rules in this order:
-                - If no answer exists: Answer.NOT_STARTED
-                - If at least one good answer exists: Answer.SUCCEEDED
-                - If at least one bad answer exists: Answer.FAILED
-                - Otherwise: Answer.STARTED
-            TL,DR: Success prevail over fail which prevail over save/reload.
-        """
-        
-        answers = Answer.objects.filter(user=user, pl=pl)
-        if not answers:
-            return Answer.NOT_STARTED
-        
-        failed = False
-        for item in answers:
-            if item.state == Answer.SUCCEEDED:
-                return Answer.SUCCEEDED
-            if item.state == Answer.FAILED and not failed:
-                failed = True
-        
-        if failed:
-            return Answer.FAILED
-        return Answer.STARTED
+        """Return the state of the answer with the highest grade."""
+        answers = Answer.objects.filter(user=user, pl=pl).order_by("-grade")
+        return State.by_grade(None if not answers else answers[0].grade)
     
     
     @staticmethod
     def pltp_state(pltp, user):
-        """ Return a list of tuples (pl_id, state) where state follow pl_state() rules. """
-        
-        lst = list()
-        for pl in pltp.pl.all():
-            lst.append((pl.id, Answer.pl_state(pl, user)))
-            
-        return lst
+        """Return a list of tuples (pl_id, state) where state follow pl_state() rules."""
+        return [(pl.id, Answer.pl_state(pl, user)) for pl in pltp.pl.all()] 
     
     
     @staticmethod
     def pltp_summary(pltp, user):
         """
-            Give information about the PLTP's completion of this user as a dict of 3 tuples:
+            Give information about the PLTP's completion of this user as a dict of 5 lists:
             {
-                'succeeded': (% succeeded, nbr succeeded),
-                'failed': (% failed, nbr failed),
-                'started: (% started, nbr started),
-                'not_started': (% not started, nbr not started),
+                'succeeded':   [ % succeeded, nbr succeeded],
+                'part_succ':   [ % part_succ, nbr part_succ],
+                'failed':      [ % failed, nbr failed],
+                'started:      [ % started, nbr started],
+                'not_started': [ % not started, nbr not started],
             }
         """
-    
-        succeeded = 0
-        failed = 0
-        started = 0
-        not_started = 0
-        for pl, state in Answer.pltp_state(pltp, user):
-            if state == Answer.SUCCEEDED:
-                succeeded += 1
-            elif state == Answer.FAILED:
-                failed += 1 
-            elif state == Answer.STARTED:
-                started += 1
-            else:
-                not_started += 1
-                        
-        nb_pl = succeeded + failed + started + not_started
-        if not nb_pl:
-            nb_pl = 1
+        
         state = {
-            'succeeded':    (str(succeeded*100/nb_pl), str(succeeded)),
-            'failed':       (str(failed*100/nb_pl), str(failed)),
-            'started':      (str(started*100/nb_pl), str(started)),
-            'not_started':  (str(not_started*100/nb_pl), str(not_started)),
+            State.SUCCEEDED:   [0.0, 0],
+            State.PART_SUCC:   [0.0, 0],
+            State.FAILED:      [0.0, 0],
+            State.STARTED:     [0.0, 0],
+            State.NOT_STARTED: [0.0, 0],
         }
+        
+        for pl in pltp.pl.all():
+            state[
+                State.STARTED if Answer.pl_state(pl, user) in [State.TEACHER_EXC, State.SANDBOX_EXC] else Answer.pl_state(pl, user)
+                ][1] += 1
+            
+        nb_pl = sum([state[k][1] for k in state]) 
+        nb_pl = 1 if not nb_pl else nb_pl
+        
+        for k, v in state.items():
+            state[k] = [str(state[k][1]*100/nb_pl), str(state[k][1])]
         
         return state
     
@@ -163,39 +162,33 @@ class Answer(models.Model):
     @staticmethod
     def user_course_summary(course, user):
         """
-            Give information about the completion of every PL of this user in course as a dict of 3 tuples:
+            Give information about the completion of every PL of this user in course as a dict of 5 tuples:
             {
-                'succeeded': (% succeeded, nbr succeeded),
-                'failed': (% failed, nbr failed),
-                'started: (% started, nbr started),
-                'not_started': (% not started, nbr not started),
+                'succeeded':   [ % succeeded, nbr succeeded],
+                'part_succ':   [ % part_succ, nbr part_succ],
+                'failed':      [ % failed, nbr failed],
+                'started:      [ % started, nbr started],
+                'not_started': [ % not started, nbr not started],
             }
-            where finished pl are either failed or succeeded pl.
         """
     
-        succeeded = 0
-        failed = 0
-        started = 0
-        not_started = 0
-        for activity in course.activity.all():
-            for pl, state in Answer.pltp_state(activity.pltp, user):
-                if state == Answer.SUCCEEDED:
-                    succeeded += 1
-                elif state == Answer.FAILED:
-                    failed += 1
-                elif state == Answer.STARTED:
-                    started += 1
-                else:
-                    not_started += 1
-                        
-        nb_pl = succeeded + failed + started + not_started
-        if not nb_pl:
-            nb_pl = 1
         state = {
-            'succeeded':    (str(succeeded*100/nb_pl), str(succeeded)),
-            'failed':       (str(failed*100/nb_pl), str(failed)),
-            'started':      (str(started*100/nb_pl), str(started)),
-            'not_started':  (str(not_started*100/nb_pl), str(not_started)),
+            State.SUCCEEDED:   [0.0, 0],
+            State.PART_SUCC:   [0.0, 0],
+            State.FAILED:      [0.0, 0],
+            State.STARTED:     [0.0, 0],
+            State.NOT_STARTED: [0.0, 0],
         }
+        
+        for activity in course.activity.all():
+            summary = Answer.pltp_summary(activity.pltp, user)
+            for k in summary:
+                state[k][1] += int(summary[k][1])
+        
+        nb_pl = sum([state[k][1] for k in state]) 
+        nb_pl = 1 if not nb_pl else nb_pl
+        
+        for k, v in state.items():
+            state[k] = [str(state[k][1]*100/nb_pl), str(state[k][1])]
         
         return state

@@ -124,7 +124,7 @@ def parse_file(directory, path, extending=False):
         
        Raise UnknownExtension if the extension is unknown.
        Propagate any exception raise by the called parser."""
-       
+    
     path = path if path[0] != '/' else path[1:]
     
     parsers = get_parsers()
@@ -140,6 +140,8 @@ def parse_file(directory, path, extending=False):
         warnings += ext_warnings
         
         if not extending:
+            #~ for key in dic:
+                #~ print(key+": "+ str(dic[key]))
             if parsers[ext]['type'] == 'pltp':
                 for key in PLTP_MANDATORY_KEY:
                     if key not in dic:

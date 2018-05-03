@@ -57,12 +57,15 @@
                 </div>
             {% endblock %}
             
-            {% block end_script %}{% endblock %}
         </div>
+<!--
         <div id="footer">
             <footer class="footer">
                 {% block footer %}{% include "playexo/footer.html" %}{% endblock %}
             </footer>
         </div>
+-->
+    <script src="{% static 'js/pl.js' %}" ></script>
+    {% block end_script %}{% endblock %}
     </body>
 </html>

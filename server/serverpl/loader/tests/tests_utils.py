@@ -22,14 +22,14 @@ from loader.utils import get_location, extends_dict, exception_to_html
 class UtilsTestCase(TestCase):
     """ Test functions of loader.utils modules. """
     
-    def setUp(self):
+    @classmethod
+    def setUpTestData(self):
         user = User.objects.create_user(username='user', password='12345')
-        Directory.objects.create(name='dir1', owner=user)
-        Directory.objects.create(name='dir2', owner=user)
-
-
+        self.dir1 = Directory.objects.create(name='dir1', owner=user)
+        self.dir2 = Directory.objects.create(name='dir2', owner=user)
+    
+    
     def test_get_location(self):
-        current_dir = Directory.objects.get(name='dir1')
         current_path = 'first1/second1/'
         
         # Correct absolute path to current directory
@@ -47,17 +47,17 @@ class UtilsTestCase(TestCase):
         # Path to another directory is not absolute, raise ValueError
         path7 = 'dir1:first1/second1/third?/file.py1'
         
-        self.assertEqual((current_dir, 'first1/second1/third1/file.py'), get_location(current_dir, path1))
-        self.assertEqual((current_dir, 'first1/second1/third1/file.py'), get_location(current_dir, path2))
-        self.assertEqual((Directory.objects.get(name='dir2'), 'first1/second1/third1/file.py'), get_location(current_dir, path3))
-        self.assertEqual((current_dir, 'first1/second2/third2/file.py'), get_location(current_dir, path4, current_path))
-        self.assertEqual((current_dir, 'first1/second1/file.py'), get_location(current_dir, path5, current_path))
+        self.assertEqual((self.dir1, 'first1/second1/third1/file.py'), get_location(self.dir1, path1))
+        self.assertEqual((self.dir1, 'first1/second1/third1/file.py'), get_location(self.dir1, path2))
+        self.assertEqual((self.dir2, 'first1/second1/third1/file.py'), get_location(self.dir1, path3))
+        self.assertEqual((self.dir1, 'first1/second2/third2/file.py'), get_location(self.dir1, path4, current_path))
+        self.assertEqual((self.dir1, 'first1/second1/file.py'), get_location(self.dir1, path5, current_path))
         
         with self.assertRaises(ObjectDoesNotExist):
-            get_location(current_dir, path6)
+            get_location(self.dir1, path6)
         
         with self.assertRaises(ValueError):
-            get_location(current_dir, path7)
+            get_location(self.dir1, path7)
     
     
     def test_extends_dic(self):

@@ -8,4 +8,4 @@ class ActivityAdmin(admin.ModelAdmin):
 
 @admin.register(Answer)
 class AnswerAdmin(admin.ModelAdmin):
-    list_display=('user', 'pl', 'seed', 'date')
+    list_display=('user', 'pl', 'grade', 'seed', 'date')

@@ -19,6 +19,7 @@
 }
 
 .card-title {
+    text-align: center;
     color: #5BC0DE;
     text-decoration: none;
     border-bottom: 2px solid #337AB7;
@@ -47,10 +48,12 @@
 }
 
 .course-activity-chart {
+    width: 100%;
     padding: 0 20px 0 20px;
 }
 
 .course-summary-chart {
+    width: 100%;
     padding: 0 20px 0 20px;
 }
 
@@ -71,10 +74,6 @@
 
 .course-instructors {
     margin: 0 0 50px 30px;
-}
-
-.activity-instructor-action {
-    margin: 45px 0 5px 40px;
 }
 
 .student-th {

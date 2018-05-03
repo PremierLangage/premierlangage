@@ -10,7 +10,10 @@ from django.conf import settings
 
 from .thread_local import set_current_request
 
-from classmanagement.models import Course, PLUser, Role
+from classmanagement.models import Course
+
+from user_profile.models import Profile
+from user_profile.enums import Role
 
 logger = logging.getLogger(__name__)
 
@@ -116,7 +119,6 @@ class MultiLTILaunchAuthMiddleware(MiddlewareMixin):
                 course_label = lti_launch.get("context_label", "None")
                 
                 activity_id = lti_launch["resource_link_id"]
-                #~ activity_title = lti_launch.get("resource_link_title", "Non")
                 
                 course = Course.objects.filter(id=course_id) 
                 if not course:
@@ -132,24 +134,19 @@ class MultiLTILaunchAuthMiddleware(MiddlewareMixin):
                 request.session["course_id"] = course_id
                 
 
-                #Add user if not existing
-                try:
-                    PLUser(user=user).save()
-                except:
-                    pass
-
+                user.profile.consumer_id = lti_launch['user_id']
                 #Adding role to user
                 for role in lti_launch["roles"]:
-                    if (role in ["urn:lti:role:ims/lis/Administrator", "Administrator"]):
-                       user.pluser.set_role(Role.ADMINISTRATOR)
-                    elif (role in ["urn:lti:role:ims/lis/Observer", "Observer"]):
-                       user.pluser.set_role(Role.OBSERVER)
-                    elif (role in ["urn:lti:role:ims/lis/Learner", "Learner"]):
-                       user.pluser.set_role(Role.LEARNER)
-                    elif (role in ["urn:lti:role:ims/lis/Instructor", "Instructor"]):
-                       user.pluser.set_role(Role.INSTRUCTOR)
-                    elif (role in ["urn:lti:role:ims/lis/ContentDeveloper", "ContentDeveloper"]):
-                       user.pluser.set_role(Role.CONTENT_DEVELOPER)
+                    if role in ["urn:lti:role:ims/lis/Administrator", "Administrator"] and user.profile.role > Role.ADMINISTRATOR:
+                       user.profile.role = Role.ADMINISTRATOR
+                    if role in ["urn:lti:role:ims/lis/Observer", "Observer"] and user.profile.role > Role.OBSERVER:
+                       user.profile.role = Role.OBSERVER
+                    if role in ["urn:lti:role:ims/lis/Learner", "Learner"] and user.profile.role > Role.LEARNER:
+                       user.profile.role = Role.LEARNER
+                    if role in ["urn:lti:role:ims/lis/Instructor", "Instructor"] and user.profile.role > Role.INSTRUCTOR:
+                       user.profile.role = Role.INSTRUCTOR
+                    if role in ["urn:lti:role:ims/lis/ContentDeveloper", "ContentDeveloper"] and user.profile.role > Role.CONTENT_DEVELOPER:
+                       user.profile.role = Role.CONTENT_DEVELOPER
                 user.save()
                 
                 # If a custom role key is defined in project, merge into existing role list

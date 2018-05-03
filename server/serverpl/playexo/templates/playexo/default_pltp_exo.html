@@ -1,4 +1,4 @@
-{% extends custom_nav %}
+{% extends 'playexo/default_nav.html' %}
 
 {% block tag %}
     {% load markdown_deux_tags %}
@@ -21,7 +21,7 @@
             {% if "introduction" %}{{ introduction|markdown }}{% endif %}
             {% if "introductionh" %}{{ introductionh|safe }}{% endif %}
             <br>
-            <center><a style="white-space: normal;" href="{{ request.path }}?action=pl&pl_id={{pl_list.0.0.id}}" type="button" class="btn btn-success btn-lg">
+            <center><a style="white-space: normal;" href="{{ request.path }}?action=pl&pl_id={{pl_list__.0.id}}" type="button" class="btn btn-success btn-lg">
                 Commencer
             </a></center>
         </div>

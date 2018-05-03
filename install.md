@@ -1,5 +1,7 @@
 # Installation
 
+If any problem occurs during the installation, see the section ***Troubleshooting***.
+
 ## Requirements:
 - python >= 3.5
 - pip3
@@ -32,25 +34,6 @@ You can see that your environment is running if its name appear at the start of 
 
 Every module installed with pip while running a python environment will be installed on said environment.
 
-##### troubleshooting
-When using
-
-    python3 -m venv **env_name**
-
-you can encounter a bug:
-
-    Error: Command '['<directory>/bin/python3.5', '-Im', 'ensurepip', '--upgrade', '--default-pip']' returned non-zero exit status
-
-To solve this problem, you can create an env without pip and install pip manually:
-
-    python3 -m venv env --without-pip
-    source env/bin/activate
-    curl -w get https://bootstrap.pypa.io/get-pip.py | python3
-
-You may need to restart the env to ensure pip is working properly:
-
-    deactivate
-    source env/bin/activate
 
 ## Local/Dev
 To use the project on localhost:
@@ -83,3 +66,35 @@ To enable logging on a custom log file, you should created a new file ending by 
 And restart syslog and rsyslog services
 
 Configure mails option in server/serverpl/serverpl/settings.py to enable the logger to sent mail.
+
+
+## Troubleshooting
+
+### Python environnement
+When using
+
+    python3 -m venv **env_name**
+
+you can encounter a bug:
+
+    Error: Command '['<directory>/bin/python3.5', '-Im', 'ensurepip', '--upgrade', '--default-pip']' returned non-zero exit status
+
+To solve this problem, you can create an env without pip and install pip manually:
+
+    python3 -m venv env --without-pip
+    source env/bin/activate
+    curl -w get https://bootstrap.pypa.io/get-pip.py | python3
+
+You may need to restart the env to ensure pip is working properly:
+
+    deactivate
+    source env/bin/activate
+
+
+### Creating / Migrating Database
+If an error occurs during the creation or the migration of the database, you can run the script *premierlangage/server/serverpl/fix_database.sh*
+**warning:** This script will empty your database (if it exists)
+
+
+### If you still have any problem, do not hesitate to contact one of the project member.
+

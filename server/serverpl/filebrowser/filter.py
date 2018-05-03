@@ -1,9 +1,21 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 #  filter.py
 #  
 #  Copyright 2018 Coumes Quentin
+
+
+########################
+#       FILTERS        #
+########################
+#
+# Filters are function which, given an absolute path to an entry, should return whether an option should
+# be displayed (True) or not (False).
+#
+# These function should be keep simple and fast as they may be called many times
+#
+
 
 
 import magic
@@ -43,7 +55,6 @@ def is_remote(path):
     return True if directory and directory.remote else False
 
 
-
 def is_image(path):
     if is_directory(path):
         return False
@@ -78,6 +89,10 @@ def is_pl(path):
     parsers = get_parsers()
     ext = splitext(path)[1]
     return ext in parsers and parsers[ext]['type'] == 'pl'
+
+
+def is_not_pl(path): 
+    return not is_pl(path)
 
 
 def is_pltp(path): 

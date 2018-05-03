@@ -4,15 +4,14 @@
 
 type=direct
 
-title=Random add
+title= Addition Aléatoire
 
 text==
-Combien font {{ op1 }} + {{ op2 }}?
+Combien font ***{{ op1 }} + {{ op2 }}*** ?
 ==
 
 form==
 <div class="input-group">
-    <span class="input-group-addon">Réponse</span>
     <input id="form_txt_answer" type="number" class="form-control" placeholder="" required>
 </div>
 ==
@@ -31,6 +30,10 @@ except:
 before==
 import random
 random.seed(seed)
-op1 = random.randint(0, 100)
-op2 = random.randint(0, 100)
+op1 = random.randint(20, 100)
+op2 = random.randint(20, 100)
 ==
+
+
+
+

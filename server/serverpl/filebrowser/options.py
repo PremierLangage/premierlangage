@@ -5,22 +5,31 @@
 #  
 #  Copyright 2018 Coumes Quentin
 #  
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#  
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#  
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
-#  
-#  
+
+
+
+########################
+#       OPTIONS        #
+########################
+#
+# Options are function that can be used by a filebrowser so execute an action over an entry or a whole
+# Directory.
+#
+# All these function received 3 arguments:
+#    - Django request
+#    - The instance of filebrowser corresponding to the path where the option was chosen
+#    - The name of the entry / of the directory
+#
+# They all should return an HttpResponse, redirecing (if possible) the user to the same position in the filebrowser
+# where he was when he chose the option. If such redirection can't be done (after a deletion for instance),
+# the user should be redirected to the filebrowser root.
+#
+# Some option can open another page than the filebrowser, such page or corresponding view should 
+# redirect the user.
+#
+# FILEBROWSER_ROOT should be removed of every path displayed by any feedback of the options
+#
+
 
 
 import os, shutil, magic, zipfile, tarfile, traceback
@@ -42,14 +51,12 @@ from filebrowser.filter import is_pl
 
 from loader.loader import load_file
 
-from playexo.views import try_pl
-
-
-
+from playexo.exercise import PLInstance
 
 
 
 def mkdir_option(request, filebrowser, target):
+    """Create a new folder named target at filebrowser.full_path()"""
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
     
@@ -59,7 +66,7 @@ def mkdir_option(request, filebrowser, target):
         return HttpResponseBadRequest
     
     try:
-        path = join(join(filebrowser.root, relative), name)
+        path = join(filebrowser.full_path(), name)
         if isdir(path):
             messages.error(request, "A folder with that name ('"+name+"') already exists")
         elif isfile(path):
@@ -77,6 +84,7 @@ def mkdir_option(request, filebrowser, target):
 
 
 def display_option(request, filebrowser, target):
+    """ Display targeted entry """
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
     
@@ -96,6 +104,7 @@ def display_option(request, filebrowser, target):
 
 
 def rename_option(request, filebrowser, target):
+    """ Rename targeted entry with POST['name'] """
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
     
@@ -126,6 +135,7 @@ def rename_option(request, filebrowser, target):
 
 
 def copy_option(request, filebrowser, target):
+    """ Copy targeted entry to POST['destination'] """
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
     
@@ -151,6 +161,7 @@ def copy_option(request, filebrowser, target):
 
 
 def add_commit_option(request, filebrowser, target):
+    """ Execute an add and commit of the targeted entry with the informations of POST. """
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
     
@@ -174,6 +185,7 @@ def add_commit_option(request, filebrowser, target):
 
 
 def checkout_option(request, filebrowser, target):
+    """ Execute a checkout of the targeted entry with the informations of POST. """
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
 
@@ -192,6 +204,7 @@ def checkout_option(request, filebrowser, target):
 
 
 def status_option(request, filebrowser, target):
+    """ Execute a git status on the targeted entry."""
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
     
@@ -210,6 +223,7 @@ def status_option(request, filebrowser, target):
 
 
 def pull_option(request, filebrowser, target):
+    """ Execute a git pull on the targeted entry with the informations of POST."""
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
     
@@ -230,6 +244,7 @@ def pull_option(request, filebrowser, target):
 
 
 def push_option(request, filebrowser, target):
+    """ Execute a git push on the targeted entry with the informations of POST."""
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
     
@@ -250,6 +265,7 @@ def push_option(request, filebrowser, target):
 
 
 def download_option(request, filebrowser, target):
+    """ Allow the user to download target"""
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
         
@@ -276,41 +292,17 @@ def download_option(request, filebrowser, target):
     return redirect_fb(request.GET.get('relative_h', '.'))
 
 
-def test_pl_option(request, filebrowser, target):
-    if request.method != 'GET':
-        return HttpResponseNotAllowed(['GET'])
-        
-    try:
-        rel_path = join(filebrowser.relative, target).replace('./'+filebrowser.directory.name, "")
-        pl, warnings = load_file(filebrowser.directory, rel_path)
-        if not pl:
-            messages.error(request, "Failed to load '"+target+"': \n"+warnings)
-        else:
-            if warnings:
-                for warning in warnings:
-                    messages.warning(request, warning)
-            request.session['exercise'] = None
-            return try_pl(request, pl, warnings)
-        
-    except Exception as e:
-        msg = "Impossible to test '"+target+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
-        if FILEBROWSER_ROOT in msg:
-            msg = msg.replace(FILEBROWSER_ROOT+"/", "")
-        messages.error(request, msg)
-    return redirect_fb(request.GET.get('relative_h', '.'))
-
-
 def new_pl_option(request, filebrowser, target):
+    """Create a new file and launch the PL editor"""
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
     
     name = request.POST.get('name', None)
-    relative = request.POST.get('relative', None)
-    if not name or not relative:
+    if not name:
         return HttpResponseBadRequest
     
     try:
-        path = join(join(filebrowser.root, relative), name)
+        path = join(filebrowser.full_path(), name)
         if not is_pl(name):
             ext = splitext(path)[1]
             messages.error(request, "Unknown PL's extension: '" + ext + "', please use a known extension.")
@@ -319,14 +311,10 @@ def new_pl_option(request, filebrowser, target):
         elif isfile(path):
             messages.error(request, "A file with that name ('"+name+"') already exists")
         else:
-            path = join(join(filebrowser.root, relative), name)
-            return render(request, 'filebrowser/editor.html', {
-                'action': "/filebrowser/new_file/",
-                'filename': name,
-                'filepath': path,
-            })
+            open(path, 'w+').close()
+            return edit_option(request, filebrowser, target)
     except Exception as e:
-        msg = "Impossible to test '"+target+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        msg = "Impossible to create '"+target+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
@@ -334,6 +322,7 @@ def new_pl_option(request, filebrowser, target):
 
 
 def load_pltp_option(request, filebrowser, target):
+    """ Load the target"""
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
         
@@ -368,6 +357,7 @@ def load_pltp_option(request, filebrowser, target):
 
 
 def move_option(request, filebrowser, target):
+    """ Move target to POST['destination']."""
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
     
@@ -388,6 +378,7 @@ def move_option(request, filebrowser, target):
 
 
 def delete_option(request, filebrowser, target):
+    """ Delete target"""
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
     
@@ -412,6 +403,7 @@ def delete_option(request, filebrowser, target):
 
 
 def edit_option(request, filebrowser, target):
+    """ Start an editor to edit target."""
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
     
@@ -419,11 +411,82 @@ def edit_option(request, filebrowser, target):
         path = join(filebrowser.full_path(), target)
         with open(path, 'r') as f:
             content = f.read()
+        
         return render(request, 'filebrowser/editor.html', {
             'file_content': content,
-            'action': "/filebrowser/edit_file/",
             'filename': basename(path),
-            'filepath': path,
+            'filepath': path.replace(FILEBROWSER_ROOT+'/', ''),
+            'dir_name': filebrowser.directory.name,
+        })
+        
+    except Exception as e:
+        msg = "Impossible to edit '"+target+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        if FILEBROWSER_ROOT in msg:
+            msg = msg.replace(FILEBROWSER_ROOT+"/", "")
+        messages.error(request, msg)
+    return redirect_fb(request.GET.get('relative_h', '.'))
+
+
+
+def edit_pl_option(request, filebrowser, target):
+    """ Start the editor with preview to edit a PL."""
+    if request.method != 'GET':
+        return HttpResponseNotAllowed(['GET'])
+    
+    try:
+        path = join(filebrowser.full_path(), target)
+        with open(path, 'r') as f:
+            content = f.read()
+        
+        rel_path = join(filebrowser.relative, target).replace('./'+filebrowser.directory.name, "")
+        pl, warnings = load_file(filebrowser.directory, rel_path)
+        if not pl:
+            preview = '<div class="alert alert-danger" role="alert"> Failed to load \''+target+"': \n"+warnings+"</div>"
+        else:
+            if warnings:
+                [messages.warning(request, warning) for warning in warnings]
+            exercise = PLInstance(pl.json)
+            request.session['exercise'] = dict(exercise.dic)
+            preview = exercise.render(request)
+            
+        return render(request, 'filebrowser/editor_pl.html', {
+            'file_content': content,
+            'filename': basename(path),
+            'filepath': path.replace(FILEBROWSER_ROOT+'/', ''),
+            'dir_name': filebrowser.directory.name,
+            'preview': preview,
+        })
+        
+    except Exception as e:
+        msg = "Impossible to display '"+target+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        if FILEBROWSER_ROOT in msg:
+            msg = msg.replace(FILEBROWSER_ROOT+"/", "")
+        messages.error(request, msg)
+    return redirect_fb(request.GET.get('relative_h', '.'))
+
+
+
+def test_pl_option(request, filebrowser, target):
+    """ Allwo to test a PL."""
+    if request.method != 'GET':
+        return HttpResponseNotAllowed(['GET'])
+    
+    try:
+        path = join(filebrowser.full_path(), target)
+
+        rel_path = join(filebrowser.relative, target).replace('./'+filebrowser.directory.name, "")
+        pl, warnings = load_file(filebrowser.directory, rel_path)
+        
+        if not pl:
+            messages.error(request, warnings)
+            return redirect_fb(request.GET.get('relative_h', '.'))
+        
+        exercise = PLInstance(pl.json)
+        request.session['exercise'] = dict(exercise.dic)
+        preview = exercise.render(request)
+            
+        return render(request, 'filebrowser/test_pl.html', {
+            'preview': preview,
         })
         
     except Exception as e:
@@ -436,6 +499,7 @@ def edit_option(request, filebrowser, target):
 
 
 def rights_option(request, filebrowser, target):
+    """ Open a page allowing the user to edit the rights of his targeted Directory."""
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
     
@@ -463,6 +527,7 @@ def rights_option(request, filebrowser, target):
 
 
 def upload_option(request, filebrowser, target):
+    """ Allow the user to upload a file in the filebrowser """
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
     
@@ -488,6 +553,7 @@ def upload_option(request, filebrowser, target):
 
 
 def extract_option(request, filebrowser, target):
+    """ Extract the given archive """
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
     
@@ -501,7 +567,7 @@ def extract_option(request, filebrowser, target):
             with tarfile.open(path) as arc:
                 arc.extractall(join(filebrowser.full_path(), splitext(target)[0]))
         else:
-            return HttpResponseBadRequest
+            raise ValueError("Can't extract '"+mime+"' files.")
         messages.success(request, "Archive '"+target+"' successfully extracted.")
     except Exception as e:
         msg = "Impossible to extract '"+target+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)

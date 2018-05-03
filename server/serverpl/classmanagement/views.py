@@ -17,31 +17,15 @@ from django.core.exceptions import PermissionDenied
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse
 
-from classmanagement.models import Role, Course, PLUser
+from classmanagement.models import Course
+from user_profile.models import Profile
 
 from playexo.models import Answer, Activity
-from playexo.views import activity_view
+from playexo.views import activity_receiver
+from playexo.enums import State
 
 
 logger = logging.getLogger(__name__)
-
-
-#Give the right state number for the css class according to answer's state of the course and summaries pages
-STATE = {
-    Answer.SUCCEEDED: "1",
-    Answer.FAILED: "2",
-    Answer.STARTED: "3",
-    Answer.NOT_STARTED: "4",
-}
-
-#Give the right state number for the css class according to user color blindness
-BLINDNESS = {
-    PLUser.NONE: "",
-    PLUser.DEUTERANOPIA: "-deuteranopia",
-    PLUser.PROTANOPIA: "-protanopia",
-    PLUser.TRITANOPIA: "-tritanopia",
-}
-
 
 
 @login_required
@@ -50,23 +34,16 @@ def index(request):
     course = list()
     for item in request.user.course_set.all():
         summary = Answer.user_course_summary(item, request.user)
-        completion = [
-            {'name': "Réussi", 'count': summary['succeeded'][1]},
-            {'name': "Echoué", 'count': summary['failed'][1]},
-            {'name': "Commencé", 'count': summary['started'][1]},
-            {'name': "Non Commencé", 'count': summary['not_started'][1]},
-        ]
+        completion = [{'name': "", 'count': summary[key][1], 'class': key.template} for key in summary]
         
         course.append({
             'id': item.id,
             'name': item.name,
             'completion': completion,
-            'nb_square': int(summary['succeeded'][1])+ int(summary['failed'][1]) + int(summary['started'][1]) + int(summary['not_started'][1]),
+            'nb_square': sum([int(summary[key][1]) for key in summary])
         })
         
-    return render(request, 'classmanagement/index.html', {
-        'course': course,
-    })
+    return render(request, 'classmanagement/index.html', {'course': course})
 
 
 
@@ -76,44 +53,33 @@ def course_view(request, id):
     try:
         course = Course.objects.get(id=id)
     except:
-        raise Http404("Impossible d'accéder à la page, cette classe n'existe pas.")
-    if not request.user in course.user.all() and not request.user.pluser.is_admin():
+        raise Http404("Course (id: "+str(id)+") not found.")
+    if not course.is_member(request.user) and not request.user.profile.is_admin():
         logger.warning("User '"+request.user.username+"' denied to access course'"+course.name+"'.")
-        raise PermissionDenied("Vous n'appartenez pas à cette classe et ne pouve donc y accéder.")
-    
+        raise PermissionDenied("Vous n'êtes pas membre de cette classe.")
     
     if request.method == 'GET':
         if request.GET.get("action", None) == "toggle_activity":
-            if not request.user.pluser.can_load():
-                logger.warning("User '"+request.user.username+"' denied to access course'"+course.name+"'.")
+            if not request.user in course.teacher.all():
+                logger.warning("User '"+request.user.username+"' denied to toggle course state'"+course.name+"'.")
                 raise PermissionDenied("Vous n'avez pas les droits nécessaires pour fermer/ouvrir cette activité.")
-            try: 
+            try:
                 act = Activity.objects.get(id=request.GET.get("id", None))
                 act.open = not act.open
                 act.save()
+                logger.info("User '"+request.user.username+"' set activity '"+act.name+"' 'open' attribute to '"+str(act.open)+"' in '"+course.name+"'.")
             except:
                 raise Http404("L'activité d'ID '"+str(request.GET.get("id", None))+"' introuvable.")
-                
-    #Getting profs
-    query = course.user.all()
-    prof = list()
-    for user in query:
-        if user.pluser.have_role(Role.INSTRUCTOR):
-            if not prof:
-                prof.append("- "+user.get_full_name().title()+" ("+user.email+")")
-            else:
-                prof.append("- "+user.get_full_name().title()+" ("+user.email+")")
     
-    #Getting activities
-    activities = course.activity.all().order_by("id")
     activity = list()
-    for item in activities:
-        pl = list()
-        for elem in item.pltp.pl.all():
-            pl.append({
+    for item in course.activity.all().order_by("id"):
+        pl = [
+            {
                 'name': elem.json['title'],
-                'state': STATE[Answer.pl_state(elem, request.user)]+BLINDNESS[request.user.pluser.color_blindness],
-            })
+                'state': Answer.pl_state(elem, request.user)
+            }
+            for elem in item.pltp.pl.all()
+        ]
         
         
         len_pl = len(pl) if len(pl) else 1
@@ -130,8 +96,8 @@ def course_view(request, id):
     return render(request, 'classmanagement/course.html', {
         'name': course.name,
         'activity': activity,
-        'prof': prof,
-        'instructor': True if request.user.pluser.have_role(Role.INSTRUCTOR) else False,
+        'teacher': course.teacher.all(),
+        'instructor': True if request.user in course.teacher.all() else False,
         'course_id': id,
     })
 
@@ -144,23 +110,30 @@ def course_summary(request, id):
         course = Course.objects.get(id=id)
     except:
         raise Http404("Impossible d'accéder à la page, cette classe n'existe pas.")
-    if not request.user.pluser.is_admin() and (not request.user in course.user.all() or not request.user.pluser.have_role(Role.INSTRUCTOR)):
-        logger.warning("User '"+request.user.username+"' denied to access course'"+course.name+"'.")
+    if not request.user.profile.is_admin() and (not request.user in course.user.all() or not request.user.profile.have_role(Role.INSTRUCTOR)):
+        logger.warning("User '"+request.user.username+"' denied to access summary of course'"+course.name+"'.")
         raise PermissionDenied("Vous n'êtes pas professeur de cette classe.")
     
     activities = course.activity.all().order_by("id")
     student = list()
-    for user in course.user.all():
+    for user in course.student.all():
         tp = list()
         for activity in activities:
+            summary = Answer.pltp_summary(activity.pltp, user)
             tp.append({
-                'state': Answer.pltp_summary(activity.pltp, user),
+                'state': [{
+                        'percent':summary[i][0],
+                        'count':  summary[i][1],
+                        'class':  i.template
+                    }
+                    for i in summary
+                ],
                 'name': activity.pltp.json['title'],
                 'activity_name': activity.name,
             })
         student.append({
             'lastname': user.last_name,
-            'name': user.get_full_name(),
+            'object': user,
             'id': user.id,
             'activities': tp,
         })
@@ -169,6 +142,7 @@ def course_summary(request, id):
     student = sorted(student, key=lambda k: k['lastname'])
     
     return render(request, 'classmanagement/course_summary.html', {
+        'state': [i for i in State if i not in [State.TEACHER_EXC, State.SANDBOX_EXC]],
         'name': course.name,
         'student': student,
         'range_tp': range(len(activities)),
@@ -184,22 +158,22 @@ def activity_summary(request, id, name):
         course = Course.objects.get(id=id)
     except:
         raise Http404("Impossible d'accéder à la page, cette classe n'existe pas.")
-    if not request.user.pluser.is_admin() and (not request.user in course.user.all() or not request.user.pluser.have_role(Role.INSTRUCTOR)):
-        logger.warning("User '"+request.user.username+"' denied to access course'"+course.name+"'.")
+    if not request.user.profile.is_admin() and (not request.user in course.user.all() or not request.user.profile.have_role(Role.INSTRUCTOR)):
+        logger.warning("User '"+request.user.username+"' denied to access summary of course'"+course.name+"'.")
         raise PermissionDenied("Vous n'êtes pas professeur de cette classe.")
     
     activity = Activity.objects.get(name=name)
     student = list()
-    for user in course.user.all():
+    for user in course.student.all():
         tp = list()
         for pl in activity.pltp.pl.all():
             tp.append({
                 'name': pl.json['title'],
-                'state': STATE[Answer.pl_state(pl, user)]+BLINDNESS[request.user.pluser.color_blindness],
+                'state': Answer.pl_state(pl, user)
             })
         student.append({
             'lastname': user.last_name,
-            'name': user.get_full_name(),
+            'object': user,
             'id': user.id,
             'question': tp,
         })
@@ -208,6 +182,7 @@ def activity_summary(request, id, name):
     student = sorted(student, key=lambda k: k['lastname'])
     
     return render(request, 'classmanagement/activity_summary.html', {
+        'state': [i for i in State if i not in [State.TEACHER_EXC, State.SANDBOX_EXC]],
         'course_name': course.name,
         'activity_name': activity.name,
         'student': student,
@@ -224,8 +199,8 @@ def student_summary(request, course_id, student_id):
         course = Course.objects.get(id=course_id)
     except:
         raise Http404("Impossible d'accéder à la page, cette classe n'existe pas.")
-    if not request.user.pluser.is_admin() and (not request.user in course.user.all() or not request.user.pluser.have_role(Role.INSTRUCTOR)):
-        logger.warning("User '"+request.user.username+"' denied to access course'"+course.name+"'.")
+    if not request.user.profile.is_admin() and (not request.user in course.user.all() or not request.user.profile.have_role(Role.INSTRUCTOR)):
+        logger.warning("User '"+request.user.username+"' denied to access summary of course'"+course.name+"'.")
         raise PermissionDenied("Vous n'êtes pas professeur de cette classe.")
         
     student = User.objects.get(id=student_id)
@@ -235,7 +210,7 @@ def student_summary(request, course_id, student_id):
     for activity in activities:
         question = list()
         for pl in activity.pltp.pl.all():
-            state = STATE[Answer.pl_state(pl, student)]+BLINDNESS[request.user.pluser.color_blindness]
+            state = Answer.pl_state(pl, student)
             question.append({
                 'state': state,
                 'name':  pl.json['title'],
@@ -249,8 +224,9 @@ def student_summary(request, course_id, student_id):
         })
         
     return render(request, 'classmanagement/student_summary.html', {
+        'state': [i for i in State if i not in [State.TEACHER_EXC, State.SANDBOX_EXC]],
         'course_name': course.name,
-        'student_name': student.get_full_name(),
+        'student': student,
         'activities': tp,
         'course_id': course_id,
     })
@@ -260,15 +236,5 @@ def student_summary(request, course_id, student_id):
 def redirect_activity(request, activity_id):
     request.session['current_activity'] = activity_id
     request.session['current_pl'] = None
-    return HttpResponseRedirect(reverse(activity_view))
-
-
-@login_required
-def cycle_color_blindness(request):
-    if request.META["REQUEST_METHOD"] != "GET":
-        return HttpResponse('405 Method ' + request.META["REQUEST_METHOD"] + ' Not Allowed', status=405)
-    
-    request.user.pluser.color_blindness = PLUser.COLOR_BLINDNESS[(PLUser.COLOR_BLINDNESS.index((request.user.pluser.color_blindness, request.user.pluser.get_color_blindness_display()))+1)%len(PLUser.COLOR_BLINDNESS)][0]
-    request.user.pluser.save()
-    redirect_url = request.GET.get('from', None)
-    return HttpResponseRedirect(redirect_url)
+    request.session['testing'] = False
+    return HttpResponseRedirect(reverse(activity_receiver))

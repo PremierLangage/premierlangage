@@ -13,40 +13,44 @@
     <link rel="stylesheet" href="{% static '/css/filebrowser.css' %}" />
 {% endblock %}
 
+{% block alert %}{% endblock %}
+
 {% block content %}
     <div class="row no-margin">
         <div class="col-md-1"></div>
         <div class="col-md-10">
-            <h1>Editing {{ filename }}</h1>
-            <hr/>
-            <div id="editor" style="height: 400px;">{{ file_content }}</div>
-            <form action="{{ action }}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="content" style="display: none;"/>
-                <input type="hidden" name="path" value="{{ filepath }}" style="display: none;"/>
-                <hr/>
-                <center>
-                    <button class="btn btn-primary" type="submit">
-                        <i class="fas fa-save"></i>&emsp; Save
-                    </button>
-                </center>
-            </form> 
-        </div>
-        <div class="col-md-1"></div>
-    </div>
-{% endblock %}
-
-{% block end_script %}
-    <script src="{% static 'js/ace/ace.js' %}"></script>
-    <script>
-        var editor = ace.edit('editor');
-            editor.session.setMode("ace/mode/python");
-            editor.setTheme("ace/theme/monokai");
-            editor.setShowInvisibles(true);
-            
-        var input = $('input[name="content"]');
-            editor.getSession().on("change", function () {
-            input.val(editor.getSession().getValue());
-        });
-    </script>
+            <div class="card">
+                <div class="card-header">
+                    <h1>Editing {{ filename }}</h1>
+                </div>
+                <div class="card-body">
+                    <div id="editorPL" style="height: 400px;">{{ file_content }}</div>
+                        <form action="/filebrowser/edit_file/" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="path" value="{{ filepath }}"/>
+                            <input type="hidden" id="editor_input" name="editor_input" value="{{ file_content }}" />
+                            <hr/>
+                            <center>
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-save"></i>&emsp; Save
+                                </button>
+                            </center>
+                        </form> 
+                    </div>
+                </div>
+            </div>
+            <script src="{% static 'js/ace/ace.js' %}"></script>
+            <script>
+                var editorPL = ace.edit('editorPL');
+                    editorPL.session.setMode("ace/mode/python");
+                    editorPL.setTheme("{{ request.user.profile.editor_theme.template }}");
+                    editorPL.setShowInvisibles(true);
+                    
+                var inputPL = $('input[name="editor_input"]');
+                    editorPL.getSession().on("change", function () {
+                    inputPL.val(editorPL.getSession().getValue());
+                });
+            </script>
+            <div class="col-md-1"></div>
+    </div> 
 {% endblock %}

@@ -10,6 +10,5 @@ urlpatterns = [
     url(r'^course/(\d+)/(\w+)/summary/$', views.activity_summary),
     url(r'^course/(\d+)/summary/$', views.course_summary),
     url(r'^redirect/(\d+)/$', views.redirect_activity),
-    url(r'^cycle_color_blindness/$', views.cycle_color_blindness),
 ]
 

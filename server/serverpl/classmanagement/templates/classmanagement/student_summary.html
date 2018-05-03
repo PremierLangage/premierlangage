@@ -16,7 +16,7 @@
     <div class="panel panel-default">
         
         <div class="panel-body">
-            <h1>{{course_name}}: {{student_name}}</h1><br>
+            <h1>{{course_name}}: {% firstof student.get_full_name student.username %}</h1><br>
             <div class="course-instructor-action">
                 <a href="/courses/course/{{course_id}}/">Retour</a><br><br>
                 <a href="/courses/course/{{course_id}}/summary/">Voir l'avancement des élèves pour le cours</a>
@@ -24,10 +24,9 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th><div class="block course-block type1{% if request.user.pluser.color_blindness == 'TR' %}-tritanopia{% elif request.user.pluser.color_blindness == 'DE' %}-deuteranopia{%elif request.user.pluser.color_blindness == 'PR'%}-protanopia{% endif %}" style="width: 20px; height: 20px;"></div>&emsp;Réussi</th>
-                        <th><div class="block course-block type2{% if request.user.pluser.color_blindness == 'TR' %}-tritanopia{% elif request.user.pluser.color_blindness == 'DE' %}-deuteranopia{%elif request.user.pluser.color_blindness == 'PR'%}-protanopia{% endif %}" style="width: 20px; height: 20px;"></div>&emsp;Échoué</th>
-                        <th><div class="block course-block type3{% if request.user.pluser.color_blindness == 'TR' %}-tritanopia{% elif request.user.pluser.color_blindness == 'DE' %}-deuteranopia{%elif request.user.pluser.color_blindness == 'PR'%}-protanopia{% endif %}" style="width: 20px; height: 20px;"></div>&emsp;Commencé</th>
-                        <th><div class="block course-block type4{% if request.user.pluser.color_blindness == 'TR' %}-tritanopia{% elif request.user.pluser.color_blindness == 'DE' %}-deuteranopia{%elif request.user.pluser.color_blindness == 'PR'%}-protanopia{% endif %}" style="width: 20px; height: 20px;"></div>&emsp;Non Commencé</th>
+                        {% for item in state %}
+                            <th><div class="block course-block {{item.template}}" style="width: 20px; height: 20px;"></div>&emsp;{{item}}</th>
+                        {% endfor %}
                     </tr>
                 </thead>
             </table>
@@ -46,7 +45,7 @@
                                 <center>
                                     <td class="summary-pl">
                                         {% for item in elem.pl %}
-                                            <div class="block course-block type{{item.state}}" style="width: calc({{elem.width}}% - 2px);"><p>{{ item.name }}</p></div>
+                                            <div class="block course-block {{item.state.template}}" style="width: calc({{elem.width}}% - 2px);"><p>{{ item.name }}</p></div>
                                         {% endfor %}
                                     </td>
                                 </center>
