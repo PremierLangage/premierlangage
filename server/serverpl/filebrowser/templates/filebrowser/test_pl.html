@@ -1,0 +1,24 @@
+{% extends "classmanagement/base.html" %}
+
+{% load static %}
+
+{% block header_script %}
+    <script src="{% static 'js/jquery-3.3.1.js' %}" ></script>
+    <script src="{% static 'js/bootstrap.js' %}" ></script>
+    <script src="{% static 'js/fontawesome-all.js' %}" ></script>
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static '/css/bootstrap.css' %}" />
+    <link rel="stylesheet" href="{% static '/css/filebrowser.css' %}" />
+{% endblock %}
+
+{% block alert %}{% endblock %}
+
+{% block content %}
+    <div class="row no-margin">
+            <div class="col-md-1"></div>
+            <div id="preview" class="col-md-9">{{ preview|safe }}</div>
+            <div class="col-md-1"></div>
+    </div>
+{% endblock %}

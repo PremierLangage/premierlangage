@@ -1,0 +1,88 @@
+{% extends "classmanagement/base.html" %}
+
+{% load static %}
+
+{% block header_script %}
+    <script src="{% static 'js/jquery-3.3.1.js' %}" ></script>
+    <script src="{% static 'js/bootstrap.js' %}" ></script>
+    <script src="{% static 'js/fontawesome-all.js' %}" ></script>
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static '/css/bootstrap.css' %}" />
+    <link rel="stylesheet" href="{% static '/css/filebrowser.css' %}" />
+{% endblock %}
+
+{% block alert %}{% endblock %}
+
+{% block content %}
+    <div class="row no-margin">
+        <div class="col-md-6" style="border-right: solid 2px grey;">
+            <div class="card">
+                <div class="card-header">
+                    <h1>Editing {{ filename }}</h1>
+                </div>
+                <div class="card-body">
+                    <div id="editorPL" style="height: 400px;">{{ file_content }}</div>
+                        <form action="/filebrowser/edit_file/" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="path" value="{{ filepath }}"/>
+                            <input type="hidden" id="editor_input" name="editor_input" value="{{ file_content }}" />
+                            <hr/>
+                            <center>
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-save"></i>&emsp; Save
+                                </button>
+                                <button id="preview_button" type=button class="btn btn-success">
+                                    <i class="fas fa-play"></i>&emsp; Preview
+                                </button>
+                            </center>
+                        </form> 
+                    </div>
+                </div>
+            </div>
+            <script src="{% static 'js/ace/ace.js' %}"></script>
+            <script>
+                var editorPL = ace.edit('editorPL');
+                    editorPL.session.setMode("ace/mode/python");
+                    editorPL.setTheme("{{ request.user.profile.editor_theme.template }}");
+                    editorPL.setShowInvisibles(true);
+
+                var inputPL = $('input[name="editor_input"]');
+                    editorPL.getSession().on("change", function () {
+                    inputPL.val(editorPL.getSession().getValue());
+                });
+
+                $( document ).ready(function(){
+                    $.valHooks.textarea = {
+                        get: function( elem ) {
+                            return elem.value.replace( /\r?\n/g, "\r\n" );
+                        }
+                    };
+          
+                    $( "#preview_button" ).click(function() {
+                        var POST = {
+                            content: $("#editor_input").val(),
+                            path: "{{ filepath }}",
+                            directory: "{{ dir_name }}",
+                            requested_action: "preview",
+                        }
+                        
+                        $.ajax({
+                            type : "POST",
+                            url : "/filebrowser/preview_pl/",
+                            data: JSON.stringify(POST, null, '\t'),
+                            contentType: 'application/json;charset=UTF-8',
+                            success: function(returned_status) {
+                                $('#preview').html(returned_status.preview);
+                                
+                            }
+                        });
+                    });
+                });
+            </script>
+            <div id="preview" class="col-md-6">{{ preview|safe }}</div>
+    </div>
+    
+    
+{% endblock %}
