@@ -93,6 +93,7 @@ You may need to restart the env to ensure pip is working properly:
 
 ### Creating / Migrating Database
 If an error occurs during the creation or the migration of the database, you can run the script *premierlangage/server/serverpl/fix_database.sh*
+
 **warning:** This script will empty your database (if it exists)
 
 
