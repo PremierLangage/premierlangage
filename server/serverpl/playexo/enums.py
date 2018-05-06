@@ -19,7 +19,7 @@ class State(Enum):
     TEACHER_EXC = 5
     SANDBOX_EXC = 6
     
-    class Labels:
+    class Label:
         SUCCEEDED   = "Réussi"
         PART_SUCC   = "Partiellement Réussi"
         FAILED      = "Échoué"
@@ -28,7 +28,7 @@ class State(Enum):
         TEACHER_EXC = "Commencé"
         SANDBOX_EXC = "Commencé"
     
-    class Templates:
+    class Template:
         SUCCEEDED   = "state-succeded"
         PART_SUCC   = "state-part-succ"
         FAILED      = "state-failed"

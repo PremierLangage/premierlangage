@@ -22,13 +22,13 @@ class ColorBlindness(Enum):
     DEUTERANOPIA = 2
     TRITANOPIA = 3
     
-    class Labels:
+    class Label:
         NONE = 'Aucun'
         PROTANOPIA = 'Protanope'
         DEUTERANOPIA = 'Deuteranope'
         TRITANOPIA = 'Tritanope'
     
-    class Templates:
+    class Template:
         NONE = ''
         DEUTERANOPIA = 'deuteranopia'
         PROTANOPIA =   'protanopia'
@@ -46,7 +46,7 @@ class Role(Enum):
     OBSERVER = 3
     LEARNER = 4
     
-    class Labels:
+    class Label:
         ADMINISTRATOR = 'Administrator'
         CONTENT_DEVELOPER = 'Conceptor'
         INSTRUCTOR = 'Teacher'
@@ -104,7 +104,7 @@ class EditorTheme(Enum):
     TWILIGHT = 33
     XCODE = 34
     
-    class Labels:
+    class Label:
         CHAOS = "Chaos"
         CHROME = "Chrome"
         CLOUDS = "Clouds"
@@ -141,7 +141,7 @@ class EditorTheme(Enum):
         TWILIGHT = "Twilight"
         XCODE = "Xcode"
     
-    class Templates:
+    class Template:
         CHAOS = "ace/theme/chaos"
         CHROME = "ace/theme/chrome"
         CLOUDS = "ace/theme/clouds"
