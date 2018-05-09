@@ -2,7 +2,14 @@
 
 {% load static %}
 
+{% block header_script %}
+    <script src="{% static 'js/jquery-3.3.1.js' %}" ></script>
+    <script src="{% static 'js/bootstrap.js' %}" ></script>
+    <script src="{% static 'js/fontawesome-all.js' %}" ></script>
+{% endblock %}
+
 {% block css %}
+    <link rel="stylesheet" href="{% static '/css/bootstrap.css' %}" />
     <link rel="stylesheet" href="{% static '/css/filebrowser.css' %}" />
 {% endblock %}
 

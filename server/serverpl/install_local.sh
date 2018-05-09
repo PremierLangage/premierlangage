@@ -1,5 +1,30 @@
 echo "Checking dependencies..."
 #Checking if zip is installed
+
+if [ "$VIRTUAL_ENV" == "" ]; then
+  INVENV=1
+  echo -e "ERROR: The installation should run under Virtual Environnement
+--> check the virtuelenv's documentation : https://virtualenv.pypa.io/en/stable/"
+  exit 1
+fi
+
+OS=$(uname -s)
+echo "$OS"
+
+#Cheking if this is an apple OS
+if [ "$OS" = "Darwin" ]; then
+   if ! hash brew; then
+       echo "ERROR: brew should be installed. visit https://brew.sh/ "
+       exit 1
+   fi
+  brew install libmagic
+fi
+
+if ! hash zip; then
+    echo "ERROR: zip should be installed. Try 'apt-get install zip' "
+    exit 1
+fi
+
 if ! hash zip; then
     echo "ERROR: zip should be installed. Try 'apt-get install zip'"
     exit 1
