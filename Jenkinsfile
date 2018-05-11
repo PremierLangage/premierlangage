@@ -4,17 +4,18 @@ pipeline {
     stage('Configurations') {
       steps {
         sh '''
-                  echo "Environnement configuration..."
-                  server/serverpl/./install_release.sh
-               '''
+               cd server/serverpl
+               echo "Environnement configuration..."
+               ./install_release.sh
+           '''
       }
     }
     stage('Test') {
       steps {
         sh '''
                echo "Running the tests..."
-               python3 server/serverpl/manage.py test
-               '''
+               python3 manage.py test
+           '''
       }
     }
   }
