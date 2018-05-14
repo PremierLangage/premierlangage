@@ -5,7 +5,7 @@ pipeline {
       steps {
         sh '''  
                pwd
-               python3 -m virtualenv /srv/env/jenkinsenv
+               python3 -m venv /srv/env/jenkinsenv
                source /srv/env/jenkinsev/bin/activate
                cd server/serverpl
                echo "Environnement configuration..."
