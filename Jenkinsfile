@@ -6,7 +6,7 @@ pipeline {
         sh '''  
                pwd
                python3 -m venv /srv/env/jenkinsenv
-               source /srv/env/jenkinsev/bin/activate
+               source /srv/env/jenkinsenv/bin/activate
                cd server/serverpl
                echo "Environnement configuration..."
                ./install_release.sh
