@@ -22,7 +22,7 @@ pipeline {
     }
     stage('Clean') {
       steps {
-        sh '''deactivate
+        sh '''
            '''
       }
     }
