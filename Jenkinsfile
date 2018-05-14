@@ -15,6 +15,7 @@ pipeline {
     stage('Test') {
       steps {
         sh '''
+              cd server/serverpl
                echo "Running the tests..."
                python3 manage.py test
            '''
