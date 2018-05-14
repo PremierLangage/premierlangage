@@ -5,7 +5,7 @@ pipeline {
       steps {
         sh '''  
                pwd
-               python -m venv toto
+               python3 -m venv toto
                source /srv/env/jenkinsenv/bin/activate
                pip3 install Django
                cd server/serverpl
