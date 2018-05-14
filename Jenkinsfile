@@ -5,8 +5,6 @@ pipeline {
       steps {
         sh '''  
                pwd
-               sudo virtualenv /srv/env/jenkinsenv
-               source /srv/env/jenkinsev/bin/activate
                cd server/serverpl
                echo "Environnement configuration..."
                ./install_release.sh
