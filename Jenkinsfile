@@ -3,8 +3,9 @@ pipeline {
   stages {
     stage('Configurations') {
       steps {
-        sh '''  pwd
-                ls
+        sh '''  
+               pwd
+               virtualenv /srv/env/jenkinsenv
                cd server/serverpl
                echo "Environnement configuration..."
                ./install_release.sh
@@ -22,7 +23,7 @@ pipeline {
     stage('Clean') {
       steps {
         sh '''
-              
+              rm -rf /srv/env/jenkinsenv
            '''
       }
     }
