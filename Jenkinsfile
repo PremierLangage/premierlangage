@@ -8,7 +8,7 @@ pipeline {
                source /srv/env/jenkinsenv/bin/activate
                cd server/serverpl
                echo "Environnement configuration..."
-               ./install_release.sh
+               ./install_local.sh
            '''
       }
     }
