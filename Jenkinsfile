@@ -4,7 +4,7 @@ pipeline {
     stage('Configurations') {
       steps {
         sh '''  pwd
-           
+                ls
                cd server/serverpl
                echo "Environnement configuration..."
                ./install_release.sh
