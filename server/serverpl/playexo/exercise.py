@@ -54,46 +54,46 @@ class ActivityInstance:
     
     
     def evaluate(self, response):
+        dic = self.intern_build()
         if 'evaluator' not in self.dic:
             try:
                 if 'timeout' in locals():
                     sandbox_session = SandboxSession(self.dic, response['answer'], timeout=timeout)
-                sandbox_session = SandboxSession(self.dic, response['answer'])
+                else:
+                    sandbox_session = SandboxSession(self.dic, response['answer'])
+                    
                 feedback = json.loads(sandbox_session.call())
-                if feedback['grade']['success'] == "info":
-                    return (None, feedback['grade']['feedback'])
-                elif feedback['grade']['success']:
-                    return (True, feedback['grade']['feedback'])
-                return (False, feedback['grade']['feedback'])
+                state, feedback = feedback['grade']['success'], feedback['grade']['feedback']
+                
+                return (None, feedback) if state == "info" else (True, feedback) if state else (False, feedback)
             except ValueError as e:
                 return (None, "La réponse reçu part la sandbox n'est pas au bon format.")
             except Exception as e:
-                return None, ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte, \
-        merci de prévenir votre professeur:<br>Error - "+str(type(e)).replace("<", "[").replace(">", "]")+": "+str(e))
+                return None,("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte,"
+                              + "merci de prévenir votre professeur:<br>Error - "
+                              + str(type(e)).replace("<", "[").replace(">", "]") + ": " + str(e))
         else:
             try:
-                _var= dict(self.dic)
-                _var['response']=response
-                exec(_var['before'],_var)
-                exec(_var['evaluator'],_var)
-                if not 'grade' in _var \
-                        or (not isinstance(_var['grade'][0], bool) \
-                        and _var['grade'][0] != None) or (not isinstance(_var['grade'][1], str)):
-                    return None, ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte, merci de prévenir votre professeur:\n"
-                                  "Evaluator should declare a tuple called 'grade' (bool, str).")
-                return _var['grade']
+                exec(dic['evaluator'], dic)
+                if not 'grade' in dic \
+                        or dic['grade'][0] not in [False, True, None] \
+                        or type(dic['grade'][1]) != str:
+                    return None, ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte, merci de prévenir votre professeur:<br>"
+                                  "evaluator/before should declare a tuple called 'grade' (bool, str).")
+                return dic['grade']
             except Exception as e:
                 return None, ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte, merci de prévenir votre professeur:<br>Error - "+str(type(e)).replace("<", "[").replace(">", "]")+": "+str(e))
     
     
     #@timeout_decorator.timeout(5, use_signals=False)
     def intern_build(self):
+        dic = dict(self.dic)
         if 'build' in self.dic:
             exec(self.dic['build'], globals())
-            self.dic = build(self.dic)
+            dic = build(self.dic)
         elif 'before' in self.dic:
-            exec(self.dic['before'], self.dic)
-        return self.dic
+            exec(self.dic['before'], dic)
+        return dic
     
     
     def get_context(self, request):
