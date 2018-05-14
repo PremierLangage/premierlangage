@@ -28,7 +28,7 @@ pipeline {
     stage('Clean') {
       steps {
         sh '''
-            
+            rm -rf /var/lib/jenkins/workspace/env/jenkinsenv
            '''
       }
     }
