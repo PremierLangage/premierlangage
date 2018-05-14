@@ -5,7 +5,6 @@ pipeline {
       steps {
         sh '''  
                pwd
-               python3 -m venv /srv/env/jenkinsenv
                source /srv/env/jenkinsenv/bin/activate
                cd server/serverpl
                echo "Environnement configuration..."
@@ -24,7 +23,6 @@ pipeline {
     stage('Clean') {
       steps {
         sh '''deactivate
-              rm -rf /srv/env/jenkinsenv
            '''
       }
     }
