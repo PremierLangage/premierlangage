@@ -10,7 +10,7 @@ pipeline {
                pip3 install Django
                cd server/serverpl
                echo "Environnement configuration..."
-               ./install_release.sh
+               ./install_local.sh
            '''
       }
     }
