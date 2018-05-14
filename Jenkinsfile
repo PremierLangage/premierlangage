@@ -5,8 +5,8 @@ pipeline {
       steps {
         sh '''  
                pwd
-               python3 -m venv /srv/env/jenkinsenv2
-               source /srv/env/jenkinsenv2/bin/activate
+               python3 -m venv /var/lib/jenkins/workspace/env/jenkinsenv
+               source  /var/lib/jenkins/workspace/env/jenkinsenv/bin/activate
                pip3 install Django
                cd server/serverpl
                echo "Environnement configuration..."
@@ -19,7 +19,7 @@ pipeline {
         sh '''
               pwd
               cd server/serverpl
-              source /srv/env/jenkinsenv2/bin/activate
+              source  /var/lib/jenkins/workspace/env/jenkinsenv/bin/activate
                echo "Running the tests..."
                python3 manage.py test
            '''
@@ -28,7 +28,7 @@ pipeline {
     stage('Clean') {
       steps {
         sh '''
-            rm -rf /srv/env/jenkinsenv2
+            rm -rf  /var/lib/jenkins/workspace/env/jenkinsenv
            '''
       }
     }
