@@ -14,6 +14,7 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpRespons
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.contrib.auth import logout
 from django.urls import reverse
 from django.contrib import messages
@@ -125,7 +126,7 @@ def lti_receiver(request, activity_name, pltp_sha1):
     activity_id = request.session.pop("activity", None)
     course_id = request.session.pop("course_id", None)
     if not activity_id or not course_id:
-        raise Http404("Impossible d'accéder à la page, la requête LTI doit contenir une ID d'activité ainsi que d'une ID de classe.")
+        raise PermissionDenied("Impossible d'accéder à la page, la requête LTI doit contenir une ID d'activité ainsi que d'une ID de classe.")
     
     try:
         activity = Activity.objects.get(id=activity_id)
@@ -137,7 +138,7 @@ def lti_receiver(request, activity_name, pltp_sha1):
         activity = Activity(name=activity_name, pltp=pltp, id=activity_id)
         activity.save()
         logger.info("New activity created: '"+activity_name+" ("+str(activity_id)+")' and added to course of id "+str(course_id))
-    Course.objects.get(id=course_id).activity.add(activity)
+        Course.objects.get(id=course_id).activity.add(activity)
     
     request.session['current_activity'] = activity_id
     request.session['current_pl'] = None

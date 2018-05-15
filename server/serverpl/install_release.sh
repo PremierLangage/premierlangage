@@ -14,6 +14,7 @@ echo "$OS"
 if [ "$OS" = "Darwin" ]; then
    if ! hash brew; then
        echo "ERROR: brew should be installed. visit https://brew.sh/ "
+       echo "ERROR: brew should be installed. visit https://brew.sh/ "
        exit 1
    fi
   brew install libmagic
@@ -65,14 +66,19 @@ echo "Done !"
 echo ""
 echo "Creating needed directories..."
 if [ ! -d "../../../tmp" ]; then
-	mkdir ../../../tmp || { echo>&2 "ERROR: Can't create ../../../tmp" ; exit 1; }
+    mkdir ../../../tmp || { echo>&2 "ERROR: Can't create ../../../tmp" ; exit 1; }
 fi
 if [ ! -f "../../../tmp/README" ]; then
-	echo "Directory used by premier langage, do not remove." > ../../../tmp/README
+    echo "Directory used by premier langage, do not remove." > ../../../tmp/README
 fi
 
 #Building database
+source /etc/apache2/envvars
 echo ""
 echo "Configuring database..."
-python3 manage.py migrate || { echo>&2 "ERROR: python3 manage.py migrate failed" ; exit 1; }
+SECRET_KEY=$SECRET_KEY python3 manage.py migrate || { echo>&2 "ERROR: python3 manage.py migrate failed" ; exit 1; }
 echo "Done !"
+
+echo ""
+echo "Creating super user account..."
+SECRET_KEY=$SECRET_KEY python3 manage.py createsuperuser || { echo>&2 "ERROR: python3 manage.py createsuperuser failed" ; exit 1; }
