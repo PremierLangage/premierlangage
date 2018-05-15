@@ -62,7 +62,7 @@ S    [L'utilisateur est sur la page d'acceuil apres s'etre connecté, il a accè
 
 RELATED INFORMATION
 
-<Concurrency>    <[Le tableau de bord s'actualise en temps réel.]>
-	
-<Superordinate Use Cases>    <[[Exercice](/exercice.md), [Etude](/etude.md),[Revision](/revision.md)]>
+Concurrency    [Le tableau de bord s'actualise en temps réel.]
+
+Superordinate Use Cases    [Exercice](/exercice.md), [Etude](/etude.md),[Revision](/revision.md)]
  
