@@ -20,7 +20,8 @@ L'inscription dois être effectué préalablement.
 
 h3. Post Conditions
 
-En cas de succès : L'utilisateur a accès à son compte.
+En cas de succès : L'utilisateur a accès à son compte. Une session est créée, l'utilisateur est soit placé sur sont Tableaudebord soit sur la dernière page ou il était.
+
 
 En cas d'échec: affiche d'erreur mot de passe, actualisation de la page de connection.
 
