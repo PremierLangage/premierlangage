@@ -1,7 +1,17 @@
 *------------ Règles de bonnes pratiques ------------*
 
+   I. ORGANISATION DU DOSSIER CONCENPTION
 
-   I. CONVENTIONS
+1. dossier : - acteur
+             - casutilisation
+             - concept
+             - patron
+2. les noms de fichiers devront être explicite par exemple visiteur.md
+
+3. les fichiers à la racine concernent le FQM et la Qualité
+
+
+   II. CONVENTIONS
 
 1. Je n'utiliserai que des minuscules pures pour le nom des fichiers et dossiers
 
@@ -10,7 +20,7 @@
 3. les liens devront utiliser le format  : [link](relative_path/file.md)
 
 
-   I. GITHUB
+   III. GITHUB
 
 1. Essayer de choisir une tâche à la fois dans premierlangage/pl-conception dans
 la partie "To do" et la choisir avant de commencer à modifier le ou les fichiers
@@ -23,7 +33,7 @@ conflits d'ajout/supression entre les fichiers.
 de premierlangage/pl-conception dans la partie "Done"
 
 
-   III. Modification des fichiers
+   IV. Modification des fichiers
 
 1. Si éventuellement, vous rencontrez des problèmes de conceptions, veuillez
 l'indiquer en utilisant l'indacteur #FIXME et le rajouter dans la partie "To do"
