@@ -3,16 +3,15 @@ pipeline {
   stages {
     stage('Configurations') {
       steps {
-        sh '''  
+        sh '''
                python3 -m venv /var/lib/jenkins/workspace/env/jenkinsenv
                source  /var/lib/jenkins/workspace/env/jenkinsenv/bin/activate
                pip3 install Django
-               apt-get install postgresql postgresql-client
                cd server/serverpl
                RANDOM_KEY=$(python3 -c 'from django.utils.crypto import get_random_string;chars = "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)";SECRET_KEY = get_random_string(50, chars);print(SECRET_KEY)')
                export SECRET_KEY=$RANDOM_KEY
                echo "---- Environnement configuration... ----"
-               ./install_release.sh
+               ./install_local.sh
            '''
       }
     }
