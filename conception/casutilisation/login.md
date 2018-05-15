@@ -62,9 +62,9 @@ Step    Branching Condition
 
 na.  Action causing branching:
 
-       1 : On propose à l'utilisateur d'entrer à nouveau ses informations et on affiche la mention [mot de passe oublié](/oublie.md).
+1 : On propose à l'utilisateur d'entrer à nouveau ses informations et on affiche la mention [mot de passe oublié](/oublie.md).
 
-       2 : On propose au visiteur de [s'inscrire](/inscription.md).
+2 : On propose au visiteur de [s'inscrire](/inscription.md).
 
 
 RELATED INFORMATION
