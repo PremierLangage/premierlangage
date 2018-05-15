@@ -5,5 +5,6 @@ Il doit être créer par les enseignants et peuvent être éditer par ces dernie
 Chaque cours doit être gérer par un ou plusieurs enseignants.
 Il doit contenir des tags afin de pouvoir être associer à des exercices.
 Chaque cours est accessible à n'importe quel étudiant à condition qu'il soit inscrit dans cette discipline.
+Chaque cours contient une ou plusieurs feuilles d'exercice.
 
 
