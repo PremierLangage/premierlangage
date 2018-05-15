@@ -18,3 +18,4 @@ Pour un enseignant, en plus des badges ... il peut voir ses étudiants. Le dashb
 Exemple : S'il a trop d'étudiant, on peut les trier par promo, td ... alors qu'on peut tous les afficher s'il a pas beaucoup d'étudiant.
 A partir du dashboard un enseignant peut cliquer sur n'importe lequel de ses élèves et voir ses statistiques, résultats ...
 
+Tous les utilisateurs peuvent également réorgansier leur dashboard (épingler un badge, intervertir 2 catégories ...)
