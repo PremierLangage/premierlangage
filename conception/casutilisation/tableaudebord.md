@@ -63,5 +63,5 @@ RELATED INFORMATION
 
 Concurrency    [Le tableau de bord s'actualise en temps réel.]
 
-Superordinate Use Cases    [Exercice](/exercice.md), [Etude](/etude.md),[Revision](/revision.md)]
+Superordinate Use Cases    [Exercice](/exercice.md), [Etude](/etude.md),[Revision](/revision.md)
  

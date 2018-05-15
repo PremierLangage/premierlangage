@@ -16,3 +16,4 @@ doc/
 .coverage/*
 documentation/templates/documentation/*
 documentation/static/documentation/*
+.coverage
