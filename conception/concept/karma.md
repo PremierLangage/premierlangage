@@ -8,5 +8,5 @@ Un utilisateur peut perdre du karma, s'il soumet par exemple trop de tag invalid
 Chaque don de karma rapporte 1 points au destinataire.
 A partir d'un certain palier (à determiner), chaque don de karma rapporte 2 points, puis 3, 4 ...
 Le karma de toutes les disciplines a un minimum et un maximum. (à déterminer)
-Les disciplines possèdent tous un "superuser" qui est un enseignant à qui on ne peut pas retirer du karma et qui possède le karma maximum.
+Les disciplines possèdent tous un ou plusieurs "superuser" qui sont des enseignants à qui on ne peut pas retirer du karma et qui possèdent le karma maximum.
 Un utilisateur connecté ne peut pas donner 2 fois du karma à un même utilisateur. 
