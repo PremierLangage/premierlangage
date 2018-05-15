@@ -1,6 +1,5 @@
-login
+Login
 
-identifiant: 1
 
 Objectif :  Permet la connexion d'un utilisateur tout en conservant les données sur son avancement.
 
