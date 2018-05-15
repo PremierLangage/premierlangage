@@ -37,6 +37,7 @@ de premierlangage/pl-conception dans la partie "Done"
 
 1. Si éventuellement, vous rencontrez des problèmes de conceptions, veuillez
 l'indiquer en utilisant l'indacteur #FIXME et le rajouter dans la partie "To do"
+précisez FIXME dans le sujet, et à quel fichier il fait référence
 
 2. Si vous êtes confronté à un problèmes que vous ne pouvez pas résoudre tout de
 suite, ou que vous jugez qu'il méritte une plus grande réfléxion, veuillez
