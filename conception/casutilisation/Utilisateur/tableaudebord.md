@@ -1,6 +1,5 @@
 Tableau de bord
 
-identifiant: 2
 
 Objectif :  Permet à l'utilisateur de voir sa progression, ces difficultés, ces cours, ces exercices, son classement par rapport à toute ça promotion, il s'agit d'un tableau suivie.
 
