@@ -28,15 +28,17 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', 'pl-test.u-pem.fr', 'pl.u-pem.fr']
 
-# Used by mail_admins log handler, set ENABLE_MAIL_ADMINS to True to use it (DEBUG should also be set to False)
+# Used by mail_admins log handler, set ENABLE_MAIL_ADMINS to True to use it (DEBUG shoule also be set to False)
 ENABLE_MAIL_ADMINS = True
-MAIL_HOST = ''
+MAIL_HOST = 'smtp.u-pem.fr'
 MAIL_PORT = 25
+SERVER_EMAIL = 'pl@pl-test.u-pem.fr'
 ADMINS = [
-    #('Coumes Quentin',      'qcoumes@etud.u-pem.fr'),
-    #('Revuz Dominique',     'Dominique.Revuz@u-pem.fr'),
-    #('Cuvelier Nicolas',    'ncuvelie@etud.u-pem.fr'),
+    ('Coumes Quentin',      'qcoumes@etud.u-pem.fr'),
+    #('Revuz Dominique',     'dominique.revuz@u-pem.fr'),
+    #('Cuvelier Nicolas',    'nicolas.cuvelier@u-pem.fr),
 ]
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -57,7 +59,7 @@ INSTALLED_APPS = [
     'django_auth_lti',
 ]
 
-MIDDLEWARE = [
+MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -268,7 +270,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-STATIC_ROOT = os.path.join(PROJECT_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
 STATIC_URL = '/static/'
 
 
