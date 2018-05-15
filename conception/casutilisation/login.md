@@ -33,7 +33,7 @@ L'utilisateur ou le visiteur est sur la page de connexion sois en cliquant sur "
 
 h2. Scénarios
 
-MAIN SUCCESS SCENARIO-> les cas d'utilisations qui doivent avoir eu lieux avant
+MAIN SUCCESS SCENARIO-> les cas d'utilisations qui doivent avoir eu lieux
 Step    Action
 S    [L'utilisateur est sur la page de connexion, il entre c'est données et clique sur le bouton connexion.]
 1    [Ce cas d'utilisation commence quand l'utilisateur clique sur le bouton "Se connecter" ou quand on entre l'url de connexion dans un navigateur.]
