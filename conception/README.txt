@@ -17,7 +17,7 @@
 
 2. Les fichiers concernant la conception, doivent être écrit en markdown
 
-3. les liens devront utiliser le format  : [link](relative_path/file.md)
+3. les liens devront utiliser le format  : [link name](relative_path/file.md)
 
 
    III. GITHUB
