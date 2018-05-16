@@ -1,19 +1,16 @@
-﻿<pre>
-
-
-UC: Etudier
+﻿# UC: Etudier
 Objectif : Pemettre à l'étudiant d'assimiler de nouvelles notions
 
 Résumé général : Donner accès à des cours et des exercices d'une matière que l'étudiant veut ou doit étudier
 
 
-Données
+# Données
 
 Acteur Principal : Etudiant
 
 
 
-Pré-conditions
+## Pré-conditions
 
 L'étudiant doit être connecté et avoir accès aux cours et aux exercices qu'il n'a jamais vu ou fait, qu'il 
 veut étudier.
