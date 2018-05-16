@@ -46,7 +46,7 @@ class ActivityInstance:
             self.dic.update({
                 'pl_id__'   : pl.id,
                 'pl_name__' : pl.name,
-                'seed'      : seed
+                'seed'      : float(seed),
             })
             self.dic.update(pl.json)
         else:
@@ -55,6 +55,7 @@ class ActivityInstance:
     
     def evaluate(self, response):
         dic = self.intern_build()
+        dic['response'] = response
         if 'evaluator' not in self.dic:
             try:
                 if 'timeout' in locals():
@@ -106,13 +107,17 @@ class ActivityInstance:
                 if answer:
                     dic['code'] = answer
             
+            for key in ['text', 'texth', 'introduction', 'introductionh']:
+                if key in dic:
+                    dic[key] = Template(dic[key]).render(Context(dic))
+                
             state = Answer.pl_state(item, request.user)
             pl_list.append({
                 'id'   : item.id,
                 'state': state,
                 'title': item.json['title'],
             })
-            
+        
         context = RequestContext(request)
         context.update(dic)
         context['pl_list__'] = pl_list
