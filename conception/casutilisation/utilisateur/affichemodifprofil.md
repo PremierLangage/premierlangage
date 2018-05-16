@@ -40,6 +40,8 @@ L'inscription dois être effectué préalablement et donc avoir rempli les infor
 
 	genre (homme/femme) (impossibilité de modification)
 
+	date de naissance
+
 	langue
 
 	mail

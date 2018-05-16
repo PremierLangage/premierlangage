@@ -33,7 +33,7 @@ L'inscription dois être effectué préalablement.
 	TODO
 
 
-En cas de succès : L'utilisateur a accès à son compte. Une session est créée, l'utilisateur est soit placé sur sont Tableaudebord soit sur la dernière page ou il était.
+En cas de succès : L'utilisateur a accès à son compte. Une session est créée, l'utilisateur est soit placé sur son Tableaudebord soit sur la dernière page ou il était.
 
 
 En cas d'échec: affiche d'erreur mot de passe, actualisation de la page de connection.
@@ -50,7 +50,7 @@ L'utilisateur ou le visiteur est sur la page de connexion sois en cliquant sur "
 
 Step    Action
 
-S    L'utilisateur est sur la page de connexion, il entre c'est données et clique sur le bouton connexion.
+S    L'utilisateur est sur la page de connexion, il entre ces données et clique sur le bouton connexion.
 
 1    Ce cas d'utilisation commence quand l'utilisateur clique sur le bouton "Se connecter" ou quand on entre l'url de connexion dans un navigateur.
 
