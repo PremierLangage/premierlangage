@@ -1,5 +1,6 @@
 repo/*
 !repo/plbank
+.idea/*
 
 ### OSX ###
 *.DS_Store
