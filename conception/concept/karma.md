@@ -1,12 +1,19 @@
 # Karma
 
-Le karma est un nombre entier représentant un indicateur de réussite pour chaque discipline.
-Il est distribué par les utilisateurs entres eux. Chaque utilisateur débute avec un karma à déterminer.
-Tout utilisateur qui a un karma négatif ne peut pas distribué de karma.
-Le karma est donné par un utilisateur à un autre lorsque ce dernier a soumis un exercice validé par un utilisateur confirmé, soumis un tag validé par un utilisateur confirmé ou tout simplement pour son niveau dans la discipline.
-Un utilisateur peut perdre du karma, s'il soumet par exemple trop de tag invalidé...
-Chaque don de karma rapporte 1 points au destinataire.
-A partir d'un certain palier (à determiner), chaque don de karma rapporte 2 points, puis 3, 4 ...
-Le karma de toutes les disciplines a un minimum et un maximum. (à déterminer)
-Les disciplines possèdent tous un ou plusieurs "superuser" qui sont des enseignants à qui on ne peut pas retirer du karma et qui possèdent le karma maximum.
-Un utilisateur connecté ne peut pas donner 2 fois du karma à un même utilisateur. 
+TODO définir les paliers (don de karma, diminution, validation d'excercices et tag), le karma de départ, max min...
+
+x = à définir
+
+Le karma est un nombre  représentant le niveau de maîtrise d'un ensignant dans une discipline.
+Il y a donc plusieurs karma pour les différentes discipline.
+Exemple :
+Pour la programmation un enseignant a un karma en C, python, compilation, caml ...
+
+Le karma est distribué entres les enseignants eux même.
+A partir d'un certain palier dans une une certaine discipline, l'enseignant peut valider un exercice ou un tag proposé par un autre utilisateur.
+Exemple: Le karma maximum est de 100, un enseignant a 70 en karma C, il peut donc valider les exercices et les tag proposé par d'autres utilisateurs pour la discipline 100.
+
+Chaque don de karma rapporte x points au destinataire. A partir d'un certain palier, un don de karma donne x*n points de karma.
+Exemple : Le karma maximum est de 100, un enseignant Toto a 40 en karma C, il peut donc donner 1 points de karma à un enseignant Titi en C. Un autre enseignant Tutu a 80 de karma en C, il décide de donner du karma à un utilisateur Tata, son don aura une valeur de 4.
+
+Il est aussi possible de retirer du karma. Même manière que le don de karma.

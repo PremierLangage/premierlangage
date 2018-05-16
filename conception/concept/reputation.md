@@ -1,4 +1,7 @@
 # Réputation
 
-La réputation indique l'activité d'un utlisateur connecté. Il est distribué par l'application.
-Il augmente lorsque l'utilisateur fait un exercice. Les points que l'application donne dépendent de la réussite de l'utilisateur sur cette exercice.
+TODO rajouter des critères
+
+La réputation est un nombre indiquant l'activité d'un enseignant et permet de le valoriser. Il est distribué par l'application.
+Il augmente lorsque l'enseignant propose des exercices et des tags qui ont été validé.
+
