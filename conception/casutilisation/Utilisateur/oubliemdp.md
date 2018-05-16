@@ -1,11 +1,11 @@
-Oublie de mot de passe
+# Oublie de mot de passe
 
 
-Objectif :  Si un utilisateur permet ces informations de connextion, on donne un solution notament grace a un mail de reinitialisation de maot de passe, cela permet de réduir le nombre de compte inutilisé et de na pas perdre inutilement des utilisateurs.
+Objectif :  Si un utilisateur perd ces informations de connextion, on donne un solution notament grace a un mail de reinitialisation de maot de passe, cela permet de réduir le nombre de compte inutilisé et de na pas perdre inutilement des utilisateurs.
 
 Résumé général: S'effectue lorsqu'un utilisateur veut se connecter.
 
-Données :
+# Données :
 
 Acteur Principal : Utilisateur
 
@@ -17,28 +17,39 @@ Concurrence : Non
 
 Déclencheur : se déclenche lorsque l'utilisateur veux se connecter mais qu'il a perdu ces informations de connexion.
 
-Pré-conditions :
+## Pré-conditions :
+
+### Données d'entrées :
+	login
+
+	mail
 
 Avoir un compte dans la base de donnée, pour cela il dois [s'inscrire](/inscription.md).
 L'inscription dois être effectué préalablement.
 Connaitre au minimun son login et l'adresse mail associé.
 
-Post Conditions :
+## Post Conditions :
+
+### Donnée sortie :
+	
+	envoie de mail
+
+	nouveau mot de passe
 
 En cas de succès : L'utilisateur dois rentrer son login ainsi que l'address mail associé, un mail de reinitialisation de mot de passe seras envoyé.
 
 En cas d'échec : affichage d'erreur de login ou d'address mail, on réactualise la page.
 
-Navigation / IHM  :
+# Navigation / IHM  :
 
 Principe de navigation du scénario principal, organisation de l'IHM.
 
 L'utilisateur est sur la page de connexion, il clique sur "oublie de mot de passe" une fenêtre s'ouvre ou il dois entrer un login correct et l'adresse mail associé à ce login.
 Ceci seras vérifié grace à la base de donné, un mail seras envoyé, pour réinitialiser la mot de passe.
 
-Scénarios :
+## Scénarios :
 
-MAIN SUCCESS SCENARIO-> les cas d'utilisations qui doivent avoir eu lieux
+# MAIN SUCCESS SCENARIO
 
 Step    Action
 
@@ -67,7 +78,7 @@ na.  Action causing branching:
 1 : On propose à l'utilisateur d'entrer à nouveau ses informations, si il continue de se tromper on affiche la mention [inscription](/inscription.md).
 
 
-RELATED INFORMATION
+# RELATED INFORMATION
 
-Superordinate Use Cases    [Inscription](/inscription.md)
+Include Use Cases    [Inscription](/inscription.md)
  
