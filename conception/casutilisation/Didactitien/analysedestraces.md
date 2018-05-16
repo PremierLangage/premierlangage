@@ -1,25 +1,24 @@
-﻿<pre>
 
-UC: Analyse les traces
-identifiant: 10
+# Analyse les traces
 Objectif :  Permet au didactitien de faire des statistiques sur les exercices pour trouvez les exercices qui 
 sont les plus efficaces
 
-Résumé général: analyse des données stockés dans la base de données en rapport avec les exercices
+Résumé général : analyse des données stockés dans la base de données en rapport avec les exercices
 
+
+# Données
 
 Acteur Principal : Didactitien
 
 
-Pré-conditions
+
+## Pré-conditions
 
 Avoir des exercices présents dans la base de données et un certain nombres d'exercice réalisés par des 
 étudiants pour pouvoir analyser les résultats.
 
 
-
-
-Post Conditions
+## Post Conditions
 
 Cherche à trouver des informations intéressantes à propos des exercices dans la base de données : le taux 
 de réussite des exercices, le temps passé dessus, le nombre d'essais avant la réussite de l'exercice.
@@ -30,11 +29,12 @@ exercices
 En cas d'échec : Affiche une erreur lors de l'analyse des traces
 
 
-Navigation / IHM 
+# Navigation / IHM 
 
 Accès à la base de données, recherche des informations en lien avec les exercices, analyse ces données.
 
-Scénarios
+
+## Scénarios
 
 MAIN SUCCESS SCENARIO
 S	[Accès à la base données, analyse des informations en lien avec les exercice]
@@ -44,6 +44,3 @@ S	[Accès à la base données, analyse des informations en lien avec les exercic
 
 
 
-
-
-</pre>
