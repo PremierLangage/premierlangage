@@ -6,8 +6,6 @@ Résumé général: §visiiongeneraleavectoutlessénario§
 
 Status: encours/review/validé/fermé etc
 
-Décisions en attente [[issues:12]]
-
 
 # Données
 
