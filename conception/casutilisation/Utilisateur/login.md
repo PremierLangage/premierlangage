@@ -1,11 +1,11 @@
-Login
+# Login
 
 
 Objectif :  Permet la connexion d'un utilisateur tout en conservant les données sur son avancement.
 
 Résumé général: S'effectue lorsqu'un utilisateur ou un visiteur veux se connecter.
 
-Données :
+#Données :
 
 Acteur Principal : Utilisateur
 
@@ -17,27 +17,36 @@ Concurrence : Non
 
 Déclencheur : se déclenche lors de la connexion de l'utilisateur, ou à la fin d'une inscription
 
-Pré-conditions :
+## Pré-conditions :
+
+### Données d'entrées :
+	login
+
+	mot de passe
 
 Avoir un compte dans la base de donnée, pour cela il dois [s'inscrire](/inscription.md).
 L'inscription dois être effectué préalablement.
 
-Post Conditions :
+## Post Conditions :
+
+### Données sortie :
+	TODO
+
 
 En cas de succès : L'utilisateur a accès à son compte. Une session est créée, l'utilisateur est soit placé sur sont Tableaudebord soit sur la dernière page ou il était.
 
 
 En cas d'échec: affiche d'erreur mot de passe, actualisation de la page de connection.
 
-Navigation / IHM  :
+# Navigation / IHM  :
 
 Principe de navigation du scénario principal, organisation de l'IHM.
 
 L'utilisateur ou le visiteur est sur la page de connexion sois en cliquant sur "Se connecter" dans la page d'acceuil sois en entrant directement l'URL, il entre ses informations et tente de se connecter si ses information sont valides il auras alors accés à son compte, dans le cas contraire un messages d'erreur apparait.
 
-Scénarios :
+##Scénarios :
 
-MAIN SUCCESS SCENARIO-> les cas d'utilisations qui doivent avoir eu lieux
+# MAIN SUCCESS SCENARIO
 
 Step    Action
 
@@ -49,7 +58,7 @@ S    L'utilisateur est sur la page de connexion, il entre c'est données et cliq
 
 3    On clique sur le bouton "Connexion".
 
-4    Ce cas d'utilisation se finis lorsque l'utilisateur a accès à son compte après avoir cliqué sur "Connexion".
+4    Ce cas d'utilisation se fini lorsque l'utilisateur a accès à son compte après avoir cliqué sur "Connexion".
 
 EXTENSION SCENARIOS
 
@@ -66,9 +75,9 @@ na.  Action causing branching:
 2 : On propose au visiteur de [s'inscrire](/inscription.md).
 
 
-RELATED INFORMATION
+# RELATED INFORMATION
 
 Concurrency    Si un utilisateur tente de se connecter avec une autre instance on ferme la première.
 
-Superordinate Use Cases    [Inscription](/inscription.md)
+Include Use Cases    [Inscription](/inscription.md)
  
