@@ -107,7 +107,7 @@ class ActivityInstance:
                 if answer:
                     dic['code'] = answer
             
-            for key in ['text', 'texth', 'introduction', 'introductionh']:
+            for key in ['text', 'texth', 'introduction', 'introductionh', "form", "title"]:
                 if key in dic:
                     dic[key] = Template(dic[key]).render(Context(dic))
                 
@@ -126,13 +126,13 @@ class ActivityInstance:
     
     
     def get_template(self):
+        raw = '{% extends "playexo/default_pltp_exo.html" %}'+default_load
         if 'pl_id__' in self.dic:
             raw = '{% extends "playexo/default_pl_exo.html" %}'+default_load
             for key, block_name in pls_known:
                 if key in self.dic:
-                    raw += "{% block "+block_name+" %}"+self.dic[key]+"{% endblock %}"
-        else:
-            raw = '{% extends "playexo/default_pltp_exo.html" %}'+default_load
+                    raw += "{% block "+block_name+" %}{{ "+key+" }}{% endblock %}"
+            
         return raw
     
     
@@ -156,7 +156,7 @@ class PLInstance(ActivityInstance):
         raw = '{% extends "playexo/preview.html" %}'+default_load
         for key, block_name in pls_known:
             if key in self.dic:
-                raw += "{% block "+block_name+" %}"+self.dic[key]+"{% endblock %}"
+                raw += "{% block "+block_name+" %}{{ "+key+" }}{% endblock %}"
         return raw
     
     
@@ -164,7 +164,7 @@ class PLInstance(ActivityInstance):
         context = RequestContext(request)
         dic = self.intern_build()
         
-        for key in ['text', 'texth', 'introduction', 'introductionh']:
+        for key in ['text', 'texth', 'introduction', 'introductionh', "form", "title"]:
             if key in dic:
                 dic[key] = Template(dic[key]).render(Context(dic))
         
