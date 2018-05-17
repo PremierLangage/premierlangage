@@ -50,6 +50,7 @@ from filebrowser.utils import redirect_fb
 from filebrowser.filter import is_pl
 
 from loader.loader import load_file
+from loader.utils import exception_to_html
 
 from playexo.exercise import PLInstance
 
@@ -445,10 +446,14 @@ def edit_pl_option(request, filebrowser, target):
         else:
             if warnings:
                 [messages.warning(request, warning) for warning in warnings]
-            exercise = PLInstance(pl.json)
-            request.session['exercise'] = dict(exercise.dic)
-            preview = exercise.render(request)
-            
+            try:
+                exercise = PLInstance(pl.json)
+                request.session['exercise'] = dict(exercise.dic)
+                preview = exercise.render(request)
+            except Exception as e:
+                preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
+                    + basename(rel_path) + "': \n\n" \
+                    + exception_to_html(str(e)) + "</div>"
         return render(request, 'filebrowser/editor_pl.html', {
             'file_content': content,
             'filename': basename(path),
