@@ -114,7 +114,7 @@ class ActivityInstance:
                 if answer:
                     dic['code'] = answer
             
-            for key in ['text', 'texth', 'introduction', 'introductionh', "form", "title"]:
+            for key in ['text', 'texth', 'introduction', 'introductionh', "title"]:
                 if key in dic:
                     dic[key] = Template(dic[key]).render(Context(dic))
                 
@@ -171,7 +171,7 @@ class PLInstance(ActivityInstance):
         context = RequestContext(request)
         dic = self.intern_build()
         
-        for key in ['text', 'texth', 'introduction', 'introductionh', "form", "title"]:
+        for key in ['text', 'texth', 'introduction', 'introductionh', "title"]:
             if key in dic:
                 dic[key] = Template(dic[key]).render(Context(dic))
         
