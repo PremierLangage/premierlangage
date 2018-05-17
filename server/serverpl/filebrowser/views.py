@@ -6,7 +6,7 @@
 #  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
 #  
 
-import os, json
+import os, json, shutil
 
 from os.path import basename, join, dirname
 
@@ -23,6 +23,7 @@ from filebrowser.filebrowser_option import ENTRY_OPTIONS, DIRECTORY_OPTIONS
 from filebrowser.utils import redirect_fb
 
 from loader.loader import load_file
+from loader.utils import exception_to_html
 
 from playexo.exercise import PLInstance
 
@@ -111,8 +112,7 @@ def preview_pl(request):
     if post['requested_action'] == 'preview': # Asking for preview
         try:
             path = FILEBROWSER_ROOT+'/'+post['path']
-            with open(path, 'r') as f: # Saving current content of the file
-                previous_content = f.read()
+            shutil.copyfile(path, path+".bk")
             with open(path, 'w+') as f: # Writting editor content into the file
                 print(post['content'], file=f)
                 
@@ -127,13 +127,16 @@ def preview_pl(request):
                 exercise = PLInstance(pl.json)
                 request.session['exercise'] = dict(exercise.dic)
                 preview = exercise.render(request)
-            
-            return HttpResponse(json.dumps({
-                    'preview': preview
-                }), content_type='application/json')
+        
+        except Exception as e:
+            preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
+                + basename(rel_path) + "': \n\n" \
+                + exception_to_html(str(e)) + "</div>"
         finally:
-            with open(path, 'w+') as f: # Writting back previous content
-                print(previous_content, file=f)
+            shutil.move(path+".bk", path)
+            return HttpResponse(json.dumps({
+                'preview': preview
+            }), content_type='application/json')
     
     elif post['requested_action'] == 'submit' : # Answer from the preview
         exercise = request.session.get('exercise', None)

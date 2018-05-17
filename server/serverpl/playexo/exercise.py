@@ -5,7 +5,7 @@
 #  Author: Coumes Quentin
 
 
-import json, timeout_decorator, time
+import json, timeout_decorator, time, traceback
 
 from django.template import Template, RequestContext, Context
 
@@ -88,12 +88,19 @@ class ActivityInstance:
     
     #@timeout_decorator.timeout(5, use_signals=False)
     def intern_build(self):
-        dic = dict(self.dic)
-        if 'build' in self.dic:
-            exec(self.dic['build'], globals())
-            dic = build(self.dic)
-        elif 'before' in self.dic:
-            exec(self.dic['before'], dic)
+        try:
+            dic = dict(self.dic)
+            if 'build' in self.dic:
+                exec(self.dic['build'], globals())
+                dic = build(self.dic)
+            elif 'before' in self.dic:
+                exec(self.dic['before'], dic)
+        except Exception as e:
+            raise Exception("Error while executing build or before:\n\n"
+                + str(type(e)) + "\n" 
+                + str(traceback.format_exc())
+                    .replace('File "/home/teacher/premierlangage/server/serverpl/playexo/exercise.py", line 97, in intern_build', "")
+            )
         return dic
     
     
@@ -141,7 +148,7 @@ class ActivityInstance:
         context = self.get_context(request)
         template = self.get_template()
         return Template(template).render(context)
-    
+
     
     
 class PLInstance(ActivityInstance):
