@@ -21,7 +21,7 @@ pls_known = [
     ('form', 'form'), ('css', 'css'), ('pl', 'exo'),
     ('pltp', 'exo'), ('navigation', 'navigation'),
     ('load', 'load'), ('state', 'state'), ('end_script', 'end_script'),
-    ('header_script', 'header_script')
+    ('header_script', 'header_script'), ('buttons', 'buttons'),
 ]
 
 
