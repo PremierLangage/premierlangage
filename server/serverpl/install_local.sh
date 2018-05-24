@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 echo "Checking dependencies..."
 #Checking if zip is installed
 
