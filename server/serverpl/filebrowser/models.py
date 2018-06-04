@@ -28,6 +28,9 @@ from urllib.parse import urlparse
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+
 from serverpl.settings import FILEBROWSER_ROOT
 
 
@@ -39,14 +42,22 @@ class Directory(models.Model):
     read_auth = models.ManyToManyField(User, blank=True, related_name="dir_read_auth")
     remote = models.CharField(max_length=1024, blank=True, default='')
     root = models.CharField(max_length=1024, blank=True)
-    
+    public = models.BooleanField(default=False, blank=True)
     
     def __str__(self):
         return self.name
     
+    
     def save(self, *args, **kwargs):
         self.root = os.path.join(FILEBROWSER_ROOT, self.name)
         super(Directory, self).save(*args, **kwargs)
+    
+    
+    @receiver(post_save, sender=User)
+    def add_user_read_public(sender, instance, created, **kwargs):
+        if created:
+            for i in Directory.objects.filter(public=True):
+                i.read_auth.add(instance)
     
     
     def is_repository(self):
