@@ -62,7 +62,7 @@ echo "Creating documentation..."
 ./make_doc.sh || { echo>&2 "ERROR: ./make_doc.sh failed" ; exit 1; }
 echo "Done !"
 
-#Creating ../tmp and ../log
+#Creating ../tmp
 echo ""
 echo "Creating needed directories..."
 if [ ! -d "../../../tmp" ]; then

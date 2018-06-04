@@ -1,35 +1,28 @@
-echo "Checking dependencies..."
-#Checking if zip is installed
+#!/usr/bin/env bash
 
-if [ "$VIRTUAL_ENV" == "" ]; then
-  INVENV=1
-  echo -e "ERROR: The installation should run under Virtual Environnement
---> check the virtuelenv's documentation : https://virtualenv.pypa.io/en/stable/"
-  exit 1
-fi
+echo -e "\nChecking dependencies...\n"
 
 OS=$(uname -s)
-echo "$OS"
+echo -e "OS: $OS\n"
+
 
 #Cheking if this is an apple OS
 if [ "$OS" = "Darwin" ]; then
-   if ! hash brew; then
-       echo "ERROR: brew should be installed. visit https://brew.sh/ "
-       exit 1
-   fi
-  brew install libmagic
+    if ! hash brew; then
+        echo "ERROR: brew should be installed. visit https://brew.sh/ "
+        exit 1
+    fi
+    brew install libmagic
 fi
 
+
+#Checking if zip is installed
 if ! hash zip; then
     echo "ERROR: zip should be installed. Try 'apt-get install zip' "
     exit 1
 fi
+echo "Zip >= 3.5: OK !"
 
-if ! hash zip; then
-    echo "ERROR: zip should be installed. Try 'apt-get install zip'"
-    exit 1
-fi
-echo "zip: OK !"
 
 #Checking if python >= 3.5 is installed
 if ! hash python3; then
@@ -48,6 +41,20 @@ echo "Python >= 3.5: OK !"
 #Checking if pip3 is installed
 command -v pip3 >/dev/null 2>&1 || { echo >&2 "ERROR: pip3 should be installed"; exit 1; }
 echo "pip3: OK !"
+
+
+# Checking if inside a python venv
+if [ "$VIRTUAL_ENV" == "" ]; then
+    echo ""
+    INVENV=1
+    echo "WARNING: You're not currently running a virtual environnement (https://docs.python.org/3/library/venv.html)." | fold -s
+    echo "Do you want to continue outside a virtual environnement ? [Y/n]" | fold -s
+    read -r -p "> " response
+    response=${response,,} # tolower
+    if [[ $response =~ ^(no|n) ]] || [[ -z $response ]]; then
+        exit 1
+    fi
+fi
 
 
 #Getting requirement
@@ -83,8 +90,3 @@ echo "Configuring database..."
 python3 manage.py makemigrations || { echo>&2 "ERROR: python3 manage.py makemigrations failed" ; exit 1; }
 python3 manage.py migrate || { echo>&2 "ERROR: python3 manage.py migrate failed" ; exit 1; }
 echo "Done !"
-
-echo ""
-echo "Creating super user account..."
-python3 manage.py createsuperuser || { echo>&2 "ERROR: python3 manage.py createsuperuser failed" ; exit 1; }
-echo "Do not forget to give you a role throught the application adminisration page."
