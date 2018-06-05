@@ -39,7 +39,7 @@ class Executor:
         for filename in self.files:
             with open(self.dirname+"/"+filename, 'wb') as f:
                 f.write(self.files[filename].read())
-                
+    
     
     @timeout_decorator.timeout(use_signals=False, use_class_attribute=True)
     def _evaluate(self):
@@ -49,13 +49,16 @@ class Executor:
             os.chdir(self.dirname)
             with tarfile.open(self.dirname+"/environment.tgz", 'r:gz') as tar:
                 tar.extractall(self.dirname)
-            result =  subprocess.check_output(['python3','grader.py'])
+            p = subprocess.Popen('python3 grader.py',stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            out, err = p.communicate()
+            err = err.decode("utf-8")
+            if p.returncode:
+                raise Exception(err.replace('<', '[').replace('>', ']').replace('\n', '<br>'))
+            return out
+        finally:
             os.chdir(cwd)
-            return result
-        except Exception as e:
-            os.chdir(cwd)
-            raise e
-        
+    
+    
     def execute(self):
         """ 
             - If the evaluation suceeded, return a json of this dic:

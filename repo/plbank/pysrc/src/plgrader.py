@@ -58,15 +58,12 @@ class Grader:
             gcc_state = 'Erreur'
         else:
             gcc_state = 'Réussie'
-        compil_fb = 'Compilation'
-        if len(flags) > 0:
-            compil_fb += ' avec drapeaux ' + flags
-        compil_fb += ' :'+ gcc_state +'<br />' 
-
+        
+        compil_fb = ""
         if compil_state == "error":
-            compil_fb += 'Il y a des erreurs à la compilation de votre programme.'
+            compil_fb += 'Il y a des erreurs dans votre programme.'
         else:
-            compil_fb += 'Compilation parfaite, <b>gcc</b> ne retourne ni warning ni erreur.<br />'
+            compil_fb += 'Aucune erreur détecté.<br />'
             
         if compil_state == "error":
             compil_fb += '<br />Feedback provenant de gcc: <br />'
@@ -291,7 +288,8 @@ class Grader:
 
         import os
         os.environ['TERM']="linux"# bug in readlinehttps://bugs.python.org/msg191824
-        if self.pld['mode'] == 2:
+        
+        if 'mode' in self.pld and self.pld['mode'] == 2:
             r,out=self.execute(['python3','-B','-m','pldoctest','-f','pltest.py'],instr=None)
         else:
             r,out=self.execute(['python3','-B','-m','pldoctest','pltest.py'],instr=None)

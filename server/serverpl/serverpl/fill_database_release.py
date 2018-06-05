@@ -1,10 +1,15 @@
+import django
 from django.contrib.auth.models import User
+from filebrowser.models import Directory
 
-user = User.objects.create_user(username='admin',
-                                 email='',
-                                 password='adminadmin')
+try :
+    user = User.objects.create_user(username='PremierLangage', password='OnjrxK7#kg')
+    user.save()
+except django.db.utils.IntegrityError:
+    user = User.objects.get(username='PremierLangage')
 
-user.is_staff = True
-user.is_admin = True
-user.is_superuser = True
-user.save()
+# Add plbank
+try:
+    Directory.objects.create(name="plbank", owner=user, public=True)
+except django.db.utils.IntegrityError:
+    pass

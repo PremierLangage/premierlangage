@@ -76,7 +76,10 @@ fi
 source /etc/apache2/envvars
 echo ""
 echo "Configuring database..."
-SECRET_KEY=$SECRET_KEY python3 manage.py migrate || { echo>&2 "ERROR: python3 manage.py migrate failed" ; exit 1; }
+SECRET_KEY=$SECRET_KEY python3 manage.py migrate
+
+#Filling database
+SECRET_KEY=$SECRET_KEY python3 manage.py shell < serverpl/fill_database_local.py  || { echo>&2 "ERROR: python3 manage.py shell failed" ; exit 1; }
 echo "Done !"
 
 echo ""

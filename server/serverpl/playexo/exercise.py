@@ -70,7 +70,7 @@ class ActivityInstance:
                 
                 return (None, feedback) if state == "info" else (True, feedback) if state else (False, feedback)
             except (ValueError, KeyError) as e:
-                return (None, "La réponse reçu part la sandbox n'est pas au bon format :\n\n"+str(feedback))
+                return (None, "La réponse reçu part la sandbox n'est pas au bon format :\n\n"+str('' if not 'feedback' in locals() else feedback))
             except Exception as e:
                 s = ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte,"
                               + "merci de prévenir votre professeur:<br>Error - "

@@ -47,13 +47,13 @@
             {%- for text,type in feedback.div %}
             
                 {%- if type == 'compil' or type == 'vresume' %}
-                <div style="border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;">
-                <p>{{text}}</p>
-                <font style="color:Green;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;"></font></div>
+                    <div style="border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;">
+                        <p>{{text}}</p>
+                    <font style="color:Green;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;"></font></div>
                 {%- else %}
                  <div style="border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;">
-                <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#demo{{type}}" aria-expanded="true" aria-controls="demo{{type}}">Test True <div id="demo{{type}}" class=collapse>
-             <div class="card card-success;" style="background-color: LightGreen;"><p>{{text}}</p></div></button>
+                <button type="button" class="btn btn-block btn-success" data-toggle="collapse" data-target="#demo{{type}}" aria-expanded="true" aria-controls="demo{{type}}">Test True <div id="demo{{type}}" class=collapse>
+                <div class="card card-success;" style="background-color: LightGreen;"><p>{{text}}</p></div></button>
                 
                 <font style="color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;"></font></div>
             
@@ -82,13 +82,13 @@
             {%- if type[0] == 'v'%}
 
              <div style="border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;">
-            <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#demo{{type}}" aria-expanded="true" aria-controls="demo{{type}}">Test True <div id="demo{{type}}" class=collapse>
+            <button type="button" class="btn btn-block btn-success" data-toggle="collapse" data-target="#demo{{type}}" aria-expanded="true" aria-controls="demo{{type}}">Test réussi<div id="demo{{type}}" class=collapse>
          <div class="card card-success;" style="background-color: LightGreen;"><p>{{text}}</p></div></button>
             
             <font style="color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;"></font></div>
             {%- else %}
-                 <div style="border:1px solid black;padding:1%;margin:1%;background-color:DarkRed;border-radius:4px;">
-            <button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#demo{{type}}" aria-expanded="true" aria-controls="demo{{type}}">Test False <div id="demo{{type}}" class="">
+                 <div style="text-align: center;border:1px solid black;padding:1%;margin:1%;background-color:DarkRed;border-radius:4px;">
+            <button type="button" class="btn btn-block btn-danger" data-toggle="collapse" data-target="#demo{{type}}" aria-expanded="true" aria-controls="demo{{type}}">Test Échoué<div id="demo{{type}}" class="">
          <div class="card card-danger;" style="background-color: #721c24;" ><p>{{text}}</p></div></button>
             
             <font style="color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;"></font></div>
