@@ -128,7 +128,7 @@ class MultiLTILaunchAuthMiddleware(MiddlewareMixin):
                 else:
                     course = course[0];
                 
-                course.user.add(user)
+                course.student.add(user)
 
                 request.session["activity"] = activity_id
                 request.session["course_id"] = course_id
@@ -145,6 +145,7 @@ class MultiLTILaunchAuthMiddleware(MiddlewareMixin):
                        user.profile.role = Role.LEARNER
                     if role in ["urn:lti:role:ims/lis/Instructor", "Instructor"] and user.profile.role > Role.INSTRUCTOR:
                        user.profile.role = Role.INSTRUCTOR
+                       course.teacher.add(user)
                     if role in ["urn:lti:role:ims/lis/ContentDeveloper", "ContentDeveloper"] and user.profile.role > Role.CONTENT_DEVELOPER:
                        user.profile.role = Role.CONTENT_DEVELOPER
                 user.save()

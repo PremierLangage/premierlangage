@@ -9,6 +9,8 @@ import json, timeout_decorator, time, traceback
 
 from django.template import Template, RequestContext, Context
 
+from user_profile.enums import Role
+
 from loader.models import PLTP
 
 from playexo.models import Answer
@@ -67,12 +69,13 @@ class ActivityInstance:
                 state, feedback = feedback['grade']['success'], feedback['grade']['feedback']
                 
                 return (None, feedback) if state == "info" else (True, feedback) if state else (False, feedback)
-            except ValueError as e:
-                return (None, "La réponse reçu part la sandbox n'est pas au bon format.")
+            except (ValueError, KeyError) as e:
+                return (None, "La réponse reçu part la sandbox n'est pas au bon format :\n\n"+str(feedback))
             except Exception as e:
-                return None,("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte,"
+                s = ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte,"
                               + "merci de prévenir votre professeur:<br>Error - "
                               + str(type(e)).replace("<", "[").replace(">", "]") + ": " + str(e))
+                return None, s
         else:
             try:
                 exec(dic['evaluator'], dic)

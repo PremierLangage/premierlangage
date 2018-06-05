@@ -110,7 +110,7 @@ def course_summary(request, id):
         course = Course.objects.get(id=id)
     except:
         raise Http404("Impossible d'accéder à la page, cette classe n'existe pas.")
-    if not request.user.profile.is_admin() and (not request.user in course.user.all() or not request.user.profile.have_role(Role.INSTRUCTOR)):
+    if not request.user in course.teacher.all():
         logger.warning("User '"+request.user.username+"' denied to access summary of course'"+course.name+"'.")
         raise PermissionDenied("Vous n'êtes pas professeur de cette classe.")
     
@@ -158,7 +158,7 @@ def activity_summary(request, id, name):
         course = Course.objects.get(id=id)
     except:
         raise Http404("Impossible d'accéder à la page, cette classe n'existe pas.")
-    if not request.user.profile.is_admin() and (not request.user in course.user.all() or not request.user.profile.have_role(Role.INSTRUCTOR)):
+    if request.user not in course.teacher.all():
         logger.warning("User '"+request.user.username+"' denied to access summary of course'"+course.name+"'.")
         raise PermissionDenied("Vous n'êtes pas professeur de cette classe.")
     
@@ -199,7 +199,7 @@ def student_summary(request, course_id, student_id):
         course = Course.objects.get(id=course_id)
     except:
         raise Http404("Impossible d'accéder à la page, cette classe n'existe pas.")
-    if not request.user.profile.is_admin() and (not request.user in course.user.all() or not request.user.profile.have_role(Role.INSTRUCTOR)):
+    if request.user not in course.teacher.all():
         logger.warning("User '"+request.user.username+"' denied to access summary of course'"+course.name+"'.")
         raise PermissionDenied("Vous n'êtes pas professeur de cette classe.")
         
