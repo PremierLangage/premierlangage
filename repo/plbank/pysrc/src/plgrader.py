@@ -1,7 +1,7 @@
 
 # -*- coding: utf-8 -*-
 
-from feedback import Feedback
+from feedback import Feedback, subnlbybr
 import subprocess
 from plutils import *
 import json
@@ -37,14 +37,42 @@ class Grader:
     def __init__(self):
         try:
             self.pld= json.load(open("pl.json","r"))
+            
         except Exception as e:
+            
             self.fb = Feedback()
-            self.fb.addFeedback( "# erreur de plateforme \n pl.json illissible\n")
+            #self.fb.addFeedback( "# erreur de plateforme \n pl.json illissible\n")
+            self.fb.adddiv("err","# erreur de plateforme \n pl.json illissible\n")
             self.fb.success = True
+            self.fb.flags="-Wall -ansi"
             self.doOutput()
             sys.exit(1)
         self.fb =  Feedback()
         self.fb.success=True
+        self.fb.flags="-Wall -ansi"
+        
+
+    def generate_feedback_compilation(self,flags, compil_state):
+      
+        if compil_state == "error":
+            gcc_state = 'Erreur'
+        else:
+            gcc_state = 'Réussie'
+        compil_fb = 'Compilation'
+        if len(flags) > 0:
+            compil_fb += ' avec drapeaux ' + flags
+        compil_fb += ' :'+ gcc_state +'<br />' 
+
+        if compil_state == "error":
+            compil_fb += 'Il y a des erreurs à la compilation de votre programme.'
+        else:
+            compil_fb += 'Compilation parfaite, <b>gcc</b> ne retourne ni warning ni erreur.<br />'
+            
+        if compil_state == "error":
+            compil_fb += '<br />Feedback provenant de gcc: <br />'
+            #compil_fb += self.terminal_code(gcc_msg)
+
+        return compil_fb;
 
     def compilestudent(self):
             EEE=None
@@ -54,19 +82,31 @@ class Grader:
                 x= py_compile.compile("student.py",doraise=True)
                 
             except Exception as EE:
-                self.fb.addCompilationError(str(EE))
+                self.fb.addCompilationError("")
+                #self.fb.addFeedback(self.fb.generate_feedback_compilation(self.fb.flags,"error",str(EE)))
+                #errcompil=generate_feedback_compilation2(str(EE),self.fb.flags) ici
+                self.fb.adddiv("errcompil",self.generate_feedback_compilation(self.fb.flags,"error"))
+                self.fb.adddiv("errcompilfin",subnlbybr(str(EE)))
+
                 if "compilehelp" in self.pld:
-                    self.fb.addFeedback(self.pld['compilehelp'])
+                    self.fb.adddiv("compilehelp",self.pld['compilehelp'])
+                    #self.fb.addFeedback(self.pld['compilehelp'])
                 self.fb.success=False
+                self.fb.compilation=False
                 return False
             else:
+                #self.fb.addFeedback(self.fb.generate_feedback_compilation(self.fb.flags,"",""))
+                self.fb.adddiv("compil",self.generate_feedback_compilation(self.fb.flags,""))
+
                 return True # compilation ok
 
     def doOutput(self):
+       
         if "showinput" in self.pld: # valeur sans importance
             self.fb.showinput =True
         if "failure" in self.pld and not self.fb.success :
             self.fb.addFeedback(self.pld["failure"])
+           
 
         if "taboo" in self.pld and checktaboo(self.pld["taboo"],"student.py"):
             self.fb.addFeedback(" la liste des mots taboo "+self.pld["taboo"]+". Raté !\n")
@@ -99,22 +139,29 @@ class Grader:
         update feedback in consequence
         return True if sucessfull
         """
+
         r,t = self.getStudentOutput(stdinput)
         c=compare(expected,t) # si egal ou contient ce qui est attendu 
         if r and  c < 3 :
             if self.fb.showinput and stdinput :
                 self.fb.addOutput("input:\n"+stdinput)
-            self.fb.addOutput(expected)
+            #self.fb.addOutput(expected)
+            self.fb.adddiv("output",subnlbybr(expected))
             self.fb.success = True
         elif r :
             if "nohint" in self.pld: # don't tel the answer
                 self.fb.addOutput(expected)
             else:
-                self.fb.addExpectedOptained(t, expected)
-                self.fb.addFeedback("\nDifférence ="+str(c)+"\n")
+                self.fb.adddiv("expected",subnlbybr(t)+"\nDifférence="+subnlbybr(str(c))+"\n")
+                
+                #self.fb.addExpectedOptained(t, expected)
+                #self.fb.addFeedback("\nDifférence ="+str(c)+"\n")
             self.fb.success = False
         else: # erreur d'execution r = False
-            self.fb.addCompilationError(t)
+            #self.fb.addCompilationError(t)
+            self.fb.addCompilationError("")
+            self.fb.adddiv("errcompil",self.generate_feedback_compilation(self.fb.flags,"error"))
+            self.fb.adddiv("errcompilfin",subnlbybr(str(t)))
             if "compilehelp" in self.pld:
                 self.fb.addFeedback(self.pld['compilehelp'])
             self.fb.success = False
@@ -229,6 +276,7 @@ class Grader:
         return True
 
     def dopltest(self):
+
         if not "pltest" in self.pld :
             return False
         try:
@@ -238,18 +286,52 @@ class Grader:
                     print('\"\"\"\n'+self.pld["pltest"]+'>>> \n\"\"\"',file=pltf)
                     print(f.read(),file=pltf)
         except Exception as e:
+           
            return False
 
         import os
         os.environ['TERM']="linux"# bug in readlinehttps://bugs.python.org/msg191824
-        r,out=self.execute(['python3','-B','-m','pldoctest','-f','pltest.py'],instr=None)
+        if self.pld['mode'] == 2:
+            r,out=self.execute(['python3','-B','-m','pldoctest','-f','pltest.py'],instr=None)
+        else:
+            r,out=self.execute(['python3','-B','-m','pldoctest','pltest.py'],instr=None)
+
         self.fb.success = r
         if r :
-            self.fb.addFeedback("<h3>Tout les Tests sont OK</h3>")
-            self.fb.addFeedback(out)
+           res=0
+           i=0
+           #self.fb.addFeedback(out)
+           liste = out.split('debut')
+           for n in liste:
+               if n != "" and n[1]=="T":
+                   self.fb.addsymbole(n,'resume',True) 
+               elif n != "" and i!=(len(liste) -2): 
+                self.fb.addsymbole(n,i,True)
+                i+=1
+              
+           
+           #self.fb.adddiv("testT",out)
+
+            
         else:
-            r,out=self.execute(['python3','-B','-m','pldoctest','-f','pltest.py'],instr=None)
-            self.fb.addOutput("<h2>Echec de tests</h2>")
+            #r,out=self.execute(['python3','-B','-m','pldoctest','-f','pltest.py'],instr=None)
+            #elf.fb.addOutput("<h2>Echec de tests</h2>")
+            res=0
+            i=0
+            #self.fb.addFeedback(out)
+            
+            liste = out.split('debut')
+            for n in liste:
+                
+                if n != "" and i!=(len(liste) -2):
+                    if n != "" and n[1]=="T":
+                        self.fb.addsymbole(n,'resume',False)  
+                    elif n.find('False') !=-1:
+                        self.fb.addsymbole(n,i,False)
+                    else:
+                        self.fb.addsymbole(n,i,True)
+                    i+=1
+                
             self.fb.addOutput(out)
         return True
 
@@ -264,9 +346,7 @@ class Grader:
         input/soluce
         pltest
         """
-        if "soluce" in  self.pld:
-            with open("soluce.py","w") as sol:
-                 print(self.pld["soluce"],file=sol)
+
         if self.direct():
             return self.doOutput()
         elif not self.compilestudent():

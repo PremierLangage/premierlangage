@@ -5,7 +5,8 @@
 #     Edward Loper
 # Minor enhancements and refactoring by:
 #     dominique revuz 
-
+# Minor enhancements and refactoring by:
+#     dominique revuz 
 # Provided as-is; use at your own risk; no warranty; no promises; enjoy!
 
 r"""Module doctest -- a framework for running examples in docstrings.
@@ -62,7 +63,7 @@ __all__ = [
     'REPORT_UDIFF',
     'REPORT_CDIFF',
     'REPORT_NDIFF',
-    'REPORT_ONLY_FIRST_FAILURE',
+    
     'REPORTING_FLAGS',
     'FAIL_FAST',
     # 1. Utility Functions
@@ -106,6 +107,8 @@ import sys
 import traceback
 import unittest
 from io import StringIO
+from feedback import Feedback
+from plgrader import Grader
 from collections import namedtuple
 
 TestResults = namedtuple('TestResults', 'failed attempted')
@@ -153,13 +156,12 @@ COMPARISON_FLAGS = (DONT_ACCEPT_TRUE_FOR_1 |
 REPORT_UDIFF = register_optionflag('REPORT_UDIFF')
 REPORT_CDIFF = register_optionflag('REPORT_CDIFF')
 REPORT_NDIFF = register_optionflag('REPORT_NDIFF')
-REPORT_ONLY_FIRST_FAILURE = register_optionflag('REPORT_ONLY_FIRST_FAILURE')
 FAIL_FAST = register_optionflag('FAIL_FAST')
 
 REPORTING_FLAGS = (REPORT_UDIFF |
                    REPORT_CDIFF |
                    REPORT_NDIFF |
-                   REPORT_ONLY_FIRST_FAILURE |
+                   
                    FAIL_FAST)
 
 # Special string markers for use in `want` strings:
@@ -195,38 +197,38 @@ def _extract_future_flags(globs):
             flags |= feature.compiler_flag
     return flags
 
-def _normalize_module(module, depth=2):
-    """
-    Return the module specified by `module`.  In particular:
-      - If `module` is a module, then return module.
-      - If `module` is a string, then import and return the
-        module with that name.
-      - If `module` is None, then return the calling module.
-        The calling module is assumed to be the module of
-        the stack frame at the given depth in the call stack.
-    """
-    if inspect.ismodule(module):
-        return module
-    elif isinstance(module, str):
-        return __import__(module, globals(), locals(), ["*"])
-    elif module is None:
-        return sys.modules[sys._getframe(depth).f_globals['__name__']]
-    else:
-        raise TypeError("Expected a module, string, or None")
+#~ def _normalize_module(module, depth=2):
+    #~ """
+    #~ Return the module specified by `module`.  In particular:
+      #~ - If `module` is a module, then return module.
+      #~ - If `module` is a string, then import and return the
+        #~ module with that name.
+      #~ - If `module` is None, then return the calling module.
+        #~ The calling module is assumed to be the module of
+        #~ the stack frame at the given depth in the call stack.
+    #~ """
+    #~ if inspect.ismodule(module):
+        #~ return module
+    #~ elif isinstance(module, str):
+        #~ return __import__(module, globals(), locals(), ["*"])
+    #~ elif module is None:
+        #~ return sys.modules[sys._getframe(depth).f_globals['__name__']]
+    #~ else:
+        #~ raise TypeError("Expected a module, string, or None")
 
-def _load_testfile(filename, package, module_relative, encoding):
-    if module_relative:
-        package = _normalize_module(package, 3)
-        filename = _module_relative_path(package, filename)
-        if getattr(package, '__loader__', None) is not None:
-            if hasattr(package.__loader__, 'get_data'):
-                file_contents = package.__loader__.get_data(filename)
-                file_contents = file_contents.decode(encoding)
-                # get_data() opens files as 'rb', so one must do the equivalent
-                # conversion as universal newlines would do.
-                return file_contents.replace(os.linesep, '\n'), filename
-    with open(filename, encoding=encoding) as f:
-        return f.read(), filename
+#~ def _load_testfile(filename, package, module_relative, encoding):
+    #~ if module_relative:
+        #~ package = _normalize_module(package, 3)
+        #~ filename = _module_relative_path(package, filename)
+        #~ if getattr(package, '__loader__', None) is not None:
+            #~ if hasattr(package.__loader__, 'get_data'):
+                #~ file_contents = package.__loader__.get_data(filename)
+                #~ file_contents = file_contents.decode(encoding)
+                #~ # get_data() opens files as 'rb', so one must do the equivalent
+                #~ # conversion as universal newlines would do.
+                #~ return file_contents.replace(os.linesep, '\n'), filename
+    #~ with open(filename, encoding=encoding) as f:
+        #~ return f.read(), filename
 
 def _indent(s, indent=4):
     """
@@ -963,6 +965,7 @@ class DocTestFinder:
         Find tests for the given object and any contained objects, and
         add them to `tests`.
         """
+        
         if self._verbose:
             print('Finding tests in %s' % name)
 
@@ -1188,6 +1191,7 @@ class DocTestRunner:
         more information.
         """
         self._checker = checker or OutputChecker()
+     
         if verbose is None:
             verbose = '-v' in sys.argv
         self._verbose = verbose
@@ -1198,6 +1202,7 @@ class DocTestRunner:
         self.tries = 0
         self.failures = 0
         self._name2ft = {}
+        self.div=[]
 
         # Create a fake output target for capturing doctest output.
         self._fakeout = _SpoofOut()
@@ -1211,6 +1216,7 @@ class DocTestRunner:
         Report that the test runner is about to process the given
         example.  (Only displays a message if verbose=True)
         """
+       
         if self._verbose:
             if example.want:
                 out('Trying:\n' + _indent(example.source) +
@@ -1219,20 +1225,28 @@ class DocTestRunner:
                 out('Trying:\n' + _indent(example.source) +
                     'Expecting nothing\n')
 
-    def report_success(self, out, test, example, got):
+    def report_success(self, out, test, example, got,i):
         """
         Report that the given example ran successfully.  (Only
         displays a message if verbose=True)
         """
+       
+        
+        out(Feedback.buttoncollapse(self,True,i,(self._failure_header(test, example) +
+            self._checker.output_difference(example, got, self.optionflags))))
+      
         if self._verbose:
+            
             out("ok\n")
 
-    def report_failure(self, out, test, example, got):
+    def report_failure(self, out, test, example, got, i):
         """
         Report that the given example failed.
         """
-        out(self._failure_header(test, example) +
-            self._checker.output_difference(example, got, self.optionflags))
+       
+    
+        out(Feedback.buttoncollapse(self,False,i,(self._failure_header(test, example) +
+            self._checker.output_difference(example, got, self.optionflags))))
 
     def report_unexpected_exception(self, out, test, example, exc_info):
         """
@@ -1243,6 +1257,7 @@ class DocTestRunner:
 
     def _failure_header(self, test, example):
         out = [self.DIVIDER]
+        
         if test.filename:
             if test.lineno is not None and example.lineno is not None:
                 lineno = test.lineno + example.lineno + 1
@@ -1252,10 +1267,13 @@ class DocTestRunner:
             #          (test.filename, lineno, test.name))
         else:
             out.append('Line %s, in %s' % (example.lineno+1, test.name))
-        out.append('le test qui ne fonctionne pas:')
+        #out.append('le test qui ne fonctionne pas:')
         source = example.source
+       
         out.append(_indent(source))
-        return '\n'.join(out)
+        #out.append(_indent(source))
+        
+        return  '\n'.join(out)
 
     #/////////////////////////////////////////////////////////////////
     # DocTest Running
@@ -1281,17 +1299,18 @@ class DocTestRunner:
         SUCCESS, FAILURE, BOOM = range(3) # `outcome` state
 
         check = self._checker.check_output
-
+        quiet=False
         # Process each example.
+        i=0;
         for examplenum, example in enumerate(test.examples):
-
+            i=i+1
             # If REPORT_ONLY_FIRST_FAILURE is set, then suppress
             # reporting after the first failure.
-            quiet = (self.optionflags & REPORT_ONLY_FIRST_FAILURE and
-                     failures > 0)
-
+            quiet = (self.optionflags  and failures > 0)
+           
             # Merge in the example's options.
             self.optionflags = original_optionflags
+            
             if example.options:
                 for (optionflag, val) in example.options.items():
                     if val:
@@ -1301,6 +1320,7 @@ class DocTestRunner:
 
             # If 'SKIP' is set, then skip this example.
             if self.optionflags & SKIP:
+                raise Exception("zzz")
                 continue
 
             # Record that we started this example.
@@ -1316,6 +1336,7 @@ class DocTestRunner:
             # Run the example in the given context (globs), and record
             # any exception that gets raised.  (But don't intercept
             # keyboard interrupts.)
+            
             try:
                 # Don't blink!  This is where the user's code gets run.
                 exec(compile(example.source, filename, "single",
@@ -1363,22 +1384,31 @@ class DocTestRunner:
             # Report the outcome.
             if outcome is SUCCESS:
                 if not quiet:
-                    self.report_success(out, test, example, got)
+                    self.report_success(out, test, example, got,i)
+                    
+                if quiet and failures <1:
+                    self.report_success(out, test, example, got,i)
+
             elif outcome is FAILURE:
                 if not quiet:
-                    self.report_failure(out, test, example, got)
+                    
+                    self.report_failure(out, test, example, got,i)
+                    
+                elif quiet and failures < 1:
+                    
+                    self.report_failure(out, test, example, got,i)
                 failures += 1
             elif outcome is BOOM:
                 if not quiet:
                     self.report_unexpected_exception(out, test, example,
                                                      exception)
+                
                 failures += 1
             else:
                 assert False, ("unknown outcome", outcome)
-
-            if failures and self.optionflags & FAIL_FAST:
-                break
-
+        
+            
+       
         # Restore the option flags (in case they were modified)
         self.optionflags = original_optionflags
 
@@ -1428,7 +1458,7 @@ class DocTestRunner:
         the `DocTestRunner.report_*` methods.
         """
         self.test = test
-
+       
         if compileflags is None:
             compileflags = _extract_future_flags(test.globs)
 
@@ -1463,7 +1493,7 @@ class DocTestRunner:
         # Make sure sys.displayhook just prints the value to stdout
         save_displayhook = sys.displayhook
         sys.displayhook = sys.__displayhook__
-
+     
         try:
             return self.__run(test, compileflags, out)
         finally:
@@ -1480,7 +1510,7 @@ class DocTestRunner:
     #/////////////////////////////////////////////////////////////////
     # Summarization
     #/////////////////////////////////////////////////////////////////
-    def summarize(self, verbose=None):
+    def summarize(self, verbose=True):
         """
         Print a summary of all the test cases that have been run by
         this DocTestRunner, and return a tuple `(f, t)`, where `f` is
@@ -1491,7 +1521,7 @@ class DocTestRunner:
         summary is.  If the verbosity is not specified, then the
         DocTestRunner's verbosity is used.
         """
-       
+
         if verbose is None:
             verbose = self._verbose
         notests = []
@@ -1520,11 +1550,15 @@ class DocTestRunner:
                 #passed.sort()
                 #for thing, count in passed:
                     #print(" %3d tests in %s" % (count, thing))
+        print("debut")
+        print("Test:")            
         if failed:
+            
             print(self.DIVIDER)
             #print(len(failed), " jeu de tests avec des problèmes :")
             failed.sort()
-            print("Test:")
+            
+            
             for thing, (f, t) in failed:
                 #print(" %3d tests sur %3d dans %s" % (f, t, thing))
                 
@@ -1534,9 +1568,10 @@ class DocTestRunner:
             print(totalt, "tests sur ", len(self._name2ft), " tests.")
             print(totalt - totalf, "reussit and ", totalf, "ratés.")
         if totalf:
-            print("***Tests échoués***", totalf, " erreurs.")
+            
+            print("***Tests échoués***")
         elif verbose:
-            print("Test passed.")
+            print("***Test validés***")
         return TestResults(totalf, totalt)
 
     #/////////////////////////////////////////////////////////////////
@@ -1695,7 +1730,7 @@ class OutputChecker:
         # If we're not using diff, then simply list the expected
         # output followed by the actual output.
         if want and got:
-            return 'Attendu:%s obtenu: %s' % (_indent(want), _indent(got))
+            return  'Attendu: '+Feedback.resultat(self,_indent(want))+ ' Obtenu: '+Feedback.resultat(self,_indent(got)) + 'debut'
         elif want:
             return 'Attendu:%s rien obtenu!\n' % _indent(want)
         elif got:
@@ -1945,11 +1980,12 @@ def testmod(m=None, name=None, globs=None, verbose=None,
         runner = DocTestRunner(verbose=verbose, optionflags=optionflags)
 
     for test in finder.find(m, name, globs=globs, extraglobs=extraglobs):
+       
         runner.run(test)
-
+        
     if report:
         runner.summarize()
-
+        
     if master is None:
         master = runner
     else:
@@ -1958,60 +1994,60 @@ def testmod(m=None, name=None, globs=None, verbose=None,
     return TestResults(runner.failures, runner.tries)
 
 
-def pltestfile(teststring, module_relative=True, name="Your Code", package=None,
-             globs=None, verbose=None, report=True, optionflags=0,
-             extraglobs=None, raise_on_error=False, parser=DocTestParser(),
-             encoding=None):
-    """
-    This is the same function than doctest.testfile but the text comme from the teststring.
+#~ def pltestfile(teststring, module_relative=True, name="Your Code", package=None,
+             #~ globs=None, verbose=None, report=True, optionflags=0,
+             #~ extraglobs=None, raise_on_error=False, parser=DocTestParser(),
+             #~ encoding=None):
+    #~ """
+    #~ This is the same function than doctest.testfile but the text comme from the teststring.
 
-    """
-    global master
+    #~ """
+    #~ global master
 
-    if package and not module_relative:
-        raise ValueError("Package may only be specified for module-"
-                         "relative paths.")
+    #~ if package and not module_relative:
+        #~ raise ValueError("Package may only be specified for module-"
+                         #~ "relative paths.")
 
-    # Relativize the path
-    # forget it get the test from the string 
-    text = teststring
-    #text, filename = _load_testfile(filename, package, module_relative,
-    #                                encoding or "utf-8")
+    #~ # Relativize the path
+    #~ # forget it get the test from the string 
+    #~ text = teststring
+    #~ #text, filename = _load_testfile(filename, package, module_relative,
+    #~ #                                encoding or "utf-8")
 
-    # If no name was given, then use the file's name.
-    # ther should be a name ! see default argument 
-    #if name is None:
-    #    name = os.path.basename(filename)
-    filename=name
+    #~ # If no name was given, then use the file's name.
+    #~ # ther should be a name ! see default argument 
+    #~ #if name is None:
+    #~ #    name = os.path.basename(filename)
+    #~ filename=name
 
-    # Assemble the globals.
-    if globs is None:
-        globs = {}
-    else:
-        globs = globs.copy()
-    if extraglobs is not None:
-        globs.update(extraglobs)
-    if '__name__' not in globs:
-        globs['__name__'] = '__main__'
+    #~ # Assemble the globals.
+    #~ if globs is None:
+        #~ globs = {}
+    #~ else:
+        #~ globs = globs.copy()
+    #~ if extraglobs is not None:
+        #~ globs.update(extraglobs)
+    #~ if '__name__' not in globs:
+        #~ globs['__name__'] = '__main__'
 
-    if raise_on_error:
-        runner = DebugRunner(verbose=verbose, optionflags=optionflags)
-    else:
-        runner = DocTestRunner(verbose=verbose, optionflags=optionflags)
+    #~ if raise_on_error:
+        #~ runner = DebugRunner(verbose=verbose, optionflags=optionflags)
+    #~ else:
+        #~ runner = DocTestRunner(verbose=verbose, optionflags=optionflags)
 
-    # Read the file, convert it to a test, and run it.
-    test = parser.get_doctest(text, globs, name, filename, 0)
-    runner.run(test)
+    #~ # Read the file, convert it to a test, and run it.
+    #~ test = parser.get_doctest(text, globs, name, filename, 0)
+    #~ runner.run(test)
 
-    if report:
-        runner.summarize()
+    #~ if report:
+        #~ runner.summarize()
 
-    if master is None:
-        master = runner
-    else:
-        master.merge(runner)
+    #~ if master is None:
+        #~ master = runner
+    #~ else:
+        #~ master.merge(runner)
 
-    return TestResults(runner.failures, runner.tries)
+    #~ return TestResults(runner.failures, runner.tries)
 
 
 
@@ -2230,41 +2266,41 @@ class DocTestCase(unittest.TestCase):
 
         test.globs.clear()
 
-    def runTest(self):
-        test = self._dt_test
-        old = sys.stdout
-        new = StringIO()
-        optionflags = self._dt_optionflags
+    #~ def runTest(self):
+        #~ test = self._dt_test
+        #~ old = sys.stdout
+        #~ new = StringIO()
+        #~ optionflags = self._dt_optionflags
 
-        if not (optionflags & REPORTING_FLAGS):
-            # The option flags don't include any reporting flags,
-            # so add the default reporting flags
-            optionflags |= _unittest_reportflags
+        #~ if not (optionflags & REPORTING_FLAGS):
+            #~ # The option flags don't include any reporting flags,
+            #~ # so add the default reporting flags
+            #~ optionflags |= _unittest_reportflags
 
-        runner = DocTestRunner(optionflags=optionflags,
-                               checker=self._dt_checker, verbose=False)
+        #~ runner = DocTestRunner(optionflags=optionflags,
+                               #~ checker=self._dt_checker, verbose=False)
 
-        try:
-            runner.DIVIDER = "-"*70
-            failures, tries = runner.run(
-                test, out=new.write, clear_globs=False)
-        finally:
-            sys.stdout = old
+        #~ try:
+            #~ runner.DIVIDER = "-"*70
+            #~ failures, tries = runner.run(
+                #~ test, out=new.write, clear_globs=False)
+        #~ finally:
+            #~ sys.stdout = old
 
-        if failures:
-            raise self.failureException(self.format_failure(new.getvalue()))
+        #~ if failures:
+            #~ raise self.failureException(self.format_failure(new.getvalue()))
 
-    def format_failure(self, err):
-        test = self._dt_test
-        if test.lineno is None:
-            lineno = 'unknown line number'
-        else:
-            lineno = '%s' % test.lineno
-        lname = '.'.join(test.name.split('.')[-1:])
-        return ('Failed doctest test for %s\n'
-                '  File "%s", line %s, in %s\n\n%s'
-                % (test.name, test.filename, lineno, lname, err)
-                )
+    #~ def format_failure(self, err):
+        #~ test = self._dt_test
+        #~ if test.lineno is None:
+            #~ lineno = 'unknown line number'
+        #~ else:
+            #~ lineno = '%s' % test.lineno
+        #~ lname = '.'.join(test.name.split('.')[-1:])
+        #~ return ('Failed doctest test for %s\n'
+                #~ '  File "%s", line %s, in %s\n\n%s'
+                #~ % (test.name, test.filename, lineno, lname, err)
+                #~ )
 
     def debug(self):
         r"""Run the test case without results and without catching exceptions
@@ -2440,6 +2476,7 @@ def DocTestSuite(module=None, globs=None, extraglobs=None, test_finder=None,
     suite = _DocTestSuite()
 
     for test in tests:
+        
         if len(test.examples) == 0:
             continue
         if not test.filename:
