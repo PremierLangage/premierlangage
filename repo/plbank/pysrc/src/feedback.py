@@ -64,7 +64,7 @@ class Feedback:
     def addsymbole(self, out, i, success):
         subnlbybr(out)
         if success:
-            self.adddiv('v'+str(i),out[16:])
+            self.adddiv('v'+str(i),out[6:])
         else:
             self.adddiv('f'+str(i),out[19:])
         return 0

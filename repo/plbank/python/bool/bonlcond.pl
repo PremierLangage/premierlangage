@@ -3,7 +3,7 @@ author=Dominique Revuz
 name=condbool.pl
 title= Condition booléenne  # N'oubliez pas de remplir ce champs svp
 tag= input|boolean|if # N'oubliez pas de remplir ce champs svp
-template=/python/0PLG/soluce
+template=/python/0PLG/template.pl
 text==
 # Easy Jet 
 Ecrire un programme qui demande à l’utilisateur le poids de son bagage en kilos.
@@ -26,3 +26,4 @@ poid=int(input())
 if poid>20:
 	print("Il y a un supplément de 30 euros pour un bagage de plus de 20 kilos.")
 ==
+

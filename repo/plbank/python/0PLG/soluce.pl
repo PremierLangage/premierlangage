@@ -18,6 +18,8 @@ print(g.grade())
 @/pysrc/src/plgrader.py
 @/pysrc/src/feedback.py
 @/pysrc/src/plutils.py
+@/pysrc/src/pldoctest.py
+@/pysrc/src/template.html
 
 
 type=sandbox

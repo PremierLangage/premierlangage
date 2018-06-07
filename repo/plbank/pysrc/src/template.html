@@ -1,108 +1,143 @@
 {% if feedback.compile %}
-     
-      <div style="border:1px solid black;padding:1%;margin:1%;background-color:Tomato;border-radius:4px;">
-     {%- for text,type in feedback.div %}
-     
-             {%- if type == 'errcompilfin' %}
-              <div style="border:1px solid black;padding:1%;margin:1%;background-color:Black;border-radius:4px;">    
+    <div style="border:1px solid black;padding:1%;margin:1%;background-color:Tomato;border-radius:4px;">
+    {% for text,type in feedback.div %}
+        {% if type == 'errcompilfin' %}
+            <div style="border:1px solid black;padding:1%;margin:1%;background-color:Black;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">    
                 <font style="color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
                     <p>{{text}}</p>
-                </font></div>
-            {%- else %}
+                </font>
+            </div>
+        {% else %}
             <p>{{text}}</p>
-           {%- endif %}
-           
-            {%- endfor %}
-    
-     <font style="color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;"></font></div>
-             
-               
-   
+        {% endif %}
+    {% endfor %}
+    </div>
+
 {% else %}
     {% if feedback.asio %}
-    <h3>eeee</h3>
-        {%- for type,text in feedback.executionhistory %}
-        <p>{{text,type,type}}</p>
-            {%- if feedback.showinput and type=="input" %}
-                
-                    <p>{{text,type}}</p>
-               
-            {%- endif %}
-            {%- if  type== "output" %}
-         <p>{{text}}</p>
-            {%- elif type=="optained" %}
-              
-                    <p>Obtenu:<br/>{{text,type}}</p>
-                
-            {%- elif type=="expected" %}
-               
-                    <p>Attendu:<br/>{{text,type}}</p>
-                
-            {%- endif %}
-        {%- endfor %}
-    {%- else %}
-    
-        {%- if feedback.success %}
-                
-            {%- for text,type in feedback.div %}
-            
-                {%- if type == 'compil' or type == 'vresume' %}
-                    <div style="border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;">
+      
+        {% if feedback.success %}
+            {% for text,type in feedback.div %}
+                {% if type == 'compil' or type == 'vresume' %}
+                    <div style="border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;color:Green;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
                         <p>{{text}}</p>
-                    <font style="color:Green;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;"></font></div>
-                {%- else %}
-                 <div style="border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;">
-                <button type="button" class="btn btn-block btn-success" data-toggle="collapse" data-target="#demo{{type}}" aria-expanded="true" aria-controls="demo{{type}}">Test True <div id="demo{{type}}" class=collapse>
-                <div class="card card-success;" style="background-color: LightGreen;"><p>{{text}}</p></div></button>
-                
-                <font style="color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;"></font></div>
-            
-                {%- endif %}
-            
-    
-           
-           
-            {%- endfor %}
-        
-    
-    {%- else %}
-   
-         {%- for text,type in feedback.div %}
-         
-        {%- if type == 'compil'%}
-            <div style="border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;">
-            <p>{{text}}</p>
-            <font style="color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;"></font></div>
-       
-        {%- elif type == 'fresume' %}
-            <div style="border:1px solid black;padding:1%;margin:1%;background-color:IndianRed;border-radius:4px;">
-            <p>{{text}}</p>
-            <font style="color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;"></font></div>
-        {%- else %}
-            {%- if type[0] == 'v'%}
-
-             <div style="border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;">
-            <button type="button" class="btn btn-block btn-success" data-toggle="collapse" data-target="#demo{{type}}" aria-expanded="true" aria-controls="demo{{type}}">Test réussi<div id="demo{{type}}" class=collapse>
-         <div class="card card-success;" style="background-color: LightGreen;"><p>{{text}}</p></div></button>
-            
-            <font style="color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;"></font></div>
-            {%- else %}
-                 <div style="text-align: center;border:1px solid black;padding:1%;margin:1%;background-color:DarkRed;border-radius:4px;">
-            <button type="button" class="btn btn-block btn-danger" data-toggle="collapse" data-target="#demo{{type}}" aria-expanded="true" aria-controls="demo{{type}}">Test Échoué<div id="demo{{type}}" class="">
-         <div class="card card-danger;" style="background-color: #721c24;" ><p>{{text}}</p></div></button>
-            
-            <font style="color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;"></font></div>
-            {%- endif %}
-
-        {%- endif %}
-            
-    
-           
-           
-        {%- endfor %}
-        
-        
-    {%- endif %}
-{%- endif %}
-{%- endif %}
+                    </div>
+                {% else %}
+                <div style="border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;">
+                    <button type="button" class="btn btn-block btn-success"
+                            data-toggle="collapse" data-target="#demo{{type}}">
+                        Test True
+                    </button>
+                    <div id="demo{{type}}" class="collapse">
+                        <div class="card card-success;" style="background-color: LightGreen;">
+                            <p>{{text}}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            {% for text,type in feedback.div %}
+                {% if type == 'compil'%}
+                    <div style="border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                        <p>{{text}}</p> 
+                    </div>
+                {% elif type == 'fresume' %}
+                    <div style="border:1px solid black;padding:1%;margin:1%;background-color:IndianRed;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                        <p>{{text}}</p>
+                    </div>
+                {% else %}
+                    {% if type[0] == 'v'%}
+                        <div style="text-align: center;border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                            <button type="button" class="btn btn-block btn-success"
+                                    data-toggle="collapse" data-target="#demo{{type}}">
+                                Test réussi
+                            </button>
+                            <div id="demo{{type}}" class="collapse">
+                                <div class="card card-success" style="background-color: LightGreen;">
+                                    <p>{{text}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div style="text-align: center;border:1px solid black;padding:1%;margin:1%;background-color:DarkRed;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                            <button type="button" class="btn btn-block btn-danger"
+                                    data-toggle="collapse" data-target="#demo{{type}}"
+                                    aria-expanded="true" aria-controls="demo{{type}}">
+                                Test Échoué
+                            </button>
+                            <div id="demo{{type}}" class="show">
+                                <div class="card card-danger;" style="background-color: #721c24;" >
+                                    <p>{{text}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% else %}
+        {% if feedback.success %}
+            {% for text,type in feedback.div %}
+                {% if type == 'compil' or type == 'vresume' %}
+                    <div style="border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;color:Green;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                        <p>{{text}}</p>
+                    </div>
+                {% else %}
+                 <div style="text-align: center;border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                            <button type="button" class="btn btn-block btn-success"
+                                    data-toggle="collapse" data-target="#demo{{type}}">
+                                Test Réussi
+                            </button>
+                            <div id="demo{{type}}" class="collapse">
+                                <div class="card card-success" style="background-color: LightGreen;">
+                                    <p>{{text}}</p>
+                                </div>
+                            </div>
+                        </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            {% for text,type in feedback.div %}
+                {% if type == 'compil'%}
+                    <div style="border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                        <p>{{text}}</p> 
+                    </div>
+                {% elif type == 'fresume' %}
+                    <div style="border:1px solid black;padding:1%;margin:1%;background-color:IndianRed;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                        <p>{{text}}</p>
+                    </div>
+                {% else %}
+                    {% if type[0] == 'v'%}
+                        <div style="text-align: center;border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                            <button type="button" class="btn btn-block btn-success"
+                                    data-toggle="collapse" data-target="#demo{{type}}"
+                                    aria-expanded="true" aria-controls="demo{{type}}">
+                                Test Réussi
+                            </button>
+                            <div id="demo{{type}}" class="collapse">
+                                <div class="card card-succes;" style="background-color: LightGreen;" >
+                                    <p>{{text}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div style="text-align: center;border:1px solid black;padding:1%;margin:1%;background-color:DarkRed;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                            <button type="button" class="btn btn-block btn-danger"
+                                    data-toggle="collapse" data-target="#demo{{type}}"
+                                    aria-expanded="true" aria-controls="demo{{type}}">
+                                Test Échoué
+                            </button>
+                            <div id="demo{{type}}" class="show">
+                                <div class="card card-danger;" style="background-color: #721c24;" >
+                                    <p>{{text}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+{% endif %}
 
