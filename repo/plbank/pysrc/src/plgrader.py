@@ -66,7 +66,7 @@ class Grader:
             compil_fb += 'Aucune erreur détecté.<br />'
             
         if compil_state == "error":
-            compil_fb += '<br />Feedback provenant de gcc: <br />'
+            compil_fb += '<br />Erreur dans votre programme: <br />'
             #compil_fb += self.terminal_code(gcc_msg)
 
         return compil_fb;
@@ -92,6 +92,7 @@ class Grader:
                 self.fb.compilation=False
                 return False
             else:
+                
                 #self.fb.addFeedback(self.fb.generate_feedback_compilation(self.fb.flags,"",""))
                 self.fb.adddiv("compil",self.generate_feedback_compilation(self.fb.flags,""))
 
@@ -103,11 +104,13 @@ class Grader:
             self.fb.showinput =True
         if "failure" in self.pld and not self.fb.success :
             self.fb.addFeedback(self.pld["failure"])
+            #self.fb.adddiv("failure",self.pld["failure"])
            
 
         if "taboo" in self.pld and checktaboo(self.pld["taboo"],"student.py"):
-            self.fb.addFeedback(" la liste des mots taboo "+self.pld["taboo"]+". Raté !\n")
-            self.fb.addFeedback(" ces mots ne doivent pas apparaitre dans votre solution !\n")
+            self.fb.adddiv("ftaboo"," la liste des mots taboo "+self.pld["taboo"]+". Raté !\n <br>Ces mots ne doivent pas apparaitre dans votre solution !\n")
+            #self.fb.addFeedback(" la liste des mots taboo "+self.pld["taboo"]+". Raté !\n")
+            #self.fb.addFeedback(" ces mots ne doivent pas apparaitre dans votre solution !\n")
             self.fb.success = False
         
         if "needed" in self.pld and checkneeded(self.pld["needed"],"student.py"):
@@ -127,38 +130,42 @@ class Grader:
         if stdinput and type(stdinput) != type("") :
                 self.fb.addFeedback("WARNING illegal type in input value")
                 stdintput= str(stdinput)
-        self.compareExpectedOutput(expected,stdinput)
+        self.compareExpectedOutput(expected,0,stdinput)
         return True
 
-    def compareExpectedOutput(self,expected,stdinput=None):
+    def compareExpectedOutput(self,expected,i,stdinput=None):
         """
         Compare the output from student to expected argument
         update feedback in consequence
         return True if sucessfull
         """
-
+        tmp=0
         r,t = self.getStudentOutput(stdinput)
         c=compare(expected,t) # si egal ou contient ce qui est attendu 
         if r and  c < 3 :
             if self.fb.showinput and stdinput :
                 self.fb.addOutput("input:\n"+stdinput)
             #self.fb.addOutput(expected)
-            self.fb.adddiv("output",subnlbybr(expected))
+            self.fb.adddiv("ventree output"+str(i),"Entrée :"+self.fb.resultat(subnlbybr(stdinput))+"Attendue:"+self.fb.resultat(subnlbybr(expected))+"Obtenue:"+self.fb.resultat(subnlbybr(expected)))
             self.fb.success = True
         elif r :
             if "nohint" in self.pld: # don't tel the answer
                 self.fb.addOutput(expected)
             else:
-                self.fb.adddiv("expected",subnlbybr(t)+"\nDifférence="+subnlbybr(str(c))+"\n")
+                self.fb.adddiv("entree expected obtenu"+str(i),"Entrée: "+self.fb.resultat(subnlbybr(stdinput))+"\n Attendue: "+self.fb.resultat(subnlbybr(expected))+"Obtenue:"+ self.fb.resultat(subnlbybr(t)))
                 
-                #self.fb.addExpectedOptained(t, expected)
+                self.fb.addExpectedOptained(t, expected)
                 #self.fb.addFeedback("\nDifférence ="+str(c)+"\n")
             self.fb.success = False
         else: # erreur d'execution r = False
             #self.fb.addCompilationError(t)
-            self.fb.addCompilationError("")
-            self.fb.adddiv("errcompil",self.generate_feedback_compilation(self.fb.flags,"error"))
-            self.fb.adddiv("errcompilfin",subnlbybr(str(t)))
+            for x,y in self.fb.div:
+                if y=="errcompil":
+                    tmp=1
+            if tmp!=1:
+                self.fb.addCompilationError("")
+                self.fb.adddiv("errcompil",self.generate_feedback_compilation(self.fb.flags,"error"))
+                self.fb.adddiv("errcompilfin",subnlbybr(str(t)))
             if "compilehelp" in self.pld:
                 self.fb.addFeedback(self.pld['compilehelp'])
             self.fb.success = False
@@ -166,13 +173,17 @@ class Grader:
 
     def getStudentOutput(self, stdinput=None):
         # execute student.py
+         
         return self.execute(["python3","student.py"],instr=stdinput)
 
     def getSoluceOutput(self, stdinput=None):
+      
         r,out = self.execute(["python3","soluce.py"],instr=stdinput)
         if not r:
-            self.fb.addFeedback("Problemes with the soluce")
-            self.fb.addFeedback(out)
+            self.fb.adddiv("info","probleme with the soluce")
+            self.fb.adddiv("info2",out)
+            #self.fb.addFeedback("Problemes with the soluce")
+            #self.fb.addFeedback(out)
         return (r,out)
 
     def execute(self,args,instr):
@@ -195,11 +206,12 @@ class Grader:
         i= 0
         while si in self.pld and so in self.pld:
             self.fb.asio=True
-            self.fb.addInput(self.pld[si])
+            #self.fb.adddiv("Entree",self.pld[si])
+            #self.fb.addInput("Entrée:"+self.pld[si])
             r = self.compareExpectedOutput(self.pld[so],
-                    stdinput=self.pld[si])
-            if not r:
-                return True
+                    i,stdinput=self.pld[si])
+            #if not r:
+            #    return True
             i=i+1
             si="input"+str(i)
             so="output"+str(i)
@@ -212,11 +224,11 @@ class Grader:
         i= 0
         while si in self.pld :
             self.fb.asio=True
-            self.fb.addInput(self.pld[si])
+            self.fb.addInput("Entrée:"+self.pld[si])
             r,soloutput = self.getSoluceOutput(stdinput=self.pld[si])
             if not r:
                 return False
-            r = self.compareExpectedOutput(soloutput,
+            r = self.compareExpectedOutput(soloutput,i,
                     stdinput=self.pld[si])
             if not r:
                 return True
@@ -237,6 +249,7 @@ class Grader:
         if not "expectedoutput" in self.pld:
             return False
         with open("student.py","r") as f:
+            
             x=f.read().split("\n")[0]
         if x == self.pld["expectedoutput"]: # FIXME ASSERT 
             self.fb.success = True
@@ -246,6 +259,7 @@ class Grader:
                 self.fb.addFeedback("ne mettez pas de commentaires dans votre réponse")
             if "" == x :
                 self.fb.addFeedback("sur la première ligne votre réponse")
+            
             self.fb.addFeedback("la valeur attendu était "+self.pld["expectedoutput"])
         return True
 
@@ -266,7 +280,7 @@ class Grader:
             r,soloutput = self.getSoluceOutput(stdinput=stdinput)
             if not r:
                 return False
-            r = self.compareExpectedOutput(soloutput,
+            r = self.compareExpectedOutput(soloutput,x,
                     stdinput=stdinput)
             if not r:
                 return True
@@ -288,7 +302,6 @@ class Grader:
 
         import os
         os.environ['TERM']="linux"# bug in readlinehttps://bugs.python.org/msg191824
-        
         if 'mode' in self.pld and self.pld['mode'] == 2:
             r,out=self.execute(['python3','-B','-m','pldoctest','-f','pltest.py'],instr=None)
         else:

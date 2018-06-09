@@ -1,7 +1,7 @@
 pipeline {
   agent any
   stages {
-    stage('Configurations') {
+    stage('Environment\'s configuration ') {
       steps {
         sh '''
                python3 -m venv /var/lib/jenkins/workspace/env/jenkinsenv
@@ -15,7 +15,7 @@ pipeline {
            '''
       }
     }
-    stage('Test') {
+    stage('Running tests') {
       steps {
         sh '''
               cd server/serverpl
@@ -25,7 +25,7 @@ pipeline {
            '''
       }
     }
-    stage('Clean') {
+    stage('Clean envrionnement') {
       steps {
         sh '''
             rm -rf /var/lib/jenkins/workspace/env/jenkinsenv

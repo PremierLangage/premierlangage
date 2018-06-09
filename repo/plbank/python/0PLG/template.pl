@@ -22,9 +22,10 @@ print(g.grade())
 
 
 
-
 # une interface standard d'exercice avec un editeur pour la réponse
 form=@ /python/form/editorform.html
+
+
 
 
 
