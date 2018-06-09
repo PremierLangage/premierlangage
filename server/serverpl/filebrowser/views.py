@@ -87,7 +87,7 @@ def apply_option_post(request):
     
     try:
         if typ == "entry":
-            return ENTRY_OPTIONS[' '+option].process_option(request, fb, name, )
+            return ENTRY_OPTIONS[option].process_option(request, fb, name, )
         else:
             return DIRECTORY_OPTIONS[option].process_option(request, fb, name)
     except Exception as e:
@@ -104,7 +104,6 @@ def preview_pl(request):
     
 
     post = json.loads(request.body.decode())
-    
     if post['requested_action'] == 'preview': # Asking for preview
         try:
             path = FILEBROWSER_ROOT+'/'+post['path']
@@ -113,7 +112,7 @@ def preview_pl(request):
                 print(post['content'], file=f)
                 
             directory = Directory.objects.get(name=post['directory'])
-            rel_path = post['path'].replace('./'+directory.name, "")
+            rel_path = post['path'].replace(directory.name, "")
             pl, warnings = load_file(directory, rel_path)
             if not pl:
                 preview = '<div class="alert alert-danger" role="alert"> Failed to load \''+basename(rel_path)+"': \n"+warnings+"</div>"
@@ -196,7 +195,8 @@ def edit_receiver(request):
         
     content = request.POST.get('editor_input', '')
     path = request.POST.get('path', '')
-    
+    print("#########")
+    print(path)
     try:
         if content:
             with open(FILEBROWSER_ROOT+'/'+path, 'w') as f:
@@ -204,10 +204,7 @@ def edit_receiver(request):
         messages.success(request, "File '"+basename(path)+"' successfully modified")
     except Exception as e:
         msg = "Impossible to modify '"+basename(path)+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
-        if FILEBROWSER_ROOT in msg:
-            msg = msg.replace(FILEBROWSER_ROOT, "")
         messages.error(request, msg)
-    
     return redirect_fb(dirname(path))
 
 
@@ -226,7 +223,7 @@ def new_file_receiver(request):
                 print(content, file=f)
         messages.success(request, "File '"+basename(path)+"' successfully created")
     except Exception as e:
-        msg = "Impossible to modify '"+basename(path)+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
+        msg = "Impossible to create '"+basename(path)+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT, "")
         messages.error(request, msg)

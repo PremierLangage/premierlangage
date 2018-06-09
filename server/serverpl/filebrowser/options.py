@@ -313,12 +313,15 @@ def new_pl_option(request, filebrowser, target):
             messages.error(request, "A file with that name ('"+name+"') already exists")
         else:
             open(path, 'w+').close()
+            response = redirect(reverse(views.apply_option_get))
+            response['Location'] += '?option_h=edit_pl&name_h='+name+'&relative_h='+relative+'&type_h=entry'
+            return response
     except Exception as e:
         msg = "Impossible to create '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
-    return redirect_fb(request.POST.get('relative_h', '.'))
+    return redirect_fb(relative)
 
 
 def load_pltp_option(request, filebrowser, target):
@@ -438,7 +441,7 @@ def edit_pl_option(request, filebrowser, target):
         with open(path, 'r') as f:
             content = f.read()
         
-        rel_path = join(filebrowser.relative, target).replace('./'+filebrowser.directory.name, "")
+        rel_path = join(filebrowser.relative, target).replace(filebrowser.directory.name, "")
         pl, warnings = load_file(filebrowser.directory, rel_path)
         if not pl:
             preview = '<div class="alert alert-danger" role="alert"> Failed to load \''+target+"': \n"+warnings+"</div>"
@@ -478,7 +481,7 @@ def test_pl_option(request, filebrowser, target):
     try:
         path = join(filebrowser.full_path(), target)
 
-        rel_path = join(filebrowser.relative, target).replace('./'+filebrowser.directory.name, "")
+        rel_path = join(filebrowser.relative, target).replace(filebrowser.directory.name, "")
         pl, warnings = load_file(filebrowser.directory, rel_path)
         
         if not pl:

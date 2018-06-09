@@ -271,21 +271,21 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
+STATIC_ROOT = os.path.abspath(os.path.join(PROJECT_DIR, 'static'))
 STATIC_URL = '/static/'
 
 
-MEDIA_ROOT = os.path.join(PROJECT_DIR, '../../../../tmp')
+MEDIA_ROOT = os.path.abspath(os.path.join(PROJECT_DIR, '../../../../tmp'))
 MEDIA_URL = '/tmp/'
 
-REPO_ROOT = os.path.join(PROJECT_DIR,'../../../repo')
+REPO_ROOT = os.path.abspath(os.path.join(PROJECT_DIR,'../../../repo'))
 
 # python plank packtage dir  
-PYSRCDIR = os.path.dirname(PROJECT_DIR + "/../pysrc/")
+PYSRCDIR = os.path.abspath(os.path.dirname(PROJECT_DIR + "/../pysrc/"))
 if not PYSRCDIR in sys.path:
     sys.path.append(PYSRCDIR)
 
 FILEBROWSER_ROOT = REPO_ROOT
 
-PARSERS_ROOT = os.path.join(PROJECT_DIR,'../loader/parsers/')
+PARSERS_ROOT = os.path.abspath(os.path.join(PROJECT_DIR,'../loader/parsers/'))
 PARSERS_MODULE = 'loader.parsers'
