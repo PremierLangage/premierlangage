@@ -22,6 +22,8 @@
 #  
 #  
 
+from collections import OrderedDict
+
 from django.contrib import messages
 from django.shortcuts import redirect, reverse
 
@@ -133,35 +135,33 @@ class FilebrowserOption():
 
 
 # Filebrowser entries options.
-ENTRY_OPTIONS = [
-    FilebrowserOption("fas fa-cog",         "Edit",     edit_pl_option,    color=DARK_BLUE, authorization=WRITE, filter=is_pl,   size=BIG, outline=False, method=GET),
-    FilebrowserOption("fas fa-check",       "Test",     test_pl_option,    color=DARK_BLUE, authorization=READ,  filter=is_pl,   size=BIG, method=GET),
-    FilebrowserOption("fas fa-play",        "Load",     load_pltp_option,  color=DARK_BLUE, authorization=READ,  filter=is_pltp, size=BIG, outline=False, method=GET),
-    FilebrowserOption("fas fa-pencil-alt",  "Rename",   rename_option,     form=RenameForm, authorization=OWNER, filter=is_directory_object),
-    FilebrowserOption("fas fa-pencil-alt",  "Rename",   rename_option,     form=RenameForm, authorization=WRITE, filter=is_not_directory_object),
-    FilebrowserOption("fas fa-unlock-alt",  "Edit access rights",          rights_option,   method=GET, filter=is_directory_object, authorization=OWNER),
-    FilebrowserOption("fas fa-arrow-right", "Move",     move_option,       form=MoveForm,   filter=is_not_directory_object),
-    FilebrowserOption("fas fa-copy",        "Copy",     copy_option,       form=CopyForm,   filter=is_not_directory_object),
-    FilebrowserOption("fas fa-share-square","Extract",  extract_option,    filter=is_archive, method=GET),
-    FilebrowserOption("fas fa-download",    "Download", download_option,   method=GET,      authorization=READ),
-    FilebrowserOption("fas fa-edit",        "Edit",     edit_option,       filter=[is_text, is_not_pl],  method=GET),
-    FilebrowserOption("fas fa-eye",         "Display",  display_option,    filter=is_text,  method=GET, balise=['target=_blank'], authorization=READ),
-    FilebrowserOption("fas fa-plus",        "Add & Commit",  add_commit_option, form=AddCommitForm, color=GREEN, filter=[is_remote, is_not_directory_object]),
-    FilebrowserOption("fas fa-eraser",      "Checkout", checkout_option,   color=YELLOW,    filter=[is_remote,   is_not_directory_object], require_confirmation=True),
-    FilebrowserOption("fas fa-times",       "Delete",   delete_option,     require_confirmation=True, color=RED, authorization=OWNER, filter=is_directory_object),
-    FilebrowserOption("fas fa-times",       "Delete",   delete_option,     require_confirmation=True, color=RED, authorization=WRITE, filter=is_not_directory_object),
-]
+ENTRY_OPTIONS = OrderedDict()
+ENTRY_OPTIONS['edit_pl'] = FilebrowserOption("fas fa-cog", "Edit", edit_pl_option, color=DARK_BLUE, authorization=WRITE, filter=is_pl, size=BIG, outline=False, method=GET)
+ENTRY_OPTIONS['test'] = FilebrowserOption("fas fa-check", "Test", test_pl_option, color=DARK_BLUE, authorization=READ, filter=is_pl, size=BIG, method=GET)
+ENTRY_OPTIONS['load'] = FilebrowserOption("fas fa-play", "Load", load_pltp_option, color=DARK_BLUE, authorization=READ, filter=is_pltp, size=BIG, outline=False, method=GET)
+ENTRY_OPTIONS['dirrename'] = FilebrowserOption("fas fa-pencil-alt", "Rename", rename_option, form=RenameForm, authorization=OWNER, filter=is_directory_object)
+ENTRY_OPTIONS['rename'] = FilebrowserOption("fas fa-pencil-alt", "Rename", rename_option, form=RenameForm, authorization=WRITE, filter=is_not_directory_object)
+ENTRY_OPTIONS['rights'] = FilebrowserOption("fas fa-unlock-alt", "Edit access rights", rights_option, method=GET, filter=is_directory_object, authorization=OWNER)
+ENTRY_OPTIONS['move'] = FilebrowserOption("fas fa-arrow-right", "Move", move_option, form=MoveForm, filter=is_not_directory_object)
+ENTRY_OPTIONS['copy'] = FilebrowserOption("fas fa-copy", "Copy", copy_option, form=CopyForm, filter=is_not_directory_object)
+ENTRY_OPTIONS['extract'] = FilebrowserOption("fas fa-share-square","Extract", extract_option, filter=is_archive, method=GET)
+ENTRY_OPTIONS['download'] = FilebrowserOption("fas fa-download", "Download", download_option, method=GET, authorization=READ)
+ENTRY_OPTIONS['edit'] = FilebrowserOption("fas fa-edit", "Edit", edit_option, filter=[is_text, is_not_pl], method=GET)
+ENTRY_OPTIONS['display'] = FilebrowserOption("fas fa-eye", "Display", display_option, filter=is_text, method=GET, balise=['target=_blank'], authorization=READ)
+ENTRY_OPTIONS['commit'] = FilebrowserOption("fas fa-plus", "Add & Commit", add_commit_option, form=AddCommitForm, color=GREEN, filter=[is_remote, is_not_directory_object])
+ENTRY_OPTIONS['checkout'] = FilebrowserOption("fas fa-eraser", "Checkout", checkout_option, color=YELLOW, filter=[is_remote, is_not_directory_object], require_confirmation=True)
+ENTRY_OPTIONS['dirdelete'] = FilebrowserOption("fas fa-times", "Delete", delete_option, require_confirmation=True, color=RED, authorization=OWNER, filter=is_directory_object)
+ENTRY_OPTIONS['delete'] = FilebrowserOption("fas fa-times", "Delete", delete_option, require_confirmation=True, color=RED, authorization=WRITE, filter=is_not_directory_object)
 
 #Filebrowser Directory options, can be displayed with the upper-right "+" in the filebrowser
-DIRECTORY_OPTIONS = [
-    FilebrowserOption("fas fa-pencil-alt",  "Rename",        rename_option,   form=RenameForm, authorization=OWNER),
-    FilebrowserOption("fas fa-folder",      "New directory", mkdir_option,    form=RenameForm),
-    FilebrowserOption("fas fa-edit",        "New PL",        new_pl_option,   form=RenameForm),
-    FilebrowserOption("fas fa-upload",      "Upload File  ", upload_option,   form=UploadForm),
-    FilebrowserOption("fas fa-download",    "Download",      download_option, method=GET, authorization=READ),
-    FilebrowserOption("fas fa-plus",        "Add & Commit",  add_commit_option, form=AddCommitForm, color=GREEN, filter=is_remote),
-    FilebrowserOption("fas fa-info-circle", "Status",        status_option, color=LIGHT_BLUE, filter=is_remote, method=GET),
-    FilebrowserOption("fas fa-eraser",      "Checkout",      checkout_option, color=YELLOW, filter=is_remote, require_confirmation=True),
-    FilebrowserOption("fas fa-cloud-upload-alt",   "Push",   push_option, form=LoginForm, color=YELLOW, filter=is_remote),
-    FilebrowserOption("fas fa-cloud-download-alt", "Pull",   pull_option, form=LoginForm, color=YELLOW, filter=is_remote),
-]
+DIRECTORY_OPTIONS = OrderedDict()
+DIRECTORY_OPTIONS['rename'] = FilebrowserOption("fas fa-pencil-alt", "Rename", rename_option, form=RenameForm, authorization=OWNER)
+DIRECTORY_OPTIONS['mkdir'] = FilebrowserOption("fas fa-folder", "New directory", mkdir_option, form=RenameForm)
+DIRECTORY_OPTIONS['new_pl'] = FilebrowserOption("fas fa-edit", "New PL", new_pl_option, form=RenameForm)
+DIRECTORY_OPTIONS['upload'] = FilebrowserOption("fas fa-upload", "Upload File ", upload_option, form=UploadForm)
+DIRECTORY_OPTIONS['download'] = FilebrowserOption("fas fa-download", "Download", download_option, method=GET, authorization=READ)
+DIRECTORY_OPTIONS['commit'] = FilebrowserOption("fas fa-plus", "Add & Commit", add_commit_option, form=AddCommitForm, color=GREEN, filter=is_remote)
+DIRECTORY_OPTIONS['status'] = FilebrowserOption("fas fa-info-circle", "Status", status_option, color=LIGHT_BLUE, filter=is_remote, method=GET)
+DIRECTORY_OPTIONS['checkout'] = FilebrowserOption("fas fa-eraser", "Checkout", checkout_option, color=YELLOW, filter=is_remote, require_confirmation=True)
+DIRECTORY_OPTIONS['push'] = FilebrowserOption("fas fa-cloud-upload-alt", "Push", push_option, form=LoginForm, color=YELLOW, filter=is_remote)
+DIRECTORY_OPTIONS['pull'] = FilebrowserOption("fas fa-cloud-download-alt", "Pull", pull_option, form=LoginForm, color=YELLOW, filter=is_remote)

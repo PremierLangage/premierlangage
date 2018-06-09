@@ -34,7 +34,7 @@
 
 import os, shutil, magic, zipfile, tarfile, traceback, htmlprint
 
-from os.path import basename, splitext, isdir, join, isfile
+from os.path import basename, splitext, isdir, join, isfile, abspath
 
 from django.shortcuts import redirect, reverse, render
 from django.contrib import messages
@@ -298,11 +298,12 @@ def new_pl_option(request, filebrowser, target):
         return HttpResponseNotAllowed(['POST'])
     
     name = request.POST.get('name', None)
-    if not name:
+    relative = request.POST.get('relative_h', None)
+    if not name or not relative:
         return HttpResponseBadRequest
     
     try:
-        path = join(filebrowser.full_path(), name)
+        path = abspath(join(join(filebrowser.full_path(), relative), name))
         if not is_pl(name):
             ext = splitext(path)[1]
             messages.error(request, "Unknown PL's extension: '" + ext + "', please use a known extension.")
@@ -312,7 +313,6 @@ def new_pl_option(request, filebrowser, target):
             messages.error(request, "A file with that name ('"+name+"') already exists")
         else:
             open(path, 'w+').close()
-            return edit_option(request, filebrowser, target)
     except Exception as e:
         msg = "Impossible to create '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if FILEBROWSER_ROOT in msg:
@@ -462,7 +462,7 @@ def edit_pl_option(request, filebrowser, target):
         })
         
     except Exception as e:
-        msg = "Impossible to display '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
+        msg = "Impossible to edit '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)

@@ -39,7 +39,7 @@
                 </table>
             </div>
             {% if fb.directory and fb.directory.remote %}<footer class="blockquote-footer">{{ fb.directory.remote }}</footer>{% endif %}
-                {% for option in fb.directory_options %}
+                {% for key,option in fb.directory_options.items %}
                 {% if option|opt_filter:fb.relative %}
                     {% if not option.form and option.require_confirmation %}{% include 'filebrowser/confirmation_dir_modal.html' %}{% endif %}
                     {% if option.form %}{% include 'filebrowser/default_dir_modal.html' %}{% endif %}

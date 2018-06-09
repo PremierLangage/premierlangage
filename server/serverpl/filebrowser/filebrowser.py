@@ -25,6 +25,8 @@
 
 import os
 
+from os.path import abspath
+
 from serverpl.settings import FILEBROWSER_ROOT
 
 from filebrowser.filebrowser_option import ENTRY_OPTIONS, DIRECTORY_OPTIONS
@@ -60,7 +62,7 @@ class Filebrowser():
     
     def full_path(self):
         """Return the absolute path of the current position of the filebrowser."""
-        return os.path.join(self.root, self.relative)
+        return abspath(os.path.join(self.root, self.relative))
     
     
     def breadcrumb(self):

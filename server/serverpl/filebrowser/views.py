@@ -58,14 +58,12 @@ def apply_option_get(request):
     fb = Filebrowser(path=path)
     
     try:
-        option = int(option)
         if typ == "entry":
             return ENTRY_OPTIONS[option].process_option(request, fb, name)
         else:
             return DIRECTORY_OPTIONS[option].process_option(request, fb, name)
     except Exception as e:
-        messages.error(request, "Impossible to apply the option "+str(option)+" : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e))
-    
+        messages.error(request, "Impossible to apply the option "+option+" : "+ htmlprint.code(str(type(e)) + " - " + str(e)))
     return redirect_fb(path)
 
 
@@ -89,12 +87,11 @@ def apply_option_post(request):
     
     try:
         if typ == "entry":
-            return ENTRY_OPTIONS[int(option)].process_option(request, fb, name, )
+            return ENTRY_OPTIONS[' '+option].process_option(request, fb, name, )
         else:
-            return DIRECTORY_OPTIONS[int(option)].process_option(request, fb, name)
+            return DIRECTORY_OPTIONS[option].process_option(request, fb, name)
     except Exception as e:
-        messages.error(request, "Impossible to apply the option "+option+" : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e))
-    
+        messages.error(request, "Impossible to apply the option "+option+" : "+ htmlprint.code(str(type(e)) + " - " + str(e)))    
     return redirect_fb(path)
 
 
@@ -206,7 +203,7 @@ def edit_receiver(request):
                 print(content, file=f)
         messages.success(request, "File '"+basename(path)+"' successfully modified")
     except Exception as e:
-        msg = "Impossible to modify '"+basename(path)+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        msg = "Impossible to modify '"+basename(path)+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT, "")
         messages.error(request, msg)
@@ -229,7 +226,7 @@ def new_file_receiver(request):
                 print(content, file=f)
         messages.success(request, "File '"+basename(path)+"' successfully created")
     except Exception as e:
-        msg = "Impossible to modify '"+basename(path)+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        msg = "Impossible to modify '"+basename(path)+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT, "")
         messages.error(request, msg)
@@ -260,7 +257,7 @@ def right_edit(request):
         messages.success(request, "Rights of '"+name+"' successfully edited.")
     except Exception as e:
         raise e
-        msg = "Impossible to edit rights of '"+name+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        msg = "Impossible to edit rights of '"+name+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT, "")
         messages.error(request, msg)

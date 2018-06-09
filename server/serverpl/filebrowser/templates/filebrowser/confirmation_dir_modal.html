@@ -9,7 +9,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="relative_h" value="."/>
                 <input type="hidden" name="name_h" value="{{ fb.directory.name }}"/>
-                <input type="hidden" name="option_h" value="{{ forloop.counter0 }}"/>
+                <input type="hidden" name="option_h" value="{{ key }}"/>
                 <input type="hidden" name="type_h" value="directory"/>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fas fa-times"></i>&emsp;Cancel</button>
