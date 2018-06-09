@@ -11,9 +11,12 @@ import json, os, tarfile, uuid, timeout_decorator, time, subprocess
 
 from django.conf import settings
 
+from sandbox.exceptions import MissingGradeError
+
+
 
 TIMEOUT_FEEDBACK = """
-L'éxecution de votre programme prends trop de temps (maximum {X} secondes).
+L'exécution de votre programme prends trop de temps (maximum {X} secondes).
 <br><br>Cette erreur peut être dû:
 <ul>
     <li>À une boucle infinie. Pensez à vérifier les conditions d'arrêts de vos boucles <strong>while</strong> ainsi que de vos fonctions récursives.</li>
@@ -42,83 +45,94 @@ class Executor:
     
     
     @timeout_decorator.timeout(use_signals=False, use_class_attribute=True)
-    def _evaluate(self):
+    def __evaluate(self):
         """ Untar environment.tar.gz and execute grader.py, returning the result. """
         try:
             cwd = os.getcwd()
             os.chdir(self.dirname)
+            
             with tarfile.open(self.dirname+"/environment.tgz", 'r:gz') as tar:
                 tar.extractall(self.dirname)
+            
             p = subprocess.Popen('python3 grader.py',stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             out, err = p.communicate()
-            err = err.decode("utf-8")
-            if p.returncode:
-                raise Exception(err.replace('<', '[').replace('>', ']').replace('\n', '<br>'))
-            return out
+            
+            return p.returncode, out if not p.returncode else err 
         finally:
             os.chdir(cwd)
     
     
     def execute(self):
-        """ 
-            - If the evaluation suceeded, return a json of this dic:
-                {
-                    "platform_error": [],
-                    "grade": {
-                        "success": [True/False] according to the evaluation.
-                        "feedback": [feedback]
-                    }
-                }
-            - If the evaluation timed out, return a json of this dic:
-                {
-                    "platform_error": [],
-                    "grade": {
-                        "success": False,
-                        "feedback": [Error message]
-                    }
-                }
-            - If the evaluation failed, return a json of this dic:
-                {
-                    "platform_error": [list of errors],
-                    "grade": {
-                        "success": False,
-                        "feedback": [Error message]
-                    }
-                }
-        """
-        
         try:
             self._create_dir()
             cwd = os.getcwd()
-            result = self._evaluate()
-            dico_response = {
-                "platform_error": [],
-                "grade": json.loads(result.decode("UTF-8")),
-            }
-            dico_response['path_files'] = self.dirname
+            exit_code, output = self.__evaluate()
+            output = output.decode("UTF-8")
+            if exit_code:
+                if exit_code > 1000 or exit_code < 0:
+                    raise GraderError("Grader exit code should be "
+                            + "[0, 999] (received '"
+                            + str(exit_code)+"').")
+                response = {
+                    'feedback': "Erreur lors de l'évaluation de votre "\
+                        + "réponse, merci de contacter votre professeur.",
+                    'error': output,
+                    'grade': -exit_code,
+                    'other': [],
+                }
+            
+            else:
+                output = json.loads(output)
+                if not 'grade' in output and not 'success' in output:
+                    raise MissingGradeError
+                if 'success' in output:
+                    output['grade'] = 100 if output['success'] else 0
+                response = {
+                    'feedback': ("No feedback provided by the grader"
+                                 if 'feedback' not in output 
+                                 else output['feedback']),
+                    'error': "" if 'error' not in output else output['error'],
+                    'other': [] if 'other' not in output else output['other'],
+                    'grade': output['grade'],
+                }
         
-        except timeout_decorator.TimeoutError as e: #Evaluation timed out
-            os.chdir(cwd)
-            error_message={
+        except timeout_decorator.TimeoutError as e:
+            response = {
                 'feedback': TIMEOUT_FEEDBACK.replace('{X}', str(self.timeout)),
-                'success': False,
-            }
-            dico_response = {
-                "platform_error": [str(e)],
-                "grade":  error_message,
+                'grade' : 0
             }
         
+        except MissingGradeError as e:
+            response = {
+                'feedback': ("Erreur lors de l'évaluation de votre "
+                    + "réponse, merci de contacter votre professeur."),
+                'error': str(e),
+                'grade': -3,
+                'other': [],
+            }
+        
+        except GraderError as e:
+            response = {
+                'feedback': ("Erreur lors de l'évaluation de votre "
+                    + "réponse, merci de contacter votre professeur."),
+                'error': str(e),
+                'grade': -4,
+                'other': [],
+            }
+
         except Exception as e: #Unknown error
-            error_message= {
-                'feedback':"Erreur de la plateforme. Si le problème persiste, merci de contacter votre professeur.<br> "+str(type(e)).replace('<', '[').replace('>', ']')+": "+str(e),
-                'success': "info",
+            response = {
+                'feedback': ("Erreur lors de l'évaluation de votre "
+                    + "réponse, merci de contacter votre professeur."),
+                'error': traceback.format_exc(),
+                'grade': -5,
+                'other': [],
             }
-            if "result" in locals():
-                error_message["feedback"] += "<br><br>"+result.decode('UTF-8').replace('\n', '<br>')
-            dico_response = {
-                "platform_error": [str(e)],
-                "grade":  error_message,
+        
+        finally:
+            try:
+                self.docker.kill()
+            except:
+                pass
             
-            }
-            
-        return json.dumps(dico_response)
+        return json.dumps(response)

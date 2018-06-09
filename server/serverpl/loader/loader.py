@@ -6,13 +6,13 @@
 #  Copyright 2018 Coumes Quentin
 
 
-import logging, hashlib, traceback
+import logging, hashlib, traceback, htmlprint
 
 from os.path import splitext, basename
 
 from django.core.exceptions import ObjectDoesNotExist
 
-from loader.utils import get_location, exception_to_html
+from loader.utils import get_location
 from loader.parser import parse_file, get_type
 from loader.models import PL, PLTP
 
@@ -42,7 +42,12 @@ def load_file(directory, rel_path, force=False):
         else:
             return load_PL(directory, rel_path)
     except Exception as e:
-        return (None, exception_to_html(str(e))) if not DEBUG else (None, exception_to_html(str(e) + '\nDEBUG set to True - Showing Traceback :\n\n' + traceback.format_exc()))
+        if not DEBUG:
+            return (None, htmlprint.code(str(e))) 
+        return (None, (
+            htmlprint.code(str(e))
+            + '<br>DEBUG set to True - Showing Traceback :<br>'
+            + htmlprint.html_exc()))
 
 
 
@@ -93,7 +98,7 @@ def load_PLTP(directory, rel_path, force=False):
     for pl in pl_list:
         pltp.pl.add(pl)
     
-    return pltp, [exception_to_html(warning) for warning in warnings]
+    return pltp, [htmlprint.code(warning) for warning in warnings]
 
 
 
@@ -112,4 +117,4 @@ def load_PL(directory, rel_path):
     
     name = splitext(basename(rel_path))[0]
     pl = PL(name=name, json=dic, directory=directory, rel_path=rel_path)
-    return pl, [exception_to_html(warning) for warning in warnings]
+    return pl, [htmlprint.code(warning) for warning in warnings]

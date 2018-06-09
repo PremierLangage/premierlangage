@@ -53,11 +53,3 @@ def extends_dict(target, source):
             target[key] = value
     
     return target
-
-
-
-def exception_to_html(string):
-    return string.replace('<', '[')\
-                 .replace('>', ']')\
-                 .replace('\n', '<br>')\
-                 .replace(REPO_ROOT, '')\

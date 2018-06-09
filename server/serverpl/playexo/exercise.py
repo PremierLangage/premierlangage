@@ -5,7 +5,7 @@
 #  Author: Coumes Quentin
 
 
-import json, timeout_decorator, time, traceback
+import json, timeout_decorator, time, traceback, htmlprint
 
 from django.template import Template, RequestContext, Context
 
@@ -65,16 +65,22 @@ class ActivityInstance:
                 else:
                     sandbox_session = SandboxSession(self.dic, response['answer'])
                     
-                feedback = json.loads(sandbox_session.call())
-                state, feedback = feedback['grade']['success'], feedback['grade']['feedback']
-                
+                response = json.loads(sandbox_session.call())
+                state = response['grade']
+                feedback = response['feedback']
+                if 'error' in response:
+                    feedback += '\n\n'+htmlprint.code(response['error'])
                 return (None, feedback) if state == "info" else (True, feedback) if state else (False, feedback)
-            except (ValueError, KeyError) as e:
-                return (None, "La réponse reçu part la sandbox n'est pas au bon format :\n\n"+str('' if not 'feedback' in locals() else feedback))
+            except KeyError as e:
+                return (
+                    None,
+                   ( "La réponse reçu par la sandbox n'est pas au bon format :<br>"
+                        + htmlprint.html_exc)
+                )
             except Exception as e:
                 s = ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte,"
-                              + "merci de prévenir votre professeur:<br>Error - "
-                              + str(type(e)).replace("<", "[").replace(">", "]") + ": " + str(e))
+                              + "merci de prévenir votre professeur:<br>"
+                              + htmlprint.html_exc())
                 return None, s
         else:
             try:
@@ -82,11 +88,13 @@ class ActivityInstance:
                 if not 'grade' in dic \
                         or dic['grade'][0] not in [False, True, None] \
                         or type(dic['grade'][1]) != str:
-                    return None, ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte, merci de prévenir votre professeur:<br>"
-                                  "evaluator/before should declare a tuple called 'grade' (bool, str).")
+                    return None, ("/!\ ATTENTION: La fonction d'évaluation de cet"
+                        + "exercice est incorrecte, merci de prévenir votre professeur:<br>"
+                        + "evaluator/before should declare a tuple called 'grade' (bool, str).")
                 return dic['grade']
             except Exception as e:
-                return None, ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte, merci de prévenir votre professeur:<br>Error - "+str(type(e)).replace("<", "[").replace(">", "]")+": "+str(e))
+                return None, ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte"
+                    + "merci de prévenir votre professeur:<br>"+htmlprint.exc_format())
     
     
     #@timeout_decorator.timeout(5, use_signals=False)
@@ -102,7 +110,6 @@ class ActivityInstance:
             raise Exception("Error while executing build or before:\n\n"
                 + str(type(e)) + "\n" 
                 + str(traceback.format_exc())
-                    .replace('File "/home/teacher/premierlangage/server/serverpl/playexo/exercise.py", line 97, in intern_build', "")
             )
         return dic
     

@@ -22,7 +22,7 @@
 #  
 #
 
-import os, subprocess
+import os, subprocess, htmlprint
 
 from urllib.parse import urlparse
 
@@ -94,7 +94,7 @@ class Directory(models.Model):
         
         Return:
             (True, git_stdout) if everything worked
-            (False, git_sterr+git_stdout) if a problem occurs
+            (False, git_stderr) if a problem occurs
         """
         if not self.is_repository():
             return False, "This directory is not a repository"
@@ -109,23 +109,23 @@ class Directory(models.Model):
                 p = subprocess.Popen('git add .', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             out, err = p.communicate()
             
-            out = out.decode("utf-8").replace('\n','<br>')
-            err = err.decode("utf-8").replace('\n','<br>')
+            out = out.decode("utf-8")
+            err = err.decode("utf-8")
             if p.returncode:
                 os.system("git reset HEAD~")
-                return False, out + '<br>' + err
+                return False, err
                 
             p = subprocess.Popen('git commit -m "'+commit+'"', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             out, err = p.communicate()
             
-            out = out.decode("utf-8").replace('\n','<br>')
-            err = err.decode("utf-8").replace('\n','<br>')
+            out = out.decode("utf-8")
+            err = err.decode("utf-8")
             if p.returncode:
                 os.system("git reset HEAD~")
-                return False, out + '<br>' + err
+                return False, err
         
         except Exception as e:
-            return False, str(type(e)).replace('<', '[').replace('>', ']') + " : " + str(e)
+            return False, str(type(e)) + " : " + str(e)
         
         finally:
             os.chdir(cwd)
@@ -138,7 +138,7 @@ class Directory(models.Model):
         
         Return:
             (True, git_stdout) if everything worked
-            (False, git_sterr+git_stdout) if a problem occurs
+            (False, git_stderr) if a problem occurs
         """
         if not self.is_repository():
             return False, "This directory is not a repository"
@@ -153,16 +153,16 @@ class Directory(models.Model):
                 p = subprocess.Popen('git checkout .', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             out, err = p.communicate()
             
-            out = out.decode("utf-8").replace('\n','<br>')
-            err = err.decode("utf-8").replace('\n','<br>')
+            out = out.decode("utf-8")
+            err = err.decode("utf-8")
             if p.returncode:
                 os.system("git reset HEAD~")
                 if "terminal prompts disabled" in err: # Repo is private and needs credentials
                     return False, "Repository is private, please provide username and password."
-                return False, out + '<br>' + err
+                return False, err
         
         except Exception as e:
-            return False, str(type(e)).replace('<', '[').replace('>', ']') + " : " + str(e)
+            return False, str(type(e)) + " : " + str(e)
         
         finally:
             os.chdir(cwd)
@@ -175,7 +175,7 @@ class Directory(models.Model):
         
         Return:
             (True, git_stdout) if everything worked
-            (False, git_sterr+git_stdout) if a problem occurs
+            (False, git_stderr) if a problem occurs
         """
         if not self.is_repository():
             return False, "This directory is not a repository"
@@ -191,18 +191,18 @@ class Directory(models.Model):
                 p = subprocess.Popen('GIT_TERMINAL_PROMPT=0 git pull', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             out, err = p.communicate()
             
-            out = out.decode("utf-8").replace('\n','<br>')
-            err = err.decode("utf-8").replace('\n','<br>')
+            out = out.decode("utf-8")
+            err = err.decode("utf-8")
             if password:
-                out = out.replace(password,'••••••••••')
-                err = err.replace(password,'••••••••••')
+                out = out.replace(password,'•'*len(password))
+                err = err.replace(password,'•'*len(password))
             if p.returncode:
                 if "terminal prompts disabled" in err: # Repo is private and needs credentials
                     return False, "Repository is private, please provide username and password."
-                return False, out + '<br>' + err
+                return False, err
         
         except Exception as e:
-            return False, str(type(e)).replace('<', '[').replace('>', ']') + " : " + str(e)
+            return False, str(type(e)) + " : " + str(e)
         
         finally:
             os.chdir(cwd)
@@ -215,7 +215,7 @@ class Directory(models.Model):
         
         Return:
             (True, git_stdout) if everything worked
-            (False, git_sterr+git_stdout) if a problem occurs
+            (False, git_stderr) if a problem occurs
         """
         if not self.is_repository():
             return False, "This directory is not a repository"
@@ -231,18 +231,18 @@ class Directory(models.Model):
                 p = subprocess.Popen('GIT_TERMINAL_PROMPT=0 git push', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             out, err = p.communicate()
             
-            out = out.decode("utf-8").replace('\n','<br>')
-            err = err.decode("utf-8").replace('\n','<br>')
+            out = out.decode("utf-8")
+            err = err.decode("utf-8")
             if password:
-                out = out.replace(password,'••••••••••')
-                err = err.replace(password,'••••••••••')
+                out = out.replace(password,'•'*len(password))
+                err = err.replace(password,'•'*len(password))
             if p.returncode:
                 if "terminal prompts disabled" in err: # Repo is private and needs credentials
                     return False, "Repository is private, please provide username and password."
-                return False, out + '<br>' + err
+                return False, err
         
         except Exception as e:
-            return False, str(type(e)).replace('<', '[').replace('>', ']') + " : " + str(e)
+            return False, str(type(e)) + " : " + str(e)
         
         finally:
             os.chdir(cwd)
@@ -255,7 +255,7 @@ class Directory(models.Model):
         
         Return:
             (True, git_stdout) if everything worked
-            (False, git_sterr+git_stdout) if a problem occurs
+            (False, git_stderr) if a problem occurs
         """
         if not self.is_repository():
             return False, "This directory is not a repository"
@@ -267,13 +267,13 @@ class Directory(models.Model):
             p = subprocess.Popen('git status', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             out, err = p.communicate()
             
-            out = out.decode("utf-8").replace('\n','<br>')
-            err = err.decode("utf-8").replace('\n','<br>')
+            out = out.decode("utf-8")
+            err = err.decode("utf-8")
             if p.returncode:
-                return False, out + '<br>' + err
+                return False, err
         
         except Exception as e:
-            return False, str(type(e)).replace('<', '[').replace('>', ']') + " : " + str(e)
+            return False, str(type(e)) + " : " + str(e)
         
         finally:
             os.chdir(cwd)
@@ -286,7 +286,7 @@ class Directory(models.Model):
         
         Return:
             (True, git_stdout) if everything worked
-            (False, git_sterr+git_stdout) if a problem occurs
+            (False, git_stderr) if a problem occurs
         """
         if not self.is_repository():
             return False, "This directory is not a repository"
@@ -302,19 +302,19 @@ class Directory(models.Model):
                 p = subprocess.Popen('GIT_TERMINAL_PROMPT=0 git clone '+self.remote+" "+self.name, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             out, err = p.communicate()
             
-            out = out.decode("utf-8").replace('\n','<br>')
-            err = err.decode("utf-8").replace('\n','<br>')
+            out = out.decode("utf-8")
+            err = err.decode("utf-8")
             if password:
-                out = out.replace(password,'••••••••••')
-                err = err.replace(password,'••••••••••')
+                out = out.replace(password,'•'*len(password))
+                err = err.replace(password,'•'*len(password))
             if p.returncode:
                 if "terminal prompts disabled" in err: # Repo is private and needs credentials
                     return False, "Repository is private, please provide username and password."
                 
-                return False, out + '<br>' + err
+                return False, err
         
         except Exception as e:
-            return False, str(type(e)).replace('<', '[').replace('>', ']') + " : " + str(e)
+            return False, str(type(e)) + " : " + str(e)
         
         finally:
             os.chdir(cwd)

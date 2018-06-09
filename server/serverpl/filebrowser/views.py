@@ -6,7 +6,7 @@
 #  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
 #  
 
-import os, json, shutil
+import os, json, shutil, htmlprint
 
 from os.path import basename, join, dirname
 
@@ -23,7 +23,6 @@ from filebrowser.filebrowser_option import ENTRY_OPTIONS, DIRECTORY_OPTIONS
 from filebrowser.utils import redirect_fb
 
 from loader.loader import load_file
-from loader.utils import exception_to_html
 
 from playexo.exercise import PLInstance
 
@@ -131,7 +130,7 @@ def preview_pl(request):
         except Exception as e:
             preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
                 + basename(rel_path) + "': \n\n" \
-                + exception_to_html(str(e)) + "</div>"
+                + htmlprint.code(str(e)) + "</div>"
         finally:
             shutil.move(path+".bk", path)
             return HttpResponse(json.dumps({
