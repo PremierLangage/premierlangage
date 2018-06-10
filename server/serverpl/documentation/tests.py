@@ -8,14 +8,14 @@
 
 import os, tempfile, time
 
-from os.path import basename
+from os.path import basename, join
 
 from django.test import SimpleTestCase, Client
-from serverpl.settings import PROJECT_DIR
+from serverpl.settings import BASE
 
 
 
-DOC_DIR = PROJECT_DIR + "/../documentation/templates/documentation/doc"
+DOC_DIR = join(BASE, "documentation/templates/documentation/doc")
 
 
 class DocumentationTestCase(SimpleTestCase):
