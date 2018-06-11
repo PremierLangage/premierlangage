@@ -1,8 +1,12 @@
 wheel
 celery
 django
+django-annoying
 django-celery-results
+django-hitcount
 django-markdown-deux
+django-markdown-app
+django-taggit
 dj-database-url
 gitpython
 gunicorn
@@ -26,3 +30,5 @@ whitenoise
 yattag
 -e git://github.com/qcoumes/timeout-decorator.git#egg=timeout-decorator
 -e git://github.com/qcoumes/django-enumfields.git#egg=django-enumfields
+-e git://github.com/qcoumes/htmlprint.git#egg=htmlprint
+

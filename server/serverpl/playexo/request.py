@@ -7,7 +7,7 @@
 # 
 
 
-import logging, tempfile, io, tarfile, json, os, hashlib, requests
+import logging, tempfile, io, tarfile, json, os, hashlib, requests, traceback, htmlprint
 
 from serverpl.settings import DEBUG
 from sandbox.models import Sandbox
@@ -16,6 +16,9 @@ logger = logging.getLogger(__name__)
 
 
 def get_sandbox():
+    """ Return the first available sandbox.
+        Raise NotImplementedError if not sandbox could be found."""
+    
     sandboxes = Sandbox.objects.all().order_by("priority")
     if not sandboxes:
         raise NotImplementedError("No sandbox has been added to the database. Add one throught Administration -> Sandbox -> New")
@@ -98,11 +101,14 @@ class SandboxSession:
             response = requests.post(self.url, data=data, files=files, timeout=10)
             response = response.text
         except Exception as e:
-            response = dict()
-            response['grade'] = dict()
-            msg = "Erreur de la sandbox '"+self.name+"', si l'erreur persiste, merci de contacter votre professeur<br><br>"
-            response['grade']['success'] = "info"
-            response['grade']['feedback'] = msg+(str(type(e))+": "+str(e)).replace('<', '[').replace('>',']')
+            response = {
+                'feedback': ("Erreur de la sandbox '"
+                            + self.name + "', si l'erreur persiste, "
+                            + "merci de contacter votre professeur<br><br>"),
+                'grade': "info",
+                'error': traceback.format_exc(),
+                'other': [],
+            }
             response = json.dumps(response)
             
         return response

@@ -32,9 +32,9 @@
 
 
 
-import os, shutil, magic, zipfile, tarfile, traceback
+import os, shutil, magic, zipfile, tarfile, traceback, htmlprint
 
-from os.path import basename, splitext, isdir, join, isfile
+from os.path import basename, splitext, isdir, join, isfile, abspath
 
 from django.shortcuts import redirect, reverse, render
 from django.contrib import messages
@@ -50,7 +50,6 @@ from filebrowser.utils import redirect_fb
 from filebrowser.filter import is_pl
 
 from loader.loader import load_file
-from loader.utils import exception_to_html
 
 from playexo.exercise import PLInstance
 
@@ -76,7 +75,7 @@ def mkdir_option(request, filebrowser, target):
             os.mkdir(path)
             messages.success(request, "Folder '"+name+"' successfully created !")
     except Exception as e:
-        msg = "Impossible to create '"+name+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        msg = "Impossible to create '"+name+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
@@ -96,7 +95,7 @@ def display_option(request, filebrowser, target):
         return render(request, 'filebrowser/file.html', {'file': lines, 'filename': basename(path)})
         
     except Exception as e:
-        msg = "Impossible to display '"+target+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        msg = "Impossible to display '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
@@ -126,7 +125,7 @@ def rename_option(request, filebrowser, target):
     except IntegrityError:
         messages.error(request, "Can't rename '"+target+"' to '"+name+"' : this name is already used.")
     except Exception as e:
-        msg = "Impossible to rename '"+target+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        msg = "Impossible to rename '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
@@ -152,7 +151,7 @@ def copy_option(request, filebrowser, target):
             shutil.copyfile(path, join(filebrowser.full_path(), destination))
         messages.success(request, "'"+target+"' successfully copied !")
     except Exception as e:
-        msg = "Impossible to copy '"+target+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        msg = "Impossible to copy '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
@@ -177,9 +176,9 @@ def add_commit_option(request, filebrowser, target):
         done, msg = filebrowser.directory.add_and_commit(commit, path=filebrowser.full_path() + '/' + target)
     
     if done:
-        messages.success(request, "Add and commit done.\n" + msg)
+        messages.success(request, "Add and commit done.<br>" + htmlprint.code(msg))
     else:
-        messages.error(request, "Couldn't add and commit :\n" + msg)
+        messages.error(request, "Couldn't add and commit :<br>" + htmlprint.code(msg))
     
     return redirect_fb(request.POST.get('relative_h', '.'))
 
@@ -197,9 +196,9 @@ def checkout_option(request, filebrowser, target):
         done, msg = filebrowser.directory.checkout(path=filebrowser.full_path() + '/' + target)
     
     if done:
-        messages.success(request, "Checkout done.\n" + msg)
+        messages.success(request, "Checkout done.<br>" + htmlprint.code(msg))
     else:
-        messages.error(request, "Couldn't checkout:\n" + msg)
+        messages.error(request, "Couldn't checkout:<br>" + htmlprint.code(msg))
     return redirect_fb(request.POST.get('relative_h', '.'))
 
 
@@ -216,9 +215,9 @@ def status_option(request, filebrowser, target):
         done, msg = filebrowser.directory.status()
     
     if done:
-        messages.success(request, "Status done.\n" + msg)
+        messages.success(request, "Status done.<br>" + htmlprint.code(msg))
     else:
-        messages.error(request, "Couldn't status:\n" + msg)
+        messages.error(request, "Couldn't status:<br>" + htmlprint.code(msg))
     return redirect_fb(request.GET.get('relative_h', '.'))
 
 
@@ -237,9 +236,9 @@ def pull_option(request, filebrowser, target):
         done, msg = filebrowser.directory.pull(username=username, password=password)
     
     if done:
-        messages.success(request, "Pull done.\n" + msg)
+        messages.success(request, "Pull done.<br>" + htmlprint.code(msg))
     else:
-        messages.error(request, "Couldn't pull:\n" + msg)
+        messages.error(request, "Couldn't pull:<br>" + htmlprint.code(msg))
     return redirect_fb(request.POST.get('relative_h', '.'))
 
 
@@ -258,9 +257,9 @@ def push_option(request, filebrowser, target):
         done, msg = filebrowser.directory.push(username=username, password=password)
     
     if done:
-        messages.success(request, "Push done.\n" + msg)
+        messages.success(request, "Push done.<br>" + htmlprint.code(msg))
     else:
-        messages.error(request, "Couldn't push:\n" + msg)
+        messages.error(request, "Couldn't push:<br>" + htmlprint.code(msg))
     return redirect_fb(request.POST.get('relative_h', '.'))
 
 
@@ -286,7 +285,7 @@ def download_option(request, filebrowser, target):
         return response
         
     except Exception as e:
-        msg = "Impossible to download '"+target+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        msg = "Impossible to download '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
@@ -299,11 +298,12 @@ def new_pl_option(request, filebrowser, target):
         return HttpResponseNotAllowed(['POST'])
     
     name = request.POST.get('name', None)
-    if not name:
+    relative = request.POST.get('relative_h', None)
+    if not name or not relative:
         return HttpResponseBadRequest
     
     try:
-        path = join(filebrowser.full_path(), name)
+        path = abspath(join(join(filebrowser.full_path(), relative), name))
         if not is_pl(name):
             ext = splitext(path)[1]
             messages.error(request, "Unknown PL's extension: '" + ext + "', please use a known extension.")
@@ -313,13 +313,15 @@ def new_pl_option(request, filebrowser, target):
             messages.error(request, "A file with that name ('"+name+"') already exists")
         else:
             open(path, 'w+').close()
-            return edit_option(request, filebrowser, target)
+            response = redirect(reverse(views.apply_option_get))
+            response['Location'] += '?option_h=edit_pl&name_h='+name+'&relative_h='+relative+'&type_h=entry'
+            return response
     except Exception as e:
-        msg = "Impossible to create '"+target+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        msg = "Impossible to create '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
-    return redirect_fb(request.POST.get('relative_h', '.'))
+    return redirect_fb(relative)
 
 
 def load_pltp_option(request, filebrowser, target):
@@ -349,7 +351,7 @@ def load_pltp_option(request, filebrowser, target):
                                       depuis un client LTI. Pour la tester en local, cliquez <a target=\"_blank\" \
                                       href=\""+url_test+"\">ici</a>.""")
     except Exception as e:
-        msg = "Impossible to load '"+target+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        msg = "Impossible to load '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         msg = msg if not DEBUG else msg + ':\n' + traceback.format_exc()
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT+"/", "")
@@ -370,7 +372,7 @@ def move_option(request, filebrowser, target):
         os.rename(join(filebrowser.full_path(), target), join(join(filebrowser.full_path(), destination), target))
         messages.success(request, "'"+target+"' successfully moved !")
     except Exception as e:
-        msg = "Impossible to move '"+target+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        msg = "Impossible to move '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
@@ -395,7 +397,7 @@ def delete_option(request, filebrowser, target):
         
         messages.success(request, "'"+target+"' successfully deleted !")
     except Exception as e:
-        msg = "Impossible to delete '"+target+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        msg = "Impossible to delete '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
@@ -421,7 +423,7 @@ def edit_option(request, filebrowser, target):
         })
         
     except Exception as e:
-        msg = "Impossible to edit '"+target+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        msg = "Impossible to edit '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
@@ -439,7 +441,7 @@ def edit_pl_option(request, filebrowser, target):
         with open(path, 'r') as f:
             content = f.read()
         
-        rel_path = join(filebrowser.relative, target).replace('./'+filebrowser.directory.name, "")
+        rel_path = join(filebrowser.relative, target).replace(filebrowser.directory.name, "")
         pl, warnings = load_file(filebrowser.directory, rel_path)
         if not pl:
             preview = '<div class="alert alert-danger" role="alert"> Failed to load \''+target+"': \n"+warnings+"</div>"
@@ -453,7 +455,7 @@ def edit_pl_option(request, filebrowser, target):
             except Exception as e:
                 preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
                     + basename(rel_path) + "': \n\n" \
-                    + exception_to_html(str(e)) + "</div>"
+                    + htmlprint.code(str(e)) + "</div>"
         return render(request, 'filebrowser/editor_pl.html', {
             'file_content': content,
             'filename': basename(path),
@@ -463,7 +465,7 @@ def edit_pl_option(request, filebrowser, target):
         })
         
     except Exception as e:
-        msg = "Impossible to display '"+target+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        msg = "Impossible to edit '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
@@ -479,7 +481,7 @@ def test_pl_option(request, filebrowser, target):
     try:
         path = join(filebrowser.full_path(), target)
 
-        rel_path = join(filebrowser.relative, target).replace('./'+filebrowser.directory.name, "")
+        rel_path = join(filebrowser.relative, target).replace(filebrowser.directory.name, "")
         pl, warnings = load_file(filebrowser.directory, rel_path)
         
         if not pl:
@@ -495,7 +497,7 @@ def test_pl_option(request, filebrowser, target):
         })
         
     except Exception as e:
-        msg = "Impossible to display '"+target+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        msg = "Impossible to display '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
@@ -524,7 +526,7 @@ def rights_option(request, filebrowser, target):
         })
         
     except Exception as e:
-        msg = "Impossible to display '"+target+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        msg = "Impossible to display '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
@@ -549,7 +551,7 @@ def upload_option(request, filebrowser, target):
         messages.success(request, "File '"+name+"' successfully uploaded.")
         
     except Exception as e:
-        msg = "Impossible to upload '"+name+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        msg = "Impossible to upload '"+name+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
@@ -575,7 +577,7 @@ def extract_option(request, filebrowser, target):
             raise ValueError("Can't extract '"+mime+"' files.")
         messages.success(request, "Archive '"+target+"' successfully extracted.")
     except Exception as e:
-        msg = "Impossible to extract '"+target+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        msg = "Impossible to extract '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)

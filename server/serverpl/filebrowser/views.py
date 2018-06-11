@@ -6,7 +6,7 @@
 #  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
 #  
 
-import os, json, shutil
+import os, json, shutil, htmlprint
 
 from os.path import basename, join, dirname
 
@@ -23,7 +23,6 @@ from filebrowser.filebrowser_option import ENTRY_OPTIONS, DIRECTORY_OPTIONS
 from filebrowser.utils import redirect_fb
 
 from loader.loader import load_file
-from loader.utils import exception_to_html
 
 from playexo.exercise import PLInstance
 
@@ -59,14 +58,12 @@ def apply_option_get(request):
     fb = Filebrowser(path=path)
     
     try:
-        option = int(option)
         if typ == "entry":
             return ENTRY_OPTIONS[option].process_option(request, fb, name)
         else:
             return DIRECTORY_OPTIONS[option].process_option(request, fb, name)
     except Exception as e:
-        messages.error(request, "Impossible to apply the option "+str(option)+" : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e))
-    
+        messages.error(request, "Impossible to apply the option "+option+" : "+ htmlprint.code(str(type(e)) + " - " + str(e)))
     return redirect_fb(path)
 
 
@@ -90,12 +87,11 @@ def apply_option_post(request):
     
     try:
         if typ == "entry":
-            return ENTRY_OPTIONS[int(option)].process_option(request, fb, name, )
+            return ENTRY_OPTIONS[option].process_option(request, fb, name, )
         else:
-            return DIRECTORY_OPTIONS[int(option)].process_option(request, fb, name)
+            return DIRECTORY_OPTIONS[option].process_option(request, fb, name)
     except Exception as e:
-        messages.error(request, "Impossible to apply the option "+option+" : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e))
-    
+        messages.error(request, "Impossible to apply the option "+option+" : "+ htmlprint.code(str(type(e)) + " - " + str(e)))    
     return redirect_fb(path)
 
 
@@ -108,7 +104,6 @@ def preview_pl(request):
     
 
     post = json.loads(request.body.decode())
-    
     if post['requested_action'] == 'preview': # Asking for preview
         try:
             path = FILEBROWSER_ROOT+'/'+post['path']
@@ -117,7 +112,7 @@ def preview_pl(request):
                 print(post['content'], file=f)
                 
             directory = Directory.objects.get(name=post['directory'])
-            rel_path = post['path'].replace('./'+directory.name, "")
+            rel_path = post['path'].replace(directory.name, "")
             pl, warnings = load_file(directory, rel_path)
             if not pl:
                 preview = '<div class="alert alert-danger" role="alert"> Failed to load \''+basename(rel_path)+"': \n"+warnings+"</div>"
@@ -131,7 +126,7 @@ def preview_pl(request):
         except Exception as e:
             preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
                 + basename(rel_path) + "': \n\n" \
-                + exception_to_html(str(e)) + "</div>"
+                + htmlprint.code(str(e)) + "</div>"
         finally:
             shutil.move(path+".bk", path)
             return HttpResponse(json.dumps({
@@ -200,18 +195,16 @@ def edit_receiver(request):
         
     content = request.POST.get('editor_input', '')
     path = request.POST.get('path', '')
-    
+    print("#########")
+    print(path)
     try:
         if content:
             with open(FILEBROWSER_ROOT+'/'+path, 'w') as f:
                 print(content, file=f)
         messages.success(request, "File '"+basename(path)+"' successfully modified")
     except Exception as e:
-        msg = "Impossible to modify '"+basename(path)+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
-        if FILEBROWSER_ROOT in msg:
-            msg = msg.replace(FILEBROWSER_ROOT, "")
+        msg = "Impossible to modify '"+basename(path)+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
         messages.error(request, msg)
-    
     return redirect_fb(dirname(path))
 
 
@@ -230,7 +223,7 @@ def new_file_receiver(request):
                 print(content, file=f)
         messages.success(request, "File '"+basename(path)+"' successfully created")
     except Exception as e:
-        msg = "Impossible to modify '"+basename(path)+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        msg = "Impossible to create '"+basename(path)+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT, "")
         messages.error(request, msg)
@@ -261,7 +254,7 @@ def right_edit(request):
         messages.success(request, "Rights of '"+name+"' successfully edited.")
     except Exception as e:
         raise e
-        msg = "Impossible to edit rights of '"+name+"' : "+ str(type(e)).replace('<', '[').replace('>', ']') + " - " + str(e)
+        msg = "Impossible to edit rights of '"+name+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
         if FILEBROWSER_ROOT in msg:
             msg = msg.replace(FILEBROWSER_ROOT, "")
         messages.error(request, msg)

@@ -1,7 +1,7 @@
 pipeline {
   agent any
   stages {
-    stage('Environment\'s configuration') {
+    stage('Environment\'s configuration ') {
       steps {
         sh '''
                python3 -m venv /var/lib/jenkins/workspace/env/jenkinsenv

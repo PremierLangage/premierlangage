@@ -8,7 +8,7 @@
 #
 
 
-from os.path import splitext, basename
+from os.path import splitext, basename, abspath
 
 
 
@@ -23,7 +23,7 @@ class SyntaxErrorPL(Exception):
         self.columno = ":"+columno if columno != None else ''
         
     def __str__(self):
-        return self.path + " -- " + self.message + " at line " + self.lineno + self.columno + "\n" + self.line
+        return abspath(self.path) + " - " + self.message + " at line " + self.lineno + self.columno + ":\n" + self.line
 
 
 
@@ -38,7 +38,7 @@ class SemanticError(Exception):
         self.columno = ":"+columno if columno != None else ''
         
     def __str__(self):
-        return self.path + " -- " + self.message + "at line " + self.lineno + self.columno + "\n" + self.line
+        return abspath(self.path) + " -- " + self.message + "at line " + self.lineno + self.columno + "\n" + self.line
 
 
 
@@ -53,7 +53,7 @@ class DirectoryNotFound(Exception):
         self.lineno = str(lineno)
         
     def __str__(self):
-        return self.path + " -- " + self.message + " : line " + self.lineno + " - '"+ self.name + "'\n" + self.line
+        return abspath(self.path) + " -- " + self.message + " : line " + self.lineno + " - '"+ self.name + "'\n" + self.line
 
 
 
@@ -68,7 +68,7 @@ class FileNotFound(Exception):
         self.path_not_found = path_not_found
         
     def __str__(self):
-        return self.path + " " + self.lineno + " -- " + self.message + " : '"+ self.path_not_found + "'\n" + self.line
+        return abspath(self.path) + " " + self.lineno + " -- " + self.message + " : '"+ abspath(self.path_not_found) + "'\n" + self.line
 
 
 
@@ -82,7 +82,7 @@ class UnknownExtension(Exception):
         self.message = message
         
     def __str__(self):
-        return self.path + " -- " + self.message + " : '"+ self.ext + "' of file '" + self.name + "'"
+        return abspath(self.path) + " -- " + self.message + " : '"+ self.ext + "' of file '" + self.name + "'"
 
 
 
@@ -107,4 +107,4 @@ class MissingKey(Exception):
         self.message = message
     
     def __str__(self):
-        return self.message + " : '" + self.key + "' in file " + self.path
+        return self.message + " : '" + self.key + "' in file " + abspath(self.path)

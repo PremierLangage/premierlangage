@@ -11,7 +11,7 @@ from os.path import join, basename
 from django.core.exceptions import ObjectDoesNotExist
 from loader.exceptions import SemanticError, SyntaxErrorPL, DirectoryNotFound, FileNotFound
 from loader.utils import get_location
-from serverpl.settings import REPO_ROOT
+from serverpl.settings import FILEBROWSER_ROOT
 
 
 class Parser:
@@ -36,7 +36,7 @@ class Parser:
     def __init__(self, directory, rel_path):
         self.directory = directory
         self.path = rel_path
-        self.path_parsed_file = join(directory.root, rel_path).replace(REPO_ROOT, '')
+        self.path_parsed_file = join(directory.root, rel_path).replace(FILEBROWSER_ROOT, '')
         self.lineno = 1
         self.dic = dict()
         self.warning = list()

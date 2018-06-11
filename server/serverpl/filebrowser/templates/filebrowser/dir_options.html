@@ -7,7 +7,7 @@
         </button>
         <ul class="dropdown-menu no-padding">
             <div class="btn-group-vertical btn-block" role="group" aria-label="Directory Options">
-                {% for option in fb.directory_options %}
+                {% for key, option in fb.directory_options.items %}
                     {% if option|opt_filter:fb.relative %}
                         {% if option.authorization == 'write' and fb.directory|can_write:request.user or option.authorization == 'read' and fb.directory|can_read:request.user or option.authorization == 'owner' and fb.directory.owner == request.user %}
                             <{{ option.type }}
@@ -19,7 +19,7 @@
                                     data-toggle="modal" data-target="#defaultModalDir{{forloop.counter0}}"
                                 {% endif %}
                                 {% if option.method == 'GET' %}
-                                    href="apply_option/?option_h={{forloop.counter0}}&relative_h={{fb.relative}}&type_h=directory&name_h={{fb.directory.name}}"
+                                    href="apply_option/?option_h={{key}}&relative_h={{fb.relative}}&type_h=directory&name_h={{fb.directory.name}}"
                                 {% endif %}
                                 >
                                 <i class="{{ option.fa_icon }} fa-fw"></i>&emsp;{{ option.text }}

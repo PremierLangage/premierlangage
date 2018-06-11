@@ -11,11 +11,11 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 
-from serverpl.settings import REPO_ROOT
+from serverpl.settings import FILEBROWSER_ROOT
 
 from filebrowser.models import Directory
 
-from loader.utils import get_location, extends_dict, exception_to_html
+from loader.utils import get_location, extends_dict
 
 
 
@@ -66,14 +66,3 @@ class UtilsTestCase(TestCase):
         result = { 'name': 'Testdic', 'newkey': 'values', 'emptylist': ['elem'], 'emptydic': {'key': 'elem'}, 'author': 'Tester' }
         
         self.assertEqual(extends_dict(target, source), result)
-    
-    
-    def test_exception_to_html(self):
-        string = """<class 'ExceptionName'> Exception message
-Traceback (most recent call last):
-File "<stdin>", line 1, in """+REPO_ROOT+"directory/path/to/file.pl"
-        result = """[class 'ExceptionName'] Exception message<br>\
-Traceback (most recent call last):<br>\
-File "[stdin]", line 1, in directory/path/to/file.pl"""
-
-        self.assertEqual(exception_to_html(string), result)

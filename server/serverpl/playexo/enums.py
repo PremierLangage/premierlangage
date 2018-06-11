@@ -47,10 +47,10 @@ class State(Enum):
             return cls.SUCCEEDED
         if grade <= 99 and grade >= 1:
             return cls.PART_SUCC
-        if grade == 0:
+        if grade == 0 or grade == -2: # -2 for abandonment
             return cls.FAILED
         if grade > -1:
             return cls.STARTED
-        if grade <= -2 and grade >= -100:
+        if -1000 <= grade <= -1999:
             return cls.TEACHER_EXC
         return cls.SANDBOX_EXC
