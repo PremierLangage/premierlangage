@@ -26,7 +26,7 @@ def get_sandbox():
             r = requests.head(sandbox.url, timeout=0.5)
             if r.status_code == 200:
                 break
-            tried += "- "+str(sandbox)+"(code received: "+r.status_code+")<br>"
+            tried += "- "+str(sandbox)+"(code received: "+str(r.status_code)+")<br>"
         except Exception as e:
             if DEBUG:   
                 tried += "- "+str(sandbox)+"<br>"+"DEBUG:<br>"+str(e)
@@ -35,7 +35,7 @@ def get_sandbox():
             pass
     else:
         logger.warning("Couldn't join any sandbox of the database")
-        raise NotImplementedError("Couldn't join any sandbox of the database.<br><br>"+tried)
+        raise NotImplementedError("Couldn't join any sandbox of the database.<br><br>"+str(tried))
     return sandbox
 
 
