@@ -85,7 +85,7 @@ class SandboxSession:
         if 'grader' in self.dic and 'grader.py' not in payload:
             payload['grader.py'] = self.dic['grader']
         if self.studentfile:
-            payload['student.py'] = self.studentfile
+            payload['student'] = self.studentfile
         
         
         self.tar = make_tar(payload)
