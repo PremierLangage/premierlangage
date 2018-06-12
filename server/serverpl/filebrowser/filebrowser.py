@@ -27,7 +27,7 @@ import os
 
 from os.path import abspath
 
-from serverpl.settings import FILEBROWSER_ROOT
+from django.conf import settings
 
 from filebrowser.filebrowser_option import ENTRY_OPTIONS, DIRECTORY_OPTIONS
 from filebrowser.models import Directory
@@ -45,14 +45,11 @@ class Filebrowser():
         directory_options (FilebrowserOption): List of every options applicable to self.directory
     """
     
-    def __init__(self, root=FILEBROWSER_ROOT, path='.'):
-        self.root = root
-        repr(path)
+    def __init__(self, root=None, path='.'):
+        self.root = settings.FILEBROWSER_ROOT if not root else root
         self.relative = '.' if not path else path
-        print(self.relative)
         self.entry_options = ENTRY_OPTIONS
         self.directory_options = DIRECTORY_OPTIONS
-        
         try:
             dir_name = path.split('/')
             dir_name = dir_name[0] if dir_name[0] != '.' else None if len(dir_name) == 1 else dir_name[1]

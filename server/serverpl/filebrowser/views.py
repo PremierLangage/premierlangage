@@ -26,7 +26,7 @@ from loader.loader import load_file
 
 from playexo.exercise import PLInstance
 
-from serverpl.settings import FILEBROWSER_ROOT
+from django.conf import settings
 
 
 
@@ -46,15 +46,12 @@ def apply_option_get(request):
         return HttpResponseNotAllowed(['GET'])
     
     path = request.GET.get('relative_h', None)
-    print(path)
-    print(repr(path))
-    repr(path)
     name = request.GET.get('name_h', None)
     option = request.GET.get('option_h', None)
     typ = request.GET.get('type_h', None)
     
     if not (name and path and option and typ):
-        return HttpResponseBadRequest()
+        return HttpResponseBadRequest("Missing one of 'relative_h', 'name_h', 'option_h' or 'type_h' argument")
     
     if typ == 'directory':
         path = '.'
@@ -82,7 +79,7 @@ def apply_option_post(request):
     typ = request.POST.get('type_h', None)
 
     if not (name and path and option and typ):
-        return HttpResponseBadRequest()
+        return HttpResponseBadRequest("Missing one of 'relative_h', 'name_h', 'option_h' or 'type_h' argument")
     
     if typ == 'directory':
         path = '.'
@@ -109,7 +106,7 @@ def preview_pl(request):
     post = json.loads(request.body.decode())
     if post['requested_action'] == 'preview': # Asking for preview
         try:
-            path = FILEBROWSER_ROOT+'/'+post['path']
+            path = settings.FILEBROWSER_ROOT+'/'+post['path']
             shutil.copyfile(path, path+".bk")
             with open(path, 'w+') as f: # Writting editor content into the file
                 print(post['content'], file=f)
@@ -187,7 +184,7 @@ def new_directory(request):
         else:
             messages.error(request, "Couldn't clone repository :\n" + feedback)
     else:
-        os.mkdir(join(FILEBROWSER_ROOT,name))
+        os.mkdir(join(settings.FILEBROWSER_ROOT,name))
         Directory(name=name, owner=request.user).save()
         messages.success(request, "Directory '" + name + "' successfully created.")
     
@@ -202,11 +199,9 @@ def edit_receiver(request):
         
     content = request.POST.get('editor_input', '')
     path = request.POST.get('path', '')
-    print("#########")
-    print(path)
     try:
         if content:
-            with open(FILEBROWSER_ROOT+'/'+path, 'w') as f:
+            with open(settings.FILEBROWSER_ROOT+'/'+path, 'w') as f:
                 print(content, file=f)
         messages.success(request, "File '"+basename(path)+"' successfully modified")
     except Exception as e:
@@ -231,8 +226,8 @@ def new_file_receiver(request):
         messages.success(request, "File '"+basename(path)+"' successfully created")
     except Exception as e:
         msg = "Impossible to create '"+basename(path)+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
-        if FILEBROWSER_ROOT in msg:
-            msg = msg.replace(FILEBROWSER_ROOT, "")
+        if settings.FILEBROWSER_ROOT in msg:
+            msg = msg.replace(settings.FILEBROWSER_ROOT, "")
         messages.error(request, msg)
     
     return redirect_fb(dirname(path))
@@ -262,8 +257,8 @@ def right_edit(request):
     except Exception as e:
         raise e
         msg = "Impossible to edit rights of '"+name+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
-        if FILEBROWSER_ROOT in msg:
-            msg = msg.replace(FILEBROWSER_ROOT, "")
+        if settings.FILEBROWSER_ROOT in msg:
+            msg = msg.replace(settings.FILEBROWSER_ROOT, "")
         messages.error(request, msg)
 
     return redirect(reverse(index))

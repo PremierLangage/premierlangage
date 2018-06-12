@@ -14,11 +14,11 @@ from django.contrib.auth.models import User
 from filebrowser import filter
 from filebrowser.models import Directory
 
-from serverpl.settings import BASE_DIR
+from django.conf import settings
 
 
 
-RES_DIR = join(BASE_DIR, "filebrowser/tests/ressources/filter/")
+RES_DIR = join(settings.BASE_DIR, "filebrowser/tests/ressources/filter/")
 
 class FilterTestCase(TestCase):
     """Tests filters defined in filebrowser.filter"""
