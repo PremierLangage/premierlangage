@@ -1562,16 +1562,16 @@ class DocTestRunner:
             for thing, (f, t) in failed:
                 #print(" %3d tests sur %3d dans %s" % (f, t, thing))
                 
-                print("reussit:")
-                print(totalt - totalf, "\n ratés:  ",totalf)
+                print("réussi(s):")
+                print(totalt - totalf, "\n ratés:  ",totalf,"<br>")
         if verbose:
             #print(totalt, "tests sur ", len(self._name2ft), " tests.")
-            print(totalt - totalf, "reussit and ", totalf, "ratés sur ", totalt, "tests")
+            print(totalt - totalf, "réussi(s) and ", totalf, "ratés sur ", totalt, "tests <br>")
         if totalf:
             
             print("***Tests échoués***")
         elif verbose:
-            print("***Test validés***")
+            print("***Tests validés***")
         return TestResults(totalf, totalt)
 
     #/////////////////////////////////////////////////////////////////

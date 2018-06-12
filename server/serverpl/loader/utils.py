@@ -32,13 +32,13 @@ def get_location(directory, path, current=""):
         if path[0] != '/':
             raise ValueError
     
-    if path[0] == '/':
+    if path[0] == '/' and not isfile(path):
         return directory, normpath(path[1:])
     
     if current and current[0] == '/':
         current = current[1:]
     
-    return directory, normpath(join(dirname(current), path))
+    return directory, join(dirname(current), path)
     
     
     

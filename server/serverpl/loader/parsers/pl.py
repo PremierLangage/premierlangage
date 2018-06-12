@@ -7,7 +7,7 @@
 
 
 import re, json
-from os.path import join, basename
+from os.path import join, basename, abspath
 from django.core.exceptions import ObjectDoesNotExist
 from loader.exceptions import SemanticError, SyntaxErrorPL, DirectoryNotFound, FileNotFound
 from loader.utils import get_location
@@ -36,7 +36,7 @@ class Parser:
     def __init__(self, directory, rel_path):
         self.directory = directory
         self.path = rel_path
-        self.path_parsed_file = join(directory.root, rel_path).replace(FILEBROWSER_ROOT, '')
+        self.path_parsed_file = join(directory.name, rel_path)
         self.lineno = 1
         self.dic = dict()
         self.warning = list()
@@ -110,8 +110,12 @@ class Parser:
             self.add_warning("Key '" + key + "' overwritten at line " + str(self.lineno))
         
         try:
+            print(match.group('file'))
+            print(self.path_parsed_file)
             directory, path = get_location(self.directory, match.group('file'), current=self.path_parsed_file)
-            path = join(directory.root, path.replace(directory.name+'/', ''))
+            print(path)
+            path = abspath(join(directory.root, path.replace(directory.name+'/', '')))
+            print(path)
             with open(path, 'r') as f:
                 if '+' in op:
                     if not key in self.dic:

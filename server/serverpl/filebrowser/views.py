@@ -135,18 +135,22 @@ def preview_pl(request):
     
     elif post['requested_action'] == 'submit' : # Answer from the preview
         exercise = request.session.get('exercise', None)
-        exercise = PLInstance(exercise)
-        success, feedback = exercise.evaluate(post['inputs'])
-        if (success == None):
-            feedback_type = "info"
-        elif success:
-            feedback_type = "success"
-        else:
-            feedback_type = "failed"
-        return HttpResponse(json.dumps({
-                'feedback_type': feedback_type,
-                'feedback': feedback
-            }), content_type='application/json')
+        
+        if exercise:
+            exercise = PLInstance(exercise)
+            success, feedback = exercise.evaluate(post['inputs'])
+            if (success == None):
+                feedback_type = "info"
+            elif success:
+                feedback_type = "success"
+            else:
+                feedback_type = "failed"
+            return HttpResponse(json.dumps({
+                    'feedback_type': feedback_type,
+                    'feedback': feedback
+                }),
+                content_type='application/json'
+            )
     
     
     return HttpResponseBadRequest(content="Couldn't resolve ajax request")
