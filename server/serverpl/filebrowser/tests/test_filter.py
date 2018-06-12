@@ -6,6 +6,7 @@
 #  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
 #  
 
+from os.path import join
 
 from django.test import TestCase
 from django.contrib.auth.models import User
@@ -13,11 +14,11 @@ from django.contrib.auth.models import User
 from filebrowser import filter
 from filebrowser.models import Directory
 
-from serverpl.settings import PROJECT_DIR
+from serverpl.settings import BASE_DIR
 
 
 
-RES_DIR = PROJECT_DIR + "/../filebrowser/tests/ressources/filter/"
+RES_DIR = join(BASE_DIR, "filebrowser/tests/ressources/filter/")
 
 class FilterTestCase(TestCase):
     """Tests filters defined in filebrowser.filter"""

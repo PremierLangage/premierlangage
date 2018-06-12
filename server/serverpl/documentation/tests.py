@@ -11,11 +11,11 @@ import os, tempfile, time
 from os.path import basename, join
 
 from django.test import SimpleTestCase, Client
-from serverpl.settings import BASE
+from serverpl.settings import BASE_DIR
 
 
 
-DOC_DIR = join(BASE, "documentation/templates/documentation/doc")
+DOC_DIR = join(BASE_DIR, "documentation/templates/documentation/doc")
 
 
 class DocumentationTestCase(SimpleTestCase):

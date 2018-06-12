@@ -15,10 +15,10 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from filebrowser.models import Directory
 from loader.exceptions import UnknownExtension, UnknownType
-from serverpl.settings import PROJECT_DIR
+from serverpl.settings import BASE_DIR
 
 
-@patch('loader.parser.PARSERS_ROOT', os.path.join(PROJECT_DIR,'../loader/tests/fake_parsers/'))
+@patch('loader.parser.PARSERS_ROOT', os.path.join(BASE_DIR,'loader/tests/fake_parsers/'))
 @patch('loader.parser.PARSERS_MODULE', "loader.tests.fake_parsers")
 @patch('loader.parser.logger')
 class ParsersTestCase(TestCase):
