@@ -6,7 +6,7 @@
 #  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
 #  
 
-import os, json, shutil, htmlprint
+import os, json, shutil, htmlprint, urllib
 
 from os.path import basename, join, dirname
 
@@ -46,6 +46,9 @@ def apply_option_get(request):
         return HttpResponseNotAllowed(['GET'])
     
     path = request.GET.get('relative_h', None)
+    print(path)
+    print(repr(path))
+    repr(path)
     name = request.GET.get('name_h', None)
     option = request.GET.get('option_h', None)
     typ = request.GET.get('type_h', None)

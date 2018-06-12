@@ -47,7 +47,9 @@ class Filebrowser():
     
     def __init__(self, root=FILEBROWSER_ROOT, path='.'):
         self.root = root
-        self.relative = path if path else '.'
+        repr(path)
+        self.relative = '.' if not path else path
+        print(self.relative)
         self.entry_options = ENTRY_OPTIONS
         self.directory_options = DIRECTORY_OPTIONS
         

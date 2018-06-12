@@ -201,9 +201,6 @@ class Parser:
             self._multiline_key = None
             self._multiline_json = False
         else:
-            # Add warning when detecting '==' to prevent unintentionnal nested key
-            if '==' in line and self._multiline_key not in ['before', 'build', 'evaluator']:
-                self.add_warning("Nested '==' detected inside a multiple line value ("+self._multiline_key+") at line "+str(self.lineno)+". You can ignore this warning if this is intended.")
             self.dic[self._multiline_key] += line
     
     

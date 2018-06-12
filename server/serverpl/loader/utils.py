@@ -6,7 +6,7 @@
 #  Copyright 2018 Coumes Quentin
 #  
 
-from os.path import join, dirname, normpath
+from os.path import join, dirname, normpath, isfile
 from filebrowser.models import Directory
 from serverpl.settings import FILEBROWSER_ROOT
 
