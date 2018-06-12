@@ -137,6 +137,8 @@ def rename_option(request, filebrowser, target):
     
     except Exception as e:
         msg = "Impossible to rename '" + target + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
+        if settings.DEBUG:
+            msg += "<br/><br/> Debug set to True:"+htmlprint.html_exc()
         messages.error(request, msg.replace(settings.FILEBROWSER_ROOT+"/", ""))
     
     return redirect_fb(request.POST.get('relative_h', '.'))
