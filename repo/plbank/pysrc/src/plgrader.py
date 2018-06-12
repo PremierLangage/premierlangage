@@ -76,7 +76,7 @@ class Grader:
 
             import py_compile
             try:
-                x= py_compile.compile("student.py",doraise=True)
+                x= py_compile.compile("student",doraise=True)
                 
             except Exception as EE:
                 self.fb.addCompilationError("")
@@ -107,13 +107,13 @@ class Grader:
             #self.fb.adddiv("failure",self.pld["failure"])
            
 
-        if "taboo" in self.pld and checktaboo(self.pld["taboo"],"student.py"):
+        if "taboo" in self.pld and checktaboo(self.pld["taboo"],"student"):
             self.fb.adddiv("ftaboo"," la liste des mots taboo "+self.pld["taboo"]+". Raté !\n <br>Ces mots ne doivent pas apparaitre dans votre solution !\n")
             #self.fb.addFeedback(" la liste des mots taboo "+self.pld["taboo"]+". Raté !\n")
             #self.fb.addFeedback(" ces mots ne doivent pas apparaitre dans votre solution !\n")
             self.fb.success = False
         
-        if "needed" in self.pld and checkneeded(self.pld["needed"],"student.py"):
+        if "needed" in self.pld and checkneeded(self.pld["needed"],"student"):
             self.fb.addFeedback(" la liste des mots obligatoires :"+self.pld["needed"]+". Raté !\n")
             self.fb.addFeedback(" ces mots doivent apparaitres dans votre solution !\n")
             self.fb.success = False
@@ -172,9 +172,9 @@ class Grader:
         return self.fb.success
 
     def getStudentOutput(self, stdinput=None):
-        # execute student.py
+        # execute student
          
-        return self.execute(["python3","student.py"],instr=stdinput)
+        return self.execute(["python3","student"],instr=stdinput)
 
     def getSoluceOutput(self, stdinput=None):
       
@@ -248,8 +248,7 @@ class Grader:
             return False
         if not "expectedoutput" in self.pld:
             return False
-        with open("student.py","r") as f:
-            
+        with open("student","r") as f:
             x=f.read().split("\n")[0]
         if x == self.pld["expectedoutput"]: # FIXME ASSERT 
             self.fb.success = True
@@ -292,7 +291,7 @@ class Grader:
             return False
         try:
             with open("pltest.py","w") as pltf :
-                with open("student.py","r") as f:
+                with open("student","r") as f:
                     print("",end="\n",file=pltf)
                     print('\"\"\"\n'+self.pld["pltest"]+'>>> \n\"\"\"',file=pltf)
                     print(f.read(),file=pltf)
