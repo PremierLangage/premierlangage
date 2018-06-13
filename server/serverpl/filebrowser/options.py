@@ -152,7 +152,7 @@ def copy_option(request, filebrowser, target):
     
     destination = request.POST.get('destination', None)
     if not destination:
-        HttpResponseBadRequest()
+        return HttpResponseBadRequest()
         
     try:
         path = join(filebrowser.full_path(), target)
@@ -160,7 +160,7 @@ def copy_option(request, filebrowser, target):
             shutil.copytree(path, join(filebrowser.full_path(), destination))
         else:
             shutil.copyfile(path, join(filebrowser.full_path(), destination))
-        messages.success(request, "'"+target+"' successfully copied !")
+        &
     except Exception as e:
         msg = "Impossible to copy '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:

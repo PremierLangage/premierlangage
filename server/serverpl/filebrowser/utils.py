@@ -34,3 +34,17 @@ def mk_missing_dirs(root, current, path):
         if pos < 0:
             raise ValueError('Given path move outside of its repository')
     os.makedirs(join(join(root, current), dirname(path)))
+
+def stay_in_directory(current, path):
+    if path[0] == '/':
+        path = path[1:]
+    dirs = [d for d in join(current, dirname(path)).split('/') if d]
+    pos = 0
+    for d in dirs:
+        if d == '..':
+            pos -= 1
+        elif d != '.':
+            pos += 1
+        if pos < 0:
+            return False
+    return True

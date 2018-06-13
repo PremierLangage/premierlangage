@@ -23,7 +23,7 @@ FAKE_FB_ROOT = join(settings.BASE_DIR, 'filebrowser/tests/ressources')
 
 
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
-class MoveTestCase(TestCase):
+class CopyTestCase(TestCase):
 
     @classmethod
     def setUpTestData(self):
@@ -36,7 +36,7 @@ class MoveTestCase(TestCase):
         shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder.root)
 
 
-    def test_move_method_not_allowed(self):
+    def test_copy_method_not_allowed(self):
         response = self.c.get(
             '/filebrowser/apply_option/post',
             follow=True
@@ -44,11 +44,11 @@ class MoveTestCase(TestCase):
         self.assertEqual(response.status_code, 405)
 
 
-    def test_move_file(self):
+    def test_copy_file(self):
         response = self.c.post(
             '/filebrowser/apply_option/post',
             {
-                'option_h': 'move',
+                'option_h': 'copy',
                 'name_h': 'function001.pl',
                 'relative_h': './dir/TPE',
                 'type_h': 'entry',
@@ -60,14 +60,17 @@ class MoveTestCase(TestCase):
         rel = join(settings.FILEBROWSER_ROOT, 'dir/')
         self.assertTrue(isfile(join(rel, 'function001.pl')))
         rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
-        self.assertFalse(isfile(join(rel, 'function001.pl')))
+        self.assertTrue(isfile(join(rel, 'function001.pl')))
+        m = list(response.context['messages'])
+        self.assertEqual(len(m), 1)
+        self.assertEqual(m[0].level, messages.SUCCESS)
 
 
-    def test_move_file_no_destination(self):
+    def test_copy_file_no_destination(self):
         response = self.c.post(
             '/filebrowser/apply_option/post',
             {
-                'option_h': 'move',
+                'option_h': 'copy',
                 'name_h': 'function001.pl',
                 'relative_h': './dir/TPE',
                 'type_h': 'entry',
@@ -77,11 +80,11 @@ class MoveTestCase(TestCase):
         self.assertEqual(response.status_code, 400)
 
 
-    def test_move_not_existing_file(self):
+    def test_copy_not_existing_file(self):
         response = self.c.post(
             '/filebrowser/apply_option/post',
             {
-                'option_h': 'move',
+                'option_h': 'copy',
                 'name_h': 'nofile',
                 'relative_h': './dir/TPE',
                 'type_h': 'entry',
@@ -95,11 +98,11 @@ class MoveTestCase(TestCase):
         self.assertEqual(m[0].level, messages.ERROR)
 
 
-    def test_move_file_destination_error(self):
+    def test_copy_file_destination_error(self):
         response = self.c.post(
             '/filebrowser/apply_option/post',
             {
-                'option_h': 'move',
+                'option_h': 'copy',
                 'name_h': 'function001.pl',
                 'relative_h': './dir/TPE',
                 'type_h': 'entry',
@@ -111,5 +114,3 @@ class MoveTestCase(TestCase):
         m = list(response.context['messages'])
         self.assertEqual(len(m), 1)
         self.assertEqual(m[0].level, messages.ERROR)
-
-
