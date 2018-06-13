@@ -45,15 +45,8 @@ class RenameTestCase(TestCase):
     
     
     def test_rename_file(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                    'option_h' : 'rename',
-                    'name_h' : 'function001.pl',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'entry',
-                    'name' : 'name.pl'
-                },
+        response = self.c.get(
+            '/filebrowser/apply_option/',
             follow=True
         )
         self.assertEqual(response.status_code, 200)
