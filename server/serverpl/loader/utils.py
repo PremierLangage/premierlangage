@@ -38,7 +38,7 @@ def get_location(directory, path, current=""):
     if current and current[0] == '/':
         current = current[1:]
     
-    return directory, join(dirname(current), path)
+    return directory, normpath(join(dirname(current), path))
     
     
     

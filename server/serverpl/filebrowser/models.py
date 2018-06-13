@@ -31,7 +31,7 @@ from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
-from serverpl.settings import FILEBROWSER_ROOT
+from django.conf import settings
 
 
 
@@ -49,7 +49,8 @@ class Directory(models.Model):
     
     
     def save(self, *args, **kwargs):
-        self.root = os.path.join(FILEBROWSER_ROOT, self.name)
+        if not self.root:
+            self.root = os.path.join(settings.FILEBROWSER_ROOT, self.name)
         super(Directory, self).save(*args, **kwargs)
     
     
@@ -295,7 +296,7 @@ class Directory(models.Model):
         url = urlparse(self.remote)
         
         try:
-            os.chdir(FILEBROWSER_ROOT)
+            os.chdir(settings.FILEBROWSER_ROOT)
             if username:
                 p = subprocess.Popen('git clone '+url.scheme+'://'+username+":"+password+"@"+url.netloc+url.path+" "+self.name, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             else:

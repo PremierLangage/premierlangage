@@ -22,7 +22,7 @@ import magic
 
 from os.path import isdir, isfile, basename, splitext
 
-from serverpl.settings import FILEBROWSER_ROOT
+from django.conf import settings
 
 from loader.parser import get_parsers
 
@@ -34,7 +34,7 @@ is_file = isfile
 
 
 def is_directory_object(path):
-    if len(path.replace(FILEBROWSER_ROOT, "").split('/')) < 3 and Directory.objects.filter(name=basename(path)):
+    if len(path.replace(settings.FILEBROWSER_ROOT, "").split('/')) < 3 and Directory.objects.filter(name=basename(path)):
         return True
     return False
 
@@ -44,7 +44,7 @@ def is_not_directory_object(path):
 
 
 def is_remote(path):
-    path = path if FILEBROWSER_ROOT not in path else path.replace(FILEBROWSER_ROOT+'/', '')
+    path = path if settings.FILEBROWSER_ROOT not in path else path.replace(settings.FILEBROWSER_ROOT+'/', '')
     parts = path.split('/')
 
     directory = None

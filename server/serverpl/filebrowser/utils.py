@@ -13,13 +13,13 @@ from django.shortcuts import redirect, reverse
 
 from filebrowser import views
 
-from serverpl.settings import FILEBROWSER_ROOT
+from django.conf import settings
 
 
 
 def redirect_fb(path='.'):
     response = redirect(reverse(views.index))
-    response['Location'] += '?cd='+path.replace(FILEBROWSER_ROOT+'/', '')
+    response['Location'] += '?cd='+path.replace(settings.FILEBROWSER_ROOT+'/', '')
     return response
 
 
