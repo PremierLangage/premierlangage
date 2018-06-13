@@ -70,7 +70,6 @@ def is_text(path):
 def is_audio(path):
     if is_directory(path):
         return False
-    print (magic.from_file(path, mime=True).split('/'))
     return magic.from_file(path, mime=True).split('/')[0] == 'audio'
 
 
