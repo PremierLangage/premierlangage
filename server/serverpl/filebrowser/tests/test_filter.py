@@ -18,7 +18,7 @@ from django.conf import settings
 
 
 
-RES_DIR = join(-settings.BASE_DIR, "filebrowser/tests/ressources/filter/")
+RES_DIR = join(settings.BASE_DIR, "filebrowser/tests/ressources/filter/")
 
 class FilterTestCase(TestCase):
     """Tests filters defined in filebrowser.filter"""
