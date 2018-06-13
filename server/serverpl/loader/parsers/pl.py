@@ -5,7 +5,6 @@
 #  
 #  Copyright 2018 Coumes Quentin
 
-
 import re, json
 from os.path import join, basename, abspath
 from django.core.exceptions import ObjectDoesNotExist
