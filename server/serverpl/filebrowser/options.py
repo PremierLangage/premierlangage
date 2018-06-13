@@ -383,11 +383,21 @@ def move_option(request, filebrowser, target):
        return HttpResponseBadRequest()
         
     try:
+        print(filebrowser.full_path())
+        if stay_in_directory("", join(join(filebrowser.full_path(), destination), target)) :
+            raise ValueError()
 
         os.rename(join(filebrowser.full_path(), target), join(join(filebrowser.full_path(), destination), target))
         messages.success(request, "'"+target+"' successfully moved !")
     except Exception as e:
+
         msg = "Impossible to move '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
+        if settings.FILEBROWSER_ROOT in msg:
+            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
+        messages.error(request, msg)
+
+    except ValueError as e:
+        msg = "Impossible to move out '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
