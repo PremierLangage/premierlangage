@@ -36,6 +36,11 @@ class RenameTestCase(TestCase):
         shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder.root)
     
     
+    def tearDown(self):
+        if isdir(join(FAKE_FB_ROOT,'directory')):
+            shutil.rmtree(join(FAKE_FB_ROOT,'directory'))
+    
+    
     def test_rename_method_not_allowed(self):
         response = self.c.get(
             '/filebrowser/apply_option/post',
@@ -45,162 +50,196 @@ class RenameTestCase(TestCase):
     
     
     def test_rename_file(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                    'option_h' : 'rename',
-                    'name_h' : 'function001.pl',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'entry',
-                    'name' : 'name.pl'
-                },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-        rel = join(settings.FILEBROWSER_ROOT,'./dir/TPE')
-        self.assertTrue(isfile(join(rel, 'name.pl')))
-        self.assertFalse(isfile(join(rel, 'function001.pl')))
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                    'option_h' : 'rename',
-                    'name_h' : 'name.pl',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'entry',
-                    'name' : 'function001.pl'
-                },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-        rel = join(settings.FILEBROWSER_ROOT,'./dir/TPE')
-        self.assertTrue(isfile(join(rel, 'function001.pl')))
-        self.assertFalse(isfile(join(rel, 'name.pl')))
+        try:
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                        'option_h' : 'rename',
+                        'name_h' : 'function001.pl',
+                        'relative_h' : './dir/TPE',
+                        'type_h' : 'entry',
+                        'name' : 'name.pl'
+                    },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            rel = join(settings.FILEBROWSER_ROOT,'./dir/TPE')
+            self.assertTrue(isfile(join(rel, 'name.pl')))
+            self.assertFalse(isfile(join(rel, 'function001.pl')))
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                        'option_h' : 'rename',
+                        'name_h' : 'name.pl',
+                        'relative_h' : './dir/TPE',
+                        'type_h' : 'entry',
+                        'name' : 'function001.pl'
+                    },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            rel = join(settings.FILEBROWSER_ROOT,'./dir/TPE')
+            self.assertTrue(isfile(join(rel, 'function001.pl')))
+            self.assertFalse(isfile(join(rel, 'name.pl')))
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
     
     
     def test_rename_folder(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                    'option_h' : 'rename',
-                    'name_h' : 'TPE',
-                    'relative_h' : './dir',
-                    'type_h' : 'entry',
-                    'name' : 'folder'
-                },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-        rel = join(settings.FILEBROWSER_ROOT,'./dir')
-        self.assertTrue(isdir(join(rel, 'folder')))
-        self.assertFalse(isdir(join(rel, 'TPE')))
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                    'option_h' : 'rename',
-                    'name_h' : 'folder',
-                    'relative_h' : './dir',
-                    'type_h' : 'entry',
-                    'name' : 'TPE'
-                },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-        rel = join(settings.FILEBROWSER_ROOT,'./dir')
-        self.assertTrue(isdir(join(rel, 'TPE')))
-        self.assertFalse(isdir(join(rel, 'folder')))
+        try:
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                        'option_h' : 'rename',
+                        'name_h' : 'TPE',
+                        'relative_h' : './dir',
+                        'type_h' : 'entry',
+                        'name' : 'folder'
+                    },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            rel = join(settings.FILEBROWSER_ROOT,'./dir')
+            self.assertTrue(isdir(join(rel, 'folder')))
+            self.assertFalse(isdir(join(rel, 'TPE')))
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                        'option_h' : 'rename',
+                        'name_h' : 'folder',
+                        'relative_h' : './dir',
+                        'type_h' : 'entry',
+                        'name' : 'TPE'
+                    },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            rel = join(settings.FILEBROWSER_ROOT,'./dir')
+            self.assertTrue(isdir(join(rel, 'TPE')))
+            self.assertFalse(isdir(join(rel, 'folder')))
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
     
     
     def test_rename_directory_entry(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                    'option_h' : 'rename',
-                    'name_h' : 'dir',
-                    'relative_h' : '.',
-                    'type_h' : 'entry',
-                    'name' : 'directory'
-                },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(isdir(join(settings.FILEBROWSER_ROOT, 'directory')))
-        self.assertFalse(isdir(join(settings.FILEBROWSER_ROOT, 'dir')))
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                    'option_h' : 'rename',
-                    'name_h' : 'directory',
-                    'relative_h' : '.',
-                    'type_h' : 'entry',
-                    'name' : 'dir'
-                },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(isdir(join(settings.FILEBROWSER_ROOT, 'dir')))
-        self.assertFalse(isdir(join(settings.FILEBROWSER_ROOT, 'directory')))
+        try:
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                        'option_h' : 'rename',
+                        'name_h' : 'dir',
+                        'relative_h' : '.',
+                        'type_h' : 'entry',
+                        'name' : 'directory'
+                    },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(isdir(join(settings.FILEBROWSER_ROOT, 'directory')))
+            self.assertFalse(isdir(join(settings.FILEBROWSER_ROOT, 'dir')))
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                        'option_h' : 'rename',
+                        'name_h' : 'directory',
+                        'relative_h' : '.',
+                        'type_h' : 'entry',
+                        'name' : 'dir'
+                    },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(isdir(join(settings.FILEBROWSER_ROOT, 'dir')))
+            self.assertFalse(isdir(join(settings.FILEBROWSER_ROOT, 'directory')))
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
     
     
-    def test_dirrename_directory_entry(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                    'option_h' : 'dirrename',
-                    'name_h' : 'dir',
-                    'relative_h' : '.',
-                    'type_h' : 'entry',
-                    'name' : 'directory'
-                },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(isdir(join(settings.FILEBROWSER_ROOT, 'directory')))
-        self.assertFalse(isdir(join(settings.FILEBROWSER_ROOT, 'dir')))
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                    'option_h' : 'dirrename',
-                    'name_h' : 'directory',
-                    'relative_h' : '.',
-                    'type_h' : 'entry',
-                    'name' : 'dir'
-                },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(isdir(join(settings.FILEBROWSER_ROOT, 'dir')))
-        self.assertFalse(isdir(join(settings.FILEBROWSER_ROOT, 'directory')))
+    def test_dirrename(self):
+        try:
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                        'option_h' : 'dirrename',
+                        'name_h' : 'dir',
+                        'relative_h' : '.',
+                        'type_h' : 'entry',
+                        'name' : 'directory'
+                    },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(isdir(join(settings.FILEBROWSER_ROOT, 'directory')))
+            self.assertFalse(isdir(join(settings.FILEBROWSER_ROOT, 'dir')))
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                        'option_h' : 'dirrename',
+                        'name_h' : 'directory',
+                        'relative_h' : '.',
+                        'type_h' : 'entry',
+                        'name' : 'dir'
+                    },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(isdir(join(settings.FILEBROWSER_ROOT, 'dir')))
+            self.assertFalse(isdir(join(settings.FILEBROWSER_ROOT, 'directory')))
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
     
     
     def test_rename_directory_directory(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                    'option_h' : 'rename',
-                    'name_h' : 'dir',
-                    'relative_h' : '.',
-                    'type_h' : 'directory',
-                    'name' : 'directory'
-                },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(isdir(join(settings.FILEBROWSER_ROOT, 'directory')))
-        self.assertFalse(isdir(join(settings.FILEBROWSER_ROOT, 'dir')))
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                    'option_h' : 'rename',
-                    'name_h' : 'directory',
-                    'relative_h' : '.',
-                    'type_h' : 'directory',
-                    'name' : 'dir'
-                },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(isdir(join(settings.FILEBROWSER_ROOT, 'dir')))
-        self.assertFalse(isdir(join(settings.FILEBROWSER_ROOT, 'directory')))
+        try:
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                        'option_h' : 'rename',
+                        'name_h' : 'dir',
+                        'relative_h' : '.',
+                        'type_h' : 'directory',
+                        'name' : 'directory'
+                    },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(isdir(join(settings.FILEBROWSER_ROOT, 'directory')))
+            self.assertFalse(isdir(join(settings.FILEBROWSER_ROOT, 'dir')))
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                        'option_h' : 'rename',
+                        'name_h' : 'directory',
+                        'relative_h' : '.',
+                        'type_h' : 'directory',
+                        'name' : 'dir'
+                    },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(isdir(join(settings.FILEBROWSER_ROOT, 'dir')))
+            self.assertFalse(isdir(join(settings.FILEBROWSER_ROOT, 'directory')))
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
     
     
     def test_rename_value_error(self):

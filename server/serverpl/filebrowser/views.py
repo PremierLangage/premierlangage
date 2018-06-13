@@ -174,7 +174,7 @@ def new_directory(request):
     
     if Directory.objects.filter(name=name):
         messages.error(request, "A directory with this name ('" + name + "') already exists. Please choose another name")
-        return redirect(reverse(index))
+        return redirect(reverse('filebrowser:index'))
     
     if url:
         directory = Directory(name=name, owner=request.user, remote=url)

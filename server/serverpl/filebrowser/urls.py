@@ -26,9 +26,10 @@
 from django.conf.urls import url
 from filebrowser import views
 
+app_name = 'filebrowser'
 
 urlpatterns = [
-    url(r'^$', views.index),
+    url(r'^$', views.index, name='index'),
     url(r'^new_directory/$', views.new_directory),
     url(r'^apply_option/post$', views.apply_option_post),
     url(r'^apply_option/$', views.apply_option_get),

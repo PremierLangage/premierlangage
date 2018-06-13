@@ -18,3 +18,6 @@ documentation/templates/documentation/*
 documentation/static/documentation/*
 .coverage
 src/
+filebrowser/tests/ressources/*
+!filebrowser/tests/ressources/fake_filebrowser_data
+!filebrowser/tests/ressources/filter
