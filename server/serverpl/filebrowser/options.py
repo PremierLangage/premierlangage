@@ -376,10 +376,11 @@ def move_option(request, filebrowser, target):
     """ Move target to POST['destination']."""
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-    
+
     destination = request.POST.get('destination', None)
+
     if not destination:
-        HttpResponseBadRequest()
+       return HttpResponseBadRequest()
         
     try:
         os.rename(join(filebrowser.full_path(), target), join(join(filebrowser.full_path(), destination), target))
