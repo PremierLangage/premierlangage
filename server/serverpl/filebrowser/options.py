@@ -46,7 +46,7 @@ from django.conf import settings
 from filebrowser import views
 from filebrowser.models import Directory
 from filebrowser.form import RightForm
-from filebrowser.utils import redirect_fb
+from filebrowser.utils import redirect_fb, stay_in_directory
 from filebrowser.filter import is_pl
 
 from loader.loader import load_file
@@ -383,8 +383,9 @@ def move_option(request, filebrowser, target):
        return HttpResponseBadRequest()
         
     try:
-        print(filebrowser.full_path())
-        if stay_in_directory("", join(join(filebrowser.full_path(), destination), target)) :
+        relative_h = request.POST.get('relative_h', None)
+        relative_h = "/".join([d for d in relative_h.split("/") if d][2:])
+        if not stay_in_directory(relative_h, destination) :
             raise ValueError()
 
         os.rename(join(filebrowser.full_path(), target), join(join(filebrowser.full_path(), destination), target))

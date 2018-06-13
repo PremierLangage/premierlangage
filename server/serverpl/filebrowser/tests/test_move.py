@@ -52,12 +52,12 @@ class MoveTestCase(TestCase):
                 'name_h': 'function001.pl',
                 'relative_h': './dir/TPE',
                 'type_h': 'entry',
-                'destination': '..'
+                'destination': 'Dir_test'
             },
             follow=True
         )
         self.assertEqual(response.status_code, 200)
-        rel = join(settings.FILEBROWSER_ROOT, 'dir/')
+        rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE/Dir_test')
         self.assertTrue(isfile(join(rel, 'function001.pl')))
         rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
         self.assertFalse(isfile(join(rel, 'function001.pl')))
@@ -85,7 +85,7 @@ class MoveTestCase(TestCase):
                 'name_h': 'nofile',
                 'relative_h': './dir/TPE',
                 'type_h': 'entry',
-                'destination': '..'
+                'destination': 'Dir_test'
             },
             follow=True
         )
