@@ -61,6 +61,9 @@ class MoveTestCase(TestCase):
         self.assertTrue(isfile(join(rel, 'function001.pl')))
         rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
         self.assertFalse(isfile(join(rel, 'function001.pl')))
+        m = list(response.context['messages'])
+        self.assertEqual(len(m), 1)
+        self.assertEqual(m[0].level, messages.SUCCESS)
 
 
     def test_move_file_no_destination(self):

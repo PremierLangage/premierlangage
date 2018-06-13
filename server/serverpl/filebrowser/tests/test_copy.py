@@ -45,25 +45,32 @@ class CopyTestCase(TestCase):
 
 
     def test_copy_file(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                'option_h': 'copy',
-                'name_h': 'function001.pl',
-                'relative_h': './dir/TPE',
-                'type_h': 'entry',
-                'destination': '..'
-            },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-        rel = join(settings.FILEBROWSER_ROOT, 'dir/')
-        self.assertTrue(isfile(join(rel, 'function001.pl')))
-        rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
-        self.assertTrue(isfile(join(rel, 'function001.pl')))
-        m = list(response.context['messages'])
-        self.assertEqual(len(m), 1)
-        self.assertEqual(m[0].level, messages.SUCCESS)
+        try:
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'copy',
+                    'name_h': 'function001.pl',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'entry',
+                    'destination': '..'
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE/..')
+            self.assertTrue(isfile(join(rel, 'function001.pl')))
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
+            self.assertTrue(isfile(join(rel, 'function001.pl')))
+            m = list(response.context['messages'])
+            self.assertEqual(len(m), 1)
+            self.assertEqual(m[0].level, messages.SUCCESS)
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
 
 
     def test_copy_file_no_destination(self):
@@ -98,19 +105,29 @@ class CopyTestCase(TestCase):
         self.assertEqual(m[0].level, messages.ERROR)
 
 
-    def test_copy_file_destination_error(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                'option_h': 'copy',
-                'name_h': 'function001.pl',
-                'relative_h': './dir/TPE',
-                'type_h': 'entry',
-                'destination': 'error'
-            },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-        m = list(response.context['messages'])
-        self.assertEqual(len(m), 1)
-        self.assertEqual(m[0].level, messages.ERROR)
+    def test_copy_file_not_existing_destination(self):
+        try :
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'copy',
+                    'name_h': 'function001.pl',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'entry',
+                    'destination': 'newDir'
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            m = list(response.context['messages'])
+            self.assertEqual(len(m), 1)
+            self.assertEqual(m[0].level, messages.ERROR)
+
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+
+
