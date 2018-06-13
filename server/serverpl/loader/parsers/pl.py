@@ -110,12 +110,8 @@ class Parser:
             self.add_warning("Key '" + key + "' overwritten at line " + str(self.lineno))
         
         try:
-            print(match.group('file'))
-            print(self.path_parsed_file)
             directory, path = get_location(self.directory, match.group('file'), current=self.path_parsed_file)
-            print(path)
             path = abspath(join(directory.root, path.replace(directory.name+'/', '')))
-            print(path)
             with open(path, 'r') as f:
                 if '+' in op:
                     if not key in self.dic:

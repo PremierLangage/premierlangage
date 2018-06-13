@@ -157,7 +157,7 @@ ENTRY_OPTIONS['delete'] = FilebrowserOption("fas fa-times", "Delete", delete_opt
 DIRECTORY_OPTIONS = OrderedDict()
 DIRECTORY_OPTIONS['rename'] = FilebrowserOption("fas fa-pencil-alt", "Rename", rename_option, form=RenameForm, authorization=OWNER)
 DIRECTORY_OPTIONS['mkdir'] = FilebrowserOption("fas fa-folder", "New directory", mkdir_option, form=RenameForm)
-DIRECTORY_OPTIONS['new_pl'] = FilebrowserOption("fas fa-edit", "New PL", new_pl_option, form=RenameForm)
+DIRECTORY_OPTIONS['new'] = FilebrowserOption("fas fa-edit", "New File", new_file_option, form=RenameForm)
 DIRECTORY_OPTIONS['upload'] = FilebrowserOption("fas fa-upload", "Upload File ", upload_option, form=UploadForm)
 DIRECTORY_OPTIONS['download'] = FilebrowserOption("fas fa-download", "Download", download_option, method=GET, authorization=READ)
 DIRECTORY_OPTIONS['commit'] = FilebrowserOption("fas fa-plus", "Add & Commit", add_commit_option, form=AddCommitForm, color=GREEN, filter=is_remote)
