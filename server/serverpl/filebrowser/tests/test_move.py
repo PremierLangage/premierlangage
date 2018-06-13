@@ -103,7 +103,7 @@ class MoveTestCase(TestCase):
                 'name_h': 'function001.pl',
                 'relative_h': './dir/TPE',
                 'type_h': 'entry',
-                'destination': 'error'
+                'destination': 'er&€or'
             },
             follow=True
         )
@@ -112,4 +112,21 @@ class MoveTestCase(TestCase):
         self.assertEqual(len(m), 1)
         self.assertEqual(m[0].level, messages.ERROR)
 
+
+    def test_move_file_in_directory(self):
+        response = self.c.post(
+            '/filebrowser/apply_option/post',
+            {
+                'option_h': 'move',
+                'name_h': 'function001.pl',
+                'relative_h': './dir/TPE',
+                'type_h': 'entry',
+                'destination': ''
+            },
+            follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+        m = list(response.context['messages'])
+        self.assertEqual(len(m), 1)
+        self.assertEqual(m[0].level, messages.ERROR)
 

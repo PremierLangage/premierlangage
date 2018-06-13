@@ -45,6 +45,6 @@ def stay_in_directory(current, path):
             pos -= 1
         elif d != '.':
             pos += 1
-        if pos < 0:
+        if pos <= 0:
             return False
     return True

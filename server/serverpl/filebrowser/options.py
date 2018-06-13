@@ -160,7 +160,7 @@ def copy_option(request, filebrowser, target):
             shutil.copytree(path, join(filebrowser.full_path(), destination))
         else:
             shutil.copyfile(path, join(filebrowser.full_path(), destination))
-        &
+
     except Exception as e:
         msg = "Impossible to copy '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
@@ -383,6 +383,7 @@ def move_option(request, filebrowser, target):
        return HttpResponseBadRequest()
         
     try:
+
         os.rename(join(filebrowser.full_path(), target), join(join(filebrowser.full_path(), destination), target))
         messages.success(request, "'"+target+"' successfully moved !")
     except Exception as e:
