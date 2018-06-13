@@ -66,7 +66,7 @@ def mkdir_option(request, filebrowser, target):
         return HttpResponseBadRequest
     
     try:
-        path = join(filebrowser.full_path(), name)
+        path = abspath(join(join(filebrowser.full_path(), relative), name))
         if isdir(path):
             messages.error(request, "A folder with that name ('"+name+"') already exists")
         elif isfile(path):
@@ -303,7 +303,7 @@ def download_option(request, filebrowser, target):
     return redirect_fb(request.GET.get('relative_h', '.'))
 
 
-def new_pl_option(request, filebrowser, target):
+def new_file_option(request, filebrowser, target):
     """Create a new file and launch the PL editor"""
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
@@ -315,18 +315,20 @@ def new_pl_option(request, filebrowser, target):
     
     try:
         path = abspath(join(join(filebrowser.full_path(), relative), name))
-        if not is_pl(name):
-            ext = splitext(path)[1]
-            messages.error(request, "Unknown PL's extension: '" + ext + "', please use a known extension.")
-        elif isdir(path):
+        
+        if isdir(path):
             messages.error(request, "A folder with that name ('"+name+"') already exists")
         elif isfile(path):
             messages.error(request, "A file with that name ('"+name+"') already exists")
         else:
             open(path, 'w+').close()
             response = redirect(reverse(views.apply_option_get))
-            response['Location'] += '?option_h=edit_pl&name_h='+name+'&relative_h='+relative+'&type_h=entry'
-            return response
+            if not is_pl(name):
+                response['Location'] += '?option_h=edit&name_h='+name+'&relative_h='+relative+'&type_h=entry'
+                return response
+            else:
+                response['Location'] += '?option_h=edit_pl&name_h='+name+'&relative_h='+relative+'&type_h=entry'
+                return response
     except Exception as e:
         msg = "Impossible to create '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
