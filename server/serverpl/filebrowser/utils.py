@@ -10,6 +10,7 @@ import os, sys
 
 from os.path import dirname, join
 
+from django.utils.encoding import iri_to_uri
 from django.shortcuts import redirect, reverse
 from django.conf import settings
 
@@ -17,7 +18,7 @@ from django.conf import settings
 
 def redirect_fb(path='.'):
     response = redirect(reverse('filebrowser:index'))
-    response['Location'] += '?cd='+path.replace(settings.FILEBROWSER_ROOT+'/', '')
+    response['Location'] += '?cd='+iri_to_uri(path.replace(settings.FILEBROWSER_ROOT+'/', ''))
     return response
 
 
