@@ -301,24 +301,19 @@ def download_option(request, filebrowser, target):
         if isdir(path):
             shutil.make_archive(path, 'zip', root_dir=path)
             filename = filename+".zip"
-<<<<<<< HEAD
-            path += ".zip"
-
-        with open(path, 'rb')as f:
-=======
             npath = path + ".zip"
         else:
             npath = path
-        
+
         with open(npath, 'rb')as f:
->>>>>>> b14ad2936ac2829ba0a44c77f12ae90759910537
+
             response = HttpResponse(f.read())
             response['Content-Type']=magic.from_file(npath, mime=True)
             response['Content-Disposition'] = "attachment; filename="+filename
-        
+
         if isdir(path):
             os.remove(npath)
-        
+
         return response
 
     except Exception as e:
