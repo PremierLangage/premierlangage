@@ -88,6 +88,8 @@ class CopyTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
             rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE/..')
             self.assertTrue(isdir(join(rel, 'Dir_test')))
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE/../Dir_test')
+            self.assertTrue(isfile(join(rel, 'test.txt')))
             rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
             self.assertTrue(isdir(join(rel, 'Dir_test')))
             m = list(response.context['messages'])
@@ -213,6 +215,8 @@ class CopyTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
             rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE/newDir')
             self.assertTrue(isdir(join(rel, 'Dir_test')))
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE/newDir/Dir_test')
+            self.assertTrue(isfile(join(rel, 'test.txt')))
             rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
             self.assertTrue(isdir(join(rel, 'Dir_test')))
             m = list(response.context['messages'])
@@ -283,8 +287,63 @@ class CopyTestCase(TestCase):
                 [print(i.level,':',i.message) for i in m]
             raise
 
-
     def test_copy_file_not_in_bank(self):
+        try:
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'copy',
+                    'name_h': 'function001.pl',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'entry',
+                    'destination': '../..'
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE/../..')
+            self.assertFalse(isfile(join(rel, 'function001.pl')))
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
+            self.assertTrue(isfile(join(rel, 'function001.pl')))
+            m = list(response.context['messages'])
+            self.assertEqual(len(m), 1)
+            self.assertEqual(m[0].level, messages.ERROR)
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level, ':', i.message) for i in m]
+            raise
+
+
+    def test_copy_not_existing_directory_not_in_bank(self):
+        try :
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'copy',
+                    'name_h': 'noDir',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'entry',
+                    'destination': '../..'
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE/../..')
+            self.assertFalse(isdir(join(rel, 'noDir')))
+            m = list(response.context['messages'])
+            self.assertEqual(len(m), 1)
+            self.assertEqual(m[0].level, messages.ERROR)
+        except AssertionError :
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+
+
+    def test_copy_not_existing_file_not_in_bank(self):
         try :
             response = self.c.post(
                 '/filebrowser/apply_option/post',
