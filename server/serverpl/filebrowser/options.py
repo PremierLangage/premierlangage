@@ -404,7 +404,6 @@ def move_option(request, filebrowser, target):
         os.rename(join(filebrowser.full_path(), target), join(join(filebrowser.full_path(), destination), target))
         messages.success(request, "'"+target+"' successfully moved !")
     except Exception as e:
-
         msg = "Impossible to move '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")

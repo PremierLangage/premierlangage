@@ -44,92 +44,357 @@ class MoveTestCase(TestCase):
         self.assertEqual(response.status_code, 405)
 
 
+    def test_move_directory(self):
+        try :
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'move',
+                    'name_h': 'Dir_test',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'entry',
+                    'destination': '..'
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/')
+            self.assertTrue(isdir(join(rel, 'Dir_test')))
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
+            self.assertFalse(isdir(join(rel, 'Dir_test')))
+            m = list(response.context['messages'])
+            self.assertEqual(len(m), 1)
+            self.assertEqual(m[0].level, messages.SUCCESS)
+
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'move',
+                    'name_h': 'Dir_test',
+                    'relative_h': './dir',
+                    'type_h': 'entry',
+                    'destination': 'TPE'
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
+            self.assertTrue(isdir(join(rel, 'Dir_test')))
+            rel = join(settings.FILEBROWSER_ROOT, 'dir')
+            self.assertFalse(isdir(join(rel, 'Dir_test')))
+            m = list(response.context['messages'])
+            self.assertEqual(len(m), 1)
+            self.assertEqual(m[0].level, messages.SUCCESS)
+        except AssertionError :
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+
+
     def test_move_file(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                'option_h': 'move',
-                'name_h': 'function001.pl',
-                'relative_h': './dir/TPE',
-                'type_h': 'entry',
-                'destination': 'Dir_test'
-            },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-        rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE/Dir_test')
-        self.assertTrue(isfile(join(rel, 'function001.pl')))
-        rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
-        self.assertFalse(isfile(join(rel, 'function001.pl')))
-        m = list(response.context['messages'])
-        self.assertEqual(len(m), 1)
-        self.assertEqual(m[0].level, messages.SUCCESS)
+        try :
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'move',
+                    'name_h': 'function001.pl',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'entry',
+                    'destination': 'Dir_test'
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE/Dir_test')
+            self.assertTrue(isfile(join(rel, 'function001.pl')))
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
+            self.assertFalse(isfile(join(rel, 'function001.pl')))
+            m = list(response.context['messages'])
+            self.assertEqual(len(m), 1)
+            self.assertEqual(m[0].level, messages.SUCCESS)
+
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'move',
+                    'name_h': 'function001.pl',
+                    'relative_h': './dir/TPE/Dir_test',
+                    'type_h': 'entry',
+                    'destination': '..'
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
+            self.assertTrue(isfile(join(rel, 'function001.pl')))
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE/Dir_test')
+            self.assertFalse(isfile(join(rel, 'function001.pl')))
+            m = list(response.context['messages'])
+            self.assertEqual(len(m), 1)
+            self.assertEqual(m[0].level, messages.SUCCESS)
+        except AssertionError :
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+
+
+    def test_move_directory_no_destination(self):
+        try :
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'move',
+                    'name_h': 'Dir_test',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'entry',
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 400)
+        except AssertionError :
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
 
 
     def test_move_file_no_destination(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                'option_h': 'move',
-                'name_h': 'function001.pl',
-                'relative_h': './dir/TPE',
-                'type_h': 'entry',
-            },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 400)
+        try :
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'move',
+                    'name_h': 'function001.pl',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'entry',
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 400)
+        except AssertionError :
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+
+
+    def test_move_not_existing_directory(self):
+        try :
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'move',
+                    'name_h': 'noDir',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'entry',
+                    'destination': 'Dir_test'
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            m = list(response.context['messages'])
+            self.assertEqual(len(m), 1)
+            self.assertEqual(m[0].level, messages.ERROR)
+        except AssertionError :
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
 
 
     def test_move_not_existing_file(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                'option_h': 'move',
-                'name_h': 'nofile',
-                'relative_h': './dir/TPE',
-                'type_h': 'entry',
-                'destination': 'Dir_test'
-            },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-        m = list(response.context['messages'])
-        self.assertEqual(len(m), 1)
-        self.assertEqual(m[0].level, messages.ERROR)
+        try :
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'move',
+                    'name_h': 'nofile',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'entry',
+                    'destination': 'Dir_test'
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            m = list(response.context['messages'])
+            self.assertEqual(len(m), 1)
+            self.assertEqual(m[0].level, messages.ERROR)
+        except AssertionError :
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+
+
+    def test_move_directory_destination_error(self):
+        try :
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'move',
+                    'name_h': 'Dir_test',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'entry',
+                    'destination': 'er&€or'
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
+            self.assertFalse(isdir(join(rel, 'er&€or')))
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
+            self.assertTrue(isdir(join(rel, 'Dir_test')))
+            m = list(response.context['messages'])
+            self.assertEqual(len(m), 1)
+            self.assertEqual(m[0].level, messages.ERROR)
+        except AssertionError :
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
 
 
     def test_move_file_destination_error(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                'option_h': 'move',
-                'name_h': 'function001.pl',
-                'relative_h': './dir/TPE',
-                'type_h': 'entry',
-                'destination': 'er&€or'
-            },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-        m = list(response.context['messages'])
-        self.assertEqual(len(m), 1)
-        self.assertEqual(m[0].level, messages.ERROR)
+        try :
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'move',
+                    'name_h': 'function001.pl',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'entry',
+                    'destination': 'er&€or'
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
+            self.assertFalse(isdir(join(rel, 'er&€or')))
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
+            self.assertTrue(isfile(join(rel, 'function001.pl')))
+            m = list(response.context['messages'])
+            self.assertEqual(len(m), 1)
+            self.assertEqual(m[0].level, messages.ERROR)
+        except AssertionError :
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+
+
+    def test_move_directory_not_in_directory(self):
+        try :
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'move',
+                    'name_h': 'Dir_test',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'entry',
+                    'destination': '../..'
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE/../..')
+            self.assertFalse(isdir(join(rel, 'Dir_test')))
+            m = list(response.context['messages'])
+            self.assertEqual(len(m), 1)
+            self.assertEqual(m[0].level, messages.ERROR)
+        except AssertionError :
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
 
 
     def test_move_file_not_in_directory(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                'option_h': 'move',
-                'name_h': 'function001.pl',
-                'relative_h': './dir/TPE',
-                'type_h': 'entry',
-                'destination': '../..'
-            },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-        m = list(response.context['messages'])
-        self.assertEqual(len(m), 1)
-        self.assertEqual(m[0].level, messages.ERROR)
+        try :
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'move',
+                    'name_h': 'function001.pl',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'entry',
+                    'destination': '../..'
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE/../..')
+            self.assertFalse(isfile(join(rel, 'function001.pl')))
+            m = list(response.context['messages'])
+            self.assertEqual(len(m), 1)
+            self.assertEqual(m[0].level, messages.ERROR)
+        except AssertionError :
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
 
+
+    def test_move_not_existing_directory_not_in_directory(self):
+        try :
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'move',
+                    'name_h': 'noDir',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'entry',
+                    'destination': '../..'
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE/../..')
+            self.assertFalse(isdir(join(rel, 'noDir')))
+            m = list(response.context['messages'])
+            self.assertEqual(len(m), 1)
+            self.assertEqual(m[0].level, messages.ERROR)
+        except AssertionError :
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+
+
+    def test_move_not_existing_file_not_in_directory(self):
+        try :
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'move',
+                    'name_h': 'nofile',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'entry',
+                    'destination': '../..'
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE/../..')
+            self.assertFalse(isfile(join(rel, 'nofile')))
+            m = list(response.context['messages'])
+            self.assertEqual(len(m), 1)
+            self.assertEqual(m[0].level, messages.ERROR)
+        except AssertionError :
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
