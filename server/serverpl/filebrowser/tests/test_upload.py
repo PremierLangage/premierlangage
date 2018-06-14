@@ -108,29 +108,7 @@ class UploadTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-
-    def test_upload_file_with_bad_name(self):
-        with open('./filebrowser/tests/ressources/filter/text.txt', 'r') as fd:
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                    'option_h': 'upload',
-                    'name_h': 'dir',
-                    'relative_h': './dir/TPE',
-                    'type_h': 'directory',
-                    'file': fd,
-                    'relative': './dir/TPE',
-                    'name': '../../../../../text.txt',
-                },
-                follow=True
-            )
-        self.assertEqual(response.status_code, 200)
-        rel = join(settings.FILEBROWSER_ROOT, './dir/TPE')
-        self.assertFalse(isfile(join(rel, '../../../../../text.txt')))
-        m = list(response.context['messages'])
-        self.assertEqual(m[0].level, messages.ERROR)
-
-
+        
     def test_upload_in_bad_directory(self):
         with open('./filebrowser/tests/ressources/filter/text.txt', 'r') as fd:
             response = self.c.post(
