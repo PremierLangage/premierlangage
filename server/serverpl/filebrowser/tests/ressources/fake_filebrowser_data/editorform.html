@@ -1,0 +1,20 @@
+{% load static %}
+<!-- Do not tabulate this div as the tabulation will appear in the editor -->
+<div id="editor" style="border: 1px #E7E7E7 solid; border-width: 1px; border-color: #5bc0de; border-radius: 4px; height: 400px; #E7E7E7 solid;">
+{% if student_answer__ and student_answer__ != "" %}{{ student_answer__ }}{% else %}{{ code }}{% endif %}</div>
+<input id="form_txt_answer" type="hidden" name="form_txt_answer" style="display: none;" value="{% if student_answer__ and student_answer__ != "" %}{{ student_answer__ }}{% else %}{{ code }}{% endif %}">
+<br>
+<script src="{% static 'ace/ace.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'ace/ext-modelist.js' %}"></script>
+<script>
+    var editor = ace.edit('editor');
+    editor.setTheme("{{ request.user.profile.editor_theme.template }}");
+    editor.session.setMode("ace/mode/{% if language and language in authorized_lang %}{{language}}{% else %}python{% endif %}");
+        
+    var input = $('input[name="form_txt_answer"]');
+        editor.getSession().on("change", function() {
+        input.val(editor.getSession().getValue());
+    });
+</script>
+
+
