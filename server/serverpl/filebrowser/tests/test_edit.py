@@ -64,9 +64,11 @@ class RenameTestCase(TestCase):
             response2 = self.c.post(
                 '/filebrowser/apply_option',
                 {
-                    'path': './dir/TPE/function001.pl'
-                    'editor_input': 'New content'
-                    }
+                    'path': './dir/TPE/function001.pl',
+                    'editor_input': 'New content',
+                    },
+                follow=True,
+            )
             
         except AssertionError:
             m = list(response.context['messages'])

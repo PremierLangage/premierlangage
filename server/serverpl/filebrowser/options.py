@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 #
 #  options.py
-#  
+#
 #  Copyright 2018 Coumes Quentin
-#  
+#
 
 
 
@@ -24,7 +24,7 @@
 # where he was when he chose the option. If such redirection can't be done (after a deletion for instance),
 # the user should be redirected to the filebrowser root.
 #
-# Some option can open another page than the filebrowser, such page or corresponding view should 
+# Some option can open another page than the filebrowser, such page or corresponding view should
 # redirect the user.
 #
 # settings.FILEBROWSER_ROOT should be removed of every path displayed by any feedback of the options
@@ -89,19 +89,19 @@ def display_option(request, filebrowser, target):
     """ Display targeted entry """
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
-    
+
     try:
         path = join(filebrowser.full_path(), target)
         with open(path, 'r') as f:
             lines = f.readlines()
         return render(request, 'filebrowser/file.html', {'file': lines, 'filename': basename(path)})
-        
+
     except Exception as e:
         msg = "Impossible to display '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
-    
+
     return redirect_fb(request.GET.get('relative_h', '.'))
 
 
@@ -109,40 +109,40 @@ def rename_option(request, filebrowser, target):
     """ Rename targeted entry with POST['name'] """
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-    
+
     name = request.POST.get('name', None)
     if not name:
         return HttpResponse(status=200)
-    
+
     try:
         path = join(filebrowser.full_path(), target)
-        
+
         if '/' in name:
             raise ValueError()
-        
+
         if isfile(join(filebrowser.full_path(),name)):
             raise OSError()
-        
+
         if not filebrowser.directory:
             d = Directory.objects.get(name=target)
             d.name = name
             d.save()
-        
+
         os.rename(path, join(filebrowser.full_path(),name))
         messages.success(request, "'"+target+"' successfully renamed to '" + name + "' !")
-        
+
     except (IntegrityError, OSError, IsADirectoryError):
         messages.error(request, "Can't rename '" + target+"' to '" + name + "' : this name is already used.")
-    
+
     except ValueError:
         messages.error(request, "Can't rename '" + target + "' to '" + name + "' : name contains a '/'.")
-    
+
     except Exception as e:
         msg = "Impossible to rename '" + target + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.DEBUG:
             msg += "<br/><br/> Debug set to True:" + htmlprint.html_exc()
         messages.error(request, msg.replace(settings.FILEBROWSER_ROOT + "/", ""))
-    
+
     return redirect_fb(request.POST.get('relative_h', '.'))
 
 
@@ -151,11 +151,11 @@ def copy_option(request, filebrowser, target):
     """ Copy targeted entry to POST['destination'] """
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-    
+
     destination = request.POST.get('destination', None)
     if not destination:
         return HttpResponseBadRequest()
-        
+
     try:
         relative_h = request.POST.get('relative_h', None)
         name_h = request.POST.get('name_h', None)
@@ -180,7 +180,7 @@ def copy_option(request, filebrowser, target):
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
-    
+
     return redirect_fb(request.POST.get('relative_h', '.'))
 
 
@@ -189,22 +189,22 @@ def add_commit_option(request, filebrowser, target):
     """ Execute an add and commit of the targeted entry with the informations of POST. """
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-    
+
     commit = request.POST.get('commit', None)
     if not commit:
         HttpResponseBadRequest()
-    
+
     if not filebrowser.directory:
         d = Directory.objects.get(name=target)
         done, msg = d.add_and_commit(commit)
     else:
         done, msg = filebrowser.directory.add_and_commit(commit, path=filebrowser.full_path() + '/' + target)
-    
+
     if done:
         messages.success(request, "Add and commit done.<br>" + htmlprint.code(msg))
     else:
         messages.error(request, "Couldn't add and commit :<br>" + htmlprint.code(msg))
-    
+
     return redirect_fb(request.POST.get('relative_h', '.'))
 
 
@@ -219,7 +219,7 @@ def checkout_option(request, filebrowser, target):
         done, msg = d.checkout()
     else:
         done, msg = filebrowser.directory.checkout(path=filebrowser.full_path() + '/' + target)
-    
+
     if done:
         messages.success(request, "Checkout done.<br>" + htmlprint.code(msg))
     else:
@@ -232,13 +232,13 @@ def status_option(request, filebrowser, target):
     """ Execute a git status on the targeted entry."""
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
-    
+
     if not filebrowser.directory:
         d = Directory.objects.get(name=target)
         done, msg = d.status()
     else:
         done, msg = filebrowser.directory.status()
-    
+
     if done:
         messages.success(request, "Status done.<br>" + htmlprint.code(msg))
     else:
@@ -251,7 +251,7 @@ def pull_option(request, filebrowser, target):
     """ Execute a git pull on the targeted entry with the informations of POST."""
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-    
+
     username = request.POST.get('username', None)
     password = request.POST.get('password', None)
     if not filebrowser.directory:
@@ -259,7 +259,7 @@ def pull_option(request, filebrowser, target):
         done, msg = d.pull(username=username, password=password)
     else:
         done, msg = filebrowser.directory.pull(username=username, password=password)
-    
+
     if done:
         messages.success(request, "Pull done.<br>" + htmlprint.code(msg))
     else:
@@ -272,7 +272,7 @@ def push_option(request, filebrowser, target):
     """ Execute a git push on the targeted entry with the informations of POST."""
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-    
+
     username = request.POST.get('username', None)
     password = request.POST.get('password', None)
     if not filebrowser.directory:
@@ -280,7 +280,7 @@ def push_option(request, filebrowser, target):
         done, msg = d.push(username=username, password=password)
     else:
         done, msg = filebrowser.directory.push(username=username, password=password)
-    
+
     if done:
         messages.success(request, "Push done.<br>" + htmlprint.code(msg))
     else:
@@ -293,28 +293,29 @@ def download_option(request, filebrowser, target):
     """ Allow the user to download target"""
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
-        
+
     try:
         path = join(filebrowser.full_path(), target)
         filename = target
-        
+
         if isdir(path):
             shutil.make_archive(path, 'zip', root_dir=path)
             filename = filename+".zip"
             npath = path + ".zip"
         else:
             npath = path
-        
+
         with open(npath, 'rb')as f:
+
             response = HttpResponse(f.read())
             response['Content-Type']=magic.from_file(npath, mime=True)
             response['Content-Disposition'] = "attachment; filename="+filename
-        
+
         if isdir(path):
             os.remove(npath)
-        
+
         return response
-        
+
     except Exception as e:
         msg = "Impossible to download '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
@@ -327,15 +328,15 @@ def new_file_option(request, filebrowser, target):
     """Create a new file and launch the PL editor"""
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-    
+
     name = request.POST.get('name', None)
     relative = request.POST.get('relative_h', None)
     if not name or not relative:
         return HttpResponseBadRequest
-    
+
     try:
         path = abspath(join(join(filebrowser.full_path(), relative), name))
-        
+
         if isdir(path):
             messages.error(request, "A folder with that name ('"+name+"') already exists")
         elif isfile(path):
@@ -361,11 +362,11 @@ def load_pltp_option(request, filebrowser, target):
     """ Load the target"""
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
-        
+
     try:
         rel_path = join(filebrowser.relative, target).replace('./'+filebrowser.directory.name, "")
         pltp, warnings = load_file(filebrowser.directory, rel_path, True)
-        
+
         if not pltp and not warnings:
             messages.info(request, "This PLTP is already loaded")
         elif not pltp:
@@ -401,7 +402,7 @@ def move_option(request, filebrowser, target):
 
     if not destination:
        return HttpResponseBadRequest()
-        
+
     try:
         relative_h = request.POST.get('relative_h', None)
         relative_h = "/".join([d for d in relative_h.split("/") if d][2:])
@@ -428,17 +429,17 @@ def delete_option(request, filebrowser, target):
     """ Delete target"""
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-    
+
     try:
         path = join(filebrowser.full_path(), target)
         if isdir(path):
             shutil.rmtree(path, ignore_errors=True)
         else:
             os.remove(path)
-        
+
         if not filebrowser.directory:
             Directory.objects.get(name=target).delete()
-        
+
         messages.success(request, "'"+target+"' successfully deleted !")
     except Exception as e:
         msg = "Impossible to delete '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
@@ -453,19 +454,19 @@ def edit_option(request, filebrowser, target):
     """ Start an editor to edit target."""
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
-    
+
     try:
         path = join(filebrowser.full_path(), target)
         with open(path, 'r') as f:
             content = f.read()
-        
+
         return render(request, 'filebrowser/editor.html', {
             'file_content': content,
             'filename': basename(path),
             'filepath': path.replace(settings.FILEBROWSER_ROOT+'/', ''),
             'dir_name': filebrowser.directory.name,
         })
-        
+
     except Exception as e:
         msg = "Impossible to edit '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
@@ -479,12 +480,12 @@ def edit_pl_option(request, filebrowser, target):
     """ Start the editor with preview to edit a PL."""
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
-    
+
     try:
         path = join(filebrowser.full_path(), target)
         with open(path, 'r') as f:
             content = f.read()
-        
+
         rel_path = join(filebrowser.relative, target).replace(filebrowser.directory.name, "")
         pl, warnings = load_file(filebrowser.directory, rel_path)
         if not pl:
@@ -507,7 +508,7 @@ def edit_pl_option(request, filebrowser, target):
             'dir_name': filebrowser.directory.name,
             'preview': preview,
         })
-        
+
     except Exception as e:
         msg = "Impossible to edit '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
@@ -521,25 +522,25 @@ def test_pl_option(request, filebrowser, target):
     """ Allwo to test a PL."""
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
-    
+
     try:
         path = join(filebrowser.full_path(), target)
 
         rel_path = join(filebrowser.relative, target).replace(filebrowser.directory.name, "")
         pl, warnings = load_file(filebrowser.directory, rel_path)
-        
+
         if not pl:
             messages.error(request, warnings)
             return redirect_fb(request.GET.get('relative_h', '.'))
-        
+
         exercise = PLInstance(pl.json)
         request.session['exercise'] = dict(exercise.dic)
         preview = exercise.render(request)
-            
+
         return render(request, 'filebrowser/test_pl.html', {
             'preview': preview,
         })
-        
+
     except Exception as e:
         msg = "Impossible to display '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
@@ -553,22 +554,22 @@ def rights_option(request, filebrowser, target):
     """ Open a page allowing the user to edit the rights of his targeted Directory."""
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
-    
+
     try:
         if not filebrowser.directory:
             d = Directory.objects.get(name=target)
         else:
             d = filebrowser.directory
-        
+
         form = RightForm()
         form.initial['write'] = [user.id for user in d.write_auth.all()]
         form.initial['read'] =  [user.id for user in d.read_auth.all()]
-        
+
         return render(request, 'filebrowser/edit_rights.html', {
             'form': form,
             'directory': d.name,
         })
-        
+
     except Exception as e:
         msg = "Impossible to display '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
@@ -583,17 +584,23 @@ def upload_option(request, filebrowser, target):
         return HttpResponseNotAllowed(['POST'])
 
     try:
+        relative = request.POST.get('relative', None)
+        relative_h = request.POST.get('relative_h', None)
         f = request.FILES['file']
         name = request.POST.get('name', None)
         if not name:
             name = f.name
-        relative = request.POST.get('relative', None)
+        else :
+            if not stay_in_directory(relative_h, name):
+                raise ValueError()
         path = filebrowser.root+'/'+relative+'/'+name
+        if isfile(path) or isdir(path):
+            messages.error(request, "The file's name is already used")
         with open(path, 'wb+') as dest:
             for chunk in f.chunks():
                 dest.write(chunk)
         messages.success(request, "File '"+name+"' successfully uploaded.")
-        
+
     except Exception as e:
         msg = "Impossible to upload '"+name+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
@@ -607,7 +614,7 @@ def extract_option(request, filebrowser, target):
     """ Extract the given archive """
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
-    
+
     try:
         path = join(filebrowser.full_path(), target)
         mime = magic.from_file(path, mime=True).split('/')[1]

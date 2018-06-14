@@ -52,13 +52,15 @@ class CreateDirectoryTestCase(TestCase):
             'relative_h' : './dir/TPE',
             'type_h' : 'directory',
             'relative': './dir/TPE',
-            'name' : 'dir_test',
+            'name' : 'dir_test2',
         },
         follow=True
         )
         self.assertEqual(response.status_code, 200)
         rel = join(settings.FILEBROWSER_ROOT, './dir/TPE')
-        self.assertTrue(isdir(join(rel, 'dir_test')))
+        self.assertTrue(isdir(join(rel, 'dir_test2')))
+        m = list(response.context['messages'])
+        self.assertEqual(m[0].level, messages.SUCCESS)
 
 
     def test_mkdir_existing_dir(self):
@@ -78,7 +80,7 @@ class CreateDirectoryTestCase(TestCase):
         rel = join(settings.FILEBROWSER_ROOT, './dir/TPE')
         self.assertTrue(isdir(join(rel, 'dir_test')))
         m = list(response.context['messages'])
-        self.assertTrue(m[0].level, messages.ERROR)
+        self.assertEqual(m[0].level, messages.ERROR)
 
     def test_mkdir_existing_file(self):
         response = self.c.post(
@@ -97,7 +99,7 @@ class CreateDirectoryTestCase(TestCase):
         rel = join(settings.FILEBROWSER_ROOT, './dir/TPE')
         self.assertTrue(isfile(join(rel, 'function001.pl')))
         m = list(response.context['messages'])
-        self.assertTrue(m[0].level, messages.ERROR)
+        self.assertEqual(m[0].level, messages.ERROR)
 
 
     def test_invalid_name(self):
@@ -117,6 +119,6 @@ class CreateDirectoryTestCase(TestCase):
         rel = join(settings.FILEBROWSER_ROOT, './dir/TPE')
         self.assertFalse(isfile(join(rel, '/test')))
         m = list(response.context['messages'])
-        self.assertTrue(m[0].level, messages.ERROR)
+        self.assertEqual(m[0].level, messages.ERROR)
 
 
