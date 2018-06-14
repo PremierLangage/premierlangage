@@ -343,7 +343,7 @@ def new_file_option(request, filebrowser, target):
             messages.error(request, "A file with that name ('"+name+"') already exists")
         else:
             open(path, 'w+').close()
-            response = redirect(reverse(views.apply_option_get))
+            response = redirect(reverse("filebrowser:apply_option_get"))
             if not is_pl(name):
                 response['Location'] += '?option_h=edit&name_h='+name+'&relative_h='+relative+'&type_h=entry'
                 return response
