@@ -72,13 +72,13 @@ class CreateDirectoryTestCase(TestCase):
                 'relative_h': './dir/TPE',
                 'type_h': 'directory',
                 'relative': './dir/TPE',
-                'name': 'dir_test',
+                'name': 'Dir_test',
             },
             follow=True
         )
         self.assertEqual(response.status_code, 200)
         rel = join(settings.FILEBROWSER_ROOT, './dir/TPE')
-        self.assertTrue(isdir(join(rel, 'dir_test')))
+        self.assertTrue(isdir(join(rel, 'Dir_test')))
         m = list(response.context['messages'])
         self.assertEqual(m[0].level, messages.ERROR)
 
