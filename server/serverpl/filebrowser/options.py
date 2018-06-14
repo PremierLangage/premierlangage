@@ -334,9 +334,11 @@ def new_file_option(request, filebrowser, target):
     if not name or not relative:
         return HttpResponseBadRequest
 
-    try:
+    try :
+        relative_h = "/".join([d for d in relative.split("/") if d][2:])
+        if not stay_in_directory(relative_h, name):
+            raise ValueError()
         path = abspath(join(join(filebrowser.full_path(), relative), name))
-
         if isdir(path):
             messages.error(request, "A folder with that name ('"+name+"') already exists")
         elif isfile(path):
@@ -350,6 +352,11 @@ def new_file_option(request, filebrowser, target):
             else:
                 response['Location'] += '?option_h=edit_pl&name_h='+name+'&relative_h='+relative+'&type_h=entry'
                 return response
+    except ValueError as e:
+        msg = "Impossible to create out '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
+        if settings.FILEBROWSER_ROOT in msg:
+            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
+        messages.error(request, msg)
     except Exception as e:
         msg = "Impossible to create '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:

@@ -6,16 +6,14 @@
 #  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
 #
 
-import os, shutil, sys, json, time
+import shutil
 
 from os.path import join, isdir, isfile
 
-from mock import patch
 
 from django.test import TestCase, Client, override_settings
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.messages import constants as messages
 
 from filebrowser.models import Directory
 
@@ -50,19 +48,81 @@ class NewTestCase(TestCase):
                 '/filebrowser/apply_option/post',
                 {
                     'option_h': 'new',
-                    'name_h': 'function001.pl',
+                    'name_h': 'dir',
                     'relative_h': './dir/TPE',
-                    'type_h': 'entry',
+                    'type_h': 'directory',
+                    'name': 'file'
+                },
+                follow=True
+            )
+            self.assertContains(
+                response,
+                "var editorPL = ace.edit(\'editorPL\')",
+                status_code=200
+            )
+            self.assertNotContains(
+                response,
+                "Preview",
+                status_code=200
+            )
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
+            self.assertTrue(isfile(join(rel, 'file')))
+        except AssertionError :
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+
+
+    def test_new_pl(self):
+        try :
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'new',
+                    'name_h': 'dir',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'directory',
                     'name': 'file.pl'
+                },
+                follow=True
+            )
+            self.assertContains(
+                response,
+                "var editorPL = ace.edit(\'editorPL\')",
+                status_code=200
+            )
+            self.assertContains(
+                response,
+                "Preview",
+                status_code=200
+            )
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
+            self.assertTrue(isfile(join(rel, 'file.pl')))
+        except AssertionError :
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+
+    def test_new_pl_not_in_directory(self):
+        try :
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'new',
+                    'name_h': 'dir',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'directory',
+                    'name': '../../file1.pl'
                 },
                 follow=True
             )
             self.assertEqual(response.status_code, 200)
             rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
-            self.assertTrue(isfile(join(rel, 'file.pl')))
-            m = list(response.context['messages'])
-            self.assertEqual(len(m), 1)
-            self.assertEqual(m[0].level, messages.SUCCESS)
+            self.assertFalse(isfile(join(rel, '../../file1.pl')))
         except AssertionError :
             m = list(response.context['messages'])
             if m:
