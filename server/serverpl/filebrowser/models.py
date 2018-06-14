@@ -49,8 +49,7 @@ class Directory(models.Model):
     
     
     def save(self, *args, **kwargs):
-        if not self.root:
-            self.root = os.path.join(settings.FILEBROWSER_ROOT, self.name)
+        self.root = os.path.join(settings.FILEBROWSER_ROOT, self.name)
         super(Directory, self).save(*args, **kwargs)
     
     
