@@ -14,6 +14,7 @@ from os.path import join, isdir, isfile
 from django.test import TestCase, Client, override_settings
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.messages import constants as messages
 
 from filebrowser.models import Directory
 
@@ -116,13 +117,65 @@ class NewTestCase(TestCase):
                     'name_h': 'dir',
                     'relative_h': './dir/TPE',
                     'type_h': 'directory',
-                    'name': '../../file1.pl'
+                    'name': '../../../../file1.pl'
                 },
                 follow=True
             )
             self.assertEqual(response.status_code, 200)
             rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
-            self.assertFalse(isfile(join(rel, '../../file1.pl')))
+            self.assertFalse(isfile(join(rel, '../../../../file1.pl')))
+        except AssertionError :
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+
+
+    def test_new_file_with_used_file_name(self):
+        try :
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'new',
+                    'name_h': 'dir',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'directory',
+                    'name': 'function001.pl'
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            m = list(response.context['messages'])
+            self.assertEqual(len(m), 1)
+            self.assertEqual(m[0].level, messages.ERROR)
+        except AssertionError :
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+
+
+    def test_new_file_with_used_dir_name(self):
+        try :
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'new',
+                    'name_h': 'dir',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'directory',
+                    'name': 'Dir_test'
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
+            self.assertFalse(isfile(join(rel, 'Dir_test')))
+            m = list(response.context['messages'])
+            self.assertEqual(len(m), 1)
+            self.assertEqual(m[0].level, messages.ERROR)
         except AssertionError :
             m = list(response.context['messages'])
             if m:
