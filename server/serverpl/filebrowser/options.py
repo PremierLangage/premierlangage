@@ -46,7 +46,7 @@ from django.conf import settings
 from filebrowser import views
 from filebrowser.models import Directory
 from filebrowser.form import RightForm
-from filebrowser.utils import redirect_fb
+from filebrowser.utils import redirect_fb, stay_in_directory
 from filebrowser.filter import is_pl
 
 from loader.loader import load_file
@@ -152,17 +152,29 @@ def copy_option(request, filebrowser, target):
     
     destination = request.POST.get('destination', None)
     if not destination:
-        HttpResponseBadRequest()
+        return HttpResponseBadRequest()
         
     try:
+        relative_h = request.POST.get('relative_h', None)
+        name_h = request.POST.get('name_h', None)
+        relative_h = "/".join([d for d in relative_h.split("/") if d][2:])
+        if not stay_in_directory(relative_h, destination) :
+            raise ValueError()
         path = join(filebrowser.full_path(), target)
+
         if isdir(path):
-            shutil.copytree(path, join(filebrowser.full_path(), destination))
-        else:
-            shutil.copyfile(path, join(filebrowser.full_path(), destination))
-        messages.success(request, "'"+target+"' successfully copied !")
+            shutil.copytree(path, join(filebrowser.full_path(), join(destination, name_h)))
+        else :
+            shutil.copyfile(path, join(filebrowser.full_path(), join(destination, name_h)))
+        messages.success(request, "'" + target + "' successfully copy !")
+
     except Exception as e:
         msg = "Impossible to copy '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
+        if settings.FILEBROWSER_ROOT in msg:
+            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
+        messages.error(request, msg)
+    except ValueError as e:
+        msg = "Impossible to copy out'"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
@@ -376,16 +388,28 @@ def move_option(request, filebrowser, target):
     """ Move target to POST['destination']."""
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-    
+
     destination = request.POST.get('destination', None)
+
     if not destination:
-        HttpResponseBadRequest()
+       return HttpResponseBadRequest()
         
     try:
+        relative_h = request.POST.get('relative_h', None)
+        relative_h = "/".join([d for d in relative_h.split("/") if d][2:])
+        if not stay_in_directory(relative_h, destination) :
+            raise ValueError()
         os.rename(join(filebrowser.full_path(), target), join(join(filebrowser.full_path(), destination), target))
         messages.success(request, "'"+target+"' successfully moved !")
     except Exception as e:
+
         msg = "Impossible to move '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
+        if settings.FILEBROWSER_ROOT in msg:
+            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
+        messages.error(request, msg)
+
+    except ValueError as e:
+        msg = "Impossible to move out '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
