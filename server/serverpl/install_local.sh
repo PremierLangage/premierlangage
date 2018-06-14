@@ -50,8 +50,7 @@ if [ "$VIRTUAL_ENV" == "" ]; then
     echo "WARNING: You're not currently running a virtual environnement (https://docs.python.org/3/library/venv.html)." | fold -s
     echo "Do you want to continue outside a virtual environnement ? [Y/n]" | fold -s
     read -r -p "> " response
-    response=${response,,} # tolower
-    if [[ $response =~ ^(no|n) ]] || [[ -z $response ]]; then
+    if [[ response =~ (no|n|NO|N) ]]; then
         exit 1
     fi
 fi
