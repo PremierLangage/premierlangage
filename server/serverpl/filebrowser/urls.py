@@ -30,9 +30,9 @@ app_name = 'filebrowser'
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^new_directory/$', views.new_directory),
-    url(r'^apply_option/post$', views.apply_option_post),
-    url(r'^apply_option/$', views.apply_option_get),
+    url(r'^new_directory/$', views.new_directory, name='new_directory'),
+    url(r'^apply_option/post$', views.apply_option_post, name='apply_option_post'),
+    url(r'^apply_option/$', views.apply_option_get, name='apply_option_get'),
     url(r'^edit_file/$', views.edit_receiver),
     url(r'^new_file/$', views.new_file_receiver),
     url(r'^edit_rights/$', views.right_edit),
