@@ -114,7 +114,6 @@ class MoveTestCase(TestCase):
             m = list(response.context['messages'])
             self.assertEqual(len(m), 1)
             self.assertEqual(m[0].level, messages.SUCCESS)
-
             response = self.c.post(
                 '/filebrowser/apply_option/post',
                 {
