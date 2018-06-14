@@ -59,15 +59,17 @@ def mkdir_option(request, filebrowser, target):
     """Create a new folder named target at filebrowser.full_path()"""
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-    
+
     name = request.POST.get('name', None)
     relative = request.POST.get('relative', None)
     if not name or not relative:
         return HttpResponseBadRequest
-    
+
     try:
         path = abspath(join(join(filebrowser.full_path(), relative), name))
-        if isdir(path):
+        if '/' in name :
+            messages.error(request, "The folder's name ('" + name + "') is invalid")
+        elif isdir(path):
             messages.error(request, "A folder with that name ('"+name+"') already exists")
         elif isfile(path):
             messages.error(request, "A file with that name ('"+name+"') already exists")
@@ -79,7 +81,7 @@ def mkdir_option(request, filebrowser, target):
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
-    
+
     return redirect_fb(request.POST.get('relative_h', '.'))
 
 
@@ -580,7 +582,7 @@ def upload_option(request, filebrowser, target):
     """ Allow the user to upload a file in the filebrowser """
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-    
+
     try:
         f = request.FILES['file']
         name = request.POST.get('name', None)
