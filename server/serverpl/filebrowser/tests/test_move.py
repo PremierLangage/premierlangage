@@ -45,27 +45,34 @@ class MoveTestCase(TestCase):
 
 
     def test_move_file(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                'option_h': 'move',
-                'name_h': 'function001.pl',
-                'relative_h': './dir/TPE',
-                'type_h': 'entry',
-                'destination': 'Dir_test'
-            },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-        rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE/Dir_test')
-        self.assertTrue(isfile(join(rel, 'function001.pl')))
-        rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
-        self.assertFalse(isfile(join(rel, 'function001.pl')))
-        m = list(response.context['messages'])
-        self.assertEqual(len(m), 1)
-        self.assertEqual(m[0].level, messages.SUCCESS)
-
-
+        try:
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'move',
+                    'name_h': 'function001.pl',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'entry',
+                    'destination': 'Dir_test'
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE/Dir_test')
+            self.assertTrue(isfile(join(rel, 'function001.pl')))
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
+            self.assertFalse(isfile(join(rel, 'function001.pl')))
+            m = list(response.context['messages'])
+            self.assertEqual(len(m), 1)
+            self.assertEqual(m[0].level, messages.SUCCESS)
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+    
+    
     def test_move_file_no_destination(self):
         response = self.c.post(
             '/filebrowser/apply_option/post',

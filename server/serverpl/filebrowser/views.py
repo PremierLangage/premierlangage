@@ -45,7 +45,6 @@ def apply_option_get(request):
     if not request.method == 'GET':
         return HttpResponseNotAllowed(['GET'])
     
-    # FIXME problème quand URL Encoding
     path = request.GET.get('relative_h', None)
     name = request.GET.get('name_h', None)
     option = request.GET.get('option_h', None)
@@ -200,6 +199,7 @@ def edit_receiver(request):
         
     content = request.POST.get('editor_input', '')
     path = request.POST.get('path', '')
+    
     try:
         if content:
             with open(settings.FILEBROWSER_ROOT+'/'+path, 'w') as f:
@@ -219,6 +219,7 @@ def new_file_receiver(request):
         
     content = request.POST.get('content', '')
     path = request.POST.get('path', '')
+    
     
     try:
         if content:
