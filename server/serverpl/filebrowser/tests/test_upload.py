@@ -131,7 +131,7 @@ class UploadTestCase(TestCase):
         self.assertEqual(m[0].level, messages.ERROR)
 
 
-    def test_upload_existing_file_or_dir(self):
+    def test_upload_existing_file(self):
         with open('./filebrowser/tests/ressources/filter/text.txt', 'r') as fd:
             response = self.c.post(
                 '/filebrowser/apply_option/post',
@@ -183,6 +183,30 @@ class UploadTestCase(TestCase):
             follow=True
         )
         self.assertEqual(response.status_code, 200)
+
+
+    def test_upload_existing_dir(self):
+        with open('./filebrowser/tests/ressources/filter/text.txt', 'r') as fd:
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'upload',
+                    'name_h': 'dir',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'directory',
+                    'file' : fd,
+                    'relative' : './dir/TPE',
+                    'name' : 'Dir_test',
+                },
+                follow=True
+            )
+        self.assertEqual(response.status_code, 200)
+        rel = join(settings.FILEBROWSER_ROOT, './dir/TPE')
+        self.assertTrue(isdir(join(rel, 'Dir_test')))
+        m = list(response.context['messages'])
+        self.assertEqual(m[0].level, messages.ERROR)
+
+
 
 
 

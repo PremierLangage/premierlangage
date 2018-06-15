@@ -102,7 +102,7 @@ class CreateDirectoryTestCase(TestCase):
         self.assertEqual(m[0].level, messages.ERROR)
 
 
-    def test_invalid_name(self):
+    def test_invalid_name1(self):
         response = self.c.post(
             '/filebrowser/apply_option/post',
             {
@@ -118,6 +118,46 @@ class CreateDirectoryTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         rel = join(settings.FILEBROWSER_ROOT, './dir/TPE')
         self.assertFalse(isfile(join(rel, '/test')))
+        m = list(response.context['messages'])
+        self.assertEqual(m[0].level, messages.ERROR)
+
+
+    def test_invalid_name2(self):
+        response = self.c.post(
+            '/filebrowser/apply_option/post',
+            {
+                'option_h': 'mkdir',
+                'name_h': 'dir',
+                'relative_h': './dir/TPE',
+                'type_h': 'directory',
+                'relative': './dir/TPE',
+                'name': 'test/',
+            },
+            follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+        rel = join(settings.FILEBROWSER_ROOT, './dir/TPE')
+        self.assertFalse(isfile(join(rel, 'test/')))
+        m = list(response.context['messages'])
+        self.assertEqual(m[0].level, messages.ERROR)
+
+
+    def test_invalid_name3(self):
+        response = self.c.post(
+            '/filebrowser/apply_option/post',
+            {
+                'option_h': 'mkdir',
+                'name_h': 'dir',
+                'relative_h': './dir/TPE',
+                'type_h': 'directory',
+                'relative': './dir/TPE',
+                'name': 'test/test',
+            },
+            follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+        rel = join(settings.FILEBROWSER_ROOT, './dir/TPE')
+        self.assertFalse(isfile(join(rel, 'test/test')))
         m = list(response.context['messages'])
         self.assertEqual(m[0].level, messages.ERROR)
 
