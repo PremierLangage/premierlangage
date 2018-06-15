@@ -63,7 +63,7 @@ def mkdir_option(request, filebrowser, target):
     name = request.POST.get('name', None)
     relative = request.POST.get('relative', None)
     if not name or not relative:
-        return HttpResponseBadRequest
+        return HttpResponseBadRequest(b"Missing name or relative parameter")
 
     try:
         path = abspath(join(join(filebrowser.full_path(), relative), name))

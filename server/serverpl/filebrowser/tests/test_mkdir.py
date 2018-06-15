@@ -29,8 +29,9 @@ class CreateDirectoryTestCase(TestCase):
         self.user = User.objects.create_user(username='user', password='12345')
         self.c = Client()
         self.c.force_login(self.user, backend=settings.AUTHENTICATION_BACKENDS[0])
-        if isdir(join(FAKE_FB_ROOT, 'dir')):
-            shutil.rmtree(join(FAKE_FB_ROOT, 'dir'))
+        rel = join(settings.FILEBROWSER_ROOT, './dir/')
+        if isdir(rel):
+            shutil.rmtree(join(rel))
         self.folder = Directory.objects.create(name='dir', owner=self.user)
         shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder.root)
 
@@ -45,16 +46,16 @@ class CreateDirectoryTestCase(TestCase):
 
     def test_mkdir(self):
         response = self.c.post(
-        '/filebrowser/apply_option/post',
-        {
-            'option_h' : 'mkdir',
-            'name_h' : 'dir',
-            'relative_h' : './dir/TPE',
-            'type_h' : 'directory',
-            'relative': './dir/TPE',
-            'name' : 'dir_test2',
-        },
-        follow=True
+            '/filebrowser/apply_option/post',
+            {
+                'option_h' : 'mkdir',
+                'name_h' : 'dir',
+                'relative_h' : './dir/TPE',
+                'type_h' : 'directory',
+                'relative': './dir/TPE',
+                'name' : 'dir_test2',
+            },
+            follow=True
         )
         self.assertEqual(response.status_code, 200)
         rel = join(settings.FILEBROWSER_ROOT, './dir/TPE')
@@ -81,6 +82,37 @@ class CreateDirectoryTestCase(TestCase):
         self.assertTrue(isdir(join(rel, 'Dir_test')))
         m = list(response.context['messages'])
         self.assertEqual(m[0].level, messages.ERROR)
+
+
+    def test_mkdir_empty_relative(self):
+        response = self.c.post(
+            '/filebrowser/apply_option/post',
+            {
+                'option_h' : 'mkdir',
+                'name_h' : 'dir',
+                'relative_h' : './dir/TPE',
+                'type_h' : 'directory',
+                'name' : 'dir_test2',
+            },
+            follow=True
+        )
+        self.assertEqual(response.status_code, 400)
+
+
+    def test_mkdir_empty_name(self):
+        response = self.c.post(
+        '/filebrowser/apply_option/post',
+        {
+            'option_h' : 'mkdir',
+            'name_h' : 'dir',
+            'relative_h' : './dir/TPE',
+            'type_h' : 'directory',
+            'relative': './dir/TPE',
+        },
+        follow=True
+        )
+        self.assertEqual(response.status_code, 400)
+
 
     def test_mkdir_existing_file(self):
         response = self.c.post(
@@ -160,5 +192,11 @@ class CreateDirectoryTestCase(TestCase):
         self.assertFalse(isfile(join(rel, 'test/test')))
         m = list(response.context['messages'])
         self.assertEqual(m[0].level, messages.ERROR)
+
+
+    
+
+
+
 
 
