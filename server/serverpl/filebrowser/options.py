@@ -66,8 +66,9 @@ def mkdir_option(request, filebrowser, target):
         return HttpResponseBadRequest(b"Missing name or relative parameter")
 
     try:
+        bad_char = ['/', ' ']
         path = abspath(join(join(filebrowser.full_path(), relative), name))
-        if '/' in name :
+        if any(c in name for c in bad_char):
             messages.error(request, "The folder's name ('" + name + "') is invalid")
         elif isdir(path):
             messages.error(request, "A folder with that name ('"+name+"') already exists")
