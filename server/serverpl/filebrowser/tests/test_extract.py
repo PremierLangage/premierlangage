@@ -39,16 +39,16 @@ class ExtractTestCase(TestCase):
     
 
     def test_extract_method_not_allowed(self):
-        response = self.c.get(
-            '/filebrowser/apply_option/post',
+        response = self.c.post(
+            '/filebrowser/apply_option/',
             follow=True
         )
         self.assertEqual(response.status_code, 405)
         
         
     def test_is_zipfile(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
+        response = self.c.get(
+            '/filebrowser/apply_option/',
             {
                     'option_h' : 'extract',
                     'name_h' : 'function001.pl',
@@ -62,8 +62,8 @@ class ExtractTestCase(TestCase):
         
     
     def test_zipfile(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
+        response = self.c.get(
+            '/filebrowser/apply_option/',
             {
                     'option_h' : 'extract',
                     'name_h' : 'function001.pl',
@@ -79,8 +79,8 @@ class ExtractTestCase(TestCase):
         
 
     def test_open_zipfile(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
+        response = self.c.get(
+            '/filebrowser/apply_option/',
             {
                     'option_h' : 'extract',
                     'name_h' : 'function001.pl',
@@ -104,8 +104,8 @@ class ExtractTestCase(TestCase):
         
         
     def test_is_tarfile(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
+        response = self.c.get(
+            '/filebrowser/apply_option/',
             {
                     'option_h' : 'extract',
                     'name_h' : 'function001.pl',
@@ -119,8 +119,8 @@ class ExtractTestCase(TestCase):
       
       
     def test_open_tarfile(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
+        response = self.c.get(
+            '/filebrowser/apply_option/',
             {
                     'option_h' : 'extract',
                     'name_h' : 'function001.pl',
@@ -144,8 +144,8 @@ class ExtractTestCase(TestCase):
         
 
     def test_is_targzfile(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
+        response = self.c.get(
+            '/filebrowser/apply_option/',
             {
                     'option_h' : 'extract',
                     'name_h' : 'function001.pl',
@@ -159,8 +159,8 @@ class ExtractTestCase(TestCase):
         
         
     def test_is_tarxzfile(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
+        response = self.c.get(
+            '/filebrowser/apply_option/',
             {
                     'option_h' : 'extract',
                     'name_h' : 'function001.pl',
@@ -174,8 +174,8 @@ class ExtractTestCase(TestCase):
         
         
     def test_open_targzfile(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
+        response = self.c.get(
+            '/filebrowser/apply_option/',
             {
                     'option_h' : 'extract',
                     'name_h' : 'function001.pl',
@@ -199,8 +199,8 @@ class ExtractTestCase(TestCase):
                 
                 
     def test_open_tarxzfile(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
+        response = self.c.get(
+            '/filebrowser/apply_option/',
             {
                     'option_h' : 'extract',
                     'name_h' : 'function001.pl',
