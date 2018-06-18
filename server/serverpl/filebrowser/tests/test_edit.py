@@ -23,7 +23,7 @@ from filebrowser.models import Directory
 FAKE_FB_ROOT = join(settings.BASE_DIR,'filebrowser/tests/ressources')
 
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
-class RenameTestCase(TestCase):
+class EditTestCase(TestCase):
     
     @classmethod
     def setUpTestData(self):
@@ -36,10 +36,14 @@ class RenameTestCase(TestCase):
         shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder.root)
     
     
-    def test_rename_method_not_allowed(self):
+    def test_method_not_allowed(self):
         response = self.c.get(
-            '/filebrowser/apply_option/post',
-            follow=True
+            '/filebrowser/edit_file/',
+            {
+                'path': './dir/TPE/function001.pl',
+                'editor_input': 'New content',
+                },
+            follow=True,
         )
         self.assertEqual(response.status_code, 405)
     
@@ -62,14 +66,16 @@ class RenameTestCase(TestCase):
                 status_code=200
             )
             response2 = self.c.post(
-                '/filebrowser/apply_option',
+                '/filebrowser/edit_file/',
                 {
                     'path': './dir/TPE/function001.pl',
                     'editor_input': 'New content',
                     },
                 follow=True,
             )
-            
+            self.assertEqual(response2.status_code, 200)
+            with open(join(FAKE_FB_ROOT, './dir/TPE/function001.pl'), 'r') as f:
+                self.assertEqual(f.read(), 'New content\n')
         except AssertionError:
             m = list(response.context['messages'])
             if m:
