@@ -79,7 +79,9 @@
     {% else %}
         {% if feedback.success %}
             {% for text,type in feedback.div %}
-                {% if type == 'compil' or type == 'vresume' %}
+                {% if type == 'compil' %}
+                
+                {% elif type == 'vresume' %}
                     <div style="border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;color:Green;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
                         <p>{{text}}</p>
                     </div>
@@ -100,9 +102,7 @@
         {% else %}
             {% for text,type in feedback.div %}
                 {% if type == 'compil'%}
-                    <div style="border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
-                        <p>{{text}}</p> 
-                    </div>
+                    
                 {% elif type == 'fresume' %}
                     <div style="border:1px solid black;padding:1%;margin:1%;background-color:IndianRed;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
                         <p>{{text}}</p>
