@@ -57,6 +57,7 @@ class ExtractTestCase(TestCase):
                 },
             follow=True
         )
+        self.assertEqual(response.status_code, 200)
         rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
         self.assertTrue(is_zipfile(join(rel, 'application.zip')))
         
@@ -72,6 +73,7 @@ class ExtractTestCase(TestCase):
                 },
             follow=True
         )
+        self.assertEqual(response.status_code, 200)
         rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
         zfile = ZipFile(join(rel, 'application.zip'))
         self.assertEqual(zfile.testzip(), None)
@@ -89,12 +91,12 @@ class ExtractTestCase(TestCase):
                 },
             follow=True
         )
+        self.assertEqual(response.status_code, 200)
         rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
         zfile = ZipFile(join(rel, 'application2.zip'))
         tab = list(zfile.namelist())
 
         zfile.extractall(rel)
-        zfile.close()
         
         for i in range(0, len(tab)):
             if(tab[i][-1] == '/'):
@@ -114,6 +116,7 @@ class ExtractTestCase(TestCase):
                 },
             follow=True
         )
+        self.assertEqual(response.status_code, 200)
         rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
         self.assertTrue(is_tarfile(join(rel, 'application.tar')))
       
@@ -129,6 +132,7 @@ class ExtractTestCase(TestCase):
                 },
             follow=True
         )
+        self.assertEqual(response.status_code, 200)
         rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
         tar = tarfile.open(join(rel, "application.tar"))
         tab = tar.getnames()
@@ -154,6 +158,7 @@ class ExtractTestCase(TestCase):
                 },
             follow=True
         )
+        self.assertEqual(response.status_code, 200)
         rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
         self.assertTrue(is_tarfile(join(rel, 'application.tar.gz')))
         
@@ -169,6 +174,7 @@ class ExtractTestCase(TestCase):
                 },
             follow=True
         )
+        self.assertEqual(response.status_code, 200)
         rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
         self.assertTrue(is_tarfile(join(rel, 'application.tar.xz')))
         
@@ -184,6 +190,7 @@ class ExtractTestCase(TestCase):
                 },
             follow=True
         )
+        self.assertEqual(response.status_code, 200)
         rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
         tar = tarfile.open(join(rel, "application.tar.gz"))
         tab = tar.getnames()
@@ -209,6 +216,7 @@ class ExtractTestCase(TestCase):
                 },
             follow=True
         )
+        self.assertEqual(response.status_code, 200)
         rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
         tar = tarfile.open(join(rel, "application.tar.xz"))
         tab = tar.getnames()
