@@ -219,8 +219,7 @@ def new_file_receiver(request):
         
     content = request.POST.get('content', '')
     path = request.POST.get('path', '')
-    
-    
+
     try:
         if content:
             with open(path, 'w+') as f:
