@@ -238,4 +238,4 @@ def right_edit(request):
             msg = msg.replace(settings.FILEBROWSER_ROOT, "")
         messages.error(request, msg)
 
-    return redirect(reverse(index))
+    return redirect_fb()

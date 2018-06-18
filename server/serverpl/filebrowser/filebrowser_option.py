@@ -155,6 +155,7 @@ ENTRY_OPTIONS['delete'] = FilebrowserOption("fas fa-times", "Delete", delete_opt
 
 #Filebrowser Directory options, can be displayed with the upper-right "+" in the filebrowser
 DIRECTORY_OPTIONS = OrderedDict()
+DIRECTORY_OPTIONS['rights'] = FilebrowserOption("fas fa-unlock-alt", "Edit access rights", rights_option, method=GET, filter=is_directory_object, authorization=OWNER)
 DIRECTORY_OPTIONS['rename'] = FilebrowserOption("fas fa-pencil-alt", "Rename", rename_option, form=RenameForm, authorization=OWNER)
 DIRECTORY_OPTIONS['mkdir'] = FilebrowserOption("fas fa-folder", "New directory", mkdir_option, form=RenameForm)
 DIRECTORY_OPTIONS['new'] = FilebrowserOption("fas fa-edit", "New File", new_file_option, form=RenameForm)
