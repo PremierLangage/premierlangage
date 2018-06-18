@@ -25,11 +25,11 @@ La variable **a** est maintenant disponible dans le formulaire et l'evaluator.
 Il est aussi possible d'écraser des clés du PL dans le before:
 ```python
 before==
-titre = "Nouveau titre"
+title = "Nouveau titre"
 ==
 ```
 
-La clé *titre* du PL vaut maintenant *Nouveau titre*.
+La clé *title* du PL vaut maintenant *Nouveau titre*.
 
 <i class="fas fa-exclamation-triangle"></i> **Attention :** Il est important de faire attention au nom donné aux variables, celles-ci pouvant écraser les clés du PL, il est donc possible d'écraser des clés importantes (telle que *form*) par mégarde.
 
