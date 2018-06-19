@@ -439,7 +439,6 @@ def delete_option(request, filebrowser, target):
 
         if not filebrowser.directory:
             Directory.objects.get(name=target).delete()
-
         messages.success(request, "'"+target+"' successfully deleted !")
     except Exception as e:
         msg = "Impossible to delete '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
