@@ -194,7 +194,7 @@ class CreateDirectoryTestCase(TestCase):
         self.assertEqual(m[0].level, messages.ERROR)
 
 
-    
+
 
 
 

@@ -45,9 +45,10 @@ class Profile(models.Model):
     def create_user_profile(sender, instance, created, **kwargs):
         if created:
             profile = Profile.objects.create(user=instance)
-            if instance.is_staff or instance.is_superuser:
-                profile.role = Role.ADMINISTRATOR
+    
     
     @receiver(post_save, sender=User)
     def save_user_profile(sender, instance, **kwargs):
         instance.profile.save()
+        if instance.is_staff or instance.is_superuser:
+            instance.profile.role = Role.ADMINISTRATOR

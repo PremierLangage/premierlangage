@@ -210,7 +210,6 @@ def edit_receiver(request):
     return redirect_fb(dirname(path))
 
 
-@login_required
 def right_edit(request):
     """ View used to add the new right of a Directory. """
     if request.method != 'POST':
@@ -238,4 +237,4 @@ def right_edit(request):
             msg = msg.replace(settings.FILEBROWSER_ROOT, "")
         messages.error(request, msg)
 
-    return redirect(reverse(index))
+    return redirect_fb()
