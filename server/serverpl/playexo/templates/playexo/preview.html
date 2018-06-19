@@ -27,7 +27,7 @@
     <div class="card-body">
         {% if 'text'%}{{ text|markdown }}{% endif %}
         {% if 'texth'%}{{ texth|safe }}{% endif %}
-        
+
         {% block feedback %}
             <div id="feedback_success" class="alert alert-success feedback" style="display: None"></div>
             <div id="feedback_info" class="alert alert-info feedback" style="display: None"></div>

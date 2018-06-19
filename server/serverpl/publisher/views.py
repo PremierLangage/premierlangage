@@ -21,8 +21,7 @@ def publish_receiver(request):
     tag = request.POST.get('tag', None)
     git = request.POST.get('git', None)
 
-    str = file.read().encode('utf-8')
-    if settings.DELIMITER in str :
+    if isfile(join(destination,key)+"meta") :
         strjson = str.split(settings.DELIMITER)[1]
         dico1 = json.loads(strjson)
         dico1['commit'].append(commit)

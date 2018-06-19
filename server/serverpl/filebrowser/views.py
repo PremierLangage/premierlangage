@@ -192,6 +192,34 @@ def new_directory(request):
 
 
 @login_required
+@csrf_exempt
+def save_edit_receiver(request):
+    """ View used to saved a newly edited file. """
+    if not request.method == 'POST':
+        return HttpResponseNotAllowed(['POST'])
+    post = json.loads(request.body.decode())
+    content = post['editor_input']
+    path = post['path']
+    try:
+        if content:
+            with open(settings.FILEBROWSER_ROOT + '/' + path, 'w') as f:
+                print(content, file=f)
+        return HttpResponse(json.dumps({'feedback_type': "success",
+                                        'feedback': '<i class="fas fa-check"></i>'+
+                                                    '<a href="#" class="close" '+
+                                                    'data-dismiss="alert" aria-label="close">x</a>'+
+                                                    '&nbsp Sauvegarde effectuée'}),
+                                        content_type='application/json')
+    except Exception as e:
+        return HttpResponse(json.dumps({'feedback_type': "fail",
+                                        'feedback': '<i class="fas fa-fire"></i>'+
+                                                    '<a href="#" class="close" '+
+                                                    'data-dismiss="alert" aria-label="close">x</a>'+
+                                                    '&nbsp Sauvegarde échouée'}),
+                                        content_type='application/json')
+
+
+@login_required
 def edit_receiver(request):
     """ View used to saved a newly edited file. """
     if not request.method == 'POST':
@@ -210,6 +238,7 @@ def edit_receiver(request):
     return redirect_fb(dirname(path))
 
 
+@login_required
 def right_edit(request):
     """ View used to add the new right of a Directory. """
     if request.method != 'POST':

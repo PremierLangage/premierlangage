@@ -12,6 +12,10 @@
     <div class="row no-margin">
         <div class="col-md-1"></div>
         <div class="col-md-10">
+            {% block feedback %}
+            <div id="feedback_success" class="alert alert-success feedback" style="display: None"></div>
+            <div id="feedback_danger" class="alert alert-danger feedback" style="display: None"></div>
+            {% endblock %}
             <div class="card">
                 <div class="card-header">
                     <h1>Editing {{ filename }}</h1>
@@ -24,11 +28,14 @@
                             <input type="hidden" id="editor_input" name="editor_input" value="{{ file_content }}" />
                             <hr/>
                             <center>
-                                <button class="btn btn-primary" type="submit">
+                                <button id="save_button" type="button" class="btn btn-success">
                                     <i class="fas fa-save"></i>&emsp; Save
                                 </button>
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-save"></i>&emsp; Save & Quit
+                                </button>
                             </center>
-                        </form> 
+                        </form>
                     </div>
                 </div>
             </div>
@@ -38,12 +45,47 @@
                     editorPL.session.setMode("ace/mode/python");
                     editorPL.setTheme("{{ request.user.profile.editor_theme.template }}");
                     editorPL.setShowInvisibles(true);
-                    
+
                 var inputPL = $('input[name="editor_input"]');
                     editorPL.getSession().on("change", function () {
                     inputPL.val(editorPL.getSession().getValue());
                 });
+                $( document ).ready(function() {
+                    $("#save_button").click(function () {
+                        var input = $("#editor_input").val();
+                        var path = "{{ filepath }}";
+                        var status = {requested_action: 'save', editor_input: input, path: path};
+                        $.ajax({
+                            type: "POST",
+                            url: "/filebrowser/save_edit/",
+                            data: JSON.stringify(status, null, '\t'),
+                            contentType: 'application/json;charset=UTF-8',
+                            success: function (returned_status) {
+                                status = returned_status;
+                                onReturn(status.feedback_type, status.feedback);
+                            }
+                        });
+                    });
+                });
+                function onReturn(feedback_type, feedback) {
+                    $( "#feedback_success" ).hide();
+                    $( "#feedback_success").css('animation', 'fadeOut 1s forwards');
+                    $( "#feedback_danger" ).hide();
+                    $( "#feedback_danger").css('animation', 'fadeOut 1s forwards');
+
+                    if (feedback_type == "success") {
+                        $( "#feedback_success" ).html(feedback);
+                        $( "#feedback_success" ).toggle();
+                        $( "#feedback_success").css('animation', 'growIn 1s forwards');
+
+                    }
+                    else {
+                        $( "#feedback_danger" ).html(feedback);
+                        $( "#feedback_danger" ).toggle();
+                        $( "#feedback_danger").css('animation', 'growIn 1s forwards');
+                    }
+                }
             </script>
             <div class="col-md-1"></div>
-    </div> 
+    </div>
 {% endblock %}
