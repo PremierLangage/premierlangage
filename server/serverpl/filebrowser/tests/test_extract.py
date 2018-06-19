@@ -85,7 +85,7 @@ class ExtractTestCase(TestCase):
         except AssertionError:
             m = list(response.context['messages'])
             if m:
-                print("\nFound messages:")
+                print("\nFound messages:") 
                 [print(i.level,':',i.message) for i in m]
             raise
     
