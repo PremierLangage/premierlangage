@@ -75,6 +75,7 @@ class ExtractTestCase(TestCase):
                 follow=True
             )
             self.assertEqual(response.status_code, 200)
+            zfile.close()
             
             rel = join(rel, 'application2')
             for i in range(0, len(tab)):
@@ -90,127 +91,115 @@ class ExtractTestCase(TestCase):
             raise
     
         
-    #def test_is_tarfile(self):
-        #response = self.c.get(
-            #'/filebrowser/apply_option/',
-            #{
-                    #'option_h' : 'extract',
-                    #'name_h' : 'function001.pl',
-                    #'relative_h' : './dir/TPE',
-                    #'type_h' : 'entry',
-                #},
-            #follow=True
-        #)
-        #self.assertEqual(response.status_code, 200)
-        #rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
-        #self.assertTrue(is_tarfile(join(rel, 'application.tar')))
+    def test_is_tarfile(self):
+        rel = join(settings.FILEBROWSER_ROOT,'./dir/extract_test')
+        self.assertTrue(is_tarfile(join(rel, 'application.tar')))
       
       
-    #def test_open_tarfile(self):
-        #response = self.c.get(
-            #'/filebrowser/apply_option/',
-            #{
-                    #'option_h' : 'extract',
-                    #'name_h' : 'function001.pl',
-                    #'relative_h' : './dir/TPE',
-                    #'type_h' : 'entry',
-                #},
-            #follow=True
-        #)
-        #self.assertEqual(response.status_code, 200)
-        #rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
-        #tar = tarfile.open(join(rel, "application.tar"))
-        #tab = tar.getnames()
+    def test_open_tarfile(self):
+        try:
+            rel = join(settings.FILEBROWSER_ROOT,'./dir/extract_test')
+            tar = tarfile.open(join(rel, "application.tar"))
+            tab = tar.getnames()
+            
+            response = self.c.get(
+                '/filebrowser/apply_option/',
+                {
+                        'option_h' : 'extract',
+                        'name_h' : 'application.tar',
+                        'relative_h' : './dir/extract_test',
+                        'type_h' : 'entry',
+                    },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            tar.close()
+            
+            rel = join(rel, 'application')
+            for i in range(0, len(tab)):
+                if(isdir(tab[i])):
+                    self.assertTrue(isdir(join(rel, tab[i])))
+                elif(isfile(tab[i])):
+                    self.assertTrue(isfile(join(rel, tab[i])))
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:") 
+                [print(i.level,':',i.message) for i in m]
+            raise
+        
 
-        #tar.extractall(rel)
-        #tar.close()
-        
-        #for i in range(0, len(tab)):
-            #if(isdir(tab[i])):
-                #self.assertTrue(isdir(join(rel, tab[i])))
-            #elif(isfile(tab[i])):
-                #self.assertTrue(isfile(join(rel, tab[i])))
-        
-
-    #def test_is_targzfile(self):
-        #response = self.c.get(
-            #'/filebrowser/apply_option/',
-            #{
-                    #'option_h' : 'extract',
-                    #'name_h' : 'function001.pl',
-                    #'relative_h' : './dir/TPE',
-                    #'type_h' : 'entry',
-                #},
-            #follow=True
-        #)
-        #self.assertEqual(response.status_code, 200)
-        #rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
-        #self.assertTrue(is_tarfile(join(rel, 'application.tar.gz')))
+    def test_is_targzfile(self):
+        rel = join(settings.FILEBROWSER_ROOT,'./dir/extract_test')
+        self.assertTrue(is_tarfile(join(rel, 'application.tar.gz')))
         
         
-    #def test_is_tarxzfile(self):
-        #response = self.c.get(
-            #'/filebrowser/apply_option/',
-            #{
-                    #'option_h' : 'extract',
-                    #'name_h' : 'function001.pl',
-                    #'relative_h' : './dir/TPE',
-                    #'type_h' : 'entry',
-                #},
-            #follow=True
-        #)
-        #self.assertEqual(response.status_code, 200)
-        #rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
-        #self.assertTrue(is_tarfile(join(rel, 'application.tar.xz')))
+    def test_is_tarxzfile(self):
+        rel = join(settings.FILEBROWSER_ROOT,'./dir/extract_test')
+        self.assertTrue(is_tarfile(join(rel, 'application.tar.xz')))
         
         
-    #def test_open_targzfile(self):
-        #response = self.c.get(
-            #'/filebrowser/apply_option/',
-            #{
-                    #'option_h' : 'extract',
-                    #'name_h' : 'function001.pl',
-                    #'relative_h' : './dir/TPE',
-                    #'type_h' : 'entry',
-                #},
-            #follow=True
-        #)
-        #self.assertEqual(response.status_code, 200)
-        #rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
-        #tar = tarfile.open(join(rel, "application.tar.gz"))
-        #tab = tar.getnames()
-
-        #tar.extractall(rel)
-        #tar.close()
-        
-        #for i in range(0, len(tab)):
-            #if(isdir(tab[i])):
-                #self.assertTrue(isdir(join(rel, tab[i])))
-            #elif(isfile(tab[i])):
-                #self.assertTrue(isfile(join(rel, tab[i])))
+    def test_open_targzfile(self):
+        try:
+            rel = join(settings.FILEBROWSER_ROOT,'./dir/extract_test')
+            tar = tarfile.open(join(rel, "application.tar.gz"))
+            tab = tar.getnames()
+            
+            response = self.c.get(
+                '/filebrowser/apply_option/',
+                {
+                        'option_h' : 'extract',
+                        'name_h' : 'application.tar.gz',
+                        'relative_h' : './dir/extract_test',
+                        'type_h' : 'entry',
+                    },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            tar.close()
+            
+            rel = join(rel, 'application')
+            for i in range(0, len(tab)):
+                if(isdir(tab[i])):
+                    self.assertTrue(isdir(join(rel, tab[i])))
+                elif(isfile(tab[i])):
+                    self.assertTrue(isfile(join(rel, tab[i])))
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:") 
+                [print(i.level,':',i.message) for i in m]
+            raise
                 
                 
-    #def test_open_tarxzfile(self):
-        #response = self.c.get(
-            #'/filebrowser/apply_option/',
-            #{
-                    #'option_h' : 'extract',
-                    #'name_h' : 'function001.pl',
-                    #'relative_h' : './dir/TPE',
-                    #'type_h' : 'entry',
-                #},
-            #follow=True
-        #)
-        #self.assertEqual(response.status_code, 200)
-        #rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
-        #tar = tarfile.open(join(rel, "application.tar.xz"))
-        #tab = tar.getnames()
-
-        #tar.extractall(rel)
-        #tar.close()
-        
-        #for i in range(0, len(tab)):
-            #if(isdir(tab[i])):
-                #self.assertTrue(isdir(join(rel, tab[i])))
-            #elif(isfile(tab[i])):
-                #self.assertTrue(isfile(join(rel, tab[i])))
+    def test_open_tarxzfile(self):
+        try:
+            rel = join(settings.FILEBROWSER_ROOT,'./dir/extract_test')
+            tar = tarfile.open(join(rel, "application.tar.xz"))
+            tab = tar.getnames()
+            
+            response = self.c.get(
+                '/filebrowser/apply_option/',
+                {
+                        'option_h' : 'extract',
+                        'name_h' : 'application.tar.xz',
+                        'relative_h' : './dir/extract_test',
+                        'type_h' : 'entry',
+                    },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            tar.close()
+            
+            rel = join(rel, 'application')
+            for i in range(0, len(tab)):
+                if(isdir(tab[i])):
+                    self.assertTrue(isdir(join(rel, tab[i])))
+                elif(isfile(tab[i])):
+                    self.assertTrue(isfile(join(rel, tab[i])))
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:") 
+                [print(i.level,':',i.message) for i in m]
+            raise
