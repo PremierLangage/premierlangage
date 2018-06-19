@@ -69,7 +69,7 @@ class LoadTestCase(TestCase):
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:")
-                [print(i.level,':MESSAGES    EEEEEEE',i.message) for i in m]
+                [print(i.level,':',i.message) for i in m]
             raise
             
             
@@ -94,6 +94,6 @@ class LoadTestCase(TestCase):
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:")
-                [print(i.level,':MESSAGES    EEEEEEE',i.message) for i in m]
+                [print(i.level,':',i.message) for i in m]
             raise
     

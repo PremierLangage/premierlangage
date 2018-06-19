@@ -199,10 +199,9 @@ def edit_receiver(request):
         
     content = request.POST.get('editor_input', '')
     path = request.POST.get('path', '')
-    
     try:
         if content:
-            with open(settings.FILEBROWSER_ROOT+'/'+path, 'w') as f:
+            with open(join(settings.FILEBROWSER_ROOT, path), 'w+') as f:
                 print(content, file=f)
         messages.success(request, "File '"+basename(path)+"' successfully modified")
     except Exception as e:
@@ -211,30 +210,6 @@ def edit_receiver(request):
     return redirect_fb(dirname(path))
 
 
-@login_required
-def new_file_receiver(request):
-    """ View used to saved a newly created file. """
-    if not request.method == 'POST':
-        return HttpResponseNotAllowed(['POST'])
-        
-    content = request.POST.get('content', '')
-    path = request.POST.get('path', '')
-
-    try:
-        if content:
-            with open(path, 'w+') as f:
-                print(content, file=f)
-        messages.success(request, "File '"+basename(path)+"' successfully created")
-    except Exception as e:
-        msg = "Impossible to create '"+basename(path)+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT, "")
-        messages.error(request, msg)
-    
-    return redirect_fb(dirname(path))
-
-
-@login_required
 def right_edit(request):
     """ View used to add the new right of a Directory. """
     if request.method != 'POST':
@@ -262,4 +237,4 @@ def right_edit(request):
             msg = msg.replace(settings.FILEBROWSER_ROOT, "")
         messages.error(request, msg)
 
-    return redirect(reverse(index))
+    return redirect_fb()

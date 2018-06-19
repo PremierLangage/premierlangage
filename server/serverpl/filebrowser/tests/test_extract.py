@@ -39,73 +39,60 @@ class ExtractTestCase(TestCase):
     
 
     def test_extract_method_not_allowed(self):
-        response = self.c.get(
-            '/filebrowser/apply_option/post',
+        response = self.c.post(
+            '/filebrowser/apply_option/',
             follow=True
         )
         self.assertEqual(response.status_code, 405)
         
         
     def test_is_zipfile(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                    'option_h' : 'extract',
-                    'name_h' : 'function001.pl',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'entry',
-                },
-            follow=True
-        )
-        rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
+        rel = join(settings.FILEBROWSER_ROOT,'./dir/extract_test')
         self.assertTrue(is_zipfile(join(rel, 'application.zip')))
         
     
     def test_zipfile(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                    'option_h' : 'extract',
-                    'name_h' : 'function001.pl',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'entry',
-                },
-            follow=True
-        )
-        rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
+        rel = join(settings.FILEBROWSER_ROOT,'./dir/extract_test')
         zfile = ZipFile(join(rel, 'application.zip'))
         self.assertEqual(zfile.testzip(), None)
         zfile.close()
         
 
     def test_open_zipfile(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                    'option_h' : 'extract',
-                    'name_h' : 'function001.pl',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'entry',
-                },
-            follow=True
-        )
-        rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
-        zfile = ZipFile(join(rel, 'application2.zip'))
-        tab = list(zfile.namelist())
+        try:
+            rel = join(settings.FILEBROWSER_ROOT,'./dir/extract_test')
+            zfile = ZipFile(join(rel, 'application2.zip'))
+            tab = list(zfile.namelist())
 
-        zfile.extractall(rel)
-        zfile.close()
-        
-        for i in range(0, len(tab)):
-            if(tab[i][-1] == '/'):
-                self.assertTrue(isdir(join(rel, tab[i][:-1])))
-            else:
-                self.assertTrue(isfile(join(rel, tab[i])))
-        
+            response = self.c.get(
+                '/filebrowser/apply_option/',
+                {
+                        'option_h' : 'extract',
+                        'name_h' : 'application2.zip',
+                        'relative_h' : './dir/extract_test',
+                        'type_h' : 'entry',
+                    },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            
+            rel = join(rel, 'application2')
+            for i in range(0, len(tab)):
+                if(tab[i][-1] == '/'):
+                    self.assertTrue(isdir(join(rel, tab[i][:-1])))
+                else:
+                    self.assertTrue(isfile(join(rel, tab[i])))
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+    
         
     def test_is_tarfile(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
+        response = self.c.get(
+            '/filebrowser/apply_option/',
             {
                     'option_h' : 'extract',
                     'name_h' : 'function001.pl',
@@ -114,13 +101,14 @@ class ExtractTestCase(TestCase):
                 },
             follow=True
         )
+        self.assertEqual(response.status_code, 200)
         rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
         self.assertTrue(is_tarfile(join(rel, 'application.tar')))
       
       
     def test_open_tarfile(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
+        response = self.c.get(
+            '/filebrowser/apply_option/',
             {
                     'option_h' : 'extract',
                     'name_h' : 'function001.pl',
@@ -129,6 +117,7 @@ class ExtractTestCase(TestCase):
                 },
             follow=True
         )
+        self.assertEqual(response.status_code, 200)
         rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
         tar = tarfile.open(join(rel, "application.tar"))
         tab = tar.getnames()
@@ -144,8 +133,8 @@ class ExtractTestCase(TestCase):
         
 
     def test_is_targzfile(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
+        response = self.c.get(
+            '/filebrowser/apply_option/',
             {
                     'option_h' : 'extract',
                     'name_h' : 'function001.pl',
@@ -154,13 +143,14 @@ class ExtractTestCase(TestCase):
                 },
             follow=True
         )
+        self.assertEqual(response.status_code, 200)
         rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
         self.assertTrue(is_tarfile(join(rel, 'application.tar.gz')))
         
         
     def test_is_tarxzfile(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
+        response = self.c.get(
+            '/filebrowser/apply_option/',
             {
                     'option_h' : 'extract',
                     'name_h' : 'function001.pl',
@@ -169,13 +159,14 @@ class ExtractTestCase(TestCase):
                 },
             follow=True
         )
+        self.assertEqual(response.status_code, 200)
         rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
         self.assertTrue(is_tarfile(join(rel, 'application.tar.xz')))
         
         
     def test_open_targzfile(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
+        response = self.c.get(
+            '/filebrowser/apply_option/',
             {
                     'option_h' : 'extract',
                     'name_h' : 'function001.pl',
@@ -184,6 +175,7 @@ class ExtractTestCase(TestCase):
                 },
             follow=True
         )
+        self.assertEqual(response.status_code, 200)
         rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
         tar = tarfile.open(join(rel, "application.tar.gz"))
         tab = tar.getnames()
@@ -199,8 +191,8 @@ class ExtractTestCase(TestCase):
                 
                 
     def test_open_tarxzfile(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
+        response = self.c.get(
+            '/filebrowser/apply_option/',
             {
                     'option_h' : 'extract',
                     'name_h' : 'function001.pl',
@@ -209,6 +201,7 @@ class ExtractTestCase(TestCase):
                 },
             follow=True
         )
+        self.assertEqual(response.status_code, 200)
         rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
         tar = tarfile.open(join(rel, "application.tar.xz"))
         tab = tar.getnames()
