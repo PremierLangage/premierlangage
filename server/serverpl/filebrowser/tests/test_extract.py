@@ -47,63 +47,48 @@ class ExtractTestCase(TestCase):
         
         
     def test_is_zipfile(self):
-        response = self.c.get(
-            '/filebrowser/apply_option/',
-            {
-                    'option_h' : 'extract',
-                    'name_h' : 'function001.pl',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'entry',
-                },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-        rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
+        rel = join(settings.FILEBROWSER_ROOT,'./dir/extract_test')
         self.assertTrue(is_zipfile(join(rel, 'application.zip')))
         
     
     def test_zipfile(self):
-        response = self.c.get(
-            '/filebrowser/apply_option/',
-            {
-                    'option_h' : 'extract',
-                    'name_h' : 'function001.pl',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'entry',
-                },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-        rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
+        rel = join(settings.FILEBROWSER_ROOT,'./dir/extract_test')
         zfile = ZipFile(join(rel, 'application.zip'))
         self.assertEqual(zfile.testzip(), None)
         zfile.close()
         
 
     def test_open_zipfile(self):
-        response = self.c.get(
-            '/filebrowser/apply_option/',
-            {
-                    'option_h' : 'extract',
-                    'name_h' : 'function001.pl',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'entry',
-                },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-        rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
-        zfile = ZipFile(join(rel, 'application2.zip'))
-        tab = list(zfile.namelist())
+        try:
+            rel = join(settings.FILEBROWSER_ROOT,'./dir/extract_test')
+            zfile = ZipFile(join(rel, 'application2.zip'))
+            tab = list(zfile.namelist())
 
-        zfile.extractall(rel)
-        
-        for i in range(0, len(tab)):
-            if(tab[i][-1] == '/'):
-                self.assertTrue(isdir(join(rel, tab[i][:-1])))
-            else:
-                self.assertTrue(isfile(join(rel, tab[i])))
-        
+            response = self.c.get(
+                '/filebrowser/apply_option/',
+                {
+                        'option_h' : 'extract',
+                        'name_h' : 'application2.zip',
+                        'relative_h' : './dir/extract_test',
+                        'type_h' : 'entry',
+                    },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            
+            rel = join(rel, 'application2')
+            for i in range(0, len(tab)):
+                if(tab[i][-1] == '/'):
+                    self.assertTrue(isdir(join(rel, tab[i][:-1])))
+                else:
+                    self.assertTrue(isfile(join(rel, tab[i])))
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+    
         
     def test_is_tarfile(self):
         response = self.c.get(
