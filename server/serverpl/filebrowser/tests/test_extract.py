@@ -171,3 +171,53 @@ class ExtractTestCase(TestCase):
         )
         rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
         self.assertTrue(is_tarfile(join(rel, 'application.tar.xz')))
+        
+        
+    def test_open_targzfile(self):
+        response = self.c.post(
+            '/filebrowser/apply_option/post',
+            {
+                    'option_h' : 'extract',
+                    'name_h' : 'function001.pl',
+                    'relative_h' : './dir/TPE',
+                    'type_h' : 'entry',
+                },
+            follow=True
+        )
+        rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
+        tar = tarfile.open(join(rel, "application.tar.gz"))
+        tab = tar.getnames()
+
+        tar.extractall(rel)
+        tar.close()
+        
+        for i in range(0, len(tab)):
+            if(isdir(tab[i])):
+                self.assertTrue(isdir(join(rel, tab[i])))
+            elif(isfile(tab[i])):
+                self.assertTrue(isfile(join(rel, tab[i])))
+                
+                
+    def test_open_tarxzfile(self):
+        response = self.c.post(
+            '/filebrowser/apply_option/post',
+            {
+                    'option_h' : 'extract',
+                    'name_h' : 'function001.pl',
+                    'relative_h' : './dir/TPE',
+                    'type_h' : 'entry',
+                },
+            follow=True
+        )
+        rel = join(settings.FILEBROWSER_ROOT,'./filter/extract_test')
+        tar = tarfile.open(join(rel, "application.tar.xz"))
+        tab = tar.getnames()
+
+        tar.extractall(rel)
+        tar.close()
+        
+        for i in range(0, len(tab)):
+            if(isdir(tab[i])):
+                self.assertTrue(isdir(join(rel, tab[i])))
+            elif(isfile(tab[i])):
+                self.assertTrue(isfile(join(rel, tab[i])))

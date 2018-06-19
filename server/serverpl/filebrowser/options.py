@@ -66,8 +66,9 @@ def mkdir_option(request, filebrowser, target):
         return HttpResponseBadRequest(b"Missing name or relative parameter")
 
     try:
+        bad_char = ['/', ' ']
         path = abspath(join(join(filebrowser.full_path(), relative), name))
-        if '/' in name :
+        if any(c in name for c in bad_char):
             messages.error(request, "The folder's name ('" + name + "') is invalid")
         elif isdir(path):
             messages.error(request, "A folder with that name ('"+name+"') already exists")
@@ -169,18 +170,14 @@ def copy_option(request, filebrowser, target):
         else :
             shutil.copyfile(path, join(filebrowser.full_path(), join(destination, name_h)))
         messages.success(request, "'" + target + "' successfully copy !")
-
+    except ValueError as e:
+        msg = "Impossible to copy '"+target+"' in this directory"
+        messages.error(request, msg)
     except Exception as e:
         msg = "Impossible to copy '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
-    except ValueError as e:
-        msg = "Impossible to copy out'"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
-        messages.error(request, msg)
-
     return redirect_fb(request.POST.get('relative_h', '.'))
 
 
@@ -332,10 +329,11 @@ def new_file_option(request, filebrowser, target):
     name = request.POST.get('name', None)
     relative = request.POST.get('relative_h', None)
     if not name or not relative:
-        return HttpResponseBadRequest
-
-    try :
+        return HttpResponseBadRequest()
+    try:
         relative_h = "/".join([d for d in relative.split("/") if d][2:])
+        if ' ' in name:
+            raise ValueError()
         if not stay_in_directory(relative_h, name):
             raise ValueError()
         path = abspath(join(join(filebrowser.full_path(), relative), name))
@@ -353,9 +351,7 @@ def new_file_option(request, filebrowser, target):
                 response['Location'] += '?option_h=edit_pl&name_h='+name+'&relative_h='+relative+'&type_h=entry'
                 return response
     except ValueError as e:
-        msg = "Impossible to create out '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
+        msg = "Impossible to create '"+target+"' in this directory"
         messages.error(request, msg)
     except Exception as e:
         msg = "Impossible to create '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
@@ -417,14 +413,11 @@ def move_option(request, filebrowser, target):
             raise ValueError()
         os.rename(join(filebrowser.full_path(), target), join(join(filebrowser.full_path(), destination), target))
         messages.success(request, "'"+target+"' successfully moved !")
+    except ValueError as e:
+        msg = "Impossible to move '"+target+"' in this directory"
+        messages.error(request, msg)
     except Exception as e:
         msg = "Impossible to move '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
-        messages.error(request, msg)
-
-    except ValueError as e:
-        msg = "Impossible to move out '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
@@ -446,7 +439,6 @@ def delete_option(request, filebrowser, target):
 
         if not filebrowser.directory:
             Directory.objects.get(name=target).delete()
-
         messages.success(request, "'"+target+"' successfully deleted !")
     except Exception as e:
         msg = "Impossible to delete '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
