@@ -51,7 +51,8 @@ class Directory(models.Model):
     def save(self, *args, **kwargs):
         self.root = os.path.join(settings.FILEBROWSER_ROOT, self.name)
         super(Directory, self).save(*args, **kwargs)
-    
+        if self.public:
+            [self.add_read_auth(u) for u in User.objects.all()]
     
     @receiver(post_save, sender=User)
     def add_user_read_public(sender, instance, created, **kwargs):
@@ -67,25 +68,25 @@ class Directory(models.Model):
     
     def add_write_auth(self, user):
         """Add user to the writing authorization list."""
-        if not user in self.write_auth:
+        if not user in self.write_auth.all():
             self.write_auth.add(user)
     
     
     def add_read_auth(self, user):
         """Add user to the reading authorization list."""
-        if not user in self.read_auth:
+        if not user in self.read_auth.all():
             self.read_auth.add(user)
     
     
     def remove_write_auth(self, user):
         """Remove user to the writing authorization list."""
-        if user in self.write_auth:
+        if user in self.write_auth.all():
             self.write_auth.remove(user)
     
     
     def remove_read_auth(self, user):
         """Remove user to the reading authorization list."""
-        if user in self.read_auth:
+        if user in self.read_auth.all():
             self.read_auth.remove(user)
     
     
