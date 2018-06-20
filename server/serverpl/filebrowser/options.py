@@ -590,6 +590,7 @@ def upload_option(request, filebrowser, target):
         if not name:
             name = f.name
         else :
+            relative_h = "/".join([d for d in relative_h.split("/") if d][2:])
             if not stay_in_directory(relative_h, name):
                 raise ValueError()
         path = filebrowser.root+'/'+relative+'/'+name

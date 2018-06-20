@@ -172,7 +172,7 @@ class GitTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
             m = list(response.context['messages'])
             self.assertEqual(messages.SUCCESS, m[0].level)
-            self.assertTrue("Changes not staged for commit" in m[0].message)
+            self.assertTrue("TPE&sol;function001&period;pl" in m[0].message)
             
             response = self.c.post(
                 '/filebrowser/apply_option/post',
@@ -202,7 +202,7 @@ class GitTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
             m = list(response.context['messages'])
             self.assertEqual(messages.SUCCESS, m[0].level)
-            self.assertTrue("working tree clean" in m[0].message)
+            self.assertFalse("TPE&sol;function001&period;pl" in m[0].message)
         except AssertionError:
             m = list(response.context['messages'])
             if m:
@@ -214,8 +214,8 @@ class GitTestCase(TestCase):
     def test_commit_directory(self):
         with open(join(FAKE_FB_ROOT, 'dir/TPE/operator001.pl'), 'w+') as f1, \
              open(join(FAKE_FB_ROOT, 'dir/TPE/function001.pl'), 'w+') as f2:
-            print("test", file=f1)
-            print("test", file=f2)
+            print("test1", file=f1)
+            print("test2", file=f2)
         try:
             response = self.c.get(
                 '/filebrowser/apply_option/',
@@ -230,7 +230,8 @@ class GitTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
             m = list(response.context['messages'])
             self.assertEqual(messages.SUCCESS, m[0].level)
-            self.assertTrue("Changes not staged for commit" in m[0].message)
+            self.assertTrue("TPE&sol;function001&period;pl" in m[0].message)
+            self.assertTrue("TPE&sol;operator001&period;pl" in m[0].message)
             
             response = self.c.post(
                 '/filebrowser/apply_option/post',
@@ -260,7 +261,8 @@ class GitTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
             m = list(response.context['messages'])
             self.assertEqual(messages.SUCCESS, m[0].level)
-            self.assertTrue("working tree clean" in m[0].message)
+            self.assertFalse("TPE&sol;function001&period;pl" in m[0].message)
+            self.assertFalse("TPE&sol;operator001&period;pl" in m[0].message)
         except AssertionError:
             m = list(response.context['messages'])
             if m:
@@ -337,7 +339,7 @@ class GitTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
             m = list(response.context['messages'])
             self.assertEqual(messages.SUCCESS, m[0].level)
-            self.assertTrue("Changes not staged for commit" in m[0].message)
+            self.assertTrue("TPE&sol;function001&period;pl" in m[0].message)
             
             response = self.c.post(
                 '/filebrowser/apply_option/post',
@@ -368,7 +370,7 @@ class GitTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
             m = list(response.context['messages'])
             self.assertEqual(messages.SUCCESS, m[0].level)
-            self.assertTrue("working tree clean" in m[0].message)
+            self.assertFalse("TPE&sol;function001&period;pl" in m[0].message)
         except AssertionError:
             m = list(response.context['messages'])
             if m:
@@ -397,7 +399,8 @@ class GitTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
             m = list(response.context['messages'])
             self.assertEqual(messages.SUCCESS, m[0].level)
-            self.assertTrue("Changes not staged for commit" in m[0].message)
+            self.assertTrue("TPE&sol;function001&period;pl" in m[0].message)
+            self.assertTrue("TPE&sol;operator001&period;pl" in m[0].message)
             
             response = self.c.post(
                 '/filebrowser/apply_option/post',
@@ -430,7 +433,8 @@ class GitTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
             m = list(response.context['messages'])
             self.assertEqual(messages.SUCCESS, m[0].level)
-            self.assertTrue("working tree clean" in m[0].message)
+            self.assertFalse("TPE&sol;function001&period;pl" in m[0].message)
+            self.assertFalse("TPE&sol;operator001&period;pl" in m[0].message)
         except AssertionError:
             m = list(response.context['messages'])
             if m:
@@ -454,7 +458,6 @@ class GitTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
             m = list(response.context['messages'])
             self.assertEqual(messages.SUCCESS, m[0].level)
-            self.assertTrue("1 file changed" in m[0].message)
         except AssertionError:
             m = list(response.context['messages'])
             if m:
