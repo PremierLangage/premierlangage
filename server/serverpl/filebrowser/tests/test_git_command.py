@@ -202,7 +202,7 @@ class GitTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
             m = list(response.context['messages'])
             self.assertEqual(messages.SUCCESS, m[0].level)
-            self.assertTrue("working tree clean" in m[0].message)
+            self.assertFalse("TPE&sol;function001&period;pl" in m[0].message)
         except AssertionError:
             m = list(response.context['messages'])
             if m:
@@ -261,7 +261,8 @@ class GitTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
             m = list(response.context['messages'])
             self.assertEqual(messages.SUCCESS, m[0].level)
-            self.assertTrue("working tree clean" in m[0].message)
+            self.assertFalse("TPE&sol;function001&period;pl" in m[0].message)
+            self.assertFalse("TPE&sol;operator001&period;pl" in m[0].message)
         except AssertionError:
             m = list(response.context['messages'])
             if m:
@@ -369,7 +370,7 @@ class GitTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
             m = list(response.context['messages'])
             self.assertEqual(messages.SUCCESS, m[0].level)
-            self.assertTrue("working tree clean" in m[0].message)
+            self.assertFalse("TPE&sol;function001&period;pl" in m[0].message)
         except AssertionError:
             m = list(response.context['messages'])
             if m:
@@ -432,7 +433,8 @@ class GitTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
             m = list(response.context['messages'])
             self.assertEqual(messages.SUCCESS, m[0].level)
-            self.assertTrue("working tree clean" in m[0].message)
+            self.assertFalse("TPE&sol;function001&period;pl" in m[0].message)
+            self.assertFalse("TPE&sol;operator001&period;pl" in m[0].message)
         except AssertionError:
             m = list(response.context['messages'])
             if m:
