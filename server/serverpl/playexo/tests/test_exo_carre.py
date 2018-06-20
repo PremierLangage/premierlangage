@@ -51,6 +51,11 @@ class ExoTestCase(TestCase):
             content_type='text/json',follow=True
         )
         
+        print(response.content)
+        
+
+        self.assertContains(response,"Dominique Revuz")
+        self.assertContains(response,"<h2>Une fonction carre</h2>\n\n<p>Ecrivez une fonction <strong>carre</strong> qui retourne le")
         
         self.assertContains(response2, "Test \\u00c9chou\\u00e9")
         self.assertContains(response2, "r\\u00e9ussi(s):" , count=1)
@@ -68,7 +73,11 @@ class ExoTestCase(TestCase):
         json.dumps({"requested_action":"submit", "inputs": {"answer":response_eleve}}),
             content_type='text/json', follow=True
         )
-       
+        
+        self.assertContains(response,"Dominique Revuz")
+        self.assertContains(response,"<h2>Une fonction carre</h2>\n\n<p>Ecrivez une fonction <strong>carre</strong> qui retourne le")
+        
+        
         self.assertContains(response2, "Il y a des erreurs dans votre programme.", count=1)
         self.assertContains(response2, "Erreur dans votre programme:", count=1)
 
@@ -83,6 +92,9 @@ class ExoTestCase(TestCase):
             json.dumps({"requested_action":"submit", "inputs": {"answer":response_eleve}}),
             content_type='text/json', follow=True
         )
+        
+        self.assertContains(response,"Dominique Revuz")
+        self.assertContains(response,"<h2>Une fonction carre</h2>\n\n<p>Ecrivez une fonction <strong>carre</strong> qui retourne le")
         
         
         self.assertContains(response2, "Test R\\u00e9ussi")
