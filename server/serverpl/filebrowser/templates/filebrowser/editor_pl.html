@@ -11,10 +11,8 @@
 {% block content %}
     <div class="row no-margin">
         <div class="col-md-6" style="border-right: solid 2px grey;">
-            {% block feedback %}
-                <div id="feedback_success" class="alert alert-success feedback" style="display: None"></div>
-                <div id="feedback_danger" class="alert alert-danger feedback" style="display: None"></div>
-            {% endblock %}
+            <div id="success" class="alert alert-success feedback" style="display: None"></div>
+            <div id="danger" class="alert alert-danger feedback" style="display: None"></div>
             <div class="card">
                 <div class="card-header">
                     <h1>Editing {{ filename }}</h1>
@@ -73,7 +71,7 @@
                             contentType: 'application/json;charset=UTF-8',
                             success: function(returned_status) {
                                 status = returned_status;
-                                onReturn(status.feedback_type, status.feedback);
+                                onReturn2(status.feedback_type, status.feedback);
                             }
                         });
                     });
@@ -99,22 +97,22 @@
                     });
                 });
 
-                function onReturn(feedback_type, feedback) {
-                    $( "#feedback_success" ).hide();
-                    $( "#feedback_success").css('animation', 'fadeOut 1s forwards');
-                    $( "#feedback_danger" ).hide();
-                    $( "#feedback_danger").css('animation', 'fadeOut 1s forwards');
+                function onReturn2(feedback_type, feedback) {
+                    $( "#success" ).hide();
+                    $( "#success").css('animation', 'fadeOut 1s forwards');
+                    $( "#danger" ).hide();
+                    $( "#danger").css('animation', 'fadeOut 1s forwards');
                     if (feedback_type == "success") {
-                        $( "#feedback_success" ).html(feedback);
-                        MathJax.Hub.Queue(["Typeset",MathJax.Hub,feedback_success]);
-                        $( "#feedback_success" ).toggle();
-                        $( "#feedback_success").css('animation', 'growIn 1s forwards');
+                        $( "#success" ).html(feedback);
+                        MathJax.Hub.Queue(["Typeset",MathJax.Hub,success]);
+                        $( "#success" ).toggle();
+                        $( "#success").css('animation', 'growIn 1s forwards');
                     }
                     else {
-                        $( "#feedback_danger" ).html(feedback);
-                        MathJax.Hub.Queue(["Typeset",MathJax.Hub,feedback_danger]);
-                        $( "#feedback_danger" ).toggle();
-                        $( "#feedback_danger").css('animation', 'growIn 1s forwards');
+                        $( "#danger" ).html(feedback);
+                        MathJax.Hub.Queue(["Typeset",MathJax.Hub,danger]);
+                        $( "#danger" ).toggle();
+                        $( "#danger").css('animation', 'growIn 1s forwards');
                     }
                 }
             </script>
