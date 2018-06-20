@@ -17,10 +17,15 @@ from serverpl.settings import BASE_DIR
 def documentation(request, target=None):
     if not isdir(join(BASE_DIR, 'documentation/templates/documentation/doc/')):
         raise Http404("Impossible de charger la documentation, merci de contacter l'administrateur.")
-    
-    template = ('documentation/doc/index.html' 
+
+    template = ('documentation/doc/index.html'
                 if not target
                 else 'documentation/doc/' + target +'index.html')
-    
-    return render(request, template, {})
-    
+
+    link_github = ('https://github.com/plgitlogin/premierlangage/edit/master/' +
+                  'server/serverpl/documentation/mkdocs/docs/index.md'
+                  if not target
+                  else 'https://github.com/plgitlogin/premierlangage/edit/master/' +
+                  'server/serverpl/documentation/mkdocs/docs/' + target[:-1] +'.md')
+    return render(request, template, {'link': link_github})
+
