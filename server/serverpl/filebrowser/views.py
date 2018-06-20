@@ -123,15 +123,17 @@ def preview_pl(request):
                 request.session['exercise'] = dict(exercise.dic)
                 preview = exercise.render(request)
         
-        except Exception as e:
+        except Exception as e: # pragma: no cover
             preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
                 + basename(rel_path) + "': \n\n" \
                 + htmlprint.code(str(e)) + "</div>"
         finally:
             shutil.move(path+".bk", path)
-            return HttpResponse(json.dumps({
-                'preview': preview
-            }), content_type='application/json')
+            return HttpResponse(
+                json.dumps({'preview': preview}),
+                content_type='application/json',
+                status=200
+            )
     
     elif post['requested_action'] == 'submit' : # Answer from the preview
         exercise = request.session.get('exercise', None)
@@ -145,11 +147,13 @@ def preview_pl(request):
                 feedback_type = "success"
             else:
                 feedback_type = "failed"
-            return HttpResponse(json.dumps({
+            return HttpResponse(
+                json.dumps({
                     'feedback_type': feedback_type,
                     'feedback': feedback
                 }),
-                content_type='application/json'
+                content_type='application/json',
+                status=200
             )
     
     
@@ -232,7 +236,7 @@ def edit_receiver(request):
             with open(join(settings.FILEBROWSER_ROOT, path), 'w+') as f:
                 print(content, file=f)
         messages.success(request, "File '"+basename(path)+"' successfully modified")
-    except Exception as e:
+    except Exception as e: # pragma: no cover
         msg = "Impossible to modify '"+basename(path)+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
         messages.error(request, msg)
     return redirect_fb(dirname(path))
@@ -259,7 +263,7 @@ def right_edit(request):
             d.read_auth.add(User.objects.get(id=item))
         
         messages.success(request, "Rights of '"+name+"' successfully edited.")
-    except Exception as e:
+    except Exception as e: # pragma: no cover
         raise e
         msg = "Impossible to edit rights of '"+name+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
         if settings.FILEBROWSER_ROOT in msg:
