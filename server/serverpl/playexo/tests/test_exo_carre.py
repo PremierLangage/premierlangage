@@ -51,7 +51,7 @@ class ExoTestCase(TestCase):
             content_type='text/json',follow=True
         )
         
-        print(response.content)
+        
         
 
         self.assertContains(response,"Dominique Revuz")
