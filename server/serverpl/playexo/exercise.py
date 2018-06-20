@@ -75,7 +75,7 @@ class ActivityInstance:
                 return (
                     None,
                    ( "La réponse reçu par la sandbox n'est pas au bon format :<br>"
-                        + htmlprint.html_exc)
+                        + htmlprint.html_exc())
                 )
             except Exception as e:
                 s = ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte,"
