@@ -51,9 +51,7 @@ class ExoTestCase(TestCase):
             content_type='text/json',follow=True
         )
         
-        self.assertContains(response2, "Aucune erreur d\\u00e9tect\\u00e9.", count=1,
-            status_code=200, msg_prefix="", html=False
-        )
+        
         self.assertContains(response2, "Test \\u00c9chou\\u00e9")
         self.assertContains(response2, "r\\u00e9ussi(s):" , count=1)
         self.assertContains(response2, "rat\\u00e9s:", count=1)
@@ -86,7 +84,7 @@ class ExoTestCase(TestCase):
             content_type='text/json', follow=True
         )
         
-        self.assertContains(response2, "Aucune erreur d\\u00e9tect\\u00e9.", count=1)
+        
         self.assertContains(response2, "Test R\\u00e9ussi")
         self.assertNotContains(response2, "Test \\u00c9chou\\u00e9")
         self.assertContains(response2, "r\\u00e9ussi(s) and ", count=1)

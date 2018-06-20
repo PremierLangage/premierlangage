@@ -123,15 +123,17 @@ def preview_pl(request):
                 request.session['exercise'] = dict(exercise.dic)
                 preview = exercise.render(request)
         
-        except Exception as e:
+        except Exception as e: # pragma: no cover
             preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
                 + basename(rel_path) + "': \n\n" \
                 + htmlprint.code(str(e)) + "</div>"
         finally:
             shutil.move(path+".bk", path)
-            return HttpResponse(json.dumps({
-                'preview': preview
-            }), content_type='application/json')
+            return HttpResponse(
+                json.dumps({'preview': preview}),
+                content_type='application/json',
+                status=200
+            )
     
     elif post['requested_action'] == 'submit' : # Answer from the preview
         exercise = request.session.get('exercise', None)
@@ -145,11 +147,13 @@ def preview_pl(request):
                 feedback_type = "success"
             else:
                 feedback_type = "failed"
-            return HttpResponse(json.dumps({
+            return HttpResponse(
+                json.dumps({
                     'feedback_type': feedback_type,
                     'feedback': feedback
                 }),
-                content_type='application/json'
+                content_type='application/json',
+                status=200
             )
     
     
@@ -192,6 +196,34 @@ def new_directory(request):
 
 
 @login_required
+@csrf_exempt
+def save_edit_receiver(request):
+    """ View used to saved a newly edited file. """
+    if not request.method == 'POST':
+        return HttpResponseNotAllowed(['POST'])
+    post = json.loads(request.body.decode())
+    content = post['editor_input']
+    path = post['path']
+    try:
+        if content:
+            with open(settings.FILEBROWSER_ROOT + '/' + path, 'w') as f:
+                print(content, file=f)
+        return HttpResponse(json.dumps({'feedback_type': "success",
+                                        'feedback': '<i class="fas fa-check"></i>'+
+                                                    '<a href="#" class="close" '+
+                                                    'data-dismiss="alert" aria-label="close">x</a>'+
+                                                    '&nbsp Sauvegarde effectuée'}),
+                                        content_type='application/json')
+    except Exception as e:
+        return HttpResponse(json.dumps({'feedback_type': "fail",
+                                        'feedback': '<i class="fas fa-fire"></i>'+
+                                                    '<a href="#" class="close" '+
+                                                    'data-dismiss="alert" aria-label="close">x</a>'+
+                                                    '&nbsp Sauvegarde échouée'}),
+                                        content_type='application/json')
+
+
+@login_required
 def edit_receiver(request):
     """ View used to saved a newly edited file. """
     if not request.method == 'POST':
@@ -204,7 +236,7 @@ def edit_receiver(request):
             with open(join(settings.FILEBROWSER_ROOT, path), 'w+') as f:
                 print(content, file=f)
         messages.success(request, "File '"+basename(path)+"' successfully modified")
-    except Exception as e:
+    except Exception as e: # pragma: no cover
         msg = "Impossible to modify '"+basename(path)+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
         messages.error(request, msg)
     return redirect_fb(dirname(path))
@@ -231,11 +263,11 @@ def right_edit(request):
             d.read_auth.add(User.objects.get(id=item))
         
         messages.success(request, "Rights of '"+name+"' successfully edited.")
-    except Exception as e:
+    except Exception as e: # pragma: no cover
         raise e
         msg = "Impossible to edit rights of '"+name+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT, "")
         messages.error(request, msg)
 
-    return redirect(reverse(index))
+    return redirect_fb()

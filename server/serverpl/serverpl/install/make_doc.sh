@@ -1,4 +1,4 @@
-#Create 
+# Should be use from directory containing manage.py 
 cd documentation/mkdocs
 mkdocs build
 cd -

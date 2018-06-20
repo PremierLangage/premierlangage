@@ -52,7 +52,7 @@ class NewTestCase(TestCase):
                     'name_h': 'dir',
                     'relative_h': './dir/TPE',
                     'type_h': 'directory',
-                    'name': 'file'
+                    'name': 'file',
                 },
                 follow=True
             )
@@ -66,6 +66,7 @@ class NewTestCase(TestCase):
                 "Preview",
                 status_code=200
             )
+            self.assertEqual(response.status_code, 200)
             rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
             self.assertTrue(isfile(join(rel, 'file')))
         except AssertionError :
@@ -85,7 +86,7 @@ class NewTestCase(TestCase):
                     'name_h': 'dir',
                     'relative_h': './dir/TPE',
                     'type_h': 'directory',
-                    'name': 'file.pl'
+                    'name': 'file.pl',
                 },
                 follow=True
             )
@@ -99,6 +100,7 @@ class NewTestCase(TestCase):
                 "Preview",
                 status_code=200
             )
+            self.assertEqual(response.status_code, 200)
             rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
             self.assertTrue(isfile(join(rel, 'file.pl')))
         except AssertionError :
@@ -117,13 +119,16 @@ class NewTestCase(TestCase):
                     'name_h': 'dir',
                     'relative_h': './dir/TPE',
                     'type_h': 'directory',
-                    'name': '../../../../file1.pl'
+                    'name': '../../../../file1.pl',
                 },
                 follow=True
             )
             self.assertEqual(response.status_code, 200)
             rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
             self.assertFalse(isfile(join(rel, '../../../../file1.pl')))
+            m = list(response.context['messages'])
+            self.assertEqual(len(m), 1)
+            self.assertEqual(m[0].level, messages.ERROR)
         except AssertionError :
             m = list(response.context['messages'])
             if m:
@@ -141,7 +146,7 @@ class NewTestCase(TestCase):
                     'name_h': 'dir',
                     'relative_h': './dir/TPE',
                     'type_h': 'directory',
-                    'name': 'function001.pl'
+                    'name': 'function001.pl',
                 },
                 follow=True
             )
@@ -166,13 +171,80 @@ class NewTestCase(TestCase):
                     'name_h': 'dir',
                     'relative_h': './dir/TPE',
                     'type_h': 'directory',
-                    'name': 'Dir_test'
+                    'name': 'Dir_test',
                 },
                 follow=True
             )
             self.assertEqual(response.status_code, 200)
             rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
             self.assertFalse(isfile(join(rel, 'Dir_test')))
+            m = list(response.context['messages'])
+            self.assertEqual(len(m), 1)
+            self.assertEqual(m[0].level, messages.ERROR)
+        except AssertionError :
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+
+
+    def test_new_file_with_no_name(self):
+        try :
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'new',
+                    'name_h': 'dir',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'directory',
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 400)
+        except AssertionError :
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+
+    def test_new_file_with_no_relative(self):
+        try :
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'new',
+                    'name_h': 'dir',
+                    'type_h': 'directory',
+                    'name': 'Dir_test',
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 400)
+        except AssertionError :
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+
+    def test_new_file_with_space_name(self):
+        try :
+            response = self.c.post(
+                '/filebrowser/apply_option/post',
+                {
+                    'option_h': 'new',
+                    'name_h': 'dir',
+                    'relative_h': './dir/TPE',
+                    'type_h': 'directory',
+                    'name': ' ',
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
+            self.assertFalse(isfile(join(rel, ' ')))
             m = list(response.context['messages'])
             self.assertEqual(len(m), 1)
             self.assertEqual(m[0].level, messages.ERROR)

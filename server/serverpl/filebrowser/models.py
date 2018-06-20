@@ -51,7 +51,8 @@ class Directory(models.Model):
     def save(self, *args, **kwargs):
         self.root = os.path.join(settings.FILEBROWSER_ROOT, self.name)
         super(Directory, self).save(*args, **kwargs)
-    
+        if self.public:
+            [self.add_read_auth(u) for u in User.objects.all()]
     
     @receiver(post_save, sender=User)
     def add_user_read_public(sender, instance, created, **kwargs):
@@ -67,25 +68,25 @@ class Directory(models.Model):
     
     def add_write_auth(self, user):
         """Add user to the writing authorization list."""
-        if not user in self.write_auth:
+        if not user in self.write_auth.all():
             self.write_auth.add(user)
     
     
     def add_read_auth(self, user):
         """Add user to the reading authorization list."""
-        if not user in self.read_auth:
+        if not user in self.read_auth.all():
             self.read_auth.add(user)
     
     
     def remove_write_auth(self, user):
         """Remove user to the writing authorization list."""
-        if user in self.write_auth:
+        if user in self.write_auth.all():
             self.write_auth.remove(user)
     
     
     def remove_read_auth(self, user):
         """Remove user to the reading authorization list."""
-        if user in self.read_auth:
+        if user in self.read_auth.all():
             self.read_auth.remove(user)
     
     
@@ -111,26 +112,21 @@ class Directory(models.Model):
             
             out = out.decode("utf-8")
             err = err.decode("utf-8")
-            if p.returncode:
-                os.system("git reset HEAD~")
-                return False, err
+            if p.returncode: # pragma: no cover
+                return False, err + out
                 
             p = subprocess.Popen('git commit -m "'+commit+'"', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             out, err = p.communicate()
             
             out = out.decode("utf-8")
             err = err.decode("utf-8")
-            if p.returncode:
-                os.system("git reset HEAD~")
-                return False, err
-        
-        except Exception as e:
-            return False, str(type(e)) + " : " + str(e)
+            if p.returncode: # pragma: no cover
+                return False, err + out
         
         finally:
             os.chdir(cwd)
         
-        return True, out
+        return True, out + err
     
     
     def checkout(self, path=None):
@@ -152,22 +148,15 @@ class Directory(models.Model):
             else:
                 p = subprocess.Popen('git checkout .', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
             out, err = p.communicate()
-            
             out = out.decode("utf-8")
             err = err.decode("utf-8")
-            if p.returncode:
-                os.system("git reset HEAD~")
-                if "terminal prompts disabled" in err: # Repo is private and needs credentials
-                    return False, "Repository is private, please provide username and password."
-                return False, err
-        
-        except Exception as e:
-            return False, str(type(e)) + " : " + str(e)
+            if p.returncode: # pragma: no cover
+                return False, err + out
         
         finally:
             os.chdir(cwd)
         
-        return True, out
+        return True, out + err
     
     
     def pull(self, username=None, password=None):
@@ -196,18 +185,15 @@ class Directory(models.Model):
             if password:
                 out = out.replace(password,'•'*len(password))
                 err = err.replace(password,'•'*len(password))
-            if p.returncode:
+            if p.returncode: # pragma: no cover
                 if "terminal prompts disabled" in err: # Repo is private and needs credentials
                     return False, "Repository is private, please provide username and password."
-                return False, err
-        
-        except Exception as e:
-            return False, str(type(e)) + " : " + str(e)
+                return False, err + out
         
         finally:
             os.chdir(cwd)
         
-        return True, out
+        return True, out + err
     
     
     def push(self, username=None, password=None):
@@ -236,18 +222,15 @@ class Directory(models.Model):
             if password:
                 out = out.replace(password,'•'*len(password))
                 err = err.replace(password,'•'*len(password))
-            if p.returncode:
+            if p.returncode: # pragma: no cover
                 if "terminal prompts disabled" in err: # Repo is private and needs credentials
                     return False, "Repository is private, please provide username and password."
-                return False, err
-        
-        except Exception as e:
-            return False, str(type(e)) + " : " + str(e)
+                return False, err + out
         
         finally:
             os.chdir(cwd)
         
-        return True, out
+        return True, out + err
     
     
     def status(self):
@@ -269,16 +252,13 @@ class Directory(models.Model):
             
             out = out.decode("utf-8")
             err = err.decode("utf-8")
-            if p.returncode:
-                return False, err
-        
-        except Exception as e:
-            return False, str(type(e)) + " : " + str(e)
+            if p.returncode: # pragma: no cover
+                return False, err + out
         
         finally:
             os.chdir(cwd)
         
-        return True, out
+        return True, out + err
     
     
     def clone(self, username=None, password=None):
@@ -307,16 +287,13 @@ class Directory(models.Model):
             if password:
                 out = out.replace(password,'•'*len(password))
                 err = err.replace(password,'•'*len(password))
-            if p.returncode:
+            if p.returncode: # pragma: no cover
                 if "terminal prompts disabled" in err: # Repo is private and needs credentials
                     return False, "Repository is private, please provide username and password."
                 
-                return False, err
-        
-        except Exception as e:
-            return False, str(type(e)) + " : " + str(e)
+                return False, err + out
         
         finally:
             os.chdir(cwd)
         
-        return True, out
+        return True, out + err

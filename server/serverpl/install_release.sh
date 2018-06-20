@@ -54,12 +54,12 @@ echo "Done !"
 #Getting release settings.py
 echo "creating setting and secret key"
 cp -f serverpl/install/settings_release.py serverpl/settings.py
-python3 serverpl/genkey.py >>settings.py
+python3 serverpl/install/genkey.py >> settings.py
 
 #Creating documentation
 echo ""
 echo "Creating documentation..."
-./make_doc.sh || { echo>&2 "ERROR: ./make_doc.sh failed" ; exit 1; }
+./serverpl/install/make_doc.sh || { echo>&2 "ERROR: ./serverpl/install/make_doc.sh failed" ; exit 1; }
 echo "Done !"
 
 #Creating ../tmp
@@ -79,7 +79,7 @@ echo "Configuring database..."
 SECRET_KEY=$SECRET_KEY python3 manage.py migrate
 
 #Filling database
-SECRET_KEY=$SECRET_KEY python3 manage.py shell < serverpl/fill_database_local.py  || { echo>&2 "ERROR: python3 manage.py shell failed" ; exit 1; }
+SECRET_KEY=$SECRET_KEY python3 manage.py shell < serverpl/install/fill_database_local.py  || { echo>&2 "ERROR: python3 manage.py shell failed" ; exit 1; }
 echo "Done !"
 
 echo ""

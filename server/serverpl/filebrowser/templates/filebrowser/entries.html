@@ -2,7 +2,7 @@
 
 {% for entry in fb.list %}
     <tr>
-        <td style="width: 20%{% if entry.path|isdir %};cursor: pointer;" onclick="window.location='?cd={{ fb.relative }}/{{ entry.name }}';"{% else %};{%endif%}>
+        <td style="width: 20%{% if entry.path|isdir %};cursor: pointer;" onclick="window.location='?cd={{ fb.relative }}/{{ entry.name }}'{%endif%};">
             &emsp;<i class="{{ entry.path|icon }}"></i>&emsp;{{ entry.name }}
         </td>
         <td>

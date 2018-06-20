@@ -120,7 +120,7 @@ class UploadTestCase(TestCase):
                     'type_h': 'directory',
                     'file': fd,
                     'relative': './dir/TPE',
-                    'name': '../../../../../text.txt',
+                    'name': '../../text.txt',
                 },
                 follow=True
             )

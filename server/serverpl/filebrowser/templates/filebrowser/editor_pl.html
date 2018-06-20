@@ -11,11 +11,15 @@
 {% block content %}
     <div class="row no-margin">
         <div class="col-md-6" style="border-right: solid 2px grey;">
+            <div id="success" class="alert alert-success feedback" style="display: None"></div>
+            <div id="danger" class="alert alert-danger feedback" style="display: None"></div>
             <div class="card">
                 <div class="card-header">
                     <h1>Editing {{ filename }}</h1>
                 </div>
+
                 <div class="card-body">
+
                     <div id="editorPL" style="height: 400px;">{{ file_content }}</div>
                         <form action="/filebrowser/edit_file/" method="post">
                             {% csrf_token %}
@@ -23,10 +27,13 @@
                             <input type="hidden" id="editor_input" name="editor_input" value="{{ file_content }}" />
                             <hr/>
                             <center>
-                                <button class="btn btn-primary" type="submit">
+                                <button id="save_button" type="button" class="btn btn-success">
                                     <i class="fas fa-save"></i>&emsp; Save
                                 </button>
-                                <button id="preview_button" type=button class="btn btn-success">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-save"></i>&emsp; Save & Quit
+                                </button>
+                                <button id="preview_button" type="button" class="btn btn-success">
                                     <i class="fas fa-play"></i>&emsp; Preview
                                 </button>
                             </center>
@@ -52,6 +59,22 @@
                             return elem.value.replace( /\r?\n/g, "\r\n" );
                         }
                     };
+
+                    $( "#save_button" ).click(function() {
+                        var input = $("#editor_input").val();
+                        var path = "{{ filepath }}";
+                        var status = {requested_action: 'save', editor_input: input, path: path};
+                        $.ajax({
+                            type : "POST",
+                            url : "/filebrowser/save_edit/",
+                            data: JSON.stringify(status, null, '\t'),
+                            contentType: 'application/json;charset=UTF-8',
+                            success: function(returned_status) {
+                                status = returned_status;
+                                onReturn2(status.feedback_type, status.feedback);
+                            }
+                        });
+                    });
           
                     $( "#preview_button" ).click(function() {
                         var POST = {
@@ -73,6 +96,25 @@
                         });
                     });
                 });
+
+                function onReturn2(feedback_type, feedback) {
+                    $( "#success" ).hide();
+                    $( "#success").css('animation', 'fadeOut 1s forwards');
+                    $( "#danger" ).hide();
+                    $( "#danger").css('animation', 'fadeOut 1s forwards');
+                    if (feedback_type == "success") {
+                        $( "#success" ).html(feedback);
+                        MathJax.Hub.Queue(["Typeset",MathJax.Hub,success]);
+                        $( "#success" ).toggle();
+                        $( "#success").css('animation', 'growIn 1s forwards');
+                    }
+                    else {
+                        $( "#danger" ).html(feedback);
+                        MathJax.Hub.Queue(["Typeset",MathJax.Hub,danger]);
+                        $( "#danger" ).toggle();
+                        $( "#danger").css('animation', 'growIn 1s forwards');
+                    }
+                }
             </script>
             <div id="preview" class="col-md-6">{{ preview|safe }}</div>
     </div>

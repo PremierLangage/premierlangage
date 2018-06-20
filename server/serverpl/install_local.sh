@@ -71,7 +71,7 @@ cp -f serverpl/install/settings_local.py serverpl/settings.py
 #Creating documentation
 echo ""
 echo "Creating documentation..."
-./make_doc.sh || { echo>&2 "ERROR: ./make_doc.sh failed" ; exit 1; }
+./serverpl/install/make_doc.sh || { echo>&2 "ERROR: ./serverpl/install/make_doc.sh failed" ; exit 1; }
 echo "Done !"
 
 echo ""
@@ -89,5 +89,5 @@ echo "Configuring database..."
 python3 manage.py makemigrations || { echo>&2 "ERROR: python3 manage.py makemigrations failed" ; exit 1; }
 python3 manage.py migrate || { echo>&2 "ERROR: python3 manage.py migrate failed" ; exit 1; }
 #Filling database
-python3 manage.py shell < serverpl/fill_database_local.py  || { echo>&2 "ERROR: python3 manage.py shell failed" ; exit 1; }
+python3 manage.py shell < serverpl/install/fill_database_local.py  || { echo>&2 "ERROR: python3 manage.py shell failed" ; exit 1; }
 echo "Done !"

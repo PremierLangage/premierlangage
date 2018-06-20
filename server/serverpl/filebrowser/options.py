@@ -66,8 +66,9 @@ def mkdir_option(request, filebrowser, target):
         return HttpResponseBadRequest(b"Missing name or relative parameter")
 
     try:
+        bad_char = ['/', ' ']
         path = abspath(join(join(filebrowser.full_path(), relative), name))
-        if '/' in name :
+        if any(c in name for c in bad_char):
             messages.error(request, "The folder's name ('" + name + "') is invalid")
         elif isdir(path):
             messages.error(request, "A folder with that name ('"+name+"') already exists")
@@ -76,7 +77,7 @@ def mkdir_option(request, filebrowser, target):
         else:
             os.mkdir(path)
             messages.success(request, "Folder '"+name+"' successfully created !")
-    except Exception as e:
+    except Exception as e: # pragma: no cover
         msg = "Impossible to create '"+name+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
@@ -96,7 +97,7 @@ def display_option(request, filebrowser, target):
             lines = f.readlines()
         return render(request, 'filebrowser/file.html', {'file': lines, 'filename': basename(path)})
 
-    except Exception as e:
+    except Exception as e: # pragma: no cover
         msg = "Impossible to display '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
@@ -137,7 +138,7 @@ def rename_option(request, filebrowser, target):
     except ValueError:
         messages.error(request, "Can't rename '" + target + "' to '" + name + "' : name contains a '/'.")
 
-    except Exception as e:
+    except Exception as e: # pragma: no cover
         msg = "Impossible to rename '" + target + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.DEBUG:
             msg += "<br/><br/> Debug set to True:" + htmlprint.html_exc()
@@ -169,18 +170,14 @@ def copy_option(request, filebrowser, target):
         else :
             shutil.copyfile(path, join(filebrowser.full_path(), join(destination, name_h)))
         messages.success(request, "'" + target + "' successfully copy !")
-
-    except Exception as e:
+    except ValueError as e:
+        msg = "Impossible to copy '"+target+"' in this directory"
+        messages.error(request, msg)
+    except Exception as e: # pragma: no cover
         msg = "Impossible to copy '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
-    except ValueError as e:
-        msg = "Impossible to copy out'"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
-        messages.error(request, msg)
-
     return redirect_fb(request.POST.get('relative_h', '.'))
 
 
@@ -316,7 +313,7 @@ def download_option(request, filebrowser, target):
 
         return response
 
-    except Exception as e:
+    except Exception as e: # pragma: no cover
         msg = "Impossible to download '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
@@ -332,10 +329,11 @@ def new_file_option(request, filebrowser, target):
     name = request.POST.get('name', None)
     relative = request.POST.get('relative_h', None)
     if not name or not relative:
-        return HttpResponseBadRequest
-
-    try :
+        return HttpResponseBadRequest()
+    try:
         relative_h = "/".join([d for d in relative.split("/") if d][2:])
+        if ' ' in name:
+            raise ValueError()
         if not stay_in_directory(relative_h, name):
             raise ValueError()
         path = abspath(join(join(filebrowser.full_path(), relative), name))
@@ -353,11 +351,9 @@ def new_file_option(request, filebrowser, target):
                 response['Location'] += '?option_h=edit_pl&name_h='+name+'&relative_h='+relative+'&type_h=entry'
                 return response
     except ValueError as e:
-        msg = "Impossible to create out '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
+        msg = "Impossible to create '"+target+"' in this directory"
         messages.error(request, msg)
-    except Exception as e:
+    except Exception as e: # pragma: no cover
         msg = "Impossible to create '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
@@ -391,7 +387,7 @@ def load_pltp_option(request, filebrowser, target):
                                       </button><br>L'activité sera créée lorsqu'une personne cliquera sur le lien \
                                       depuis un client LTI. Pour la tester en local, cliquez <a target=\"_blank\" \
                                       href=\""+url_test+"\">ici</a>.""")
-    except Exception as e:
+    except Exception as e: # pragma: no cover
         msg = "Impossible to load '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         msg = msg if not settings.DEBUG_ROOT else msg + ':\n' + traceback.format_exc()
         if settings.FILEBROWSER_ROOT in msg:
@@ -417,14 +413,11 @@ def move_option(request, filebrowser, target):
             raise ValueError()
         os.rename(join(filebrowser.full_path(), target), join(join(filebrowser.full_path(), destination), target))
         messages.success(request, "'"+target+"' successfully moved !")
-    except Exception as e:
-        msg = "Impossible to move '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
-        messages.error(request, msg)
-
     except ValueError as e:
-        msg = "Impossible to move out '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
+        msg = "Impossible to move '"+target+"' in this directory"
+        messages.error(request, msg)
+    except Exception as e: # pragma: no cover
+        msg = "Impossible to move '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
@@ -446,9 +439,8 @@ def delete_option(request, filebrowser, target):
 
         if not filebrowser.directory:
             Directory.objects.get(name=target).delete()
-
         messages.success(request, "'"+target+"' successfully deleted !")
-    except Exception as e:
+    except Exception as e: # pragma: no cover
         msg = "Impossible to delete '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
@@ -474,7 +466,7 @@ def edit_option(request, filebrowser, target):
             'dir_name': filebrowser.directory.name,
         })
 
-    except Exception as e:
+    except Exception as e: # pragma: no cover
         msg = "Impossible to edit '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
@@ -516,7 +508,7 @@ def edit_pl_option(request, filebrowser, target):
             'preview': preview,
         })
 
-    except Exception as e:
+    except Exception as e: # pragma: no cover
         msg = "Impossible to edit '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
@@ -548,7 +540,7 @@ def test_pl_option(request, filebrowser, target):
             'preview': preview,
         })
 
-    except Exception as e:
+    except Exception as e: # pragma: no cover
         msg = "Impossible to display '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
@@ -577,7 +569,7 @@ def rights_option(request, filebrowser, target):
             'directory': d.name,
         })
 
-    except Exception as e:
+    except Exception as e: # pragma: no cover
         msg = "Impossible to display '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
@@ -598,6 +590,7 @@ def upload_option(request, filebrowser, target):
         if not name:
             name = f.name
         else :
+            relative_h = "/".join([d for d in relative_h.split("/") if d][2:])
             if not stay_in_directory(relative_h, name):
                 raise ValueError()
         path = filebrowser.root+'/'+relative+'/'+name
@@ -608,7 +601,7 @@ def upload_option(request, filebrowser, target):
                 dest.write(chunk)
         messages.success(request, "File '"+name+"' successfully uploaded.")
 
-    except Exception as e:
+    except Exception as e: # pragma: no cover
         msg = "Impossible to upload '"+name+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
@@ -634,7 +627,7 @@ def extract_option(request, filebrowser, target):
         else:
             raise ValueError("Can't extract '"+mime+"' files.")
         messages.success(request, "Archive '"+target+"' successfully extracted.")
-    except Exception as e:
+    except Exception as e: # pragma: no cover
         msg = "Impossible to extract '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
