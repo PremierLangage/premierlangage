@@ -26,7 +26,7 @@ def get_sandbox():
     tried = "Tried sandboxes:<br>"
     for sandbox in sandboxes:
         try:
-            r = requests.head(sandbox.url, timeout=0.5)
+            r = requests.head(sandbox.url, timeout=2)
             if r.status_code == 200:
                 break
             tried += "- "+str(sandbox)+"(code received: "+str(r.status_code)+")<br>"
