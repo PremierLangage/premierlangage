@@ -7,7 +7,7 @@
 #  Last Modified: 2017-09-30
 
 
-import json, os, tarfile, uuid, timeout_decorator, time, subprocess
+import json, os, tarfile, uuid, timeout_decorator, subprocess
 
 from django.conf import settings
 

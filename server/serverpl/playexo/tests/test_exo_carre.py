@@ -6,9 +6,8 @@
 #  
 
 import json
-from django.test import TestCase, SimpleTestCase, Client
+from django.test import TestCase, Client
 from sandbox.models import Sandbox
-from playexo.utils import sum_key_value
 from loader.loader import load_file
 from django.contrib.auth.models import User
 from filebrowser.models import Directory

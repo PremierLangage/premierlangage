@@ -6,11 +6,9 @@
 #  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
 #  
 
-import os, shutil, sys, json, time, subprocess
+import os, shutil, subprocess
 
-from os.path import join, isdir, isfile
-
-from mock import patch
+from os.path import join, isdir
 
 from django.test import TestCase, Client, override_settings
 from django.conf import settings

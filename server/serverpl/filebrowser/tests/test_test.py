@@ -5,11 +5,9 @@
 #  
 #  
 
-import os, shutil, sys, json, time
+import shutil
 
-from os.path import join, isdir, isfile
-
-from mock import patch
+from os.path import join, isdir
 
 from django.test import TestCase, Client, override_settings
 from django.conf import settings

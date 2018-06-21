@@ -11,8 +11,6 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 
-from serverpl.settings import FILEBROWSER_ROOT
-
 from filebrowser.models import Directory
 
 from loader.utils import get_location, extends_dict

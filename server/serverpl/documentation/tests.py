@@ -6,7 +6,7 @@
 #  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
 #  
 
-import os, tempfile, time
+import os, tempfile
 
 from os.path import basename, join
 
