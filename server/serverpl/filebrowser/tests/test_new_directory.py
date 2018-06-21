@@ -54,7 +54,7 @@ class NewDirTestCase(TestCase):
             shutil.rmtree(join(FAKE_FB_ROOT, 'same'))
     
     
-    def test_new_directory(self):
+    def test_new_directory_method_not_allowed(self):
         response = self.c.get(
             '/filebrowser/new_directory/',
             {

@@ -12,7 +12,6 @@ from loader.loader import load_file
 from django.contrib.auth.models import User
 from filebrowser.models import Directory 
 
-
 from serverpl.settings import AUTHENTICATION_BACKENDS
 
 class ExoTestCase(TestCase):
@@ -50,9 +49,6 @@ class ExoTestCase(TestCase):
             content_type='text/json',follow=True
         )
         
-        
-        
-
         self.assertContains(response,"Dominique Revuz")
         self.assertContains(response,"<h2>Une fonction carre</h2>\n\n<p>Ecrivez une fonction <strong>carre</strong> qui retourne le")
         
@@ -60,6 +56,7 @@ class ExoTestCase(TestCase):
         self.assertContains(response2, "r\\u00e9ussi(s):" , count=1)
         self.assertContains(response2, "rat\\u00e9s:", count=1)
         self.assertContains(response2, "***Tests \\u00e9chou\\u00e9s***", count=1)
+
 
     def test_reponse_carre_error(self):
         c = Client()
@@ -79,6 +76,7 @@ class ExoTestCase(TestCase):
         
         self.assertContains(response2, "Il y a des erreurs dans votre programme.", count=1)
         self.assertContains(response2, "Erreur dans votre programme:", count=1)
+
 
     def test_reponse_carre_true(self):
         c = Client()

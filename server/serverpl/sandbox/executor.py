@@ -65,7 +65,6 @@ class Executor:
     def execute(self):
         try:
             self._create_dir()
-            cwd = os.getcwd()
             exit_code, output = self.__evaluate()
             output = output.decode("UTF-8")
             if exit_code:

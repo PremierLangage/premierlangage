@@ -8,7 +8,6 @@
 
 from os.path import join, dirname, normpath, isfile
 from filebrowser.models import Directory
-from serverpl.settings import FILEBROWSER_ROOT
 
 def get_location(directory, path, current=""):
     """Return a tuple (directory, path)

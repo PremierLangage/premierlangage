@@ -44,7 +44,6 @@ class ParsersTestCase(TestCase):
     
     
     def test_get_type(self, mock_logger):
-        parsers = parser.get_parsers()
         
         # Correct paths
         path1 = "relative/to/pl.pl"
