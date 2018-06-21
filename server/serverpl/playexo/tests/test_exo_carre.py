@@ -10,7 +10,7 @@ from django.test import TestCase, Client
 from sandbox.models import Sandbox
 from loader.loader import load_file
 from django.contrib.auth.models import User
-from filebrowser.models import Directory
+from filebrowser.models import Directory 
 
 
 from serverpl.settings import AUTHENTICATION_BACKENDS
