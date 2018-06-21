@@ -128,11 +128,6 @@ class Executor:
                 'grade': -5,
                 'other': [],
             }
-        
-        finally:
-            try:
-                self.docker.kill()
-            except:
-                pass
+            
             
         return json.dumps(response)
