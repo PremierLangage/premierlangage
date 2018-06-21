@@ -11,7 +11,7 @@ import json, os, tarfile, uuid, timeout_decorator, time, subprocess
 
 from django.conf import settings
 
-from sandbox.exceptions import MissingGradeError
+from sandbox.exceptions import MissingGradeError, GraderError
 
 
 
@@ -45,7 +45,7 @@ class Executor:
     
     
     @timeout_decorator.timeout(use_signals=False, use_class_attribute=True)
-    def __evaluate(self):
+    def _evaluate(self):
         """ Untar environment.tar.gz and execute grader.py, returning the result. """
         try:
             cwd = os.getcwd()
@@ -66,7 +66,7 @@ class Executor:
         try:
             self._create_dir()
             cwd = os.getcwd()
-            exit_code, output = self.__evaluate()
+            exit_code, output = self._evaluate()
             output = output.decode("UTF-8")
             if exit_code:
                 if exit_code > 1000 or exit_code < 0:
