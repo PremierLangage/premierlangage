@@ -43,7 +43,6 @@ from django.db.utils import IntegrityError
 
 from django.conf import settings
 
-from filebrowser import views
 from filebrowser.models import Directory
 from filebrowser.form import RightForm
 from filebrowser.utils import redirect_fb, stay_in_directory
@@ -367,7 +366,7 @@ def load_pltp_option(request, filebrowser, target):
         return HttpResponseNotAllowed(['GET'])
 
     try:
-        rel_path = join(filebrowser.relative, target).replace('./'+filebrowser.directory.name, "")
+        rel_path = join(filebrowser.relative, target).replace(filebrowser.directory.name, "").replace('./', "")
         pltp, warnings = load_file(filebrowser.directory, rel_path, True)
 
         if not pltp and not warnings:
@@ -523,8 +522,6 @@ def test_pl_option(request, filebrowser, target):
         return HttpResponseNotAllowed(['GET'])
 
     try:
-        path = join(filebrowser.full_path(), target)
-
         rel_path = join(filebrowser.relative, target).replace(filebrowser.directory.name, "")
         pl, warnings = load_file(filebrowser.directory, rel_path)
 

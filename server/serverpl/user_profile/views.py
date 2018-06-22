@@ -11,7 +11,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 from user_profile.forms import ProfileForm
-from user_profile.enums import EditorTheme, ColorBlindness
+from user_profile.enums import EditorTheme
 
 
 sample_C = """

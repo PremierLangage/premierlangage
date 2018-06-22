@@ -7,14 +7,14 @@
 
 
 
-import os, importlib, traceback, logging
+import os, importlib, logging
 
 from os.path import basename, splitext, join
 
 from django.core.exceptions import ObjectDoesNotExist
 
 from serverpl.settings import PARSERS_ROOT, PARSERS_MODULE
-from loader.utils import get_location, extends_dict
+from loader.utils import extends_dict
 from loader.exceptions import UnknownExtension, UnknownType, DirectoryNotFound, FileNotFound, MissingKey
 
 from filebrowser.models import Directory
@@ -107,7 +107,7 @@ def process_extends(dic):
         except UnknownExtension as e:
             raise UnknownExtension(e.path, e.name, message="extending from " + dic['__rel_path'] + " -- unknow extension  ")
         except FileNotFoundError:
-            raise FileNotFound(dic['__rel_path'], item['line'], item['path'], lineno=item['lineno'])
+            raise FileNotFound(dic['__rel_path'], item['line'], join(item['directory_name'], item['path']), lineno=item['lineno'])
         except ValueError:
             raise FileNotFound(self.path_parsed_file, line, match.group('file'), lineno=self.lineno, message="Path from another directory must be absolute")
     
@@ -140,8 +140,6 @@ def parse_file(directory, path, extending=False):
         warnings += ext_warnings
         
         if not extending:
-            #~ for key in dic:
-                #~ print(key+": "+ str(dic[key]))
             if parsers[ext]['type'] == 'pltp':
                 for key in PLTP_MANDATORY_KEY:
                     if key not in dic:

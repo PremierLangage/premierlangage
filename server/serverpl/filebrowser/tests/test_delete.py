@@ -5,16 +5,13 @@
 #  
 #  
 
-import os, shutil, sys, json, time
+import shutil
 
 from os.path import join, isdir, isfile
-
-from mock import patch
 
 from django.test import TestCase, Client, override_settings
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.messages import constants as messages
 
 from filebrowser.models import Directory
 

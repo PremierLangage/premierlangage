@@ -8,8 +8,6 @@
 
 from datetime import datetime
 
-from enumfields import EnumIntegerField
-
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -38,7 +36,6 @@ class ActivityTest(models.Model):
     
     @staticmethod
     def delete_outdated():
-        now = datetime.utcnow()
         activities = ActivityTest.objects.get.all().sort_by("date")
         for activity in activities:
             if (datetime.utcnow() - activity.date) > timedelta(days=1):

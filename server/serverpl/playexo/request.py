@@ -7,7 +7,7 @@
 # 
 
 
-import logging, tempfile, io, tarfile, json, os, hashlib, requests, traceback, htmlprint
+import logging, tempfile, tarfile, json, os, hashlib, requests, traceback
 
 from serverpl.settings import DEBUG
 from sandbox.models import Sandbox

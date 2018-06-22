@@ -7,7 +7,7 @@
 #  Last Modified: 2017-09-30
 
 
-import json, os, tarfile, uuid, timeout_decorator, time, subprocess
+import json, os, tarfile, uuid, timeout_decorator, subprocess
 
 from django.conf import settings
 
@@ -65,7 +65,6 @@ class Executor:
     def execute(self):
         try:
             self._create_dir()
-            cwd = os.getcwd()
             exit_code, output = self._evaluate()
             output = output.decode("UTF-8")
             if exit_code:
