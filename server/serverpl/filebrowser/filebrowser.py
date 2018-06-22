@@ -45,13 +45,11 @@ class Filebrowser():
         directory_options (FilebrowserOption): List of every options applicable to self.directory
     """
     
-    def __init__(self, root=None, path='.'):
+    def __init__(self, root=None, path=None):
         self.root = settings.FILEBROWSER_ROOT if not root else root
-        self.relative = '.' if not path else path
         self.entry_options = ENTRY_OPTIONS
         self.directory_options = DIRECTORY_OPTIONS
-        if not self.relative.startswith('./'):
-            self.relative = './' + self.relative
+        self.relative = '.' if not path else path
         try:
             dir_name = path.split('/')
             dir_name = dir_name[0] if dir_name[0] != '.' else None if len(dir_name) == 1 else dir_name[1]
