@@ -48,11 +48,12 @@ if [ "$VIRTUAL_ENV" == "" ]; then
     echo ""
     INVENV=1
     echo "WARNING: You're not currently running a virtual environnement (https://docs.python.org/3/library/venv.html)." | fold -s
-    echo "Do you want to continue outside a virtual environnement ? [Y/n]" | fold -s
-    read -r -p "> " response
-    if [[ response =~ (no|n|NO|N) ]]; then
-        exit 1
-    fi
+    read -p "Do you want to continue outside a virtual environnement ? [Y/n] " -n 1 -r
+ 	echo
+	if [[ $REPLY =~ ^[Nn]$ ]]
+	then
+   		exit 1
+	fi
 fi
 
 

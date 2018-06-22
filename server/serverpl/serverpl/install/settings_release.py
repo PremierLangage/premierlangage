@@ -250,7 +250,7 @@ MEDIA_URL = '/tmp/'
 
 
 # Default Filebrowser's path
-FILEBROWSER_ROOT = FILEBROWSER_ROOT
+FILEBROWSER_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../repo/'))
 
 # Path to directory containing parsers
 PARSERS_ROOT = os.path.abspath(os.path.join(BASE_DIR,'loader/parsers/'))

@@ -106,7 +106,7 @@ def preview_pl(request):
     post = json.loads(request.body.decode())
     if post['requested_action'] == 'preview': # Asking for preview
         try:
-            path = settings.FILEBROWSER_ROOT+'/'+post['path']
+            path = join(settings.FILEBROWSER_ROOT, post['path'])
             shutil.copyfile(path, path+".bk")
             with open(path, 'w+') as f: # Writting editor content into the file
                 print(post['content'], file=f)

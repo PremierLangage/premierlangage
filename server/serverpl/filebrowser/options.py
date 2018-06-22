@@ -366,7 +366,7 @@ def load_pltp_option(request, filebrowser, target):
         return HttpResponseNotAllowed(['GET'])
 
     try:
-        rel_path = join(filebrowser.relative, target).replace('./'+filebrowser.directory.name, "")
+        rel_path = join(filebrowser.relative, target).replace(filebrowser.directory.name, "").replace('./', "")
         pltp, warnings = load_file(filebrowser.directory, rel_path, True)
 
         if not pltp and not warnings:

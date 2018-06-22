@@ -107,7 +107,7 @@ def process_extends(dic):
         except UnknownExtension as e:
             raise UnknownExtension(e.path, e.name, message="extending from " + dic['__rel_path'] + " -- unknow extension  ")
         except FileNotFoundError:
-            raise FileNotFound(dic['__rel_path'], item['line'], item['path'], lineno=item['lineno'])
+            raise FileNotFound(dic['__rel_path'], item['line'], join(item['directory_name'], item['path']), lineno=item['lineno'])
         except ValueError:
             raise FileNotFound(self.path_parsed_file, line, match.group('file'), lineno=self.lineno, message="Path from another directory must be absolute")
     
@@ -140,8 +140,6 @@ def parse_file(directory, path, extending=False):
         warnings += ext_warnings
         
         if not extending:
-            #~ for key in dic:
-                #~ print(key+": "+ str(dic[key]))
             if parsers[ext]['type'] == 'pltp':
                 for key in PLTP_MANDATORY_KEY:
                     if key not in dic:
