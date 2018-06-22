@@ -8,6 +8,7 @@
 #
 
 
+from django.conf import settings
 from os.path import splitext, basename, abspath
 
 
@@ -68,7 +69,10 @@ class FileNotFound(Exception):
         self.path_not_found = path_not_found
         
     def __str__(self):
-        return abspath(self.path) + " " + self.lineno + " -- " + self.message + " : '"+ abspath(self.path_not_found) + "'\n" + self.line
+        return (abspath(self.path) + " " + self.lineno 
+            + " -- " + self.message 
+            + " : '"+ abspath(self.path_not_found).replace(settings.FILEBROWSER_ROOT, '')
+            + "'\n" + self.line)
 
 
 
