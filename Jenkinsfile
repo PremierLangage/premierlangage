@@ -1,4 +1,4 @@
-pipeline {
+eline {
     agent {
         docker { 
             image 'elaad/premierlangage:latest' 
@@ -20,25 +20,28 @@ pipeline {
                 '''
             }
         }
-        parallel {
-            stage('Run Server') {
-                steps {
-                    sh '''
-                        cd server/serverpl
-                        source env/bin/activate
-                        ./run
-                    '''
+        stage('Run tests') {
+            parallel {
+                stage('Run Server') {
+                    steps {
+                        sh '''
+                            cd server/serverpl
+                            source env/bin/activate
+                            ./run
+                        '''
+                    }
+                }
+                stage('Run Django's tests') {
+                    steps {
+                        sh '''
+                            cd server/serverpl
+                            source env/bin/activate
+                            python3 manage.py test
+                        '''
+                    }
                 }
             }
-            stage('Run Django tests') {
-                steps {
-                    sh '''
-                        cd server/serverpl
-                        source env/bin/activate
-                        python3 manage.py test
-                    '''
-                }
-            }
-        }
+        } 
     }
 }
+
