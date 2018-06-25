@@ -2,7 +2,6 @@ pipeline {
     agent {
         docker { 
             image 'elaad/premierlangage:latest' 
-            args '-u 0'
         }
     }
     stages {
