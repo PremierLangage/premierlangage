@@ -5,7 +5,7 @@ pipeline {
         }
     }
     stages {
-         agent {
+          agent {
         docker { 
             image 'elaad/premierlangage:latest' 
         }
@@ -13,6 +13,7 @@ pipeline {
         stage('Set Environnement') {
             steps {
                 sh '''
+                    docker run -it elaad/premierlangage
                     pwd
                     python3 -m venv env
                     source env/bin/activate
@@ -23,6 +24,11 @@ pipeline {
             }
         }
         stage('Run tests') {
+              agent {
+        docker { 
+            image 'elaad/premierlangage:latest' 
+        }
+    }
             steps {
                 sh '''
                     pwd
