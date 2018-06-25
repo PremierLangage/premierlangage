@@ -1,9 +1,5 @@
 pipeline {
-    agent {
-        docker { 
-            image 'elaad/premierlangage' 
-        }
-    }
+    agent { dockerfile true }
     stages {
         stage('Set Environnement') {
             steps {
