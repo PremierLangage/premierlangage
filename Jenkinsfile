@@ -1,6 +1,15 @@
 pipeline {
-    agent { dockerfile true }
+     agent {
+        docker { 
+            image 'elaad/premierlangage:latest' 
+        }
+    }
     stages {
+         agent {
+        docker { 
+            image 'elaad/premierlangage:latest' 
+        }
+    }
         stage('Set Environnement') {
             steps {
                 sh '''
