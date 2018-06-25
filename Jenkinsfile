@@ -5,19 +5,19 @@ pipeline {
     stages {
         stage('Set environnement') {
             steps {
-                sh 'pwd'
-                sh 'ls'
                 sh 'service rsyslog restart'
             }
         }
         stage('run tests') {
             steps {
-                sh 'pwd'
-                sh 'ls'
-                sh 'cd server/serverpl'
-                sh 'pwd'
-                sh 'yes | ./install_local.sh'
-                sh 'python3 manage.py test'
+                sh '''
+                    pwd
+                    ls
+                    cd server/serverpl
+                    pwd
+                    yes | ./install_local.sh
+                    python3 manage.py test
+                '''
             }
         }
         
