@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker { 
-            image 'elaad/premierlangage:latest' 
+            image 'elaad/premierlangage' 
         }
     }
     stages {
