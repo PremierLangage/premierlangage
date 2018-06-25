@@ -17,8 +17,8 @@ pipeline {
                     pwd
                     python3 -m venv env
                     source env/bin/activate
-                    chmod +x install_local.sh
-                    yes | ./install_local.sh
+                    sudo chmod +x install_local.sh
+                    sudo yes | sudo ./install_local.sh
                     python3 manage.py test
                 '''
             }
