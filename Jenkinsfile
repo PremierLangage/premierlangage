@@ -13,10 +13,10 @@ pipeline {
         stage('Set Environnement') {
             steps {
                 sh '''
-                    cd server/serverpl
                     python3 -m venv env
                     source env/bin/activate
-                    yes | ./install_local.sh
+                    cd server/serverpl
+                    ./install_local.sh
                 '''
             }
         }
@@ -25,8 +25,8 @@ pipeline {
                 stage('Run Server') {
                     steps {
                         sh '''
-                            cd server/serverpl
                             source env/bin/activate
+                            cd server/serverpl
                             ./run
                         '''
                     }
@@ -34,8 +34,8 @@ pipeline {
                 stage('Run Djangos tests') {
                     steps {
                         sh '''
-                            cd server/serverpl
                             source env/bin/activate
+                            cd server/serverpl
                             python3 manage.py test
                         '''
                     }
