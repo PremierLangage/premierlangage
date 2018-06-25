@@ -31,7 +31,7 @@ eline {
                         '''
                     }
                 }
-                stage('Run Django's tests') {
+                stage('Run Djangos tests') {
                     steps {
                         sh '''
                             cd server/serverpl
