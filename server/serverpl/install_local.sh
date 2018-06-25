@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash bash
 
 echo -e "\nChecking dependencies...\n"
 
