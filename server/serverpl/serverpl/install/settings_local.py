@@ -187,7 +187,7 @@ LOGGING = {
             'facility': 'local7',
             'address': '/dev/log' if os.path.exists('/dev/log') else '/var/run/syslog',
             'formatter': 'verbose'
-        },
+        } if SYSLOG else None,
         'mail_admins': {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler',
