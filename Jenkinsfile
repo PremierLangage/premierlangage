@@ -22,25 +22,15 @@ pipeline {
             }
         }
         stage('Run tests') {
-            parallel {
-                stage('Run Server') {
-                    steps {
-                        sh '''
-                            source env/bin/activate
-                            cd server/serverpl
-                            ./run
-                        '''
-                    }
-                }
-                stage('Run Djangos tests') {
-                    steps {
-                        sh '''
-                            source env/bin/activate
-                            cd server/serverpl
-                            python3 manage.py test
-                        '''
-                    }
-                }
+            steps {
+                sh '''
+                    source env/bin/activate
+                    cd server/serverpl
+                    git config --global user.email "you@example.com"
+                    git config --global user.name "Your Name"
+                    python3 manage.py runserver &
+                    python3 manage.py test
+                '''
             }
         } 
     }
