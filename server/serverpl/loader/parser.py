@@ -7,14 +7,14 @@
 
 
 
-import os, importlib, traceback, logging
+import os, importlib, logging
 
 from os.path import basename, splitext, join
 
 from django.core.exceptions import ObjectDoesNotExist
 
 from serverpl.settings import PARSERS_ROOT, PARSERS_MODULE
-from loader.utils import get_location, extends_dict
+from loader.utils import extends_dict
 from loader.exceptions import UnknownExtension, UnknownType, DirectoryNotFound, FileNotFound, MissingKey
 
 from filebrowser.models import Directory

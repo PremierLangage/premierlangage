@@ -18,7 +18,6 @@ from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse
 
 from classmanagement.models import Course
-from user_profile.models import Profile
 
 from playexo.models import Answer, Activity
 from playexo.views import activity_receiver

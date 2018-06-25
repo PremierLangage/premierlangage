@@ -22,7 +22,7 @@
 #  
 #
 
-import os, subprocess, htmlprint
+import os, subprocess
 
 from urllib.parse import urlparse
 

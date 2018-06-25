@@ -5,11 +5,9 @@
 #  Author: Coumes Quentin
 
 
-import json, timeout_decorator, time, traceback, htmlprint
+import json, time, traceback, htmlprint
 
 from django.template import Template, RequestContext, Context
-
-from user_profile.enums import Role
 
 from loader.models import PLTP
 

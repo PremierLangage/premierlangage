@@ -10,7 +10,6 @@ from os.path import join, basename, abspath
 from django.core.exceptions import ObjectDoesNotExist
 from loader.exceptions import SemanticError, SyntaxErrorPL, DirectoryNotFound, FileNotFound
 from loader.utils import get_location
-from serverpl.settings import FILEBROWSER_ROOT
 
 
 class Parser:

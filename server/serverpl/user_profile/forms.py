@@ -10,7 +10,7 @@ from enumfields import EnumIntegerField
 
 from django import forms
 
-from user_profile.enums import EditorTheme, ColorBlindness, Role
+from user_profile.enums import EditorTheme, ColorBlindness
 
 
 

@@ -6,7 +6,7 @@
 #  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
 #  
 
-import os, json, shutil, htmlprint, urllib
+import os, json, shutil, htmlprint
 
 from os.path import basename, join, dirname
 

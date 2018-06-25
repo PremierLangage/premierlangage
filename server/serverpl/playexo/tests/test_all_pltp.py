@@ -6,11 +6,13 @@
 #  
 
 import json
-from django.test import TestCase, Client
+from django.test import TestCase, SimpleTestCase, Client
 from sandbox.models import Sandbox
+from playexo.utils import sum_key_value
 from loader.loader import load_file
 from django.contrib.auth.models import User
-from filebrowser.models import Directory 
+from filebrowser.models import Directory
+from django.contrib.messages import constants as messages
 
 from serverpl.settings import AUTHENTICATION_BACKENDS
 
@@ -20,20 +22,27 @@ class ExoTestCase(TestCase):
     def setUpTestData(self):
         self.user = User.objects.create_user(username='user', password='12345')
         self.dir = Directory.objects.create(name='plbank', owner=self.user)
-        self.pl = load_file(self.dir, 'plbank/python/function/carre.pl')[0]
+        self.pltp = load_file(self.dir, 'plbank/demo/all/all.pl')[0]
         self.sandbox = Sandbox.objects.create(url="http://127.0.0.1:8000/sandbox/?action=execute", 
             name="sanbdboxlocal", priority=200)
         
     
 
-    def test_load_exo_carre(self):
+    def test_load_allpltp(self):
         c = Client()
         c.force_login(self.user,backend=AUTHENTICATION_BACKENDS[0])
-        response = c.get('/filebrowser/apply_option/?option_h=edit_pl&name_h=carre.pl&relative_h=./plbank/python/function&type_h=entry',
+        response = c.get('/filebrowser/apply_option/?option_h=load&name_h=all.pltp&relative_h=./plbank/demo/all&type_h=entrya',
             {}, follow=True
         )
         
         self.assertEqual(response.status_code,200)
+        m = list(response.context["messages"])
+        self.assertEqual(messages.SUCCESS, m[0].level)
+        self.assertContains(m[0].message,"et a pour URL LTI")
+        self.assertContains(response.content,"et a pour URL LTI")
+        self.assertContains(response.content,"<body")
+
+
     
     
     def test_reponse_carre_false(self):
@@ -49,6 +58,9 @@ class ExoTestCase(TestCase):
             content_type='text/json',follow=True
         )
         
+        
+        
+
         self.assertContains(response,"Dominique Revuz")
         self.assertContains(response,"<h2>Une fonction carre</h2>\n\n<p>Ecrivez une fonction <strong>carre</strong> qui retourne le")
         
@@ -56,7 +68,6 @@ class ExoTestCase(TestCase):
         self.assertContains(response2, "r\\u00e9ussi(s):" , count=1)
         self.assertContains(response2, "rat\\u00e9s:", count=1)
         self.assertContains(response2, "***Tests \\u00e9chou\\u00e9s***", count=1)
-
 
     def test_reponse_carre_error(self):
         c = Client()
@@ -76,7 +87,6 @@ class ExoTestCase(TestCase):
         
         self.assertContains(response2, "Il y a des erreurs dans votre programme.", count=1)
         self.assertContains(response2, "Erreur dans votre programme:", count=1)
-
 
     def test_reponse_carre_true(self):
         c = Client()
