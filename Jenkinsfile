@@ -17,7 +17,7 @@ pipeline {
                     pwd
                     python3 -m venv env
                     source env/bin/activate
-                    yes | ./install_local.sh
+                    yes | bash install_local.sh
                     python3 manage.py test
                 '''
             }
