@@ -12,7 +12,7 @@ from os.path import join, isdir
 
 from django.test import TestCase
 from django.conf import settings
-from filebrowser.utils import mk_missing_dirs
+from filebrowser.utils import mk_missing_dirs, verif_file_in_repository
 
 
 TEST_DIR = join(settings.BASE_DIR, "filebrowser/tests/mk_missing_dirs")
@@ -73,6 +73,8 @@ class MKMissingDirsTestCase(TestCase):
             mk_missing_dirs(TEST_DIR, "", "/dir1/../dir2/dir3/../../../")
     
     
-
-    
+    def test_verif_file_in_repository(self):
+        path = "/dir1/dir2/dir3/file.pl"
+        
+        self.assertEqual(None, verif_file_in_repository('',path))
     
