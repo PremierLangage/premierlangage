@@ -31,7 +31,7 @@ pipeline {
                         '''
                     }
                 }
-                stage('Run Djangos tests') {
+                stage('Run Djangos test') {
                     steps {
                         sh '''
                             cd server/serverpl
