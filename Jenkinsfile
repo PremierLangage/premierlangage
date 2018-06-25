@@ -10,7 +10,7 @@ pipeline {
                 sh 'service rsyslog restart'
             }
         }
-        stage('Set Environnement) {
+        stage('Set Environnement') {
             steps {
                 sh '''
                     cd server/serverpl
@@ -30,7 +30,7 @@ pipeline {
                     '''
                 }
             }
-            stage('Run Django's tests') {
+            stage('Run Django tests') {
                 steps {
                     sh '''
                         cd server/serverpl
