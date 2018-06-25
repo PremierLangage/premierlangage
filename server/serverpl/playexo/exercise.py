@@ -134,7 +134,7 @@ class ActivityInstance:
             })
         
         context = RequestContext(request)
-        context.update(dic)
+        context.update(self.dic)
         context['pl_list__'] = pl_list
         
         return context
