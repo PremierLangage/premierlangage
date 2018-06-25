@@ -2,31 +2,43 @@ pipeline {
     agent {
         docker { 
             image 'elaad/premierlangage:latest' 
-            args '-u root:root'
         }
     }
     stages {
-        stage('Set environnement') {
+        stage('Restart rsyslog') {
             steps {
                 sh 'service rsyslog restart'
             }
         }
-        stage('run tests') {
+        stage('Set Environnement) {
             steps {
                 sh '''
-                    pwd
-                    ls
                     cd server/serverpl
-                    pwd
                     python3 -m venv env
                     source env/bin/activate
-                    chmod +x install_local.sh
                     yes | ./install_local.sh
-                    python3 manage.py test
                 '''
             }
         }
-        
+        parallel {
+            stage('Run Server') {
+                steps {
+                    sh '''
+                        cd server/serverpl
+                        source env/bin/activate
+                        ./run
+                    '''
+                }
+            }
+            stage('Run Django's tests') {
+                steps {
+                    sh '''
+                        cd server/serverpl
+                        source env/bin/activate
+                        python3 manage.py test
+                    '''
+                }
+            }
+        }
     }
 }
-
