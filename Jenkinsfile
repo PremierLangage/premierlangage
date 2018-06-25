@@ -5,12 +5,12 @@ pipeline {
         }
     }
     stages {
-          agent {
+        stage('Set Environnement') {
+              agent {
         docker { 
             image 'elaad/premierlangage:latest' 
         }
     }
-        stage('Set Environnement') {
             steps {
                 sh '''
                     docker run -it elaad/premierlangage
