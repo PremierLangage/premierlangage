@@ -1,4 +1,4 @@
-eline {
+elise {
     agent {
         docker { 
             image 'elaad/premierlangage:latest' 
