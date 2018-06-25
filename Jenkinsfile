@@ -1,4 +1,4 @@
-elise {
+pipeline {
     agent {
         docker { 
             image 'elaad/premierlangage:latest' 
