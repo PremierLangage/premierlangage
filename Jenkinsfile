@@ -9,6 +9,7 @@ pipeline {
             steps {
                 sh 'cd'
                 sh 'pwd'
+                sh 'whoami'
                 sh 'service rsyslog restart'
             }
         }
