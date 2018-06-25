@@ -15,7 +15,6 @@ pipeline {
                     ls
                     cd server/serverpl
                     pwd
-                    whoami
                     python3 -m venv /env
                     source /env/bin/activate
                     yes | ./install_local.sh
