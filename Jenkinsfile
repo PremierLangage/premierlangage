@@ -8,6 +8,7 @@ pipeline {
         stage('Set Environnement') {
             steps {
                 sh '''
+                    pwd
                     python3 -m venv env
                     source env/bin/activate
                     cd server/serverpl
@@ -19,6 +20,7 @@ pipeline {
         stage('Run tests') {
             steps {
                 sh '''
+                    pwd
                     source env/bin/activate
                     cd server/serverpl
                     git config --global user.email "you@example.com"
