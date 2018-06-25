@@ -244,7 +244,7 @@ USE_TZ = True
 STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'static'))
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../../tmp'))
+MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../tmp'))
 MEDIA_URL = '/tmp/'
 
 
