@@ -182,13 +182,6 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
         },
-        'syslog': {
-            'level': 'INFO',
-            'class': 'logging.handlers.SysLogHandler',
-            'facility': 'local7',
-            'address': '/dev/log' if os.path.exists('/dev/log') else '/var/run/syslog',
-            'formatter': 'verbose'
-        } if SYSLOG else None,
         'mail_admins': {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler',
@@ -198,35 +191,31 @@ LOGGING = {
     },
     'loggers': {
         'django':{
-            'handlers': ['console', 'syslog', 'mail_admins'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
         },
         'sandbox':{
-            'handlers': ['console', 'syslog', 'mail_admins'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
         },
         'classmanagement':{
-            'handlers': ['console', 'syslog', 'mail_admins'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
         },
         'documentation':{
-            'handlers': ['console', 'syslog', 'mail_admins'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
         },
         'filebrowser':{
-            'handlers': ['console', 'syslog', 'mail_admins'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
         },
         'playexo':{
-            'handlers': ['console', 'syslog', 'mail_admins'],
-            'level': 'INFO',
-        },
-        'pysrc':{
-            'handlers': ['console', 'syslog', 'mail_admins'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
         },
         'django_auth_lti':{
-            'handlers': ['console', 'syslog', 'mail_admins'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
         },
     },
