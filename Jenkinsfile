@@ -2,12 +2,14 @@ pipeline {
     agent {
         docker { 
             image 'elaad/premierlangage:latest' 
-            args 'exec -u 0'
+            args '-u 0'
         }
     }
     stages {
         stage('Restart rsyslog') {
             steps {
+                sh 'cd'
+                sh 'pwd'
                 sh 'service rsyslog restart'
             }
         }
