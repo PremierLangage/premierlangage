@@ -15,6 +15,7 @@ pipeline {
                 sh 'pwd'
                 sh 'ls'
                 sh 'cd server/serverpl'
+                sh 'pwd'
                 sh 'yes | ./install_local.sh'
                 sh 'python3 manage.py test'
             }
