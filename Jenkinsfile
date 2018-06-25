@@ -16,6 +16,7 @@ pipeline {
                     python3 -m venv env
                     source env/bin/activate
                     cd server/serverpl
+                    service rsyslog restart
                     ./install_local.sh
                 '''
             }
