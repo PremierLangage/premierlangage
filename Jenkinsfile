@@ -1,6 +1,9 @@
 pipeline {
     agent {
-        docker { image 'elaad/premierlangage:latest' }
+        docker { 
+            image 'elaad/premierlangage:latest' 
+            args '-u root:root'
+        }
     }
     stages {
         stage('Set environnement') {
@@ -17,8 +20,8 @@ pipeline {
                     pwd
                     python3 -m venv env
                     source env/bin/activate
-                    sudo chmod +x install_local.sh
-                    sudo yes | sudo ./install_local.sh
+                    chmod +x install_local.sh
+                    yes | ./install_local.sh
                     python3 manage.py test
                 '''
             }
