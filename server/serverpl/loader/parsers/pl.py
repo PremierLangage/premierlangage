@@ -312,14 +312,12 @@ class Parser:
             self.while_multi_line(line)
             
         elif self.DICT_LINE.match(line):
-            print(self.DICT_LINE.match(line))
             self.dict_line_match(self.DICT_LINE.match(line), line)
         
         elif self.EXTENDS_LINE.match(line):
             self.extends_line_match(self.EXTENDS_LINE.match(line), line)
         
         elif self.FROM_FILE_LINE.match(line):
-            print(self.FROM_FILE_LINE.match(line))
             self.from_file_line_match(self.FROM_FILE_LINE.match(line), line)
             
         elif self.ONE_LINE.match(line):
