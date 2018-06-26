@@ -39,7 +39,7 @@ class SemanticError(Exception):
         self.columno = ":"+columno if columno != None else ''
         
     def __str__(self):
-        return abspath(self.path) + " -- " + self.message + "at line " + self.lineno + self.columno + "\n" + self.line
+        return abspath(self.path) + " -- " + self.message + " at line " + self.lineno + self.columno + "\n" + self.line
 
 
 
