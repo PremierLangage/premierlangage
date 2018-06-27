@@ -5,7 +5,7 @@
 #  
 #  Copyright 2018 Coumes Quentin
 
-import re, json
+import re, json, os
 from os.path import join, basename, abspath
 from django.core.exceptions import ObjectDoesNotExist
 from loader.exceptions import SemanticError, SyntaxErrorPL, DirectoryNotFound, FileNotFound
@@ -212,7 +212,10 @@ class Parser:
         try:
             directory, path = get_location(self.directory, match.group('file'), current=self.path_parsed_file)
             path = join(directory.root, path)
+            
             name = basename(path) if not match.group('alias') else match.group('alias')
+            print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"+name)
+            print(str(directory)+"        "+path)
             with open(path, 'r') as f:
                 self.dic['__file'][name] = f.read()
         except ObjectDoesNotExist:
@@ -228,27 +231,35 @@ class Parser:
             Raise loader.exceptions.SyntaxErrorPL if the line wasn't match by any regex."""
         
         if self._multiline_key:
+            
             self.while_multi_line(line)
         
         elif self.EXTENDS_LINE.match(line):
+            
             self.extends_line_match(self.EXTENDS_LINE.match(line), line)
         
         elif self.FROM_FILE_LINE.match(line):
+            
             self.from_file_line_match(self.FROM_FILE_LINE.match(line), line)
             
         elif self.ONE_LINE.match(line):
+            
             self.one_line_match(self.ONE_LINE.match(line), line)
         
         elif self.SANDBOX_FILE_LINE.match(line):
+            
             self.sandbox_file_line_match(self.SANDBOX_FILE_LINE.match(line), line)
         
         elif self.MULTI_LINE.match(line):
+            
             self.multi_line_match(self.MULTI_LINE.match(line), line)
         
         elif self.COMMENT_LINE.match(line):
+            
             self.dic['__comment'] += '\n' + self.COMMENT_LINE.match(line).group('comment')
         
         elif not self.EMPTY_LINE.match(line):
+            
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)   
     
     def parse(self):
@@ -269,6 +280,7 @@ class Parser:
         if self._multiline_key: # If a multiline value is still open at the end of the parsing
             raise SyntaxErrorPL(join(self.directory.root, self.path), self.lines[self._multiline_opened_lineno-1], self._multiline_opened_lineno, message="Multiline value never closed, start ")
         
+        print(self.dic['__file']['__init__.py'])
         return self.dic, self.warning
 
 
@@ -286,3 +298,13 @@ def get_parser():
         'parser': Parser,
         'type': 'pl'
     }
+
+def createandtransforme():
+    """
+    """
+    try:
+        os.makedirs("")
+    except OSError:
+        if not os.path.isdir(""):
+            raise "dossier doesnr ext" 
+    

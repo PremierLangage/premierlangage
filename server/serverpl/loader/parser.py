@@ -128,16 +128,20 @@ def parse_file(directory, path, extending=False):
     path = path if path[0] != '/' else path[1:]
     
     parsers = get_parsers()
+    print("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
     ext = splitext(basename(path))[1]
     
     if not ext:
         ext = '.pl'
         path += '.pl'
     
-    if ext in parsers:
+    if ext in parsers
+    
         dic, warnings = parsers[ext]['parser'](directory, path).parse()
+        print("aaaaaaaaaaaaaaaaaaaaaaaaaa")
         dic, ext_warnings = process_extends(dic)
         warnings += ext_warnings
+        print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
         
         if not extending:
             if parsers[ext]['type'] == 'pltp':
@@ -152,6 +156,7 @@ def parse_file(directory, path, extending=False):
         for key in MUST_BE_STRING:
             if key in dic and type(dic[key]) != str:
                 raise TypeError("Key : '"+key+"' is '"+str(type(dic[key]))+"' but must be a string.")
+        
         
         return dic, warnings
     
