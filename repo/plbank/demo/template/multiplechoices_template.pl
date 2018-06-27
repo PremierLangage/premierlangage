@@ -3,30 +3,31 @@
 #  Last Modified: 2017-06-29
 
 type=direct
+title=<h1 style="color:pink">Pas de Titre </h1>
 
-build==
-def build(dic):
-    d= dict(dic)
-    n=1
-    question=list()
-    answer=list()
-    while ('answer'+str(n) in dic):
-        question.append(dic['answer'+str(n)])
-        if 'right_answer'+str(n) in dic:
-            answer.append(dic['right_answer'+str(n)])
-        n += 1
-    d['question'] = question
-    d['answer'] = answer
-    return d
+good==
+Napoleon, Oui c'est ca
+Bonapparte, Oui aussi malgré l'orthographe
+
 ==
 
-responses==
-def create_responses(dic):
-    good_rep = dict()
-    wrong_rep = dict()
-    good_rep['answer'] = dic['answer']
-    wrong_rep['answer'] = []
-    return good_rep, wrong_rep
+bad==
+Michel Fugain, T'es con ou quoi 
+Quentin Coumes, Peut être un jour
+==
+
+before==
+def spit(a):
+    d={}
+    for x in a.split("\n") :
+        if x:
+            x=x.split(",")
+            d[x[0]]=x[1]
+    return d
+
+goods=spit(good)
+bads=spit(bad)
+question=[x for x in goods.keys()]+[x for x in bads.keys()]
 ==
 
 form==
@@ -39,45 +40,16 @@ form==
 </center>
 ==
 
-consistency==
-
-def check_aux(dic, txt):
-    n = 1
-    list = [int(x[-1]) for x in dic.keys() if x[:-1] == txt]
-    list.sort()
-    while n < len(list):
-        if list[n] != list[n-1] + 1:
-            return False, "You must give consecutive numbers to your "+txt+'s'
-        n +=1
-
-
-def check_consistency(dic):
-    check_aux(dic, 'answer')
-    check_aux(dic, 'right_answer')
-    for x in dic['answer'] :
-        if x not in dic['question']:
-            False, "right_answer must be a possible answer"
-    return True, ""
-==
-
-responses==
-def create_responses(dic):
-    good_rep = dict()
-    wrong_rep = dict()
-    good_rep['answer'] = dic['answer']
-    wrong_rep['answer'] = []
-    return good_rep, wrong_rep
-==
 
 
 evaluator==
 def evaluator(reponse, dic):
     if not 'answer' in reponse:
         return False, "Merci de cocher au moins une case"
-    if len(reponse['answer']) == len(dic['answer']):
-        for answer in dic['answer']:
-            if not answer in reponse['answer']:
-                return False, "Réponse incorrecte"
-        return True, "Bonne réponse"
-    return False, "Réponse incorrecte"
+    if reponse['answer'] in dic['goods']:
+        return 100, dic['goods'][reponse['answer']]
+    if reponse['answer'] in dic['bads']:
+        return 100, dic['bads'][reponse['answer']]
+
 ==
+

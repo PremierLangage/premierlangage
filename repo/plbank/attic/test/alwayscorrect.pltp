@@ -49,15 +49,16 @@ tag=print|input|variables|identifieurs
 
 
 
-concept==debug
+
 @ /test/allwayscorrect.pl
-==
+
 
 
 
 
 
 title= Tests de plgrader
+
 
 
 

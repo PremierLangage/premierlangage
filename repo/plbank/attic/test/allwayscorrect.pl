@@ -35,6 +35,7 @@ soluce=""
 grader==
 print('{"execution": "*italic* **bold** ***bold italic***", "other": "", "errormessages": "", "success": true, "feedback": "ceci n\'est pas un exercice doit \\u00eatre utilis\\u00e9 uniquement comme \\u00e9lement de test\\n*italic* **bold** ***bold italic***"}')
 ==
-template=python/0PLG/template.pl
+template=plbank:/python/0PLG/template.pl
 
 # n'utilise pas 0PLG
+
