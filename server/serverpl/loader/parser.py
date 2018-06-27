@@ -135,7 +135,7 @@ def parse_file(directory, path, extending=False):
         ext = '.pl'
         path += '.pl'
     
-    if ext in parsers
+    if ext in parsers:
     
         dic, warnings = parsers[ext]['parser'](directory, path).parse()
         print("aaaaaaaaaaaaaaaaaaaaaaaaaa")
