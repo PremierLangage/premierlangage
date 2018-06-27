@@ -8,7 +8,7 @@
 
 import os
 
-from os.path import dirname, join
+from os.path import dirname, join, isdir, abspath
 
 from django.utils.encoding import iri_to_uri
 from django.shortcuts import redirect, reverse
@@ -52,16 +52,23 @@ def stay_in_directory(current, path):
             return False
     return True
 
-def verif_file_in_repository(current, path):
-    if path[0] == '/':
-        path = path[1:]
-    path = join(current, dirname(path))
-    while dirname(path):
-        if path == '.':
-            return None
+
+def in_repository(path, end):
+    """Check if entry pointed by path is inside a repository by recursively moving up
+    the path until <end>"""
+    path, end = abspath(path), abspath(end)
+    if end not in path:
+        raise ValueError("'Path' is not a sub-path of 'end'")
+    if not isdir(path):
         path = dirname(path)
-        if os.path.exists(join(path, ".git/")):
-            return path
+        
+    if '.git' in os.listdir(path):
+        return path if not path.endswith('/') else path[:-1]
+    while path != end and end in path and dirname(path):
+        path = dirname(path)
+        if '.git' in os.listdir(path):
+            return path if not path.endswith('/') else path[:-1]
+    
     return None
     
     
