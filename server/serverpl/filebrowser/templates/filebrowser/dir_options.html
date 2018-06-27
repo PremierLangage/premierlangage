@@ -30,10 +30,10 @@
             </div>
         </ul>
     </div>
-{% else %}
-    <button class="btn btn-secondary btn-dir-options" data-toggle="modal" data-target="#newDirModal">
-        <i class="fas fa-plus"></i>
-    </button>
-
-    {% include 'filebrowser/new_dir_modal.html' %}
+    {% for key,option in fb.directory_options.items %}
+        {% if option|opt_filter:fb.relative %}
+            {% if not option.form and option.require_confirmation %}{% include 'filebrowser/confirmation_dir_modal.html' %}{% endif %}
+            {% if option.form %}{% include 'filebrowser/default_dir_modal.html' %}{% endif %}
+        {% endif %}
+    {% endfor %}
 {% endif %}

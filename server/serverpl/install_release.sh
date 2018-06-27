@@ -71,17 +71,32 @@ fi
 if [ ! -f "../../../tmp/README" ]; then
     echo "Directory used by premier langage, do not remove." > ../../../tmp/README
 fi
+if [ ! -d "../../home" ]; then
+    mkdir ../../home/
+fi
+if [ ! -d "../../bank" ]; then
+    mkdir ../../bank/
+fi
 
 #Building database
 source /etc/apache2/envvars
 echo ""
 echo "Configuring database..."
+SECRET_KEY=$SECRET_KEY python3 manage.py makemigrations
 SECRET_KEY=$SECRET_KEY python3 manage.py migrate
 
 #Filling database
 SECRET_KEY=$SECRET_KEY python3 manage.py shell < serverpl/install/fill_database_local.py  || { echo>&2 "ERROR: python3 manage.py shell failed" ; exit 1; }
 echo "Done !"
 
-echo ""
-echo "Creating super user account..."
-SECRET_KEY=$SECRET_KEY python3 manage.py createsuperuser || { echo>&2 "ERROR: python3 manage.py createsuperuser failed" ; exit 1; }
+
+# Creating super user
+echo
+read -p "Creating a super user for django ? [Y/n] " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Nn]$ ]]
+then
+    echo "Creating super user account..."
+    SECRET_KEY=$SECRET_KEY python3 manage.py createsuperuser || { echo>&2 "ERROR: python3 manage.py createsuperuser failed" ; exit 1; }
+fi
+

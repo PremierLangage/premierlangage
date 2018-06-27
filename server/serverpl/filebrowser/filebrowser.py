@@ -25,7 +25,7 @@
 
 import os
 
-from os.path import abspath
+from os.path import abspath, join, basename
 
 from django.conf import settings
 
@@ -45,20 +45,15 @@ class Filebrowser():
         directory_options (FilebrowserOption): List of every options applicable to self.directory
     """
     
-    def __init__(self, root=None, path='.'):
-        self.root = settings.FILEBROWSER_ROOT if not root else root
+    def __init__(self, user, path='.', root=None):
+        self.root = join(settings.FILEBROWSER_ROOT, user.username) if not root else root
         self.relative = '.' if not path else path
         self.entry_options = ENTRY_OPTIONS
         self.directory_options = DIRECTORY_OPTIONS
-        if not self.relative.startswith('./'):
+        self.directory = Directory.objects.get(name=basename(self.root))
+        
+        if self.relative != '.' and not self.relative.startswith('./'):
             self.relative = './' + self.relative
-        try:
-            dir_name = path.split('/')
-            dir_name = dir_name[0] if dir_name[0] != '.' else None if len(dir_name) == 1 else dir_name[1]
-            self.directory = None if path == '.' else Directory.objects.get(name=dir_name)
-        except:
-            self.directory = None
-            self.relative = '.'
     
     
     def full_path(self):
@@ -70,22 +65,25 @@ class Filebrowser():
         """Return the breadcrumb corresponding to the current position o the filebrowser"""
         bc = list()
         path = ""
-        for elem in self.relative.split('/'):
-            bc.append({'name': elem, 'link': path+elem})
-            path += elem + '/'
+        for elem in [i for i in self.relative.split('/') if i]:
+            bc.append({'name': elem, 'link': join(path, elem)})
+            path = join(path, elem)
         
         return bc
     
     
     def list(self):
         """Return a list of tuple (name, path) corresponding to every entry at the current possition of the filebrowser."""
-        if not self.directory:
-            return sorted(Directory.objects.all(), key=lambda k: k.name)
-        
         entries = []
         for rootdir, dirs, files in os.walk(self.full_path()):
-            entries += sorted([{'name': elem, 'path': rootdir+'/'+elem} for elem in dirs ], key=lambda k: k['name'])
-            entries += sorted([{'name': elem, 'path': rootdir+'/'+elem} for elem in files], key=lambda k: k['name'])
+            entries += sorted(
+                [{'name': elem, 'path': rootdir+'/'+elem} for elem in dirs ],
+                key=lambda k: k['name']
+            )
+            entries += sorted(
+                [{'name': elem, 'path': rootdir+'/'+elem} for elem in files],
+                key=lambda k: k['name']
+            )
             break
         
         return entries

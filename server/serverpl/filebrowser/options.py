@@ -195,7 +195,7 @@ def add_commit_option(request, filebrowser, target):
         d = Directory.objects.get(name=target)
         done, msg = d.add_and_commit(commit)
     else:
-        done, msg = filebrowser.directory.add_and_commit(commit, path=filebrowser.full_path() + '/' + target)
+        done, msg = filebrowser.directory.add_and_commit(commit, path=join(filebrowser.full_path(), target))
 
     if done:
         messages.success(request, "Add and commit done.<br>" + htmlprint.code(msg))
@@ -215,7 +215,7 @@ def checkout_option(request, filebrowser, target):
         d = Directory.objects.get(name=target)
         done, msg = d.checkout()
     else:
-        done, msg = filebrowser.directory.checkout(path=filebrowser.full_path() + '/' + target)
+        done, msg = filebrowser.directory.checkout(path=join(filebrowser.full_path(), target))
 
     if done:
         messages.success(request, "Checkout done.<br>" + htmlprint.code(msg))
@@ -242,6 +242,26 @@ def status_option(request, filebrowser, target):
         messages.error(request, "Couldn't status:<br>" + htmlprint.code(msg))
     return redirect_fb(request.GET.get('relative_h', '.'))
 
+
+
+def clone_option(request, filebrowser, target):
+    """ Execute a git clone on the targeted entry with the informations of POST."""
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    username = request.POST.get('username', None)
+    password = request.POST.get('password', None)
+    if not filebrowser.directory:
+        d = Directory.objects.get(name=target)
+        done, msg = d.clone(username=username, password=password)
+    else:
+        done, msg = filebrowser.directory.pull(username=username, password=password)
+
+    if done:
+        messages.success(request, "Pull done.<br>" + htmlprint.code(msg))
+    else:
+        messages.error(request, "Couldn't pull:<br>" + htmlprint.code(msg))
+    return redirect_fb(request.POST.get('relative_h', '.'))
 
 
 def pull_option(request, filebrowser, target):

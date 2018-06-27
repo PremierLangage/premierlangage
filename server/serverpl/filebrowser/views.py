@@ -36,7 +36,7 @@ def index(request):
     if request.method == 'GET':
         path = request.GET.get('cd', '.')
     
-    return render(request, 'filebrowser/filebrowser.html', {'fb': Filebrowser(path=path)})
+    return render(request, 'filebrowser/filebrowser.html', {'fb': Filebrowser(request.user, path=path)})
 
 
 @login_required
@@ -55,7 +55,7 @@ def apply_option_get(request):
     
     if typ == 'directory':
         path = '.'
-    fb = Filebrowser(path=path)
+    fb = Filebrowser(request.user, path=path)
     
     try:
         if typ == "entry":
@@ -83,7 +83,7 @@ def apply_option_post(request):
     
     if typ == 'directory':
         path = '.'
-    fb = Filebrowser(path=path)
+    fb = Filebrowser(request.user, path=path)
     
     try:
         if typ == "entry":

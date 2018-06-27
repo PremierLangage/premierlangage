@@ -30,21 +30,18 @@
             <div class="card-body no-padding">
                 <table class="table table-hover" style="table-layout: fixed">
                     <tbody>
-                        {% if not fb.directory %}
-                            {% include 'filebrowser/directories.html' %}
-                        {% else %}
-                            {% include 'filebrowser/entries.html' %}
-                        {% endif %}
+                        {% include 'filebrowser/entries.html' %}
                     </tbody>
                 </table>
             </div>
-            {% if fb.directory and fb.directory.remote %}<footer class="blockquote-footer">{{ fb.directory.remote }}</footer>{% endif %}
-                {% for key,option in fb.directory_options.items %}
-                {% if option|opt_filter:fb.relative %}
-                    {% if not option.form and option.require_confirmation %}{% include 'filebrowser/confirmation_dir_modal.html' %}{% endif %}
-                    {% if option.form %}{% include 'filebrowser/default_dir_modal.html' %}{% endif %}
-                {% endif %}
-            {% endfor %}
         </div>
     </div>
+{% endblock %}
+
+{% block end_script %}
+    <script>
+        $(document).on('shown.bs.modal', function(e) {
+            $('input:visible:enabled:first', e.target).focus();
+        });
+    </script>
 {% endblock %}

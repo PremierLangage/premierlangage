@@ -36,6 +36,7 @@ def mk_missing_dirs(root, current, path):
             raise ValueError('Given path move outside of its repository')
     os.makedirs(join(join(root, current), dirname(path)))
 
+
 def stay_in_directory(current, path):
     if path[0] == '/':
         path = path[1:]

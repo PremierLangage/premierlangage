@@ -6,8 +6,14 @@
 #  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
 #
 
+
+import os
+
+from os.path import join, isdir
+
 from enumfields import EnumIntegerField
 
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -15,6 +21,7 @@ from django.dispatch import receiver
 
 from user_profile.enums import Role, EditorTheme, ColorBlindness
 
+from filebrowser.models import Directory
 from playexo.models import Activity
 
 
@@ -45,6 +52,9 @@ class Profile(models.Model):
     def create_user_profile(sender, instance, created, **kwargs):
         if created:
             profile = Profile.objects.create(user=instance)
+            if not isdir(join(settings.FILEBROWSER_ROOT, instance.username)):
+                os.mkdir(join(settings.FILEBROWSER_ROOT, instance.username))
+            Directory.objects.create(name=instance.username, owner=instance)
     
     
     @receiver(post_save, sender=User)

@@ -250,9 +250,11 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../../tmp'))
 MEDIA_URL = '/tmp/'
 
-
 # Default Filebrowser's path
-FILEBROWSER_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../repo/'))
+FILEBROWSER_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../home/'))
+
+# Default bank path
+BANK_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../bank/'))
 
 # Path to directory containing parsers
 PARSERS_ROOT = os.path.abspath(os.path.join(BASE_DIR,'loader/parsers/'))
