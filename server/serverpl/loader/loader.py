@@ -75,7 +75,10 @@ def load_PLTP(directory, rel_path, force=False):
     except: # If the PLTP does not exist, keep going
         pass
     
-    dic, warnings = parse_file(directory, rel_path)
+
+    path = createandtransforme(dirname(abspath(join(directory.root, rel_path[1:])))+"/dir"+splitext(basename(rel_path))[0], abspath(join(directory.root, rel_path[1:])))
+    
+    dic, warnings = parse_file(directory, rel_path, path)
     
     pl_list = list()
     for item in dic['__pl']:
