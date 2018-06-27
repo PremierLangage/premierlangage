@@ -84,15 +84,15 @@ class ActivityInstance:
             try:
                 exec(dic['evaluator'], dic)
                 if not 'grade' in dic \
-                        or dic['grade'][0] not in [False, True, None] \
+                        or type(dic['grade'][0]) not in [int, bool, type(None)] \
                         or type(dic['grade'][1]) != str:
                     return None, ("/!\ ATTENTION: La fonction d'évaluation de cet"
-                        + "exercice est incorrecte, merci de prévenir votre professeur:<br>"
-                        + "evaluator/before should declare a tuple called 'grade' (bool, str).")
+                        + " exercice est incorrecte, merci de prévenir votre professeur:<br>"
+                        + " evaluator/before should declare a tuple called 'grade' (bool, str).")
                 return dic['grade']
             except Exception as e:
                 return None, ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte"
-                    + "merci de prévenir votre professeur:<br>"+htmlprint.exc_format())
+                    + "merci de prévenir votre professeur:<br>"+htmlprint.html_exc())
     
     
     #@timeout_decorator.timeout(5, use_signals=False)
