@@ -1,7 +1,4 @@
-import os, sys
-
-from datetime import date
-
+import os
 from django.contrib.messages import constants as messages
 
 

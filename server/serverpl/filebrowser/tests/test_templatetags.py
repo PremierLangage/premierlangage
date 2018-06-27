@@ -9,10 +9,7 @@
 from os.path import join
 
 from django.test import TestCase
-from django.contrib.auth.models import User
 
-from filebrowser import filter
-from filebrowser.models import Directory
 from filebrowser.templatetags.filebrowser_filter import icon
 
 from django.conf import settings

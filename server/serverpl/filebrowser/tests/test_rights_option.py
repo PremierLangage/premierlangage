@@ -8,7 +8,7 @@
 
 import shutil
 
-from os.path import join, isdir, isfile
+from os.path import join, isdir
 
 
 from django.test import TestCase, Client, override_settings

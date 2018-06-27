@@ -6,7 +6,7 @@
 #  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
 #  
 
-import os, sys
+import os
 
 from os.path import dirname, join
 
@@ -14,6 +14,7 @@ from django.utils.encoding import iri_to_uri
 from django.shortcuts import redirect, reverse
 from django.conf import settings
 
+from filebrowser.models import Directory
 
 
 def redirect_fb(path='.'):
@@ -50,3 +51,18 @@ def stay_in_directory(current, path):
         if pos < 0:
             return False
     return True
+
+def verif_file_in_repository(current, path):
+    if path[0] == '/':
+        path = path[1:]
+    path = join(current, dirname(path))
+    while dirname(path):
+        if path == '.':
+            return None
+        path = dirname(path)
+        if os.path.exists(join(path, ".git/")):
+            return path
+    return None
+    
+    
+        

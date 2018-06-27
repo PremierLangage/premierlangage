@@ -6,16 +6,13 @@
 #  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
 #  
 
-import os, shutil, sys, json, time, subprocess
+import os, shutil, subprocess
 
 from os.path import join, isdir, isfile
-
-from mock import patch
 
 from django.test import TestCase, Client, override_settings
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.messages import constants as messages
 
 from filebrowser.models import Directory
 
@@ -57,7 +54,7 @@ class NewDirTestCase(TestCase):
             shutil.rmtree(join(FAKE_FB_ROOT, 'same'))
     
     
-    def test_new_directory(self):
+    def test_new_directory_method_not_allowed(self):
         response = self.c.get(
             '/filebrowser/new_directory/',
             {

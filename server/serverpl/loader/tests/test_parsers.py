@@ -6,7 +6,7 @@
 #  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
 #  
 
-import os, shutil, sys
+import os
 
 from mock import patch
 from loader import parser
@@ -14,7 +14,7 @@ from loader import parser
 from django.test import TestCase
 from django.contrib.auth.models import User
 from filebrowser.models import Directory
-from loader.exceptions import UnknownExtension, UnknownType
+from loader.exceptions import UnknownExtension
 from serverpl.settings import BASE_DIR
 
 
@@ -44,7 +44,6 @@ class ParsersTestCase(TestCase):
     
     
     def test_get_type(self, mock_logger):
-        parsers = parser.get_parsers()
         
         # Correct paths
         path1 = "relative/to/pl.pl"

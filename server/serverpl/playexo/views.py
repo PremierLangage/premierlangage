@@ -6,9 +6,7 @@
 #  Created: 2017-07-05
 #  Last Modified: 2017-11-16
 
-import json, traceback, logging, timeout_decorator, time, tempfile
-
-from sympy import evaluate
+import json, logging
 
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponseBadRequest
 from django.shortcuts import render, redirect, get_object_or_404
@@ -17,7 +15,6 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth import logout
 from django.urls import reverse
-from django.contrib import messages
 
 from loader.models import PLTP, PL
 

@@ -6,7 +6,7 @@
 #  Copyright 2018 Coumes Quentin
 
 
-import logging, hashlib, traceback, htmlprint
+import logging, hashlib, htmlprint
 
 from os.path import splitext, basename
 
