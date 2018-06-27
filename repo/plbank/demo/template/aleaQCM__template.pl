@@ -71,9 +71,11 @@ else:
             n -= 5 
     if n <0:
         n=0
-    grade = n, f + ""
+    NOTE=((n/10)/len(goods.keys()))*10
+    grade = n, f + "</br>Note: "+str(NOTE)+"/10"
 
 ==
+
 
 
 
