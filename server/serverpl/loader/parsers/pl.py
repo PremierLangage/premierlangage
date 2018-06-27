@@ -5,8 +5,8 @@
 #  
 #  Copyright 2018 Coumes Quentin
 
-import re, json, os
-from os.path import join, basename, abspath
+import re, json, os, shutil
+from os.path import join, basename, abspath, dirname
 from django.core.exceptions import ObjectDoesNotExist
 from loader.exceptions import SemanticError, SyntaxErrorPL, DirectoryNotFound, FileNotFound
 from loader.utils import get_location
@@ -87,7 +87,7 @@ class Parser:
         })
     
     
-    def from_file_line_match(self, match, line):
+    def from_file_line_match(self, match, line, dirtmp):
         """ Map (or append) the content if the file corresponding to file)
             to the key
             
@@ -117,6 +117,7 @@ class Parser:
                     self.dic[key] += f.read()
                 else:
                     self.dic[key] = f.read()
+            shutil.copy(abspath(join(directory,path)),dirtmp)
         except ObjectDoesNotExist:
             raise DirectoryNotFound(self.path_parsed_file, line, match.group('file'), self.lineno)
         except FileNotFoundError:
@@ -198,7 +199,7 @@ class Parser:
             self.dic[self._multiline_key] += line
     
     
-    def sandbox_file_line_match(self, match, line):
+    def sandbox_file_line_match(self, match, line, dirtmp):
         """ Map content of file to self.dic['__file'][name].
             
             Raise from loader.exceptions:
@@ -214,18 +215,22 @@ class Parser:
             path = join(directory.root, path)
             
             name = basename(path) if not match.group('alias') else match.group('alias')
-            print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"+name)
-            print(str(directory)+"        "+path)
+            
+           
             with open(path, 'r') as f:
                 self.dic['__file'][name] = f.read()
+            
+            shutil.copy(abspath(join(directory,path)), dirtmp)
+            
         except ObjectDoesNotExist:
             raise DirectoryNotFound(self.path_parsed_file, line, match.group('file'), self.lineno)
         except FileNotFoundError:
             raise FileNotFound(self.path_parsed_file, line, path, lineno=self.lineno)
         except ValueError:
             raise FileNotFound(self.path_parsed_file, line, match.group('file'), lineno=self.lineno, message="Path from another directory must be absolute")
-    
-    def parse_line(self, line):
+        
+        
+    def parse_line(self, line, dirtmp):
         """ Parse the given line by calling the appropriate function according to regex match.
         
             Raise loader.exceptions.SyntaxErrorPL if the line wasn't match by any regex."""
@@ -240,15 +245,15 @@ class Parser:
         
         elif self.FROM_FILE_LINE.match(line):
             
-            self.from_file_line_match(self.FROM_FILE_LINE.match(line), line)
+            self.from_file_line_match(self.FROM_FILE_LINE.match(line), line, dirtmp)
             
         elif self.ONE_LINE.match(line):
             
             self.one_line_match(self.ONE_LINE.match(line), line)
         
         elif self.SANDBOX_FILE_LINE.match(line):
+            self.sandbox_file_line_match(self.SANDBOX_FILE_LINE.match(line), line, dirtmp)
             
-            self.sandbox_file_line_match(self.SANDBOX_FILE_LINE.match(line), line)
         
         elif self.MULTI_LINE.match(line):
             
@@ -262,7 +267,7 @@ class Parser:
             
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)   
     
-    def parse(self):
+    def parse(self, dirtmp):
         """ Parse the given file.
         
             Return a tuple (dic, warning) where:
@@ -274,13 +279,12 @@ class Parser:
         self.fill_meta()
         
         for line in self.lines:
-            self.parse_line(line)
+            self.parse_line(line, dirtmp)
             self.lineno += 1
         
         if self._multiline_key: # If a multiline value is still open at the end of the parsing
             raise SyntaxErrorPL(join(self.directory.root, self.path), self.lines[self._multiline_opened_lineno-1], self._multiline_opened_lineno, message="Multiline value never closed, start ")
         
-        print(self.dic['__file']['__init__.py'])
         return self.dic, self.warning
 
 
@@ -299,12 +303,37 @@ def get_parser():
         'type': 'pl'
     }
 
-def createandtransforme():
+def createandtransforme(path, file_execute):
     """
     """
     try:
-        os.makedirs("")
+        if os.path.isdir(path):
+            shutil.rmtree(path)
+        os.makedirs(path)
+       
+        with open(file_execute,'r') as r,\
+             open(join(path, basename(file_execute)), 'w+') as f:
+            for line in r.readlines():
+                if Parser.SANDBOX_FILE_LINE.match(line):
+                    match = Parser.SANDBOX_FILE_LINE.match(line)
+                    s = '@ ' + basename(match.group('file'))
+                    if match.group('alias'):
+                        s += ' [' + match.group('alias') + ']'
+                    if match.group('comment'):
+                        s += ' ' + match.group('comment') 
+                    print(s, file=f)
+                elif Parser.FROM_FILE_LINE.match(line):
+                    match = Parser.FROM_FILE_LINE.match(line)
+                    s = (match.group('key')
+                      + ' ' + match.group('operator')
+                      + ' ' + basename(match.group('file')))
+                    if match.group('comment'):
+                        s += ' ' + match.group('comment')
+                    print(s, file=f)
+                else:
+                    print(line, file=f, end="")
+        return path
     except OSError:
-        if not os.path.isdir(""):
-            raise "dossier doesnr ext" 
+        return path
+            
     
