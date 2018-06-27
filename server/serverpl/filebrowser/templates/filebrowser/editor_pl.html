@@ -30,7 +30,7 @@
                                 <button id="save_button" type="button" class="btn btn-success">
                                     <i class="fas fa-save"></i>&emsp; Save
                                 </button>
-                                <button class="btn btn-primary" type="submit">
+                                <button id="quit_button" class="btn btn-primary" type="submit">
                                     <i class="fas fa-save"></i>&emsp; Save & Quit
                                 </button>
                                 <button id="preview_button" type="button" class="btn btn-success">
@@ -60,6 +60,12 @@
                             return elem.value.replace( /\r?\n/g, "\r\n" );
                         }
                     };
+
+
+                    $( "#quit_button" ).click(function() {
+                        window.onbeforeunload = function () {}
+                    });
+
 
                     $( "#save_button" ).click(function() {
                         var input = $("#editor_input").val();

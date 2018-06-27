@@ -73,6 +73,9 @@
 window.onbeforeunload = function () {return confirm();}
 $( document ).ready(function(){
     $( "#submit_button" ).click(function() {
+
+        window.onbeforeunload = function () {}
+
         var inputs = getInputs();
 
         var status = {requested_action: 'submit', inputs: inputs};
@@ -89,6 +92,8 @@ $( document ).ready(function(){
     });
     
     $( "#save_button" ).click(function() {
+        window.onbeforeunload = function () {}
+
         var inputs = getInputs();
 
         var status = {requested_action: 'save', inputs: inputs};

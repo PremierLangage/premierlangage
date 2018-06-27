@@ -31,7 +31,7 @@
                                 <button id="save_button" type="button" class="btn btn-success">
                                     <i class="fas fa-save"></i>&emsp; Save
                                 </button>
-                                <button class="btn btn-primary" type="submit">
+                                <button id="quit_button" class="btn btn-primary" type="submit">
                                     <i class="fas fa-save"></i>&emsp; Save & Quit
                                 </button>
                             </center>
@@ -52,6 +52,11 @@
                     inputPL.val(editorPL.getSession().getValue());
                 });
                 $( document ).ready(function() {
+                    $( "#quit_button" ).click(function() {
+                        window.onbeforeunload = function () {}
+                    });
+
+
                     $("#save_button").click(function () {
                         var input = $("#editor_input").val();
                         var path = "{{ filepath }}";
