@@ -26,5 +26,6 @@ urlpatterns = [
     url(r'^documentation/',include('documentation.urls')),
     url(r'^filebrowser/',include('filebrowser.urls', namespace='filebrowser')),
     url(r'^profile/',include('user_profile.urls')),
+    url(r'^publisher/',include('publisher.urls')),
     url(r'^admin/', admin.site.urls),
 ]
