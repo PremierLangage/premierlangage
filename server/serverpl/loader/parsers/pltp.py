@@ -282,7 +282,7 @@ def get_parser():
         'parser': Parser,
         'type': 'pltp'
     }
-def createandtransforme(path, file_execute):
+def createandtransforme(path, file_execute, directory):
     """
     """
     try:
@@ -301,6 +301,8 @@ def createandtransforme(path, file_execute):
                     if match.group('comment'):
                         s += ' ' + match.group('comment') 
                     print(s, file=f)
+                    print(directory.root+match.group('file'))
+                    shutil.copy(abspath(directory.root+match.group('file')), path)
                 elif Parser.FROM_FILE_LINE.match(line):
                     match = Parser.FROM_FILE_LINE.match(line)
                     s = (match.group('key')
@@ -309,8 +311,15 @@ def createandtransforme(path, file_execute):
                     if match.group('comment'):
                         s += ' ' + match.group('comment')
                     print(s, file=f)
+                   
+                    shutil.copy(abspath(directory.root+match.group('file')),path)
+                    
                 else:
                     print(line, file=f, end="")
+        
+        zf = path
+        shutil.make_archive(zf,"zip",path)
+        shutil.rmtree(path)
         return path
     except OSError:
         return path

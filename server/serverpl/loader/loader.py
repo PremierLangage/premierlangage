@@ -76,8 +76,8 @@ def load_PLTP(directory, rel_path, force=False):
         pass
     
 
-    path = createandtransforme(dirname(abspath(join(directory.root, rel_path[1:])))+"/dir"+splitext(basename(rel_path))[0], abspath(join(directory.root, rel_path[1:])))
-    
+    #~ path = createandtransforme(dirname(abspath(join(directory.root, rel_path[1:])))+"/dir"+splitext(basename(rel_path))[0], abspath(join(directory.root, rel_path[1:])), directory)
+    path = dirname(abspath(join(directory.root, rel_path[1:])))+"/dir"+splitext(basename(rel_path))[0]
     dic, warnings = parse_file(directory, rel_path, path)
     
     pl_list = list()
@@ -116,9 +116,9 @@ def load_PL(directory, rel_path):
         This function return a PL object but does not save it in the database
     """
     
-
-    path = createandtransforme(dirname(abspath(join(directory.root, rel_path[1:])))+"/dir"+splitext(basename(rel_path))[0], abspath(join(directory.root, rel_path[1:])))
     
+    createandtransforme(dirname(abspath(join(directory.root, rel_path[1:])))+"/dir"+splitext(basename(rel_path))[0], abspath(join(directory.root, rel_path[1:])), directory)
+    path = dirname(abspath(join(directory.root, rel_path[1:])))+"/dir"+splitext(basename(rel_path))[0]
     dic, warnings = parse_file(directory, rel_path, path)
     
     

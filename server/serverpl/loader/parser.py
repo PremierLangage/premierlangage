@@ -141,9 +141,9 @@ def parse_file(directory, path, dirtmp, extending=False):
         dic, ext_warnings = process_extends(dic)
         warnings += ext_warnings
         
-        zf = join(join(dirname(abspath(join(directory.root,path)))),basename(dirtmp))
-        shutil.make_archive(zf,"zip",join(dirname(abspath(join(directory.root,path))),basename(dirtmp)))
-        shutil.rmtree(join(dirname(abspath(join(directory.root,path))),basename(dirtmp)))
+        #~ zf = join(join(dirname(abspath(join(directory.root,path)))),basename(dirtmp))
+        #~ shutil.make_archive(zf,"zip",join(dirname(abspath(join(directory.root,path))),basename(dirtmp)))
+        #~ shutil.rmtree(join(dirname(abspath(join(directory.root,path))),basename(dirtmp)))
         if not extending:
             if parsers[ext]['type'] == 'pltp':
                 for key in PLTP_MANDATORY_KEY:
