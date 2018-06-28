@@ -9,7 +9,7 @@
             <td class="fb-tr" style="width: 15%; cursor: pointer;" onclick="window.location='?cd={{ fb.relative }}/{{ entry.name }}';">
                 <i class="fas fa-user"></i>&emsp; {{ entry.owner }}
             </td>
-            <td class="fb-tr" style="width: 25%; cursor: pointer;" onclick="window.location='?cd={{ fb.relative }}/{{ entry.name }}';">
+            <td class="fb-tr" style="width: 25%; cursor: pointer;" onclick="window.location='{{ entry.remote }}';">
                 <i class="fas fa-link"></i>&emsp; {% if entry.remote %}{{ entry.remote }}{% else %}-{% endif %}
             </td>
             <td style="width: 35%">
