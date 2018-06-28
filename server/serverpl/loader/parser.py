@@ -99,7 +99,7 @@ def process_extends(dic):
     for item in dic['__extends']:
         try:
             directory = Directory.objects.get(name=item['directory_name'])
-            ext_dic, warnings_ext = parse_file(directory, item['path'], extending=True)
+            ext_dic, warnings_ext = parse_file(directory, item['path'],"", extending=True)
             warnings += warnings_ext
             dic = extends_dict(dic, ext_dic)
         except ObjectDoesNotExist:
