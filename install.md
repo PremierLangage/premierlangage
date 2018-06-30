@@ -12,7 +12,7 @@ If any problem occurs during the installation, see the section ***Troubleshootin
 We recommend you to use [python virtual environment](https://docs.python.org/3/tutorial/venv.html) to make a clean install and to be 
 sure that PL's packages will not conflict with your already installed packages.
 
-You can install virtualenv by using:
+You can install virtualenv with:
 
     apt-get install python3-virtualenv python3-venv
 

@@ -1,5 +1,4 @@
 wheel
-celery
 django
 django-annoying
 django-celery-results
@@ -8,7 +7,6 @@ django-markdown-deux
 django-markdown-app
 django-taggit
 dj-database-url
-gitpython
 gunicorn
 jinja2
 jsonfield
@@ -19,12 +17,10 @@ oauth2
 psycopg2
 pytest
 pytest-django
-pytest-selenium
 python-magic
 pytz
 recommonmark
 requests
-sphinx
 sympy
 whitenoise
 yattag

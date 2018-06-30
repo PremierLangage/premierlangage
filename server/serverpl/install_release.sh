@@ -1,35 +1,32 @@
-echo "Checking dependencies..."
+#!/bin/bash
 
-if [ "$VIRTUAL_ENV" == "" ]; then
-  INVENV=1
-  echo -e "ERROR: The installation should run under Virtual Environnement
---> check the virtuelenv's documentation : https://virtualenv.pypa.io/en/stable/"
-  exit 1
-fi
+echo -e "\nChecking dependencies...\n"
 
 OS=$(uname -s)
-echo "$OS"
+echo -e "OS: $OS\n"
+
 
 #Cheking if this is an apple OS
 if [ "$OS" = "Darwin" ]; then
-   if ! hash brew; then
-       echo "ERROR: brew should be installed. visit https://brew.sh/ "
-       echo "ERROR: brew should be installed. visit https://brew.sh/ "
-       exit 1
-   fi
-  brew install libmagic
+    if ! hash brew; then
+        echo "ERROR: brew should be installed. visit https://brew.sh/ "
+        exit 1
+    fi
+    brew install libmagic
 fi
+
 
 #Checking if zip is installed
 if ! hash zip; then
-    echo "ERROR: zip should be installed. Try 'apt-get install zip'"
+    echo "ERROR: zip should be installed. Try 'apt-get install zip' "
     exit 1
 fi
-echo "zip: OK !"
+echo "Zip >= 3.5: OK !"
+
 
 #Checking if python >= 3.5 is installed
 if ! hash python3; then
-    echo "ERROR: Python >= 3.5 should be installed."
+    echo "ERROR: Python >= 3.5 should be installed. Try 'apt-get install python3'"
     exit 1
 fi
 
@@ -40,9 +37,25 @@ if [ "$ver" -lt "35" ]; then
 fi
 echo "Python >= 3.5: OK !"
 
+
 #Checking if pip3 is installed
 command -v pip3 >/dev/null 2>&1 || { echo >&2 "ERROR: pip3 should be installed"; exit 1; }
 echo "pip3: OK !"
+
+
+# Checking if inside a python venv
+if [ "$VIRTUAL_ENV" == "" ]; then
+    echo ""
+    INVENV=1
+    echo "WARNING: You're not currently running a virtual environnement (https://docs.python.org/3/library/venv.html)." | fold -s
+    read -p "Do you want to continue outside a virtual environnement ? [Y/N] " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Nn]$ ]]
+    then
+        exit 1
+    fi
+fi
+
 
 #Getting requirement
 echo ""
@@ -51,10 +64,10 @@ pip3 install wheel  || { echo>&2 "ERROR: pip3 install wheel failed" ; exit 1; }
 pip3 install -r requirements.txt || { echo>&2 "ERROR: pip3 install -r requirements.txt failed" ; exit 1; }
 echo "Done !"
 
+
 #Getting release settings.py
-echo "creating setting and secret key"
-cp -f serverpl/install/settings_release.py serverpl/settings.py
-python3 serverpl/install/genkey.py >> settings.py
+cp -f serverpl/install/settings_local.py serverpl/settings.py
+
 
 #Creating documentation
 echo ""
@@ -62,26 +75,18 @@ echo "Creating documentation..."
 ./serverpl/install/make_doc.sh || { echo>&2 "ERROR: ./serverpl/install/make_doc.sh failed" ; exit 1; }
 echo "Done !"
 
-#Creating ../tmp
-echo ""
-echo "Creating needed directories..."
-if [ ! -d "../../tmp" ]; then
-    mkdir ../../tmp || { echo>&2 "ERROR: Can't create ../../tmp" ; exit 1; }
-fi
-if [ ! -f "../../../tmp/README" ]; then
-    echo "Directory used by premier langage, do not remove." > ../../tmp/README
-fi
 
 #Building database
-source /etc/apache2/envvars
 echo ""
 echo "Configuring database..."
-SECRET_KEY=$SECRET_KEY python3 manage.py migrate
+python3 manage.py makemigrations || { echo>&2 "ERROR: python3 manage.py makemigrations failed" ; exit 1; }
+python3 manage.py migrate || { echo>&2 "ERROR: python3 manage.py migrate failed" ; exit 1; }
 
 #Filling database
-SECRET_KEY=$SECRET_KEY python3 manage.py shell < serverpl/install/fill_database_local.py  || { echo>&2 "ERROR: python3 manage.py shell failed" ; exit 1; }
+read -p "Do you want to create a new django super user ? [Y/N] " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    python3 manage.py creatersuperuser || { echo>&2 "ERROR: python3 manage.py createsuperuser failed" ; exit 1; }
+fi
 echo "Done !"
-
-echo ""
-echo "Creating super user account..."
-SECRET_KEY=$SECRET_KEY python3 manage.py createsuperuser || { echo>&2 "ERROR: python3 manage.py createsuperuser failed" ; exit 1; }

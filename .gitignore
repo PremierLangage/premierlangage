@@ -4,6 +4,7 @@ repo/*
 .idea/*
 *__pycache__/
 *htmlcov/
+tmp/
 
 ### OSX ###
 *.DS_Store

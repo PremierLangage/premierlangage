@@ -75,14 +75,6 @@ echo "Creating documentation..."
 ./serverpl/install/make_doc.sh || { echo>&2 "ERROR: ./serverpl/install/make_doc.sh failed" ; exit 1; }
 echo "Done !"
 
-echo ""
-echo "Creating needed directories..."
-if [ ! -d "../../tmp" ]; then
-    mkdir ../../tmp || { echo>&2 "ERROR: Can't create ../../tmp" ; exit 1; }
-fi
-if [ ! -f "../../tmp/README" ]; then
-    echo "Directory used by premier langage, do not remove." > ../../tmp/README
-fi
 
 #Building database
 echo ""
