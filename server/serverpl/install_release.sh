@@ -76,6 +76,12 @@ echo "Creating documentation..."
 echo "Done !"
 
 
+#Creating static files
+echo ""
+echo "Creating static files..."
+python3 manage.py collectstatic --noinput || { echo>&2 "ERROR: python3 manage.py collectstatic failed" ; exit 1; }
+echo "Done !"
+
 #Building database
 echo ""
 echo "Configuring database..."
@@ -87,6 +93,6 @@ read -p "Do you want to create a new django super user ? [Y/N] " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-    python3 manage.py creatersuperuser || { echo>&2 "ERROR: python3 manage.py createsuperuser failed" ; exit 1; }
+    python3 manage.py createsuperuser || { echo>&2 "ERROR: python3 manage.py createsuperuser failed" ; exit 1; }
 fi
 echo "Done !"
