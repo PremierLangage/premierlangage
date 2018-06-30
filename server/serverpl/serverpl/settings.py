@@ -1,4 +1,4 @@
-DEPLOYED = True
+DEPLOYED = False
 
 import os
 import dj_database_url
