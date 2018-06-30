@@ -1,4 +1,4 @@
-DEPLOYED = False
+DEPLOYED = True
 
 import os
 import dj_database_url
@@ -6,7 +6,12 @@ from django.contrib.messages import constants as messages
 
 
 if DEPLOYED:
-    import serverpl.config as conf
+    try:
+        import serverpl.config as conf
+    except ImportError:
+        raise ImportError("ImportError: No module named 'serverpl.config' found.\n"
+                        + "File premierlangage/server/serverpl/conf.py was not found.\n"
+                        + "You can find an example of such file at premierlangage/server/serverpl/conf_example.py")
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
