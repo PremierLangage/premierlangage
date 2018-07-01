@@ -1,9 +1,9 @@
 DEADJOE
 home/
 .idea/*
-*__pycache__/
-*htmlcov/
-
+__pycache__/
+htmlcov/
+.pytest_cache/
 ### OSX ###
 *.DS_Store
 .AppleDouble
