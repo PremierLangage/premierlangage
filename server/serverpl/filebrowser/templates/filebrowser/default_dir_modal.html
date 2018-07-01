@@ -10,7 +10,7 @@
                 <input type="hidden" name="relative_h" value="{{ fb.relative }}"/>
                 <input type="hidden" name="name_h" value="{{ fb.directory.name }}"/>
                 <input type="hidden" name="option_h" value="{{ key }}"/>
-                <input type="hidden" name="type_h" value="directory"/>
+                <input type="hidden" name="type_h" value="directory-{{dropname}}"/>
                 <input type="hidden" name="relative" value="{{ fb.relative }}"/>
                 {{ option.form.as_p }}
                 <div class="modal-footer">

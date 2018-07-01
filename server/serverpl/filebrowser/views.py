@@ -48,20 +48,18 @@ def apply_option_get(request):
     path = request.GET.get('relative_h', None)
     name = request.GET.get('name_h', None)
     option = request.GET.get('option_h', None)
-    typ = request.GET.get('type_h', None)
+    typ, key = request.GET.get('type_h', None).split('-')
     
-    if not (name and path and option and typ):
+    if not (name and path and option and typ and key):
         return HttpResponseBadRequest("Missing one of 'relative_h', 'name_h', 'option_h' or 'type_h' argument")
     
-    if typ == 'directory':
-        path = '.'
     fb = Filebrowser(request.user, path=path)
     
     try:
         if typ == "entry":
-            return ENTRY_OPTIONS[option].process_option(request, fb, name)
+            return ENTRY_OPTIONS[key][option].process_option(request, fb, name)
         else:
-            return DIRECTORY_OPTIONS[option].process_option(request, fb, name)
+            return DIRECTORY_OPTIONS[key][option].process_option(request, fb, name)
     except Exception as e:
         messages.error(request, "Impossible to apply the option "+option+" : "+ htmlprint.code(str(type(e)) + " - " + str(e)))
     return redirect_fb(path)
@@ -76,20 +74,18 @@ def apply_option_post(request):
     path = request.POST.get('relative_h', None)
     name = request.POST.get('name_h', None)
     option = request.POST.get('option_h', None)
-    typ = request.POST.get('type_h', None)
+    typ, key = request.POST.get('type_h', None).split('-')
 
-    if not (name and path and option and typ):
+    if not (name and path and option and typ and key):
         return HttpResponseBadRequest("Missing one of 'relative_h', 'name_h', 'option_h' or 'type_h' argument")
     
-    if typ == 'directory':
-        path = '.'
     fb = Filebrowser(request.user, path=path)
     
     try:
         if typ == "entry":
-            return ENTRY_OPTIONS[option].process_option(request, fb, name, )
+            return ENTRY_OPTIONS.get_option(key, option)(request, fb, name)
         else:
-            return DIRECTORY_OPTIONS[option].process_option(request, fb, name)
+            return DIRECTORY_OPTIONS[key]['options'][option].process_option(request, fb, name)
     except Exception as e:
         messages.error(request, "Impossible to apply the option "+option+" : "+ htmlprint.code(str(type(e)) + " - " + str(e)))    
     return redirect_fb(path)

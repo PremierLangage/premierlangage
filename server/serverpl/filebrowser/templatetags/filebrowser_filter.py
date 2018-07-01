@@ -23,12 +23,14 @@
 #  
 
 
+import gitcmd
+
 from os.path import splitext
 
 from django import template
 
 from filebrowser.models import Directory
-from filebrowser.filter import is_directory, is_image, is_video, is_audio, is_text
+from filebrowser.filter import is_directory, is_image, is_video, is_audio, is_text, in_repository
 
 
 register = template.Library()
@@ -53,6 +55,47 @@ def filter(option, path):
         bol = not option.filter or option.filter(path)
     
     return bol
+
+
+@register.filter(name='dropdown_filter')
+def filter(dropdown, path):
+    if 'filter' in dropdown and isinstance(dropdown['filter'], (list, tuple)):
+        bol = True;
+        for filter in dropdown['filter']:
+            bol = bol and filter(path)
+            if not bol:
+                break
+    else:
+        bol = not 'filter' in dropdown or dropdown['filter'](path)
+    
+    return bol
+
+
+@register.filter(name='in_repository')
+def in_repo(path):
+    return in_repository(path)
+
+
+@register.filter(name='repository_url')
+def repository_url(path):
+    return gitcmd.remote_url(path)[1][:-1]
+
+
+@register.filter(name='repository_branch')
+def repository_branch(path):
+    return gitcmd.current_branch(path)[1][:-1]
+
+
+@register.filter(name='repository_host')
+def repository_host(path):
+    url = repository_url(path)
+    if 'github.com' in url:
+        return 'fab fa-github'
+    if 'bitbucket.org' in url:
+        return 'fab fa-bitbucket'
+    if 'gitlab.com' in url:
+        return 'fab fa-gitlab'
+    return 'fab fa-git'
 
 
 @register.filter

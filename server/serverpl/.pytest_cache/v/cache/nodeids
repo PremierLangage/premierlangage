@@ -1,0 +1,9 @@
+[
+  "django_auth_lti/tests/test_verification.py::TestVerification::test_is_allowed_config_failure",
+  "django_auth_lti/tests/test_verification.py::TestVerification::test_is_allowed_exception",
+  "django_auth_lti/tests/test_verification.py::TestVerification::test_is_allowed_failure",
+  "django_auth_lti/tests/test_verification.py::TestVerification::test_is_allowed_failure_one_role",
+  "django_auth_lti/tests/test_verification.py::TestVerification::test_is_allowed_success",
+  "django_auth_lti/tests/test_verification.py::TestVerification::test_is_allowed_success_one_role",
+  "playexo/tests/test_utils.py::UtilsTestCase::test_sum_key_value"
+]

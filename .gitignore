@@ -1,6 +1,5 @@
 DEADJOE
-repo/*
-!repo/plbank
+home/
 .idea/*
 *__pycache__/
 *htmlcov/

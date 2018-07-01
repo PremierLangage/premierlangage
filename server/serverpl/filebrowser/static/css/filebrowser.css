@@ -23,6 +23,56 @@
     border-radius: 0;
 }
 
+.btn-sep {
+    border: rgba(0,0,0,0) !important;
+    color: rgba(0,0,0,0) !important;
+    background-color: rgba(0,0,0,0) !important;
+    cursor: default !important;
+}
+.btn-sep:hover {
+    border: rgba(0,0,0,0) !important;
+    color: rgba(0,0,0,0) !important;
+    background-color: rgba(0,0,0,0) !important;
+    cursor: default !important;
+}
+.btn-sep:active {
+    border: rgba(0,0,0,0) !important;
+    color: rgba(0,0,0,0) !important;
+    background-color: rgba(0,0,0,0) !important;
+    cursor: default !important;
+}
+.btn-sep:focus {
+    border: rgba(0,0,0,0) !important;
+    color: rgba(0,0,0,0) !important;
+    background-color: rgba(0,0,0,0) !important;
+    cursor: default !important;
+    box-shadow: 0 0 0 0.2rem rgba(0,0,0,0) !important;
+}
+
+
+.dropdown:hover>.dropdown-menu {
+  display: block;
+}
+
+.opt-drop-entry {
+    margin-left: 20px;
+}
+
+.dir-opt {
+    position: absolute;
+    right: 0;
+    width: 70px;
+    height: 44px;
+}
+
+.card-fb {
+    margin-bottom: 40px;
+}
+
+.card-header-fb {
+    background-color: #e9ecef;
+}
+
 .fb-tr {
     overflow: hidden;
     text-overflow: ellipsis;

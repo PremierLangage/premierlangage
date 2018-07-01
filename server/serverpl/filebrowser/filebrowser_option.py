@@ -34,41 +34,36 @@ from filebrowser.options import *
 from filebrowser.filter import *
 from filebrowser.models import Directory
 
-
+#####
 # Bootstrap button classes
     # Color
-GREY = "secondary"
-DARK_BLUE = "primary"
-LIGHT_BLUE = "info"
-GREEN = "success"
-RED = "danger"
-YELLOW = "warning"
-WHITE = "light"
-BLACK = "dark"
+GREY = "-secondary"
+DARK_BLUE = "-primary"
+LIGHT_BLUE = "-info"
+GREEN = "-success"
+RED = "-danger"
+YELLOW = "-warning"
+WHITE = "-light"
+BLACK = "-dark"
 
     # Outline
-OUTLINE = "outline-"
+OUTLINE = "-outline"
 
     # Size
 SMALL = "small"
 BIG = "big" 
 
-
+#####
 # Methods
 POST = 'POST'
 GET = 'GET'
-
-# Rights
-READ = "read"
-WRITE = "write"
-OWNER = "owner"
-
 
 
 class FilebrowserOption():
     """ Class representing an option in the filebrowser.
     
     Mandatory Attributes:
+        slug (str): Will be used when searching an option
         fa_icon (str): Font Awesome 5 class of the icon of the button
         text (str): Texte which will be displayed on big button or when hovering small button
         option (function): Function which will be called with request, filebrowser
@@ -82,8 +77,7 @@ class FilebrowserOption():
         filter (function/function list): function of list of function to filter to which entry
                                          this option is applied (default None, see filter.py for
                                          more informations)
-        authorization (str): Which level of right is needed for the option to be displayed
-                             (READ, WRITE or OWNER, default WRITE)
+        class (lst): List of css class to be added to the button
         color (str): boostrap class for the color of the button, see above constant for choices.
         size (size): boostrap class for the size of the button (BIG or SMALL, default SMALL). Big buttons
                      are displayed first together then small buttons next.
@@ -91,9 +85,10 @@ class FilebrowserOption():
         balise (str): Any extra balise which should be add inside the <button [balise]> element.
     """
     
-    def __init__(self, fa_icon, name, option, form=None, filter=None,
+    def __init__(self, slug, fa_icon, name, option, form=None, filter=None,
                  require_confirmation=False, color=GREY, outline=True,
-                 method=POST, balise=None, authorization=WRITE, size=SMALL):
+                 method=POST, balise=None, size=SMALL, classes=[]):
+        self.slug = slug
         self.fa_icon = fa_icon
         self.text = name
         self.form = form
@@ -105,65 +100,92 @@ class FilebrowserOption():
         self.method = method
         self.type = 'button' if method == POST else 'a'
         self.balise = balise
-        self.authorization = authorization
         self.size = size
+        self.classes = classes
         
         if form and method == GET:
             raise ValueError("An option can't have a form while using GET method")
         if require_confirmation and method == GET:
             raise ValueError("require_confirmation can't be True with a GET method")
+
+
+
+class OptionsGroup():
     
+    def __init__(self, slug, name, options, icon=None, dropdown=True):
+        if (not icon and dropdown):
+            raise ValueError('A FA5 icon must be provided if dropdown is True (default)')
+        lst = [s.slug for s in options]
+        if len(lst) != len(set(lst)):
+            raise ValueError("Options' slug must be unique inside an OptionsGroup()")
+        
+        self.slug = slug
+        self.name = named
+        self.icon = icon
+        self.options = options
+        self.dropdown = dropdown
+
+
+
+class OptionsCategory():
     
-    def process_option(self, request, filebrowser, target):
-        """Check if the option can be used according to the current user and call self.option if yes."""
-        owner = Directory.objects.get(name=target).owner if not filebrowser.directory else filebrowser.directory.owner
-        write = Directory.objects.get(name=target).write_auth.all() if not filebrowser.directory else filebrowser.directory.write_auth.all()
-        read = Directory.objects.get(name=target).read_auth.all() if not filebrowser.directory else filebrowser.directory.read_auth.all()
-        
-        if owner == request.user:
-            return self.option(request, filebrowser, target)
-        
-        if (self.authorization == OWNER and owner != request.user) or \
-           (self.authorization == WRITE and request.user not in write) or \
-           (self.authorization == READ and (request.user not in write and request.user not in read)):
-            messages.warning(request, "You dont have the rights to use '"+self.text+"' option.")
-            return redirect(reverse(views.index))
-        
-        return self.option(request, filebrowser, target)
+    def __init__(self, groups):
+        groups = groups
+    
+    def get_option(group, option):
+        """Get the option corresponding to <option> in <group>."""
+        return self.groups[group].options[option].option
 
-
-
-
+####################################################################################################
 # Filebrowser entries options.
-ENTRY_OPTIONS = OrderedDict()
-ENTRY_OPTIONS['edit_pl'] = FilebrowserOption("fas fa-cog", "Edit", edit_pl_option, color=DARK_BLUE, authorization=WRITE, filter=is_pl, size=BIG, outline=False, method=GET)
-ENTRY_OPTIONS['test'] = FilebrowserOption("fas fa-check", "Test", test_pl_option, color=DARK_BLUE, authorization=READ, filter=is_pl, size=BIG, method=GET)
-ENTRY_OPTIONS['load'] = FilebrowserOption("fas fa-play", "Load", load_pltp_option, color=DARK_BLUE, authorization=READ, filter=is_pltp, size=BIG, outline=False, method=GET)
-ENTRY_OPTIONS['dirrename'] = FilebrowserOption("fas fa-pencil-alt", "Rename", rename_option, form=RenameForm, authorization=OWNER, filter=is_directory_object)
-ENTRY_OPTIONS['rename'] = FilebrowserOption("fas fa-pencil-alt", "Rename", rename_option, form=RenameForm, authorization=WRITE, filter=is_not_directory_object)
-ENTRY_OPTIONS['rights'] = FilebrowserOption("fas fa-unlock-alt", "Edit access rights", rights_option, method=GET, filter=is_directory_object, authorization=OWNER)
-ENTRY_OPTIONS['move'] = FilebrowserOption("fas fa-arrow-right", "Move", move_option, form=MoveForm, filter=is_not_directory_object)
-ENTRY_OPTIONS['copy'] = FilebrowserOption("fas fa-copy", "Copy", copy_option, form=CopyForm, filter=is_not_directory_object)
-ENTRY_OPTIONS['extract'] = FilebrowserOption("fas fa-share-square","Extract", extract_option, filter=is_archive, method=GET)
-ENTRY_OPTIONS['download'] = FilebrowserOption("fas fa-download", "Download", download_option, method=GET, authorization=READ)
-ENTRY_OPTIONS['edit'] = FilebrowserOption("fas fa-edit", "Edit", edit_option, filter=[is_text, is_not_pl], method=GET)
-ENTRY_OPTIONS['display'] = FilebrowserOption("fas fa-eye", "Display", display_option, filter=is_text, method=GET, balise=['target=_blank'], authorization=READ)
-ENTRY_OPTIONS['commit'] = FilebrowserOption("fas fa-plus", "Add & Commit", add_commit_option, form=AddCommitForm, color=GREEN, filter=[is_remote, is_not_directory_object])
-ENTRY_OPTIONS['checkout'] = FilebrowserOption("fas fa-eraser", "Checkout", checkout_option, color=YELLOW, filter=[is_remote, is_not_directory_object], require_confirmation=True)
-ENTRY_OPTIONS['dirdelete'] = FilebrowserOption("fas fa-times", "Delete", delete_option, require_confirmation=True, color=RED, authorization=OWNER, filter=is_directory_object)
-ENTRY_OPTIONS['delete'] = FilebrowserOption("fas fa-times", "Delete", delete_option, require_confirmation=True, color=RED, authorization=WRITE, filter=is_not_directory_object)
+ENTRY_OPTIONS = OptionsCategory(
+    OptionsGroup('direct', 'Direct', {
+        "edit_pl": FilebrowserOption("fas fa-edit",  "Edit", edit_pl_option,   size=BIG, method=GET, filter=is_pl),
+        "edit":    FilebrowserOption("fas fa-edit",  "Edit", edit_option,      size=BIG, method=GET, filter=[is_text, is_not_pl]),
+        "test":    FilebrowserOption("fas fa-check", "Test", test_pl_option,   size=BIG, method=GET, filter=is_pl),
+        "load":    FilebrowserOption("fas fa-play",  "Load", load_pltp_option, size=BIG, method=GET, filter=is_pltp),
+    }, dropdown=False),
+    OptionGroup('entry', 'Options', {
+        "rename":   FilebrowserOption("fas fa-pencil-alt",  "Rename",   rename_option, form=RenameForm),
+        "move":     FilebrowserOption("fas fa-arrow-right", "Move",     move_option, form=MoveForm, filter=is_not_directory_object),
+        "copy":     FilebrowserOption("fas fa-copy",        "Copy",     copy_option, form=CopyForm, filter=is_not_directory_object),
+        "extract":  FilebrowserOption("fas fa-share-square","Extract",  extract_option, filter=is_archive, method=GET),
+        "download": FilebrowserOption("fas fa-download",    "Download", download_option, method=GET),
+        "display":  FilebrowserOption("fas fa-eye",         "Display",  display_option, filter=is_text, method=GET, balise=['target=_blank']),
+        "delete":   FilebrowserOption("fas fa-times",       "Delete",   delete_option, require_confirmation=True, color=RED, filter=is_not_directory_object),
+    ], icon="fas fa-cog"),
+    OptionGroup('git', 'Git', [
+        "add":      FilebrowserOption("fas fa-plus",   "Git Add",      add_commit_option, form=AddCommitForm, color=GREEN)
+        "commit":   FilebrowserOption("fas fa-edit",   "Git Commit",   add_commit_option, form=AddCommitForm, color=YELLOW)
+        "reset":    FilebrowserOption("fas fa-undo",   "Git Reset",    add_commit_option, form=AddCommitForm, color=YELLOW)
+        "checkout": FilebrowserOption("fas fa-eraser", "Git Checkout", checkout_option, color=RED, require_confirmation=True)
+    ], icon="fab fa-git-square fa-lg")
+)
 
-#Filebrowser Directory options, can be displayed with the upper-right "+" in the filebrowser
-DIRECTORY_OPTIONS = OrderedDict()
-DIRECTORY_OPTIONS['rights'] = FilebrowserOption("fas fa-unlock-alt", "Edit access rights", rights_option, method=GET, filter=is_directory_object, authorization=OWNER)
-DIRECTORY_OPTIONS['rename'] = FilebrowserOption("fas fa-pencil-alt", "Rename", rename_option, form=RenameForm, authorization=OWNER)
-DIRECTORY_OPTIONS['mkdir'] = FilebrowserOption("fas fa-folder", "New directory", mkdir_option, form=RenameForm)
-DIRECTORY_OPTIONS['new'] = FilebrowserOption("fas fa-edit", "New File", new_file_option, form=RenameForm)
-DIRECTORY_OPTIONS['upload'] = FilebrowserOption("fas fa-upload", "Upload File ", upload_option, form=UploadForm)
-DIRECTORY_OPTIONS['download'] = FilebrowserOption("fas fa-download", "Download", download_option, method=GET, authorization=READ)
-DIRECTORY_OPTIONS['clone'] = FilebrowserOption("fas fa-cloud-download-alt", "Git Clone", clone_option, form=LoginForm, authorization=READ)
-DIRECTORY_OPTIONS['commit'] = FilebrowserOption("fas fa-plus", "Git Add & Commit", add_commit_option, form=AddCommitForm, color=GREEN, filter=is_remote)
-DIRECTORY_OPTIONS['status'] = FilebrowserOption("fas fa-info-circle", "Git Status", status_option, color=LIGHT_BLUE, filter=is_remote, method=GET)
-DIRECTORY_OPTIONS['checkout'] = FilebrowserOption("fas fa-eraser", "Git Checkout", checkout_option, color=YELLOW, filter=is_remote, require_confirmation=True)
-DIRECTORY_OPTIONS['push'] = FilebrowserOption("fas fa-cloud-upload-alt", "Git Push", push_option, form=LoginForm, color=YELLOW, filter=is_remote)
-DIRECTORY_OPTIONS['pull'] = FilebrowserOption("fas fa-cloud-download-alt", "Git Pull", pull_option, form=LoginForm, color=YELLOW, filter=is_remote)
+
+
+####################################################################################################
+#Filebrowser Directory options, can be displayed with the upper-right dropdown in the filebrowser
+DIRECTORY_OPTIONS = OptionsCategory(
+    OptionsGroup('directory', 'Options', [
+        FilebrowserOption("mkdir",    "fas fa-folder",   "New directory", mkdir_option, form=RenameForm)
+        FilebrowserOption("new",      "fas fa-edit",     "New File",      new_file_option, form=RenameForm)
+        FilebrowserOption("upload",   "fas fa-upload",   "Upload File ",  upload_option, form=UploadForm)
+        FilebrowserOption("download", "fas fa-download", "Download",      download_option, method=GET)
+        FilebrowserOption("clone",    "fas fa-cloud-download-alt", "Git Clone", clone_option, form=LoginForm)
+    ] icon='fas fa-cog'),
+    OptionsGroup('git', 'Git', [
+        
+    ] icon='fab fa-git-square fa-lg'),
+)
+
+
+FilebrowserOption("push", "fas fa-cloud-upload-alt", "Git Push", push_option, form=LoginForm)
+FilebrowserOption("pull", "fas fa-cloud-download-alt", "Git Pull", pull_option, form=LoginForm)
+FilebrowserOption(""fas fa-info-circle", "Git Status", status_option, method=GET)
+FilebrowserOption("fas fa-code-branch", "Git Branch", status_option, method=GET)
+FilebrowserOption("fas fa-plus",   "Git Add",      add_commit_option, form=AddCommitForm, color=GREEN)
+FilebrowserOption("fas fa-edit",   "Git Commit",   add_commit_option, form=AddCommitForm, color=YELLOW)
+FilebrowserOption("fas fa-undo",   "Git Reset",    add_commit_option, form=AddCommitForm, color=YELLOW)
+FilebrowserOption("fas fa-eraser", "Git Checkout", checkout_option, color=RED, require_confirmation=True)
+

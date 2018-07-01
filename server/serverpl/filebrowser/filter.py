@@ -18,7 +18,7 @@
 
 
 
-import magic
+import magic, os, gitcmd
 
 from os.path import isdir, isfile, basename, splitext
 
@@ -31,6 +31,10 @@ from filebrowser.models import Directory
 
 is_directory = isdir
 is_file = isfile
+
+
+def in_repository(path):
+    return gitcmd.in_repository(path, False)
 
 
 def is_directory_object(path):
@@ -64,7 +68,8 @@ def is_image(path):
 def is_text(path):
     if is_directory(path):
         return False
-    return magic.from_file(path, mime=True).split('/')[0] == 'text'
+    return (magic.from_file(path, mime=True).split('/')[0] == 'text' 
+         or not os.stat(path).st_size)
 
 
 def is_audio(path):
