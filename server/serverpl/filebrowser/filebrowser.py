@@ -51,9 +51,9 @@ class Filebrowser():
         self.entry_options = ENTRY_OPTIONS
         self.directory_options = DIRECTORY_OPTIONS
         self.directory = Directory.objects.get(name=basename(self.root))
-        
         if self.relative != '.' and not self.relative.startswith('./'):
             self.relative = './' + self.relative
+        self.entries, self.length_max = self.list()
     
     
     def full_path(self):
@@ -86,7 +86,8 @@ class Filebrowser():
             )
             break
         
-        return entries
+        return entries, (0 if not entries 
+                        else len(max(entries, key=lambda i:len(i['name']))['name']) + 12)  # 12 for the icon and padding
     
     
     

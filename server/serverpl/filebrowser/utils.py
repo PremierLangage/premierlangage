@@ -51,25 +51,3 @@ def stay_in_directory(current, path):
         if pos < 0:
             return False
     return True
-
-
-def in_repository(path, end):
-    """Check if entry pointed by path is inside a repository by recursively moving up
-    the path until <end>"""
-    path, end = abspath(path), abspath(end)
-    if end not in path:
-        raise ValueError("'Path' is not a sub-path of 'end'")
-    if not isdir(path):
-        path = dirname(path)
-        
-    if '.git' in os.listdir(path):
-        return path if not path.endswith('/') else path[:-1]
-    while path != end and end in path and dirname(path):
-        path = dirname(path)
-        if '.git' in os.listdir(path):
-            return path if not path.endswith('/') else path[:-1]
-    
-    return None
-    
-    
-        

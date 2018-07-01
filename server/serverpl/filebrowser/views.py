@@ -48,20 +48,20 @@ def apply_option_get(request):
     path = request.GET.get('relative_h', None)
     name = request.GET.get('name_h', None)
     option = request.GET.get('option_h', None)
-    typ, key = request.GET.get('type_h', None).split('-')
+    typ = request.GET.get('type_h', None)
     
-    if not (name and path and option and typ and key):
+    if not (name and path and option and typ):
         return HttpResponseBadRequest("Missing one of 'relative_h', 'name_h', 'option_h' or 'type_h' argument")
     
-    fb = Filebrowser(request.user, path=path)
-    
     try:
+        group, option = option.split('-')
+        fb = Filebrowser(request.user, path=path)
         if typ == "entry":
-            return ENTRY_OPTIONS[key][option].process_option(request, fb, name)
+            return ENTRY_OPTIONS.get_option(group, option)(request, fb, name)
         else:
-            return DIRECTORY_OPTIONS[key][option].process_option(request, fb, name)
+            return DIRECTORY_OPTIONS.get_option(group, option)(request, fb, name)
     except Exception as e:
-        messages.error(request, "Impossible to apply the option "+option+" : "+ htmlprint.code(str(type(e)) + " - " + str(e)))
+        messages.error(request, "Impossible to apply the option "+request.GET['option_h']+" : "+ htmlprint.code(str(type(e)) + " - " + str(e)))
     return redirect_fb(path)
 
 
@@ -74,18 +74,18 @@ def apply_option_post(request):
     path = request.POST.get('relative_h', None)
     name = request.POST.get('name_h', None)
     option = request.POST.get('option_h', None)
-    typ, key = request.POST.get('type_h', None).split('-')
+    typ= request.POST.get('type_h', None)
 
-    if not (name and path and option and typ and key):
+    if not (name and path and option and typ):
         return HttpResponseBadRequest("Missing one of 'relative_h', 'name_h', 'option_h' or 'type_h' argument")
     
-    fb = Filebrowser(request.user, path=path)
-    
     try:
+        group, option = option.split('-')
+        fb = Filebrowser(request.user, path=path)
         if typ == "entry":
-            return ENTRY_OPTIONS.get_option(key, option)(request, fb, name)
+            return ENTRY_OPTIONS.get_option(group, option)(request, fb, name)
         else:
-            return DIRECTORY_OPTIONS[key]['options'][option].process_option(request, fb, name)
+            return DIRECTORY_OPTIONS.get_option(group, option)(request, fb, name)
     except Exception as e:
         messages.error(request, "Impossible to apply the option "+option+" : "+ htmlprint.code(str(type(e)) + " - " + str(e)))    
     return redirect_fb(path)
@@ -202,7 +202,7 @@ def save_edit_receiver(request):
     path = post['path']
     try:
         if content:
-            with open(settings.FILEBROWSER_ROOT + '/' + path, 'w') as f:
+            with open(join(settings.FILEBROWSER_ROOT, path), 'w') as f:
                 print(content, file=f)
         return HttpResponse(json.dumps({'feedback_type': "success",
                                         'feedback': '<i class="fas fa-check"></i>'+
@@ -236,34 +236,3 @@ def edit_receiver(request):
         msg = "Impossible to modify '"+basename(path)+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
         messages.error(request, msg)
     return redirect_fb(dirname(path))
-
-
-@login_required
-def right_edit(request):
-    """ View used to add the new right of a Directory. """
-    if request.method != 'POST':
-        return HttpResponseNotAllowed(['POST'])
-    
-    name = request.POST.get('directory', None)
-    write = request.POST.getlist('write')
-    read =  request.POST.getlist('read')
-    
-    try:
-        d = Directory.objects.get(name=name)
-        d.write_auth.clear()
-        d.read_auth.clear()
-        
-        for item in write:
-            d.write_auth.add(User.objects.get(id=item))
-        for item in read:
-            d.read_auth.add(User.objects.get(id=item))
-        
-        messages.success(request, "Rights of '"+name+"' successfully edited.")
-    except Exception as e: # pragma: no cover
-        raise e
-        msg = "Impossible to edit rights of '"+name+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT, "")
-        messages.error(request, msg)
-
-    return redirect_fb()

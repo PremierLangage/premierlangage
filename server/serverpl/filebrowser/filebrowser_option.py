@@ -63,7 +63,6 @@ class FilebrowserOption():
     """ Class representing an option in the filebrowser.
     
     Mandatory Attributes:
-        slug (str): Will be used when searching an option
         fa_icon (str): Font Awesome 5 class of the icon of the button
         text (str): Texte which will be displayed on big button or when hovering small button
         option (function): Function which will be called with request, filebrowser
@@ -85,10 +84,9 @@ class FilebrowserOption():
         balise (str): Any extra balise which should be add inside the <button [balise]> element.
     """
     
-    def __init__(self, slug, fa_icon, name, option, form=None, filter=None,
+    def __init__(self, fa_icon, name, option, form=None, filter=None,
                  require_confirmation=False, color=GREY, outline=True,
                  method=POST, balise=None, size=SMALL, classes=[]):
-        self.slug = slug
         self.fa_icon = fa_icon
         self.text = name
         self.form = form
@@ -112,80 +110,86 @@ class FilebrowserOption():
 
 class OptionsGroup():
     
-    def __init__(self, slug, name, options, icon=None, dropdown=True):
+    def __init__(self, name, options, icon=None, dropdown=True, filter=None):
         if (not icon and dropdown):
             raise ValueError('A FA5 icon must be provided if dropdown is True (default)')
-        lst = [s.slug for s in options]
-        if len(lst) != len(set(lst)):
-            raise ValueError("Options' slug must be unique inside an OptionsGroup()")
+        for k in options.keys():
+            if '-' in k:
+                raise ValueError("Dashes '-' are not allowed inside options key.")
         
-        self.slug = slug
-        self.name = named
+        self.name = name
         self.icon = icon
         self.options = options
         self.dropdown = dropdown
+        self.filter = filter
 
 
 
 class OptionsCategory():
     
     def __init__(self, groups):
-        groups = groups
+        for k in groups.keys():
+            if '-' in k:
+                raise ValueError("Dashes '-' are not allowed inside groups key.")
+        
+        self.groups = groups
     
-    def get_option(group, option):
+    def get_option(self, group, option):
         """Get the option corresponding to <option> in <group>."""
         return self.groups[group].options[option].option
 
+
+
 ####################################################################################################
 # Filebrowser entries options.
-ENTRY_OPTIONS = OptionsCategory(
-    OptionsGroup('direct', 'Direct', {
-        "edit_pl": FilebrowserOption("fas fa-edit",  "Edit", edit_pl_option,   size=BIG, method=GET, filter=is_pl),
-        "edit":    FilebrowserOption("fas fa-edit",  "Edit", edit_option,      size=BIG, method=GET, filter=[is_text, is_not_pl]),
-        "test":    FilebrowserOption("fas fa-check", "Test", test_pl_option,   size=BIG, method=GET, filter=is_pl),
-        "load":    FilebrowserOption("fas fa-play",  "Load", load_pltp_option, size=BIG, method=GET, filter=is_pltp),
-    }, dropdown=False),
-    OptionGroup('entry', 'Options', {
-        "rename":   FilebrowserOption("fas fa-pencil-alt",  "Rename",   rename_option, form=RenameForm),
-        "move":     FilebrowserOption("fas fa-arrow-right", "Move",     move_option, form=MoveForm, filter=is_not_directory_object),
-        "copy":     FilebrowserOption("fas fa-copy",        "Copy",     copy_option, form=CopyForm, filter=is_not_directory_object),
-        "extract":  FilebrowserOption("fas fa-share-square","Extract",  extract_option, filter=is_archive, method=GET),
-        "download": FilebrowserOption("fas fa-download",    "Download", download_option, method=GET),
-        "display":  FilebrowserOption("fas fa-eye",         "Display",  display_option, filter=is_text, method=GET, balise=['target=_blank']),
-        "delete":   FilebrowserOption("fas fa-times",       "Delete",   delete_option, require_confirmation=True, color=RED, filter=is_not_directory_object),
-    ], icon="fas fa-cog"),
-    OptionGroup('git', 'Git', [
-        "add":      FilebrowserOption("fas fa-plus",   "Git Add",      add_commit_option, form=AddCommitForm, color=GREEN)
-        "commit":   FilebrowserOption("fas fa-edit",   "Git Commit",   add_commit_option, form=AddCommitForm, color=YELLOW)
-        "reset":    FilebrowserOption("fas fa-undo",   "Git Reset",    add_commit_option, form=AddCommitForm, color=YELLOW)
-        "checkout": FilebrowserOption("fas fa-eraser", "Git Checkout", checkout_option, color=RED, require_confirmation=True)
-    ], icon="fab fa-git-square fa-lg")
-)
+ENTRY_OPTIONS = OptionsCategory({
+    "direct": OptionsGroup('Direct', {
+            "edit_pl": FilebrowserOption("fas fa-edit",  "Edit", edit_pl_option,   size=BIG, method=GET, filter=is_pl),
+            "edit":    FilebrowserOption("fas fa-edit",  "Edit", edit_option,      size=BIG, method=GET, filter=[is_text, is_not_pl]),
+            "test":    FilebrowserOption("fas fa-check", "Test", test_pl_option,   size=BIG, method=GET, filter=is_pl),
+            "load":    FilebrowserOption("fas fa-play",  "Load", load_pltp_option, size=BIG, method=GET, filter=is_pltp),
+        }, dropdown=False),
+    "options": OptionsGroup('Options', {
+            "rename":   FilebrowserOption("fas fa-pencil-alt",  "Rename",   rename_option, form=RenameForm),
+            "move":     FilebrowserOption("fas fa-arrow-right", "Move",     move_option, form=MoveForm, filter=is_not_directory_object),
+            "copy":     FilebrowserOption("fas fa-copy",        "Copy",     copy_option, form=CopyForm, filter=is_not_directory_object),
+            "extract":  FilebrowserOption("fas fa-share-square","Extract",  extract_option, filter=is_archive, method=GET),
+            "download": FilebrowserOption("fas fa-download",    "Download", download_option, method=GET),
+            "display":  FilebrowserOption("fas fa-eye",         "Display",  display_option, filter=is_text, method=GET, balise=['target=_blank']),
+            "delete":   FilebrowserOption("fas fa-times",       "Delete",   delete_option, require_confirmation=True, color=RED, filter=is_not_directory_object),
+        }, icon="fas fa-cog"),
+    "git": OptionsGroup('Git', {
+            "add":      FilebrowserOption("fas fa-plus",   "Git Add",      add_commit_option, form=AddCommitForm, color=GREEN),
+            "commit":   FilebrowserOption("fas fa-edit",   "Git Commit",   add_commit_option, form=AddCommitForm, color=YELLOW),
+            "reset":    FilebrowserOption("fas fa-undo",   "Git Reset",    add_commit_option, form=AddCommitForm, color=YELLOW),
+            "checkout": FilebrowserOption("fas fa-eraser", "Git Checkout", checkout_option, color=RED, require_confirmation=True),
+        }, icon="fab fa-git-square fa-lg", filter=in_repository),
+})
 
 
 
 ####################################################################################################
-#Filebrowser Directory options, can be displayed with the upper-right dropdown in the filebrowser
-DIRECTORY_OPTIONS = OptionsCategory(
-    OptionsGroup('directory', 'Options', [
-        FilebrowserOption("mkdir",    "fas fa-folder",   "New directory", mkdir_option, form=RenameForm)
-        FilebrowserOption("new",      "fas fa-edit",     "New File",      new_file_option, form=RenameForm)
-        FilebrowserOption("upload",   "fas fa-upload",   "Upload File ",  upload_option, form=UploadForm)
-        FilebrowserOption("download", "fas fa-download", "Download",      download_option, method=GET)
-        FilebrowserOption("clone",    "fas fa-cloud-download-alt", "Git Clone", clone_option, form=LoginForm)
-    ] icon='fas fa-cog'),
-    OptionsGroup('git', 'Git', [
+# Filebrowser Directory options, can be displayed with the upper-right dropdown in the filebrowser
+DIRECTORY_OPTIONS = OptionsCategory({
+    "options": OptionsGroup('Options', {
+            "mkdir":    FilebrowserOption("fas fa-folder",   "New directory", mkdir_option, form=RenameForm),
+            "new":      FilebrowserOption("fas fa-edit",     "New File",      new_file_option, form=RenameForm),
+            "upload":   FilebrowserOption("fas fa-upload",   "Upload File ",  upload_option, form=UploadForm),
+            "download": FilebrowserOption("fas fa-download", "Download",      download_option, method=GET),
+            "clone":    FilebrowserOption("fas fa-cloud-download-alt", "Git Clone", clone_option, form=LoginForm),
+        }, icon='fas fa-cog'),
+    "git": OptionsGroup('Git', {
+            "push":     FilebrowserOption("fas fa-cloud-upload-alt",   "Git Push",     push_option, form=LoginForm),
+            "pull":     FilebrowserOption("fas fa-cloud-download-alt", "Git Pull",     pull_option, form=LoginForm),
+            "status":   FilebrowserOption("fas fa-info-circle",        "Git Status",   status_option, method=GET),
+            "branch":   FilebrowserOption("fas fa-code-branch",        "Git Branch",   status_option, method=GET),
+            "add":      FilebrowserOption("fas fa-plus",               "Git Add",      add_commit_option, form=AddCommitForm, color=GREEN),
+            "commit":   FilebrowserOption("fas fa-edit",               "Git Commit",   add_commit_option, form=AddCommitForm, color=YELLOW),
+            "reset":    FilebrowserOption("fas fa-undo",               "Git Reset",    add_commit_option, form=AddCommitForm, color=YELLOW),
+            "checkout": FilebrowserOption("fas fa-eraser",             "Git Checkout", checkout_option, color=RED, require_confirmation=True),
+        }, icon='fab fa-git-square fa-lg', filter=in_repository),
+})
+
+
         
-    ] icon='fab fa-git-square fa-lg'),
-)
-
-
-FilebrowserOption("push", "fas fa-cloud-upload-alt", "Git Push", push_option, form=LoginForm)
-FilebrowserOption("pull", "fas fa-cloud-download-alt", "Git Pull", pull_option, form=LoginForm)
-FilebrowserOption(""fas fa-info-circle", "Git Status", status_option, method=GET)
-FilebrowserOption("fas fa-code-branch", "Git Branch", status_option, method=GET)
-FilebrowserOption("fas fa-plus",   "Git Add",      add_commit_option, form=AddCommitForm, color=GREEN)
-FilebrowserOption("fas fa-edit",   "Git Commit",   add_commit_option, form=AddCommitForm, color=YELLOW)
-FilebrowserOption("fas fa-undo",   "Git Reset",    add_commit_option, form=AddCommitForm, color=YELLOW)
-FilebrowserOption("fas fa-eraser", "Git Checkout", checkout_option, color=RED, require_confirmation=True)
 

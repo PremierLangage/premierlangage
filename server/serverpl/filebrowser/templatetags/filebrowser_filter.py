@@ -48,7 +48,7 @@ def filter(option, path):
     if isinstance(option.filter, (list, tuple)):
         bol = True;
         for filter in option.filter:
-            bol = bol and filter(path)
+            bol &= filter(path)
             if not bol:
                 break
     else:
@@ -57,16 +57,16 @@ def filter(option, path):
     return bol
 
 
-@register.filter(name='dropdown_filter')
-def filter(dropdown, path):
-    if 'filter' in dropdown and isinstance(dropdown['filter'], (list, tuple)):
+@register.filter(name='group_filter')
+def filter(group, path):
+    if isinstance(group.filter, (list, tuple)):
         bol = True;
-        for filter in dropdown['filter']:
-            bol = bol and filter(path)
+        for filter in group.filter:
+            bol &= filter(path)
             if not bol:
                 break
     else:
-        bol = not 'filter' in dropdown or dropdown['filter'](path)
+        bol = not group.filter or group.filter(path)
     
     return bol
 

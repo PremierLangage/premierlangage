@@ -1,26 +1,27 @@
 {% load filebrowser_filter %}
 
-{% for dropname, dropdown in fb.directory_options.items %}
-    {% if dropdown|dropdown_filter:fb.full_path %}
+{% for group_key, group in fb.directory_options.groups.items %}
+    {% if group|group_filter:fb.full_path %}
         <div class="dropdown dir-opt" style="right: calc({{ forloop.counter0 }} * 70px);">
             <button class="btn btn-secondary btn-dir-options dropdown-toggle" type="button" data-toggle="dropdown">
-                <i class="{{ dropdown.icon }}"></i>
+                <i class="{{ group.icon }}"></i>
             </button>
-            <ul class="dropdown-menu no-padding">
+            <ul class="dropdown-menu no-padding" style="top: 30px;">
                 <div class="btn-group-vertical btn-block" role="group" aria-label="Directory Options">
-                    {% for key, option in dropdown.options.items %}
+                    {% for key, option in group.options.items %}
                         {% if option|opt_filter:fb.relative %}
                             <{{ option.type }}
-                                type="button" class="btn btn-dir btn{{ option.outline }}{{ option.color }}" title="{{ option.text }}"
+                                type="button" class="btn btn-dir btn{{ option.outline }}{{ option.color }}{% for class in option.classes %} {{ class }}{% endfor %}" title="{{ option.text }}"
                                 {% if not option.form and option.require_confirmation %}
-                                    data-toggle="modal" data-target="#confirmationModalDir{{forloop.counter0}}" 
+                                    data-toggle="modal" data-target="#confirmationModalDir{{group_key}}-{{key}}-{{forloop.parentloop.parentloop.counter0}}" 
                                 {% endif %}
                                 {% if option.form %}
-                                    data-toggle="modal" data-target="#defaultModalDir{{forloop.counter0}}"
+                                    data-toggle="modal" data-target="#defaultModalDir{{group_key}}-{{key}}-{{forloop.parentloop.parentloop.counter0}}"
                                 {% endif %}
                                 {% if option.method == 'GET' %}
-                                    href="apply_option/?option_h={{key}}&relative_h={{fb.relative}}&type_h=directory-{{dropname}}&name_h={{fb.directory.name}}"
+                                    href="apply_option/?option_h={{group_key}}-{{key}}&name_h={{fb.directory.name}}&relative_h={{fb.relative}}&type_h=directory"
                                 {% endif %}
+                                {% for elem in option.balise %} {{ elem }} {% endfor %}
                                 >
                                 <i class="{{ option.fa_icon }} fa-fw"></i>&emsp;{{ option.text }}
                             </{{ option.type }}>
@@ -29,7 +30,7 @@
                 </div>
             </ul>
         </div>
-        {% for key,option in dropdown.options.items %}
+        {% for key,option in group.options.items %}
             {% if option|opt_filter:fb.relative %}
                 {% if not option.form and option.require_confirmation %}{% include 'filebrowser/confirmation_dir_modal.html' %}{% endif %}
                 {% if option.form %}{% include 'filebrowser/default_dir_modal.html' %}{% endif %}
