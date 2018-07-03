@@ -10,12 +10,13 @@ import os, json, shutil, htmlprint
 
 from os.path import basename, join, dirname
 
+
 from django.shortcuts import render, redirect, reverse
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponse
+from django.http import HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponse, Http404
 
 from filebrowser.filebrowser import Filebrowser
 from filebrowser.models import Directory
@@ -31,63 +32,54 @@ from django.conf import settings
 
 
 @login_required
-def index(request):
+def index(request, path="home"):
     """ Used by the filebrowser module to navigate """
+    path = (path).split('/')
+    
+    if path[0].isdigit():
+        raise Http404()
+    
+    return render(request, 'filebrowser/filebrowser.html', {
+        'fb': Filebrowser(request, path=join(*path))
+    })
+
+
+@login_required
+def apply_option(request, path="home"):
+    real = (path).split('/')
+    if real[0] == "home":
+        real[0] = str(request.user.id)
+    
     if request.method == 'GET':
-        path = request.GET.get('cd', '.')
+        option = request.GET.get('option')
+        target = request.GET.get('target')
+    if request.method == 'POST':
+        option = request.POST.get('option')
+        target = request.POST.get('target')
     
-    return render(request, 'filebrowser/filebrowser.html', {'fb': Filebrowser(request.user, path=path)})
-
-
-@login_required
-def apply_option_get(request):
-    """ Apply an option using the GET method """
-    if not request.method == 'GET':
-        return HttpResponseNotAllowed(['GET'])
-    
-    path = request.GET.get('relative_h', None)
-    name = request.GET.get('name_h', None)
-    option = request.GET.get('option_h', None)
-    typ = request.GET.get('type_h', None)
-    
-    if not (name and path and option and typ):
-        return HttpResponseBadRequest("Missing one of 'relative_h', 'name_h', 'option_h' or 'type_h' argument")
+    if not option:
+        return HttpResponseBadRequest("'option' parameter is missing")
+    if not target:
+        return HttpResponseBadRequest("'target' parameter is missing")
     
     try:
-        group, option = option.split('-')
-        fb = Filebrowser(request.user, path=path)
-        if typ == "entry":
-            return ENTRY_OPTIONS.get_option(group, option)(request, fb, name)
+        category, group, option = option.split('-')
+        fb = Filebrowser(request, path=path)
+        if category == "entry":
+            return ENTRY_OPTIONS.get_option(group, option)(request, fb, target)
         else:
-            return DIRECTORY_OPTIONS.get_option(group, option)(request, fb, name)
-    except Exception as e:
-        messages.error(request, "Impossible to apply the option "+request.GET['option_h']+" : "+ htmlprint.code(str(type(e)) + " - " + str(e)))
-    return redirect_fb(path)
-
-
-@login_required
-def apply_option_post(request):
-    """ Apply an option using the POST method """
-    if not request.method == 'POST':
-        return HttpResponseNotAllowed(['POST'])
+            return DIRECTORY_OPTIONS.get_option(group, option)(request, fb, target)
     
-    path = request.POST.get('relative_h', None)
-    name = request.POST.get('name_h', None)
-    option = request.POST.get('option_h', None)
-    typ= request.POST.get('type_h', None)
-
-    if not (name and path and option and typ):
-        return HttpResponseBadRequest("Missing one of 'relative_h', 'name_h', 'option_h' or 'type_h' argument")
-    
-    try:
-        group, option = option.split('-')
-        fb = Filebrowser(request.user, path=path)
-        if typ == "entry":
-            return ENTRY_OPTIONS.get_option(group, option)(request, fb, name)
-        else:
-            return DIRECTORY_OPTIONS.get_option(group, option)(request, fb, name)
     except Exception as e:
-        messages.error(request, "Impossible to apply the option "+option+" : "+ htmlprint.code(str(type(e)) + " - " + str(e)))    
+        messages.error(
+            request, 
+            ("Impossible to apply the option " 
+                + option + " : " 
+                + (htmlprint.code(str(type(e)) + " - " + str(e))
+                   if not settings.DEBUG 
+                   else htmlprint.html_exc()))
+        )
+    
     return redirect_fb(path)
 
 
@@ -224,7 +216,7 @@ def edit_receiver(request):
     """ View used to saved a newly edited file. """
     if not request.method == 'POST':
         return HttpResponseNotAllowed(['POST'])
-        
+    
     content = request.POST.get('editor_input', '')
     path = request.POST.get('path', '')
     try:

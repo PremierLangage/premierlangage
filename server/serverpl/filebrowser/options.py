@@ -32,9 +32,9 @@
 
 
 
-import os, shutil, magic, zipfile, tarfile, traceback, htmlprint
+import os, shutil, magic, zipfile, tarfile, traceback, htmlprint, datetime
 
-from os.path import basename, splitext, isdir, join, isfile, abspath
+from os.path import basename, splitext, isdir, join, isfile, abspath, normpath, dirname
 
 from django.shortcuts import redirect, reverse, render
 from django.contrib import messages
@@ -58,49 +58,50 @@ def mkdir_option(request, filebrowser, target):
     """Create a new folder named target at filebrowser.full_path()"""
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-
+    
+    bad_char = ['/', ' ']
     name = request.POST.get('name', None)
-    relative = request.POST.get('relative', None)
-    if not name or not relative:
-        return HttpResponseBadRequest(b"Missing name or relative parameter")
+    if not name:
+        return HttpResponseBadRequest("Missing 'name' or parameter")
 
     try:
-        bad_char = ['/', ' ']
-        path = abspath(join(join(filebrowser.full_path(), relative), name))
+        path = normpath(join(filebrowser.full_path(), name))
+        
         if any(c in name for c in bad_char):
-            messages.error(request, "The folder's name ('" + name + "') is invalid")
-        elif isdir(path):
-            messages.error(request, "A folder with that name ('"+name+"') already exists")
-        elif isfile(path):
-            messages.error(request, "A file with that name ('"+name+"') already exists")
+            messages.error(request, "Can't create directory '" + name
+                                  + "': name should not contain any of " + str(bad_char) + ".")
+        elif isdir(path) or isfile(path):
+            messages.error(request, "Can't create directory '" + name
+                                  + "': this name is already used.")
         else:
             os.mkdir(path)
-            messages.success(request, "Folder '"+name+"' successfully created !")
+            messages.success(request, "Folder '" + name + "' successfully created !")
+    
     except Exception as e: # pragma: no cover
         msg = "Impossible to create '"+name+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
-        messages.error(request, msg)
+        messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))
+        if settings.DEBUG:
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
 
-    return redirect_fb(request.POST.get('relative_h', '.'))
+    return redirect_fb(filebrowser.relative)
 
 
 def display_option(request, filebrowser, target):
-    """ Display targeted entry """
+    """ Display targeted entry's content"""
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
 
     try:
-        path = join(filebrowser.full_path(), target)
+        path = normpath(join(filebrowser.full_path(), target))
         with open(path, 'r') as f:
             lines = f.readlines()
         return render(request, 'filebrowser/file.html', {'file': lines, 'filename': basename(path)})
 
     except Exception as e: # pragma: no cover
         msg = "Impossible to display '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
-        messages.error(request, msg)
+        messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))
+        if settings.DEBUG:
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
 
     return redirect_fb(request.GET.get('relative_h', '.'))
 
@@ -109,41 +110,36 @@ def rename_option(request, filebrowser, target):
     """ Rename targeted entry with POST['name'] """
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-
+    
+    bad_char = ['/', ' ']
     name = request.POST.get('name', None)
     if not name:
-        return HttpResponse(status=200)
+        return HttpResponseBadRequest("Missing 'name' parameter.")
 
     try:
-        path = join(filebrowser.full_path(), target)
+        path = normpath(join(filebrowser.full_path(), target))
+        target_path = join(filebrowser.full_path(), name)
+        if any(c in name for c in bad_char):
+            messages.error(request, "Can't rename '" + target + "' to '" + name
+                                  + "': name should not contain any of " + str(bad_char) + ".")
+        elif isfile(target_path) or isdir(target_path):
+            messages.error(request, "Can't rename '" + target + "' to '" + name
+                                  + "': this name is already used.")
+        else:
+            os.rename(path, target_path)
+            messages.success(request, "'" + target + "' successfully renamed to '" + name + "' !")
+        
+        if settings.DEBUG:
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
 
-        if '/' in name:
-            raise ValueError()
-
-        if isfile(join(filebrowser.full_path(),name)):
-            raise OSError()
-
-        if not filebrowser.directory:
-            d = Directory.objects.get(name=target)
-            d.name = name
-            d.save()
-
-        os.rename(path, join(filebrowser.full_path(),name))
-        messages.success(request, "'"+target+"' successfully renamed to '" + name + "' !")
-
-    except (IntegrityError, OSError, IsADirectoryError):
-        messages.error(request, "Can't rename '" + target+"' to '" + name + "' : this name is already used.")
-
-    except ValueError:
-        messages.error(request, "Can't rename '" + target + "' to '" + name + "' : name contains a '/'.")
-
+    
     except Exception as e: # pragma: no cover
         msg = "Impossible to rename '" + target + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
+        messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))
         if settings.DEBUG:
-            msg += "<br/><br/> Debug set to True:" + htmlprint.html_exc()
-        messages.error(request, msg.replace(settings.FILEBROWSER_ROOT + "/", ""))
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
 
-    return redirect_fb(request.POST.get('relative_h', '.'))
+    return redirect_fb(filebrowser.relative)
 
 
 
@@ -162,7 +158,7 @@ def copy_option(request, filebrowser, target):
         relative_h = "/".join([d for d in relative_h.split("/") if d][2:])
         if not stay_in_directory(relative_h, destination) :
             raise ValueError()
-        path = join(filebrowser.full_path(), target)
+        path = normpath(join(filebrowser.full_path(), target))
 
         if isdir(path):
             shutil.copytree(path, join(filebrowser.full_path(), join(destination, name_h)))
@@ -174,35 +170,43 @@ def copy_option(request, filebrowser, target):
         messages.error(request, msg)
     except Exception as e: # pragma: no cover
         msg = "Impossible to copy '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
-        messages.error(request, msg)
-    return redirect_fb(request.POST.get('relative_h', '.'))
+        messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))
+        if settings.DEBUG:
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
+        
+    return redirect_fb(filebrowser.relative)
 
 
 
-def add_commit_option(request, filebrowser, target):
+def add_option(request, filebrowser, target):
+    """ Execute a git add on the targeted entry."""
+    ret, out, err = gitcmd.add(normpath(join(filebrowser.full_path(), name)))
+    
+    if not ret:
+        messages.success(request, htmlprint.code(out + err))
+    else:
+        messages.error(request, htmlprint.code(err + out))
+    
+    return redirect_fb(filebrowser.relative)
+
+
+def commit_option(request, filebrowser, target):
     """ Execute an add and commit of the targeted entry with the informations of POST. """
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-
+    
     commit = request.POST.get('commit', None)
     if not commit:
-        HttpResponseBadRequest()
+        HttpResponseBadRequest("Missing 'commit' parameter")
+    
+    ret, out, err = gitcmd.commit(normpath(join(filebrowser.full_path(), name)), )
 
-    if not filebrowser.directory:
-        d = Directory.objects.get(name=target)
-        done, msg = d.add_and_commit(commit)
+    if not ret:
+        messages.success(request, htmlprint.code(out + err))
     else:
-        done, msg = filebrowser.directory.add_and_commit(commit, path=join(filebrowser.full_path(), target))
+        messages.error(request, htmlprint.code(err + out))
 
-    if done:
-        messages.success(request, "Add and commit done.<br>" + htmlprint.code(msg))
-    else:
-        messages.error(request, "Couldn't add and commit :<br>" + htmlprint.code(msg))
-
-    return redirect_fb(request.POST.get('relative_h', '.'))
-
+    return redirect_fb(filebrowser.relative)
 
 
 def checkout_option(request, filebrowser, target):
@@ -214,13 +218,13 @@ def checkout_option(request, filebrowser, target):
         d = Directory.objects.get(name=target)
         done, msg = d.checkout()
     else:
-        done, msg = filebrowser.directory.checkout(path=join(filebrowser.full_path(), target))
+        done, msg = filebrowser.directory.checkout(path=normpath(join(filebrowser.full_path(), target)))
 
     if done:
         messages.success(request, "Checkout done.<br>" + htmlprint.code(msg))
     else:
         messages.error(request, "Couldn't checkout:<br>" + htmlprint.code(msg))
-    return redirect_fb(request.POST.get('relative_h', '.'))
+    return redirect_fb(filebrowser.relative)
 
 
 
@@ -260,7 +264,7 @@ def clone_option(request, filebrowser, target):
         messages.success(request, "Pull done.<br>" + htmlprint.code(msg))
     else:
         messages.error(request, "Couldn't pull:<br>" + htmlprint.code(msg))
-    return redirect_fb(request.POST.get('relative_h', '.'))
+    return redirect_fb(filebrowser.relative)
 
 
 def pull_option(request, filebrowser, target):
@@ -280,7 +284,7 @@ def pull_option(request, filebrowser, target):
         messages.success(request, "Pull done.<br>" + htmlprint.code(msg))
     else:
         messages.error(request, "Couldn't pull:<br>" + htmlprint.code(msg))
-    return redirect_fb(request.POST.get('relative_h', '.'))
+    return redirect_fb(filebrowser.relative)
 
 
 
@@ -301,7 +305,7 @@ def push_option(request, filebrowser, target):
         messages.success(request, "Push done.<br>" + htmlprint.code(msg))
     else:
         messages.error(request, "Couldn't push:<br>" + htmlprint.code(msg))
-    return redirect_fb(request.POST.get('relative_h', '.'))
+    return redirect_fb(filebrowser.relative)
 
 
 
@@ -311,32 +315,34 @@ def download_option(request, filebrowser, target):
         return HttpResponseNotAllowed(['GET'])
 
     try:
-        path = join(filebrowser.full_path(), target)
-        filename = target
+        path = normpath(normpath(join(filebrowser.full_path(), target)))
+        filename = basename(path) + datetime.datetime.now().strftime("_%dd-%mm-%yy-%Hh-%Mm-%Ss")
 
         if isdir(path):
-            shutil.make_archive(path, 'zip', root_dir=path)
-            filename = filename+".zip"
-            npath = path + ".zip"
+            npath = path + datetime.datetime.now().strftime("_%dd-%mm-%yy-%Hh-%Mm-%Ss")
+            shutil.make_archive(npath, 'zip', root_dir=path, base_dir=path)
+            filename += ".zip"
+            npath += ".zip"
         else:
             npath = path
 
         with open(npath, 'rb')as f:
-
             response = HttpResponse(f.read())
-            response['Content-Type']=magic.from_file(npath, mime=True)
-            response['Content-Disposition'] = "attachment; filename="+filename
-
-        if isdir(path):
-            os.remove(npath)
+            response['Content-Type'] = magic.from_file(npath, mime=True)
+            response['Content-Disposition'] = "attachment; filename=" + filename
 
         return response
 
     except Exception as e: # pragma: no cover
-        msg = "Impossible to download '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
-        messages.error(request, msg)
+        msg = "Impossible to download '" + target + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
+        messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))
+        if settings.DEBUG:
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
+    
+    finally:
+        if isdir(path):
+            os.remove(npath)
+    
     return redirect_fb(request.GET.get('relative_h', '.'))
 
 
@@ -355,7 +361,7 @@ def new_file_option(request, filebrowser, target):
             raise ValueError()
         if not stay_in_directory(relative_h, name):
             raise ValueError()
-        path = abspath(join(join(filebrowser.full_path(), relative), name))
+        path = normpath(join(join(filebrowser.full_path(), relative), name))
         if isdir(path):
             messages.error(request, "A folder with that name ('"+name+"') already exists")
         elif isfile(path):
@@ -374,9 +380,9 @@ def new_file_option(request, filebrowser, target):
         messages.error(request, msg)
     except Exception as e: # pragma: no cover
         msg = "Impossible to create '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
-        messages.error(request, msg)
+        messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))
+        if settings.DEBUG:
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
     return redirect_fb(relative)
 
 
@@ -408,10 +414,9 @@ def load_pltp_option(request, filebrowser, target):
                                       href=\""+url_test+"\">ici</a>.""")
     except Exception as e: # pragma: no cover
         msg = "Impossible to load '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
-        msg = msg if not settings.DEBUG_ROOT else msg + ':\n' + traceback.format_exc()
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
-        messages.error(request, msg)
+        messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))
+        if settings.DEBUG:
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
     return redirect_fb(request.GET.get('relative_h', '.'))
 
 
@@ -430,17 +435,18 @@ def move_option(request, filebrowser, target):
         relative_h = "/".join([d for d in relative_h.split("/") if d][2:])
         if not stay_in_directory(relative_h, destination) :
             raise ValueError()
-        os.rename(join(filebrowser.full_path(), target), join(join(filebrowser.full_path(), destination), target))
+        os.rename(normpath(join(filebrowser.full_path(), target)), join(join(filebrowser.full_path(), destination), target))
         messages.success(request, "'"+target+"' successfully moved !")
     except ValueError as e:
         msg = "Impossible to move '"+target+"' in this directory"
         messages.error(request, msg)
     except Exception as e: # pragma: no cover
         msg = "Impossible to move '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
-        messages.error(request, msg)
-    return redirect_fb(request.POST.get('relative_h', '.'))
+        messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))
+        if settings.DEBUG:
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
+    
+    return redirect_fb(filebrowser.relative)
 
 
 
@@ -450,7 +456,7 @@ def delete_option(request, filebrowser, target):
         return HttpResponseNotAllowed(['POST'])
 
     try:
-        path = join(filebrowser.full_path(), target)
+        path = normpath(join(filebrowser.full_path(), target))
         if isdir(path):
             shutil.rmtree(path, ignore_errors=True)
         else:
@@ -464,7 +470,7 @@ def delete_option(request, filebrowser, target):
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
-    return redirect_fb(request.POST.get('relative_h', '.'))
+    return redirect_fb(filebrowser.relative)
 
 
 
@@ -474,7 +480,7 @@ def edit_option(request, filebrowser, target):
         return HttpResponseNotAllowed(['GET'])
 
     try:
-        path = join(filebrowser.full_path(), target)
+        path = normpath(join(filebrowser.full_path(), target))
         with open(path, 'r') as f:
             content = f.read()
 
@@ -487,9 +493,10 @@ def edit_option(request, filebrowser, target):
 
     except Exception as e: # pragma: no cover
         msg = "Impossible to edit '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
-        messages.error(request, msg)
+        messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))
+        if settings.DEBUG:
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
+    
     return redirect_fb(request.GET.get('relative_h', '.'))
 
 
@@ -500,7 +507,7 @@ def edit_pl_option(request, filebrowser, target):
         return HttpResponseNotAllowed(['GET'])
 
     try:
-        path = join(filebrowser.full_path(), target)
+        path = normpath(join(filebrowser.full_path(), target))
         with open(path, 'r') as f:
             content = f.read()
 
@@ -529,9 +536,10 @@ def edit_pl_option(request, filebrowser, target):
 
     except Exception as e: # pragma: no cover
         msg = "Impossible to edit '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
-        messages.error(request, msg)
+        messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))
+        if settings.DEBUG:
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
+    
     return redirect_fb(request.GET.get('relative_h', '.'))
 
 
@@ -558,10 +566,10 @@ def test_pl_option(request, filebrowser, target):
         })
 
     except Exception as e: # pragma: no cover
-        msg = "Impossible to display '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
-        messages.error(request, msg)
+        messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))
+        if settings.DEBUG:
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
+    
     return redirect_fb(request.GET.get('relative_h', '.'))
 
 
@@ -620,10 +628,11 @@ def upload_option(request, filebrowser, target):
 
     except Exception as e: # pragma: no cover
         msg = "Impossible to upload '"+name+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
-        messages.error(request, msg)
-    return redirect_fb(request.POST.get('relative_h', '.'))
+        messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))
+        if settings.DEBUG:
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
+    
+    return redirect_fb(filebrowser.relative)
 
 
 
@@ -633,7 +642,7 @@ def extract_option(request, filebrowser, target):
         return HttpResponseNotAllowed(['GET'])
 
     try:
-        path = join(filebrowser.full_path(), target)
+        path = normpath(join(filebrowser.full_path(), target))
         mime = magic.from_file(path, mime=True).split('/')[1]
         if mime == 'zip':
             with zipfile.ZipFile(path) as arc:
@@ -646,7 +655,8 @@ def extract_option(request, filebrowser, target):
         messages.success(request, "Archive '"+target+"' successfully extracted.")
     except Exception as e: # pragma: no cover
         msg = "Impossible to extract '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
-        messages.error(request, msg)
+        messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))
+        if settings.DEBUG:
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
+    
     return redirect_fb(request.GET.get('relative_h', '.'))

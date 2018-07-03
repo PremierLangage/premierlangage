@@ -45,31 +45,39 @@ class Filebrowser():
         directory_options (FilebrowserOption): List of every options applicable to self.directory
     """
     
-    def __init__(self, user, path='.', root=None):
-        self.root = join(settings.FILEBROWSER_ROOT, user.username) if not root else root
-        self.relative = '.' if not path else path
+    def __init__(self, request, path='home', root=None):
+        real = (path).split('/')
+        if real[0] == "home":
+            real[0] = str(request.user.id)
+        
+        self.root = settings.FILEBROWSER_ROOT if not root else root
+        self.relative = path
+        self._real_relative = join(*real)
+        self.home = path.split('/')[0]
         self.entry_options = ENTRY_OPTIONS
         self.directory_options = DIRECTORY_OPTIONS
-        self.directory = Directory.objects.get(name=basename(self.root))
-        if self.relative != '.' and not self.relative.startswith('./'):
-            self.relative = './' + self.relative
+        self.directory = Directory.objects.get(name=self._real_relative.split('/')[0])
         self.entries, self.length_max = self.list()
     
     
     def full_path(self):
         """Return the absolute path of the current position of the filebrowser."""
-        return abspath(os.path.join(self.root, self.relative))
+        return abspath(os.path.join(self.root, self._real_relative))
     
     
     def breadcrumb(self):
         """Return the breadcrumb corresponding to the current position o the filebrowser"""
-        bc = list()
-        path = ""
-        for elem in [i for i in self.relative.split('/') if i]:
+        path = self.home
+        bc = [{'name': path, 'link': path}]
+        for elem in [i for i in self._real_relative.split('/') if i][1:]:
             bc.append({'name': elem, 'link': join(path, elem)})
             path = join(path, elem)
         
         return bc
+    
+    
+    def list_root(self):
+        return ['home'] + [r for r in os.listdir(settings.FILEBROWSER_ROOT) if not r.isdigit()]
     
     
     def list(self):

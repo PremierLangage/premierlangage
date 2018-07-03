@@ -19,7 +19,7 @@
                                     data-toggle="modal" data-target="#defaultModalDir{{group_key}}-{{key}}-{{forloop.parentloop.parentloop.counter0}}"
                                 {% endif %}
                                 {% if option.method == 'GET' %}
-                                    href="apply_option/?option_h={{group_key}}-{{key}}&name_h={{fb.directory.name}}&relative_h={{fb.relative}}&type_h=directory"
+                                    href="/filebrowser/{{ fb.relative }}/opt/?option=directory-{{group_key}}-{{key}}&target=."
                                 {% endif %}
                                 {% for elem in option.balise %} {{ elem }} {% endfor %}
                                 >

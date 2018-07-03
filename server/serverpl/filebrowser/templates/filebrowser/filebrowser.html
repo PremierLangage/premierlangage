@@ -8,7 +8,15 @@
 {% endblock %}
 
 {% block content %}
+
     <div class="container">
+        <ul class="nav nav-tabs nav-justified">
+            {% for root in fb.list_root %}
+                <li class="nav-item">
+                    <a class="nav-link{% if fb.home == root %} active"{% else %}" style="color: black;"{% endif %} href="/filebrowser/{{ root }}">{{ root|title }}</a>
+                </li>
+            {% endfor %}
+        </ul> 
         <div class="card card-fb">
             
             <div class="card-header no-padding card-header-fb">

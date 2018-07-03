@@ -159,9 +159,9 @@ ENTRY_OPTIONS = OptionsCategory({
             "delete":   FilebrowserOption("fas fa-times",       "Delete",   delete_option, require_confirmation=True, color=RED, filter=is_not_directory_object),
         }, icon="fas fa-cog"),
     "git": OptionsGroup('Git', {
-            "add":      FilebrowserOption("fas fa-plus",   "Git Add",      add_commit_option, form=AddCommitForm, color=GREEN),
-            "commit":   FilebrowserOption("fas fa-edit",   "Git Commit",   add_commit_option, form=AddCommitForm, color=YELLOW),
-            "reset":    FilebrowserOption("fas fa-undo",   "Git Reset",    add_commit_option, form=AddCommitForm, color=YELLOW),
+            "add":      FilebrowserOption("fas fa-plus",   "Git Add",      add_option, form=AddCommitForm, color=GREEN),
+            "commit":   FilebrowserOption("fas fa-edit",   "Git Commit",   add_option, form=AddCommitForm, color=YELLOW),
+            "reset":    FilebrowserOption("fas fa-undo",   "Git Reset",    add_option, form=AddCommitForm, color=YELLOW),
             "checkout": FilebrowserOption("fas fa-eraser", "Git Checkout", checkout_option, color=RED, require_confirmation=True),
         }, icon="fab fa-git-square fa-lg", filter=in_repository),
 })
@@ -183,9 +183,9 @@ DIRECTORY_OPTIONS = OptionsCategory({
             "pull":     FilebrowserOption("fas fa-cloud-download-alt", "Git Pull",     pull_option, form=LoginForm),
             "status":   FilebrowserOption("fas fa-info-circle",        "Git Status",   status_option, method=GET),
             "branch":   FilebrowserOption("fas fa-code-branch",        "Git Branch",   status_option, method=GET),
-            "add":      FilebrowserOption("fas fa-plus",               "Git Add",      add_commit_option, form=AddCommitForm, color=GREEN),
-            "commit":   FilebrowserOption("fas fa-edit",               "Git Commit",   add_commit_option, form=AddCommitForm, color=YELLOW),
-            "reset":    FilebrowserOption("fas fa-undo",               "Git Reset",    add_commit_option, form=AddCommitForm, color=YELLOW),
+            "add":      FilebrowserOption("fas fa-plus",               "Git Add",      add_option, form=AddCommitForm, color=GREEN),
+            "commit":   FilebrowserOption("fas fa-edit",               "Git Commit",   add_option, form=AddCommitForm, color=YELLOW),
+            "reset":    FilebrowserOption("fas fa-undo",               "Git Reset",    add_option, form=AddCommitForm, color=YELLOW),
             "checkout": FilebrowserOption("fas fa-eraser",             "Git Checkout", checkout_option, color=RED, require_confirmation=True),
         }, icon='fab fa-git-square fa-lg', filter=in_repository),
 })

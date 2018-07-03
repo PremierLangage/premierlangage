@@ -17,9 +17,8 @@ from django.conf import settings
 from filebrowser.models import Directory
 
 
-def redirect_fb(path='.'):
-    response = redirect(reverse('filebrowser:index'))
-    response['Location'] += '?cd='+iri_to_uri(path.replace(settings.FILEBROWSER_ROOT+'/', ''))
+def redirect_fb(path=''):
+    response = redirect('/filebrowser/' + path)
     return response
 
 

@@ -2,7 +2,7 @@
 
 {% for entry in fb.entries %}
     <tr>
-        <td style="width: calc({{fb.length_max}}em / 2);{% if entry.path|isdir %};cursor: pointer;" onclick="window.location='?cd={{ fb.relative }}/{{ entry.name }}'{%endif%};">
+        <td style="width: calc({{fb.length_max}}em / 2);{% if entry.path|isdir %};cursor: pointer;" onclick="window.location='/filebrowser/{{ fb.relative }}/{{ entry.name }}'{%endif%};">
             &emsp;<i class="{{ entry.path|icon }}"></i>&emsp;{{ entry.name }}
         </td>
         <td>
@@ -20,7 +20,7 @@
                                         data-toggle="modal" data-target="#defaultModal{{group_key}}-{{key}}-{{forloop.parentloop.parentloop.counter0}}"
                                     {% endif %}
                                     {% if option.method == 'GET' %}
-                                        href="apply_option/?option_h={{group_key}}-{{key}}&name_h={{entry.name}}&relative_h={{fb.relative}}&type_h=entry"
+                                        href="/filebrowser/{{ fb.relative }}/opt/?option=entry-{{group_key}}-{{key}}&target={{ entry.name }}"
                                     {% endif %}
                                     {% for elem in option.balise %} {{ elem }} {% endfor %}
                                     >
@@ -54,7 +54,7 @@
                                                     data-toggle="modal" data-target="#defaultModal{{group_key}}-{{key}}-{{forloop.parentloop.parentloop.counter0}}"
                                                 {% endif %}
                                                 {% if option.method == 'GET' %}
-                                                    href="apply_option/?option_h={{group_key}}-{{key}}&name_h={{entry.name}}&relative_h={{fb.relative}}&type_h=entry"
+                                                    href="/filebrowser/{{ fb.relative }}/opt/?option=entry-{{group_key}}-{{key}}&target={{ entry.name }}"
                                                 {% endif %}
                                                 {% for elem in option.balise %} {{ elem }} {% endfor %}
                                                 >
