@@ -16,30 +16,28 @@ from os.path import splitext, basename, abspath
 class SyntaxErrorPL(Exception):
     """Raised when a syntax error occured while parsing a file."""
 
-    def __init__(self, path, line, lineno, columno=None, message="Syntax error"):
+    def __init__(self, path, line, lineno, message="Syntax error"):
         self.path = path
         self.line = line
         self.message = message
         self.lineno = str(lineno)
-        self.columno = ":"+columno if columno != None else ''
         
     def __str__(self):
-        return abspath(self.path) + " - " + self.message + " at line " + self.lineno + self.columno + ":\n" + self.line
+        return abspath(self.path) + " - " + self.message + " at line " + str(self.lineno) + ":\n" + self.line
 
 
 
 class SemanticError(Exception):
     """Raised when a semantic error occured while parsing a file."""
 
-    def __init__(self, path, line, lineno, columno=None, message="Semantic error"):
+    def __init__(self, path, line, lineno, message="Semantic error"):
         self.path = path
         self.line = line
         self.message = message
         self.lineno = str(lineno)
-        self.columno = ":"+columno if columno != None else ''
         
     def __str__(self):
-        return abspath(self.path) + " -- " + self.message + " at line " + self.lineno + self.columno + "\n" + self.line
+        return abspath(self.path) + " -- " + self.message + " at line " + str(self.lineno) + "\n" + self.line
 
 
 
@@ -54,7 +52,7 @@ class DirectoryNotFound(Exception):
         self.lineno = str(lineno)
         
     def __str__(self):
-        return abspath(self.path) + " -- " + self.message + " : line " + self.lineno + " - '"+ self.name + "'\n" + self.line
+        return abspath(self.path) + " -- " + self.message + " : line " + str(self.lineno) + " - '"+ self.name + "'\n" + self.line
 
 
 

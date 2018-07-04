@@ -77,9 +77,12 @@ class Parser:
             
         else :
             if list_key == None :
-                raise SemanticError(self.path_parsed_file, line, self.lineno, "Illegal syntax empty name : " + key)
+                raise SemanticError(self.path_parsed_file, line, self.lineno, "Illegal syntax : Key '" + line.split(op)[0] + "' overwritten ")
             key = list_key[0]
             
+            
+            if key in dic and type(dic[key]) != dict:
+                raise SemanticError(self.path_parsed_file, line, self.lineno, "Illegal syntax : Key '" + line.split(op)[0] + "' overwritten ")
 
             # Add warning when overwritting a key
             if key not in dic:
@@ -96,6 +99,9 @@ class Parser:
             if list_key == None :
                 raise SemanticError(self.path_parsed_file, self.lineno, "Illegal syntax empty name : " + key)
             key = list_key[0]
+
+            if key in dic and type(dic[key]) != dict:
+                raise SemanticError(self.path_parsed_file, self.lineno, ' ', "Illegal syntax,  : " + key)
 
             # Add warning when overwritting a key
             if key not in dic:
@@ -237,7 +243,6 @@ class Parser:
                 - SyntaxErrorPL if self._multiline_json is True, line match END_MULTI_LINE
                   and string consisting of all readed line is not a well formated json."""
         if self.END_MULTI_LINE.match(line):
-            print(self.dic)
             if self._multiline_json:
                 try:
                     self.dic[self._multiline_key] = json.loads(self.dic[self._multiline_key])
