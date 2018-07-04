@@ -75,11 +75,10 @@ class Parser:
             self.set_value(dic,list_key[0],value,op)
             return
             
-        else :
-            if list_key == None :
+        else:
+            if list_key == None:
                 raise SemanticError(self.path_parsed_file, line, self.lineno, "Illegal syntax : Key '" + line.split(op)[0] + "' overwritten ")
             key = list_key[0]
-            
             
             if key in dic and type(dic[key]) != dict:
                 raise SemanticError(self.path_parsed_file, line, self.lineno, "Illegal syntax : Key '" + line.split(op)[0] + "' overwritten ")
@@ -95,8 +94,8 @@ class Parser:
             self.set_value(dic,list_key[0],value,op)
             return
             
-        else :
-            if list_key == None :
+        else:
+            if list_key == None:
                 raise SemanticError(self.path_parsed_file, self.lineno, "Illegal syntax empty name : " + key)
             key = list_key[0]
 
@@ -281,6 +280,7 @@ class Parser:
         except ValueError:
             raise FileNotFound(self.path_parsed_file, line, match.group('file'), lineno=self.lineno, message="Path from another directory must be absolute")
     
+    
     def parse_line(self, line):
         """ Parse the given line by calling the appropriate function according to regex match.
         
@@ -309,6 +309,7 @@ class Parser:
         
         elif not self.EMPTY_LINE.match(line):
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)   
+    
     
     def parse(self):
         """ Parse the given file.

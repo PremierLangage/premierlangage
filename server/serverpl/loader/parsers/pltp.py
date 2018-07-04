@@ -17,14 +17,12 @@ from serverpl.settings import FILEBROWSER_ROOT
 class Parser:
     """Parser used to parse pltp files with .pltp extension"""
 
-    KEY = r'^(?P<key>[a-zA-Z_][a-zA-Z0-9_]*)\s*'
-    DOUBLEKEY = r'^(?P<dic>[a-zA-Z_][a-zA-Z0-9_]*)\.(?P<key2>[a-zA-Z_][a-zA-Z0-9_]*)\s*'
+    KEY = r'^(?P<key>[a-zA-Z_][a-zA-Z0-9_\.]*)\s*'
     COMMENT = r'(?P<comment>#.*)'
     VALUE = r'(?P<value>[^=@%#][^#]*?)\s*'
     FILE = r'(?P<file>([a-zA-Z_][a-zA-Z0-9_]*:)?((\/)?[a-zA-Z0-9_.]+)(\/[a-zA-Z0-9_.]+)*)\s*'
 
     ONE_LINE = re.compile(KEY + r'(?P<operator>=|\%)\s*' + VALUE + COMMENT+r'?' + r'$')
-    DICT_LINE = re.compile(DOUBLEKEY + r'(?P<operator>=|\%)\s*' + VALUE + COMMENT + r'?' + r'$')
     FROM_FILE_LINE = re.compile(KEY + r'(?P<operator>=@|\+=@)\s*' + FILE + COMMENT+r'?' + r'$')
     EXTENDS_LINE = re.compile(r'(extends|template)\s*=\s*' + FILE + COMMENT+r'?' + r'$')
     MULTI_LINE = re.compile(KEY + r'(?P<operator>==|\+=|\%=)\s*' + COMMENT+r'?' + r'$')
@@ -69,6 +67,61 @@ class Parser:
         sha1 = hashlib.sha1()
         sha1.update((self.directory.name+':'+self.path).encode('utf-8'))
         self.dic['__sha1'] = sha1.hexdigest()
+    
+    
+    def set_value(self, dic, key, value, op):
+        if op == '=':
+            dic[key] = value
+            
+        if op == '==':
+            if value == '':
+                dic[key] = value
+            
+        if op == '+=':
+            dic[key] += value
+        
+    
+    def add_dic(self, dic, list_key, value, line, op):
+        if len(list_key) == 1:
+            if list_key[0] in dic:
+                key = line.split(op)
+                self.add_warning("Key '" + key[0] + "' overwritten at line "+ str(self.lineno) + "\n old value = " + str(dic[list_key[0]]) )
+
+            self.set_value(dic,list_key[0],value,op)
+            return
+            
+        else:
+            if list_key == None:
+                raise SemanticError(self.path_parsed_file, line, self.lineno, "Illegal syntax : Key '" + line.split(op)[0] + "' overwritten ")
+            key = list_key[0]
+            
+            if key in dic and type(dic[key]) != dict:
+                raise SemanticError(self.path_parsed_file, line, self.lineno, "Illegal syntax : Key '" + line.split(op)[0] + "' overwritten ")
+
+            # Add warning when overwritting a key
+            if key not in dic:
+                dic[key] = {}
+            self.add_dic(dic[key],list_key[1:], value, line, op)
+            
+            
+    def add_dic2(self, dic, list_key, value, op):
+        if len(list_key) == 1:
+            self.set_value(dic,list_key[0],value,op)
+            return
+            
+        else:
+            if list_key == None:
+                raise SemanticError(self.path_parsed_file, self.lineno, "Illegal syntax empty name : " + key)
+            key = list_key[0]
+
+            if key in dic and type(dic[key]) != dict:
+                raise SemanticError(self.path_parsed_file, self.lineno, ' ', "Illegal syntax,  : " + key)
+
+            # Add warning when overwritting a key
+            if key not in dic:
+                dic[key] = {}
+            self.add_dic2(dic[key],list_key[1:], value, op)
+ 
     
     
     def extends_line_match(self, match, line):
@@ -139,54 +192,14 @@ class Parser:
         if not (match.group('key') and match.group('value') and match.group('operator')):
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)
         
+        value = match.group('value')
         key = match.group('key')
-        
-        # Add warning when overwritting a key
-        if key in self.dic:
-            self.add_warning("Key '" + key + "' overwritten at line " + str(self.lineno))
-            
+        keys = key.split(".")
+        op = match.group('operator')
+
         if match.group('operator') == '=':
-            self.dic[key] = match.group('value')
-        else:
-            try:
-                self.dic[key] = json.loads(match.group('value'))
-            except:
-                SyntaxErrorPL(join(self.directory.root, self.path), line, self.lineno, message="Invalid JSON syntax ")
-    
-    
-    def dict_line_match(self, match, line):
-        """ Map value to key if operator is '=',
-            Map json.loads(value) if operator is '%'
-            
-            Raise from loader.exceptions:
-                - SyntaxErrorPL if no group 'value', 'key' or 'operator' was found
-                              if operator is '%' and value isn't a well formated json"""
-        
-        if not (match.group('dic') and match.group('key2') and match.group('operator') and match.group('value')):
-            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)
-        
-        key = match.group('key2')
-        dic = match.group('dic')
-        
-        if not dic in self.dic:
-            self.dic[dic] = {}
-            
-        if dic in self.dic and type(self.dic[dic]) != dict:
-            raise SemanticError(self.path_parsed_file, line, self.lineno, "Not a dictionnary : " + dic)
-            
-        # Add warning when overwritting a key
-        if (key in self.dic[dic]):
-            self.add_warning("Key '" + dic + '.' + key + "' overwritten at line " + str(self.lineno))
-        
-        if match.group('operator') == '=':
-            self.dic[dic][key] = match.group('value')
-        else:
-            try:
-                self.dic[dic] = json.loads(match.group('value'))
-            except:
-                raise SyntaxErrorPL(join(self.directory.root, self.path), line, self.lineno, message="Invalid JSON syntax ")
-    
-    
+            self.add_dic(self.dic,keys,value,line,op)
+
     
     def multi_line_match(self, match, line):
         """ Set self._multiline_key and self._multiline_opened_lineno.
@@ -201,6 +214,7 @@ class Parser:
             
             key = match.group('key')
             op = match.group('operator')
+            keys = key.split(".")
             
             # Add warning when overwritting a key
             if op != '+=' and key in self.dic:
@@ -212,36 +226,10 @@ class Parser:
                 self._multiline_json = True
             
             if op != '+=': # Allow next lines to be concatenated
-                self.dic[key] = ''
+                self.add_dic(self.dic,keys,'',line,op)
                 
-        elif match.group('dic'):
-            if not match.group('key2') or not match.group('operator'):
-                raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)
-            
-            dic = match.group('dic')
-            key2 = match.group('key2')
-            op = match.group('operator')
-            
-            if dic in self.dic and type(self.dic[dic]) != dict:
-                    raise SemanticError(self.path_parsed_file, line, self.lineno, " Not a dictionnary : " + dic)
-                    
-            # Add warning when overwritting a key  
-            if op != '+=' and dic in self.dic and key2 in self.dic[dic]:
-                self.add_warning("Key '" + dic + "." + key2 + "' overwritten at line " + str(self.lineno))
-            
-            self._multiline_dic = dic
-            self._multiline_key = key2
-            self._multiline_opened_lineno = self.lineno
-            if op == '=%':
-                self._multiline_json = True
-            
-            if op != '+=': # Allow next lines to be concatenated
-                if dic not in self.dic:
-                    self.dic[dic] = {}
-                self.dic[dic][key2] = ''
         else:
             SyntaxErrorPL(join(self.directory.root, self.path), self.lines[self._multi_line_lineno-1], self._multi_line_lineno, message="Invalid multiline syntax ")
-
     
     
     def while_multi_line(self, line):
@@ -251,30 +239,19 @@ class Parser:
             Raise from loader.exceptions:
                 - SyntaxErrorPL if self._multiline_json is True, line match END_MULTI_LINE
                   and string consisting of all readed line is not a well formated json."""
-        if self._multiline_key and not self._multiline_dic:
-            if self.END_MULTI_LINE.match(line):
-                if self._multiline_json:
-                    try:
-                        self.dic[self._multiline_key] = json.loads(self.dic[self._multiline_key])
-                    except:
-                        SyntaxErrorPL(join(self.directory.root, self.path), self.lines[self._multi_line_lineno-1], self._multi_line_lineno, message="Invalid JSON syntax starting ")
-                self._multiline_key = None
-                self._multiline_json = False
-            else:
-                self.dic[self._multiline_key] += '\n'+line
-        
-        elif self._multiline_dic:
-            if self.END_MULTI_LINE.match(line):
-                if self._multiline_json:
-                    try:
-                        self.dic[self._multiline_dic][self._multiline_key] = json.loads(self.dic[self._multiline_dic][self._multiline_key])
-                    except:
-                        SyntaxErrorPL(join(self.directory.root, self.path), self.lines[self._multi_line_lineno-1], self._multi_line_lineno, message="Invalid JSON syntax starting ")
-                self._multiline_dic = None
-                self._multiline_key = None
-                self._multiline_json = False
-            else:
-                self.dic[self._multiline_dic][self._multiline_key] += '\n'+line
+        if self.END_MULTI_LINE.match(line):
+            if self._multiline_json:
+                try:
+                    self.dic[self._multiline_key] = json.loads(self.dic[self._multiline_key])
+                except:
+                    SyntaxErrorPL(join(self.directory.root, self.path), self.lines[self._multi_line_lineno-1], self._multi_line_lineno, message="Invalid JSON syntax starting ")
+            self._multiline_key = None
+            self._multiline_json = False
+        else:
+            # Add warning when detecting '==' to prevent unintentionnal nested key
+            if '==' in line and self._multiline_key not in ['before', 'build', 'evaluator']:
+                self.add_warning("Nested '==' detected inside a multiple line value ("+self._multiline_key+") at line "+str(self.lineno)+". You can ignore this warning if this is intended.")
+            self.add_dic2(self.dic, self._multiline_key.split("."), line, "+=")
     
     
     def pl_file_line_match(self, match, line):
@@ -303,9 +280,6 @@ class Parser:
         
         if self._multiline_key:
             self.while_multi_line(line)
-            
-        elif self.DICT_LINE.match(line):
-            self.dict_line_match(self.DICT_LINE.match(line), line)
         
         elif self.EXTENDS_LINE.match(line):
             self.extends_line_match(self.EXTENDS_LINE.match(line), line)
