@@ -80,8 +80,6 @@ class Parser:
                 raise SemanticError(self.path_parsed_file, line, self.lineno, "Illegal syntax empty name : " + key)
             key = list_key[0]
             
-            if key in dic and dic[key] is not dict():
-                raise SemanticError(self.path_parsed_file, line, self.lineno, "Illegal syntax : " + key)
 
             # Add warning when overwritting a key
             if key not in dic:
