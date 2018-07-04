@@ -8,6 +8,15 @@ title= Addition Aléatoire
 
 text==
 Combien font ***{{ op1 }} + {{ op2 }}*** ?
+{{var.az.bn}}
+{{var}}
+==
+var.az.bn==
+45
+==
+
+var.az.ty==
+78
 ==
 
 form==
@@ -33,6 +42,19 @@ random.seed(seed)
 op1 = random.randint(20, 100)
 op2 = random.randint(20, 100)
 ==
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
