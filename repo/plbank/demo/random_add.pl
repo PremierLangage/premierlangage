@@ -11,11 +11,12 @@ Combien font ***{{ op1 }} + {{ op2 }}*** ?
 {{var.az.bn}}
 {{var}}
 ==
-var.az.bn==
+var.az==
 45
+987
 ==
 
-var.az.ty==
+var.az.ki==
 78
 ==
 
@@ -42,6 +43,9 @@ random.seed(seed)
 op1 = random.randint(20, 100)
 op2 = random.randint(20, 100)
 ==
+
+
+
 
 
 
