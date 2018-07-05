@@ -8,12 +8,12 @@ title= Addition Aléatoire
 
 text==
 Combien font ***{{ op1 }} + {{ op2 }}*** ?
-{{var.az.bn}}
+{{var.az.er.t}}
 {{var}}
 ==
-var.az==
+var.az.er.t==
 45
-987
+azer
 ==
 
 var.az.ki==
@@ -43,6 +43,7 @@ random.seed(seed)
 op1 = random.randint(20, 100)
 op2 = random.randint(20, 100)
 ==
+
 
 
 
