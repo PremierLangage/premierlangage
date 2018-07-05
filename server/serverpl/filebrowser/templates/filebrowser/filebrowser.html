@@ -24,6 +24,9 @@
                     <!-- Breadcrumb -->
                     {% include 'filebrowser/breadcrumb.html' %}
                     
+                    <button type="button" class="btn" style="background-color:transparent; position: absolute; right: 0;"  data-toggle="tooltip" data-placement="top" title="These options apply on the current directory.">
+                        <i class="far fa-question-circle"></i>
+                    </button>
                     <!-- Directory's Options -->
                     {% include 'filebrowser/dir_options.html' %}
                 </div>
@@ -47,6 +50,7 @@
             {% endif %}
         </div>
     </div>
+    
 {% endblock %}
 
 {% block end_script %}
@@ -54,5 +58,8 @@
         $(document).on('shown.bs.modal', function(e) {
             $('input:visible:enabled:first', e.target).focus();
         });
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
     </script>
 {% endblock %}

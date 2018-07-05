@@ -54,6 +54,7 @@ class Filebrowser():
         self.relative = path
         self._real_relative = join(*real)
         self.home = path.split('/')[0]
+        self.real_home = real[0]
         self.entry_options = ENTRY_OPTIONS
         self.directory_options = DIRECTORY_OPTIONS
         self.directory = Directory.objects.get(name=self._real_relative.split('/')[0])
@@ -77,6 +78,7 @@ class Filebrowser():
     
     
     def list_root(self):
+        """ Return the list of every entry of FILEBROWSER_ROOT."""
         return ['home'] + [r for r in os.listdir(settings.FILEBROWSER_ROOT) if not r.isdigit()]
     
     

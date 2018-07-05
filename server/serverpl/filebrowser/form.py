@@ -18,28 +18,40 @@ class RenameForm(forms.Form):
 
 
 class CopyForm(forms.Form):
-    destination = forms.CharField(max_length=4096, help_text="*Path relative to this entry (use '..' to move to te parent directory). I.E.: '../dir1/dir2/file.ext'")
+    destination = forms.CharField(max_length=4096, help_text=" * Path may be absolute or relative.")
 
 
 class MoveForm(forms.Form):
-    destination = forms.CharField(max_length=4096, help_text="*Path relative to this entry (use '..' to move to te parent directory). I.E.: '../dir1/dir2'")
+    destination = forms.CharField(max_length=4096, help_text=" * Path may be absolute or relative. Must point to a directory.")
 
 
-class AddCommitForm(forms.Form):
+class CommitForm(forms.Form):
     commit = forms.CharField(max_length=4096)
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(max_length=4096, required=False, help_text="*Optionnal")
-    password = forms.CharField(max_length=4096, required=False, help_text="*Optionnal", widget=forms.PasswordInput)
-
-
-class RightForm(forms.Form):
-    USER = User.objects.filter(profile__role__lte = Role.INSTRUCTOR)
-    write = forms.ModelMultipleChoiceField(USER, widget=forms.CheckboxSelectMultiple(), required=False, help_text="*User with writing right can do everything you can but delete, rename and change the rights of your directory")
-    read =  forms.ModelMultipleChoiceField(USER, widget=forms.CheckboxSelectMultiple(), required=False, help_text="*User with reading right can do everything that do not modify your file (I.E. display, download...)")
+    username = forms.CharField(max_length=4096, required=False, help_text=" * Optionnal")
+    password = forms.CharField(max_length=4096, required=False, help_text=" * Optionnal", widget=forms.PasswordInput)
 
 
 class UploadForm(forms.Form):
-    name = forms.CharField(max_length=1024, help_text="*Optionnal", required=False)
-    file = forms.FileField(help_text="*Only .tar.gz, .tar.xz and .zip archive can be extracted on the browser")
+    rename = forms.CharField(max_length=1024, help_text=" * Optionnal", required=False)
+    file = forms.FileField(help_text=" * Only .tar.gz, .tar.xz and .zip archive can be extracted directly on the plateform")
+
+
+class ResetForm(forms.Form):
+    MODE = (
+        ('mixed', 'mixed'),
+        ('soft',  'soft'),
+        ('hard',  'hard'),
+        ('merge', 'merge'),
+        ('keep',  'keep'),
+    )
+
+    mode = forms.ChoiceField(choices=MODE, initial="mixed", help_text=' * See <a href="https://git-scm.com/docs/git-reset"> the documentation</a> for more information')
+    commit = forms.CharField(max_length=256, initial="HEAD")
+
+
+class ChangeBranchForm(forms.Form):
+    name = forms.CharField(max_length=256)
+    new = forms.BooleanField(initial=False, required=False, label="Create a new branch ?")

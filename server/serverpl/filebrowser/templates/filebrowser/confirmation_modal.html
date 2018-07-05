@@ -5,15 +5,10 @@
                 <h4 class="modal-title">{{ option.text }} {{ entry.name }} ?</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-            <form action="/filebrowser/{{ fb.relative }}/opt/" class="form-group" method="post" enctype="multipart/form-data"> 
-                {% csrf_token %}
-                <input type="hidden" name="target" value="."/>
-                <input type="hidden" name="option" value="entry-{{group_key}}-{{key}}"/>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fas fa-times"></i>&emsp;Cancel</button>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i>&emsp;Yes</button>
-                </div>
-            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fas fa-times"></i>&emsp;Cancel</button>
+                <a type="submit" class="btn btn-primary" href="/filebrowser/{{ fb.relative }}/opt/?option=entry-{{group_key}}-{{key}}&target={{ entry.name }}"><i class="fas fa-check"></i>&emsp;Yes</a>
+            </div>
         </div>
     </div>
 </div>

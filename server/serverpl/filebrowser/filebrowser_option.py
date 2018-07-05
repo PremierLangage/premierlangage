@@ -103,8 +103,8 @@ class FilebrowserOption():
         
         if form and method == GET:
             raise ValueError("An option can't have a form while using GET method")
-        if require_confirmation and method == GET:
-            raise ValueError("require_confirmation can't be True with a GET method")
+        if require_confirmation and method == POST:
+            raise ValueError("require_confirmation can't be True with a POST method")
 
 
 
@@ -156,13 +156,13 @@ ENTRY_OPTIONS = OptionsCategory({
             "extract":  FilebrowserOption("fas fa-share-square","Extract",  extract_option, filter=is_archive, method=GET),
             "download": FilebrowserOption("fas fa-download",    "Download", download_option, method=GET),
             "display":  FilebrowserOption("fas fa-eye",         "Display",  display_option, filter=is_text, method=GET, balise=['target=_blank']),
-            "delete":   FilebrowserOption("fas fa-times",       "Delete",   delete_option, require_confirmation=True, color=RED, filter=is_not_directory_object),
+            "delete":   FilebrowserOption("fas fa-times",       "Delete",   delete_option, require_confirmation=True, method=GET, color=RED, filter=is_not_directory_object),
         }, icon="fas fa-cog"),
     "git": OptionsGroup('Git', {
-            "add":      FilebrowserOption("fas fa-plus",   "Git Add",      add_option, form=AddCommitForm, color=GREEN),
-            "commit":   FilebrowserOption("fas fa-edit",   "Git Commit",   add_option, form=AddCommitForm, color=YELLOW),
-            "reset":    FilebrowserOption("fas fa-undo",   "Git Reset",    add_option, form=AddCommitForm, color=YELLOW),
-            "checkout": FilebrowserOption("fas fa-eraser", "Git Checkout", checkout_option, color=RED, require_confirmation=True),
+            "add":      FilebrowserOption("fas fa-plus",   "Git Add",      add_option, method=GET),
+            "commit":   FilebrowserOption("fas fa-edit",   "Git Commit",   commit_option, form=CommitForm),
+            "reset":    FilebrowserOption("fas fa-undo",   "Git Reset",    reset_option, color=YELLOW, require_confirmation=True, method=GET),
+            "checkout": FilebrowserOption("fas fa-eraser", "Git Checkout", checkout_option, color=RED, require_confirmation=True, method=GET),
         }, icon="fab fa-git-square fa-lg", filter=in_repository),
 })
 
@@ -179,14 +179,15 @@ DIRECTORY_OPTIONS = OptionsCategory({
             "clone":    FilebrowserOption("fas fa-cloud-download-alt", "Git Clone", clone_option, form=LoginForm),
         }, icon='fas fa-cog'),
     "git": OptionsGroup('Git', {
-            "push":     FilebrowserOption("fas fa-cloud-upload-alt",   "Git Push",     push_option, form=LoginForm),
-            "pull":     FilebrowserOption("fas fa-cloud-download-alt", "Git Pull",     pull_option, form=LoginForm),
-            "status":   FilebrowserOption("fas fa-info-circle",        "Git Status",   status_option, method=GET),
-            "branch":   FilebrowserOption("fas fa-code-branch",        "Git Branch",   status_option, method=GET),
-            "add":      FilebrowserOption("fas fa-plus",               "Git Add",      add_option, form=AddCommitForm, color=GREEN),
-            "commit":   FilebrowserOption("fas fa-edit",               "Git Commit",   add_option, form=AddCommitForm, color=YELLOW),
-            "reset":    FilebrowserOption("fas fa-undo",               "Git Reset",    add_option, form=AddCommitForm, color=YELLOW),
-            "checkout": FilebrowserOption("fas fa-eraser",             "Git Checkout", checkout_option, color=RED, require_confirmation=True),
+            "push":     FilebrowserOption("fas fa-cloud-upload-alt",   "Git Push",        push_option, form=LoginForm),
+            "pull":     FilebrowserOption("fas fa-cloud-download-alt", "Git Pull",        pull_option, form=LoginForm),
+            "status":   FilebrowserOption("fas fa-info-circle",        "Git Status",      status_option, method=GET),
+            "branch":   FilebrowserOption("fas fa-list-ul",            "List Branch",     branch_option, method=GET),
+            "chbranch": FilebrowserOption("fas fa-code-branch",        "Change Branch",   change_branch_option, method=POST, form=ChangeBranchForm),
+            "add":      FilebrowserOption("fas fa-plus",               "Git Add",         add_option, method=GET),
+            "commit":   FilebrowserOption("fas fa-edit",               "Git Commit",      commit_option, form=CommitForm),
+            "reset":    FilebrowserOption("fas fa-undo",               "Git Reset",       reset_option, color=YELLOW, form=ResetForm, method=POST),
+            "checkout": FilebrowserOption("fas fa-eraser",             "Git Checkout",    checkout_option, color=RED, require_confirmation=True, method=GET),
         }, icon='fab fa-git-square fa-lg', filter=in_repository),
 })
 
