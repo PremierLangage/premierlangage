@@ -11,6 +11,7 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from jsonfield import JSONField
 
 from loader.models import PLTP, PL
 
@@ -59,7 +60,7 @@ class Answer(models.Model):
         (SUCCEEDED, 'Réussi'),
     )
     
-    value = models.TextField(max_length = 50000, null=False)
+    value = JSONField()
     user = models.ForeignKey(User, null=False, on_delete=models.CASCADE)
     pl = models.ForeignKey(PL, null=False, on_delete=models.CASCADE)
     seed = models.CharField(max_length=50, null=True)

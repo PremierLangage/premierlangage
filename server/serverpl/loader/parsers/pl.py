@@ -5,8 +5,8 @@
 #  
 #  Copyright 2018 Coumes Quentin
 
-import re, json
-from os.path import join, basename, abspath
+import re, json, os, shutil
+from os.path import join, basename, abspath, dirname
 from django.core.exceptions import ObjectDoesNotExist
 from loader.exceptions import SemanticError, SyntaxErrorPL, DirectoryNotFound, FileNotFound
 from loader.utils import get_location
@@ -87,7 +87,7 @@ class Parser:
         })
     
     
-    def from_file_line_match(self, match, line):
+    def from_file_line_match(self, match, line, dirtmp):
         """ Map (or append) the content if the file corresponding to file)
             to the key
             
@@ -198,7 +198,7 @@ class Parser:
             self.dic[self._multiline_key] += line
     
     
-    def sandbox_file_line_match(self, match, line):
+    def sandbox_file_line_match(self, match, line, dirtmp):
         """ Map content of file to self.dic['__file'][name].
             
             Raise from loader.exceptions:
@@ -212,46 +212,61 @@ class Parser:
         try:
             directory, path = get_location(self.directory, match.group('file'), current=self.path_parsed_file)
             path = join(directory.root, path)
+            
             name = basename(path) if not match.group('alias') else match.group('alias')
+            
+           
             with open(path, 'r') as f:
                 self.dic['__file'][name] = f.read()
+            
+            
+            
         except ObjectDoesNotExist:
             raise DirectoryNotFound(self.path_parsed_file, line, match.group('file'), self.lineno)
         except FileNotFoundError:
             raise FileNotFound(self.path_parsed_file, line, path, lineno=self.lineno)
         except ValueError:
             raise FileNotFound(self.path_parsed_file, line, match.group('file'), lineno=self.lineno, message="Path from another directory must be absolute")
-    
-    def parse_line(self, line):
+        
+        
+    def parse_line(self, line, dirtmp):
         """ Parse the given line by calling the appropriate function according to regex match.
         
             Raise loader.exceptions.SyntaxErrorPL if the line wasn't match by any regex."""
         
         if self._multiline_key:
+            
             self.while_multi_line(line)
         
         elif self.EXTENDS_LINE.match(line):
+            
             self.extends_line_match(self.EXTENDS_LINE.match(line), line)
         
         elif self.FROM_FILE_LINE.match(line):
-            self.from_file_line_match(self.FROM_FILE_LINE.match(line), line)
+            
+            self.from_file_line_match(self.FROM_FILE_LINE.match(line), line, dirtmp)
             
         elif self.ONE_LINE.match(line):
+            
             self.one_line_match(self.ONE_LINE.match(line), line)
         
         elif self.SANDBOX_FILE_LINE.match(line):
-            self.sandbox_file_line_match(self.SANDBOX_FILE_LINE.match(line), line)
+            self.sandbox_file_line_match(self.SANDBOX_FILE_LINE.match(line), line, dirtmp)
+            
         
         elif self.MULTI_LINE.match(line):
+            
             self.multi_line_match(self.MULTI_LINE.match(line), line)
         
         elif self.COMMENT_LINE.match(line):
+            
             self.dic['__comment'] += '\n' + self.COMMENT_LINE.match(line).group('comment')
         
         elif not self.EMPTY_LINE.match(line):
+            
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)   
     
-    def parse(self):
+    def parse(self, dirtmp):
         """ Parse the given file.
         
             Return a tuple (dic, warning) where:
@@ -263,7 +278,7 @@ class Parser:
         self.fill_meta()
         
         for line in self.lines:
-            self.parse_line(line)
+            self.parse_line(line, dirtmp)
             self.lineno += 1
         
         if self._multiline_key: # If a multiline value is still open at the end of the parsing
@@ -286,3 +301,47 @@ def get_parser():
         'parser': Parser,
         'type': 'pl'
     }
+
+def createandtransforme(path, file_execute, directory):
+    """
+    """
+    try:
+        if os.path.isdir(path):
+            shutil.rmtree(path)
+        os.makedirs(path)
+       
+        with open(file_execute,'r') as r,\
+             open(join(path, basename(file_execute)), 'w+') as f:
+            for line in r.readlines():
+                if Parser.SANDBOX_FILE_LINE.match(line):
+                    match = Parser.SANDBOX_FILE_LINE.match(line)
+                    s = '@ ' + basename(match.group('file'))
+                    if match.group('alias'):
+                        s += ' [' + match.group('alias') + ']'
+                    if match.group('comment'):
+                        s += ' ' + match.group('comment') 
+                    print(s, file=f)
+                    print(directory.root+match.group('file'))
+                    shutil.copy(abspath(directory.root+match.group('file')), path)
+                elif Parser.FROM_FILE_LINE.match(line):
+                    match = Parser.FROM_FILE_LINE.match(line)
+                    s = (match.group('key')
+                      + ' ' + match.group('operator')
+                      + ' ' + basename(match.group('file')))
+                    if match.group('comment'):
+                        s += ' ' + match.group('comment')
+                    print(s, file=f)
+                   
+                    shutil.copy(abspath(directory.root+match.group('file')),path)
+                    
+                else:
+                    print(line, file=f, end="")
+        
+        zf = path
+        shutil.make_archive(zf,"zip",path)
+        shutil.rmtree(path)
+        return path
+    except OSError:
+        return path
+            
+    

@@ -8,13 +8,14 @@
 
 import logging, hashlib, htmlprint
 
-from os.path import splitext, basename
+from os.path import splitext, basename, join, abspath, dirname
 
 from django.core.exceptions import ObjectDoesNotExist
 
 from loader.utils import get_location
 from loader.parser import parse_file, get_type
 from loader.models import PL, PLTP
+from loader.parsers.pl import createandtransforme
 
 from filebrowser.models import Directory
 
@@ -74,7 +75,10 @@ def load_PLTP(directory, rel_path, force=False):
     except: # If the PLTP does not exist, keep going
         pass
     
-    dic, warnings = parse_file(directory, rel_path)
+
+    #~ path = createandtransforme(dirname(abspath(join(directory.root, rel_path[1:])))+"/dir"+splitext(basename(rel_path))[0], abspath(join(directory.root, rel_path[1:])), directory)
+    path = dirname(abspath(join(directory.root, rel_path[1:])))+"/dir"+splitext(basename(rel_path))[0]
+    dic, warnings = parse_file(directory, rel_path, path)
     
     pl_list = list()
     for item in dic['__pl']:
@@ -112,7 +116,10 @@ def load_PL(directory, rel_path):
         This function return a PL object but does not save it in the database
     """
     
-    dic, warnings = parse_file(directory, rel_path)
+    
+    createandtransforme(dirname(abspath(join(directory.root, rel_path[1:])))+"/dir"+splitext(basename(rel_path))[0], abspath(join(directory.root, rel_path[1:])), directory)
+    path = dirname(abspath(join(directory.root, rel_path[1:])))+"/dir"+splitext(basename(rel_path))[0]
+    dic, warnings = parse_file(directory, rel_path, path)
     
     
     name = splitext(basename(rel_path))[0]

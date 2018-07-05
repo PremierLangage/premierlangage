@@ -217,7 +217,7 @@ class Parser:
         })
     
     
-    def parse_line(self, line):
+    def parse_line(self, line, dirtmp):
         """ Parse the given line by calling the appropriate function according to regex match.
         
             Raise loader.exceptions.SyntaxErrorPL if the line wasn't match by any regex."""
@@ -247,7 +247,7 @@ class Parser:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)    
     
     
-    def parse(self):
+    def parse(self, dirtmp):
         """ Parse the given file.
         
             Return a tuple (dic, warning) where:
@@ -259,7 +259,7 @@ class Parser:
         self.fill_meta()
         
         for line in self.lines:
-            self.parse_line(line)
+            self.parse_line(line, dirtmp)
             self.lineno += 1
         
         if self._multiline_key: # If a multiline value is still open at the end of the parsing
@@ -282,3 +282,44 @@ def get_parser():
         'parser': Parser,
         'type': 'pltp'
     }
+def createandtransforme(path, file_execute, directory):
+    """
+    """
+    try:
+        if os.path.isdir(path):
+            shutil.rmtree(path)
+        os.makedirs(path)
+       
+        with open(file_execute,'r') as r,\
+             open(join(path, basename(file_execute)), 'w+') as f:
+            for line in r.readlines():
+                if Parser.SANDBOX_FILE_LINE.match(line):
+                    match = Parser.SANDBOX_FILE_LINE.match(line)
+                    s = '@ ' + basename(match.group('file'))
+                    if match.group('alias'):
+                        s += ' [' + match.group('alias') + ']'
+                    if match.group('comment'):
+                        s += ' ' + match.group('comment') 
+                    print(s, file=f)
+                    print(directory.root+match.group('file'))
+                    shutil.copy(abspath(directory.root+match.group('file')), path)
+                elif Parser.FROM_FILE_LINE.match(line):
+                    match = Parser.FROM_FILE_LINE.match(line)
+                    s = (match.group('key')
+                      + ' ' + match.group('operator')
+                      + ' ' + basename(match.group('file')))
+                    if match.group('comment'):
+                        s += ' ' + match.group('comment')
+                    print(s, file=f)
+                   
+                    shutil.copy(abspath(directory.root+match.group('file')),path)
+                    
+                else:
+                    print(line, file=f, end="")
+        
+        zf = path
+        shutil.make_archive(zf,"zip",path)
+        shutil.rmtree(path)
+        return path
+    except OSError:
+        return path

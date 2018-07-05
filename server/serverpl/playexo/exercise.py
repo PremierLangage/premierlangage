@@ -120,19 +120,19 @@ class ActivityInstance:
             if 'pl_id__' in dic and item.id == dic['pl_id__']:
                 answer = Answer.last_answer(item, request.user)
                 if answer:
-                    dic['code'] = answer
+                    dic['student_answer'] = answer
             
-            for key in ['text', 'texth', 'introduction', 'introductionh', "form", "title"]:
-                if key in dic:
-                    dic[key] = Template(dic[key]).render(Context(dic))
-                
+                for key in ['text', 'texth', 'introduction', 'introductionh', "form", "title"]:
+                    if key in dic:
+                        dic[key] = Template(dic[key]).render(Context(dic))
+                    
             state = Answer.pl_state(item, request.user)
             pl_list.append({
                 'id'   : item.id,
                 'state': state,
                 'title': item.json['title'],
             })
-        
+
         context = RequestContext(request)
         context.update(self.dic)
         context['pl_list__'] = pl_list

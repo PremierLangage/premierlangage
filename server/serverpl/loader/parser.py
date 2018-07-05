@@ -7,16 +7,16 @@
 
 
 
-import os, importlib, logging
+import os, importlib, logging ,shutil
 
-from os.path import basename, splitext, join
+from os.path import basename, splitext, join, dirname, abspath
 
 from django.core.exceptions import ObjectDoesNotExist
 
 from serverpl.settings import PARSERS_ROOT, PARSERS_MODULE
 from loader.utils import extends_dict
 from loader.exceptions import UnknownExtension, UnknownType, DirectoryNotFound, FileNotFound, MissingKey
-
+from loader.parsers.pl import createandtransforme
 from filebrowser.models import Directory
 
 
@@ -99,7 +99,7 @@ def process_extends(dic):
     for item in dic['__extends']:
         try:
             directory = Directory.objects.get(name=item['directory_name'])
-            ext_dic, warnings_ext = parse_file(directory, item['path'], extending=True)
+            ext_dic, warnings_ext = parse_file(directory, item['path'],"", extending=True)
             warnings += warnings_ext
             dic = extends_dict(dic, ext_dic)
         except ObjectDoesNotExist:
@@ -115,7 +115,7 @@ def process_extends(dic):
 
 
 
-def parse_file(directory, path, extending=False):
+def parse_file(directory, path, dirtmp, extending=False):
     """Parse the given file with the parser class corresponding to its extension.
        
        Return a tuple (dic, warning) where:
@@ -135,10 +135,15 @@ def parse_file(directory, path, extending=False):
         path += '.pl'
     
     if ext in parsers:
-        dic, warnings = parsers[ext]['parser'](directory, path).parse()
+        
+        
+        dic, warnings = parsers[ext]['parser'](directory, path).parse(dirtmp)
         dic, ext_warnings = process_extends(dic)
         warnings += ext_warnings
         
+        #~ zf = join(join(dirname(abspath(join(directory.root,path)))),basename(dirtmp))
+        #~ shutil.make_archive(zf,"zip",join(dirname(abspath(join(directory.root,path))),basename(dirtmp)))
+        #~ shutil.rmtree(join(dirname(abspath(join(directory.root,path))),basename(dirtmp)))
         if not extending:
             if parsers[ext]['type'] == 'pltp':
                 for key in PLTP_MANDATORY_KEY:
@@ -153,6 +158,7 @@ def parse_file(directory, path, extending=False):
             if key in dic and type(dic[key]) != str:
                 raise TypeError("Key : '"+key+"' is '"+str(type(dic[key]))+"' but must be a string.")
         
+       
         return dic, warnings
     
     raise UnknownExtension(path, join(directory.name, path))
