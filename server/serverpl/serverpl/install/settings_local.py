@@ -14,6 +14,7 @@ SECRET_KEY = "o!m$n&s4=kcftm1de1m+7!36a=8x38wrr)m9)i@ru7j-*c7vgm"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+SYSLOG = False
 
 # List of Allowed Hosts
 ALLOWED_HOSTS = ['127.0.0.1']
@@ -181,13 +182,6 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
         },
-        'syslog': {
-            'level': 'INFO',
-            'class': 'logging.handlers.SysLogHandler',
-            'facility': 'local7',
-            'address': '/dev/log' if os.path.exists('/dev/log') else '/var/run/syslog',
-            'formatter': 'verbose'
-        },
         'mail_admins': {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler',
@@ -197,35 +191,31 @@ LOGGING = {
     },
     'loggers': {
         'django':{
-            'handlers': ['console', 'syslog', 'mail_admins'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
         },
         'sandbox':{
-            'handlers': ['console', 'syslog', 'mail_admins'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
         },
         'classmanagement':{
-            'handlers': ['console', 'syslog', 'mail_admins'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
         },
         'documentation':{
-            'handlers': ['console', 'syslog', 'mail_admins'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
         },
         'filebrowser':{
-            'handlers': ['console', 'syslog', 'mail_admins'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
         },
         'playexo':{
-            'handlers': ['console', 'syslog', 'mail_admins'],
-            'level': 'INFO',
-        },
-        'pysrc':{
-            'handlers': ['console', 'syslog', 'mail_admins'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
         },
         'django_auth_lti':{
-            'handlers': ['console', 'syslog', 'mail_admins'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
         },
     },
@@ -244,7 +234,7 @@ USE_TZ = True
 STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'static'))
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../../tmp'))
+MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../tmp'))
 MEDIA_URL = '/tmp/'
 
 
