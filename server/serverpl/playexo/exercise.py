@@ -60,10 +60,11 @@ class ActivityInstance:
         dic['response'] = response
         if 'evaluator' not in self.dic:
             try:
+                answer = response.get('answer')
                 if 'timeout' in locals():
-                    sandbox_session = SandboxSession(self.dic, response['answer'], timeout=timeout)
+                    sandbox_session = SandboxSession(self.dic, studentfile=answer, timeout=timeout)
                 else:
-                    sandbox_session = SandboxSession(self.dic, response['answer'])
+                    sandbox_session = SandboxSession(self.dic, studentfile=answer)
                     
                 response = json.loads(sandbox_session.call())
                 state = response['grade']
