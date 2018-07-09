@@ -4,6 +4,8 @@ from django.conf.urls import url
 
 from . import views
 
+app_name = 'playexo'
+
 urlpatterns = [
     url(r'^not_authenticated/.*$', views.not_authenticated),
     url(r'^activity/lti/(\w+)/(\w+)/$', views.lti_receiver),

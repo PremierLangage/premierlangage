@@ -52,9 +52,6 @@ class Profile(models.Model):
     def create_user_profile(sender, instance, created, **kwargs):
         if created:
             profile = Profile.objects.create(user=instance)
-            if not isdir(join(settings.FILEBROWSER_ROOT, instance.username)):
-                os.mkdir(join(settings.FILEBROWSER_ROOT, instance.username))
-            Directory.objects.create(name=instance.username, owner=instance)
     
     
     @receiver(post_save, sender=User)

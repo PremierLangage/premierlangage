@@ -8,6 +8,7 @@
 from django.conf.urls import url
 from sandbox import views
 
+app_name = 'publisher'
 
 urlpatterns = [
     url(r'^$', views.action),

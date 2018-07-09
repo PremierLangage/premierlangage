@@ -32,6 +32,8 @@ from filebrowser.models import Directory
 is_directory = isdir
 is_file = isfile
 
+def is_not_directory(path):
+    return not is_directory(path)
 
 def in_repository(path):
     return gitcmd.in_repository(path, False)

@@ -5,10 +5,10 @@
 
 {% block css %}
     <link rel="stylesheet" href="{% static '/css/filebrowser.css' %}" />
+    <link rel="stylesheet" href="{% static '/css/jqueryFileTree.css' %}" />
 {% endblock %}
 
 {% block content %}
-
     <div class="container">
         <ul class="nav nav-tabs nav-justified">
             {% for root in fb.list_root %}

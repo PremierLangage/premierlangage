@@ -24,6 +24,8 @@
 
 import os, subprocess
 
+from os.path import isdir, join
+
 from urllib.parse import urlparse
 
 from django.db import models
@@ -54,11 +56,15 @@ class Directory(models.Model):
         if self.public:
             [self.add_read_auth(u) for u in User.objects.all()]
     
+    
     @receiver(post_save, sender=User)
     def add_user_read_public(sender, instance, created, **kwargs):
         if created:
             for i in Directory.objects.filter(public=True):
                 i.read_auth.add(instance)
+            if not isdir(join(settings.FILEBROWSER_ROOT, str(instance.id))):
+                os.mkdir(join(settings.FILEBROWSER_ROOT, str(instance.id)))
+            Directory.objects.create(name=str(instance.id), owner=instance)
     
     
     def is_repository(self):

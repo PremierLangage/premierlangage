@@ -20,12 +20,12 @@ from classmanagement.views import index
 
 urlpatterns = [
     url(r'^$', index ),
-    url(r'^courses/', include('classmanagement.urls')),
-    url(r'^playexo/', include('playexo.urls')),
-    url(r'^sandbox/',include('sandbox.urls')),
-    url(r'^documentation/',include('documentation.urls')),
+    url(r'^courses/', include('classmanagement.urls', namespace='classmanagement')),
+    url(r'^playexo/', include('playexo.urls', namespace="playexo")),
+    url(r'^sandbox/',include('sandbox.urls', namespace="sandbox")),
+    url(r'^documentation/',include('documentation.urls', namespace="documentation")),
     url(r'^filebrowser/',include('filebrowser.urls', namespace='filebrowser')),
-    url(r'^profile/',include('user_profile.urls')),
-    url(r'^publisher/',include('publisher.urls')),
+    url(r'^profile/',include('user_profile.urls', namespace="profile")),
+    url(r'^publisher/',include('publisher.urls', namespace="publisher")),
     url(r'^admin/', admin.site.urls),
 ]

@@ -44,7 +44,7 @@ from django.db.utils import IntegrityError
 from django.conf import settings
 
 from filebrowser.models import Directory
-from filebrowser.utils import redirect_fb, stay_in_directory
+from filebrowser.utils import redirect_fb
 from filebrowser.filter import is_pl
 
 from loader.loader import load_file
@@ -102,7 +102,7 @@ def display_option(request, filebrowser, target):
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
 
-    return redirect_fb(request.GET.get('relative_h', '.'))
+    return redirect_fb(filebrowser.relative)
 
 
 def rename_option(request, filebrowser, target):
@@ -410,7 +410,7 @@ def download_option(request, filebrowser, target):
         if isdir(path):
             os.remove(npath)
     
-    return redirect_fb(request.GET.get('relative_h', '.'))
+    return redirect_fb(filebrowser.relative)
 
 
 
@@ -486,7 +486,7 @@ def load_pltp_option(request, filebrowser, target):
         messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
-    return redirect_fb(request.GET.get('relative_h', '.'))
+    return redirect_fb(filebrowser.relative)
 
 
 
@@ -554,7 +554,6 @@ def delete_option(request, filebrowser, target):
     return redirect_fb(filebrowser.relative)
 
 
-
 def edit_option(request, filebrowser, target):
     """ Start an editor to edit target."""
     if request.method != 'GET':
@@ -578,7 +577,7 @@ def edit_option(request, filebrowser, target):
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
     
-    return redirect_fb(request.GET.get('relative_h', '.'))
+    return redirect_fb(filebrowser.relative)
 
 
 
@@ -591,8 +590,8 @@ def edit_pl_option(request, filebrowser, target):
         path = normpath(join(filebrowser.full_path(), target))
         with open(path, 'r') as f:
             content = f.read()
-
-        rel_path = join(filebrowser.relative, target).replace(filebrowser.directory.name, "")
+        
+        rel_path = join(filebrowser.relative, target).replace('home/', "")
         pl, warnings = load_file(filebrowser.directory, rel_path)
         if not pl:
             preview = '<div class="alert alert-danger" role="alert"> Failed to load \''+target+"': \n"+warnings+"</div>"
@@ -621,7 +620,7 @@ def edit_pl_option(request, filebrowser, target):
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
     
-    return redirect_fb(request.GET.get('relative_h', '.'))
+    return redirect_fb(filebrowser.relative)
 
 
 
@@ -636,7 +635,7 @@ def test_pl_option(request, filebrowser, target):
 
         if not pl:
             messages.error(request, warnings)
-            return redirect_fb(request.GET.get('relative_h', '.'))
+            return redirect_fb(filebrowser.relative)
 
         exercise = PLInstance(pl.json)
         request.session['exercise'] = dict(exercise.dic)
@@ -651,7 +650,7 @@ def test_pl_option(request, filebrowser, target):
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
     
-    return redirect_fb(request.GET.get('relative_h', '.'))
+    return redirect_fb(filebrowser.relative)
 
 
 
@@ -680,7 +679,7 @@ def rights_option(request, filebrowser, target):
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
-    return redirect_fb(request.GET.get('relative_h', '.'))
+    return redirect_fb(filebrowser.relative)
 
 
 
@@ -741,4 +740,4 @@ def extract_option(request, filebrowser, target):
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
     
-    return redirect_fb(request.GET.get('relative_h', '.'))
+    return redirect_fb(filebrowser.relative)

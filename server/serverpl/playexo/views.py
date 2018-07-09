@@ -104,7 +104,7 @@ def activity_receiver(request):
                     break
             else:
                 request.session["current_pl"] = None
-        request.method
+        
         return redirect(reverse(activity_receiver))
     
     request.session['exercise'] = exercise.dic

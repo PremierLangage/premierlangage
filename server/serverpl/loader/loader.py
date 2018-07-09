@@ -15,7 +15,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from loader.utils import get_location
 from loader.parser import parse_file, get_type
 from loader.models import PL, PLTP
-from loader.parsers.pl import createandtransforme
 
 from filebrowser.models import Directory
 
@@ -38,10 +37,13 @@ def load_file(directory, rel_path, force=False):
     """
     
     try:
-        if get_type(directory, rel_path) == 'pltp':
+        typ = get_type(directory, rel_path)
+        if typ == 'pltp':
             return load_PLTP(directory, rel_path, force)
-        else:
+        elif typ == 'pl':
             return load_PL(directory, rel_path)
+        else:
+            raise Exception("Type '" + typ + "' is not yet implemented")
     except Exception as e:
         if not DEBUG:
             return (None, htmlprint.code(str(e))) 
@@ -115,11 +117,7 @@ def load_PL(directory, rel_path):
         
         This function return a PL object but does not save it in the database
     """
-    
-    
-    createandtransforme(dirname(abspath(join(directory.root, rel_path[1:])))+"/dir"+splitext(basename(rel_path))[0], abspath(join(directory.root, rel_path[1:])), directory)
-    path = dirname(abspath(join(directory.root, rel_path[1:])))+"/dir"+splitext(basename(rel_path))[0]
-    dic, warnings = parse_file(directory, rel_path, path)
+    dic, warnings = parse_file(directory, rel_path)
     
     
     name = splitext(basename(rel_path))[0]

@@ -11,6 +11,8 @@ from django.conf.urls import url
 
 from user_profile import views
 
+app_name = 'publisher'
+
 urlpatterns = [
     url(r'^$', views.edit_profile),
     url(r'^editor_preview/$', views.editor_preview),
