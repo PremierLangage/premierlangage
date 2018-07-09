@@ -686,25 +686,23 @@ def upload_option(request, filebrowser, target):
     """ Allow the user to upload a file in the filebrowser """
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-
+    
+    relative = request.POST.get('relative')
+    relative_h = request.POST.get('relative_h')
+    f = request.FILES['file']
+    name = request.POST.get('rename')
+    name = name if name else f.name
+    
     try:
-        relative = request.POST.get('relative')
-        relative_h = request.POST.get('relative_h')
-        f = request.FILES['file']
-        name = request.POST.get('name')
-        if not name:
-            name = f.name
-        else :
-            relative_h = "/".join([d for d in relative_h.split("/") if d][2:])
-            if not stay_in_directory(relative_h, name):
-                raise ValueError()
-        path = filebrowser.root+'/'+relative+'/'+name
+        path = normpath(join(filebrowser.full_path(), name))
         if isfile(path) or isdir(path):
-            messages.error(request, "The file's name is already used")
-        with open(path, 'wb+') as dest:
-            for chunk in f.chunks():
-                dest.write(chunk)
-        messages.success(request, "File '"+name+"' successfully uploaded.")
+            messages.error(request, "This file's name is already used")
+        
+        else:
+            with open(path, 'wb+') as dest:
+                for chunk in f.chunks():
+                    dest.write(chunk)
+            messages.success(request, "File '" + name + "' successfully uploaded.")
 
     except Exception as e: # pragma: no cover
         msg = "Impossible to upload '"+name+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
