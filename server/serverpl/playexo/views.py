@@ -150,7 +150,7 @@ def test_receiver(request, activity_name, pltp_sha1):
     request.session['current_activity'] = activity.id
     request.session['current_pl'] = None
     request.session['testing'] = True
-    return HttpResponseRedirect(reverse(activity_receiver))
+    return HttpResponseRedirect(reverse("playexo:activity_receiver"))
 
 
 

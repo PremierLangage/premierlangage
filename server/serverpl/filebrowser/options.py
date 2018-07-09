@@ -461,7 +461,7 @@ def load_pltp_option(request, filebrowser, target):
         return HttpResponseNotAllowed(['GET'])
 
     try:
-        rel_path = join(filebrowser.relative, target).replace(filebrowser.directory.name, "").replace('./', "")
+        rel_path = join(filebrowser.relative, target).replace('home/', "")
         pltp, warnings = load_file(filebrowser.directory, rel_path, True)
 
         if not pltp and not warnings:
@@ -513,6 +513,10 @@ def move_option(request, filebrowser, target):
         elif not isdir(ndestination):
             messages.error(request, "Impossible to move '" + target + "' inside '" + destination
                                    + "': destination isn't a directory.")
+        
+        elif path in ndestination:
+            messages.error(request, "Impossible to move '" + target + "' inside '" + destination
+                                   + "': Can't move a directory inside itself.")
         
         else:
             ndestination = join(ndestination, target)
@@ -630,7 +634,7 @@ def test_pl_option(request, filebrowser, target):
         return HttpResponseNotAllowed(['GET'])
 
     try:
-        rel_path = join(filebrowser.relative, target).replace(filebrowser.directory.name, "")
+        rel_path = join(filebrowser.relative, target).replace('home/', "") 
         pl, warnings = load_file(filebrowser.directory, rel_path)
 
         if not pl:
