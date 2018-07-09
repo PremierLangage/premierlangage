@@ -15,4 +15,4 @@ class GraderError(Exception):
         self.s = s
     
     def __str__(self):
-        return s
+        return self.s

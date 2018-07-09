@@ -34,7 +34,8 @@ from django.conf import settings
 @login_required
 def index(request, path="home"):
     """ Used by the filebrowser module to navigate """
-    path = (path).split('/')
+   
+    path = path.split('/')
     
     if path[0].isdigit():
         raise Http404()

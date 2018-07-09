@@ -717,8 +717,9 @@ def extract_option(request, filebrowser, target):
     """ Extract the given archive """
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
-
+    
     try:
+        
         path = normpath(join(filebrowser.full_path(), target))
         mime = magic.from_file(path, mime=True).split('/')[1]
         if mime == 'zip':

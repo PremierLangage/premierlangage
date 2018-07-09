@@ -83,382 +83,376 @@ class GitTestCase(TestCase):
         os.chdir(cwd)
 
 
-    def test_commit_method_not_allowed(self):
-        response = self.c.get(
-            '/filebrowser/apply_option/',
-            {
-                'option_h': 'commit',
-                'name_h': 'function001.pl',
-                'relative_h': './dir/TPE',
-                'type_h': 'entry',
-                },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 405)
+    #~ def test_commit_method_not_allowed(self):
+        #~ response = self.c.get(
+            #~ '/filebrowser/home/dir/TPE/opt/?option=entry-git-commit&target=function001.pl',
+            #~ follow=True
+            #~ )
+        #~ self.assertEqual(response.status_code, 405)
 
 
-    def test_status_method_not_allowed(self):
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                'option_h': 'status',
-                'name_h': 'dir',
-                'relative_h': './dir/TPE',
-                'type_h': 'directory',
-                },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 405)
+    #~ def test_status_method_not_allowed(self):
+        #~ response = self.c.post(
+            #~ '/filebrowser/apply_option/post',
+            #~ {
+                #~ 'option_h': 'status',
+                #~ 'name_h': 'dir',
+                #~ 'relative_h': './dir/TPE',
+                #~ 'type_h': 'directory',
+                #~ },
+            #~ follow=True
+        #~ )
+        #~ self.assertEqual(response.status_code, 405)
 
 
-    def test_checkout_method_not_allowed(self):
-        response = self.c.get(
-            '/filebrowser/apply_option/',
-            {
-                'option_h': 'checkout',
-                'name_h': 'function001.pl',
-                'relative_h': './dir/TPE',
-                'type_h': 'entry',
-                },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 405)
+    #~ def test_checkout_method_not_allowed(self):
+        #~ response = self.c.get(
+            #~ '/filebrowser/apply_option/',
+            #~ {
+                #~ 'option_h': 'checkout',
+                #~ 'name_h': 'function001.pl',
+                #~ 'relative_h': './dir/TPE',
+                #~ 'type_h': 'entry',
+                #~ },
+            #~ follow=True
+        #~ )
+        #~ self.assertEqual(response.status_code, 405)
 
 
-    def test_push_method_not_allowed(self):
-        response = self.c.get(
-            '/filebrowser/apply_option/',
-            {
-                'option_h': 'push',
-                'name_h': 'dir',
-                'relative_h': './dir/TPE',
-                'type_h': 'directory',
-                },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 405)
+    #~ def test_push_method_not_allowed(self):
+        #~ response = self.c.get(
+            #~ '/filebrowser/apply_option/',
+            #~ {
+                #~ 'option_h': 'push',
+                #~ 'name_h': 'dir',
+                #~ 'relative_h': './dir/TPE',
+                #~ 'type_h': 'directory',
+                #~ },
+            #~ follow=True
+        #~ )
+        #~ self.assertEqual(response.status_code, 405)
 
 
-    def test_pull_method_not_allowed(self):
-        response = self.c.get(
-            '/filebrowser/apply_option/',
-            {
-                'option_h': 'pull',
-                'name_h': 'dir',
-                'relative_h': './dir/TPE',
-                'type_h': 'directory',
-                },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 405)
+    #~ def test_pull_method_not_allowed(self):
+        #~ response = self.c.get(
+            #~ '/filebrowser/apply_option/',
+            #~ {
+                #~ 'option_h': 'pull',
+                #~ 'name_h': 'dir',
+                #~ 'relative_h': './dir/TPE',
+                #~ 'type_h': 'directory',
+                #~ },
+            #~ follow=True
+        #~ )
+        #~ self.assertEqual(response.status_code, 405)
     
     
-    def test_commit(self):
-        with open(join(FAKE_FB_ROOT, 'dir/TPE/function001.pl'), 'w') as f:
-            print("test", file=f)
-        try:
-            response = self.c.get(
-                '/filebrowser/apply_option/',
-                {
-                    'option_h' : 'status',
-                    'name_h' : 'dir',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'directory',
-                    },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            m = list(response.context['messages'])
-            self.assertEqual(messages.SUCCESS, m[0].level)
-            self.assertTrue("TPE&sol;function001&period;pl" in m[0].message)
+    #~ def test_commit(self):
+        #~ with open(join(FAKE_FB_ROOT, 'dir/TPE/function001.pl'), 'w') as f:
+            #~ print("test", file=f)
+        #~ try:
+            #~ response = self.c.get(
+                #~ '/filebrowser/apply_option/',
+                #~ {
+                    #~ 'option_h' : 'status',
+                    #~ 'name_h' : 'dir',
+                    #~ 'relative_h' : './dir/TPE',
+                    #~ 'type_h' : 'directory',
+                    #~ },
+                #~ follow=True
+            #~ )
+            #~ self.assertEqual(response.status_code, 200)
+            #~ m = list(response.context['messages'])
+            #~ self.assertEqual(messages.SUCCESS, m[0].level)
+            #~ self.assertTrue("TPE&sol;function001&period;pl" in m[0].message)
             
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                    'option_h' : 'commit',
-                    'name_h' : 'function001.pl',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'entry',
-                    'commit' : 'My commit'
-                    },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            m = list(response.context['messages'])
-            self.assertEqual(messages.SUCCESS, m[0].level)
+            #~ response = self.c.post(
+                #~ '/filebrowser/apply_option/post',
+                #~ {
+                    #~ 'option_h' : 'commit',
+                    #~ 'name_h' : 'function001.pl',
+                    #~ 'relative_h' : './dir/TPE',
+                    #~ 'type_h' : 'entry',
+                    #~ 'commit' : 'My commit'
+                    #~ },
+                #~ follow=True
+            #~ )
+            #~ self.assertEqual(response.status_code, 200)
+            #~ m = list(response.context['messages'])
+            #~ self.assertEqual(messages.SUCCESS, m[0].level)
             
-            response = self.c.get(
-                '/filebrowser/apply_option/',
-                {
-                    'option_h' : 'status',
-                    'name_h' : 'dir',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'directory',
-                    },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            m = list(response.context['messages'])
-            self.assertEqual(messages.SUCCESS, m[0].level)
-            self.assertFalse("TPE&sol;function001&period;pl" in m[0].message)
-        except AssertionError:
-            m = list(response.context['messages'])
-            if m:
-                print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
-            raise
+            #~ response = self.c.get(
+                #~ '/filebrowser/apply_option/',
+                #~ {
+                    #~ 'option_h' : 'status',
+                    #~ 'name_h' : 'dir',
+                    #~ 'relative_h' : './dir/TPE',
+                    #~ 'type_h' : 'directory',
+                    #~ },
+                #~ follow=True
+            #~ )
+            #~ self.assertEqual(response.status_code, 200)
+            #~ m = list(response.context['messages'])
+            #~ self.assertEqual(messages.SUCCESS, m[0].level)
+            #~ self.assertFalse("TPE&sol;function001&period;pl" in m[0].message)
+        #~ except AssertionError:
+            #~ m = list(response.context['messages'])
+            #~ if m:
+                #~ print("\nFound messages:")
+                #~ [print(i.level,':',i.message) for i in m]
+            #~ raise
     
     
-    def test_commit_directory(self):
-        with open(join(FAKE_FB_ROOT, 'dir/TPE/operator001.pl'), 'w+') as f1, \
-             open(join(FAKE_FB_ROOT, 'dir/TPE/function001.pl'), 'w+') as f2:
-            print("test1", file=f1)
-            print("test2", file=f2)
-        try:
-            response = self.c.get(
-                '/filebrowser/apply_option/',
-                {
-                    'option_h' : 'status',
-                    'name_h' : 'dir',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'directory',
-                    },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            m = list(response.context['messages'])
-            self.assertEqual(messages.SUCCESS, m[0].level)
-            self.assertTrue("TPE&sol;function001&period;pl" in m[0].message)
-            self.assertTrue("TPE&sol;operator001&period;pl" in m[0].message)
+    #~ def test_commit_directory(self):
+        #~ with open(join(FAKE_FB_ROOT, 'dir/TPE/operator001.pl'), 'w+') as f1, \
+             #~ open(join(FAKE_FB_ROOT, 'dir/TPE/function001.pl'), 'w+') as f2:
+            #~ print("test1", file=f1)
+            #~ print("test2", file=f2)
+        #~ try:
+            #~ response = self.c.get(
+                #~ '/filebrowser/apply_option/',
+                #~ {
+                    #~ 'option_h' : 'status',
+                    #~ 'name_h' : 'dir',
+                    #~ 'relative_h' : './dir/TPE',
+                    #~ 'type_h' : 'directory',
+                    #~ },
+                #~ follow=True
+            #~ )
+            #~ self.assertEqual(response.status_code, 200)
+            #~ m = list(response.context['messages'])
+            #~ self.assertEqual(messages.SUCCESS, m[0].level)
+            #~ self.assertTrue("TPE&sol;function001&period;pl" in m[0].message)
+            #~ self.assertTrue("TPE&sol;operator001&period;pl" in m[0].message)
             
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                    'option_h' : 'commit',
-                    'name_h' : 'dir',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'directory',
-                    'commit' : 'My commit'
-                    },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            m = list(response.context['messages'])
-            self.assertEqual(messages.SUCCESS, m[0].level)
+            #~ response = self.c.post(
+                #~ '/filebrowser/apply_option/post',
+                #~ {
+                    #~ 'option_h' : 'commit',
+                    #~ 'name_h' : 'dir',
+                    #~ 'relative_h' : './dir/TPE',
+                    #~ 'type_h' : 'directory',
+                    #~ 'commit' : 'My commit'
+                    #~ },
+                #~ follow=True
+            #~ )
+            #~ self.assertEqual(response.status_code, 200)
+            #~ m = list(response.context['messages'])
+            #~ self.assertEqual(messages.SUCCESS, m[0].level)
             
-            response = self.c.get(
-                '/filebrowser/apply_option/',
-                {
-                    'option_h' : 'status',
-                    'name_h' : 'dir',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'directory',
-                    },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            m = list(response.context['messages'])
-            self.assertEqual(messages.SUCCESS, m[0].level)
-            self.assertFalse("TPE&sol;function001&period;pl" in m[0].message)
-            self.assertFalse("TPE&sol;operator001&period;pl" in m[0].message)
-        except AssertionError:
-            m = list(response.context['messages'])
-            if m:
-                print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
-            raise
+            #~ response = self.c.get(
+                #~ '/filebrowser/apply_option/',
+                #~ {
+                    #~ 'option_h' : 'status',
+                    #~ 'name_h' : 'dir',
+                    #~ 'relative_h' : './dir/TPE',
+                    #~ 'type_h' : 'directory',
+                    #~ },
+                #~ follow=True
+            #~ )
+            #~ self.assertEqual(response.status_code, 200)
+            #~ m = list(response.context['messages'])
+            #~ self.assertEqual(messages.SUCCESS, m[0].level)
+            #~ self.assertFalse("TPE&sol;function001&period;pl" in m[0].message)
+            #~ self.assertFalse("TPE&sol;operator001&period;pl" in m[0].message)
+        #~ except AssertionError:
+            #~ m = list(response.context['messages'])
+            #~ if m:
+                #~ print("\nFound messages:")
+                #~ [print(i.level,':',i.message) for i in m]
+            #~ raise
     
     
-    def test_push(self):
-        open(join(FAKE_FB_ROOT, 'dir/TPE/function001.pl'), 'w+').close()
-        try:
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                    'option_h' : 'push',
-                    'name_h' : 'dir',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'directory',
-                },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            m = list(response.context['messages'])
-            self.assertEqual(messages.SUCCESS, m[0].level)
-        except AssertionError:
-            m = list(response.context['messages'])
-            if m:
-                print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
-            raise
+    #~ def test_push(self):
+        #~ open(join(FAKE_FB_ROOT, 'dir/TPE/function001.pl'), 'w+').close()
+        #~ try:
+            #~ response = self.c.post(
+                #~ '/filebrowser/apply_option/post',
+                #~ {
+                    #~ 'option_h' : 'push',
+                    #~ 'name_h' : 'dir',
+                    #~ 'relative_h' : './dir/TPE',
+                    #~ 'type_h' : 'directory',
+                #~ },
+                #~ follow=True
+            #~ )
+            #~ self.assertEqual(response.status_code, 200)
+            #~ m = list(response.context['messages'])
+            #~ self.assertEqual(messages.SUCCESS, m[0].level)
+        #~ except AssertionError:
+            #~ m = list(response.context['messages'])
+            #~ if m:
+                #~ print("\nFound messages:")
+                #~ [print(i.level,':',i.message) for i in m]
+            #~ raise
     
     
-    def test_push_password(self):
-        open(join(FAKE_FB_ROOT, 'dir/TPE/function001.pl'), 'w+').close()
-        try:
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                    'option_h' : 'push',
-                    'name_h' : 'dir',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'directory',
-                    'username': 'test',
-                    'password': 'password'
-                },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            m = list(response.context['messages'])
-            self.assertEqual(messages.SUCCESS, m[0].level)
-        except AssertionError:
-            m = list(response.context['messages'])
-            if m:
-                print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
-            raise
+    #~ def test_push_password(self):
+        #~ open(join(FAKE_FB_ROOT, 'dir/TPE/function001.pl'), 'w+').close()
+        #~ try:
+            #~ response = self.c.post(
+                #~ '/filebrowser/apply_option/post',
+                #~ {
+                    #~ 'option_h' : 'push',
+                    #~ 'name_h' : 'dir',
+                    #~ 'relative_h' : './dir/TPE',
+                    #~ 'type_h' : 'directory',
+                    #~ 'username': 'test',
+                    #~ 'password': 'password'
+                #~ },
+                #~ follow=True
+            #~ )
+            #~ self.assertEqual(response.status_code, 200)
+            #~ m = list(response.context['messages'])
+            #~ self.assertEqual(messages.SUCCESS, m[0].level)
+        #~ except AssertionError:
+            #~ m = list(response.context['messages'])
+            #~ if m:
+                #~ print("\nFound messages:")
+                #~ [print(i.level,':',i.message) for i in m]
+            #~ raise
     
     
-    def test_checkout(self):
-        with open(join(FAKE_FB_ROOT, 'dir/TPE/function001.pl'), 'w+') as f:
-            print("abcdefghijklmnopqrstuvwxyz", file=f)
+    #~ def test_checkout(self):
+        #~ with open(join(FAKE_FB_ROOT, 'dir/TPE/function001.pl'), 'w+') as f:
+            #~ print("abcdefghijklmnopqrstuvwxyz", file=f)
         
-        try:
-            response = self.c.get(
-                '/filebrowser/apply_option/',
-                {
-                    'option_h' : 'status',
-                    'name_h' : 'dir',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'directory',
-                    },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            m = list(response.context['messages'])
-            self.assertEqual(messages.SUCCESS, m[0].level)
-            self.assertTrue("TPE&sol;function001&period;pl" in m[0].message)
+        #~ try:
+            #~ response = self.c.get(
+                #~ '/filebrowser/apply_option/',
+                #~ {
+                    #~ 'option_h' : 'status',
+                    #~ 'name_h' : 'dir',
+                    #~ 'relative_h' : './dir/TPE',
+                    #~ 'type_h' : 'directory',
+                    #~ },
+                #~ follow=True
+            #~ )
+            #~ self.assertEqual(response.status_code, 200)
+            #~ m = list(response.context['messages'])
+            #~ self.assertEqual(messages.SUCCESS, m[0].level)
+            #~ self.assertTrue("TPE&sol;function001&period;pl" in m[0].message)
             
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                    'option_h' : 'checkout',
-                    'name_h' : 'function001.pl',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'entry',
-                },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            m = list(response.context['messages'])
-            self.assertEqual(messages.SUCCESS, m[0].level)
-            with open(join(FAKE_FB_ROOT, 'dir/TPE/function001.pl'), 'r') as f:
-                self.assertFalse("abcdefghijklmnopqrstuvwxyz" in f.read())
+            #~ response = self.c.post(
+                #~ '/filebrowser/apply_option/post',
+                #~ {
+                    #~ 'option_h' : 'checkout',
+                    #~ 'name_h' : 'function001.pl',
+                    #~ 'relative_h' : './dir/TPE',
+                    #~ 'type_h' : 'entry',
+                #~ },
+                #~ follow=True
+            #~ )
+            #~ self.assertEqual(response.status_code, 200)
+            #~ m = list(response.context['messages'])
+            #~ self.assertEqual(messages.SUCCESS, m[0].level)
+            #~ with open(join(FAKE_FB_ROOT, 'dir/TPE/function001.pl'), 'r') as f:
+                #~ self.assertFalse("abcdefghijklmnopqrstuvwxyz" in f.read())
             
-            response = self.c.get(
-                '/filebrowser/apply_option/',
-                {
-                    'option_h' : 'status',
-                    'name_h' : 'dir',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'directory',
-                    },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            m = list(response.context['messages'])
-            self.assertEqual(messages.SUCCESS, m[0].level)
-            self.assertFalse("TPE&sol;function001&period;pl" in m[0].message)
-        except AssertionError:
-            m = list(response.context['messages'])
-            if m:
-                print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
-            raise
+            #~ response = self.c.get(
+                #~ '/filebrowser/apply_option/',
+                #~ {
+                    #~ 'option_h' : 'status',
+                    #~ 'name_h' : 'dir',
+                    #~ 'relative_h' : './dir/TPE',
+                    #~ 'type_h' : 'directory',
+                    #~ },
+                #~ follow=True
+            #~ )
+            #~ self.assertEqual(response.status_code, 200)
+            #~ m = list(response.context['messages'])
+            #~ self.assertEqual(messages.SUCCESS, m[0].level)
+            #~ self.assertFalse("TPE&sol;function001&period;pl" in m[0].message)
+        #~ except AssertionError:
+            #~ m = list(response.context['messages'])
+            #~ if m:
+                #~ print("\nFound messages:")
+                #~ [print(i.level,':',i.message) for i in m]
+            #~ raise
     
     
-    def test_checkout_directory(self):
-        with open(join(FAKE_FB_ROOT, 'dir/TPE/operator001.pl'), 'w+') as f1, \
-             open(join(FAKE_FB_ROOT, 'dir/TPE/function001.pl'), 'w+') as f2:
-            print("abcdefghijklmnopqrstuvwxyz", file=f1)
-            print("abcdefghijklmnopqrstuvwxyz", file=f2)
+    #~ def test_checkout_directory(self):
+        #~ with open(join(FAKE_FB_ROOT, 'dir/TPE/operator001.pl'), 'w+') as f1, \
+             #~ open(join(FAKE_FB_ROOT, 'dir/TPE/function001.pl'), 'w+') as f2:
+            #~ print("abcdefghijklmnopqrstuvwxyz", file=f1)
+            #~ print("abcdefghijklmnopqrstuvwxyz", file=f2)
         
-        try:
-            response = self.c.get(
-                '/filebrowser/apply_option/',
-                {
-                    'option_h' : 'status',
-                    'name_h' : 'dir',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'directory',
-                    },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            m = list(response.context['messages'])
-            self.assertEqual(messages.SUCCESS, m[0].level)
-            self.assertTrue("TPE&sol;function001&period;pl" in m[0].message)
-            self.assertTrue("TPE&sol;operator001&period;pl" in m[0].message)
+        #~ try:
+            #~ response = self.c.get(
+                #~ '/filebrowser/apply_option/',
+                #~ {
+                    #~ 'option_h' : 'status',
+                    #~ 'name_h' : 'dir',
+                    #~ 'relative_h' : './dir/TPE',
+                    #~ 'type_h' : 'directory',
+                    #~ },
+                #~ follow=True
+            #~ )
+            #~ self.assertEqual(response.status_code, 200)
+            #~ m = list(response.context['messages'])
+            #~ self.assertEqual(messages.SUCCESS, m[0].level)
+            #~ self.assertTrue("TPE&sol;function001&period;pl" in m[0].message)
+            #~ self.assertTrue("TPE&sol;operator001&period;pl" in m[0].message)
             
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                    'option_h' : 'checkout',
-                    'name_h' : 'dir',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'directory',
-                },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            m = list(response.context['messages'])
-            self.assertEqual(messages.SUCCESS, m[0].level)
-            with open(join(FAKE_FB_ROOT, 'dir/TPE/operator001.pl'), 'r') as f1, \
-                 open(join(FAKE_FB_ROOT, 'dir/TPE/function001.pl'), 'r') as f2:
-                self.assertFalse("abcdefghijklmnopqrstuvwxyz" in f1.read())
-                self.assertFalse("abcdefghijklmnopqrstuvwxyz" in f2.read())
+            #~ response = self.c.post(
+                #~ '/filebrowser/apply_option/post',
+                #~ {
+                    #~ 'option_h' : 'checkout',
+                    #~ 'name_h' : 'dir',
+                    #~ 'relative_h' : './dir/TPE',
+                    #~ 'type_h' : 'directory',
+                #~ },
+                #~ follow=True
+            #~ )
+            #~ self.assertEqual(response.status_code, 200)
+            #~ m = list(response.context['messages'])
+            #~ self.assertEqual(messages.SUCCESS, m[0].level)
+            #~ with open(join(FAKE_FB_ROOT, 'dir/TPE/operator001.pl'), 'r') as f1, \
+                 #~ open(join(FAKE_FB_ROOT, 'dir/TPE/function001.pl'), 'r') as f2:
+                #~ self.assertFalse("abcdefghijklmnopqrstuvwxyz" in f1.read())
+                #~ self.assertFalse("abcdefghijklmnopqrstuvwxyz" in f2.read())
             
-            response = self.c.get(
-                '/filebrowser/apply_option/',
-                {
-                    'option_h' : 'status',
-                    'name_h' : 'dir',
-                    'relative_h' : './dir/TPE',
-                    'type_h' : 'directory',
-                    },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            m = list(response.context['messages'])
-            self.assertEqual(messages.SUCCESS, m[0].level)
-            self.assertFalse("TPE&sol;function001&period;pl" in m[0].message)
-            self.assertFalse("TPE&sol;operator001&period;pl" in m[0].message)
-        except AssertionError:
-            m = list(response.context['messages'])
-            if m:
-                print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
-            raise
+            #~ response = self.c.get(
+                #~ '/filebrowser/apply_option/',
+                #~ {
+                    #~ 'option_h' : 'status',
+                    #~ 'name_h' : 'dir',
+                    #~ 'relative_h' : './dir/TPE',
+                    #~ 'type_h' : 'directory',
+                    #~ },
+                #~ follow=True
+            #~ )
+            #~ self.assertEqual(response.status_code, 200)
+            #~ m = list(response.context['messages'])
+            #~ self.assertEqual(messages.SUCCESS, m[0].level)
+            #~ self.assertFalse("TPE&sol;function001&period;pl" in m[0].message)
+            #~ self.assertFalse("TPE&sol;operator001&period;pl" in m[0].message)
+        #~ except AssertionError:
+            #~ m = list(response.context['messages'])
+            #~ if m:
+                #~ print("\nFound messages:")
+                #~ [print(i.level,':',i.message) for i in m]
+            #~ raise
     
     
-    def test_pull(self):
-        try:
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                    'option_h' : 'pull',
-                    'name_h' : 'dir2',
-                    'relative_h' : './dir2/TPE',
-                    'type_h' : 'directory',
-                },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            m = list(response.context['messages'])
-            self.assertEqual(messages.SUCCESS, m[0].level)
-        except AssertionError:
-            m = list(response.context['messages'])
-            if m:
-                print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
-            raise
+    #~ def test_pull(self):
+        #~ try:
+            #~ response = self.c.post(
+                #~ '/filebrowser/apply_option/post',
+                #~ {
+                    #~ 'option_h' : 'pull',
+                    #~ 'name_h' : 'dir2',
+                    #~ 'relative_h' : './dir2/TPE',
+                    #~ 'type_h' : 'directory',
+                #~ },
+                #~ follow=True
+            #~ )
+            #~ self.assertEqual(response.status_code, 200)
+            #~ m = list(response.context['messages'])
+            #~ self.assertEqual(messages.SUCCESS, m[0].level)
+        #~ except AssertionError:
+            #~ m = list(response.context['messages'])
+            #~ if m:
+                #~ print("\nFound messages:")
+                #~ [print(i.level,':',i.message) for i in m]
+            #~ raise

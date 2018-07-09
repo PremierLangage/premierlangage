@@ -12,12 +12,12 @@ from os.path import join, isdir
 
 from django.test import TestCase
 from django.conf import settings
-from filebrowser.utils import mk_missing_dirs, in_repository
+from filebrowser.utils import mk_missing_dirs, stay_in_directory
 
 
-TEST_DIR = join(settings.BASE_DIR, "filebrowser/tests/mk_missing_dirs")
+TEST_DIR = join(settings.BASE_DIR, "filebrowser/tests/ressources/mk_missing_dirs")
 
-class MKMissingDirsTestCase(TestCase):
+class UtilsTestCase(TestCase):
     
     def setUp(self):
         if not isdir(TEST_DIR):
@@ -71,3 +71,14 @@ class MKMissingDirsTestCase(TestCase):
     def test_mk_missing_dirs_path_outbound(self):
         with self.assertRaises(ValueError):
             mk_missing_dirs(TEST_DIR, "", "/dir1/../dir2/dir3/../../../")
+
+
+    def test_stay_in_directory_path_abs(self):
+        self.assertTrue(stay_in_directory("", "dir1/dir2/dir3/file.pl"))
+    
+    def test_stay_in_directory_file_abs(self):
+        self.assertTrue(stay_in_directory("dir1/dir2", "../../dir3/file.pl"))
+ 
+    def test_stay_in_directory_path_outbound(self):
+        self.assertFalse(stay_in_directory("", "/dir1/../dir2/dir3/../../../"))
+        
