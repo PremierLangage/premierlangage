@@ -34,7 +34,8 @@ from django.conf import settings
 @login_required
 def index(request, path="home"):
     """ Used by the filebrowser module to navigate """
-    path = (path).split('/')
+   
+    path = path.split('/')
     
     if path[0].isdigit():
         raise Http404()
@@ -49,7 +50,7 @@ def apply_option(request, path="home"):
     real = (path).split('/')
     if real[0] == "home":
         real[0] = str(request.user.id)
-    
+   
     if request.method == 'GET':
         option = request.GET.get('option')
         target = request.GET.get('target')
@@ -147,40 +148,6 @@ def preview_pl(request):
     
     return HttpResponseBadRequest(content="Couldn't resolve ajax request")
 
-
-@login_required
-def new_directory(request):
-    """ Use to created a new Directory. """
-    if not request.method == 'POST':
-        return HttpResponseNotAllowed(['POST'])
-    
-    name = request.POST.get('name', None)
-    url = request.POST.get('url', None)
-    username = request.POST.get('username', None)
-    password = request.POST.get('password', None)
-    
-    if not name:
-        return HttpResponseBadRequest()
-    name = name.replace(' ', '_')
-    
-    if Directory.objects.filter(name=name):
-        messages.error(request, "A directory with this name ('" + name + "') already exists. Please choose another name")
-        return redirect(reverse('filebrowser:index'))
-    
-    if url:
-        directory = Directory(name=name, owner=request.user, remote=url)
-        cloned, feedback = directory.clone(username, password)
-        if cloned:
-            directory.save()
-            messages.success(request, "Repository successfully cloned in " + name + ".")
-        else:
-            messages.error(request, "Couldn't clone repository :\n" + feedback)
-    else:
-        os.mkdir(join(settings.FILEBROWSER_ROOT,name))
-        Directory(name=name, owner=request.user).save()
-        messages.success(request, "Directory '" + name + "' successfully created.")
-    
-    return redirect_fb()
 
 
 @login_required

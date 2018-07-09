@@ -60,6 +60,7 @@ def mkdir_option(request, filebrowser, target):
     
     bad_char = ['/', ' ']
     name = request.POST.get('name')
+    
     if not name:
         return HttpResponseBadRequest("Missing 'name' or parameter")
 
@@ -418,40 +419,34 @@ def new_file_option(request, filebrowser, target):
     """Create a new file and launch the PL editor"""
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-
+    
+    bad_char =['/', ' ']
     name = request.POST.get('name')
-    relative = request.POST.get('relative_h')
-    if not name or not relative:
-        return HttpResponseBadRequest()
+    if not name :
+        return HttpResponseBadRequest("Missing 'name' parameter")
+        
     try:
-        relative_h = "/".join([d for d in relative.split("/") if d][2:])
-        if ' ' in name:
-            raise ValueError()
-        if not stay_in_directory(relative_h, name):
-            raise ValueError()
-        path = normpath(join(join(filebrowser.full_path(), relative), name))
-        if isdir(path):
-            messages.error(request, "A folder with that name ('"+name+"') already exists")
-        elif isfile(path):
-            messages.error(request, "A file with that name ('"+name+"') already exists")
-        else:
-            open(path, 'w+').close()
-            response = redirect(reverse("filebrowser:apply_option_get"))
-            if not is_pl(name):
-                response['Location'] += '?option_h=edit&name_h='+name+'&relative_h='+relative+'&type_h=entry'
-                return response
-            else:
-                response['Location'] += '?option_h=edit_pl&name_h='+name+'&relative_h='+relative+'&type_h=entry'
-                return response
-    except ValueError as e:
-        msg = "Impossible to create '"+target+"' in this directory"
-        messages.error(request, msg)
-    except Exception as e: # pragma: no cover
-        msg = "Impossible to create '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
-        messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))
-        if settings.DEBUG:
-            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
-    return redirect_fb(relative)
+        path = normpath(join(filebrowser.full_path(), name))
+        
+        if any(c in name for c in bad_char): 
+            messages.error(request, "Can't create file '" + name 
+                                  + "': name should not contain any of " + str(bad_char) + ".") 
+        
+        elif isdir(path) or isfile(path): 
+            messages.error(request, "Can't create file '" + name 
+                                  + "': this name is already used.") 
+        else: 
+            f = open(path, "w")
+            f.close()
+            messages.success(request, "File '" + name + "' successfully created !") 
+ 
+    except Exception as e: # pragma: no cover 
+        msg = "Impossible to create '"+name+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e)) 
+        messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, "")) 
+        if settings.DEBUG: 
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc()) 
+ 
+    return redirect_fb(filebrowser.relative) 
 
 
 
@@ -725,8 +720,9 @@ def extract_option(request, filebrowser, target):
     """ Extract the given archive """
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
-
+    
     try:
+        
         path = normpath(join(filebrowser.full_path(), target))
         mime = magic.from_file(path, mime=True).split('/')[1]
         if mime == 'zip':
