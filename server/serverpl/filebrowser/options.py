@@ -512,6 +512,8 @@ def edit_pl_option(request, filebrowser, target):
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
+        if settings.DEBUG:
+            messages.error(request, htmlprint.html_exc())
     return redirect_fb(request.GET.get('relative_h', '.'))
 
 

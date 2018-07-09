@@ -64,6 +64,8 @@ def apply_option_get(request):
             return DIRECTORY_OPTIONS[option].process_option(request, fb, name)
     except Exception as e:
         messages.error(request, "Impossible to apply the option "+option+" : "+ htmlprint.code(str(type(e)) + " - " + str(e)))
+        if settings.DEBUG:
+            messages.error(request, htmlprint.html_exc())
     return redirect_fb(path)
 
 
