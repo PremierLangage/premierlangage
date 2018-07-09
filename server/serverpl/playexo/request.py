@@ -62,7 +62,7 @@ def make_tar(files):
 
 class SandboxSession:
     
-    def __init__(self, dic, studentfile, timeout=3):
+    def __init__(self, dic, studentfile=None, timeout=3):
         sandbox = get_sandbox()
         
         self.dic = dic
@@ -84,7 +84,7 @@ class SandboxSession:
         payload['pl.json'] = json.dumps(tmp)
         if 'grader' in self.dic and 'grader.py' not in payload:
             payload['grader.py'] = self.dic['grader']
-        if self.studentfile:
+        if self.studentfile is not None:
             payload['student'] = self.studentfile
         
         
