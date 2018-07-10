@@ -241,7 +241,7 @@ class Parser:
                   and string consisting of all readed line is not a well formated json."""
         if self.END_MULTI_LINE.match(line):
             if len(line) != 3:
-                raise SyntaxErrorPL(join(self.directory.root, self.path), line, str(self.lineno), message="Space before end of multi line zone")
+                raise SyntaxErrorPL(join(self.directory.root, self.path), line, str(self.lineno), message="Illegal character before or after end of multi line zone")
             if self._multiline_json:
                 try:
                     self.dic[self._multiline_key] = json.loads(self.dic[self._multiline_key])
