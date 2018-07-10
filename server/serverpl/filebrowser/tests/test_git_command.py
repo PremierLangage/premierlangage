@@ -50,92 +50,78 @@ class GitTestCase(TestCase):
             shutil.rmtree(dir_path)
         if isdir(join(FAKE_FB_ROOT,'dir2')):
             shutil.rmtree(join(FAKE_FB_ROOT,'dir2'))
-        if isdir(join(FAKE_FB_ROOT,'200')):
-            shutil.rmtree(join(FAKE_FB_ROOT,'200'))
+        if isdir(join(FAKE_FB_ROOT,'host')):
+            shutil.rmtree(join(FAKE_FB_ROOT,'host'))
         self.folder = Directory.objects.get(name='100')
-        self.folder2 = Directory.objects.get(
-            name='200',
-            owner=self.user,
-            remote="file://"+join(FAKE_FB_ROOT, '200')
-        ) 
+        #~ self.folder2 = Directory.objects.get(name='host') 
         shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder.root)
-        shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder2.root)
+        #~ shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder2.root)
         
         command('git init --bare ' + join(FAKE_FB_ROOT, 'host'))
         command('git init ' + self.folder.root)
-        command('git init ' + self.folder2.root)
+        #~ command('git init ' + self.folder2.root)
         cwd = os.getcwd()
-        os.chdir(self.folder2.root)
+        #~ os.chdir(self.folder2.root)
         command('git remote add host ../host/ ')
         command('git add .')
         command('git commit -m "Initial commit"')
         command('git push --set-upstream host master')
         os.chdir(self.folder.root)
-        command('git remote add host ../host/ ')
-        command('touch to_be_pull')
-        command('git add .')
-        command('git commit -m "Initial commit"')
-        command('git pull host master --allow-unrelated-histories')
-        command('git push --set-upstream host master')
-        os.chdir(cwd)
+        #~ command('git remote add host ../host/ ')
+        #~ command('touch to_be_pull')
+        #~ command('git add .')
+        #~ command('git commit -m "Initial commit"')
+        #~ command('git pull host master --allow-unrelated-histories')
+        #~ command('git push --set-upstream host master')
+        #~ os.chdir(cwd)
 
 
-    #~ def test_commit_method_not_allowed(self):
-        #~ response = self.c.get(
-            #~ '/filebrowser/home//TPE/opt/?option=entry-git-commit&target=function001.pl',
-            #~ follow=True
-            #~ )
-        #~ self.assertEqual(response.status_code, 405)
+    def test_commit_method_not_allowed(self):
+        response = self.c.get(
+            '/filebrowser/home/TPE/opt/?option=entry-git-commit&target=function001.pl',
+            follow=True
+            )
+        self.assertEqual(response.status_code, 405)
 
 
-    #~ def test_status_method_not_allowed(self):
-        #~ response = self.c.post(
-            #~ '/filebrowser/apply_option/post',
-            #~ {
-                #~ 'option_h': 'status',
-                #~ 'name_h': 'dir',
-                #~ 'relative_h': './dir/TPE',
-                #~ 'type_h': 'directory',
-                #~ },
-            #~ follow=True
-        #~ )
-        #~ self.assertEqual(response.status_code, 405)
+    def test_status_method_not_allowed(self):
+        response = self.c.post(
+            '/filebrowser/home/TPE/opt/',
+            {
+                'option': 'directory-git-status',
+                'target':'.',
+                },
+            follow=True
+        )
+        self.assertEqual(response.status_code, 405)
 
 
-    #~ def test_checkout_method_not_allowed(self):
-        #~ response = self.c.get(
-            #~ '/filebrowser/home/dir/TPE/opt/?option=entry-git-commit&target=function001.pl',
-            #~ follow=True
-        #~ )
-        #~ self.assertEqual(response.status_code, 405)
+    def test_checkout_method_not_allowed(self):
+        response = self.c.post(
+            '/filebrowser/home/TPE/opt/',
+            {
+                'option': 'entry-git-checkout',
+                'target':'.',
+                },
+            follow=True
+        )
+        self.assertEqual(response.status_code, 405)
 
 
-    #~ def test_push_method_not_allowed(self):
-        #~ response = self.c.get(
-            #~ '/filebrowser/apply_option/',
-            #~ {
-                #~ 'option_h': 'push',
-                #~ 'name_h': 'dir',
-                #~ 'relative_h': './dir/TPE',
-                #~ 'type_h': 'directory',
-                #~ },
-            #~ follow=True
-        #~ )
-        #~ self.assertEqual(response.status_code, 405)
+    def test_push_method_not_allowed(self):
+        response = self.c.get(
+            '/filebrowser/home/TPE/opt/?option=directory-git-push&target=function001.pl',
+            follow=True
+            )
+        self.assertEqual(response.status_code, 405)
 
 
-    #~ def test_pull_method_not_allowed(self):
-        #~ response = self.c.get(
-            #~ '/filebrowser/apply_option/',
-            #~ {
-                #~ 'option_h': 'pull',
-                #~ 'name_h': 'dir',
-                #~ 'relative_h': './dir/TPE',
-                #~ 'type_h': 'directory',
-                #~ },
-            #~ follow=True
-        #~ )
-        #~ self.assertEqual(response.status_code, 405)
+    def test_pull_method_not_allowed(self):
+        response = self.c.get(
+            '/filebrowser/home/TPE/opt/?option=directory-git-pull&target=function001.pl',
+            follow=True
+            )
+        self.assertEqual(response.status_code, 405)
     
     
     #~ def test_commit(self):
