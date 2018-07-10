@@ -31,7 +31,7 @@ class MoveTestCase(TestCase):
         rel = join(settings.FILEBROWSER_ROOT, '100/')
         if isdir(rel):
             shutil.rmtree(join(rel))
-        self.folder = Directory.objects.create(name='100', owner=self.user)
+        self.folder = Directory.objects.get(name='100', owner=self.user)
         shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder.root)
 
 
@@ -160,6 +160,26 @@ class MoveTestCase(TestCase):
             )
             self.assertEqual(response.status_code, 200)
             self.assertContains(response, "'function001.pl' successfully moved to '../' !")
+        except AssertionError :
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+
+    def test_move_inside_itself(self):
+        try :
+            response = self.c.post(
+            '/filebrowser/home/opt/',
+                {
+                    'destination':'extract_test',
+                    'option': 'entry-options-move',
+                    'target':'extract_test',
+                },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertContains(response, "Impossible to move 'extract_test' inside 'extract_test': Can't move a directory inside itself.")
         except AssertionError :
             m = list(response.context['messages'])
             if m:

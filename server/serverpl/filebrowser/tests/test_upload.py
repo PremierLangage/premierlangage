@@ -24,188 +24,122 @@ FAKE_FB_ROOT = join(settings.BASE_DIR, 'filebrowser/tests/ressources')
 class UploadTestCase(TestCase):
     @classmethod
     def setUpTestData(self):
-        self.user = User.objects.create_user(username='user', password='12345')
+        self.user = User.objects.create_user(username='user', password='12345', id=100)
         self.c = Client()
         self.c.force_login(self.user, backend=settings.AUTHENTICATION_BACKENDS[0])
-        if isdir(join(FAKE_FB_ROOT, 'dir')):
-            shutil.rmtree(join(FAKE_FB_ROOT, 'dir'))
-        self.folder = Directory.objects.create(name='dir', owner=self.user)
+        rel = join(settings.FILEBROWSER_ROOT, '100/')
+        if isdir(rel):
+            shutil.rmtree(join(rel))
+        self.folder = Directory.objects.get(name='100', owner=self.user)
         shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder.root)
 
 
     def test_create_dir_method_not_allowed(self):
         response = self.c.get(
-            '/filebrowser/apply_option/post',
-            follow=True
-        )
+            '/filebrowser/home/TPE/opt/?option=directory-options-upload&target=function001.pl',
+
+                follow=True
+            )
         self.assertEqual(response.status_code, 405)
 
 
-    def test_upload_file_with_name(self):
-        with open('./filebrowser/tests/ressources/filter/text.txt', 'r') as fd:
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                    'option_h': 'upload',
-                    'name_h': 'dir',
-                    'relative_h': './dir/TPE',
-                    'type_h': 'directory',
-                    'file' : fd,
-                    'relative' : './dir/TPE',
-                    'name' : 'salut.txt',
-                },
-                follow=True
-            )
-        self.assertEqual(response.status_code, 200)
-        rel = join(settings.FILEBROWSER_ROOT, './dir/TPE')
-        self.assertTrue(isfile(join(rel, 'salut.txt')))
-        m = list(response.context['messages'])
-        self.assertEqual(m[0].level, messages.SUCCESS)
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                'option_h': 'delete',
-                'name_h': 'salut.txt',
-                'relative_h': './dir/TPE',
-                'type_h': 'entry'
-            },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-
-
     def test_upload_file_without_name(self):
-        with open('./filebrowser/tests/ressources/filter/text.txt', 'r') as fd:
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                    'option_h': 'upload',
-                    'name_h': 'dir',
-                    'relative_h': './dir/TPE',
-                    'type_h': 'directory',
-                    'file' : fd,
-                    'relative' : './dir/TPE',
-                    'name' : '',
-                },
-                follow=True
-            )
-        self.assertEqual(response.status_code, 200)
-        rel = join(settings.FILEBROWSER_ROOT, './dir/TPE')
-        self.assertTrue(isfile(join(rel, 'text.txt')))
-        m = list(response.context['messages'])
-        self.assertEqual(m[0].level, messages.SUCCESS)
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                'option_h': 'delete',
-                'name_h': 'text.txt',
-                'relative_h': './dir/TPE',
-                'type_h': 'entry'
-            },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
+        try:
+            with open(join(settings.FILEBROWSER_ROOT, '100/TPE/function001.pl'), 'rb') as f:
+                response = self.c.post(
+                    '/filebrowser/home/opt/',
+                    {
+                        
+                        'option': 'directory-options-upload',
+                        'target':'.',
+                        'file': f,
+                    },
+                    follow=True
+                    )
+            self.assertEqual(response.status_code, 200)
+            
+            rel = join(settings.FILEBROWSER_ROOT, '100/')
+            self.assertTrue(isfile(join(rel, 'function001.pl')))
+            self.assertContains(response, "File 'function001.pl' successfully uploaded")
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
 
+
+    def test_upload_file_with_name(self):
+        try:
+            with open(join(settings.FILEBROWSER_ROOT, '100/TPE/function001.pl'), 'rb') as f:
+                response = self.c.post(
+                    '/filebrowser/home/opt/',
+                    {
+                        'rename':'text.pl',
+                        'option': 'directory-options-upload',
+                        'target':'.',
+                        'file': f,
+                    },
+                    follow=True
+                    )
+            self.assertEqual(response.status_code, 200)
+            self.assertContains(response, "File 'text.pl' successfully uploaded")
+            rel = join(settings.FILEBROWSER_ROOT, '100/')
+            self.assertTrue(isfile(join(rel, 'text.pl')))
+           
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+    
+    
+    def test_upload_no_file(self):
+        try:
+            with open(join(settings.FILEBROWSER_ROOT, '100/TPE/function001.pl'), 'rb') as f:
+                response = self.c.post(
+                    '/filebrowser/home/opt/',
+                    {
+                        'rename':'text.pl',
+                        'option': 'directory-options-upload',
+                        'target':'.',
+                        
+                    },
+                    follow=True
+                    )
+            self.assertEqual(response.status_code, 400)
+            self.assertContains(response, "File is missing", status_code=400)
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+    
+
+    def test_upload_file_exist_already(self):
+        try:
+            with open(join(settings.FILEBROWSER_ROOT, '100/TPE/function001.pl'), 'rb') as f:
+                response = self.c.post(
+                    '/filebrowser/home/TPE/opt/',
+                    {
+                        
+                        'option': 'directory-options-upload',
+                        'target':'.',
+                        'file': f,
+                    },
+                    follow=True
+                    )
+            self.assertEqual(response.status_code, 200)
+            self.assertContains(response, "This file's name is already used")
         
-    def test_upload_in_bad_directory(self):
-        with open('./filebrowser/tests/ressources/filter/text.txt', 'r') as fd:
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                    'option_h': 'upload',
-                    'name_h': 'dir',
-                    'relative_h': './dir/TPE',
-                    'type_h': 'directory',
-                    'file': fd,
-                    'relative': './dir/TPE',
-                    'name': '../../text.txt',
-                },
-                follow=True
-            )
-        self.assertEqual(response.status_code, 200)
-        rel = join(settings.FILEBROWSER_ROOT, './dir/TPE')
-        self.assertFalse(isfile(join(rel, '../../../../../text.txt')))
-        m = list(response.context['messages'])
-        self.assertEqual(m[0].level, messages.ERROR)
-
-
-    def test_upload_existing_file(self):
-        with open('./filebrowser/tests/ressources/filter/text.txt', 'r') as fd:
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                    'option_h': 'upload',
-                    'name_h': 'dir',
-                    'relative_h': './dir/TPE',
-                    'type_h': 'directory',
-                    'file' : fd,
-                    'relative' : './dir/TPE',
-                    'name' : 'salut.txt',
-                },
-                follow=True
-            )
-        self.assertEqual(response.status_code, 200)
-        rel = join(settings.FILEBROWSER_ROOT, './dir/TPE')
-        self.assertTrue(isfile(join(rel, 'salut.txt')))
-        m = list(response.context['messages'])
-        self.assertEqual(m[0].level, messages.SUCCESS)
-
-        with open('./filebrowser/tests/ressources/filter/text.txt', 'r') as fd:
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                    'option_h': 'upload',
-                    'name_h': 'dir',
-                    'relative_h': './dir/TPE',
-                    'type_h': 'directory',
-                    'file' : fd,
-                    'relative' : './dir/TPE',
-                    'name' : 'salut.txt',
-                },
-                follow=True
-            )
-        self.assertEqual(response.status_code, 200)
-        rel = join(settings.FILEBROWSER_ROOT, './dir/TPE')
-        self.assertTrue(isfile(join(rel, 'salut.txt')))
-        m = list(response.context['messages'])
-        self.assertEqual(m[0].level, messages.ERROR)
-
-        response = self.c.post(
-            '/filebrowser/apply_option/post',
-            {
-                'option_h': 'delete',
-                'name_h': 'salut.txt',
-                'relative_h': './dir/TPE',
-                'type_h': 'entry'
-            },
-            follow=True
-        )
-        self.assertEqual(response.status_code, 200)
-
-
-    def test_upload_existing_dir(self):
-        with open('./filebrowser/tests/ressources/filter/text.txt', 'r') as fd:
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                    'option_h': 'upload',
-                    'name_h': 'dir',
-                    'relative_h': './dir/TPE',
-                    'type_h': 'directory',
-                    'file' : fd,
-                    'relative' : './dir/TPE',
-                    'name' : 'Dir_test',
-                },
-                follow=True
-            )
-        self.assertEqual(response.status_code, 200)
-        rel = join(settings.FILEBROWSER_ROOT, './dir/TPE')
-        self.assertTrue(isdir(join(rel, 'Dir_test')))
-        m = list(response.context['messages'])
-        self.assertEqual(m[0].level, messages.ERROR)
-
-
-
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
 
 
 

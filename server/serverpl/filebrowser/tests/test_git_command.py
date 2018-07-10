@@ -40,27 +40,24 @@ class GitTestCase(TestCase):
     
     @classmethod
     def setUpTestData(self):
-        self.user = User.objects.create_user(username='user', password='12345')
+        self.user = User.objects.create_user(username='user', password='12345', id=100)
+        User.objects.create_user(username='user2', password='12345', id=200)
         self.c = Client()
         self.c.force_login(self.user,backend=settings.AUTHENTICATION_BACKENDS[0])
         
-        dir_path = join(FAKE_FB_ROOT, 'dir')
+        dir_path = join(FAKE_FB_ROOT, '100')
         if isdir(dir_path):
             shutil.rmtree(dir_path)
         if isdir(join(FAKE_FB_ROOT,'dir2')):
             shutil.rmtree(join(FAKE_FB_ROOT,'dir2'))
-        if isdir(join(FAKE_FB_ROOT,'host')):
-            shutil.rmtree(join(FAKE_FB_ROOT,'host'))
-        self.folder = Directory.objects.create(
-            name='dir',
+        if isdir(join(FAKE_FB_ROOT,'200')):
+            shutil.rmtree(join(FAKE_FB_ROOT,'200'))
+        self.folder = Directory.objects.get(name='100')
+        self.folder2 = Directory.objects.get(
+            name='200',
             owner=self.user,
-            remote="file://"+join(FAKE_FB_ROOT, 'host')
-        )
-        self.folder2 = Directory.objects.create(
-            name='dir2',
-            owner=self.user,
-            remote="file://"+join(FAKE_FB_ROOT, 'host')
-        )
+            remote="file://"+join(FAKE_FB_ROOT, '200')
+        ) 
         shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder.root)
         shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder2.root)
         
@@ -85,7 +82,7 @@ class GitTestCase(TestCase):
 
     #~ def test_commit_method_not_allowed(self):
         #~ response = self.c.get(
-            #~ '/filebrowser/home/dir/TPE/opt/?option=entry-git-commit&target=function001.pl',
+            #~ '/filebrowser/home//TPE/opt/?option=entry-git-commit&target=function001.pl',
             #~ follow=True
             #~ )
         #~ self.assertEqual(response.status_code, 405)
@@ -107,13 +104,7 @@ class GitTestCase(TestCase):
 
     #~ def test_checkout_method_not_allowed(self):
         #~ response = self.c.get(
-            #~ '/filebrowser/apply_option/',
-            #~ {
-                #~ 'option_h': 'checkout',
-                #~ 'name_h': 'function001.pl',
-                #~ 'relative_h': './dir/TPE',
-                #~ 'type_h': 'entry',
-                #~ },
+            #~ '/filebrowser/home/dir/TPE/opt/?option=entry-git-commit&target=function001.pl',
             #~ follow=True
         #~ )
         #~ self.assertEqual(response.status_code, 405)

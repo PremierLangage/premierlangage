@@ -91,10 +91,11 @@ def preview_pl(request):
     if request.method != 'POST':
         return HttpResponse('405 Method Not Allowed', status=405)
     
-
+    
     post = json.loads(request.body.decode())
     if post['requested_action'] == 'preview': # Asking for preview
         try:
+           
             path = join(settings.FILEBROWSER_ROOT, post['path'])
             shutil.copyfile(path, path+".bk")
             with open(path, 'w+') as f: # Writting editor content into the file
@@ -125,9 +126,10 @@ def preview_pl(request):
             )
     
     elif post['requested_action'] == 'submit' : # Answer from the preview
-        exercise = request.session.get('exercise', None)
         
+        exercise = request.session.get('exercise', None)
         if exercise:
+            
             exercise = PLInstance(exercise)
             success, feedback = exercise.evaluate(post['inputs'])
             if (success == None):

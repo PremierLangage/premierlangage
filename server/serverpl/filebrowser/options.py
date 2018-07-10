@@ -597,9 +597,11 @@ def edit_pl_option(request, filebrowser, target):
         else:
             if warnings:
                 [messages.warning(request, warning) for warning in warnings]
+            
             try:
                 exercise = PLInstance(pl.json)
                 request.session['exercise'] = dict(exercise.dic)
+                
                 preview = exercise.render(request)
             except Exception as e:
                 preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
@@ -689,11 +691,15 @@ def upload_option(request, filebrowser, target):
     
     relative = request.POST.get('relative')
     relative_h = request.POST.get('relative_h')
-    f = request.FILES['file']
+    f = request.FILES.get('file')
     name = request.POST.get('rename')
     name = name if name else f.name
     
+    if not f:
+        return HttpResponseBadRequest("File is missing")
+    
     try:
+        
         path = normpath(join(filebrowser.full_path(), name))
         if isfile(path) or isdir(path):
             messages.error(request, "This file's name is already used")
