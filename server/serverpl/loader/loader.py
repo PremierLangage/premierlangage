@@ -44,7 +44,7 @@ def load_file(directory, rel_path, force=False):
             return load_PL(directory, rel_path)
         else:
             raise Exception("Type '" + typ + "' is not yet implemented")
-    except Exception as e:
+    except Exception as e: # pragma: no cover 
         if not DEBUG:
             return (None, htmlprint.code(str(e))) 
         return (None, (

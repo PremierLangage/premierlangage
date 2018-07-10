@@ -34,9 +34,9 @@ class EditPLTestCase(TestCase):
         rel = join(settings.FILEBROWSER_ROOT, '100/')
         if isdir(rel):
             shutil.rmtree(join(rel))
-        self.folder = Directory.objects.create(name='100', owner=self.user)
+        self.folder = Directory.objects.get(name='100', owner=self.user)
         shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder.root)
-
+        
     
     def test_method_not_allowed(self):
         response = self.c.post(
@@ -58,6 +58,21 @@ class EditPLTestCase(TestCase):
             
             self.assertEqual(response.status_code, 200)
             self.assertContains(response, VALUE)
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+
+    def test_editpl_file_not_pl(self):
+        try:
+            response = self.c.get(
+            '/filebrowser/home/opt/?option=entry-direct-edit_pl&target=truc.pl',
+                follow=True
+            )
+            
+            self.assertEqual(response.status_code, 200)
         except AssertionError:
             m = list(response.context['messages'])
             if m:

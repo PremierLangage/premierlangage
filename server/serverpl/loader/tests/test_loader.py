@@ -1,26 +1,27 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#  test_parsers.py
+#  test_loader.py
 #  
-#  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
 #  
 
-import shutil
+import json, shutil
+from os.path import join, isdir, isfile
+from django.test import TestCase, SimpleTestCase, Client, override_settings
 
-from os.path import join, isdir
-
-from django.test import TestCase, Client, override_settings
 from django.conf import settings
 from django.contrib.auth.models import User
 
+from sandbox.models import Sandbox
+from loader.loader import load_file, load_PLTP
 from filebrowser.models import Directory
 
 
+from serverpl.settings import AUTHENTICATION_BACKENDS
 FAKE_FB_ROOT = join(settings.BASE_DIR,'filebrowser/tests/ressources')
 
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
-class CheckoutTestCase(TestCase):
+class ExoTestCase(TestCase):
     
     @classmethod
     def setUpTestData(self):
@@ -34,19 +35,17 @@ class CheckoutTestCase(TestCase):
         shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder.root)
 
     
-    def tearDown(self):
-        if isdir(join(FAKE_FB_ROOT,'directory')):
-            shutil.rmtree(join(FAKE_FB_ROOT,'directory'))
+
+    def test_load_PLTP(self):
+        c = Client()
+        c.force_login(self.user,backend=AUTHENTICATION_BACKENDS[0])        
+        res, html = load_PLTP(self.folder, 'plgrader2.pltp',force=None)
+        res, html = load_PLTP(self.folder, 'plgrader2.pltp',force=None)
+
+        self.assertEqual(res, None)
+        self.assertEqual(html, None)
+        
     
-    
-    def test_checkout_method_not_allowed(self):
-        response = self.c.post(
-                '/filebrowser/home/opt/',
-                {
-                    'option': 'entry-git-checkout',
-                    'target':'.plconception',
-                },
-                follow=True
-            )
-        self.assertEqual(response.status_code, 405)
-    
+  
+        
+        

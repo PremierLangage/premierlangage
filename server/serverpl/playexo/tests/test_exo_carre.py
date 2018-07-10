@@ -5,8 +5,11 @@
 #  
 #  
 
-import json
-from django.test import TestCase, Client
+import json, shutil
+from os.path import join, isdir
+
+from django.test import TestCase, Client, override_settings
+from django.conf import settings
 from sandbox.models import Sandbox
 from loader.loader import load_file
 from django.contrib.auth.models import User
@@ -14,43 +17,53 @@ from filebrowser.models import Directory
 
 from serverpl.settings import AUTHENTICATION_BACKENDS
 
+
+FAKE_FB_ROOT = join(settings.BASE_DIR,'filebrowser/tests/ressources')
+
 class ExoTestCase(TestCase):
     
     @classmethod
     def setUpTestData(self):
-        self.user = User.objects.create_user(username='user', password='12345')
-        self.dir = Directory.objects.create(name='plbank', owner=self.user)
-        self.pl = load_file(self.dir, 'plbank/python/function/carre.pl')[0]
+        self.user = User.objects.create_user(username='user', password='12345', id=100)
         self.sandbox = Sandbox.objects.create(url="http://127.0.0.1:8000/sandbox/?action=execute", 
             name="sanbdboxlocal", priority=200)
+        self.c = Client()
+        self.c.force_login(self.user, backend=settings.AUTHENTICATION_BACKENDS[0])
+        rel = join(settings.FILEBROWSER_ROOT, '100/')
+        if isdir(rel):
+            shutil.rmtree(join(rel))
+        self.folder = Directory.objects.get(name='100', owner=self.user)
+        shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder.root)
         
     
 
     def test_load_exo_carre(self):
-        c = Client()
-        c.force_login(self.user,backend=AUTHENTICATION_BACKENDS[0])
-        response = c.get('/filebrowser/apply_option/?option_h=edit_pl&name_h=carre.pl&relative_h=./plbank/python/function&type_h=entry',
-            {}, follow=True
-        )
+        response = self.c.get(
+            '/filebrowser/home/opt/?option=entry-direct-edit_pl&target=carre.pl',
+                follow=True
+            )
         
         self.assertEqual(response.status_code,200)
     
     
     def test_reponse_carre_false(self):
-        c = Client()
         response_eleve = "def carre(a):\n\treturn a"
-        c.force_login(self.user, backend=AUTHENTICATION_BACKENDS[0])
-        response = c.get('/filebrowser/apply_option/?option_h=edit_pl&name_h=carre.pl&relative_h=./plbank/python/function&type_h=entry',
-            {}, follow=True
-        )
-        response2 = c.post(
+       
+        response = self.c.get(
+            '/filebrowser/home/opt/?option=entry-direct-edit_pl&target=carre.pl',
+                follow=True
+            )
+        
+        self.assertEqual(response.status_code,200)
+    
+        response2 = self.c.post(
             '/filebrowser/preview_pl/',
             json.dumps({"requested_action":"submit","inputs": {"answer":response_eleve}}),
             content_type='text/json',follow=True
         )
         
-        self.assertContains(response,"Dominique Revuz")
-        self.assertContains(response,"<h2>Une fonction carre</h2>\n\n<p>Ecrivez une fonction <strong>carre</strong> qui retourne le")
+        self.assertContains(response,"# Copyright 2016 Dominique Revuz")
+        self.assertContains(response,"## Une fonction carre ##\nEcrivez une fonction **carre**")
         
         self.assertContains(response2, "Test \\u00c9chou\\u00e9")
         self.assertContains(response2, "r\\u00e9ussi(s):" , count=1)
@@ -59,13 +72,14 @@ class ExoTestCase(TestCase):
 
 
     def test_reponse_carre_error(self):
-        c = Client()
         response_eleve = "df carre(a):\n\treturn a"
-        c.force_login(self.user, backend=AUTHENTICATION_BACKENDS[0])
-        response = c.get('/filebrowser/apply_option/?option_h=edit_pl&name_h=carre.pl&relative_h=./plbank/python/function&type_h=entry',
-            {}, follow=True
-        )
-        response2 = c.post('/filebrowser/preview_pl/',
+        response = self.c.get(
+            '/filebrowser/home/opt/?option=entry-direct-edit_pl&target=carre.pl',
+                follow=True
+            )
+        
+        self.assertEqual(response.status_code,200)
+        response2 = self.c.post('/filebrowser/preview_pl/',
         json.dumps({"requested_action":"submit", "inputs": {"answer":response_eleve}}),
             content_type='text/json', follow=True
         )
@@ -79,13 +93,15 @@ class ExoTestCase(TestCase):
 
 
     def test_reponse_carre_true(self):
-        c = Client()
         response_eleve = "def carre(a):\n\treturn a*a"
-        c.force_login(self.user, backend=AUTHENTICATION_BACKENDS[0])
-        response = c.get('/filebrowser/apply_option/?option_h=edit_pl&name_h=carre.pl&relative_h=./plbank/python/function&type_h=entry',
-            {}, follow=True
-        )
-        response2 = c.post('/filebrowser/preview_pl/',
+        
+        response = self.c.get(
+            '/filebrowser/home/opt/?option=entry-direct-edit_pl&target=carre.pl',
+                follow=True
+            )
+        
+        self.assertEqual(response.status_code,200)
+        response2 = self.c.post('/filebrowser/preview_pl/',
             json.dumps({"requested_action":"submit", "inputs": {"answer":response_eleve}}),
             content_type='text/json', follow=True
         )

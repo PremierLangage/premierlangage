@@ -31,7 +31,7 @@ class LoadTestCase(TestCase):
         rel = join(settings.FILEBROWSER_ROOT, '100/')
         if isdir(rel):
             shutil.rmtree(join(rel))
-        self.folder = Directory.objects.create(name='100', owner=self.user)
+        self.folder = Directory.objects.get(name='100', owner=self.user)
         shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder.root)
 
     
@@ -53,69 +53,19 @@ class LoadTestCase(TestCase):
         self.assertEqual(response.status_code, 405)
     
     
-    #~ def test_load_pltp(self):
-        #~ try:
-            #~ response = self.c.get(
-            #~ '/filebrowser/home/opt/?option=entry-direct-load&target=plgrader.pltp',
-            #~ follow=True
-            #~ )
-            #~ self.assertEqual(response.status_code, 200)
-            
-        #~ except AssertionError:
-            #~ m = list(response.context['messages'])
-            #~ if m:
-                #~ print("\nFound messages:")
-                #~ [print(i.level,':',i.message) for i in m]
-            #~ raise
-            
-            
-<<<<<<< HEAD
-    def test_load_no_pltp(self):
+    def test_load_pltp(self):
         try:
             response = self.c.get(
-                '/filebrowser/apply_option/',
-                {
-                        'option_h' : 'load',
-                        'name_h' : 'function001.pl',
-                        'relative_h' : './dir/TPE',
-                        'type_h' : 'entry'
-                    },
-                follow=True
+            '/filebrowser/home/opt/?option=entry-direct-load&target=plgrader.pltp',
+            follow=True
             )
             self.assertEqual(response.status_code, 200)
-            m = list(response.context['messages'])
-            if m:
-                self.assertTrue(len(m) > 0)
-                self.assertEqual(m[0].level, messages.ERROR)
+            
         except AssertionError:
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:")
                 [print(i.level,':',i.message) for i in m]
             raise
-=======
-    #~ def test_load_no_pltp(self):
-        #~ try:
-            #~ response = self.c.get(
-                #~ '/filebrowser/apply_option/',
-                #~ {
-                        #~ 'option_h' : 'load',
-                        #~ 'name_h' : 'function001.pl',
-                        #~ 'relative_h' : './dir/TPE',
-                        #~ 'type_h' : 'entry'
-                    #~ },
-                #~ follow=True
-            #~ )
-            #~ self.assertEqual(response.status_code, 200)
-            #~ m = list(response.context['messages'])
-            #~ if m:
-                #~ self.assertEqual(len(m), 1)
-                #~ self.assertEqual(m[0].level, messages.ERROR)
-        #~ except AssertionError:
-            #~ m = list(response.context['messages'])
-            #~ if m:
-                #~ print("\nFound messages:")
-                #~ [print(i.level,':',i.message) for i in m]
-            #~ raise
->>>>>>> 753425e60b151549a1ba9392877978b99936c6fd
-    
+            
+

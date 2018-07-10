@@ -93,3 +93,7 @@ class FilterTestCase(TestCase):
         self.assertFalse(filter.is_remote('./missing_dir'))
         self.assertFalse(filter.is_remote('.'))
         self.assertFalse(filter.is_remote('./'))
+
+    def test_is_not_directory(self):
+        self.assertTrue(filter.is_not_directory('text.txt'))
+      

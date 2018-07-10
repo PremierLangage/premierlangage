@@ -30,7 +30,7 @@ class DownloadTestCase(TestCase):
         rel = join(settings.FILEBROWSER_ROOT, '100/')
         if isdir(rel):
             shutil.rmtree(join(rel))
-        self.folder = Directory.objects.create(name='100', owner=self.user)
+        self.folder = Directory.objects.get(name='100', owner=self.user)
         shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder.root)
 
     
