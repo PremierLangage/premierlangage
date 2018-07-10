@@ -229,7 +229,6 @@ class Parser:
             
             if op != '+=': # Allow next lines to be concatenated
                 self.add_dic(self.dic,keys,'',line,op)
-                
         else:
             SyntaxErrorPL(join(self.directory.root, self.path), self.lines[self._multi_line_lineno-1], self._multi_line_lineno, message="Invalid multiline syntax ")
     
@@ -242,6 +241,8 @@ class Parser:
                 - SyntaxErrorPL if self._multiline_json is True, line match END_MULTI_LINE
                   and string consisting of all readed line is not a well formated json."""
         if self.END_MULTI_LINE.match(line):
+            if len(line) != 3:
+                raise SyntaxErrorPL(join(self.directory.root, self.path), line, str(self.lineno), message="Space before end of multi line zone")
             if self._multiline_json:
                 try:
                     self.dic[self._multiline_key] = json.loads(self.dic[self._multiline_key])
@@ -253,6 +254,7 @@ class Parser:
             # Add warning when detecting '==' to prevent unintentionnal nested key
             if '==' in line and self._multiline_key not in ['before', 'build', 'evaluator']:
                 self.add_warning("Nested '==' detected inside a multiple line value ("+self._multiline_key+") at line "+str(self.lineno)+". You can ignore this warning if this is intended.")
+            #print(line)
             self.add_dic2(self.dic, self._multiline_key.split("."), line, "+=")
     
     
