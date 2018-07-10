@@ -18,9 +18,9 @@ except django.db.utils.IntegrityError:
 
 # Add plbank
 try:
-    Directory.objects.create(name="plbank", owner=user, public=True)
+    Directory.objects.create(name="lib", owner=user, public=True)
 except django.db.utils.IntegrityError:
-    print("Directory 'plbank' already created")
+    print("Directory 'lib' already created")
 
 
 # Add local sandbox
