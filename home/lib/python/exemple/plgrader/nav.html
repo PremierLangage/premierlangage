@@ -1,0 +1,31 @@
+{% extends "playexo/default_state.html" %}
+
+{% load static %}
+
+{% block navigation %}
+    <div id="navigation" class="btn-group-vertical" style="width: 100%; margin-bottom: 15px;">
+        <!-- PLTP -->
+        {% if pl_sha1 %}
+            <a style="white-space: normal;" href="{{ request.path }}?action=pltp" type="button" class="btn btn-default  btn-lg">{{ pltp_title }}</a>
+        {% else %}
+            <a style="white-space: normal;" href="{{ request.path }}?action=pltp" type="button" class="btn btn-default  btn-lg active">{{ pltp_title }}</a>
+        {% endif %}
+        <!-- Every PL -->
+        {% for item in pl_list %} 
+            {% if pl_sha1 == item.0.sha1 %}
+                <a style="white-space: normal;" href="{{ request.path }}?action=pl&pl_sha1={{item.0.sha1}}" type="button" class="btn btn-default btn-type{{ item.1 }} btn-lg active">
+                    {{ item.2 }}
+                </a>
+            {% elif forloop.counter0 > current_auth %}
+                <a style="white-space: normal;" type="button" class="btn btn-default btn-lg" disabled>
+                    {{ item.2 }}
+                </a>
+            {% else %}
+                <a style="white-space: normal;" href="{{ request.path }}?action=pl&pl_sha1={{item.0.sha1}}" type="button" class="btn btn-default btn-type{{ item.1 }} btn-lg">
+                    {{ item.2 }}
+                </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <br>
+{% endblock %}

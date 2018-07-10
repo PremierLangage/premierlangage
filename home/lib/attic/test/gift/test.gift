@@ -1,0 +1,5 @@
+// TrueFalse1: 0 name: TrueStatement using {T} style
+::TrueFalse1::Grant was buried in a tomb in New York City.{T #Bien joué}
+
+// TrueFalse2: 0 name: FalseStatement using {FALSE} style
+::TruFalse2::The sun rises in the West.{FALSE #Bien joué}

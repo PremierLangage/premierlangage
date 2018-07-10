@@ -1,0 +1,144 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Commande plcheck &#8212; documentation Premier langage </title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Recherche" href="search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Index général"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">documentation Premier langage </a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="commande-plcheck">
+<span id="commande-plcheck"></span><h1>Commande plcheck<a class="headerlink" href="#commande-plcheck" title="Lien permanent vers ce titre">¶</a></h1>
+<div class="section" id="installation">
+<span id="installation"></span><h2>Installation<a class="headerlink" href="#installation" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Pour installer la commande et ainsi l'utiliser aisément il vous faut modifier le fichier ~/.bashrc
+Pour cela, il faut lancer depuis un terminal</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">gedit</span> <span class="o">~/.</span><span class="n">bashrc</span>
+</pre></div>
+</div>
+<p>Ceci va ouvrir le fichier correspondant, ensuite il vous faut ajouter la ligne suivante à ce fichier :</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>export PATH=$PATH:/home/premierlangage/server/serverpl/pysrc
+</pre></div>
+</div>
+</div>
+<div class="section" id="utilisation">
+<span id="utilisation"></span><h2>Utilisation<a class="headerlink" href="#utilisation" title="Lien permanent vers ce titre">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span>    <span class="n">plcheck</span><span class="o">.</span><span class="n">py</span> <span class="p">[</span><span class="n">OPTION</span><span class="p">]</span><span class="o">...</span><span class="p">[</span><span class="n">FILE</span><span class="p">]</span><span class="o">...</span>
+</pre></div>
+</div>
+<p>Seuls les fichiers au format pl ou pltp sont acceptés. Concernant les pl vous devez renseigner le chemin à partir de plbank ou bien un autre répertoire qui est dans repo sous forme d'un chemin relatif classique ou sous la forme</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">plbank</span><span class="p">:</span><span class="n">chemin_vers_le_fichier_pl</span>
+</pre></div>
+</div>
+<p>A gauche des ':' le nom du repo, à droite le chemin relatif à partir du repo</p>
+</div>
+<div class="section" id="description">
+<span id="description"></span><h2>Description<a class="headerlink" href="#description" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Plcheck est un outil en ligne de commande permettant de vérifier qu'une feuille d'exercice est conforme et que l'exercice fonctionne.
+Pour cela elle utilise:
+gitload/loader.py pysrc/plparser.py pour charger des PL et PLTP tout en faisant attention de ne pas les sauvegarder dans la base.
+pysrc/pleditor pour vérifier les conditions sur les champs etc
+Une fois l'exercice parsé et édité convenablement, plcheck va tester le fonctionnement de l'exercice en tentant de le résoudre tout d'abord avec la bonne réponse puis avec la mauvaise réponse. Selo le type d'évaluation de l'exercice cette commande peut utiliser pysrc/plrequest pour tester sur la sandbox le bon fonctionnement de l'exercice ou bien simplement l'evaluateur fournit avec l'exercice si il est de type direct.
+Si tout s'est bien passé, plcheck effectue ensuite l'ajout de l'exercice dans repo du repertoire git.</p>
+</div>
+<div class="section" id="options">
+<span id="options"></span><h2>Options<a class="headerlink" href="#options" title="Lien permanent vers ce titre">¶</a></h2>
+<p>-s, --sandbox=[sandbox_address]
+Après cette option, préciser l'adresse de la sandbox que vous voulez utiliser, par défaut    &quot;http://pl-sandbox-test.u-pem.fr/?action=execute&quot;</p>
+<p>-v, --verbose
+Affiche plus d'informations</p>
+<p>-d, --debug
+Quitte le programme et redirige à l'endroit où vous avez accès directement aux fichiers créés par la sandbox afin de débuguer.</p>
+<p>-h, --help
+Affiche la page d'aide et quitte le programme</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table des Matières</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Commande plcheck</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#utilisation">Utilisation</a></li>
+<li><a class="reference internal" href="#description">Description</a></li>
+<li><a class="reference internal" href="#options">Options</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>Cette page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/plcheck.md.txt"
+            rel="nofollow">Montrer le code source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Recherche rapide</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Index général"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">documentation Premier langage </a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Coumes Quentin.
+      Créé avec <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

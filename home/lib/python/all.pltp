@@ -1,0 +1,83 @@
+author=Dominique Revuz
+name=auto_exo_all
+tag=all
+introduction==
+Tout les exos de la plateforme 
+==
+
+title= Un Titre pour All est il nécessaire ?
+
+concept==NONE
+@ /python/0PLG/TPE/error.pl
+@ /python/0PLG/TPE/function001.pl
+@ /python/0PLG/TPE/identificateurs.pl
+@ /python/0PLG/TPE/operator001.pl
+@ /python/0PLG/TPE/operatorModulo.pl
+@ /python/0PLG/TPE/variableAkiki.pl
+@ /python/AP1/TP1/corrigemoi_1.pl
+@ /python/AP1/TP1/corrigemoi_2.pl
+@ /python/AP1/TP1/corrigemoi_3.pl
+@ /python/AP1/TP1/corrigemoi_4.pl
+@ /python/AP1/TP1/corrigemoi_5.pl
+@ /python/AP1/TP1/corrigemoi_6.pl
+@ /python/AP1/TP1/corrigemoi_7.pl
+@ /python/IUT/TP1/constantestypes.pl
+@ /python/IUT/TP1/error.pl
+@ /python/IUT/TP1/errorindent.pl
+@ /python/IUT/TP1/errorsyntax.pl
+@ /python/IUT/TP1/errortype.pl
+@ /python/IUT/TP1/identificateurs.pl
+@ /python/IUT/TP1/ififif.pl
+@ /python/IUT/TP1/operator001.pl
+@ /python/IUT/TP1/operator002.pl
+@ /python/IUT/TP1/operator003.pl
+@ /python/IUT/TP1/printbonjour.pl
+@ /python/IUT/TP1/printinput.pl
+@ /python/IUT/TP1/variabletypes.pl
+@ /python/TP1/nuitsdamour.pl
+@ /python/TP1/valeurs.pl
+@ /python/bool/bonlcond.pl
+@ /python/bool/sisi01.pl
+@ /python/bool/sisi02.pl
+@ /python/bool/sisi03.pl
+@ /python/conversion/str_and_int.pl
+@ /python/exemple/variadic.pl
+@ /python/function/Sundaram.pl
+@ /python/function/autosubsets.pl
+@ /python/function/carre.pl
+@ /python/function/carrecube.pl
+@ /python/function/decomposition.pl
+@ /python/function/estpremier.pl
+@ /python/function/estpremier2.pl
+@ /python/function/funcvoyelle.pl
+@ /python/function/histogramme1.pl
+@ /python/function/jumeaux.pl
+@ /python/function/pim.pl
+@ /python/function/pimret.pl
+@ /python/function/pom.pl
+@ /python/function/randomcolor1.pl
+@ /python/function/romains.pl
+@ /python/function/romcode.pl
+@ /python/function/simplefunc1.pl
+@ /python/function/simplefunc2.pl
+@ /python/function/simplefunc3.pl
+@ /python/function/simplefunc4.pl
+@ /python/function/subsets.pl
+@ /python/function/writebase.pl
+@ /python/input/ageCapitaine.pl
+@ /python/input/egalegal.pl
+@ /python/input/plusmoins.pl
+@ /python/input/print1.pl
+@ /python/input/print2.pl
+@ /python/input/quelage.pl
+@ /python/list/commonelementsist.pl
+@ /python/list/lireuneliste.pl
+@ /python/list/lireunelisteint.pl
+@ /python/list/soussuite.pl
+@ /python/search/jumeaux.pl
+@ /python/stack/stackbasic.pl
+@ /python/stack/undopile.pl
+@ /python/string/Kolakoski.pl
+@ /python/string/sort.pl
+@ /python/tuples/tuple1.pl
+==

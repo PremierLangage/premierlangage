@@ -1,0 +1,10 @@
+title=MultipleGoodAnswers
+text=What two people are entombed in Grant's tomb?
+type=direct
+template=/gift/template/multiplechoices_template.pl
+answer1=No one
+answer2=Grant
+answer3=Grant's wife
+answer4=Grant's father
+right_answer1=Grant
+right_answer2=Grant's wife

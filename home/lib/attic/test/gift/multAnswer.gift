@@ -1,0 +1,10 @@
+::MultipleGoodAnswers::What two people are entombed in Grant's tomb? {
+~No one
+#Wrong!
+~%50%Grant
+#Right!
+~%50%Grant's wife
+#Right!
+~Grant's father
+#Wrong!
+}

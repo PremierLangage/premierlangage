@@ -1,5 +1,5 @@
 DEADJOE
-home/
+home/*
 !home/lib
 tmp
 .idea/*

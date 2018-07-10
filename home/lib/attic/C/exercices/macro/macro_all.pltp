@@ -1,0 +1,15 @@
+author=Nicolas Borie
+
+title=Les macros en C
+
+introduction==
+
+Voici les exercices à propos des macros et instructives préprocesseurs en C
+
+==
+
+tag=string
+
+concept==
+@ /C/exercices/macro/square.pl
+==

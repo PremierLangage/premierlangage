@@ -1,0 +1,56 @@
+
+author=dominique.revuz@u-pem.fr
+title=Introduction à l'écriture d'exercices PL
+
+introduction==
+
+## Cette feuille de TP à pour objectif de vous former à l'écriture
+d'exercices avec la plateforme PL.
+
+### Syntaxe
+Dans une première partie "syntaxe" vous apprendre à utiliser la syntaxe des exercices PL.
+
+Qui consiste en un liste de déclarations de couples clef,valeur.
+
+Les valeurs ***simples*** sous la forme suivante clef=valeur sur une seul ligne :
+
+	clef=valeur
+	author=Dominique.revuz@icibas.earth 
+	tabstops=4 8 12 16
+
+Les valeurs ***mutlilignes*** sous la forme clef== lignes == :
+
+	code==
+	# ce commentaire apparaitra dans votre editeur
+	a=3 # ce code apparaitra dans l'editeur
+	==
+
+	text==
+	Enoncé de l'exercice
+	==
+
+Les valeurs ***fichier*** sous la forme clef=@ reference :
+
+	grader=@ /python/src/drgrader.py
+
+
+La deuxième partie vous présentera les différentes types d'exercices et les différentes balises définies pour ces exercices.
+
+==
+
+concept==
+@ /pl/syntaxe/egal.pl
+@ /pl/syntaxe/egalegal.pl
+@ /pl/syntaxe/makrdown.pl
+
+==
+
+@ /python/function/pim.pl
+@ /python/function/carre.pl
+@ /python/function/carrecube.pl
+@ /python/function/randomcolor1.pl
+@ /python/function/simplefunc1.pl
+@ /python/function/simplefunc2.pl
+@ /python/function/funcvoyelle.pl
+@ /python/function/racinecarre.pl
+

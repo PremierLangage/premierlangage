@@ -1,0 +1,32 @@
+title=all
+introduction==
+# BIENVENUE 
+
+Bonjour,
+bienvenue sur la plateforme Premier Langage.
+
+Cette plateforme développée à Marne la Vallée vous permet de valider l'avancement de vos compétences en python.
+
+A chaque TP est associée une PL Activité que vous devez réussir.
+
+Si vous avez des difficultés avec un exercice demandez à votre chargé(e) de TP de vous aider.
+
+Cordialement
+
+L'Equipe Premier langage. 
+
+
+==
+concept==gift
+@ /gift/all/Description.pl
+@ /gift/all/SelectWithFeedback.pl
+@ /gift/all/SelectSet.pl
+@ /gift/all/Short.pl
+@ /gift/all/TrueFalse1.pl
+@ /gift/all/TruFalse2.pl
+@ /gift/all/Match.pl
+@ /gift/all/MultipleGoodAnswers.pl
+@ /gift/all/MultipleNumeric.pl
+@ /gift/all/RangeAvecTolerance.pl
+@ /gift/all/RangeAvecIntervalle.pl
+==

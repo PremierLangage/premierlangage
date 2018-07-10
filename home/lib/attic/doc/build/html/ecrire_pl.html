@@ -1,0 +1,714 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Écrire un PL &#8212; documentation Premier langage </title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Recherche" href="search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Index général"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">documentation Premier langage </a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="ecrire-un-pl">
+<span id="ecrire-un-pl"></span><h1>Écrire un PL<a class="headerlink" href="#ecrire-un-pl" title="Lien permanent vers ce titre">¶</a></h1>
+<div class="section" id="introduction">
+<span id="introduction"></span><h2>Introduction<a class="headerlink" href="#introduction" title="Lien permanent vers ce titre">¶</a></h2>
+<div class="section" id="bases">
+<span id="bases"></span><h3>Bases<a class="headerlink" href="#bases" title="Lien permanent vers ce titre">¶</a></h3>
+<p>PL est un format de fichier permettant l'écriture d'exercices très différents. L'évaluation ainsi que le formulaire de réponse de l'exercice étant intégré à celui-ci, les possibilités sont quasiment infinis (les limites étant le langage Python ainsi que les différents langages web: HTML, JS, etc...).</p>
+</div>
+<div class="section" id="format">
+<span id="format"></span><h3>Format<a class="headerlink" href="#format" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Le format PL est un ensemble de déclaration de couple clé, valeur. Ces déclarations ce font avec une syntaxe simple que voici:</p>
+<ul class="simple">
+<li>&quot;=&quot; (<em>clé = valeur</em>) : Permet l'attribution d'une valeur sur une ligne, exemple: <em>title=Exercice 1</em></li>
+<li>&quot;==&quot; : Permet l'attribution d'une valeur sur plusieurs lignes, de la lignes suivant <em>clé==</em> à la ligne précédant le prochain <em>==</em>, exemple:</li>
+</ul>
+<div class="highlight-default"><div class="highlight"><pre><span></span> <span class="n">clé</span><span class="o">==</span>
+ <span class="n">valeur</span>
+ <span class="n">sur</span>
+ <span class="n">plusieurs</span>
+ <span class="n">lignes</span>
+ <span class="o">==</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>&quot;=&#64;&quot; (<em>clé =&#64; valeur</em>) : Permet d'attribuer le contenu d'un fichier à la clé, exemple: <em>enonce=&#64; /python/enonce/exercice3.txt</em></li>
+</ul>
+</div>
+<div class="section" id="cles-particulieres">
+<span id="cles-particulieres"></span><h3>Clés Particulières<a class="headerlink" href="#cles-particulieres" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Il existe deux clés particulières associées au symbole &quot;=&quot;: les clés &quot;<em>extends</em>&quot; et &quot;<em>include</em>&quot; (<em>include= /python/patron-exercice.pl</em> ou <em>extends= /python/patron-exercice.pl</em>):</p>
+<ul class="simple">
+<li><em>extends</em> permet d'étendre un autre fichier, c'est à dire de récupérer l'ensemble des clés de ce fichier puis, si n'importe laquelle de ces clés est aussi déclaré dans votre fichier, cette dernière écrasera celle du fichier étendue.</li>
+<li><em>include</em> permet d'inclure un autre fichier, c'est à dire ajouter l'ensemble de ce clés à votre fichier, contrairement à <em>extends</em>, les clés ajouté peuvent écraser vos clés si le fichier est inclus après la déclaration de celles-ci.
+Ces balises permettent d'éviter de devoir réécrire les clés les plus compliquées pouvant servir pour plusieurs exercices (formulaire, fonction d'évaluation, etc...).</li>
+</ul>
+</div>
+<div class="section" id="cles-reservees">
+<span id="cles-reservees"></span><h3>Clés réservées<a class="headerlink" href="#cles-reservees" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Bien qu'il soit possible d'attribuer n'importe quel clés, il est important de noté que certaine sont utilisé pour l'interface et pour le traitement de l'exercice, ces clés sont:</p>
+<div class="section" id="pour-l-interface">
+<span id="pour-l-interface"></span><h4>Pour l'interface:<a class="headerlink" href="#pour-l-interface" title="Lien permanent vers ce titre">¶</a></h4>
+<ul class="simple">
+<li><em>title</em> - Titre de l'exercice/feuille d'exercice</li>
+<li><em>author</em> - Auteur de l'exercice</li>
+<li><em>text</em> - Énoncé de l'exercice, le contenu de cette clé est affiché comme du markdown.</li>
+<li><em>introduction</em> - (Présentation de la feuille d'exercice, le contenu de cette clé est affiché comme du markdown.</li>
+<li><em>form</em> - Formulaire HTML permettant à l'élève de répondre. Voir la page <a class="reference external" href="./formulaire.html">Écrire un Formulaire</a>.</li>
+<li><em>css</em> - Permet l'ajout de feuille de style css si le formulaire en nécessite.</li>
+<li><em>script_header</em> et <em>script_end</em> - Permet l'ajout de javascript.</li>
+</ul>
+</div>
+<div class="section" id="pour-le-traitement-de-l-exercice">
+<span id="pour-le-traitement-de-l-exercice"></span><h4>Pour le traitement de l'exercice:<a class="headerlink" href="#pour-le-traitement-de-l-exercice" title="Lien permanent vers ce titre">¶</a></h4>
+<ul class="simple">
+<li><em>type</em> - Permet de déterminer les clés obligatoires/recommandées, c'est la seul clés obligatoire, peut importe le type. La clé type est propre à la méthode d'évaluation de l'exercice, il en existe 3 :<ul>
+<li>description : pas d'évaluation</li>
+<li>direct : évaluation via la fonction python de la clé evaluator</li>
+<li>sandbox : concerne les exercices de programmation, notamment quand la réponse d'un élève est du code à éxecuter.</li>
+</ul>
+</li>
+<li><em>build</em> - Code python permettant de créer des variables plus compliqué que celle possible par le PL (liste, dictionnaire, utilisation d'aléatoire, etc...), ce code sera exécuté avant l'affichage et avant l'évaluation de l'exercice.  Voir la page <a class="reference external" href="./build.html">Écrire une Fonction <em>build()</em></a>.</li>
+<li><em>evaluator</em> - Code python permettant d'évaluer la réponse l'élève. Voir la page <a class="reference external" href="./evaluator.html">Écrire un Évaluateur</a>.
+D'autres clés, suivant les types, peuvent être réservées.
+Toutes clés déclarées dans <em>build</em> écrasera celle déclaré dans le PL si le même nom est donné.
+Voir la page build, evaluator et form pour plus d'information sur ces clés particulière.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="exemple">
+<span id="exemple"></span><h3>Exemple<a class="headerlink" href="#exemple" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Voici un exemple pour un simple QCM avec 4 choix de réponse et 2 bonnes réponses:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>title=La Tombe de Grant
+ 
+text==
+Qui sont les personnes enterrés dans la tombe de Grant?
+
+(Indice: 2 personnes)
+==
+ 
+type=direct
+
+extends=/gift/template/multiplechoices_template.pl
+
+answer1=La mère de Grant
+
+answer2=Grant
+
+answer3=La femme de Grant
+
+answer4=Le père de Grant
+
+right_answer1=Grant
+
+right_answer2=La femme de Grant
+</pre></div>
+</div>
+<p>Après application du extends:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>title=La Tombe de Grant
+ 
+text==
+Qui sont les personnes enterrés dans la tombe de Grant?
+
+(Indice: 2 personnes)
+==
+ 
+type=direct
+
+build==
+def build(dic):
+    n=1
+    question=list()
+    answer=list()
+    while (&#39;answer&#39;+str(n) in dic):
+        question.append(dic[&#39;answer&#39;+str(n)])
+        if &#39;right_answer&#39;+str(n) in dic:
+            answer.append(dic[&#39;right_answer&#39;+str(n)])
+        n += 1
+    dic[&#39;question&#39;] = question
+    dic[&#39;answer&#39;] = answer
+    return dic
+==
+
+form==
+&lt;center&gt;
+    {% for item in question %}
+        &lt;label class=&quot;radio-inline&quot;&gt;
+        &lt;input type=&quot;checkbox&quot; value=&quot;{{item}}&quot; name=&quot;answer&quot;&gt;{{item}}
+        &lt;/label&gt;
+    {% endfor %}
+&lt;/center&gt;
+==
+
+evaluator==
+def evaluator(reponse, dic):
+    if not &#39;answer&#39; in reponse:
+        return False, &quot;Merci de cocher au moins une case&quot;
+    if len(reponse[&#39;answer&#39;]) == len(dic[&#39;answer&#39;]):
+        for answer in dic[&#39;answer&#39;]:
+            if not answer in reponse[&#39;answer&#39;]:
+                return False, &quot;Réponse incorrect&quot;
+        return True, &quot;Bonne réponse&quot;
+    return False, &quot;Réponse incorrect&quot;
+==
+
+answer1=La mère de Grant
+
+answer2=Grant
+
+answer3=La femme de Grant
+
+answer4=Le père de Grant
+
+right_answer1=Grant
+
+right_answer2=La femme de Grant
+</pre></div>
+</div>
+<p>Voici le rendu:</p>
+<hr class="docutils" />
+<p><img alt="Exemple PL" src="_images/exemple_PL.png" /></p>
+</div>
+</div>
+<div class="section" id="types-definis">
+<span id="types-definis"></span><h2>Types Définis<a class="headerlink" href="#types-definis" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Bien que le format PL permet la création de type d'exercice par les professeurs, certain types ont déjà été définis pour faciliter l'écriture d'exercices.</p>
+<div class="section" id="exercice-de-programmation-python">
+<span id="exercice-de-programmation-python"></span><h3>Exercice de Programmation Python<a class="headerlink" href="#exercice-de-programmation-python" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Voir la page wiki associé.</p>
+</div>
+<div class="section" id="vrai-faux">
+<span id="vrai-faux"></span><h3>Vrai / Faux<a class="headerlink" href="#vrai-faux" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Ce type permet l'écriture rapide d'un vrai/faux. Les seuls clés requises sont les clés <em>title</em>, <em>answer</em> (vaut soit &quot;True&quot;, soit &quot;False&quot;) et <em>text</em>.
+Il est possible d'écraser <em>feedback_correct</em> et <em>feeback_wrong</em> pour des retours personnalisés.
+Pour utiliser ce type, il faut étendre: /gift/template/truefalse_template.pl.</p>
+<p>Exemple:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">title</span><span class="o">=</span><span class="n">Vrai</span> <span class="o">/</span> <span class="n">Faux</span>
+<span class="n">text</span><span class="o">=</span><span class="n">Grant</span> <span class="n">a</span> <span class="n">été</span> <span class="n">enterré</span> <span class="n">à</span> <span class="n">New</span> <span class="n">York</span><span class="o">.</span>
+<span class="n">answer</span><span class="o">=</span><span class="kc">True</span>
+<span class="n">extends</span><span class="o">=/</span><span class="n">gift</span><span class="o">/</span><span class="n">template</span><span class="o">/</span><span class="n">truefalse_template</span><span class="o">.</span><span class="n">pl</span>
+</pre></div>
+</div>
+<p>Voici le contenu du patron:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="o">=</span><span class="n">direct</span>
+<span class="n">feedback_correct</span><span class="o">=</span><span class="n">Bonne</span> <span class="n">réponse</span>
+<span class="n">feedback_wrong</span><span class="o">=</span><span class="n">Mauvaise</span> <span class="n">réponse</span>
+
+<span class="n">form</span><span class="o">==</span>
+<span class="o">&lt;</span><span class="n">center</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">label</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;radio-inline&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;form_txt_answer&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;radio&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;True&quot;</span> <span class="n">required</span><span class="o">&gt;</span> <span class="n">Vrai</span>
+    <span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">label</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;radio-inline&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;form_txt_answer&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;radio&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;False&quot;</span> <span class="o">&gt;</span> <span class="n">Faux</span>
+    <span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">center</span><span class="o">&gt;</span>
+<span class="o">==</span>
+
+<span class="n">evaluator</span><span class="o">==</span>
+<span class="k">def</span> <span class="nf">evaluator</span><span class="p">(</span><span class="n">reponse</span><span class="p">,</span> <span class="n">dic</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="n">reponse</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;feedback_correct&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;feedback_wrong&#39;</span><span class="p">])</span>
+<span class="o">==</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="qcm-a-reponse-unique">
+<span id="qcm-a-reponse-unique"></span><h3>QCM a Réponse Unique<a class="headerlink" href="#qcm-a-reponse-unique" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Ce type permet l'écriture rapide d'une QCM avec une seule bonne réponse. Les seuls clés requises sont les clés <em>title</em>, plusieurs <em>answerX</em>, <em>right_answer</em> et <em>text</em>.
+Pour utiliser ce type, il faut étendre: /gift/template/select_template.pl.</p>
+<p>Exemple:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>title=QCM
+text=Qui est enterré dans la tombe de Grant?
+extends=/gift/template/select_template.pl
+answer1=Grant
+answer2=Personne
+answer3=Napoleon
+answer4=Churchill
+answer5=Mother Teresa
+right_answer=Grant
+</pre></div>
+</div>
+<p>Il est aussi possible d'ajouter un feedback pour chaque réponse avec <em>feedbackX</em> où X correspond à la réponse et <em>right_feedback</em> pour le retour de la bonne réponse:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>title= QCM Feedback
+text=Qu&#39;est-ce qui est entre le orange et le vert sur le spectre des couleurs?
+extends=/gift/template/select_template.pl
+answer1=Jaune
+answer2=Rouge
+answer3=Bleu
+feedback2=Non, c&#39;est le jaune !
+feedback3=Non, c&#39;est le jaune !
+right_answer=Jaune
+right_feedback=Excellent !
+</pre></div>
+</div>
+<p>Voici le contenu du patron:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="o">=</span><span class="n">direct</span>
+
+<span class="n">build</span><span class="o">==</span>
+<span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">dic</span><span class="p">):</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">1</span>
+    <span class="n">answer</span><span class="o">=</span><span class="nb">list</span><span class="p">()</span>
+    <span class="k">while</span> <span class="p">(</span><span class="s1">&#39;answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">):</span>
+        <span class="n">answer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span>
+        <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">answer</span>
+    <span class="k">return</span> <span class="n">dic</span>
+<span class="o">==</span>
+
+<span class="n">form</span><span class="o">==</span>
+<span class="o">&lt;</span><span class="n">center</span><span class="o">&gt;</span>
+    <span class="p">{</span><span class="o">%</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">answer</span> <span class="o">%</span><span class="p">}</span>
+        <span class="o">&lt;</span><span class="n">label</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;radio-inline&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;form_txt_answer&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;radio&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;{{item}}&quot;</span> <span class="n">required</span><span class="o">&gt;</span><span class="p">{{</span><span class="n">item</span><span class="p">}}</span>
+        <span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+    <span class="p">{</span><span class="o">%</span> <span class="n">endfor</span> <span class="o">%</span><span class="p">}</span>
+<span class="o">&lt;/</span><span class="n">center</span><span class="o">&gt;</span>
+<span class="o">==</span>
+
+<span class="n">evaluator</span><span class="o">==</span>
+<span class="k">def</span> <span class="nf">evaluator</span><span class="p">(</span><span class="n">reponse</span><span class="p">,</span> <span class="n">dic</span><span class="p">):</span> 
+    <span class="k">if</span> <span class="n">reponse</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;right_answer&#39;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="s1">&#39;right_feedback&#39;</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">dic</span> <span class="p">[</span><span class="s1">&#39;right_feedback&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;Bonne réponse&quot;</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">])):</span> <span class="c1"># Getting the corresponding wrong feedback</span>
+        <span class="k">if</span> <span class="n">reponse</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="s1">&#39;feedback&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;feedback&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">break</span>
+    <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Mauvaise Réponse&quot;</span>
+<span class="o">==</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="reponse-courte">
+<span id="reponse-courte"></span><h3>Réponse Courte<a class="headerlink" href="#reponse-courte" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Ce type permet l'écriture rapide d'une question nécessitant une courte réponse à taper (un nom, un nombre, etc...). Les seuls clés requises sont les clés <em>title</em>, plusieurs <em>answerX</em>, <em>right_answer</em> et <em>text</em>.
+Il est possible d'écraser <em>feedback_correct</em> et <em>feeback_wrong</em> pour des retours personnalisés.
+Pour utiliser ce type, il faut étendre: /gift/template/short_template.pl.</p>
+<p>Exemple:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>title=Short
+text=Deep Thought said:
+extends=/gift/template/short_template.pl
+answer=forty two
+correct_feedback=Correct according to The Hitchhiker&#39;s Guide to the Galaxy!
+wrong_feedback=Incorrect !
+</pre></div>
+</div>
+<p>Il est aussi possible de préciser plusieurs réponses possibles, ainsi que des retours correspondants:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>title=Short
+text=Deep Thought said:
+extends=/gift/template/short_template.pl
+answer1=forty two
+answer2=42
+answer3=forty-two
+feedback1=Correct according to The Hitchhiker&#39;s Guide to the Galaxy!
+feedback2=Correct, as told to Loonquawl and Phouchg
+feedback3=Correct!
+</pre></div>
+</div>
+<p>Voici le contenu du patron:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="o">=</span><span class="n">direct</span>
+
+<span class="n">form</span><span class="o">==</span>
+<span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;input-group&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">span</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;input-group-addon&quot;</span><span class="o">&gt;</span><span class="n">Réponse</span><span class="o">&lt;/</span><span class="n">span</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;form_txt_answer&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-control&quot;</span> <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;&quot;</span> <span class="n">required</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="o">==</span>
+
+<span class="n">evaluator</span><span class="o">==</span>
+<span class="k">def</span> <span class="nf">evaluator</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">dic</span><span class="p">):</span>
+    <span class="k">if</span> <span class="s1">&#39;answer&#39;</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="s1">&#39;correct_feedback&#39;</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;correct_feedback&#39;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;Bonne réponse&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;wrong_feedback&#39;</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;wrong_feedback&#39;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Mauvaise réponse&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">answer</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">while</span> <span class="p">(</span><span class="s1">&#39;answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">):</span>
+            <span class="n">ans</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;feedback&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">):</span>
+                <span class="n">fee</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;feedback&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fee</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Bonne réponse&#39;</span><span class="p">)</span>
+            <span class="n">answer</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ans</span><span class="p">,</span> <span class="n">fee</span><span class="p">))</span>
+            <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+        
+        <span class="k">for</span> <span class="n">answer</span><span class="p">,</span> <span class="n">feedback</span> <span class="ow">in</span> <span class="n">answer</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">response</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">answer</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">feedback</span>
+        <span class="k">if</span> <span class="s1">&#39;wrong_feedback&#39;</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;wrong_feedback&#39;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Mauvaise réponse&quot;</span>
+<span class="o">==</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="reponse-numerique">
+<span id="reponse-numerique"></span><h3>Réponse Numérique<a class="headerlink" href="#reponse-numerique" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Ce type permet l'écriture rapide d'une question demandant une réponse se situant dans un intervalle. La réponse ne peut qu'être un nombre entier ou un nombre décimale. Les seuls clés requises sont les clés <em>title</em>, <em>mini</em> et <em>maxi</em>, et <em>text</em>.
+Pour utiliser ce type, il faut étendre: /gift/template/numeric_template.pl.</p>
+<p>Exemple:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">title</span><span class="o">=</span><span class="n">Intervalle</span>
+<span class="n">text</span><span class="o">=</span><span class="n">Donnez</span> <span class="n">un</span> <span class="n">nombre</span> <span class="n">entre</span> <span class="mi">1</span> <span class="n">et</span> <span class="mf">5.</span>
+<span class="n">extends</span><span class="o">=/</span><span class="n">gift</span><span class="o">/</span><span class="n">template</span><span class="o">/</span><span class="n">numeric_template</span><span class="o">.</span><span class="n">pl</span>
+<span class="n">mini</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">maxi</span><span class="o">=</span><span class="mi">5</span>
+</pre></div>
+</div>
+<p>Voici le contenu du patron:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="o">=</span><span class="n">direct</span>
+
+<span class="n">form</span><span class="o">==</span>
+<span class="o">&lt;</span><span class="n">div</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;input-group&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">span</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;input-group-addon&quot;</span><span class="o">&gt;</span><span class="n">Réponse</span><span class="o">&lt;/</span><span class="n">span</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;form_txt_answer&quot;</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;text&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;form-control&quot;</span> <span class="n">placeholder</span><span class="o">=</span><span class="s2">&quot;&quot;</span> <span class="n">required</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="o">==</span>
+
+<span class="n">evaluator</span><span class="o">==</span>
+<span class="k">def</span> <span class="nf">evaluator</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">dic</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">float</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">])</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Merci de rentrer un entier ou un flottant&quot;</span>
+       
+    <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="nb">float</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;mini&#39;</span><span class="p">])</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">response</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="nb">float</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;maxi&#39;</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;Bonne réponse&#39;</span>
+    <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;Réponse incorrecte&#39;</span>
+<span class="o">==</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="qcm">
+<span id="qcm"></span><h3>QCM<a class="headerlink" href="#qcm" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Ce type permet l'écriture rapide d'un QCM. Les seuls clés requises sont les clés <em>title</em>, plusieurs <em>answerX</em>, 1 ou plusieurs <em>right_answerX</em> et <em>text</em>.
+Pour utiliser ce type, il faut étendre: /gift/template/multiplechoices_template.pl.</p>
+<p>Exemple:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>title=La Tombe de Grant
+
+text==
+Qui sont les personnes enterrés dans la tombe de Grant?
+
+(Indice: 2 personnes)
+==
+
+type=direct
+template=/gift/template/multiplechoices_template.pl
+answer1=La mère de Grant
+answer2=Grant
+answer3=La femme de Grant
+answer4=Le père de Grant
+right_answer1=Grant
+right_answer2=La femme de Grant
+</pre></div>
+</div>
+<p>Voici le contenu du patron:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="o">=</span><span class="n">direct</span>
+
+<span class="n">build</span><span class="o">==</span>
+<span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">dic</span><span class="p">):</span>
+    <span class="n">d</span><span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dic</span><span class="p">)</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">1</span>
+    <span class="n">question</span><span class="o">=</span><span class="nb">list</span><span class="p">()</span>
+    <span class="n">answer</span><span class="o">=</span><span class="nb">list</span><span class="p">()</span>
+    <span class="k">while</span> <span class="p">(</span><span class="s1">&#39;answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">):</span>
+        <span class="n">question</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span>
+        <span class="k">if</span> <span class="s1">&#39;right_answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">:</span>
+            <span class="n">answer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;right_answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span>
+        <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;question&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">question</span>
+    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">answer</span>
+    <span class="k">return</span> <span class="n">d</span>
+<span class="o">==</span>
+
+
+<span class="n">form</span><span class="o">==</span>
+<span class="o">&lt;</span><span class="n">center</span><span class="o">&gt;</span>
+    <span class="p">{</span><span class="o">%</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">question</span> <span class="o">%</span><span class="p">}</span>
+        <span class="o">&lt;</span><span class="n">label</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;checkbox-inline&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nb">input</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;checkbox&quot;</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;form_txt_answer&quot;</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;{{item}}&quot;</span><span class="o">&gt;</span> <span class="p">{{</span><span class="n">item</span><span class="p">}}</span>
+        <span class="o">&lt;/</span><span class="n">label</span><span class="o">&gt;</span>
+    <span class="p">{</span><span class="o">%</span> <span class="n">endfor</span> <span class="o">%</span><span class="p">}</span>
+<span class="o">&lt;/</span><span class="n">center</span><span class="o">&gt;</span>
+<span class="o">==</span>
+
+<span class="n">evaluator</span><span class="o">==</span>
+<span class="k">def</span> <span class="nf">evaluator</span><span class="p">(</span><span class="n">reponse</span><span class="p">,</span> <span class="n">dic</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;answer&#39;</span> <span class="ow">in</span> <span class="n">reponse</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Merci de cocher au moins une case&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reponse</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">answer</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">answer</span> <span class="ow">in</span> <span class="n">reponse</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Réponse incorrect&quot;</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;Bonne réponse&quot;</span>
+    <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Réponse incorrect&quot;</span>
+<span class="o">==</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="correspondance">
+<span id="correspondance"></span><h3>Correspondance<a class="headerlink" href="#correspondance" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Ce type permet l'écriture rapide d'un exercice ou il faut faire correspondre plusieurs réponses. Les seuls clés requises sont les clés <em>title</em>, plusieurs_questionX_, plusieurs <em>answerX</em> où <em>answerX</em> est la réponse à <em>questionX</em>, et <em>text</em>.
+Pour utiliser ce type, il faut étendre: /gift/template/match_template.pl.</p>
+<p>Exemple:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>title=Match
+text=Which animal eats which food?
+template=/gift/template/match_template.pl
+question1=cat 
+question2=dog 
+answer1= cat food
+answer2= dog food
+</pre></div>
+</div>
+<p>Voici le contenu du patron:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="o">=</span><span class="n">direct</span>
+
+<span class="n">build</span><span class="o">==</span>
+<span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="n">dic</span><span class="p">):</span>
+    <span class="n">n</span><span class="o">=</span><span class="mi">1</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">question_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">answer_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">while</span> <span class="p">(</span><span class="s1">&#39;answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">):</span>
+        <span class="n">answer_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span>
+        <span class="n">question_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;question&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)])</span>
+        <span class="n">answer</span><span class="p">[</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;question&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)]]</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+        <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">answer</span>
+    <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">answer_list</span>
+    <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;question_list&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">question_list</span>
+    <span class="k">return</span> <span class="n">dic</span>
+<span class="o">==</span>
+
+
+<span class="n">css</span><span class="o">==</span>
+<span class="o">&lt;</span><span class="n">script</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">link</span> <span class="n">rel</span><span class="o">=</span><span class="s2">&quot;stylesheet&quot;</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css&quot;</span><span class="o">&gt;</span>
+<span class="o">==</span>
+
+<span class="n">form</span><span class="o">==</span>
+<span class="o">&lt;</span><span class="n">center</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">div</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;display: inline-block; vertical-align: middle;&quot;</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">question_list</span> <span class="o">%</span><span class="p">}</span>
+            <span class="o">&lt;</span><span class="n">span</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;input&quot;</span><span class="o">&gt;</span><span class="p">{{</span><span class="n">item</span><span class="p">}}:</span><span class="o">&lt;/</span><span class="n">span</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">select</span> <span class="nb">id</span><span class="o">=</span><span class="s2">&quot;form_txt_{{item}}&quot;</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;selectpicker&quot;</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;display: inline-block; vertical-align: middle;&quot;</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Réponse&quot;</span> <span class="n">required</span><span class="o">&gt;</span>
+                <span class="p">{</span><span class="o">%</span> <span class="k">for</span> <span class="n">item2</span> <span class="ow">in</span> <span class="n">answer_list</span> <span class="o">%</span><span class="p">}</span>
+                    <span class="o">&lt;</span><span class="n">option</span> <span class="n">value</span><span class="o">=</span><span class="s2">&quot;{{ item2 }}&quot;</span><span class="o">&gt;</span><span class="p">{{</span><span class="n">item2</span><span class="p">}}</span><span class="o">&lt;/</span><span class="n">option</span><span class="o">&gt;</span>
+                <span class="p">{</span><span class="o">%</span> <span class="n">endfor</span> <span class="o">%</span><span class="p">}</span>
+            <span class="o">&lt;/</span><span class="n">select</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+            <span class="o">&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+        <span class="p">{</span><span class="o">%</span> <span class="n">endfor</span> <span class="o">%</span><span class="p">}</span>
+    <span class="o">&lt;/</span><span class="n">div</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">center</span><span class="o">&gt;</span>
+<span class="o">==</span>
+
+<span class="n">evaluator</span><span class="o">==</span>
+<span class="k">def</span> <span class="nf">evaluator</span><span class="p">(</span><span class="n">reponse</span><span class="p">,</span> <span class="n">dic</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">reponse</span> <span class="o">==</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;Bien joué&quot;</span>
+    <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;Mauvais matching&quot;</span>
+<span class="o">==</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="description">
+<span id="description"></span><h3>Description<a class="headerlink" href="#description" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Ce type permet d'entrée un simple texte (explication, rappel de cours, etc...), il ne contient donc pas de formulaire.</p>
+<p>Exemple:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">title</span><span class="o">=</span><span class="n">Description</span>
+<span class="n">text</span><span class="o">=</span><span class="n">You</span> <span class="n">can</span> <span class="n">use</span> <span class="n">your</span> <span class="n">pencil</span> <span class="ow">and</span> <span class="n">paper</span> <span class="k">for</span> <span class="n">these</span> <span class="nb">next</span> <span class="n">math</span> <span class="n">questions</span><span class="o">.</span>
+<span class="nb">type</span><span class="o">=</span><span class="n">description</span>
+<span class="n">evaluator</span><span class="o">=</span><span class="k">def</span> <span class="nf">evaluator</span><span class="p">(</span><span class="n">reponse</span><span class="p">,</span> <span class="n">dico</span><span class="p">):</span> <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;Merci pour votre lecture&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="exercices-a-trous">
+<span id="exercices-a-trous"></span><h3>Exercices à trous<a class="headerlink" href="#exercices-a-trous" title="Lien permanent vers ce titre">¶</a></h3>
+<p>Ce type d'exercice est un énoncé à trou que l'utilisateur doit remplir avant de valider sa réponse. Il vous faut numéroter les clés text selon leur ordre d'apparition dans le texte à compléter. Il existe deux sous types a ce type d'exercice.</p>
+<div class="section" id="enonce-a-un-trou">
+<span id="enonce-a-un-trou"></span><h4>Enoncé à un trou<a class="headerlink" href="#enonce-a-un-trou" title="Lien permanent vers ce titre">¶</a></h4>
+<p>Ici l'exercice présente plusieurs similitude avec un exercice à réponses courtes, la seule différence en réalité est la numérotation des clés text à partir de 1. Retrouvez également le template dans l'exemple ci dessous.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>Exemple:
+title=fill_the_blank
+extends=/gift/template/fill_the_blank_template.pl
+text1=Deux plus
+text2=égal quatre.
+answer1=2
+answer2=deux
+feedback=En chiffres, bien joué!
+feedback2=En lettres, pas mal!
+</pre></div>
+</div>
+</div>
+<div class="section" id="enonce-a-trous-multiples">
+<span id="enonce-a-trous-multiples"></span><h4>Enoncé à trous multiples<a class="headerlink" href="#enonce-a-trous-multiples" title="Lien permanent vers ce titre">¶</a></h4>
+<p>Comme pour l'autre type d'exercice à trous, il vous faut numéroter les clés text selon leur ordre d'apparition dans l'énoncé. De plus les réponses s'écrivent selon le format answerN_M avec N le text numéro N, celui qui précède le champs de saisie, et M qui correspond à la numérotation des réponses possibles.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">title</span><span class="o">=</span><span class="n">Multiple_Blank</span>
+<span class="n">template</span><span class="o">=/</span><span class="n">gift</span><span class="o">/</span><span class="n">template</span><span class="o">/</span><span class="n">multiple_blank_template</span><span class="o">.</span><span class="n">pl</span>
+
+<span class="n">text1</span><span class="o">=</span><span class="n">Rendez</span><span class="o">-</span><span class="n">vous</span>
+
+<span class="n">answer1_1</span><span class="o">=</span><span class="n">cet</span>
+<span class="n">answer1_2</span><span class="o">=</span><span class="n">cette</span>
+
+<span class="n">text2</span><span class="o">=</span><span class="n">après</span><span class="o">-</span><span class="n">midi</span> <span class="n">à</span>
+
+<span class="n">answer2_1</span><span class="o">=</span><span class="n">treize</span>
+<span class="n">answer2_2</span><span class="o">=</span><span class="mi">13</span>
+<span class="n">answer2_3</span><span class="o">=</span><span class="n">une</span>
+<span class="n">answer2_4</span><span class="o">=</span><span class="mi">1</span>
+
+<span class="n">text3</span><span class="o">=</span><span class="n">heure</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+<span class="n">answer3_1</span><span class="o">=</span><span class="n">pile</span>
+<span class="n">answer3_2</span><span class="o">=</span><span class="n">pétante</span>
+<span class="n">answer3_3</span><span class="o">=</span><span class="n">pétantes</span>
+
+<span class="n">text4</span><span class="o">=.</span>
+</pre></div>
+</div>
+<p>=======</p>
+</div>
+</div>
+</div>
+<div class="section" id="creer-un-nouveau-type">
+<span id="creer-un-nouveau-type"></span><h2>Créer un nouveau type<a class="headerlink" href="#creer-un-nouveau-type" title="Lien permanent vers ce titre">¶</a></h2>
+<p>La syntaxe PL permettant d'inclure ou d'étendre d'autre fichier, il est possible (et recommandé) de créer nouveau type.</p>
+<p>Ces types doivent pouvoir être utilisés en déclarant le moins de clés possibles, afin de faciliter l'écriture de futures exercices. Les principales clés permettant de définir un nouveau type sont les clés:</p>
+<ul class="simple">
+<li><a class="reference external" href="./build.html">build</a> (optionnel)</li>
+<li><a class="reference external" href="./formulaire.html">form</a></li>
+<li><a class="reference external" href="./evaluator.html">evaluator</a></li>
+<li><a class="reference external" href="./responses.html">responses</a></li>
+<li><a class="reference external" href="./consistency.html">consistency</a></li>
+</ul>
+<p>Ce sont les clés <em>form</em> et <em>evaluator</em> qui permettent de &quot;normer&quot; l'exercice et de définir l'interface de réponse, ainsi que la façon d'évaluer l'exercice. Cela peut être aussi une bonne pratique de créer des <em>feedback</em> par défaut.</p>
+<p>Pour des exemples, vous pouvez référer aux patrons des types d'exercices déclarés plus haut.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table des Matières</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Écrire un PL</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a><ul>
+<li><a class="reference internal" href="#bases">Bases</a></li>
+<li><a class="reference internal" href="#format">Format</a></li>
+<li><a class="reference internal" href="#cles-particulieres">Clés Particulières</a></li>
+<li><a class="reference internal" href="#cles-reservees">Clés réservées</a><ul>
+<li><a class="reference internal" href="#pour-l-interface">Pour l'interface:</a></li>
+<li><a class="reference internal" href="#pour-le-traitement-de-l-exercice">Pour le traitement de l'exercice:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#exemple">Exemple</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#types-definis">Types Définis</a><ul>
+<li><a class="reference internal" href="#exercice-de-programmation-python">Exercice de Programmation Python</a></li>
+<li><a class="reference internal" href="#vrai-faux">Vrai / Faux</a></li>
+<li><a class="reference internal" href="#qcm-a-reponse-unique">QCM a Réponse Unique</a></li>
+<li><a class="reference internal" href="#reponse-courte">Réponse Courte</a></li>
+<li><a class="reference internal" href="#reponse-numerique">Réponse Numérique</a></li>
+<li><a class="reference internal" href="#qcm">QCM</a></li>
+<li><a class="reference internal" href="#correspondance">Correspondance</a></li>
+<li><a class="reference internal" href="#description">Description</a></li>
+<li><a class="reference internal" href="#exercices-a-trous">Exercices à trous</a><ul>
+<li><a class="reference internal" href="#enonce-a-un-trou">Enoncé à un trou</a></li>
+<li><a class="reference internal" href="#enonce-a-trous-multiples">Enoncé à trous multiples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#creer-un-nouveau-type">Créer un nouveau type</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>Cette page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/ecrire_pl.md.txt"
+            rel="nofollow">Montrer le code source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Recherche rapide</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Index général"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">documentation Premier langage </a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Coumes Quentin.
+      Créé avec <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

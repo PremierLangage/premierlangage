@@ -1,0 +1,5 @@
+// multiple numeric answers with partial credit and feedback
+::MultipleNumeric:: When was Ulysses S. Grant born? {
+=%50%1822:2 # He was born in 1822. Half credit for being close.
+=1822:0 # Correct! Full credit.
+}

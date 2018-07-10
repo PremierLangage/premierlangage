@@ -1,0 +1,12 @@
+title=SelectWithFeedback
+text=What's between orange and green in the spectrum?
+type=direct
+template=/gift/template/select_template.pl
+answer1=yellow
+answer2=red
+answer3=blue
+feedback1=right; good!
+feedback2=wrong, it's yellow
+feedback3=wrong, it's yellow
+right_answer=yellow
+right_feedback=right; good!

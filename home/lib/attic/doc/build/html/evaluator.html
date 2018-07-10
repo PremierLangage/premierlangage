@@ -1,0 +1,214 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Écriture d&#39;une Fonction d&#39;Évaluation &#8212; documentation Premier langage </title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/translations.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Recherche" href="search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Index général"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">documentation Premier langage </a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="ecriture-d-une-fonction-d-evaluation">
+<span id="ecriture-d-une-fonction-d-evaluation"></span><h1>Écriture d'une Fonction d'Évaluation<a class="headerlink" href="#ecriture-d-une-fonction-d-evaluation" title="Lien permanent vers ce titre">¶</a></h1>
+<p>La fonction <em>evaluator()</em> est la fonction qui sera appelé avec la réponse de l'élève afin de la corriger.</p>
+<p>La fonction étant déclarer en <strong>python 3</strong>, il est nécessaire d'avoir des connaissances en python.</p>
+<p>La fonction <em>evaluator()</em>, reçoit, en plus de la réponse de l'élève, le dictionnaire de l'exercice après un passage par la fonction <a class="reference external" href="./build.html"><em>build()</em></a>, et peut donc se servir de l'ensemble des variables déclarées/créées afin de corriger l'élève.</p>
+<div class="section" id="les-bases">
+<span id="les-bases"></span><h2>Les Bases<a class="headerlink" href="#les-bases" title="Lien permanent vers ce titre">¶</a></h2>
+<p>La fonction <em>evaluator()</em> doit être écrit en <strong>python 3</strong> et respecter un prototype précis:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">evaluator</span><span class="p">(</span><span class="n">reponse</span><span class="p">,</span> <span class="n">dic</span><span class="p">):</span>
+    <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="bp">True</span><span class="o">/</span><span class="bp">False</span><span class="p">],</span> <span class="n">feedback</span>
+</pre></div>
+</div>
+<p>Où <em>réponse</em> est le dictionaire contenant l'ensemble des réponses (voir <a class="reference external" href="./formulaire.html">Écrire un Formulaire</a>), et <em>dic</em> est le dictionnaire de l'exercice qui contient donc l'ensemble des variables déclaré dans le fichier PL associé.</p>
+<p>La fonction doit retourner un tuple contenant un booléen indiquant la réussite de l'élève ainsi qu'un <em>feedback</em> qui sera affiché à l'élève (en vert si le booléen est Vrai, rouge si Faux).</p>
+<p>Elle doit être déclarée dans le PL grâce à la clé <em>evaluator</em>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">evaluator</span><span class="o">==</span>
+<span class="k">def</span> <span class="nf">evaluator</span><span class="p">(</span><span class="n">reponse</span><span class="p">,</span> <span class="n">dic</span><span class="p">):</span>
+    <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="bp">True</span><span class="o">/</span><span class="bp">False</span><span class="p">],</span> <span class="n">feedback</span>
+<span class="o">==</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="modules-et-fonctions-secondaires">
+<span id="modules-et-fonctions-secondaires"></span><h2>Modules et Fonctions Secondaires<a class="headerlink" href="#modules-et-fonctions-secondaires" title="Lien permanent vers ce titre">¶</a></h2>
+<p>N'importe quel module, (excepté <em>os</em> et <em>sys</em>) peut être importé avant la déclaration de build, de même, plusieurs fonctions annexes peuvenr être déclarées avant la fonction <em>evaluator()</em> et être appelée par celle-ci:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">evaluator</span><span class="o">==</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="k">def</span> <span class="nf">is_sqrt</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="n">j</span>
+
+<span class="k">def</span> <span class="nf">evaluator</span><span class="p">(</span><span class="n">reponse</span><span class="p">,</span> <span class="n">dic</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">is_sqrt</span><span class="p">(</span><span class="n">reponse</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">],</span> <span class="nb">int</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">])):</span>
+        <span class="k">return</span> <span class="bp">True</span><span class="p">,</span> <span class="s2">&quot;Bonne réponse&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="s2">&quot;Mauvaise réponse, &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">reponse</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;*&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">reponse</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot; = &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">reponse</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span> <span class="s2">&quot; et non&quot;</span><span class="o">+</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;.&quot;</span>
+<span class="o">==</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fonctions-d-evaluation-avancees">
+<span id="fonctions-d-evaluation-avancees"></span><h2>Fonctions d'Évaluation Avancées<a class="headerlink" href="#fonctions-d-evaluation-avancees" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Il est ausi possible de déclarer/écraser des clés de l'exercice dans l'évaluator. Cela peut par exemple être utile si on veut par exemple modifié le formulaire de réponse (surligné des champs en vert/rouge, ajouté des indices, etc...).</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">evaluator</span><span class="o">==</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
+<span class="n">form_fail</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">&lt;div class=&quot;input-group&quot;&gt;</span>
+<span class="s2">    &lt;red&gt;&lt;span class=&quot;input-group-addon&quot;&gt;Réponse&lt;/span&gt;&lt;/red&gt;</span>
+<span class="s2">    &lt;input id=&quot;form_txt_answer&quot; type=&quot;number&quot; class=&quot;form-control&quot; placeholder=&quot;&quot; required&gt;</span>
+<span class="s2">&lt;/div&gt;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="k">def</span> <span class="nf">is_sqrt</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="n">j</span>
+
+<span class="k">def</span> <span class="nf">evaluator</span><span class="p">(</span><span class="n">reponse</span><span class="p">,</span> <span class="n">dic</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">is_sqrt</span><span class="p">(</span><span class="n">reponse</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">],</span> <span class="nb">int</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">])):</span>
+        <span class="k">return</span> <span class="bp">True</span><span class="p">,</span> <span class="s2">&quot;Bonne réponse&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;form&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">form_fail</span>
+        <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="s2">&quot;Mauvaise réponse, &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">reponse</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot;*&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">reponse</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">])</span><span class="o">+</span><span class="s2">&quot; = &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">reponse</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span> <span class="s2">&quot; et non&quot;</span><span class="o">+</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;n&#39;</span><span class="p">]</span><span class="o">+</span><span class="s2">&quot;.&quot;</span>
+<span class="o">==</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="exemples">
+<span id="exemples"></span><h2>Exemples<a class="headerlink" href="#exemples" title="Lien permanent vers ce titre">¶</a></h2>
+<p>Voici divers exemples de fonction <em>evaluator()</em>:</p>
+<div class="section" id="vrai-faux">
+<span id="vrai-faux"></span><h3>Vrai / Faux<a class="headerlink" href="#vrai-faux" title="Lien permanent vers ce titre">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">evaluator</span><span class="o">==</span>
+<span class="k">def</span> <span class="nf">evaluator</span><span class="p">(</span><span class="n">reponse</span><span class="p">,</span> <span class="n">dic</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="n">reponse</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="bp">True</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;feedback_correct&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;feedback_wrong&#39;</span><span class="p">])</span>
+<span class="o">==</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="qcm">
+<span id="qcm"></span><h3>QCM<a class="headerlink" href="#qcm" title="Lien permanent vers ce titre">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">evaluator</span><span class="o">==</span>
+<span class="k">def</span> <span class="nf">evaluator</span><span class="p">(</span><span class="n">reponse</span><span class="p">,</span> <span class="n">dic</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;answer&#39;</span> <span class="ow">in</span> <span class="n">reponse</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="s2">&quot;Merci de cocher au moins une case&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">reponse</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]):</span>
+        <span class="k">for</span> <span class="n">answer</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">answer</span> <span class="ow">in</span> <span class="n">reponse</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="s2">&quot;Réponse incorrect&quot;</span>
+        <span class="k">return</span> <span class="bp">True</span><span class="p">,</span> <span class="s2">&quot;Bonne réponse&quot;</span>
+    <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="s2">&quot;Réponse incorrect&quot;</span>
+<span class="o">==</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="match">
+<span id="match"></span><h3>Match<a class="headerlink" href="#match" title="Lien permanent vers ce titre">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">evaluator</span><span class="o">==</span>
+<span class="k">def</span> <span class="nf">evaluator</span><span class="p">(</span><span class="n">reponse</span><span class="p">,</span> <span class="n">dic</span><span class="p">):</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">reponse</span> <span class="o">==</span> <span class="n">dic</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]):</span>
+        <span class="k">return</span> <span class="bp">True</span><span class="p">,</span> <span class="s2">&quot;Bien joué&quot;</span>
+    <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="s2">&quot;Mauvais matching&quot;</span>
+<span class="o">==</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table des Matières</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Écriture d'une Fonction d'Évaluation</a><ul>
+<li><a class="reference internal" href="#les-bases">Les Bases</a></li>
+<li><a class="reference internal" href="#modules-et-fonctions-secondaires">Modules et Fonctions Secondaires</a></li>
+<li><a class="reference internal" href="#fonctions-d-evaluation-avancees">Fonctions d'Évaluation Avancées</a></li>
+<li><a class="reference internal" href="#exemples">Exemples</a><ul>
+<li><a class="reference internal" href="#vrai-faux">Vrai / Faux</a></li>
+<li><a class="reference internal" href="#qcm">QCM</a></li>
+<li><a class="reference internal" href="#match">Match</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>Cette page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/evaluator.md.txt"
+            rel="nofollow">Montrer le code source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Recherche rapide</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="Index général"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="index.html">documentation Premier langage </a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Coumes Quentin.
+      Créé avec <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

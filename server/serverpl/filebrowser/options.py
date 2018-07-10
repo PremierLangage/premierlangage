@@ -456,7 +456,7 @@ def load_pltp_option(request, filebrowser, target):
         return HttpResponseNotAllowed(['GET'])
 
     try:
-        rel_path = join(filebrowser.relative, target).replace('home/', "")
+        rel_path = join(*(filebrowser.relative.split('/')[1:] + [target]))
         pltp, warnings = load_file(filebrowser.directory, rel_path, True)
 
         if not pltp and not warnings:
@@ -590,7 +590,7 @@ def edit_pl_option(request, filebrowser, target):
         with open(path, 'r') as f:
             content = f.read()
         
-        rel_path = join(filebrowser.relative, target).replace('home/', "")
+        rel_path = join(*(filebrowser.relative.split('/')[1:] + [target]))
         pl, warnings = load_file(filebrowser.directory, rel_path)
         if not pl:
             preview = '<div class="alert alert-danger" role="alert"> Failed to load \''+target+"': \n"+warnings+"</div>"
@@ -631,7 +631,7 @@ def test_pl_option(request, filebrowser, target):
         return HttpResponseNotAllowed(['GET'])
 
     try:
-        rel_path = join(filebrowser.relative, target).replace('home/', "") 
+        rel_path = join(*(filebrowser.relative.split('/')[1:] + [target]))
         pl, warnings = load_file(filebrowser.directory, rel_path)
 
         if not pl:
