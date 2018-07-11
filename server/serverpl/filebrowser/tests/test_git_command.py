@@ -559,23 +559,4 @@ class GitTestCase(TestCase):
             raise
 
 
-    def test_reset_mode(self):
-        try:
-            response = self.c.post(
-            '/filebrowser/home/TPE/opt/',
-            {
-                'mode': 'soft',
-                'option': 'entry-git-reset',
-                'target':'function001.pl',
-            },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            m = list(response.context['messages'])
-            self.assertEqual(messages.SUCCESS, m[0].level)
-        except AssertionError:
-            m = list(response.context['messages'])
-            if m:
-                print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
-            raise
+    
