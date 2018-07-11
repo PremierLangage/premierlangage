@@ -503,7 +503,7 @@ def move_option(request, filebrowser, target):
         
         if join(filebrowser.root, filebrowser.real_home) not in ndestination:
             messages.error(request, "Impossible to move '" + target + "' inside '" + destination
-                                   + "': this directory does not exists.")
+                                  + "': this directory does not exists.")
         
         elif not isdir(ndestination):
             messages.error(request, "Impossible to move '" + target + "' inside '" + destination
