@@ -210,19 +210,25 @@ def save_edit_receiver(request):
         if content:
             with open(settings.FILEBROWSER_ROOT + '/' + path, 'w') as f:
                 print(content, file=f)
-        return HttpResponse(json.dumps({'feedback_type': "success",
-                                        'feedback': '<i class="fas fa-check"></i>'+
-                                                    '<a href="#" class="close" '+
-                                                    'data-dismiss="alert" aria-label="close">x</a>'+
-                                                    '&nbsp Sauvegarde effectuée'}),
-                                        content_type='application/json')
+        return HttpResponse(
+            json.dumps({
+                'feedback': '<div id="success" class="alert alert-success feedback">'
+                          + '<i class="fas fa-check"></i> &nbsp Sauvegarde effectuée'
+                          + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+                          + '<span aria-hidden="true">&times;</span>'
+                          + '</button></div>'}),
+            content_type='application/json'
+        )
     except Exception as e:
-        return HttpResponse(json.dumps({'feedback_type': "fail",
-                                        'feedback': '<i class="fas fa-fire"></i>'+
-                                                    '<a href="#" class="close" '+
-                                                    'data-dismiss="alert" aria-label="close">x</a>'+
-                                                    '&nbsp Sauvegarde échouée'}),
-                                        content_type='application/json')
+        return HttpResponse(
+            json.dumps({
+                'feedback': '<div id="success" class="alert alert-success feedback">'
+                          + '<i class="fas fa-fire"></i> &nbsp Sauvegarde échouée'
+                          + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+                          + '<span aria-hidden="true">&times;</span>'
+                          + '</button></div>'}),
+            content_type='application/json'
+        )
 
 
 @login_required

@@ -11,8 +11,7 @@
 {% block content %}
     <div class="row no-margin">
         <div class="col-md-6" style="border-right: solid 2px grey;">
-            <div id="success" class="alert alert-success feedback" style="display: None"></div>
-            <div id="danger" class="alert alert-danger feedback" style="display: None"></div>
+            <div id="save_feedback"></div>
             <div class="card">
                 <div class="card-header">
                     <h1>Editing {{ filename }}</h1>
@@ -43,7 +42,7 @@
             </div>
             <script src="{% static 'js/ace/ace.js' %}"></script>
             <script>
-                window.onbeforeunload = function () {return confirm();}
+                
                 var editorPL = ace.edit('editorPL');
                     editorPL.session.setMode("ace/mode/python");
                     editorPL.setTheme("{{ request.user.profile.editor_theme.template }}");
@@ -51,6 +50,7 @@
 
                 var inputPL = $('input[name="editor_input"]');
                     editorPL.getSession().on("change", function () {
+                    window.onbeforeunload = function () {return confirm();}
                     inputPL.val(editorPL.getSession().getValue());
                 });
 
@@ -78,7 +78,7 @@
                             contentType: 'application/json;charset=UTF-8',
                             success: function(returned_status) {
                                 status = returned_status;
-                                onReturn2(status.feedback_type, status.feedback);
+                                onReturn2(status.feedback);
                             }
                         });
                     });
@@ -98,29 +98,14 @@
                             contentType: 'application/json;charset=UTF-8',
                             success: function(returned_status) {
                                 $('#preview').html(returned_status.preview);
-                                
                             }
                         });
                     });
                 });
 
-                function onReturn2(feedback_type, feedback) {
-                    $( "#success" ).hide();
-                    $( "#success").css('animation', 'fadeOut 1s forwards');
-                    $( "#danger" ).hide();
-                    $( "#danger").css('animation', 'fadeOut 1s forwards');
-                    if (feedback_type == "success") {
-                        $( "#success" ).html(feedback);
-                        MathJax.Hub.Queue(["Typeset",MathJax.Hub,success]);
-                        $( "#success" ).toggle();
-                        $( "#success").css('animation', 'growIn 1s forwards');
-                    }
-                    else {
-                        $( "#danger" ).html(feedback);
-                        MathJax.Hub.Queue(["Typeset",MathJax.Hub,danger]);
-                        $( "#danger" ).toggle();
-                        $( "#danger").css('animation', 'growIn 1s forwards');
-                    }
+
+                function onReturn2(feedback) {
+                    $( "#save_feedback" ).html(feedback);
                 }
             </script>
             <div id="preview" class="col-md-6">{{ preview|safe }}</div>

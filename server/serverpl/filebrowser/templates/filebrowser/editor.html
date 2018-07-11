@@ -13,8 +13,7 @@
         <div class="col-md-1"></div>
         <div class="col-md-10">
             {% block feedback %}
-            <div id="success" class="alert alert-success feedback" style="display: None"></div>
-            <div id="danger" class="alert alert-danger feedback" style="display: None"></div>
+            <div id="save_feedback"></div>
             {% endblock %}
             <div class="card">
                 <div class="card-header">
@@ -41,7 +40,6 @@
             </div>
             <script src="{% static 'js/ace/ace.js' %}"></script>
             <script>
-                window.onbeforeunload = function () {return confirm();}
                 var editorPL = ace.edit('editorPL');
                     editorPL.session.setMode("ace/mode/python");
                     editorPL.setTheme("{{ request.user.profile.editor_theme.template }}");
@@ -49,13 +47,13 @@
 
                 var inputPL = $('input[name="editor_input"]');
                     editorPL.getSession().on("change", function () {
+                    window.onbeforeunload = function () {return confirm();}
                     inputPL.val(editorPL.getSession().getValue());
                 });
                 $( document ).ready(function() {
                     $( "#quit_button" ).click(function() {
                         window.onbeforeunload = function () {}
                     });
-
 
                     $("#save_button").click(function () {
                         var input = $("#editor_input").val();
@@ -68,28 +66,13 @@
                             contentType: 'application/json;charset=UTF-8',
                             success: function (returned_status) {
                                 status = returned_status;
-                                onReturn2(status.feedback_type, status.feedback);
+                                onReturn2(status.feedback);
                             }
                         });
                     });
                 });
-                function onReturn2(feedback_type, feedback) {
-                    $( "#success" ).hide();
-                    $( "#success").css('animation', 'fadeOut 1s forwards');
-                    $( "#danger" ).hide();
-                    $( "#danger").css('animation', 'fadeOut 1s forwards');
-
-                    if (feedback_type == "success") {
-                        $( "#success" ).html(feedback);
-                        $( "#success" ).toggle();
-                        $( "#success").css('animation', 'growIn 1s forwards');
-
-                    }
-                    else {
-                        $( "#danger" ).html(feedback);
-                        $( "#danger" ).toggle();
-                        $( "#danger").css('animation', 'growIn 1s forwards');
-                    }
+                function onReturn2(feedback) {
+                    $( "#save_feedback" ).html(feedback);
                 }
             </script>
             <div class="col-md-1"></div>
