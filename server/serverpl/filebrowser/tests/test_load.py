@@ -61,7 +61,7 @@ class LoadTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
             m = list(response.context['messages'])
             if m:
-                self.assertEqual(len(m), 1)
+                self.assertTrue(len(m) >= 1)
                 self.assertEqual(m[0].level, messages.SUCCESS)
         except AssertionError:
             m = list(response.context['messages'])
@@ -86,7 +86,7 @@ class LoadTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
             m = list(response.context['messages'])
             if m:
-                self.assertEqual(len(m), 1)
+                self.assertTrue(len(m) >= 1)
                 self.assertEqual(m[0].level, messages.ERROR)
         except AssertionError:
             m = list(response.context['messages'])
