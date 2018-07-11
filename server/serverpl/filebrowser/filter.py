@@ -32,8 +32,10 @@ from filebrowser.models import Directory
 is_directory = isdir
 is_file = isfile
 
+
 def is_not_directory(path):
     return not is_directory(path)
+
 
 def in_repository(path):
     return gitcmd.in_repository(path, False)
@@ -95,7 +97,7 @@ def is_application(path):
 def is_pl(path): 
     parsers = get_parsers()
     ext = splitext(path)[1]
-    return ext in parsers and parsers[ext]['type'] == 'pl'
+    return is_not_directory(path) and ext in parsers and parsers[ext]['type'] == 'pl'
 
 
 def is_not_pl(path): 
@@ -105,7 +107,7 @@ def is_not_pl(path):
 def is_pltp(path): 
     parsers = get_parsers()
     ext = splitext(path)[1]
-    return ext in parsers and parsers[ext]['type'] == 'pltp'
+    return is_not_directory(path) and ext in parsers and parsers[ext]['type'] == 'pltp'
 
 
 def is_archive(path):

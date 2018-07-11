@@ -140,6 +140,10 @@ def is_owner(directory, user):
 @register.filter
 def icon(path):    
     ext = splitext(path)[1]
+    
+    if is_directory(path):
+        return "fas fa-folder"
+    
     if ext == ".pdf":
         return "fas fa-file-pdf"
     if ext in EXCEL_EXT:
@@ -153,8 +157,6 @@ def icon(path):
     if ext in CODE_EXT:
         return "fas fa-file-code"
     
-    if is_directory(path):
-        return "fas fa-folder"
     if is_text(path):
         return "fas fa-file-alt"
     if is_audio(path):

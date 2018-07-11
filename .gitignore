@@ -1,5 +1,7 @@
 DEADJOE
-home/
+home/*
+!home/lib
+tmp
 .idea/*
 __pycache__/
 htmlcov/
