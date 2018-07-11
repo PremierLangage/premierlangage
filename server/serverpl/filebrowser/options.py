@@ -103,7 +103,7 @@ def display_option(request, filebrowser, target):
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
 
-    return redirect_fb(filebrowser.relative)
+    return redirect_fb(filebrowser.relative)  # pragma: no cover 
 
 
 def rename_option(request, filebrowser, target):
@@ -190,7 +190,7 @@ def add_option(request, filebrowser, target):
     
     if not ret:
         messages.success(request, "Entry successfully added to the index.")
-    else:
+    else:  # pragma: no cover 
         messages.error(request, "Nothing to add." if not err else htmlprint.code(err + out))
     
     return redirect_fb(filebrowser.relative)
@@ -211,7 +211,7 @@ def reset_option(request, filebrowser, target):
     
     if not ret:
         messages.success(request, htmlprint.code(out + err))
-    else:
+    else:  # pragma: no cover 
         messages.error(request, htmlprint.code(err + out))
     
     return redirect_fb(filebrowser.relative)
@@ -231,7 +231,7 @@ def commit_option(request, filebrowser, target):
 
     if not ret:
         messages.success(request, htmlprint.code(out + err))
-    else:
+    else:  # pragma: no cover 
         messages.error(request, htmlprint.code(err + out))
 
     return redirect_fb(filebrowser.relative)
@@ -252,7 +252,7 @@ def change_branch_option(request, filebrowser, target):
     
     if not ret:
         messages.success(request, htmlprint.code(out + err))
-    else:
+    else:  # pragma: no cover 
         messages.error(request, htmlprint.code(err + out))
 
     return redirect_fb(filebrowser.relative)
@@ -268,7 +268,7 @@ def checkout_option(request, filebrowser, target):
     
     if not ret:
         messages.success(request, "Entry successfully checked out.")
-    else:
+    else:  # pragma: no cover 
         messages.error(request, "Nothing to checked out." if not err else htmlprint.code(err + out))
 
     return redirect_fb(filebrowser.relative)
@@ -284,7 +284,7 @@ def status_option(request, filebrowser, target):
     
     if not ret:
         messages.success(request, htmlprint.code(out + err))
-    else:
+    else: # pragma: no cover 
         messages.error(request, htmlprint.code(err + out))
 
     return redirect_fb(filebrowser.relative)
@@ -300,7 +300,7 @@ def branch_option(request, filebrowser, target):
     
     if not ret:
         messages.success(request, htmlprint.code(out + err))
-    else:
+    else: # pragma: no cover 
         messages.error(request, htmlprint.code(err + out))
 
     return redirect_fb(filebrowser.relative)
@@ -411,7 +411,7 @@ def download_option(request, filebrowser, target):
         if isdir(path):
             os.remove(npath)
     
-    return redirect_fb(filebrowser.relative)
+    return redirect_fb(filebrowser.relative)  # pragma: no cover 
 
 
 
@@ -459,12 +459,12 @@ def load_pltp_option(request, filebrowser, target):
         rel_path = join(*(filebrowser.relative.split('/')[1:] + [target]))
         pltp, warnings = load_file(filebrowser.directory, rel_path, True)
 
-        if not pltp and not warnings:
+        if not pltp and not warnings: # pragma: no cover 
             messages.info(request, "This PLTP is already loaded")
-        elif not pltp:
+        elif not pltp:  # pragma: no cover 
             messages.error(request, "Failed to load '"+target+"': \n"+warnings)
         else:
-            if warnings:
+            if warnings:  # pragma: no cover 
                 for warning in warnings:
                     messages.warning(request, warning)
             url_lti = request.scheme + "://" + request.get_host()+"/playexo/activity/lti/"+pltp.name+"/"+pltp.sha1+"/"
@@ -576,7 +576,7 @@ def edit_option(request, filebrowser, target):
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
     
-    return redirect_fb(filebrowser.relative)
+    return redirect_fb(filebrowser.relative)  # pragma: no cover 
 
 
 
@@ -595,7 +595,7 @@ def edit_pl_option(request, filebrowser, target):
         if not pl:
             preview = '<div class="alert alert-danger" role="alert"> Failed to load \''+target+"': \n"+warnings+"</div>"
         else:
-            if warnings:
+            if warnings:  # pragma: no cover 
                 [messages.warning(request, warning) for warning in warnings]
             
             try:
@@ -603,7 +603,7 @@ def edit_pl_option(request, filebrowser, target):
                 request.session['exercise'] = dict(exercise.dic)
                 
                 preview = exercise.render(request)
-            except Exception as e:
+            except Exception as e:  # pragma: no cover 
                 preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
                     + basename(rel_path) + "': \n\n" \
                     + htmlprint.code(str(e)) + "</div>"
@@ -621,7 +621,7 @@ def edit_pl_option(request, filebrowser, target):
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
     
-    return redirect_fb(filebrowser.relative)
+    return redirect_fb(filebrowser.relative)  # pragma: no cover 
 
 
 
@@ -651,7 +651,7 @@ def test_pl_option(request, filebrowser, target):
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
     
-    return redirect_fb(filebrowser.relative)
+    return redirect_fb(filebrowser.relative)  # pragma: no cover 
 
 
 
@@ -680,7 +680,7 @@ def rights_option(request, filebrowser, target):
         if settings.FILEBROWSER_ROOT in msg:
             msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
         messages.error(request, msg)
-    return redirect_fb(filebrowser.relative)
+    return redirect_fb(filebrowser.relative)  # pragma: no cover 
 
 
 
