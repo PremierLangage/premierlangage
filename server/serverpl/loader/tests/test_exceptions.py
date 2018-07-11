@@ -43,6 +43,7 @@ class ExceptionsTestCase(TestCase):
         self.assertEqual(classe2.columno, ":4")
         self.assertEqual(classe2.message, "Syntax error") 
   
+  
     def test_syntax_error_pl_str(self):
         path = 'first1/second1/'
         line = '3'
@@ -55,6 +56,7 @@ class ExceptionsTestCase(TestCase):
         
         
         self.assertEqual(str(classe),str_message)
+        
         
     def test_semantic_error_init(self):
         path = 'first1/second1/'
@@ -92,6 +94,7 @@ class ExceptionsTestCase(TestCase):
         
         self.assertEqual(str(classe),str_message)
 
+
     def test_directory_not_found_init(self):
         path = 'first1/second1/'
         line = 32
@@ -115,6 +118,7 @@ class ExceptionsTestCase(TestCase):
         self.assertEqual(classe2.name, "dir1")
         self.assertEqual(classe2.message, "Directory not found") 
   
+  
     def test_directory_not_found_str(self):
         path = 'first1/second1/'
         line = '3'
@@ -127,6 +131,7 @@ class ExceptionsTestCase(TestCase):
         
         
         self.assertEqual(str(classe),str_message)
+
 
     def test_file_not_found_init(self):
         path = 'first1/second1/'
@@ -151,6 +156,7 @@ class ExceptionsTestCase(TestCase):
         self.assertEqual(classe2.path_not_found, 'dir1')
         self.assertEqual(classe2.message, "File not found") 
   
+  
     def test_file_not_found_str(self):
         path = 'first1/second1/'
         line = '3'
@@ -161,7 +167,8 @@ class ExceptionsTestCase(TestCase):
         
         classe = FileNotFound(path, line, path_not_found, lineno, message)
         
-        self.assertEqual(str(classe),str_message)
+        self.assertEqual(str(classe), str_message)
+
 
     def test_unknown_extension_str(self):
         path = 'first1/second1/'
@@ -171,7 +178,7 @@ class ExceptionsTestCase(TestCase):
 
         classe = UnknownExtension(path, name, message)
         
-        self.assertEqual(str(classe),str_message)
+        self.assertEqual(str(classe), str_message)
         
 
     def test_unknown_type_init(self):

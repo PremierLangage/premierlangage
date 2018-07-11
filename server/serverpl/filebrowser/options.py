@@ -225,7 +225,7 @@ def commit_option(request, filebrowser, target):
     
     commit = request.POST.get('commit')
     if not commit:
-        HttpResponseBadRequest("Missing 'commit' parameter")
+        return HttpResponseBadRequest("Missing 'commit' parameter")
     
     ret, out, err = gitcmd.commit(normpath(join(filebrowser.full_path(), target)), commit)
 
@@ -246,7 +246,7 @@ def change_branch_option(request, filebrowser, target):
     branch = request.POST.get('name')
     new = request.POST.get('new')
     if not branch:
-        HttpResponseBadRequest("Missing 'branch' parameter")
+        return HttpResponseBadRequest("Missing 'branch' parameter")
     
     ret, out, err = gitcmd.checkout(normpath(join(filebrowser.full_path(), target)), branch, new)
     
@@ -317,7 +317,7 @@ def clone_option(request, filebrowser, target):
     url = request.POST.get('url')
     destination = request.POST.get('destination')
     if not url or not destination:
-        HttpResponseBadRequest("Missing 'url' or 'destination' parameter")
+       return HttpResponseBadRequest("Missing 'url' or 'destination' parameter")
     
     ret, out, err = gitcmd.clone(normpath(join(filebrowser.full_path(), target)),
                                  url, destination, username, password)
@@ -340,7 +340,7 @@ def pull_option(request, filebrowser, target):
     password = request.POST.get('password')
     url = request.POST.get('url')
     if not url:
-        HttpResponseBadRequest("Missing 'url' parameter")
+       return HttpResponseBadRequest("Missing 'url' parameter")
     
     ret, out, err = gitcmd.pull(normpath(join(filebrowser.full_path(), target)),
                                  url, username, password)
@@ -363,7 +363,7 @@ def push_option(request, filebrowser, target):
     password = request.POST.get('password')
     url = request.POST.get('url')
     if not url:
-        HttpResponseBadRequest("Missing 'url' parameter")
+        return HttpResponseBadRequest("Missing 'url' parameter")
     
     ret, out, err = gitcmd.push(normpath(join(filebrowser.full_path(), target)),
                                  url, username, password)
