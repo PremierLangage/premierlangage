@@ -491,6 +491,28 @@ class GitTestCase(TestCase):
             raise
 
 
+    def test_pull_not_url(self):
+        try:
+            response = self.c.post(
+            '/filebrowser/home/TPE/opt/',
+            {
+                'username':'user3',
+                'password':'12345',
+                'option': 'directory-git-pull',
+                'target':'.',
+            },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 400)
+            self.assertContains(response, "Missing 'url' parameter", status_code=400)
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+            
+            
     def test_clone_not_destination(self):
         try:
             response = self.c.post(
