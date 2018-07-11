@@ -207,7 +207,7 @@ def reset_option(request, filebrowser, target):
     
     ret, out, err = gitcmd.reset(normpath(join(filebrowser.full_path(), target)),
                                  mode if mode else 'mixed',
-                                 commit if commit else 'HEAd')
+                                 commit if commit else 'HEAD')
     
     if not ret:
         messages.success(request, htmlprint.code(out + err))

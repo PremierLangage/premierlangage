@@ -61,17 +61,17 @@ class GitTestCase(TestCase):
         command('git init ' + self.folder2.root)
         cwd = os.getcwd()
         os.chdir(self.folder2.root)
-        command('git remote add host ' + self.host.root)
+        command('git remote add origin ' + self.host.root)
         command('git add .')
         command('git commit -m "Initial commit"')
-        command('git push --set-upstream host master')
+        command('git push --set-upstream origin master')
         os.chdir(self.folder.root)
-        command('git remote add host ' + self.host.root)
+        command('git remote add origin ' + self.host.root)
         command('touch to_be_pull')
         command('git add .')
         command('git commit -m "Initial commit"')
-        command('git pull host master --allow-unrelated-histories')
-        command('git push --set-upstream host master')
+        command('git pull origin master --allow-unrelated-histories')
+        command('git push --set-upstream origin master')
         os.chdir(cwd)
 
 
@@ -93,8 +93,20 @@ class GitTestCase(TestCase):
             follow=True
         )
         self.assertEqual(response.status_code, 405)
+    
+    
+    def test_add_method_not_allowed(self):
+        response = self.c.post(
+            '/filebrowser/home/TPE/opt/',
+            {
+                'option': 'directory-git-add',
+                'target':'.',
+                },
+            follow=True
+        )
+        self.assertEqual(response.status_code, 405)
 
-
+    
     def test_checkout_method_not_allowed(self):
         response = self.c.post(
             '/filebrowser/home/TPE/opt/',
@@ -104,6 +116,42 @@ class GitTestCase(TestCase):
                 },
             follow=True
         )
+        self.assertEqual(response.status_code, 405)
+
+
+    def test_reset_method_not_allowed(self):
+        response = self.c.get(
+            '/filebrowser/home/TPE/opt/?option=entry-git-reset&target=function001.pl',
+            follow=True
+            )
+        self.assertEqual(response.status_code, 405)
+
+
+    def test_chang_branch_method_not_allowed(self):
+        response = self.c.get(
+            '/filebrowser/home/TPE/opt/?option=directory-git-chbranch&target=function001.pl',
+            follow=True
+            )
+        self.assertEqual(response.status_code, 405)
+
+
+    def test_branch_method_not_allowed(self):
+        response = self.c.post(
+            '/filebrowser/home/TPE/opt/',
+            {
+                'option': 'directory-git-branch',
+                'target':'.',
+                },
+            follow=True
+        )
+        self.assertEqual(response.status_code, 405)
+
+
+    def test_clone_method_not_allowed(self):
+        response = self.c.get(
+            '/filebrowser/home/TPE/opt/?option=directory-options-clone&target=function001.pl',
+            follow=True
+            )
         self.assertEqual(response.status_code, 405)
 
 
@@ -199,54 +247,29 @@ class GitTestCase(TestCase):
                 [print(i.level,':',i.message) for i in m]
             raise
     
-    #~ def test_push(self):
-        #~ open(join(FAKE_FB_ROOT, '100/TPE/function001.pl'), 'w+').close()
-        #~ try:
-            #~ response = self.c.post(
-            #~ '/filebrowser/home/TPE/opt/',
-            #~ {
-                #~ 'username':'user3',
-                #~ 'password':'12345',
-                #~ 'url':'self.host.root',   
-                #~ 'option': 'directory-git-push',
-                #~ 'target':'.',
-            #~ },
-                #~ follow=True
-            #~ )
-            #~ self.assertEqual(response.status_code, 200)
-            #~ m = list(response.context['messages'])
-            #~ self.assertEqual(messages.SUCCESS, m[0].level)
-        #~ except AssertionError:
-            #~ m = list(response.context['messages'])
-            #~ if m:
-                #~ print("\nFound messages:")
-                #~ [print(i.level,':',i.message) for i in m]
-            #~ raise
-    
-    
-    #~ def test_push_password(self):
-        #~ open(join(FAKE_FB_ROOT, '100/TPE/function001.pl'), 'w+').close()
-        #~ try:
-            #~ response = self.c.post(
-            #~ '/filebrowser/home/TPE/opt/',
-            #~ {
-                #~ 'username':'test',
-                #~ 'password':'password',
-                #~ 'url':'',   
-                #~ 'option': 'directory-git-push',
-                #~ 'target':'function001.pl',
-            #~ },
-                #~ follow=True
-            #~ )
-            #~ self.assertEqual(response.status_code, 200)
-            #~ m = list(response.context['messages'])
-            #~ self.assertEqual(messages.SUCCESS, m[0].level)
-        #~ except AssertionError:
-            #~ m = list(response.context['messages'])
-            #~ if m:
-                #~ print("\nFound messages:")
-                #~ [print(i.level,':',i.message) for i in m]
-            #~ raise
+    def test_push(self):
+        open(join(FAKE_FB_ROOT, '100/TPE/function001.pl'), 'w+').close()
+        try:
+            response = self.c.post(
+            '/filebrowser/home/TPE/opt/',
+            {
+                'username': 'user3',
+                'password': '12345',
+                'url': "file://" + self.host.root,   
+                'option': 'directory-git-push',
+                'target': '.',
+            },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            m = list(response.context['messages'])
+            self.assertEqual(messages.SUCCESS, m[0].level)
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
     
     
     def test_push_not_url(self):
@@ -337,6 +360,113 @@ class GitTestCase(TestCase):
                 [print(i.level,':',i.message) for i in m]
             raise
     
+    
+    def test_branch(self):
+        with open(join(FAKE_FB_ROOT, '100/TPE/function001.pl'), 'w+') as f:
+            print("abcdefghijklmnopqrstuvwxyz", file=f)
+        
+        try:
+            response = self.c.get(
+            '/filebrowser/home/opt/?option=directory-git-branch&target=.',
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            m = list(response.context['messages'])
+            self.assertEqual(messages.SUCCESS, m[0].level)
+            
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+    
+    
+    def test_add(self):
+        with open(join(FAKE_FB_ROOT, '100/TPE/function001.pl'), 'w+') as f:
+            print("abcdefghijklmnopqrstuvwxyz", file=f)
+        
+        try:
+            response = self.c.get(
+            '/filebrowser/home/TPE/opt/?option=entry-git-add&target=function001.pl',
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertContains(response, "Entry successfully added to the index.")
+            m = list(response.context['messages'])
+            self.assertEqual(messages.SUCCESS, m[0].level)
+            
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+    
+    def test_change_branch(self):
+        with open(join(FAKE_FB_ROOT, '100/TPE/function001.pl'), 'w+') as f:
+            print("abcdefghijklmnopqrstuvwxyz", file=f)
+        
+        try:
+            response = self.c.post(
+            '/filebrowser/home/TPE/opt/',
+            {
+                'name': 'test',
+                'new':True,
+                'option': 'directory-git-chbranch',
+                'target':'function001.pl',
+            },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            m = list(response.context['messages'])
+            self.assertEqual(messages.SUCCESS, m[0].level)
+            
+            response = self.c.post(
+            '/filebrowser/home/opt/',
+            {
+                'name': "master",
+                'option': 'directory-git-chbranch',
+                'target':'.',
+            },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            m = list(response.context['messages'])
+            self.assertEqual(messages.SUCCESS, m[0].level)
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+            
+            
+    def test_change_branch_not_branch(self):
+        with open(join(FAKE_FB_ROOT, '100/TPE/function001.pl'), 'w+') as f:
+            print("abcdefghijklmnopqrstuvwxyz", file=f)
+        
+        try:
+            response = self.c.post(
+            '/filebrowser/home/TPE/opt/',
+            {
+                'new':'password',
+                'option': 'directory-git-chbranch',
+                'target':'function001.pl',
+            },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 400)
+            self.assertContains(response, "Missing 'branch' parameter", status_code=400)
+            
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+            
+                    
     #~ def test_pull(self):
         #~ try:
             #~ response = self.c.post(
@@ -344,7 +474,7 @@ class GitTestCase(TestCase):
             #~ {
                 #~ 'username':'user3',
                 #~ 'password':'12345',
-                #~ 'url':'self.host.root',   
+                #~ 'url': "file://" + self.host.root,  
                 #~ 'option': 'directory-git-pull',
                 #~ 'target':'.',
             #~ },
@@ -359,3 +489,93 @@ class GitTestCase(TestCase):
                 #~ print("\nFound messages:")
                 #~ [print(i.level,':',i.message) for i in m]
             #~ raise
+
+
+    def test_clone_not_destination(self):
+        try:
+            response = self.c.post(
+            '/filebrowser/home/TPE/opt/',
+            {
+                'username':'user3',
+                'password':'12345',
+                'url': "file://" + self.host.root,  
+                'option': 'directory-options-clone',
+                'target':'.',
+            },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 400)
+            self.assertContains(response, "Missing 'url' or 'destination' parameter", status_code=400)
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+            
+    #~ def test_clone(self):
+        #~ try:
+            #~ response = self.c.post(
+            #~ '/filebrowser/home/TPE/opt/',
+            #~ {
+                #~ 'username':'user3',
+                #~ 'password':'12345',
+                #~ 'url': "file://" + self.host.root, 
+                #~ 'destination':'essai', 
+                #~ 'option': 'directory-options-clone',
+                #~ 'target':'.',
+            #~ },
+                #~ follow=True
+            #~ )
+            #~ self.assertEqual(response.status_code, 200)
+            #~ m = list(response.context['messages'])
+            #~ self.assertEqual(messages.SUCCESS, m[0].level)
+        #~ except AssertionError:
+            #~ m = list(response.context['messages'])
+            #~ if m:
+                #~ print("\nFound messages:")
+                #~ [print(i.level,':',i.message) for i in m]
+            #~ raise
+
+
+    def test_reset(self):
+        try:
+            response = self.c.post(
+            '/filebrowser/home/TPE/opt/',
+            {
+                'option': 'entry-git-reset',
+                'target':'function001.pl',
+            },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            m = list(response.context['messages'])
+            self.assertEqual(messages.SUCCESS, m[0].level)
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+
+
+    def test_reset_mode(self):
+        try:
+            response = self.c.post(
+            '/filebrowser/home/TPE/opt/',
+            {
+                'mode': 'soft',
+                'option': 'entry-git-reset',
+                'target':'function001.pl',
+            },
+                follow=True
+            )
+            self.assertEqual(response.status_code, 200)
+            m = list(response.context['messages'])
+            self.assertEqual(messages.SUCCESS, m[0].level)
+        except AssertionError:
+            m = list(response.context['messages'])
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
