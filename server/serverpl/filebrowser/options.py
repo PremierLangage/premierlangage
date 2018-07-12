@@ -342,12 +342,9 @@ def pull_option(request, filebrowser, target):
     
     username = request.POST.get('username')
     password = request.POST.get('password')
-    url = request.POST.get('url')
-    if not url:
-       return HttpResponseBadRequest("Missing 'url' parameter")
     
-    ret, out, err = gitcmd.pull(normpath(join(filebrowser.full_path(), target)),
-                                 url, username, password)
+    ret, out, err = gitcmd.pull(normpath(join(filebrowser.full_path(), target))
+                                ,username=username, password=password)
     
     if not ret:
         messages.success(request, htmlprint.code(out + err))
@@ -365,12 +362,9 @@ def push_option(request, filebrowser, target):
     
     username = request.POST.get('username')
     password = request.POST.get('password')
-    url = request.POST.get('url')
-    if not url:
-        return HttpResponseBadRequest("Missing 'url' parameter")
     
     ret, out, err = gitcmd.push(normpath(join(filebrowser.full_path(), target)),
-                                 url, username, password)
+                                  username=username, password=password)
     
     if not ret:
         messages.success(request, htmlprint.code(out + err))

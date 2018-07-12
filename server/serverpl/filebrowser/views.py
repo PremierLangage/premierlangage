@@ -54,7 +54,7 @@ def apply_option(request, path="home"):
     if request.method == 'GET':
         option = request.GET.get('option')
         target = request.GET.get('target')
-    if request.method == 'POST':
+    elif request.method == 'POST':
         option = request.POST.get('option')
         target = request.POST.get('target')
     
