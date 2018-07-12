@@ -52,13 +52,13 @@ from loader.loader import load_file
 from playexo.exercise import PLInstance
 
 
+BAD_CHAR = ['/', ' ',  ';', '#', '+', '&']
 
 def mkdir_option(request, filebrowser, target):
     """Create a new folder named target at filebrowser.full_path()"""
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
     
-    bad_char = ['/', ' ']
     name = request.POST.get('name')
     
     if not name:
@@ -67,9 +67,9 @@ def mkdir_option(request, filebrowser, target):
     try:
         path = normpath(join(filebrowser.full_path(), name))
         
-        if any(c in name for c in bad_char):
+        if any(c in name for c in BAD_CHAR):
             messages.error(request, "Can't create directory '" + name
-                                  + "': name should not contain any of " + str(bad_char) + ".")
+                                  + "': name should not contain any of " + str(BAD_CHAR) + ".")
         elif isdir(path) or isfile(path):
             messages.error(request, "Can't create directory '" + name
                                   + "': this name is already used.")
@@ -111,7 +111,6 @@ def rename_option(request, filebrowser, target):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
     
-    bad_char = ['/', ' ']
     name = request.POST.get('name')
     if not name:
         return HttpResponseBadRequest("Missing 'name' parameter.")
@@ -119,9 +118,9 @@ def rename_option(request, filebrowser, target):
     try:
         path = normpath(join(filebrowser.full_path(), target))
         target_path = join(filebrowser.full_path(), name)
-        if any(c in name for c in bad_char):
+        if any(c in name for c in BAD_CHAR):
             messages.error(request, "Can't rename '" + target + "' to '" + name
-                                  + "': name should not contain any of " + str(bad_char) + ".")
+                                  + "': name should not contain any of " + str(BAD_CHAR) + ".")
         elif isfile(target_path) or isdir(target_path):
             messages.error(request, "Can't rename '" + target + "' to '" + name
                                   + "': this name is already used.")
@@ -424,7 +423,6 @@ def new_file_option(request, filebrowser, target):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
     
-    bad_char =['/', ' ']
     name = request.POST.get('name')
     if not name :
         return HttpResponseBadRequest("Missing 'name' parameter")
@@ -432,9 +430,9 @@ def new_file_option(request, filebrowser, target):
     try:
         path = normpath(join(filebrowser.full_path(), name))
         
-        if any(c in name for c in bad_char): 
+        if any(c in name for c in BAD_CHAR): 
             messages.error(request, "Can't create file '" + name 
-                                  + "': name should not contain any of " + str(bad_char) + ".") 
+                                  + "': name should not contain any of " + str(BAD_CHAR) + ".") 
         
         elif isdir(path) or isfile(path): 
             messages.error(request, "Can't create file '" + name 
