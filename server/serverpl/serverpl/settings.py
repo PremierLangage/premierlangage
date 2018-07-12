@@ -26,7 +26,7 @@ SECRET_KEY = "o!m$n&s4=kcftm1de1m+7!36a=8x38w4" if not DEPLOYED else conf.SECRET
 DEBUG = not DEPLOYED
 
 # List of Allowed Hosts
-ALLOWED_HOSTS = ['127.0.0.1'] if not DEPLOYED else conf.ALLOWED_HOSTS
+ALLOWED_HOSTS = ['127.0.0.1', 'pl-test.u-pem.fr'] if not DEPLOYED else conf.ALLOWED_HOSTS
 
 
 # Used by mail_admins log handler, 
@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'sandbox',
     'documentation',
     'markdown_deux',
+    'wims',
     #~ 'qa',
     'taggit',
     'hitcount',
@@ -241,3 +242,7 @@ FILEBROWSER_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../repo/'))
 # Path to directory containing parsers
 PARSERS_ROOT = os.path.abspath(os.path.join(BASE_DIR,'loader/parsers/'))
 PARSERS_MODULE = 'loader.parsers'
+
+
+# Wims modules URL
+WIMS_MODULE_URL = "https://wims-preprod.u-pem.fr/modules/"
