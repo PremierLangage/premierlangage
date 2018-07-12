@@ -68,7 +68,11 @@ def is_image(path):
         return False
     return magic.from_file(path, mime=True).split('/')[0] == 'image'
 
-
+def is_image(path):
+    if is_directory(path):
+        return False
+    return magic.from_file(path, mime=True).split('/')[0] == 'image'
+    
 def is_text(path):
     if is_directory(path):
         return False

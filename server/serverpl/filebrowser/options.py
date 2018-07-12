@@ -316,16 +316,20 @@ def clone_option(request, filebrowser, target):
     password = request.POST.get('password')
     url = request.POST.get('url')
     destination = request.POST.get('destination')
-    if not url or not destination:
-       return HttpResponseBadRequest("Missing 'url' or 'destination' parameter")
+    if not url:
+       return HttpResponseBadRequest("Missing 'url' parameter")
     
-    ret, out, err = gitcmd.clone(normpath(join(filebrowser.full_path(), target)),
-                                 url, destination, username, password)
-    
-    if not ret:
-        messages.success(request, htmlprint.code(out + err))
+    if '@' in url:
+        messages.error(request, "SSH link is not supported, please use HTTPS")
+        
     else:
-        messages.error(request, htmlprint.code(err + out))
+        ret, out, err = gitcmd.clone(normpath(join(filebrowser.full_path(), target)),
+                                     url, destination, username, password)
+        
+        if not ret:
+            messages.success(request, htmlprint.code(out + err))
+        else:
+            messages.error(request, htmlprint.code(err + out))
 
     return redirect_fb(filebrowser.relative)
 
