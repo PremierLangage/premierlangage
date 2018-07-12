@@ -42,3 +42,44 @@ C'est l'exercice minimal celui qui à un titre, une champs de saisie pour l'él�
   print(json.dumps({"success":True,"feedback":" Bravo mon coco !!!"}))
   ==
 ```
+
+
+Testez en créant un nouveau fichier sur pl, Editez le et faites des tests avec la preview.
+
+Vous obtenez toujours un Bravo mon coco !!! sur fond vert.
+
+## Lecture de la réponse de l'étudiant 
+
+```
+  title= Tester l'existance
+  # nous avons ajouté la ligne suivante pour rendre l'exo plus agréable à regarder.
+  texth==
+  <h3 style="color:RED" >
+  Si vous validez sans réponse il n'y aura pas de fichier réponse 
+  dans le répertoire de la sandbox 
+  !!!</h3> 
+
+  Ainsi l'énoncé de cette exercice est : répondez quelque chose !!!
+  ==
+
+  form==
+  <span class="input-group-addon">Réponse</span>
+  <input id="form_txt_answer" type="text" class="form-control" placeholder="NON" required>
+  ==
+
+
+  grader==
+  import json
+  import os
+  feedback=""
+  if os.path.isfile('./student'):
+      feedback += "Bravo Student exist et contient : \n"
+      with open("./student","r") as f:
+          feedback += f.read()
+      print(json.dumps({"success":True,"feedback": feedback}))
+  else:
+      feedback += "Student n'existe pas \n"
+      print(json.dumps({"success":False,"feedback": feedback}))
+  ==
+
+```
