@@ -13,7 +13,8 @@ pages:
     - 'Ecrire un parseur': 'parser.md'
     - 'Exceptions prédéfinies': 'parser_exception.md'
     - 'Exemple': 'parser_exemple.md'
-
+- grader:
+    - 'Ecrire un grader': 'ecrire_un_grader.md'
 
 theme:
     name: null
