@@ -50,6 +50,10 @@ def basename_filter(path):
 @register.filter(name='dirname')
 def dirname_filter(path):
     return dirname(path)
+    
+@register.filter(name='string')
+def string(var):
+    return str(var)
 
 
 @register.filter(name='opt_filter')

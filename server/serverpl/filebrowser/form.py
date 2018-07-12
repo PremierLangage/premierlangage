@@ -34,6 +34,13 @@ class LoginForm(forms.Form):
     password = forms.CharField(max_length=4096, required=False, help_text=" * Optionnal", widget=forms.PasswordInput)
 
 
+class CloneForm(forms.Form):
+    url = forms.CharField(max_length=4096)
+    destination = forms.CharField(max_length=4096, required=False, help_text=" * Optionnal, default to repository's name")
+    username = forms.CharField(max_length=4096, required=False, help_text=" * Optionnal")
+    password = forms.CharField(max_length=4096, required=False, help_text=" * Optionnal", widget=forms.PasswordInput)
+
+
 class UploadForm(forms.Form):
     rename = forms.CharField(max_length=1024, help_text=" * Optionnal", required=False)
     file = forms.FileField(help_text=" * Only .tar.gz, .tar.xz and .zip archive can be extracted directly on the plateform")

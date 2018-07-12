@@ -655,35 +655,6 @@ def test_pl_option(request, filebrowser, target):
 
 
 
-def rights_option(request, filebrowser, target):
-    """ Open a page allowing the user to edit the rights of his targeted Directory."""
-    if request.method != 'GET':
-        return HttpResponseNotAllowed(['GET'])
-
-    try:
-        if not filebrowser.directory:
-            d = Directory.objects.get(name=target)
-        else:
-            d = filebrowser.directory
-
-        form = RightForm()
-        form.initial['write'] = [user.id for user in d.write_auth.all()]
-        form.initial['read'] =  [user.id for user in d.read_auth.all()]
-
-        return render(request, 'filebrowser/edit_rights.html', {
-            'form': form,
-            'directory': d.name,
-        })
-
-    except Exception as e: # pragma: no cover
-        msg = "Impossible to display '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT+"/", "")
-        messages.error(request, msg)
-    return redirect_fb(filebrowser.relative)  # pragma: no cover 
-
-
-
 def upload_option(request, filebrowser, target):
     """ Allow the user to upload a file in the filebrowser """
     if request.method != 'POST':

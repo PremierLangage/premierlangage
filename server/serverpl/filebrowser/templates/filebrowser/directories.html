@@ -15,45 +15,49 @@
             <td style="width: 35%">
                 <div class="btn-group btn-block" role="group" aria-label="Entry Options">
                     {% for key,option in fb.entry_options.items %}
-                        {% if option|opt_filter:entry.root and option.size == "big" %}
-                            {% if option.authorization == 'write' and entry.name|can_write:request.user or option.authorization == 'read' and entry.name|can_read:request.user or option.authorization == 'owner' and entry.name|is_owner:request.user %}
-                                <{{ option.type }} type="button" class="btn btn-{{ option.outline }}{{ option.color }}" title="{{ option.text }}"
-                                        {% if not option.form and option.require_confirmation %}
-                                            data-toggle="modal" data-target="#confirmationModal{{forloop.parentloop.counter0}}_{{forloop.counter0}}"
-                                        {% endif %}
-                                        {% if option.form %}
-                                            data-toggle="modal" data-target="#defaultModal{{forloop.parentloop.counter0}}_{{forloop.counter0}}"
-                                        {% endif %}
-                                        {% if option.method == 'GET' %}
-                                             href="apply_option/?option_h={{key}}&name_h={{entry.name}}&relative_h={{fb.relative}}&type_h=entry"
-                                        {% endif %}
-                                        {% for elem in option.balise %} {{ elem }} {% endfor %}>
-                                    <i class="{{ option.fa_icon }} fa-fw"></i> {{ option.text }}
-                                </{{ option.type }}>
-                                {% if not option.form and option.require_confirmation %}{% include 'filebrowser/confirmation_modal.html' %}{% endif %}
-                                {% if option.form %}{% include 'filebrowser/default_modal.html' %}{% endif %}
+                        {% if option.right == 'R' or fb.real_home == request.user.id %}
+                            {% if option|opt_filter:entry.root and option.size == "big" %}
+                                {% if option.authorization == 'write' and entry.name|can_write:request.user or option.authorization == 'read' and entry.name|can_read:request.user or option.authorization == 'owner' and entry.name|is_owner:request.user %}
+                                    <{{ option.type }} type="button" class="btn btn-{{ option.outline }}{{ option.color }}" title="{{ option.text }}"
+                                            {% if not option.form and option.require_confirmation %}
+                                                data-toggle="modal" data-target="#confirmationModal{{forloop.parentloop.counter0}}_{{forloop.counter0}}"
+                                            {% endif %}
+                                            {% if option.form %}
+                                                data-toggle="modal" data-target="#defaultModal{{forloop.parentloop.counter0}}_{{forloop.counter0}}"
+                                            {% endif %}
+                                            {% if option.method == 'GET' %}
+                                                 href="apply_option/?option_h={{key}}&name_h={{entry.name}}&relative_h={{fb.relative}}&type_h=entry"
+                                            {% endif %}
+                                            {% for elem in option.balise %} {{ elem }} {% endfor %}>
+                                        <i class="{{ option.fa_icon }} fa-fw"></i> {{ option.text }}
+                                    </{{ option.type }}>
+                                    {% if not option.form and option.require_confirmation %}{% include 'filebrowser/confirmation_modal.html' %}{% endif %}
+                                    {% if option.form %}{% include 'filebrowser/default_modal.html' %}{% endif %}
+                                {% endif %}
                             {% endif %}
                         {% endif %}
                     {% endfor %}
                     
                     {% for key,option in fb.entry_options.items %}
-                        {% if option|opt_filter:entry.root and option.size == "small" %}
-                            {% if option.authorization == 'write' and entry.name|can_write:request.user or option.authorization == 'read' and entry.name|can_read:request.user or option.authorization == 'owner' and entry.name|is_owner:request.user %}
-                                <{{ option.type }} type="button" class="btn btn-{{ option.outline }}{{ option.color }}" title="{{ option.text }}"
-                                        {% if not option.form and option.require_confirmation %}
-                                            data-toggle="modal" data-target="#confirmationModal{{forloop.parentloop.counter0}}_{{forloop.counter0}}"
-                                        {% endif %}
-                                        {% if option.form %}
-                                            data-toggle="modal" data-target="#defaultModal{{forloop.parentloop.counter0}}_{{forloop.counter0}}"
-                                        {% endif %}
-                                        {% if option.method == 'GET' %}
-                                             href="apply_option/?option_h={{key}}&name_h={{entry.name}}&relative_h={{fb.relative}}&type_h=entry"
-                                        {% endif %}
-                                        {% for elem in option.balise %} {{ elem }} {% endfor %}>
-                                    <i class="{{ option.fa_icon }}"></i>
-                                </{{ option.type }}>
-                                {% if not option.form and option.require_confirmation %}{% include 'filebrowser/confirmation_modal.html' %}{% endif %}
-                                {% if option.form %}{% include 'filebrowser/default_modal.html' %}{% endif %}
+                        {% if option.right == 'R' or fb.real_home == request.user.id %}
+                            {% if option|opt_filter:entry.root and option.size == "small" %}
+                                {% if option.authorization == 'write' and entry.name|can_write:request.user or option.authorization == 'read' and entry.name|can_read:request.user or option.authorization == 'owner' and entry.name|is_owner:request.user %}
+                                    <{{ option.type }} type="button" class="btn btn-{{ option.outline }}{{ option.color }}" title="{{ option.text }}"
+                                            {% if not option.form and option.require_confirmation %}
+                                                data-toggle="modal" data-target="#confirmationModal{{forloop.parentloop.counter0}}_{{forloop.counter0}}"
+                                            {% endif %}
+                                            {% if option.form %}
+                                                data-toggle="modal" data-target="#defaultModal{{forloop.parentloop.counter0}}_{{forloop.counter0}}"
+                                            {% endif %}
+                                            {% if option.method == 'GET' %}
+                                                 href="apply_option/?option_h={{key}}&name_h={{entry.name}}&relative_h={{fb.relative}}&type_h=entry"
+                                            {% endif %}
+                                            {% for elem in option.balise %} {{ elem }} {% endfor %}>
+                                        <i class="{{ option.fa_icon }}"></i>
+                                    </{{ option.type }}>
+                                    {% if not option.form and option.require_confirmation %}{% include 'filebrowser/confirmation_modal.html' %}{% endif %}
+                                    {% if option.form %}{% include 'filebrowser/default_modal.html' %}{% endif %}
+                                {% endif %}
                             {% endif %}
                         {% endif %}
                     {% endfor %}

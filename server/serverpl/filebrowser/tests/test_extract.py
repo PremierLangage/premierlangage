@@ -40,7 +40,7 @@ class ExtractTestCase(TestCase):
         response = self.c.post(
                 '/filebrowser/home/opt/',
                 {
-                    'option': 'entry-options-extract',
+                    'option': 'entry-direct-extract',
                     'target':'.dirtmp.zip',
                 },
                 follow=True
@@ -68,7 +68,7 @@ class ExtractTestCase(TestCase):
 
             response = self.c.get(
                 '/filebrowser/home/extract_test/opt/',
-                {'option': 'entry-options-extract', 'target': 'application2.zip'},
+                {'option': 'entry-direct-extract', 'target': 'application2.zip'},
                 follow=True
             )
             
@@ -102,7 +102,7 @@ class ExtractTestCase(TestCase):
             
             response = self.c.get(
                 '/filebrowser/home/extract_test/opt/',
-                {'option': 'entry-options-extract', 'target': 'application.tar'},
+                {'option': 'entry-direct-extract', 'target': 'application.tar'},
                 follow=True
             )
         
@@ -141,7 +141,7 @@ class ExtractTestCase(TestCase):
             
             response = self.c.get(
                 '/filebrowser/home/extract_test/opt/',
-                {'option': 'entry-options-extract', 'target': 'application.tar.gz'},
+                {'option': 'entry-direct-extract', 'target': 'application.tar.gz'},
                 follow=True
             )
            
@@ -170,7 +170,7 @@ class ExtractTestCase(TestCase):
             
             response = self.c.get(
                 '/filebrowser/home/extract_test/opt/',
-                {'option': 'entry-options-extract', 'target': 'application.tar.xz'},
+                {'option': 'entry-direct-extract', 'target': 'application.tar.xz'},
                 follow=True
             )
            
