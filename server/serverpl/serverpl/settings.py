@@ -245,4 +245,4 @@ PARSERS_MODULE = 'loader.parsers'
 
 
 # Wims modules URL
-WIMS_MODULE_URL = "https://wims-preprod.u-pem.fr/modules/"
+WIMS_MODULE_URL = "https://wims-preprod.u-pem.fr/"
