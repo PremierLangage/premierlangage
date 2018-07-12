@@ -68,6 +68,11 @@ class Parser:
     
     def add_dic(self, dic, list_key, value, line, op):
         if len(list_key) == 1:
+            key = list_key[0]
+            if key in dic and type(dic[key]) == dict:
+                raise SemanticError(self.path_parsed_file, line, self.lineno, "Illegal syntax : Key '" + line.split(op)[0] + "' overwritten ")
+
+            # Add warning when overwritting a key
             if list_key[0] in dic:
                 key = line.split(op)
                 self.add_warning("Key '" + key[0] + "' overwritten at line "+ str(self.lineno) + "\n old value = " + str(dic[list_key[0]]) )
@@ -182,7 +187,6 @@ class Parser:
             raise FileNotFound(self.path_parsed_file, line, match.group('file'), lineno=self.lineno, message="Path from another directory must be absolute")
     
     
-    
     def one_line_match(self, match, line):
         """ Map value to key if operator is '=',
             Map json.loads(value) if operator is '%'
@@ -218,9 +222,9 @@ class Parser:
             op = match.group('operator')
             keys = key.split(".")
             
-            # Add warning when overwritting a key
-            if op != '+=' and key in self.dic:
-                self.add_warning("Key '" + key + "' overwritten at line " + str(self.lineno))
+            if '' in keys:
+                raise SemanticError(self.path_parsed_file, line, self.lineno, "Illegal syntax : Key '" + key + "'")
+
             
             self._multiline_key = key
             self._multiline_opened_lineno = self.lineno

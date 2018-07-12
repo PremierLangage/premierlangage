@@ -83,6 +83,11 @@ class Parser:
     
     def add_dic(self, dic, list_key, value, line, op):
         if len(list_key) == 1:
+            key = list_key[0]
+            if key in dic and type(dic[key]) == dict:
+                raise SemanticError(self.path_parsed_file, line, self.lineno, "Illegal syntax : Key '" + line.split(op)[0] + "' overwritten ")
+
+            # Add warning when overwritting a key
             if list_key[0] in dic:
                 key = line.split(op)
                 self.add_warning("Key '" + key[0] + "' overwritten at line "+ str(self.lineno) + "\n old value = " + str(dic[list_key[0]]) )
@@ -216,9 +221,9 @@ class Parser:
             op = match.group('operator')
             keys = key.split(".")
             
-            # Add warning when overwritting a key
-            if op != '+=' and key in self.dic:
-                self.add_warning("Key '" + key + "' overwritten at line " + str(self.lineno))
+            if '' in keys:
+                raise SemanticError(self.path_parsed_file, line, self.lineno, "Illegal syntax : Key '" + key + "'")
+
             
             self._multiline_key = key
             self._multiline_opened_lineno = self.lineno
@@ -227,7 +232,7 @@ class Parser:
             
             if op != '+=': # Allow next lines to be concatenated
                 self.add_dic(self.dic,keys,'',line,op)
-                
+        
         else:
             SyntaxErrorPL(join(self.directory.root, self.path), self.lines[self._multi_line_lineno-1], self._multi_line_lineno, message="Invalid multiline syntax ")
     
@@ -250,9 +255,6 @@ class Parser:
             self._multiline_key = None
             self._multiline_json = False
         else:
-            # Add warning when detecting '==' to prevent unintentionnal nested key
-            if '==' in line and self._multiline_key not in ['before', 'build', 'evaluator']:
-                self.add_warning("Nested '==' detected inside a multiple line value ("+self._multiline_key+") at line "+str(self.lineno)+". You can ignore this warning if this is intended.")
             self.add_dic2(self.dic, self._multiline_key.split("."), line, "+=")
     
     
