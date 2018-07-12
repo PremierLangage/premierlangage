@@ -30,7 +30,7 @@ Créez un exercice qui ne contient que les trois balises suivantes: **title**,**
   title= Je dit toujours OUI
   # nous avons ajouté la ligne suivante pour rendre l'exo plus agréable à regarder.
   texth==
-  <h3 color="RED" >QUelque soit la réponse c'est oui !!!</h3> 
+  <h3 style="color:RED" >Quelque soit la réponse c'est oui !!!</h3> 
   ==
 
   form==
@@ -55,13 +55,11 @@ Vous obtenez toujours un Bravo mon coco !!! sur fond vert.
 ```
   title= Tester l'existance
   # nous avons ajouté la ligne suivante pour rendre l'exo plus agréable à regarder.
-  texth==
-  <h3 style="color:RED" >
-  Si vous validez sans réponse il n'y aura pas de fichier réponse 
-  dans le répertoire de la sandbox 
-  !!!</h3> 
+  text==
+  **Si vous validez sans réponse il n'y aura pas de fichier réponse "student"
+  dans le répertoire de la sandbox !!!** 
 
-  Ainsi l'énoncé de cette exercice est : répondez quelque chose !!!
+  Ainsi l'énoncé de cette exercice est : ~~répondez quelque chose~~ !!!
   ==
 
   form==
