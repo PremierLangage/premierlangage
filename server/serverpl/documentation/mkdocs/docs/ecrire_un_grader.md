@@ -1,5 +1,5 @@
 
-# ecriture d'un grader 
+# Ecriture d'un grader 
 
 ## Introduction 
 Toutes les évaluation d'un exercice sont faites en utilisant un serveur "sandbox" c'est à dire un bac à sable
