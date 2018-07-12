@@ -21,11 +21,12 @@ le grader pas exigent suivant:
   ==
 ```
 
-Créez un exercice qui ne contient que les trois balises suivantes: **title**,**text**, et **grader**
+Créez un exercice qui ne contient que les trois balises suivantes: **title**,**form**, et **grader**.
+C'est l'exercice minimal celui qui à un titre, une champs de saisie pour l'élève et une évaluation de la réponse.
 
 ```
   title= Je dit toujours OUI
-
+  # nous avons ajouté la ligne suivante pour rendre l'exo plus agréable à regarder.
   texth==
   <h3 color="RED" >QUelque soit la réponse c'est oui !!!</h3> 
   ==
