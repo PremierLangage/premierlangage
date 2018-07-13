@@ -30,4 +30,4 @@ class ProfileForm(forms.Form):
         label='Thème de l\'éditeur ', 
         help_text='<a target="_blank" href="/profile/editor_preview/">prévisualisation</a>'
     )
-    
+
