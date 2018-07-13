@@ -31,3 +31,5 @@ class ProfileForm(forms.Form):
         help_text='<a target="_blank" href="/profile/editor_preview/">prévisualisation</a>'
     )
     
+
+    confirm = forms.BooleanField(required=False, label="Confirmation exercice :", help_text="Confirmer avant de quitter un exercice")

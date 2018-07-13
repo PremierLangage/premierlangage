@@ -29,6 +29,7 @@ class Profile(models.Model):
     role = EnumIntegerField(Role, default=Role.LEARNER)
     color_blindness = EnumIntegerField(ColorBlindness, default=ColorBlindness.NONE)
     activity = models.ManyToManyField(Activity, blank=True)
+    confirm = models.BooleanField(default=True)
     
     
     def __str__(self):

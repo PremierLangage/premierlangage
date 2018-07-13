@@ -50,7 +50,9 @@
 
                 var inputPL = $('input[name="editor_input"]');
                     editorPL.getSession().on("change", function () {
-                    window.onbeforeunload = function () {return confirm();}
+                    {% if request.user.profile.confirm %}
+                        window.onbeforeunload = function () {return confirm();}
+                    {% endif %}
                     inputPL.val(editorPL.getSession().getValue());
                 });
 

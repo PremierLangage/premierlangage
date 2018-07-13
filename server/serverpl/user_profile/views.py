@@ -63,11 +63,14 @@ def edit_profile(request):
     if request.method == 'POST':
         color_blindness = request.POST.get("color_blindness", None)
         editor_theme = request.POST.get("editor_theme", None)
+        confirm = request.POST.get("confirm", False)
     
         if color_blindness != None: # Can be 0
             request.user.profile.color_blindness = color_blindness
         if editor_theme != None: # Can be 0
             request.user.profile.editor_theme = editor_theme
+        
+        request.user.profile.confirm = True if confirm == 'on' else False
         request.user.save()
         messages.info(request, "Paramètres sauvergardés.")
     
@@ -78,8 +81,8 @@ def edit_profile(request):
         "consumer_id": request.user.profile.consumer_id,
         "role": request.user.profile.role,
         "mail": request.user.email,
+        "confirm": request.user.profile.confirm,
     })
-        
     
     return render(request, "user_profile/edit_profile.html", {"form": form})
 
