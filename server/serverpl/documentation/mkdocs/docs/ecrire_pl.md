@@ -69,7 +69,7 @@ Ces balises permettent d'éviter de devoir réécrire les clés les plus compliq
 
 
 ### Clés réservées
-Bien qu'il soit possible d'attribuer n'importe quel clés, il est important de noté que certaine sont utilisé pour l'interface et pour le traitement de l'exercice, ces clés sont:
+Bien qu'il soit possible d'attribuer une valeur à n'importe quel clés, il est important de noter que certaines sont réservées pour l'interface et pour le traitement de l'exercice, ces clés réservées sont:
 
 
 #### PLTP & PL:
@@ -92,7 +92,19 @@ Bien qu'il soit possible d'attribuer n'importe quel clés, il est important de n
 
 ## Différence PL / PLTP
 
-L'ensemble des opérateur vue dans **Format** est identique pour les PL et les PLTP. Il existe cependant un autre opérateur ayant une signification différentes : l'opérateur **@**
+L'ensemble des opérateurs vus dans [Format](#Format) ont un comportement identique dans les PL et les PLTP.  
+Sauf  l'opérateur **@** !!
+
+### PL
+Dans un pl l'oéprateur **@**  indique un fichier que l'on souhaite voire dans le contexte d'exécution sur la sandbox:
+
+il est classique de trouvez dans un template la ligne :  
+```
+@ /pysrc/src/utils.py
+```
+Le fichier utils.py contenant des fonctions qui simplifies l'écriture des grader.
+
+
 
 ### PLTP
 
