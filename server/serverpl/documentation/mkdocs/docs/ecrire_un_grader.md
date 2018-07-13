@@ -1,5 +1,5 @@
 
-# Ecriture d'un grader 
+# Ecriture d'un grader (pour l'évaluation de programmes)
 
 ## Introduction 
 Toutes les évaluation d'un exercice sont faites en utilisant un serveur "sandbox" c'est à dire un bac à sable
@@ -60,6 +60,10 @@ Testez en créant un nouveau fichier sur pl, Editez le et faites des tests avec 
 Vous obtenez toujours un Bravo mon coco !!! sur fond vert.
 
 ## Lecture de la réponse de l'étudiant 
+
+Pour faire l'évaluation de l'exercice.
+
+
 
 ```
   title= Tester l'existance
