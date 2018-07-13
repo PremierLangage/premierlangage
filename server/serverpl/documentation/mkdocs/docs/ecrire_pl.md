@@ -3,6 +3,11 @@
 
 PL est un format de fichier permettant l'écriture d'exercices très différents. L'évaluation ainsi que le formulaire de réponse de l'exercice étant intégré à celui-ci, les possibilités sont quasiment infinis (les limites étant le langage Python ainsi que les différents langages web: HTML, JS, etc...). 
 
+## Quelque remarques pratiques
+
+Pour écrire des exercices pl le plus simple et de se connecter à PL [connection.md](connection.md).
+Puis dans le repertoire home de créer un fichier avec l'extention pl.
+
 
 ## Format
 Le format PL est un ensemble de déclaration de couple clé, valeur. Ces déclarations ce font avec une syntaxe simple que voici:
