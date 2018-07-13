@@ -271,28 +271,6 @@ class GitTestCase(TestCase):
                 [print(i.level,':',i.message) for i in m]
             raise
     
-    
-    def test_push_not_url(self):
-        open(join(FAKE_FB_ROOT, '100/TPE/function001.pl'), 'w+').close()
-        try:
-            response = self.c.post(
-            '/filebrowser/home/TPE/opt/',
-            {
-                'username':'test',
-                'password':'password',
-                'option': 'directory-git-push',
-                'target':'function001.pl',
-            },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 400)
-            self.assertContains(response, "Missing 'url' parameter", status_code=400)
-        except AssertionError:
-            m = list(response.context['messages'])
-            if m:
-                print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
-            raise
             
     def test_checkout(self):
         with open(join(FAKE_FB_ROOT, '100/TPE/function001.pl'), 'w+') as f:
@@ -512,28 +490,6 @@ class GitTestCase(TestCase):
                 [print(i.level,':',i.message) for i in m]
             raise
             
-            
-    def test_clone_not_destination(self):
-        try:
-            response = self.c.post(
-            '/filebrowser/home/TPE/opt/',
-            {
-                'username':'user3',
-                'password':'12345',
-                'url': "file://" + self.host.root,  
-                'option': 'directory-options-clone',
-                'target':'.',
-            },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 400)
-            self.assertContains(response, "Missing 'url' or 'destination' parameter", status_code=400)
-        except AssertionError:
-            m = list(response.context['messages'])
-            if m:
-                print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
-            raise
             
     def test_clone(self):
         try:

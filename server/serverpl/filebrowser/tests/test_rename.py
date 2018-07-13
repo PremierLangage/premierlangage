@@ -151,7 +151,7 @@ class RenameTestCase(TestCase):
       
             self.assertEqual(response.status_code, 200)
             self.assertContains(response, "Can't rename ")
-            self.assertContains(response, "name should not contain any of ['/', ' ']")
+            self.assertContains(response, "name should not contain any of")
             rel = join(settings.FILEBROWSER_ROOT, '100')
             self.assertFalse(isdir(join(rel, 'TPE/z')))
         
@@ -177,7 +177,7 @@ class RenameTestCase(TestCase):
       
             self.assertEqual(response.status_code, 200)
             self.assertContains(response, "Can't rename ")
-            self.assertContains(response, "name should not contain any of ['/', ' ']")
+            self.assertContains(response, "name should not contain any of")
             rel = join(settings.FILEBROWSER_ROOT, '100')
             self.assertFalse(isdir(join(rel, 'TPE z')))
         

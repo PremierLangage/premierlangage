@@ -124,7 +124,7 @@ class NewTestCase(TestCase):
             )
            
             self.assertEqual(response.status_code, 200)
-            self.assertContains(response, "Can't create file 'essa/i.pl': name should not contain any of ['/', ' '].")
+            self.assertContains(response, "Can't create file 'essa/i.pl': name should not contain any of")
         except AssertionError :
             m = list(response.context['messages'])
             if m:
@@ -146,7 +146,7 @@ class NewTestCase(TestCase):
             )
            
             self.assertEqual(response.status_code, 200)
-            self.assertContains(response, "Can't create file 'essa i.pl': name should not contain any of ['/', ' '].")
+            self.assertContains(response, "Can't create file 'essa i.pl': name should not contain any of")
         except AssertionError :
             m = list(response.context['messages'])
             if m:

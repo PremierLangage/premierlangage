@@ -109,7 +109,7 @@ class CreateDirectoryTestCase(TestCase):
       
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Can't create directory")
-        self.assertContains(response, "name should not contain any of ['/', ' ']")
+        self.assertContains(response, "name should not contain any of")
         rel = join(settings.FILEBROWSER_ROOT, '100/TPE')
         self.assertFalse(isdir(join(rel, 'dir/2')))
 
@@ -127,7 +127,7 @@ class CreateDirectoryTestCase(TestCase):
       
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Can't create directory")
-        self.assertContains(response, "name should not contain any of ['/', ' ']")
+        self.assertContains(response, "name should not contain any of")
         rel = join(settings.FILEBROWSER_ROOT, '100/TPE')
         self.assertFalse(isdir(join(rel, 'dir 2')))
 
