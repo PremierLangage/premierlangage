@@ -179,3 +179,6 @@ def icon(path):
 def hidden(path):
     return basename(path) in HIDDEN
 
+@register.filter
+def dir_opt_right_padding(val):
+    return val*70 + 35
