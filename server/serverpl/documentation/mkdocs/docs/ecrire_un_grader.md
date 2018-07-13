@@ -18,9 +18,17 @@ le grader pas exigant suivant qui est toujours satisfait du travail de l'étudia
 
 ```
   grader==
-  print('''{"success":True,"error":"","message":" Bravo !!!"}""")
+  import json
+  print(json.dumps({"success":True,"error":"","message":" Bravo !!!"}))
   ==
 ```
+Remarquez que ce grader écrit sur la sortie standard un dictionnaire au format json.
+C'est ce qui est attendu par le serveur pl pour obtenir l'évaluation de l'exercice.
+
+
+
+# Un premier exercice avec votre grader
+
 
 Créez un exercice qui ne contient que les trois balises suivantes: **title**,**form**, et **grader**.
 
@@ -32,13 +40,13 @@ Créez un exercice qui ne contient que les trois balises suivantes: **title**,**
   texth==
   <h3 style="color:RED" >Quelque soit la réponse c'est oui !!!</h3> 
   ==
-
+  # ici nous avons un champs de saisie text avec le titre réponse 
   form==
   <span class="input-group-addon">Réponse</span>
   <input id="form_txt_answer" type="text" class="form-control" placeholder="NON" required>
   ==
 
-
+  # voici notre grader toujours aussi gentil.
   grader==
   import json
   print(json.dumps({"success":True,"feedback":" Bravo mon coco !!!"}))
@@ -46,7 +54,8 @@ Créez un exercice qui ne contient que les trois balises suivantes: **title**,**
 ```
 
 
-Testez en créant un nouveau fichier sur pl, Editez le et faites des tests avec la preview.
+Testez en créant un nouveau fichier sur pl, Editez le et faites des tests avec le mode preview .
+
 
 Vous obtenez toujours un Bravo mon coco !!! sur fond vert.
 
