@@ -5,7 +5,7 @@ PL est un format de fichier permettant l'écriture d'exercices très différents
 
 ## Quelque remarques pratiques
 
-Pour écrire des exercices pl le plus simple et de se connecter à PL [connection.md](connection.md).
+Pour apprendre à écrire des exercices pl le plus simple et de se connecter à PL [connection.md](connection.md).
 Puis dans le repertoire home de créer un fichier avec l'extention pl.
 
 
