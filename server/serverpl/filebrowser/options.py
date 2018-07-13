@@ -561,6 +561,7 @@ def edit_option(request, filebrowser, target):
 
         return render(request, 'filebrowser/editor.html', {
             'file_content': content,
+            'relative': filebrowser.relative,
             'filename': basename(path),
             'filepath': path.replace(settings.FILEBROWSER_ROOT+'/', ''),
             'dir_name': filebrowser.directory.name,
@@ -606,6 +607,7 @@ def edit_pl_option(request, filebrowser, target):
         return render(request, 'filebrowser/editor_pl.html', {
             'file_content': content,
             'filename': basename(path),
+            'relative': filebrowser.relative,
             'filepath': path.replace(settings.FILEBROWSER_ROOT+'/', ''),
             'dir_name': filebrowser.directory.name,
             'preview': preview,

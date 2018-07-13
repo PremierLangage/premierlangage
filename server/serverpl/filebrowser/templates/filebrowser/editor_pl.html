@@ -24,6 +24,7 @@
                         <form action="/filebrowser/edit_file/" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="path" value="{{ filepath }}"/>
+                            <input type="hidden" name="relative" value="{{ relative }}"/>
                             <input type="hidden" id="editor_input" name="editor_input" value="{{ file_content }}" />
                             <hr/>
                             <center>

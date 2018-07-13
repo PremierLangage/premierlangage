@@ -188,6 +188,8 @@ def edit_receiver(request):
     
     content = request.POST.get('editor_input', '')
     path = request.POST.get('path', '')
+    relative = request.POST.get('relative', '')
+    
     try:
         if content:
             with open(join(settings.FILEBROWSER_ROOT, path), 'w+') as f:
@@ -196,4 +198,4 @@ def edit_receiver(request):
     except Exception as e: # pragma: no cover
         msg = "Impossible to modify '"+basename(path)+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
         messages.error(request, msg)
-    return redirect_fb(dirname(path))
+    return redirect_fb(relative)
