@@ -9,8 +9,8 @@
 
 <script>
     var editor = ace.edit('editor');
-    editor.setTheme("{% if editor.theme %}{{ editor.theme}}{% else %} {{ request.user.profile.editor_theme.template }} {% endif %}");
-    editor.session.setMode("ace/mode/{% if editor.language and editor.language in authorized_lang %}{{editor.language}}{% else %}python{% endif %}");
+    editor.setTheme("ace/theme/{% if editor.theme %}{{ editor.theme}}{% else %} {{ request.user.profile.editor_theme.template }} {% endif %}");
+    editor.session.setMode("ace/mode/{% if editor.language %}{{editor.language}}{% else %}python{% endif %}");
     editor.session.setTabSize("{% if editor.tabsize %} {{ editor.tabsize }} {% else %} 4 {% endif %} ");
     
     document.getElementById('editor').style.fontSize="{% if editor.fontsize %} {{ editor.fontsize }} {% else %} 12px {% endif %}";
