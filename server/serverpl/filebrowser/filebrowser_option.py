@@ -170,7 +170,7 @@ ENTRY_OPTIONS = OptionsCategory({
     "git": OptionsGroup('Git', {
             "add":      FilebrowserOption("fas fa-plus",   "Git Add",      add_option, method=GET),
             "commit":   FilebrowserOption("fas fa-edit",   "Git Commit",   commit_option, form=CommitForm),
-            "reset":    FilebrowserOption("fas fa-undo",   "Git Reset",    reset_option, color=YELLOW, require_confirmation=True, method=GET),
+            "reset":    FilebrowserOption("fas fa-undo",   "Git Reset",    reset_option, color=YELLOW, form=ResetForm, method=POST),
             "checkout": FilebrowserOption("fas fa-eraser", "Git Checkout", checkout_option, color=RED, require_confirmation=True, method=GET),
         }, icon="fab fa-git-square fa-lg", filter=in_repository),
 })

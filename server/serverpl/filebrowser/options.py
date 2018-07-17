@@ -384,8 +384,10 @@ def download_option(request, filebrowser, target):
         filename = basename(path) + datetime.datetime.now().strftime("_%dd-%mm-%yy-%Hh-%Mm-%Ss")
 
         if isdir(path):
+            
             npath = path + datetime.datetime.now().strftime("_%dd-%mm-%yy-%Hh-%Mm-%Ss")
-            shutil.make_archive(npath, 'zip', root_dir=path, base_dir=path)
+            
+            shutil.make_archive(npath, 'zip', root_dir=path)
             filename += ".zip"
             npath += ".zip"
         else:
