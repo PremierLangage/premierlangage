@@ -69,6 +69,7 @@ def activity_ajax(request):
 @csrf_exempt
 @login_required
 def activity_receiver(request):
+    print(request.user.profile.editor_theme.template)
     activity_id = request.session.get("current_activity", None)
     if activity_id == None:
         return HttpResponse("No activity found in the session", status=409)

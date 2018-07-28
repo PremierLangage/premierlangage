@@ -32,7 +32,7 @@
                             <a class="nav-link" href="/documentation/"></i><i class="fas fa-book"></i> Documentation</a>
                         </li>
                     {% endif %}
-                    {% if request.user.pluser.is_admin or request.user.is_superuser %}
+                    {% if request.user.profile.is_admin or request.user.is_superuser %}
                         <li class="nav-item">
                             <a class="nav-link" href="/admin/"><i class="fas fa-cog"></i> Administration</a>
                         </li>

@@ -68,8 +68,8 @@ class ActivityInstance:
                 state = response['grade']
                 feedback = response['feedback']
                 if 'error' in response:
-                    feedback += '\n\n'+htmlprint.code(response['error'])
-                return (None, feedback) if state == "info" else (True, feedback) if state else (False, feedback)
+                    feedback  += '\n\n' + htmlprint.code(response['error'])
+                return (None if state == "info" else True if state else false, feedback)
             except KeyError as e:
                 return (
                     None,
@@ -93,7 +93,7 @@ class ActivityInstance:
                 return dic['grade']
             except Exception as e:
                 return None, ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte"
-                    + "merci de prévenir votre professeur:<br>"+htmlprint.html_exc())
+                    + "merci de prévenir votre professeur:<br>" + htmlprint.html_exc())
     
     
     #@timeout_decorator.timeout(5, use_signals=False)
@@ -116,38 +116,40 @@ class ActivityInstance:
     def get_context(self, request):
         pltp = PLTP.objects.get(sha1=self.dic['pltp_sha1__'])
         pl_list = list()
+        pltp_f = True
         for item in pltp.pl.all():
-            dic = self.intern_build()
-            if 'pl_id__' in dic and item.id == dic['pl_id__']:
+            if 'pl_id__' in self.dic and item.id == self.dic['pl_id__']:
+                pltp_f = False
+                dic = self.intern_build()
                 answer = Answer.last_answer(item, request.user)
                 if answer:
                     dic['student_answer'] = answer
-            
+                c = Context(dic)
+                c['user'] = request.user.profile
                 for key in ['text', 'texth', 'introduction', 'introductionh', "form", "title"]:
                     if key in dic:
-                        dic[key] = Template(dic[key]).render(Context(dic))
-                    
+                        dic[key] = Template(dic[key]).render(c)
+                            
             state = Answer.pl_state(item, request.user)
             pl_list.append({
                 'id'   : item.id,
                 'state': state,
                 'title': item.json['title'],
             })
-
-        context = RequestContext(request)
-        context.update(dic)
+        
+        context = RequestContext(request, dic if not pltp_f else self.dic)
         context['pl_list__'] = pl_list
         
         return context
     
     
     def get_template(self):
-        raw = '{% extends "playexo/default_pltp_exo.html" %}'+default_load
+        raw = '{% extends "playexo/default_pltp_exo.html" %}' + default_load
         if 'pl_id__' in self.dic:
-            raw = '{% extends "playexo/default_pl_exo.html" %}'+default_load
+            raw = '{% extends "playexo/default_pl_exo.html" %}' + default_load
             for key, block_name in pls_known:
                 if key in self.dic:
-                    raw += "{% block "+block_name+" %}{{ "+key+" }}{% endblock %}"
+                    raw  += "{% block " + block_name + " %}{{ " + key + " }}{% endblock %}"
             
         return raw
     
@@ -169,27 +171,21 @@ class PLInstance(ActivityInstance):
     
     
     def get_template(self): 
-        raw = '{% extends "playexo/preview.html" %}'+default_load
+        raw = '{% extends "playexo/preview.html" %}' + default_load
         for key, block_name in pls_known:
             if key in self.dic:
-                raw += "{% block "+block_name+" %}{{ "+key+" }}{% endblock %}"
+                raw  += "{% block " + block_name + " %}{{ " + key + " }}{% endblock %}"
         return raw
     
     
     def get_context(self, request):
         context = RequestContext(request)
         dic = self.intern_build()
-        
+        c = Context(dic)
+        c['user'] = request.user.profile
         for key in ['text', 'texth', 'introduction', 'introductionh', "form", "title"]:
             if key in dic:
-                dic[key] = Template(dic[key]).render(Context(dic))
+                dic[key] = Template(dic[key]).render(c)
         
         context.update(dic)
         return context
-        
-        
-    def render(self, request):  
-        """ Return the rendered template for this PL """
-        context = self.get_context(request)
-        template = self.get_template()
-        return Template(template).render(context)
