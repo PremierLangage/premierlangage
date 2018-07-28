@@ -5,46 +5,61 @@
 
 {% block css %}
     <link rel="stylesheet" href="{% static '/css/filebrowser.css' %}" />
+    <link rel="stylesheet" href="{% static '/css/jqueryFileTree.css' %}" />
 {% endblock %}
 
 {% block content %}
     <div class="container">
-        <div class="card">
+        <ul class="nav nav-tabs nav-justified">
+            {% for root in fb.list_root %}
+                <li class="nav-item">
+                    <a class="nav-link{% if fb.home == root %} active"{% else %}" style="color: black;"{% endif %} href="/filebrowser/{{ root }}">{{ root|title }}</a>
+                </li>
+            {% endfor %}
+        </ul> 
+        <div class="card card-fb">
             
-            <div class="card-header no-padding">
+            <div class="card-header no-padding card-header-fb">
                 <div class="row no-margin">
-                    
                     <!-- Breadcrumb -->
-                    <div class="col-sm-11 no-padding">
-                        {% include 'filebrowser/breadcrumb.html' %}
-                    </div>
+                    {% include 'filebrowser/breadcrumb.html' %}
                     
+                    <button type="button" class="btn" style="background-color:transparent; position: absolute; right: 0;"  data-toggle="tooltip" data-placement="top" title="These options apply on the current directory.">
+                        <i class="far fa-question-circle"></i>
+                    </button>
                     <!-- Directory's Options -->
-                    <div class="col-sm-1 no-padding">
-                        {% include 'filebrowser/dir_options.html' %}
-                    </div>
+                    {% include 'filebrowser/dir_options.html' %}
                 </div>
             </div>
             
             <!-- Entries -->
             <div class="card-body no-padding">
-                <table class="table table-hover" style="table-layout: fixed">
+                <table class="table table-hover no-margin" style="table-layout: fixed">
                     <tbody>
-                        {% if not fb.directory %}
-                            {% include 'filebrowser/directories.html' %}
-                        {% else %}
-                            {% include 'filebrowser/entries.html' %}
-                        {% endif %}
+                        {% include 'filebrowser/entries.html' %}
                     </tbody>
                 </table>
             </div>
-            {% if fb.directory and fb.directory.remote %}<footer class="blockquote-footer">{{ fb.directory.remote }}</footer>{% endif %}
-                {% for key,option in fb.directory_options.items %}
-                {% if option|opt_filter:fb.relative %}
-                    {% if not option.form and option.require_confirmation %}{% include 'filebrowser/confirmation_dir_modal.html' %}{% endif %}
-                    {% if option.form %}{% include 'filebrowser/default_dir_modal.html' %}{% endif %}
-                {% endif %}
-            {% endfor %}
+            
+            {% if fb.full_path|in_repository %}
+                <div class="card-footer card-footer-fb">
+                    <div class="row no-margin">
+                        <i class="{{ fb.full_path|repository_host}} fa-2x"></i>&emsp; <a href="{{ fb.full_path|repository_url }}">{{ fb.full_path|repository_url }}</a>&nbsp;-&nbsp;<i>{{ fb.full_path|repository_branch }}</i>
+                    </div>
+                </div>
+            {% endif %}
         </div>
     </div>
+    
+{% endblock %}
+
+{% block end_script %}
+    <script>
+        $(document).on('shown.bs.modal', function(e) {
+            $('input:visible:enabled:first', e.target).focus();
+        });
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
 {% endblock %}

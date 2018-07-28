@@ -25,14 +25,14 @@ class ModelTestCase(TestCase):
     
     @classmethod
     def setUpTestData(self):
-        self.user = User.objects.create_user(username='user', password='12345')
-        self.user2 = User.objects.create_user(username='user2', password='12345')
-        self.user3 = User.objects.create_user(username='user3', password='12345')
+        self.user = User.objects.create_user(username='user', password='12345', id=100)
+        self.user2 = User.objects.create_user(username='user2', password='12345', id=200)
+        self.user3 = User.objects.create_user(username='user3', password='12345', id=300)
         
-        dir_path = join(FAKE_FB_ROOT, 'dir')
+        dir_path = join(FAKE_FB_ROOT, '100/')
         if isdir(dir_path):
             shutil.rmtree(dir_path)
-        self.d = Directory.objects.create(name='dir', owner=self.user)
+        self.d = Directory.objects.get(name='100', owner=self.user)
     
     
     def test_add_remove_write(self):
@@ -60,3 +60,9 @@ class ModelTestCase(TestCase):
         user4 = User.objects.create_user(username='user4', password='12345')
         self.assertTrue(user4 in d.read_auth.all())
         self.assertTrue(user4 not in d.write_auth.all())
+
+    def test_is_repository(self):
+        self.d.remote=True
+        self.assertTrue(self.d.is_repository())
+        self.d.remote=False
+        self.assertFalse(self.d.is_repository())

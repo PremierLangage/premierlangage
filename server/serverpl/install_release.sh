@@ -82,17 +82,30 @@ echo "Creating static files..."
 python3 manage.py collectstatic --noinput || { echo>&2 "ERROR: python3 manage.py collectstatic failed" ; exit 1; }
 echo "Done !"
 
+
+#Creating needed directories
+echo "Creating needed directories..."
+if [ ! -d "../../tmp" ]; then
+    mkdir ../../tmp || { echo>&2 "ERROR: Can't create ../../tmp" ; exit 1; }
+fi
+if [ ! -f "../../../tmp/README" ]; then
+    echo "Directory used by premier langage, do not remove." > ../../tmp/README
+fi
+
+
 #Building database
 echo ""
 echo "Configuring database..."
-python3 manage.py makemigrations || { echo>&2 "ERROR: python3 manage.py makemigrations failed" ; exit 1; }
-python3 manage.py migrate || { echo>&2 "ERROR: python3 manage.py migrate failed" ; exit 1; }
+SECRET_KEY=$SECRET_KEY python3 manage.py makemigrations || { echo>&2 "ERROR: python3 manage.py makemigrations failed" ; exit 1; }
+SECRET_KEY=$SECRET_KEY python3 manage.py migrate || { echo>&2 "ERROR: python3 manage.py migrate failed" ; exit 1; }
 
-#Filling database
-read -p "Do you want to create a new django super user ? [Y/N] " -n 1 -r
+
+# Creating super user
 echo
-if [[ $REPLY =~ ^[Yy]$ ]]
+read -p "Creating a super user for django ? [Y/n] " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Nn]$ ]]
 then
-    python3 manage.py createsuperuser || { echo>&2 "ERROR: python3 manage.py createsuperuser failed" ; exit 1; }
+    echo "Creating super user account..."
+    SECRET_KEY=$SECRET_KEY python3 manage.py createsuperuser || { echo>&2 "ERROR: python3 manage.py createsuperuser failed" ; exit 1; }
 fi
-echo "Done !"

@@ -49,11 +49,11 @@ if [ "$VIRTUAL_ENV" == "" ]; then
     INVENV=1
     echo "WARNING: You're not currently running a virtual environnement (https://docs.python.org/3/library/venv.html)." | fold -s
     read -p "Do you want to continue outside a virtual environnement ? [Y/n] " -n 1 -r
- 	echo
-	if [[ $REPLY =~ ^[Nn]$ ]]
-	then
-   		exit 1
-	fi
+    echo
+    if [[ $REPLY =~ ^[Nn]$ ]]
+    then
+        exit 1
+    fi
 fi
 
 
@@ -76,11 +76,22 @@ echo "Creating documentation..."
 echo "Done !"
 
 
+#Creating needed directories
+echo ""
+echo "Creating needed directories..."
+if [ ! -d "../../tmp" ]; then
+    mkdir ../../tmp || { echo>&2 "ERROR: Can't create ../../tmp" ; exit 1; }
+fi
+if [ ! -f "../../tmp/README" ]; then
+    echo "Directory used by premier langage, do not remove." > ../../tmp/README
+fi
+
 #Building database
 echo ""
 echo "Configuring database..."
 python3 manage.py makemigrations || { echo>&2 "ERROR: python3 manage.py makemigrations failed" ; exit 1; }
 python3 manage.py migrate || { echo>&2 "ERROR: python3 manage.py migrate failed" ; exit 1; }
+
 #Filling database
 python3 manage.py shell < serverpl/install/fill_database_local.py  || { echo>&2 "ERROR: python3 manage.py shell failed" ; exit 1; }
 echo "Done !"

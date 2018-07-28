@@ -18,7 +18,7 @@
 
 
 
-import magic
+import magic, os, gitcmd
 
 from os.path import isdir, isfile, basename, splitext
 
@@ -31,6 +31,14 @@ from filebrowser.models import Directory
 
 is_directory = isdir
 is_file = isfile
+
+
+def is_not_directory(path):
+    return not is_directory(path)
+
+
+def in_repository(path):
+    return gitcmd.in_repository(path, False)
 
 
 def is_directory_object(path):
@@ -60,11 +68,16 @@ def is_image(path):
         return False
     return magic.from_file(path, mime=True).split('/')[0] == 'image'
 
-
+def is_image(path):
+    if is_directory(path):
+        return False
+    return magic.from_file(path, mime=True).split('/')[0] == 'image'
+    
 def is_text(path):
     if is_directory(path):
         return False
-    return magic.from_file(path, mime=True).split('/')[0] == 'text'
+    return (magic.from_file(path, mime=True).split('/')[0] == 'text' 
+         or not os.stat(path).st_size)
 
 
 def is_audio(path):
@@ -88,7 +101,7 @@ def is_application(path):
 def is_pl(path): 
     parsers = get_parsers()
     ext = splitext(path)[1]
-    return ext in parsers and parsers[ext]['type'] == 'pl'
+    return is_not_directory(path) and ext in parsers and parsers[ext]['type'] == 'pl'
 
 
 def is_not_pl(path): 
@@ -98,7 +111,7 @@ def is_not_pl(path):
 def is_pltp(path): 
     parsers = get_parsers()
     ext = splitext(path)[1]
-    return ext in parsers and parsers[ext]['type'] == 'pltp'
+    return is_not_directory(path) and ext in parsers and parsers[ext]['type'] == 'pltp'
 
 
 def is_archive(path):

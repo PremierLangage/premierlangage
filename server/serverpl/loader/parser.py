@@ -7,16 +7,15 @@
 
 
 
-import os, importlib, logging
+import os, importlib, logging ,shutil
 
-from os.path import basename, splitext, join
+from os.path import basename, splitext, join, dirname, abspath
 
 from django.core.exceptions import ObjectDoesNotExist
 
 from serverpl.settings import PARSERS_ROOT, PARSERS_MODULE
 from loader.utils import extends_dict
 from loader.exceptions import UnknownExtension, UnknownType, DirectoryNotFound, FileNotFound, MissingKey
-
 from filebrowser.models import Directory
 
 
@@ -51,7 +50,7 @@ def get_parsers():
                     if ext not in parsers:
                         parsers[ext] = {'type': parser['type'], 'parser': parser['parser']}
                     else :
-                        logger.error("Two parsers trying to parse the same extension ('"+str(parsers[ext])+"' and '"+str(parser['parser'])+"')")
+                        logger.error("Two parsers are trying to parse the same extension ('"+str(parsers[ext])+"' and '"+str(parser['parser'])+"')")
             except NameError:
                 logger.error("Function 'get_parser()' not defined in '"+f+"'")
             except ValueError:
@@ -153,6 +152,7 @@ def parse_file(directory, path, extending=False):
             if key in dic and type(dic[key]) != str:
                 raise TypeError("Key : '"+key+"' is '"+str(type(dic[key]))+"' but must be a string.")
         
+       
         return dic, warnings
     
     raise UnknownExtension(path, join(directory.name, path))

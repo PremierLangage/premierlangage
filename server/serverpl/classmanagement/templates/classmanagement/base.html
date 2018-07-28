@@ -26,6 +26,7 @@
         {% block css %}{% endblock %}
         
         <!-- JS -->
+        <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
         <script src="{% static 'js/jquery_3.1.1.js' %}" ></script>
         <script src="{% static 'js/tether.min.js' %}" ></script>
         <script src="{% static 'js/popper.js' %}" ></script>
@@ -53,6 +54,17 @@
     
     <script src="{% static 'js/pl.js' %}" ></script>
     {% block end_script %}{% endblock %}
+    
+    <!-- Copy tool -->
+    <script>
+        var clipboard = new ClipboardJS('.btn');
+        clipboard.on('success', function(e) {
+            console.log(e);
+        });
+        clipboard.on('error', function(e) {
+            console.log(e);
+        });
+    </script>
     </body>
 </html>
 

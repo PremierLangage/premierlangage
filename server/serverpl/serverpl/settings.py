@@ -1,17 +1,6 @@
-DEPLOYED = False
-
 import os
-import dj_database_url
 from django.contrib.messages import constants as messages
 
-
-if DEPLOYED:
-    try:
-        import serverpl.config as conf
-    except ImportError:
-        raise ImportError("ImportError: No module named 'serverpl.config' found.\n"
-                        + "File premierlangage/server/serverpl/conf.py was not found.\n"
-                        + "You can find an example of such file at premierlangage/server/serverpl/conf_example.py")
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -19,14 +8,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "o!m$n&s4=kcftm1de1m+7!36a=8x38w4" if not DEPLOYED else conf.SECRET_KEY
+SECRET_KEY = "o!m$n&s4=kcftm1de1m+7!36a=8x38wrr)m9)i@ru7j-*c7vgm"
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = not DEPLOYED
+DEBUG = True
+
+SYSLOG = False
 
 # List of Allowed Hosts
-ALLOWED_HOSTS = ['127.0.0.1'] if not DEPLOYED else conf.ALLOWED_HOSTS
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Used by mail_admins log handler, 
@@ -36,11 +27,13 @@ MAIL_HOST = 'smtp.u-pem.fr'
 MAIL_PORT = 25
 SERVER_EMAIL = 'pl@pl-test.u-pem.fr'
 ADMINS = [
-    ('Coumes Quentin', 'qcoumes@etud.u-pem.fr'),
-] if not DEPLOYED else conf.ADMINS
-if DEBUG or not ENABLE_MAIL_ADMINS: # Write email in console instead of sending it
+    #('Coumes Quentin',      'qcoumes@etud.u-pem.fr'),
+    #('Revuz Dominique',     'Dominique.Revuz@u-pem.fr'),
+    #('Cuvelier Nicolas',    'ncuvelie@etud.u-pem.fr'),
+]
+# Write email in console instead of sending it if ENABLE_MAIL_ADMINS is False or DEBUG is True
+if DEBUG or not ENABLE_MAIL_ADMINS:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
 
 
 # Application definition
@@ -53,7 +46,7 @@ INSTALLED_APPS = [
     'sandbox',
     'documentation',
     'markdown_deux',
-    #~ 'qa',
+    #'qa',
     'taggit',
     'hitcount',
     'django_markdown',
@@ -78,10 +71,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
 #Cookies settings
 SESSION_SAVE_EVERY_REQUEST = True
-SESSION_COOKIE_AGE = 157680000  # 5 years
+SESSION_COOKIE_AGE = 5*365*24*60*60
 
 
 # Redirect when not authenticated to
@@ -128,12 +120,14 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-} if not DEPLOYED else conf.DATABASES
-#~ db_from_env = dj_database_url.config(conn_max_age=500)
-#~ DATABASES['default'].update(db_from_env)
+}
+# Update database configuration with $DATABASE_URL.
+import dj_database_url
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
 
 
-# Authentification
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -156,14 +150,13 @@ AUTHENTICATION_BACKENDS = (
 
 LTI_OAUTH_CREDENTIALS = {
     'moodle': 'secret',
-} if not DEPLOYED else conf.LTI_OAUTH_CREDENTIALS
+}
 
 
 #Logger information
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    
     'filters': {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse',
@@ -172,10 +165,9 @@ LOGGING = {
             '()': 'django.utils.log.RequireDebugTrue',
         },
     },
-    
     'formatters': {
         'verbose': {
-            'format': '[%(asctime)-15s] %(levelname)s -- File: %(pathname)s line n°%(lineno) -- %(message)s',
+            'format': '[%(asctime)-15s] %(levelname)s -- File: %(pathname)s line n°%(lineno)d -- %(message)s',
             'datefmt': '%Y/%m/%d %H:%M:%S'
         },
         'simple': {
@@ -183,20 +175,12 @@ LOGGING = {
             'datefmt': '%Y/%m/%d %H:%M:%S'
         },
     },
-    
     'handlers': {
         'console': {
             'level': 'DEBUG',
             'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
-        },
-        'syslog': {
-            'level': 'INFO',
-            'class': 'logging.handlers.SysLogHandler',
-            'facility': 'local7',
-            'address': '/dev/log' if os.path.exists('/dev/log') else '/var/run/syslog',
-            'formatter': 'verbose'
         },
         'mail_admins': {
             'level': 'ERROR',
@@ -205,15 +189,37 @@ LOGGING = {
             'formatter': 'verbose'
         }
     },
-    
     'loggers': {
         'django':{
-            'handlers': ['console', 'syslog', 'mail_admins'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
-            'propagate': True,
+        },
+        'sandbox':{
+            'handlers': ['console', 'mail_admins'],
+            'level': 'INFO',
+        },
+        'classmanagement':{
+            'handlers': ['console', 'mail_admins'],
+            'level': 'INFO',
+        },
+        'documentation':{
+            'handlers': ['console', 'mail_admins'],
+            'level': 'INFO',
+        },
+        'filebrowser':{
+            'handlers': ['console', 'mail_admins'],
+            'level': 'INFO',
+        },
+        'playexo':{
+            'handlers': ['console', 'mail_admins'],
+            'level': 'INFO',
+        },
+        'django_auth_lti':{
+            'handlers': ['console', 'mail_admins'],
+            'level': 'INFO',
         },
     },
-} if not DEPLOYED else conf.LOGGING
+}
 
 
 # Internationalization
@@ -225,18 +231,18 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'serverpl/static'))
+STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'static'))
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../tmp'))
-if not os.path.isdir(MEDIA_ROOT):
-    os.makedirs(MEDIA_ROOT)
 MEDIA_URL = '/tmp/'
 
 
 # Default Filebrowser's path
-FILEBROWSER_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../repo/'))
+FILEBROWSER_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../home/'))
 
+# Default bank path
+BANK_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../bank/'))
 
 # Path to directory containing parsers
 PARSERS_ROOT = os.path.abspath(os.path.join(BASE_DIR,'loader/parsers/'))

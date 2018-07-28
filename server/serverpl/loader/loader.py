@@ -8,7 +8,7 @@
 
 import logging, hashlib, htmlprint
 
-from os.path import splitext, basename
+from os.path import splitext, basename, join, abspath, dirname
 
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -37,11 +37,14 @@ def load_file(directory, rel_path, force=False):
     """
     
     try:
-        if get_type(directory, rel_path) == 'pltp':
+        typ = get_type(directory, rel_path)
+        if typ == 'pltp':
             return load_PLTP(directory, rel_path, force)
-        else:
+        elif typ == 'pl':
             return load_PL(directory, rel_path)
-    except Exception as e:
+        else:
+            raise Exception("Type '" + typ + "' is not yet implemented")
+    except Exception as e: # pragma: no cover 
         if not DEBUG:
             return (None, htmlprint.code(str(e))) 
         return (None, (
@@ -74,7 +77,10 @@ def load_PLTP(directory, rel_path, force=False):
     except: # If the PLTP does not exist, keep going
         pass
     
-    dic, warnings = parse_file(directory, rel_path)
+
+    #~ path = createandtransforme(dirname(abspath(join(directory.root, rel_path[1:])))+"/dir"+splitext(basename(rel_path))[0], abspath(join(directory.root, rel_path[1:])), directory)
+    path = dirname(abspath(join(directory.root, rel_path[1:])))+"/dir"+splitext(basename(rel_path))[0]
+    dic, warnings = parse_file(directory, rel_path, path)
     
     pl_list = list()
     for item in dic['__pl']:
@@ -111,7 +117,6 @@ def load_PL(directory, rel_path):
         
         This function return a PL object but does not save it in the database
     """
-    
     dic, warnings = parse_file(directory, rel_path)
     
     

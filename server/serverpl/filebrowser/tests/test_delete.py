@@ -23,50 +23,38 @@ class DeleteTestCase(TestCase):
     
     @classmethod
     def setUpTestData(self):
-        self.user = User.objects.create_user(username='user', password='12345')
+        self.user = User.objects.create_user(username='user', password='12345', id=100)
         self.c = Client()
-        self.c.force_login(self.user,backend=settings.AUTHENTICATION_BACKENDS[0])
-        if isdir(join(FAKE_FB_ROOT,'dir')):
-            shutil.rmtree(join(FAKE_FB_ROOT,'dir'))
-        self.folder = Directory.objects.create(name='dir', owner=self.user)
+        self.c.force_login(self.user, backend=settings.AUTHENTICATION_BACKENDS[0])
+        rel = join(settings.FILEBROWSER_ROOT, '100/')
+        if isdir(rel):
+            shutil.rmtree(join(rel))
+        self.folder = Directory.objects.get(name='100', owner=self.user)
         shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder.root)
-    
+
     
     def test_delete_method_not_allowed(self):
-        response = self.c.get(
-            '/filebrowser/apply_option/post',
+        response = self.c.post(
+            '/filebrowser/home/TPE/opt/',
+            {
+                'option': 'entry-options-delete',
+                'target':'.',
+                   
+            },
             follow=True
         )
-        self.assertEqual(response.status_code, 405)
-    
     
     def test_delete_file(self):
         try:
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                        'option_h' : 'delete',
-                        'name_h' : 'function001.pl',
-                        'relative_h' : './dir/TPE',
-                        'type_h' : 'entry'
-                    },
+            response = self.c.get(
+            '/filebrowser/home/TPE/opt/?option=entry-options-delete&target=function001.pl',
+
                 follow=True
             )
             self.assertEqual(response.status_code, 200)
-            rel = join(settings.FILEBROWSER_ROOT,'./dir/TPE')
+            rel = join(settings.FILEBROWSER_ROOT,'100/TPE')
             self.assertFalse(isfile(join(rel, 'function001.pl')))
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                        'option_h' : 'delete',
-                        'name_h' : 'function001.pl',
-                        'relative_h' : './dir/TPE',
-                        'type_h' : 'entry'
-                    },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            self.assertFalse(isfile(join(rel, 'function001.pl')))
+            self.assertContains(response, "'function001.pl' successfully deleted !")
         except AssertionError:
             m = list(response.context['messages'])
             if m:
@@ -77,107 +65,23 @@ class DeleteTestCase(TestCase):
     
     def test_delete_folder(self):
         try:
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                        'option_h' : 'delete',
-                        'name_h' : 'TPE',
-                        'relative_h' : './dir',
-                        'type_h' : 'entry'
-                    },
+            response = self.c.get(
+            '/filebrowser/home/TPE/opt/?option=entry-options-delete&target=Dir_test',
+
                 follow=True
             )
             self.assertEqual(response.status_code, 200)
-            rel = join(settings.FILEBROWSER_ROOT,'./dir')
-            self.assertFalse(isdir(join(rel, 'TPE')))
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                        'option_h' : 'delete',
-                        'name_h' : 'TPE',
-                        'relative_h' : './dir',
-                        'type_h' : 'entry'
-                    },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            rel = join(settings.FILEBROWSER_ROOT,'./dir')
-            self.assertFalse(isdir(join(rel, 'TPE')))
+            rel = join(settings.FILEBROWSER_ROOT,'100/TPE')
+            self.assertFalse(isdir(join(rel, 'Dir_test')))
+            self.assertContains(response, "'Dir_test' successfully deleted !")
+
         except AssertionError:
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:")
                 [print(i.level,':',i.message) for i in m]
             raise
-    
-    
-    def test_delete_directory_entry(self):
-        try:
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                        'option_h' : 'delete',
-                        'name_h' : 'dir',
-                        'relative_h' : '.',
-                        'type_h' : 'entry'
-                    },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            self.assertFalse(isdir(join(settings.FILEBROWSER_ROOT, 'dir')))
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                        'option_h' : 'delete',
-                        'name_h' : 'dir',
-                        'relative_h' : '.',
-                        'type_h' : 'entry'
-                    },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            self.assertFalse(isdir(join(settings.FILEBROWSER_ROOT, 'dir')))
-        except AssertionError:
-            m = list(response.context['messages'])
-            if m:
-                print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
-            raise
-    
-    
-    
-    def test_dirdelete_directory_entry(self):
-        try:
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                        'option_h' : 'dirdelete',
-                        'name_h' : 'dir',
-                        'relative_h' : '.',
-                        'type_h' : 'entry'
-                    },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            self.assertFalse(isdir(join(settings.FILEBROWSER_ROOT, 'dir')))
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                        'option_h' : 'delete',
-                        'name_h' : 'directory',
-                        'relative_h' : '.',
-                        'type_h' : 'entry'
-                    },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            self.assertFalse(isdir(join(settings.FILEBROWSER_ROOT, 'dir')))
-        except AssertionError:
-            m = list(response.context['messages'])
-            if m:
-                print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
-            raise
+       
   
     
    

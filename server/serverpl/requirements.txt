@@ -27,4 +27,5 @@ yattag
 -e git://github.com/qcoumes/timeout-decorator.git#egg=timeout-decorator
 -e git://github.com/qcoumes/django-enumfields.git#egg=django-enumfields
 -e git://github.com/qcoumes/htmlprint.git#egg=htmlprint
+-e git://github.com/qcoumes/gitcmd.git#egg=gitcmd
 

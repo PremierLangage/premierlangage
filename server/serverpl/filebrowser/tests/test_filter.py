@@ -38,18 +38,23 @@ class FilterTestCase(TestCase):
     def test_is_image(self):
         self.assertTrue(filter.is_image(RES_DIR+"image.png"))
         self.assertFalse(filter.is_image(RES_DIR+"text.txt"))
+        self.assertFalse(filter.is_image(RES_DIR))
+        
     
     def test_is_audio(self):
         self.assertTrue(filter.is_audio(RES_DIR+"audio.mp3"))
         self.assertFalse(filter.is_audio(RES_DIR+"text.txt"))
+        self.assertFalse(filter.is_audio(RES_DIR))
     
     def test_is_video(self):
         self.assertTrue(filter.is_video(RES_DIR+"video.mp4"))
         self.assertFalse(filter.is_video(RES_DIR+"text.txt"))
+        self.assertFalse(filter.is_video(RES_DIR))
     
     def test_is_application(self):
         self.assertTrue(filter.is_application(RES_DIR+"application.zip"))
         self.assertFalse(filter.is_application(RES_DIR+"text.txt"))
+        self.assertFalse(filter.is_application(RES_DIR))
     
     def test_is_pl(self):
         self.assertTrue(filter.is_pl(RES_DIR+"pl.pl"))
@@ -88,3 +93,7 @@ class FilterTestCase(TestCase):
         self.assertFalse(filter.is_remote('./missing_dir'))
         self.assertFalse(filter.is_remote('.'))
         self.assertFalse(filter.is_remote('./'))
+
+    def test_is_not_directory(self):
+        self.assertTrue(filter.is_not_directory('text.txt'))
+      

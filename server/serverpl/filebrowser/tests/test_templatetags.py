@@ -10,7 +10,7 @@ from os.path import join
 
 from django.test import TestCase
 
-from filebrowser.templatetags.filebrowser_filter import icon
+from filebrowser.templatetags.filebrowser_filter import icon, basename_filter, dirname_filter
 
 from django.conf import settings
 
@@ -64,3 +64,10 @@ class TemplateTagTestCase(TestCase):
     def test_image(self):
         self.assertEqual(icon(RES_DIR+"image.png"), "fas fa-file-image")
     
+    
+    def test_basename_dirname(self):
+        path = 'truc/exo.pl'
+       
+        self.assertEqual(basename_filter(path), "exo.pl")
+        self.assertEqual(dirname_filter(path), "truc")
+

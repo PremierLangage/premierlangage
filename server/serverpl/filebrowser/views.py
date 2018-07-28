@@ -10,12 +10,13 @@ import os, json, shutil, htmlprint
 
 from os.path import basename, join, dirname
 
+
 from django.shortcuts import render, redirect, reverse
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponse
+from django.http import HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponse, Http404
 
 from filebrowser.filebrowser import Filebrowser
 from filebrowser.models import Directory
@@ -31,69 +32,53 @@ from django.conf import settings
 
 
 @login_required
-def index(request):
+def index(request, path="home"):
     """ Used by the filebrowser module to navigate """
+    path = path.split('/')
+    if path[0].isdigit():
+        raise Http404()
+    
+    return render(request, 'filebrowser/filebrowser.html', {
+        'fb': Filebrowser(request, path=join(*path))
+    })
+
+
+@login_required
+def apply_option(request, path="home"):
+    real = (path).split('/')
+    if real[0] == "home":
+        real[0] = str(request.user.id)
+   
     if request.method == 'GET':
-        path = request.GET.get('cd', '.')
+        option = request.GET.get('option')
+        target = request.GET.get('target')
+    elif request.method == 'POST':
+        option = request.POST.get('option')
+        target = request.POST.get('target')
     
-    return render(request, 'filebrowser/filebrowser.html', {'fb': Filebrowser(path=path)})
-
-
-@login_required
-def apply_option_get(request):
-    """ Apply an option using the GET method """
-    if not request.method == 'GET':
-        return HttpResponseNotAllowed(['GET'])
-    
-    path = request.GET.get('relative_h', None)
-    name = request.GET.get('name_h', None)
-    option = request.GET.get('option_h', None)
-    typ = request.GET.get('type_h', None)
-    
-    if not (name and path and option and typ):
-        return HttpResponseBadRequest("Missing one of 'relative_h', 'name_h', 'option_h' or 'type_h' argument")
-    
-    if typ == 'directory':
-        path = '.'
-    fb = Filebrowser(path=path)
+    if not option:
+        return HttpResponseBadRequest("'option' parameter is missing")
+    if not target:
+        return HttpResponseBadRequest("'target' parameter is missing")
     
     try:
-        if typ == "entry":
-            return ENTRY_OPTIONS[option].process_option(request, fb, name)
+        category, group, option = option.split('-')
+        fb = Filebrowser(request, path=path)
+        if category == "entry":
+            return ENTRY_OPTIONS.get_option(group, option)(request, fb, target)
         else:
-            return DIRECTORY_OPTIONS[option].process_option(request, fb, name)
+            return DIRECTORY_OPTIONS.get_option(group, option)(request, fb, target)
+    
     except Exception as e:
-        messages.error(request, "Impossible to apply the option "+option+" : "+ htmlprint.code(str(type(e)) + " - " + str(e)))
-        if settings.DEBUG:
-            messages.error(request, htmlprint.html_exc())
-    return redirect_fb(path)
-
-
-@login_required
-def apply_option_post(request):
-    """ Apply an option using the POST method """
-    if not request.method == 'POST':
-        return HttpResponseNotAllowed(['POST'])
+        messages.error(
+            request, 
+            ("Impossible to apply the option " 
+                + option + " : " 
+                + (htmlprint.code(str(type(e)) + " - " + str(e))
+                   if not settings.DEBUG 
+                   else htmlprint.html_exc()))
+        )
     
-    path = request.POST.get('relative_h', None)
-    name = request.POST.get('name_h', None)
-    option = request.POST.get('option_h', None)
-    typ = request.POST.get('type_h', None)
-
-    if not (name and path and option and typ):
-        return HttpResponseBadRequest("Missing one of 'relative_h', 'name_h', 'option_h' or 'type_h' argument")
-    
-    if typ == 'directory':
-        path = '.'
-    fb = Filebrowser(path=path)
-    
-    try:
-        if typ == "entry":
-            return ENTRY_OPTIONS[option].process_option(request, fb, name, )
-        else:
-            return DIRECTORY_OPTIONS[option].process_option(request, fb, name)
-    except Exception as e:
-        messages.error(request, "Impossible to apply the option "+option+" : "+ htmlprint.code(str(type(e)) + " - " + str(e)))    
     return redirect_fb(path)
 
 
@@ -104,10 +89,11 @@ def preview_pl(request):
     if request.method != 'POST':
         return HttpResponse('405 Method Not Allowed', status=405)
     
-
+    
     post = json.loads(request.body.decode())
     if post['requested_action'] == 'preview': # Asking for preview
         try:
+           
             path = join(settings.FILEBROWSER_ROOT, post['path'])
             shutil.copyfile(path, path+".bk")
             with open(path, 'w+') as f: # Writting editor content into the file
@@ -138,9 +124,10 @@ def preview_pl(request):
             )
     
     elif post['requested_action'] == 'submit' : # Answer from the preview
-        exercise = request.session.get('exercise', None)
         
+        exercise = request.session.get('exercise', None)
         if exercise:
+            
             exercise = PLInstance(exercise)
             success, feedback = exercise.evaluate(post['inputs'])
             if (success == None):
@@ -162,40 +149,6 @@ def preview_pl(request):
     return HttpResponseBadRequest(content="Couldn't resolve ajax request")
 
 
-@login_required
-def new_directory(request):
-    """ Use to created a new Directory. """
-    if not request.method == 'POST':
-        return HttpResponseNotAllowed(['POST'])
-    
-    name = request.POST.get('name', None)
-    url = request.POST.get('url', None)
-    username = request.POST.get('username', None)
-    password = request.POST.get('password', None)
-    
-    if not name:
-        return HttpResponseBadRequest()
-    name = name.replace(' ', '_')
-    
-    if Directory.objects.filter(name=name):
-        messages.error(request, "A directory with this name ('" + name + "') already exists. Please choose another name")
-        return redirect(reverse('filebrowser:index'))
-    
-    if url:
-        directory = Directory(name=name, owner=request.user, remote=url)
-        cloned, feedback = directory.clone(username, password)
-        if cloned:
-            directory.save()
-            messages.success(request, "Repository successfully cloned in " + name + ".")
-        else:
-            messages.error(request, "Couldn't clone repository :\n" + feedback)
-    else:
-        os.mkdir(join(settings.FILEBROWSER_ROOT,name))
-        Directory(name=name, owner=request.user).save()
-        messages.success(request, "Directory '" + name + "' successfully created.")
-    
-    return redirect_fb()
-
 
 @login_required
 @csrf_exempt
@@ -208,7 +161,7 @@ def save_edit_receiver(request):
     path = post['path']
     try:
         if content:
-            with open(settings.FILEBROWSER_ROOT + '/' + path, 'w') as f:
+            with open(join(settings.FILEBROWSER_ROOT, path), 'w') as f:
                 print(content, file=f)
         return HttpResponse(
             json.dumps({
@@ -236,9 +189,11 @@ def edit_receiver(request):
     """ View used to saved a newly edited file. """
     if not request.method == 'POST':
         return HttpResponseNotAllowed(['POST'])
-        
+    
     content = request.POST.get('editor_input', '')
     path = request.POST.get('path', '')
+    relative = request.POST.get('relative', '')
+    
     try:
         if content:
             with open(join(settings.FILEBROWSER_ROOT, path), 'w+') as f:
@@ -247,35 +202,4 @@ def edit_receiver(request):
     except Exception as e: # pragma: no cover
         msg = "Impossible to modify '"+basename(path)+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
         messages.error(request, msg)
-    return redirect_fb(dirname(path))
-
-
-@login_required
-def right_edit(request):
-    """ View used to add the new right of a Directory. """
-    if request.method != 'POST':
-        return HttpResponseNotAllowed(['POST'])
-    
-    name = request.POST.get('directory', None)
-    write = request.POST.getlist('write')
-    read =  request.POST.getlist('read')
-    
-    try:
-        d = Directory.objects.get(name=name)
-        d.write_auth.clear()
-        d.read_auth.clear()
-        
-        for item in write:
-            d.write_auth.add(User.objects.get(id=item))
-        for item in read:
-            d.read_auth.add(User.objects.get(id=item))
-        
-        messages.success(request, "Rights of '"+name+"' successfully edited.")
-    except Exception as e: # pragma: no cover
-        raise e
-        msg = "Impossible to edit rights of '"+name+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
-        if settings.FILEBROWSER_ROOT in msg:
-            msg = msg.replace(settings.FILEBROWSER_ROOT, "")
-        messages.error(request, msg)
-
-    return redirect_fb()
+    return redirect_fb(relative)

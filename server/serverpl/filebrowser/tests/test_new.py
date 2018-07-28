@@ -26,49 +26,40 @@ class NewTestCase(TestCase):
 
     @classmethod
     def setUpTestData(self):
-        self.user = User.objects.create_user(username='user', password='12345')
+        self.user = User.objects.create_user(username='user', password='12345', id=100)
         self.c = Client()
         self.c.force_login(self.user, backend=settings.AUTHENTICATION_BACKENDS[0])
-        if isdir(join(FAKE_FB_ROOT, 'dir')):
-            shutil.rmtree(join(FAKE_FB_ROOT, 'dir'))
-        self.folder = Directory.objects.create(name='dir', owner=self.user)
+        rel = join(settings.FILEBROWSER_ROOT, '100/')
+        if isdir(rel):
+            shutil.rmtree(join(rel))
+        self.folder = Directory.objects.get(name='100', owner=self.user)
         shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder.root)
 
 
     def test_new_method_not_allowed(self):
         response = self.c.get(
-            '/filebrowser/apply_option/post',
+            '/filebrowser/home/opt/?option=directory-options-new&target=.',
             follow=True
         )
         self.assertEqual(response.status_code, 405)
 
 
-    def test_new_file(self):
+    def test_new(self):
         try :
             response = self.c.post(
-                '/filebrowser/apply_option/post',
+                '/filebrowser/home/TPE/opt/',
                 {
-                    'option_h': 'new',
-                    'name_h': 'dir',
-                    'relative_h': './dir/TPE',
-                    'type_h': 'directory',
-                    'name': 'file',
+                    'name': 'essai.pl',
+                    'option': 'directory-options-new',
+                    'target':'.',
                 },
                 follow=True
             )
-            self.assertContains(
-                response,
-                "var editorPL = ace.edit(\'editorPL\')",
-                status_code=200
-            )
-            self.assertNotContains(
-                response,
-                "Preview",
-                status_code=200
-            )
+           
             self.assertEqual(response.status_code, 200)
-            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
-            self.assertTrue(isfile(join(rel, 'file')))
+            rel = join(settings.FILEBROWSER_ROOT, '100/TPE')
+            self.assertTrue(isfile(join(rel, 'essai.pl')))
+            self.assertContains(response, "File 'essai.pl' successfully created !")
         except AssertionError :
             m = list(response.context['messages'])
             if m:
@@ -77,32 +68,20 @@ class NewTestCase(TestCase):
             raise
 
 
-    def test_new_pl(self):
+    def test_new_existing_already(self):
         try :
             response = self.c.post(
-                '/filebrowser/apply_option/post',
+                '/filebrowser/home/TPE/opt/',
                 {
-                    'option_h': 'new',
-                    'name_h': 'dir',
-                    'relative_h': './dir/TPE',
-                    'type_h': 'directory',
-                    'name': 'file.pl',
+                    'name': 'essai.pl',
+                    'option': 'directory-options-new',
+                    'target':'.',
                 },
                 follow=True
             )
-            self.assertContains(
-                response,
-                "var editorPL = ace.edit(\'editorPL\')",
-                status_code=200
-            )
-            self.assertContains(
-                response,
-                "Preview",
-                status_code=200
-            )
+           
             self.assertEqual(response.status_code, 200)
-            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
-            self.assertTrue(isfile(join(rel, 'file.pl')))
+            self.assertContains(response, "Can't create file 'essai.pl': this name is already used.")
         except AssertionError :
             m = list(response.context['messages'])
             if m:
@@ -110,144 +89,64 @@ class NewTestCase(TestCase):
                 [print(i.level,':',i.message) for i in m]
             raise
 
-    def test_new_pl_not_in_directory(self):
+    def test_new_empty_name(self):
         try :
             response = self.c.post(
-                '/filebrowser/apply_option/post',
+                '/filebrowser/home/TPE/opt/',
                 {
-                    'option_h': 'new',
-                    'name_h': 'dir',
-                    'relative_h': './dir/TPE',
-                    'type_h': 'directory',
-                    'name': '../../../../file1.pl',
+                    
+                    'option': 'directory-options-new',
+                    'target':'.',
                 },
                 follow=True
             )
-            self.assertEqual(response.status_code, 200)
-            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
-            self.assertFalse(isfile(join(rel, '../../../../file1.pl')))
-            m = list(response.context['messages'])
-            self.assertEqual(len(m), 1)
-            self.assertEqual(m[0].level, messages.ERROR)
-        except AssertionError :
-            m = list(response.context['messages'])
-            if m:
-                print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
-            raise
-
-
-    def test_new_file_with_used_file_name(self):
-        try :
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                    'option_h': 'new',
-                    'name_h': 'dir',
-                    'relative_h': './dir/TPE',
-                    'type_h': 'directory',
-                    'name': 'function001.pl',
-                },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            m = list(response.context['messages'])
-            self.assertEqual(len(m), 1)
-            self.assertEqual(m[0].level, messages.ERROR)
-        except AssertionError :
-            m = list(response.context['messages'])
-            if m:
-                print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
-            raise
-
-
-    def test_new_file_with_used_dir_name(self):
-        try :
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                    'option_h': 'new',
-                    'name_h': 'dir',
-                    'relative_h': './dir/TPE',
-                    'type_h': 'directory',
-                    'name': 'Dir_test',
-                },
-                follow=True
-            )
-            self.assertEqual(response.status_code, 200)
-            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
-            self.assertFalse(isfile(join(rel, 'Dir_test')))
-            m = list(response.context['messages'])
-            self.assertEqual(len(m), 1)
-            self.assertEqual(m[0].level, messages.ERROR)
-        except AssertionError :
-            m = list(response.context['messages'])
-            if m:
-                print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
-            raise
-
-
-    def test_new_file_with_no_name(self):
-        try :
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                    'option_h': 'new',
-                    'name_h': 'dir',
-                    'relative_h': './dir/TPE',
-                    'type_h': 'directory',
-                },
-                follow=True
-            )
+           
             self.assertEqual(response.status_code, 400)
+            self.assertContains(response, "Missing 'name' parameter", status_code=400)
         except AssertionError :
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:")
                 [print(i.level,':',i.message) for i in m]
             raise
-
-    def test_new_file_with_no_relative(self):
+    
+    
+    def test_new_invalid_name(self):
         try :
             response = self.c.post(
-                '/filebrowser/apply_option/post',
+                '/filebrowser/home/TPE/opt/',
                 {
-                    'option_h': 'new',
-                    'name_h': 'dir',
-                    'type_h': 'directory',
-                    'name': 'Dir_test',
+                    'name': 'essa/i.pl',
+                    'option': 'directory-options-new',
+                    'target':'.',
                 },
                 follow=True
             )
-            self.assertEqual(response.status_code, 400)
-        except AssertionError :
-            m = list(response.context['messages'])
-            if m:
-                print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
-            raise
-
-    def test_new_file_with_space_name(self):
-        try :
-            response = self.c.post(
-                '/filebrowser/apply_option/post',
-                {
-                    'option_h': 'new',
-                    'name_h': 'dir',
-                    'relative_h': './dir/TPE',
-                    'type_h': 'directory',
-                    'name': ' ',
-                },
-                follow=True
-            )
+           
             self.assertEqual(response.status_code, 200)
-            rel = join(settings.FILEBROWSER_ROOT, 'dir/TPE')
-            self.assertFalse(isfile(join(rel, ' ')))
+            self.assertContains(response, "Can't create file 'essa/i.pl': name should not contain any of")
+        except AssertionError :
             m = list(response.context['messages'])
-            self.assertEqual(len(m), 1)
-            self.assertEqual(m[0].level, messages.ERROR)
+            if m:
+                print("\nFound messages:")
+                [print(i.level,':',i.message) for i in m]
+            raise
+
+
+    def test_new_invalid_name2(self):
+        try :
+            response = self.c.post(
+                '/filebrowser/home/TPE/opt/',
+                {
+                    'name': 'essa i.pl',
+                    'option': 'directory-options-new',
+                    'target':'.',
+                },
+                follow=True
+            )
+           
+            self.assertEqual(response.status_code, 200)
+            self.assertContains(response, "Can't create file 'essa i.pl': name should not contain any of")
         except AssertionError :
             m = list(response.context['messages'])
             if m:

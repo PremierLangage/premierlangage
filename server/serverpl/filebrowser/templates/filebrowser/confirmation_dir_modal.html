@@ -1,21 +1,14 @@
-<div id="confirmationModalDir{{forloop.counter0}}" class="modal fade" role="dialog">
+<div id="confirmationModalDir{{group_key}}-{{key}}-{{forloop.parentloop.parentloop.counter0}}" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">{{ option.text }} ?</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-            <form action="apply_option/post" class="form-group" method="post"> 
-                {% csrf_token %}
-                <input type="hidden" name="relative_h" value="."/>
-                <input type="hidden" name="name_h" value="{{ fb.directory.name }}"/>
-                <input type="hidden" name="option_h" value="{{ key }}"/>
-                <input type="hidden" name="type_h" value="directory"/>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fas fa-times"></i>&emsp;Cancel</button>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i>&emsp;Yes</button>
-                </div>
-            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"><i class="fas fa-times"></i>&emsp;Cancel</button>
+                <a href="/filebrowser/{{ fb.relative }}/opt/?option=directory-{{group_key}}-{{key}}&target=." class="btn btn-primary"><i class="fas fa-check"></i>&emsp;Yes</a>
+            </div>
         </div>
     </div>
 </div>

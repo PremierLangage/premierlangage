@@ -24,6 +24,8 @@
 
 import os, subprocess
 
+from os.path import isdir, join
+
 from urllib.parse import urlparse
 
 from django.db import models
@@ -54,11 +56,15 @@ class Directory(models.Model):
         if self.public:
             [self.add_read_auth(u) for u in User.objects.all()]
     
+    
     @receiver(post_save, sender=User)
     def add_user_read_public(sender, instance, created, **kwargs):
         if created:
             for i in Directory.objects.filter(public=True):
                 i.read_auth.add(instance)
+            if not isdir(join(settings.FILEBROWSER_ROOT, str(instance.id))):
+                os.mkdir(join(settings.FILEBROWSER_ROOT, str(instance.id)))
+            Directory.objects.create(name=str(instance.id), owner=instance)
     
     
     def is_repository(self):
@@ -88,212 +94,3 @@ class Directory(models.Model):
         """Remove user to the reading authorization list."""
         if user in self.read_auth.all():
             self.read_auth.remove(user)
-    
-    
-    def add_and_commit(self, commit, path=None):
-        """Add and commit the file pointed by path, the whole repository if path is None.
-        
-        Return:
-            (True, git_stdout) if everything worked
-            (False, git_stderr) if a problem occurs
-        """
-        if not self.is_repository():
-            return False, "This directory is not a repository"
-        
-        cwd = os.getcwd()
-        
-        try:
-            os.chdir(self.root)
-            if path:
-                p = subprocess.Popen('git add '+path, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-            else:
-                p = subprocess.Popen('git add .', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-            out, err = p.communicate()
-            
-            out = out.decode("utf-8")
-            err = err.decode("utf-8")
-            if p.returncode: # pragma: no cover
-                return False, err + out
-                
-            p = subprocess.Popen('git commit -m "'+commit+'"', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-            out, err = p.communicate()
-            
-            out = out.decode("utf-8")
-            err = err.decode("utf-8")
-            if p.returncode: # pragma: no cover
-                return False, err + out
-        
-        finally:
-            os.chdir(cwd)
-        
-        return True, out + err
-    
-    
-    def checkout(self, path=None):
-        """Checkout the file pointed by path, the whole repository if path is None.
-        
-        Return:
-            (True, git_stdout) if everything worked
-            (False, git_stderr) if a problem occurs
-        """
-        if not self.is_repository():
-            return False, "This directory is not a repository"
-        
-        cwd = os.getcwd()
-        
-        try:
-            os.chdir(self.root)
-            if path:
-                p = subprocess.Popen('git checkout '+path, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-            else:
-                p = subprocess.Popen('git checkout .', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-            out, err = p.communicate()
-            out = out.decode("utf-8")
-            err = err.decode("utf-8")
-            if p.returncode: # pragma: no cover
-                return False, err + out
-        
-        finally:
-            os.chdir(cwd)
-        
-        return True, out + err
-    
-    
-    def pull(self, username=None, password=None):
-        """Perform a git pull over the directory using username and password if given.
-        
-        Return:
-            (True, git_stdout) if everything worked
-            (False, git_stderr) if a problem occurs
-        """
-        if not self.is_repository():
-            return False, "This directory is not a repository"
-        
-        cwd = os.getcwd()
-        url = urlparse(self.remote)
-        
-        try:
-            os.chdir(self.root)
-            if username:
-                p = subprocess.Popen('git pull '+url.scheme+'://'+username+":"+password+"@"+url.netloc+url.path, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-            else:
-                p = subprocess.Popen('GIT_TERMINAL_PROMPT=0 git pull', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-            out, err = p.communicate()
-            
-            out = out.decode("utf-8")
-            err = err.decode("utf-8")
-            if password:
-                out = out.replace(password,'•'*len(password))
-                err = err.replace(password,'•'*len(password))
-            if p.returncode: # pragma: no cover
-                if "terminal prompts disabled" in err: # Repo is private and needs credentials
-                    return False, "Repository is private, please provide username and password."
-                return False, err + out
-        
-        finally:
-            os.chdir(cwd)
-        
-        return True, out + err
-    
-    
-    def push(self, username=None, password=None):
-        """Perform a git push over the directory using username and password if given.
-        
-        Return:
-            (True, git_stdout) if everything worked
-            (False, git_stderr) if a problem occurs
-        """
-        if not self.is_repository():
-            return False, "This directory is not a repository"
-        
-        cwd = os.getcwd()
-        url = urlparse(self.remote)
-        
-        try:
-            os.chdir(self.root)
-            if username:
-                p = subprocess.Popen('git push '+url.scheme+'://'+username+":"+password+"@"+url.netloc+url.path, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-            else:
-                p = subprocess.Popen('GIT_TERMINAL_PROMPT=0 git push', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-            out, err = p.communicate()
-            
-            out = out.decode("utf-8")
-            err = err.decode("utf-8")
-            if password:
-                out = out.replace(password,'•'*len(password))
-                err = err.replace(password,'•'*len(password))
-            if p.returncode: # pragma: no cover
-                if "terminal prompts disabled" in err: # Repo is private and needs credentials
-                    return False, "Repository is private, please provide username and password."
-                return False, err + out
-        
-        finally:
-            os.chdir(cwd)
-        
-        return True, out + err
-    
-    
-    def status(self):
-        """Perform a git status over the directory.
-        
-        Return:
-            (True, git_stdout) if everything worked
-            (False, git_stderr) if a problem occurs
-        """
-        if not self.is_repository():
-            return False, "This directory is not a repository"
-        
-        cwd = os.getcwd()
-        
-        try:
-            os.chdir(self.root)
-            p = subprocess.Popen('git status', stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-            out, err = p.communicate()
-            
-            out = out.decode("utf-8")
-            err = err.decode("utf-8")
-            if p.returncode: # pragma: no cover
-                return False, err + out
-        
-        finally:
-            os.chdir(cwd)
-        
-        return True, out + err
-    
-    
-    def clone(self, username=None, password=None):
-        """Perform a git clone over the directory using username and password if given.
-        
-        Return:
-            (True, git_stdout) if everything worked
-            (False, git_stderr) if a problem occurs
-        """
-        if not self.is_repository():
-            return False, "This directory is not a repository"
-        
-        cwd = os.getcwd()
-        url = urlparse(self.remote)
-        
-        try:
-            os.chdir(settings.FILEBROWSER_ROOT)
-            if username:
-                p = subprocess.Popen('git clone '+url.scheme+'://'+username+":"+password+"@"+url.netloc+url.path+" "+self.name, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-            else:
-                p = subprocess.Popen('GIT_TERMINAL_PROMPT=0 git clone '+self.remote+" "+self.name, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-            out, err = p.communicate()
-            
-            out = out.decode("utf-8")
-            err = err.decode("utf-8")
-            if password:
-                out = out.replace(password,'•'*len(password))
-                err = err.replace(password,'•'*len(password))
-            if p.returncode: # pragma: no cover
-                if "terminal prompts disabled" in err: # Repo is private and needs credentials
-                    return False, "Repository is private, please provide username and password."
-                
-                return False, err + out
-        
-        finally:
-            os.chdir(cwd)
-        
-        return True, out + err

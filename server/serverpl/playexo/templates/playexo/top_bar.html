@@ -24,7 +24,7 @@
                     </li>
                     {% if request.user.profile.can_load %}
                         <li class="nav-item">
-                            <a class="nav-link" href="/filebrowser/"><i class="fas fa-cloud"></i> Gitload</a>
+                            <a class="nav-link" href="/filebrowser/home"><i class="fas fa-cloud"></i> Gitload</a>
                         </li>
                     {% endif %}
                     {% if request.user.profile.can_load %}
@@ -40,7 +40,7 @@
                 </ul>
             
                 <ul class="navbar-nav navbar-right">
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown-nav">
                         <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#">
                             <i class="fas fa-user"></i>
                             {% firstof request.user.get_full_name request.user.get_username "Non Connecté" %}

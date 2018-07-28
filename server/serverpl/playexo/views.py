@@ -41,7 +41,7 @@ def activity_ajax(request):
         feedback_type = "info"
         feedback = "Réponse enregistré avec succès"
         Answer(
-            value=status['inputs']['answer'],
+            value=status['inputs'],
             user=request.user,
             pl=PL.objects.get(id=exercise.dic['pl_id__']),
             seed=exercise.dic['seed'],
@@ -51,19 +51,16 @@ def activity_ajax(request):
     
     elif status['requested_action'] == 'submit': # Validate
         success, feedback = exercise.evaluate(status['inputs']) 
-        if 'answer' in status['inputs']:
-            value = status['inputs']['answer']
-        else:
-            value = ""
+       
         if success == None:
             feedback_type = "info"
-            Answer(value=value, user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id__']), seed=exercise.dic['seed'], grade=-1).save()
+            Answer(value=status['inputs'], user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id__']), seed=exercise.dic['seed'], grade=-1).save()
         elif success:
             feedback_type = "success"
-            Answer(value=value, user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id__']), seed=exercise.dic['seed'], grade=100).save()
+            Answer(value=status['inputs'], user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id__']), seed=exercise.dic['seed'], grade=100).save()
         else:
             feedback_type = "fail"
-            Answer(value=value, user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id__']), seed=exercise.dic['seed'], grade=0).save()
+            Answer(value=status['inputs'], user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id__']), seed=exercise.dic['seed'], grade=0).save()
         return HttpResponse(json.dumps({'feedback_type': feedback_type, 'feedback': feedback}), content_type='application/json')
     return HttpResponseBadRequest("Missing action in status")
 
@@ -107,12 +104,12 @@ def activity_receiver(request):
                     break
             else:
                 request.session["current_pl"] = None
-        request.method
-        return redirect(reverse(activity_receiver))
+        
+        return HttpResponseRedirect(reverse("playexo:activity_receiver"))
     
     request.session['exercise'] = exercise.dic
     if current_pl:
-        Answer(value='', user=request.user, pl=PL.objects.get(id=current_pl.id), seed=exercise.dic['seed'], grade=-1).save()
+        Answer(value={}, user=request.user, pl=PL.objects.get(id=current_pl.id), seed=exercise.dic['seed'], grade=-1).save()
     return HttpResponse(exercise.render(request))
 
 
@@ -140,7 +137,7 @@ def lti_receiver(request, activity_name, pltp_sha1):
     request.session['current_activity'] = activity_id
     request.session['current_pl'] = None
     request.session['testing'] = False
-    return HttpResponseRedirect(reverse(activity_receiver))
+    return HttpResponseRedirect(reverse("playexo:activity_receiver"))
 
 
 
@@ -153,7 +150,7 @@ def test_receiver(request, activity_name, pltp_sha1):
     request.session['current_activity'] = activity.id
     request.session['current_pl'] = None
     request.session['testing'] = True
-    return HttpResponseRedirect(reverse(activity_receiver))
+    return HttpResponseRedirect(reverse("playexo:activity_receiver"))
 
 
 

@@ -5,8 +5,8 @@
 #  
 #  Copyright 2018 Coumes Quentin
 
-import re, json
-from os.path import join, basename, abspath
+import re, json, os, shutil
+from os.path import join, basename, abspath, dirname
 from django.core.exceptions import ObjectDoesNotExist
 from loader.exceptions import SemanticError, SyntaxErrorPL, DirectoryNotFound, FileNotFound
 from loader.utils import get_location
@@ -38,8 +38,9 @@ class Parser:
         self.lineno = 1
         self.dic = dict()
         self.warning = list()
+        self.abs_path = join(directory.root, rel_path)
         
-        with open(join(directory.root, rel_path), 'r') as f:
+        with open(self.abs_path, 'r')  as f:
             self.lines = f.readlines()
         
         self._multiline_dic = None
@@ -122,6 +123,7 @@ class Parser:
         self.dic['__rel_path'] = self.path_parsed_file
         self.dic['__comment'] = ''
         self.dic['__file'] = dict()
+        self.dic['__dependencies'] = [self.abs_path]
         self.dic['__extends'] = list()
     
     
@@ -140,7 +142,7 @@ class Parser:
             directory, path = get_location(self.directory, match.group('file'), current=self.path_parsed_file)
         except ObjectDoesNotExist:
             raise DirectoryNotFound(self.path_parsed_file, line, match.group('file'), self.lineno)
-            
+        
         self.dic['__extends'].append({
             'path': path.replace(directory.name+'/', ''),
             'line': line,
@@ -172,6 +174,7 @@ class Parser:
         try:
             directory, path = get_location(self.directory, match.group('file'), current=self.path_parsed_file)
             path = abspath(join(directory.root, path.replace(directory.name+'/', '')))
+            
             with open(path, 'r') as f:
                 if '+' in op:
                     if not key in self.dic:
@@ -274,8 +277,11 @@ class Parser:
             directory, path = get_location(self.directory, match.group('file'), current=self.path_parsed_file)
             path = join(directory.root, path)
             name = basename(path) if not match.group('alias') else match.group('alias')
+            
+            self.dic['__dependencies'].append(path)
             with open(path, 'r') as f:
                 self.dic['__file'][name] = f.read()
+
         except ObjectDoesNotExist:
             raise DirectoryNotFound(self.path_parsed_file, line, match.group('file'), self.lineno)
         except FileNotFoundError:

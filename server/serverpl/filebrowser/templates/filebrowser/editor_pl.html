@@ -23,6 +23,7 @@
                         <form action="/filebrowser/edit_file/" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="path" value="{{ filepath }}"/>
+                            <input type="hidden" name="relative" value="{{ relative }}"/>
                             <input type="hidden" id="editor_input" name="editor_input" value="{{ file_content }}" />
                             <hr/>
                             <center>
@@ -42,7 +43,7 @@
             </div>
             <script src="{% static 'js/ace/ace.js' %}"></script>
             <script>
-                
+                window.onbeforeunload = function () {return confirm();}
                 var editorPL = ace.edit('editorPL');
                     editorPL.session.setMode("ace/mode/python");
                     editorPL.setTheme("{{ request.user.profile.editor_theme.template }}");

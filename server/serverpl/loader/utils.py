@@ -38,17 +38,15 @@ def get_location(directory, path, current=""):
         current = current[1:]
     
     return directory, normpath(join(dirname(current), path))
-    
-    
-    
-    
 
 
 def extends_dict(target, source):
     """ Will copy every key and value of source in target if key is not present in target """
     
     for key, value in source.items():
-        if key not in target or not target[key]:
+        if key == '__dependencies':
+            target[key] += value
+        elif key not in target or not target[key]:
             target[key] = value
     
     return target

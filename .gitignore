@@ -1,10 +1,11 @@
 DEADJOE
-repo/*
-!repo/plbank
+home/*
+!home/lib
+tmp
 .idea/*
-*__pycache__/
-*htmlcov/
-tmp/
+__pycache__/
+htmlcov/
+.pytest_cache/
 
 ### OSX ###
 *.DS_Store
