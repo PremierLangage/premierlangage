@@ -69,7 +69,7 @@ class ActivityInstance:
                 feedback = response['feedback']
                 if 'error' in response:
                     feedback  += '\n\n' + htmlprint.code(response['error'])
-                return (None if state == "info" else True if state else false, feedback)
+                return (None if state == "info" else True if state else False, feedback)
             except KeyError as e:
                 return (
                     None,
