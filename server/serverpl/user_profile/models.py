@@ -37,13 +37,18 @@ class Profile(models.Model):
     color_blindness = EnumIntegerField(ColorBlindness, default=ColorBlindness.NONE)
     activity = models.ManyToManyField(Activity, blank=True)
     confirm = models.BooleanField(default=True)
+    rep = models.IntegerField(default=0)
     
     
-    def __str__(self):
-        return self.user.username + "'s Profile"
+    def mod_rep(self, added_points):
+        """Core function to modify the reputation of the user profile."""
+        self.rep += added_points
+        self.save()
+    
     
     def is_admin(self):
         return (self.role == Role.ADMINISTRATOR or self.user.is_staff or self.user.is_superuser)
+    
     
     def can_load(self):
         return self.role <= Role.INSTRUCTOR or self.is_admin()
@@ -60,3 +65,7 @@ class Profile(models.Model):
         instance.profile.save()
         if instance.is_staff or instance.is_superuser:
             instance.profile.role = Role.ADMINISTRATOR
+    
+    
+    def __str__(self):
+        return "<Profile: " + self.user.username + ">"

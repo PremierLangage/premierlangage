@@ -20,11 +20,13 @@ from classmanagement.views import index
 
 urlpatterns = [
     url(r'^$', index ),
-    url(r'^courses/', include('classmanagement.urls', namespace='classmanagement')),
-    url(r'^playexo/', include('playexo.urls', namespace="playexo")),
-    url(r'^sandbox/',include('sandbox.urls', namespace="sandbox")),
-    url(r'^documentation/',include('documentation.urls', namespace="documentation")),
-    url(r'^filebrowser/',include('filebrowser.urls', namespace='filebrowser')),
-    url(r'^profile/',include('user_profile.urls', namespace="profile")),
+    url(r'^courses/',      include('classmanagement.urls', namespace='classmanagement')),
+    url(r'^playexo/',      include('playexo.urls',         namespace="playexo")),
+    url(r'^sandbox/',      include('sandbox.urls',         namespace="sandbox")),
+    url(r'^documentation/',include('documentation.urls',   namespace="documentation")),
+    url(r'^filebrowser/',  include('filebrowser.urls',     namespace='filebrowser')),
+    url(r'^profile/',      include('user_profile.urls',    namespace="profile")),
+    url(r'^ask/',          include('qa.urls',              namespace='ask')),
+    url(r'^markdown/',     include('django_markdown.urls', namespace='markdown')),
     url(r'^admin/', admin.site.urls),
 ]

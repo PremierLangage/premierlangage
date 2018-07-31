@@ -1,0 +1,49 @@
+{% extends "qa/base.html" %}
+
+{% load static %}
+
+{% block content %}
+    <div class="container">
+        <div class="p-3 pl-5 mb-2 bg-secondary text-white qa-title">
+            Questions Récentes
+            <a role="button" href="{% url 'ask:qa_create_question' %}" class="btn btn-primary float-right">
+                <i class="fas fa-question"></i> Ask a question
+            </a>
+            <form method="GET" class="float-right" action="{% url 'ask:qa_search' %}">
+                  <input type="search" style="width: 90%;" value="" name="word" placeholder="search" />
+            </form>
+        </div>
+        {% for question in questions %}
+        <div class="p-3 mb-0 bg-question {% if question.has_accepted_answer %}border border-success{% endif %}">
+            <div class="row">
+                <div class="col-1 p-0">
+                    <div class="qainfo">
+                        {{ question.hit_count.hits }}<br>
+                        Views
+                    </div>
+                </div>
+                <div class="col-1 p-0">
+                    <div class="qainfo {% if question.total_points > 0 %} text-success{% elif question.total_points < 0 %} text-danger{% endif%}">
+                        {{ question.total_points }}<br>
+                        Votes
+                    </div>
+                </div><div class="col-1 p-0">
+                    <div class="qainfo{% if question.num_answers == 0 %} text-danger{% elif question.has_accepted_answer %} text-success{% endif %}">
+                        {{ question.num_answers }}<br>
+                        Answers
+                    </div>
+                </div>
+                <div class="col-9 pl-4">
+                    <a href="{% url 'ask:qa_detail' question.id %}">{{ question.title }}</a><br>
+                    {% for tag in question.tags.all %}
+                        <div class="p-1 mr-2 tags">
+                            <a href="{% url 'ask:qa_tag' tag.slug %}"><tag>{{ tag.slug }}</tag></a>
+                        </div>
+                    {% endfor %}
+                    <p class="float-right m-0"><small>asked {{ question.date }} by <a href="{% url 'ask:qa_profile' question.user.id %}">{{ question.user.username }}</small></a></p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

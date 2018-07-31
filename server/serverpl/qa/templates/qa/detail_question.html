@@ -1,0 +1,168 @@
+{% extends "qa/base.html" %}
+
+{% load static %}
+{% load django_markdown %}
+
+{% block content %}
+    <div class="container">
+        <div class="p-2 mb-2 bg-secondary text-white qa-title">
+            Q: {{ question.title }}
+        </div>
+        <div class="p-2 mb-2 bg-question">
+            <div class="row">
+                <div class="col-1 p-0">
+                    <div class="qainfo-details{% if question.total_points > 0 %} text-success{% endif%}{% if question.total_points < 0 %} text-danger{% endif%}">
+                        {{ question.total_points }}<br>
+                        Votes<br>
+                        <div class="mr-2 thumbs">
+                            <form action="{% url 'ask:qa_question_vote' question.id %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{{ request.path }}">
+                                <input type="hidden" name="upvote" value="on">
+                                <button type="submit" class="btn btn-sm thumbs-btn" data-toggle="tooltip" data-placement="top" title="Vote Up this question"><i class="far fa-thumbs-up"></i></button>
+                            </form>
+                        </div>
+                        <div class="thumbs">
+                            <form action="{% url 'ask:qa_question_vote' question.id %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{{ request.path }}">
+                                <button type="submit" class="btn btn-sm thumbs-btn" data-toggle="tooltip" data-placement="bottom" title="Vote Down this question"><i class="far fa-thumbs-down"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="qainfo-details">
+                        {{ question.hit_count.hits }}<br>
+                        Views
+                    </div>
+                </div>
+                <div class="col-11 pl-4">
+                    {{ question.description|markdown }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-1 p-0"></div>
+                <div class="col-11 p-0">
+                    {% for tag in question.tags.all %}
+                        <div class="p-1 mr-2 tags">
+                            <a href="{% url 'ask:qa_tag' tag.slug %}"><tag>{{ tag.slug }}</tag></a>
+                        </div>
+                    {% endfor %}
+                    <p class="float-right m-0">asked {{ question.date }} by <a href="{% url 'ask:qa_profile' question.user.id %}">{{ question.user.username }}</a></p>
+                    <hr class="m-2"/>
+                    <div class="pl-5">
+                        {% for comment in question.qaquestioncomment_set.all %}
+                            <div class="p-2 mb-2 bg-comment">
+                                <small>
+                                    commented {{ comment.date }} by <a href="{% url 'ask:qa_profile' comment.user.id %}">{{ comment.user.username }}</a>
+                                    {% if comment.user == user %}
+                                        <a href="{% url 'ask:qa_update_question_comment' comment.id %}" class="float-right">
+                                            Edit &nbsp;
+                                        </a>
+                                    {% endif %}
+                                    <hr class="m-1"/>
+                                    {{ comment.comment_text }}
+                                </small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                     <a class="btn btn-primary btn-sm pull-right" href="{% url 'ask:qa_create_question_comment' question.id %}" role="button">
+                        <i class="far fa-comment-alt"></i> Add a comment...
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-2 mb-2 bg-{% if num_answers == 0 %}danger{% elif question.has_accepted_answer %}success{% else %}warning{% endif %} text-white qa-title">
+            {{ num_answers }} Answers
+        </div>
+        {% for answer in answers %}
+            <div class="p-2 mb-2 bg-question {% if answer.answer %}border border-success rounded{% endif %}">
+                <div class="row">
+                    <div class="col-1 p-0">
+                        <div class="qainfo-details{% if answer.total_points > 0 %} text-success{% endif%}{% if answer.total_points < 0 %} text-danger{% endif%}">
+                            {{ answer.total_points }}<br>
+                            Votes<br>
+                            <div class="mr-2 thumbs">
+                                <form action="{% url 'ask:qa_answer_vote' answer.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                    <input type="hidden" name="upvote" value="on">
+                                    <button type="submit" class="btn btn-sm thumbs-btn" data-toggle="tooltip" data-placement="top" title="Vote Up this answer"><i class="far fa-thumbs-up"></i></button>
+                                </form>
+                            </div>
+                            <div class="thumbs">
+                                <form action="{% url 'ask:qa_answer_vote' answer.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="next" value="{{ request.path }}">
+                                    <button type="submit" class="btn btn-sm thumbs-btn" data-toggle="tooltip" data-placement="bottom" title="Vote Down this answer"><i class="far fa-thumbs-down"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                        <hr>
+                        {% if user.is_authenticated and answer.question.user == user and answer.question.closed == False %}
+                            <form action="{% url 'ask:qa_answer_question' answer.id %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{{ request.path }}"/>
+                                <center>
+                                    <button type="submit" class="btn thumbs-btn" data-toggle="tooltip" data-placement="bottom" title="Accept this answer">
+                                        <i class="fas fa-check fa-2x text-{% if answer.answer %}success{% else %}muted{% endif %}"></i>
+                                    </button>
+                                </center>
+                            </form>
+                        {% else %}
+                            <div class="qainfo-details">
+                                <center>
+                                    <i class="fas fa-check fa-2x text-{% if answer.answer %}success{% else %}muted{% endif %}"></i>
+                                </center>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-11 pl-4">
+                        {{ answer.answer_text|markdown }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-1 p-0"></div>
+                    <div class="col-11 p-0">
+                        <p class="float-right m-0">answered {{ answer.date }} by <a href="{% url 'ask:qa_profile' answer.user.id %}">{{ answer.user.username }}</a></p>
+                        <br><hr class="m-2"/>
+                        <div class="pl-5">
+                            {% for comment in answer.qaanswercomment_set.all %}
+                                <div class="p-2 mb-2 bg-comment">
+                                    <small>
+                                        commented {{ comment.date }} by <a href="{% url 'ask:qa_profile' comment.user.id %}">{{ comment.user.username }}</a>
+                                        {% if comment.user == user %}
+                                            <a href="{% url 'ask:qa_update_answer_comment' comment.id %}" class="float-right">
+                                                Edit &nbsp;
+                                            </a>
+                                        {% endif %}
+                                        <hr class="m-1"/>
+                                        {{ comment.comment_text }}
+                                    </small>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <a class="btn btn-primary btn-sm pull-right" href="{% url 'ask:qa_create_answer_comment' answer.id %}" role="button">
+                            <i class="far fa-comment-alt"></i> Add a comment...
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="mt-4 p-3 bg-warning">
+            <h4>Your Answer</h4>
+            <p>
+            Thanks for contributing an answer on PL !<br>
+            Please be sure to answer the question. Provide details and share your research!
+            <br>
+            But avoid asking for help, clarification, or responding to other answers (use comments for this).</p>
+        </div>
+        <form class="mb-4" method="post" action="{% url 'ask:qa_detail' question.id %}">
+            {% csrf_token %}
+            <textarea style="width:100%" name="answer" rows="6" tabindex="101" data-wz-state="8" data-min-length="">{{answer_text}}</textarea>
+            <br>
+            <input class="btn pull-right btn-success" type="submit" value="Submit Answer" />
+        </form>
+    </div>
+{% endblock %}

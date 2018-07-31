@@ -46,7 +46,7 @@ class Filebrowser():
     """
     
     def __init__(self, request, path='home', root=None):
-        real = (path).split('/')
+        real = path.split('/')
         if real[0] == "home":
             real[0] = str(request.user.id)
         
