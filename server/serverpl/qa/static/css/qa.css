@@ -1,6 +1,15 @@
 body {
     background: #F5F9FA !important;
 }
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    background-color: #6c757d !important;
+    color: white;
+}
+
+.nav-tabs .nav-link, .nav-tabs .nav-link {
+    background-color: white !important;
+    color: black;
+}
 
 .qa-title {
     font-weight: bold;

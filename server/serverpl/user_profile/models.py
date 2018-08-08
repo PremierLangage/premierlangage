@@ -14,11 +14,13 @@ from os.path import join, isdir
 from enumfields import EnumIntegerField
 
 from django.conf import settings
+from django.core.files import File
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+from user_profile.utils import avatar_path, generate_identicon
 from user_profile.enums import Role, EditorTheme, ColorBlindness
 
 from filebrowser.models import Directory
@@ -38,6 +40,7 @@ class Profile(models.Model):
     activity = models.ManyToManyField(Activity, blank=True)
     confirm = models.BooleanField(default=True)
     rep = models.IntegerField(default=0)
+    avatar = models.ImageField(upload_to=avatar_path, blank=True)
     
     
     def mod_rep(self, added_points):
@@ -45,19 +48,20 @@ class Profile(models.Model):
         self.rep += added_points
         self.save()
     
-    
     def is_admin(self):
         return (self.role == Role.ADMINISTRATOR or self.user.is_staff or self.user.is_superuser)
     
     
     def can_load(self):
         return self.role <= Role.INSTRUCTOR or self.is_admin()
-    
+
      
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):
         if created:
             profile = Profile.objects.create(user=instance)
+            profile.avatar.save(instance.username, File(generate_identicon(instance)))
+            profile.save()
     
     
     @receiver(post_save, sender=User)

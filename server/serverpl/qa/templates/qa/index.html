@@ -2,48 +2,63 @@
 
 {% load static %}
 
-{% block content %}
-    <div class="container">
-        <div class="p-3 pl-5 mb-2 bg-secondary text-white qa-title">
-            Questions Récentes
-            <a role="button" href="{% url 'ask:qa_create_question' %}" class="btn btn-primary float-right">
-                <i class="fas fa-question"></i> Ask a question
-            </a>
-            <form method="GET" class="float-right" action="{% url 'ask:qa_search' %}">
-                  <input type="search" style="width: 90%;" value="" name="word" placeholder="search" />
-            </form>
+{% block content_qa %}
+    <ul class="nav nav-tabs nav-justified" id="tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link {% if active == 'questions' %}active{% endif %}" id="recent-tab" data-toggle="tab" href="#recent" role="tab" aria-controls="recent" aria-selected="{% if active == 'questions' %}true{% else %}false{% endif %}">Recents</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if active == 'noans' %}active{% endif %}" id="noans-tab" data-toggle="tab" href="#noans" role="tab" aria-controls="noans" aria-selected="{% if active == 'noans' %}true{% else %}false{% endif %}">Not Answered</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if active == 'popular' %}active{% endif %}" id="popular-tab" data-toggle="tab" href="#popular" role="tab" aria-controls="popular" aria-selected="{% if active == 'popular' %}true{% else %}false{% endif %}">Populars</a>
+        </li>
+        {% if request.user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link {% if active == 'usersq' %}active{% endif %}" id="usersq-tab" data-toggle="tab" href="#usersq" role="tab" aria-controls="usersq" aria-selected="{% if active == 'usersq' %}true{% else %}false{% endif %}">My Questions</a>
+            </li>
+        {% endif %}
+    </ul>
+    
+    <div class="tab-content mb-5">
+        <div class="tab-pane fade{% if active == 'questions' %} show active{% endif %}" id="recent" role="tabpanel" aria-labelledby="recent-tab">
+            {% for question in questions %}
+                {% include 'qa/list_questions.html' %}
+            {% endfor %}
+            {% with paginator=questions active_q='questions' %}
+                {% include 'qa/paginator.html' %}
+            {% endwith %}
         </div>
-        {% for question in questions %}
-        <div class="p-3 mb-0 bg-question {% if question.has_accepted_answer %}border border-success{% endif %}">
-            <div class="row">
-                <div class="col-1 p-0">
-                    <div class="qainfo">
-                        {{ question.hit_count.hits }}<br>
-                        Views
-                    </div>
-                </div>
-                <div class="col-1 p-0">
-                    <div class="qainfo {% if question.total_points > 0 %} text-success{% elif question.total_points < 0 %} text-danger{% endif%}">
-                        {{ question.total_points }}<br>
-                        Votes
-                    </div>
-                </div><div class="col-1 p-0">
-                    <div class="qainfo{% if question.num_answers == 0 %} text-danger{% elif question.has_accepted_answer %} text-success{% endif %}">
-                        {{ question.num_answers }}<br>
-                        Answers
-                    </div>
-                </div>
-                <div class="col-9 pl-4">
-                    <a href="{% url 'ask:qa_detail' question.id %}">{{ question.title }}</a><br>
-                    {% for tag in question.tags.all %}
-                        <div class="p-1 mr-2 tags">
-                            <a href="{% url 'ask:qa_tag' tag.slug %}"><tag>{{ tag.slug }}</tag></a>
-                        </div>
-                    {% endfor %}
-                    <p class="float-right m-0"><small>asked {{ question.date }} by <a href="{% url 'ask:qa_profile' question.user.id %}">{{ question.user.username }}</small></a></p>
-                </div>
-            </div>
+        
+        
+        <div class="tab-pane fade{% if active == 'noans' %} show active{% endif %}" id="noans" role="tabpanel" aria-labelledby="noans-tab">
+            {% for question in noans %}
+                {% include 'qa/list_questions.html' %}
+            {% endfor %}
+            {% with paginator=noans active_q='noans' %}
+                {% include 'qa/paginator.html' %}
+            {% endwith %}
         </div>
-        {% endfor %}
+        
+        
+        <div class="tab-pane fade{% if active == 'popular' %} show active{% endif %}" id="popular" role="tabpanel" aria-labelledby="popular-tab">
+            {% for question in popular %}
+                {% include 'qa/list_questions.html' %}
+            {% endfor %}
+            {% with paginator=popular active_q='popular' %}
+                {% include 'qa/paginator.html' %}
+            {% endwith %}
+        </div>
+        
+        
+        <div class="tab-pane fade{% if active == 'usersq' %} show active{% endif %}" id="usersq" role="tabpanel" aria-labelledby="usersq-tab">
+            {% for question in usersq %}
+                {% include 'qa/list_questions.html' %}
+            {% endfor %}
+            {% with paginator=usersq active_q='usersq' %}
+                {% include 'qa/paginator.html' %}
+            {% endwith %}
+        </div>
+        
     </div>
 {% endblock %}

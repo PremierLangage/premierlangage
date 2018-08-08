@@ -14,8 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 
+from django.conf import settings
 from django.conf.urls import include, url
+from django.conf.urls.static import static
 from django.contrib import admin
+
 from classmanagement.views import index
 
 urlpatterns = [
@@ -29,4 +32,4 @@ urlpatterns = [
     url(r'^ask/',          include('qa.urls',              namespace='ask')),
     url(r'^markdown/',     include('django_markdown.urls', namespace='markdown')),
     url(r'^admin/', admin.site.urls),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

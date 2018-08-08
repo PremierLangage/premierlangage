@@ -1,4 +1,4 @@
-import os
+import os, hashlib
 from django.contrib.messages import constants as messages
 
 
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'qa',
     'taggit',
     'hitcount',
+    'django_http_method',
     'django_markdown',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -77,7 +78,7 @@ SESSION_COOKIE_AGE = 5*365*24*60*60
 
 
 # Redirect when not authenticated to
-LOGIN_URL = "/playexo/not_authenticated/"
+LOGIN_URL = "/playexo/login/"
 
 
 # URLs module
@@ -152,6 +153,8 @@ LTI_OAUTH_CREDENTIALS = {
     'moodle': 'secret',
 }
 
+LOGIN_REDIRECT_URL = '/'
+
 
 #Logger information
 LOGGING = {
@@ -194,48 +197,62 @@ LOGGING = {
             'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
         },
-        'sandbox':{
-            'handlers': ['console', 'mail_admins'],
-            'level': 'INFO',
-        },
-        'classmanagement':{
-            'handlers': ['console', 'mail_admins'],
-            'level': 'INFO',
-        },
-        'documentation':{
-            'handlers': ['console', 'mail_admins'],
-            'level': 'INFO',
-        },
-        'filebrowser':{
-            'handlers': ['console', 'mail_admins'],
-            'level': 'INFO',
-        },
-        'playexo':{
-            'handlers': ['console', 'mail_admins'],
-            'level': 'INFO',
-        },
-        'django_auth_lti':{
-            'handlers': ['console', 'mail_admins'],
-            'level': 'INFO',
-        },
     },
 }
 
 # Ask's settings
+# Reputation contains the points awarded
+# Right contains the points needed for doing action, -1 to disable (do not apply for the owner)
 QA_SETTINGS = {
     'qa_messages': True,
     'qa_description_optional': False,
     'reputation': {
-        'CREATE_QUESTION': 0,
-        'CREATE_ANSWER': 0,
-        'CREATE_ANSWER_COMMENT': 0,
-        'CREATE_QUESTION_COMMENT': 0,
-        'ACCEPT_ANSWER': 0,
-        'UPVOTE_QUESTION': 0,
-        'UPVOTE_ANSWER': 0,
-        'DOWNVOTE_QUESTION': 0,
-        'DOWNVOTE_ANSWER': 0,
-    }
+        'CREATE_QUESTION': 10,
+        'CREATE_ANSWER': 5,
+        'CREATE_ANSWER_COMMENT': 2,
+        'CREATE_QUESTION_COMMENT': 2,
+        'RECEIVE_QUESTION_COMMENT': 1,
+        'RECEIVE_ANSWER_COMMENT': 1,
+        'ANSWER_ACCEPTED': 20, # Half for the acceptor
+        'UPVOTE_QUESTION': 5,
+        'UPVOTE_ANSWER': 10,
+        'DOWNVOTE_QUESTION': -5,
+        'DOWNVOTE_ANSWER': -10,
+    },
+    'right': {
+        'POST_QUESTION': 0,
+        'POST_ANSWER': 0,
+        'POST_COMMENT': 0,
+        'EDIT_QUESTION': 500,
+        'EDIT_ANSWER': 500,
+        'EDIT_COMMENT': -1,
+        'DELETE_QUESTION': -1,
+        'DELETE_ANSWER': -1,
+        'DELETE_COMMENT': -1,
+    },
+}
+
+# Hitcount settings
+HITCOUNT_KEEP_HIT_ACTIVE = { 'days': 1 }
+
+
+# Settings used for the creation of identicon (default avatar)
+IDENTICON_SETTINGS = {
+    'background': 'rgb(224,224,224)',
+    'foreground': [ 
+        'rgb(45,79,255)',
+        'rgb(254,180,44)',
+        'rgb(226,121,234)',
+        'rgb(30,179,253)',
+        'rgb(232,77,65)',
+        'rgb(49,203,115)',
+    ],
+    'row': 15,
+    'col': 15,
+    'padding': (20, 20, 20, 20),
+    'size': (300, 300),
+    'digest': hashlib.sha1,
+    'output_format': 'png',
 }
 
 
@@ -251,8 +268,8 @@ USE_TZ = True
 STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'static'))
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../tmp'))
-MEDIA_URL = '/tmp/'
+MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'media'))
+MEDIA_URL = '/media/'
 
 
 # Default Filebrowser's path

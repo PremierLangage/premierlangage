@@ -1,3 +1,5 @@
+import math
+
 from annoying.fields import AutoOneToOneField
 
 from django.conf import settings
@@ -13,6 +15,8 @@ from hitcount.models import HitCountMixin
 from taggit.managers import TaggableManager
 
 from qa.mixins import DateMixin
+from qa.utils import epoch_seconds
+
 from user_profile.models import Profile
 
 
@@ -23,13 +27,23 @@ class QAQuestion(models.Model, HitCountMixin, DateMixin):
     title = models.CharField(max_length=200, blank=False)
     description = MarkdownField()
     pub_date = models.DateTimeField('date published', auto_now_add=True)
+    update_date = models.DateTimeField('date updated', null=True)
+    update_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL,
+                                    related_name="updated_question")
     tags = TaggableManager()
-    reward = models.IntegerField(default=0)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     closed = models.BooleanField(default=False)
-    positive_votes = models.IntegerField(default=0)
-    negative_votes = models.IntegerField(default=0)
-    total_points = models.IntegerField(default=0)
+    points = models.IntegerField(default=0)
+    popularity = models.FloatField(default=0)
+    
+    
+    def mod_points(self, points):
+        self.points += points
+        
+        order = math.log(max(abs(self.points), 1), 10)
+        sign = 1 if self.points > 0 else -1 if self.points < 0 else 0
+        seconds = epoch_seconds(self.pub_date) - 1134028003
+        self.popularity = round(sign * order + seconds / 45000, 7)
     
     
     def has_accepted_answer(self):
@@ -37,18 +51,16 @@ class QAQuestion(models.Model, HitCountMixin, DateMixin):
     
     
     def save(self, *args, **kwargs):
-        if not self.id:
+        if not self.pk:
             self.slug = slugify(self.title)
-            try:
-                points = settings.QA_SETTINGS['reputation']['CREATE_QUESTION']
-
-            except KeyError:
-                points = 0
-
-            self.user.profile.mod_rep(points)
-
-        self.total_points = self.positive_votes - self.negative_votes
+            self.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['CREATE_QUESTION'])
         super(QAQuestion, self).save(*args, **kwargs)
+    
+    
+    def delete(self, *args, **kwargs):
+        self.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['CREATE_QUESTION'])
+        super(QAQuestion, self).delete(*args, **kwargs)
+    
     
     def __str__(self):
         return self.title
@@ -61,53 +73,127 @@ class QAAnswer(models.Model, DateMixin):
     question = models.ForeignKey(QAQuestion, on_delete=models.CASCADE)
     answer_text = MarkdownField()
     pub_date = models.DateTimeField('date published', auto_now_add=True)
-    updated = models.DateTimeField('date updated', auto_now=True)
+    update_date = models.DateTimeField('date updated', null=True)
+    update_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL,
+                                    related_name="updated_answer")
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     answer = models.BooleanField(default=False)
-    positive_votes = models.IntegerField(default=0)
-    negative_votes = models.IntegerField(default=0)
-    total_points = models.IntegerField(default=0)
-
+    points = models.IntegerField(default=0)
+    
+    
     def save(self, *args, **kwargs):
-        try:
-            points = settings.QA_SETTINGS['reputation']['CREATE_ANSWER']
-    
-        except KeyError:
-            points = 0
-    
-        self.user.profile.mod_rep(points)
-        self.total_points = self.positive_votes - self.negative_votes
+        if self.pk is None:
+            self.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['CREATE_ANSWER'])
         super(QAAnswer, self).save(*args, **kwargs)
+    
+    
+    def delete(self, *args, **kwargs):
+        self.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['CREATE_ANSWER'])
+        if self.answer:
+            answer.question.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['ANSWER_ACCEPTED']//2)
+            answer.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['ANSWER_ACCEPTED'])
+        super(QAAnswer, self).delete(*args, **kwargs)
     
     
     def __str__(self):  # pragma: no cover
         return self.answer_text
     
+    
     class Meta:
         ordering = ['-answer', '-pub_date']
+
 
 
 class VoteParent(models.Model):
     """Abstract model to define the basic elements to every single vote."""
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     value = models.BooleanField(default=True)
-
+    
+    
     class Meta:
         abstract = True
+
 
 
 class QAAnswerVote(VoteParent):
     """Model class to contain the votes for the answers."""
     answer = models.ForeignKey(QAAnswer, on_delete=models.CASCADE)
-
+    
+    
+    def save(self, *args, **kwargs):
+        if self.pk is None: # New vote
+            if self.value:
+                self.answer.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['UPVOTE_ANSWER'])
+            else:
+                self.answer.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['DOWNVOTE_ANSWER'])
+        else: # Changed vote
+            if self.value:
+                self.answer.user.profile.mod_rep(
+                    settings.QA_SETTINGS['reputation']['UPVOTE_ANSWER']
+                  - settings.QA_SETTINGS['reputation']['DOWNVOTE_ANSWER']
+                )
+            else:
+                self.answer.user.profile.mod_rep(
+                    settings.QA_SETTINGS['reputation']['DOWNVOTE_ANSWER']
+                  - settings.QA_SETTINGS['reputation']['UPVOTE_ANSWER']
+                )
+        super(QAAnswerVote, self).save(*args, **kwargs)
+    
+    
+    def delete(self, *args, **kwargs):
+        if self.value:
+            self.answer.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['UPVOTE_ANSWER'])
+        else:
+            self.answer.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['DOWNVOTE_ANSWER'])
+        super(QAAnswerVote, self).delete(*args, **kwargs)
+    
+    
     class Meta:
         unique_together = (('user', 'answer'),)
+
 
 
 class QAQuestionVote(VoteParent):
     """Model class to contain the votes for the questions."""
     question = models.ForeignKey(QAQuestion, on_delete=models.CASCADE)
-
+    
+    
+    def save(self, *args, **kwargs):
+        if self.pk is None: # New vote
+            if self.value:
+                self.question.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['UPVOTE_QUESTION'])
+                self.question.mod_points(1)
+            else:
+                self.question.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['DOWNVOTE_QUESTION'])
+                self.question.mod_points(-1)
+        else: # Changed vote
+            if self.value:
+                self.question.user.profile.mod_rep(
+                    settings.QA_SETTINGS['reputation']['UPVOTE_QUESTION']
+                  - settings.QA_SETTINGS['reputation']['DOWNVOTE_QUESTION']
+                )
+                self.question.mod_points(2)
+            else:
+                self.question.user.profile.mod_rep(
+                    settings.QA_SETTINGS['reputation']['DOWNVOTE_QUESTION']
+                  - settings.QA_SETTINGS['reputation']['UPVOTE_QUESTION']
+                )
+                self.question.mod_points(-2)
+        self.question.save()
+        super(QAQuestionVote, self).save(*args, **kwargs)
+    
+    
+    def delete(self, *args, **kwargs):
+        if self.value:
+            self.question.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['UPVOTE_QUESTION'])
+            self.question.points -= 1
+        else:
+            self.question.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['DOWNVOTE_QUESTION'])
+            self.question.points += 1
+        self.question.save()
+        super(QAQuestionVote, self).delete(*args, **kwargs)
+    
+    
     class Meta:
         unique_together = (('user', 'question'),)
 
@@ -116,6 +202,8 @@ class QAQuestionVote(VoteParent):
 class BaseComment(models.Model, DateMixin):
     """Abstract model to define the basic elements to every single comment."""
     pub_date = models.DateTimeField('date published', auto_now_add=True)
+    update_date = models.DateTimeField('date updated', null=True)
+    comment_text = models.CharField(max_length=400)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     class Meta:
@@ -125,33 +213,43 @@ class BaseComment(models.Model, DateMixin):
         return self.comment_text
 
 
+
 class QAAnswerComment(BaseComment):
     """Model class to contain the comments for the answers."""
-    comment_text = MarkdownField()
     answer = models.ForeignKey(QAAnswer, on_delete=models.CASCADE)
-
+    update_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL,
+                                    related_name="updated_answer_comment")
+    
+    
     def save(self, *args, **kwargs):
-        try:
-            points = settings.QA_SETTINGS['reputation']['CREATE_ANSWER_COMMENT']
-
-        except KeyError:
-            points = 0
-
-        self.user.profile.mod_rep(points)
+        if self.pk is None:
+            self.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['CREATE_ANSWER_COMMENT'])
+            self.answer.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['RECEIVE_ANSWER_COMMENT'])
         super(QAAnswerComment, self).save(*args, **kwargs)
+    
+    
+    def delete(self, *args, **kwargs):
+        self.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['CREATE_ANSWER_COMMENT'])
+        self.answer.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['RECEIVE_ANSWER_COMMENT'])
+        super(QAAnswerComment, self).delete(*args, **kwargs)
+
 
 
 class QAQuestionComment(BaseComment):
     """Model class to contain the comments for the questions."""
-    comment_text = models.CharField(max_length=250)
     question = models.ForeignKey(QAQuestion, on_delete=models.CASCADE)
-
+    update_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL,
+                                    related_name="updated_question_comment")
+    
+    
     def save(self, *args, **kwargs):
-        try:
-            points = settings.QA_SETTINGS['reputation']['CREATE_QUESTION_COMMENT']
-
-        except KeyError:
-            points = 0
-
-        self.user.profile.mod_rep(points)
+        if self.pk is None:
+            self.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['CREATE_QUESTION_COMMENT'])
+            self.question.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['RECEIVE_QUESTION_COMMENT'])
         super(QAQuestionComment, self).save(*args, **kwargs)
+    
+    
+    def delete(self, *args, **kwargs):
+        self.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['CREATE_QUESTION_COMMENT'])
+        self.question.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['RECEIVE_QUESTION_COMMENT'])
+        super(QAQuestionComment, self).delete(*args, **kwargs)

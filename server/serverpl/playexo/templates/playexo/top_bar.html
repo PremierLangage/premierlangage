@@ -19,9 +19,11 @@
             
             <div class="collapse navbar-collapse" id="navbar">        
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/"><i class="fas fa-graduation-cap"></i> Mes Cours</a>
-                    </li>
+                    {% if request.user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/"><i class="fas fa-graduation-cap"></i> Mes Cours</a>
+                        </li>
+                    {% endif %}
                     {% if request.user.profile.can_load %}
                         <li class="nav-item">
                             <a class="nav-link" href="/filebrowser/home"><i class="fas fa-cloud"></i> Gitload</a>
@@ -32,11 +34,9 @@
                             <a class="nav-link" href="/documentation/"></i><i class="fas fa-book"></i> Documentation</a>
                         </li>
                     {% endif %}
-                    {% if request.user.profile.can_load %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="/ask/"></i><i class="fas fa-question"></i> FAQ</a>
-                        </li>
-                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/ask/"></i><i class="fas fa-question"></i> FAQ</a>
+                    </li>
                     {% if request.user.profile.is_admin or request.user.is_superuser %}
                         <li class="nav-item">
                             <a class="nav-link" href="/admin/"><i class="fas fa-cog"></i> Administration</a>
@@ -45,19 +45,25 @@
                 </ul>
             
                 <ul class="navbar-nav navbar-right">
-                    <li class="nav-item dropdown-nav">
-                        <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#">
-                            <i class="fas fa-user"></i>
-                            {% firstof request.user.get_full_name request.user.get_username "Non Connecté" %}
+                    {% if request.user.is_authenticated %}
+                        <li class="nav-item dropdown-nav">
+                            <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#">
+                                <img width=20 class="float-left" src="{{ request.user.profile.avatar.url }}">&nbsp;
+                                {% firstof request.user.get_full_name request.user.get_username %}
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right mr-4" aria-labelledby="navbarDropdownMenuLink">
+                                <a class="dropdown-item"><i class="fas fa-envelope"></i>&emsp;{% firstof user.email "N/A" %}</a>
+                                <a class="dropdown-item" href="/profile/" style="color: inherit;"><i class="fas fa-cog"></i>&emsp;Paramètres</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/playexo/not_authenticated/"><i class="fas fa-power-off fa-lg"></i></a>
+                        </li>
+                    {% else %}
+                        <a class="nav-link" href="{% url 'classmanagement:login' %}">
+                            <i class="fas fa-user"></i> Log-in
                         </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item"><i class="fas fa-envelope"></i>&emsp;{% firstof user.email "N/A" %}</a>
-                            <a class="dropdown-item" href="/profile/" style="color: inherit;"><i class="fas fa-cog"></i>&emsp;Paramètres</a>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/playexo/not_authenticated/"><i class="fas fa-power-off fa-lg"></i></a>
-                    </li>
+                    {% endif %}
                 </ul>
             </div>
         </nav>

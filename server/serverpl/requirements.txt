@@ -3,6 +3,7 @@ django
 django-annoying
 django-celery-results
 django-hitcount
+django-http-method
 django-markdown-deux
 django-markdown-app
 django-taggit
@@ -15,6 +16,7 @@ mkdocs
 mock
 oauth2
 psycopg2
+pydenticon
 pytest
 pytest-django
 python-magic
