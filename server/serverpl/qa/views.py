@@ -44,14 +44,18 @@ class IndexView(View):
         
         questions = QAQuestion.objects.order_by("-pub_date")
         noans = QAQuestion.objects.order_by('-pub_date').filter(qaanswer__isnull=True)
-        usersq = QAQuestion.objects.order_by('-pub_date').filter(user=request.user)
         popular = QAQuestion.objects.order_by('-popularity')
+        if request.user.is_authenticated:
+            usersq = QAQuestion.objects.order_by('-pub_date').filter(user=request.user)
+        else:
+            usersq = []
         
         if tag:
             questions = question.filter(tags__name__contains=tag)
             noans = noans.filter(tags__name__contains=tag)
-            usersq = usersq.filter(tags__name__contains=tag)
             popular = popular.filter(tags__name__contains=tag)
+            if request.user.is_authenticated:
+                usersq = usersq.filter(tags__name__contains=tag)
             
         if query:
             include, exclude = parse_query(query)
@@ -65,13 +69,15 @@ class IndexView(View):
                      if exclude else Q())
             questions = questions.filter(include & exclude)
             noans = noans.filter(include & exclude)
-            usersq = usersq.filter(include & exclude)
             popular = popular.filter(include & exclude)
+            if request.user.is_authenticated:
+                usersq = usersq.filter(include & exclude)
         
         questions = questions.annotate(num_answers=Count('qaanswer'))
         noans = noans.annotate(num_answers=Count('qaanswer'))
-        usersq = usersq.annotate(num_answers=Count('qaanswer'))
         popular = popular.annotate(num_answers=Count('qaanswer'))
+        if request.user.is_authenticated:
+            usersq = usersq.annotate(num_answers=Count('qaanswer'))
         
         return render(request, self.template_name, {
             "questions": Paginator(questions, self.question_per_page).get_page(page if page else 1),
@@ -248,9 +254,11 @@ class AbstractCommentView(HttpMethodMixin):
         comment = self.model.objects.filter(pk=pk)
         if not comment:
             raise Http404("Comment with ID '" + str(pk) + "' does not exists")
+        
         params = dict(request.PATCH.dict())
-        params['update_date'] = timezone.now()
         del params['csrfmiddlewaretoken']
+        params['update_date'] = timezone.now()
+        params['update_user'] = request.user
         comment.update(**params)
         
         return redirect(reverse('ask:question', args=[question_pk]))

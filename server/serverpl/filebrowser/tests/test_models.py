@@ -60,9 +60,14 @@ class ModelTestCase(TestCase):
         user4 = User.objects.create_user(username='user4', password='12345')
         self.assertTrue(user4 in d.read_auth.all())
         self.assertTrue(user4 not in d.write_auth.all())
-
+    
+    
     def test_is_repository(self):
         self.d.remote=True
         self.assertTrue(self.d.is_repository())
         self.d.remote=False
         self.assertFalse(self.d.is_repository())
+    
+    
+    def test_str(self):
+        self.assertEqual(str(self.d), '<Directory: 100>')

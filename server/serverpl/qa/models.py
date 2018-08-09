@@ -31,7 +31,7 @@ class QAQuestion(models.Model, HitCountMixin, DateMixin):
     update_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL,
                                     related_name="updated_question")
     tags = TaggableManager()
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     closed = models.BooleanField(default=False)
     points = models.IntegerField(default=0)
     popularity = models.FloatField(default=0)
@@ -76,7 +76,7 @@ class QAAnswer(models.Model, DateMixin):
     update_date = models.DateTimeField('date updated', null=True)
     update_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL,
                                     related_name="updated_answer")
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     answer = models.BooleanField(default=False)
     points = models.IntegerField(default=0)
     
@@ -90,8 +90,8 @@ class QAAnswer(models.Model, DateMixin):
     def delete(self, *args, **kwargs):
         self.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['CREATE_ANSWER'])
         if self.answer:
-            answer.question.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['ANSWER_ACCEPTED']//2)
-            answer.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['ANSWER_ACCEPTED'])
+            self.question.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['ANSWER_ACCEPTED']//2)
+            self.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['ANSWER_ACCEPTED'])
         super(QAAnswer, self).delete(*args, **kwargs)
     
     
@@ -106,7 +106,7 @@ class QAAnswer(models.Model, DateMixin):
 
 class VoteParent(models.Model):
     """Abstract model to define the basic elements to every single vote."""
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     value = models.BooleanField(default=True)
     
     
@@ -203,8 +203,10 @@ class BaseComment(models.Model, DateMixin):
     """Abstract model to define the basic elements to every single comment."""
     pub_date = models.DateTimeField('date published', auto_now_add=True)
     update_date = models.DateTimeField('date updated', null=True)
+    update_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL,
+                                    related_name="updated_comment")
     comment_text = models.CharField(max_length=400)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
 
     class Meta:
         abstract = True

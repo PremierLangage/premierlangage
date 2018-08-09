@@ -6,14 +6,16 @@
 #  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
 #  
 
+from os.path import join
 
 from django.test import TestCase
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 
 from filebrowser.models import Directory
 
-from loader.utils import get_location, extends_dict
+from loader.utils import get_location, extends_dict, displayed_path
 
 
 
@@ -64,3 +66,15 @@ class UtilsTestCase(TestCase):
         result = { 'name': 'Testdic', 'newkey': 'values', 'emptylist': ['elem'], 'emptydic': {'key': 'elem'}, 'author': 'Tester' }
         
         self.assertEqual(extends_dict(target, source), result)
+    
+    
+    def test_displayed_path(self):
+        path1 = join(settings.FILEBROWSER_ROOT, '1/a/path')
+        path2 = join(settings.FILEBROWSER_ROOT, 'not_int/a/path')
+        path3 = 'not_int/a/path'
+        path4 = '1/a/path'
+        
+        self.assertEqual(displayed_path(path1), 'home/a/path')
+        self.assertEqual(displayed_path(path2), 'not_int/a/path')
+        self.assertEqual(displayed_path(path3), 'not_int/a/path')
+        self.assertEqual(displayed_path(path4), 'home/a/path')

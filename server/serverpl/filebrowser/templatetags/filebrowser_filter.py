@@ -58,7 +58,7 @@ def string(var):
 
 
 @register.filter(name='opt_filter')
-def filter(option, path):
+def opt_filter(option, path):
     
     if isinstance(option.filter, (list, tuple)):
         bol = True;
@@ -73,7 +73,7 @@ def filter(option, path):
 
 
 @register.filter(name='group_filter')
-def filter(group, path):
+def group_filter(group, path):
     if isinstance(group.filter, (list, tuple)):
         bol = True;
         for filter in group.filter:
@@ -123,7 +123,9 @@ def can_read(directory, user):
     if isinstance(directory, str):
         directory = Directory.objects.get(name=directory)
     
-    return user in directory.read_auth.all() or directory.write_auth.all() or directory.owner == user
+    return (directory.owner == user
+            or user in directory.read_auth.all() 
+            or user in directory.write_auth.all())
 
 
 @register.filter
@@ -131,7 +133,7 @@ def can_write(directory, user):
     if isinstance(directory, str):
         directory = Directory.objects.get(name=directory)
     
-    return user in directory.write_auth.all() or directory.owner == user
+    return directory.owner == user or user in directory.write_auth.all()
 
 
 @register.filter

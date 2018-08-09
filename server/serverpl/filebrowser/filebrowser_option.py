@@ -4,35 +4,16 @@
 #  filebrowser_option.py
 #  
 #  Copyright 2018 Coumes Quentin
-#  
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#  
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#  
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
-#  
-#  
 
-from collections import OrderedDict
 
 from django.contrib import messages
 from django.shortcuts import redirect, reverse
-
-from filebrowser import views
 
 from filebrowser.form import *
 from filebrowser.options import *
 from filebrowser.filter import *
 from filebrowser.models import Directory
+
 
 #####
 # Bootstrap button classes
@@ -45,25 +26,23 @@ RED = "-danger"
 YELLOW = "-warning"
 WHITE = "-light"
 BLACK = "-dark"
-
     # Outline
 OUTLINE = "-outline"
-
     # Size
 SMALL = "small"
 BIG = "big" 
-
 
 #####
 # Methods
 POST = 'POST'
 GET = 'GET'
 
-
 #####
 # Rights
 READ = 'R'
 WRITE = 'W'
+
+
 
 class FilebrowserOption():
     """ Class representing an option in the filebrowser.
@@ -109,9 +88,9 @@ class FilebrowserOption():
         self.classes = classes
         self.right = right
         
-        if form and method == GET:
+        if form and method == GET: # pragma: no cover
             raise ValueError("An option can't have a form while using GET method")
-        if require_confirmation and method == POST:
+        if require_confirmation and method == POST: # pragma: no cover
             raise ValueError("require_confirmation can't be True with a POST method")
 
 
@@ -119,9 +98,9 @@ class FilebrowserOption():
 class OptionsGroup():
     
     def __init__(self, name, options, icon=None, dropdown=True, filter=None, right=WRITE):
-        if (not icon and dropdown):
+        if (not icon and dropdown): # pragma: no cover
             raise ValueError('A FA5 icon must be provided if dropdown is True (default)')
-        for k in options.keys():
+        for k in options.keys(): # pragma: no cover
             if '-' in k:
                 raise ValueError("Dashes '-' are not allowed inside options key.")
         
@@ -137,7 +116,7 @@ class OptionsGroup():
 class OptionsCategory():
     
     def __init__(self, groups):
-        for k in groups.keys():
+        for k in groups.keys(): # pragma: no cover
             if '-' in k:
                 raise ValueError("Dashes '-' are not allowed inside groups key.")
         

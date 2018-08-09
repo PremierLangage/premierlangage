@@ -54,7 +54,7 @@ def is_not_directory_object(path):
 def is_remote(path):
     path = path if settings.FILEBROWSER_ROOT not in path else path.replace(settings.FILEBROWSER_ROOT+'/', '')
     parts = path.split('/')
-
+    
     directory = None
     try:
         directory = Directory.objects.get(name=parts[1])
@@ -68,11 +68,7 @@ def is_image(path):
         return False
     return magic.from_file(path, mime=True).split('/')[0] == 'image'
 
-def is_image(path):
-    if is_directory(path):
-        return False
-    return magic.from_file(path, mime=True).split('/')[0] == 'image'
-    
+
 def is_text(path):
     if is_directory(path):
         return False

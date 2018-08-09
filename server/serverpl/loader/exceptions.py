@@ -3,13 +3,13 @@
 #
 #  exceptions.py
 #  
-#  Copyright 2017 Dominique Revuz <dr@univ-mlv.fr>
 #  Copyright 2018 Coumes Quentin
-#
 
+from os.path import splitext, basename, normpath, join, normpath
 
 from django.conf import settings
-from os.path import splitext, basename, normpath, join, normpath
+
+from loader.utils import displayed_path
 
 
 
@@ -17,9 +17,7 @@ class SyntaxErrorPL(Exception):
     """Raised when a syntax error occured while parsing a file."""
 
     def __init__(self, path, line, lineno, message="Syntax error"):
-        real = path.split('/')
-        real[0] = 'home'
-        self.path = join(*real)
+        self.path = displayed_path(path)
         self.line = line
         self.message = message
         self.lineno = str(lineno)
@@ -33,9 +31,7 @@ class SemanticError(Exception):
     """Raised when a semantic error occured while parsing a file."""
 
     def __init__(self, path, line, lineno, message="Semantic error"):
-        real = path.split('/')
-        real[0] = 'home'
-        self.path = join(*real)
+        self.path = displayed_path(path)
         self.line = line
         self.message = message
         self.lineno = str(lineno)
@@ -49,9 +45,7 @@ class DirectoryNotFound(Exception):
     """Raised when a directory named with the syntax 'directory:path' couldn't be found in the database."""
     
     def __init__(self, path, line, name, lineno, message="Directory not found"):
-        real = path.split('/')
-        real[0] = 'home'
-        self.path = join(*real)
+        self.path = displayed_path(path)
         self.line = line
         self.name = name
         self.message = message
@@ -67,14 +61,10 @@ class FileNotFound(Exception):
     
     def __init__(self, path, line, path_not_found, lineno=None, message="File not found"):
         self.line = line
-        real = path.split('/')
-        real[0] = 'home'
-        self.path = join(*real)
+        self.path = displayed_path(path)
         self.message = message
         self.lineno = '' if not lineno else 'at line '+str(lineno)
-        real = path_not_found.split('/')
-        real[0] = 'home'
-        self.path_not_found = join(*real)
+        self.path_not_found = displayed_path(path_not_found)
         
     def __str__(self):
         return (normpath(self.path) + " " + self.lineno
@@ -88,9 +78,7 @@ class UnknownExtension(Exception):
     """Raised when the parsed file have an unknown extension"""
     
     def __init__(self, path, name, message="Unknown Extension"):
-        real = path.split('/')
-        real[0] = 'home'
-        self.path = join(*real)
+        self.path = displayed_path(path)
         self.name = basename(name)
         self.ext = splitext(name)[1] if splitext(name)[1] else "[NO EXTENSION]"
         self.message = message
@@ -112,11 +100,12 @@ class UnknownType(Exception):
         return self.message + " : '"+ self.typ + "' of parser '" + self.parser + "'"
 
 
+
 class MissingKey(Exception):
     """Raised when a key is missing in a parsed file"""
     
     def __init__(self, file_path, key, message="Missing key"):
-        self.path = file_path
+        self.path = displayed_path(file_path)
         self.key = key
         self.message = message
     

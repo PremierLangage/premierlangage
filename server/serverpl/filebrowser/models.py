@@ -47,7 +47,7 @@ class Directory(models.Model):
     public = models.BooleanField(default=False, blank=True)
     
     def __str__(self):
-        return self.name
+        return '<Directory: '+ self.name + '>'
     
     
     def save(self, *args, **kwargs):

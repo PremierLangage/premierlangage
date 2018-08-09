@@ -7,7 +7,11 @@
 #  
 
 from os.path import join, dirname, normpath, isfile
+
+from django.conf import settings
+
 from filebrowser.models import Directory
+
 
 def get_location(directory, path, current=""):
     """Return a tuple (directory, path)
@@ -50,3 +54,12 @@ def extends_dict(target, source):
             target[key] = value
     
     return target
+
+
+def displayed_path(path):
+    path = path.replace(settings.FILEBROWSER_ROOT, '')
+    p = [i for i in path.split('/') if i]
+    if p[0].isdigit():
+        p[0] = 'home'
+    
+    return join(*p)

@@ -226,9 +226,9 @@ QA_SETTINGS = {
         'EDIT_QUESTION': 500,
         'EDIT_ANSWER': 500,
         'EDIT_COMMENT': -1,
-        'DELETE_QUESTION': -1,
-        'DELETE_ANSWER': -1,
-        'DELETE_COMMENT': -1,
+        'DELETE_QUESTION': 2000,
+        'DELETE_ANSWER': 2000,
+        'DELETE_COMMENT': 2000,
     },
 }
 

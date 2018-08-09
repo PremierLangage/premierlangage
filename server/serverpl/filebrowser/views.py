@@ -35,7 +35,7 @@ from django.conf import settings
 def index(request, path="home"):
     """ Used by the filebrowser module to navigate """
     path = path.split('/')
-    if path[0].isdigit():
+    if path[0].isdigit(): # pragma: no cover
         raise Http404()
     
     return render(request, 'filebrowser/filebrowser.html', {
