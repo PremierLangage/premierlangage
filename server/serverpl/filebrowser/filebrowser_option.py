@@ -97,7 +97,7 @@ class FilebrowserOption():
 
 class OptionsGroup():
     
-    def __init__(self, name, options, icon=None, dropdown=True, filter=None, right=WRITE):
+    def __init__(self, name, options, icon=None, dropdown=True, filter=None):
         if (not icon and dropdown): # pragma: no cover
             raise ValueError('A FA5 icon must be provided if dropdown is True (default)')
         for k in options.keys(): # pragma: no cover
@@ -108,7 +108,6 @@ class OptionsGroup():
         self.icon = icon
         self.options = options
         self.dropdown = dropdown
-        self.right = right
         self.filter = filter
 
 
@@ -137,7 +136,7 @@ ENTRY_OPTIONS = OptionsCategory({
             "test":    FilebrowserOption("fas fa-check", "Test", test_pl_option,   size=BIG, method=GET, filter=is_pl, right=READ),
             "load":    FilebrowserOption("fas fa-play",  "Load", load_pltp_option, size=BIG, method=GET, filter=is_pltp, right=READ),
             "extract":  FilebrowserOption("fas fa-share-square","Extract",  extract_option, filter=is_archive, method=GET, size=BIG),
-        }, dropdown=False, right=READ),
+        }, dropdown=False),
     "options": OptionsGroup('Options', {
             "rename":   FilebrowserOption("fas fa-pencil-alt",  "Rename",   rename_option, form=RenameForm),
             "move":     FilebrowserOption("fas fa-arrow-right", "Move",     move_option, form=MoveForm, filter=is_not_directory_object),
@@ -145,7 +144,7 @@ ENTRY_OPTIONS = OptionsCategory({
             "download": FilebrowserOption("fas fa-download",    "Download", download_option, method=GET, right=READ),
             "display":  FilebrowserOption("fas fa-eye",         "Display",  display_option, filter=is_text, method=GET, balise=['target=_blank'], right=READ),
             "delete":   FilebrowserOption("fas fa-times",       "Delete",   delete_option, require_confirmation=True, method=GET, color=RED, filter=is_not_directory_object),
-        }, icon="fas fa-cog", right=READ),
+        }, icon="fas fa-cog"),
     "git": OptionsGroup('Git', {
             "add":      FilebrowserOption("fas fa-plus",   "Git Add",      add_option, method=GET),
             "commit":   FilebrowserOption("fas fa-edit",   "Git Commit",   commit_option, form=CommitForm),
@@ -161,11 +160,11 @@ ENTRY_OPTIONS = OptionsCategory({
 DIRECTORY_OPTIONS = OptionsCategory({
     "options": OptionsGroup('Options', {
             "mkdir":    FilebrowserOption("fas fa-folder",   "New directory", mkdir_option, form=RenameForm),
-            "new":      FilebrowserOption("fas fa-edit",     "New File",      new_file_option, form=RenameForm),
+            "new":      FilebrowserOption("fas fa-edit",     "New File",      new_file_option, form=NewFileForm),
             "upload":   FilebrowserOption("fas fa-upload",   "Upload File ",  upload_option, form=UploadForm),
             "download": FilebrowserOption("fas fa-download", "Download",      download_option, method=GET, right=READ),
             "clone":    FilebrowserOption("fas fa-cloud-download-alt", "Git Clone", clone_option, form=CloneForm),
-        }, icon='fas fa-cog', right=READ),
+        }, icon='fas fa-cog'),
     "git": OptionsGroup('Git', {
             "push":     FilebrowserOption("fas fa-cloud-upload-alt",   "Git Push",        push_option, form=LoginForm),
             "pull":     FilebrowserOption("fas fa-cloud-download-alt", "Git Pull",        pull_option, form=LoginForm),

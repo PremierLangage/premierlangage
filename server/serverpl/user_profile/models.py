@@ -48,8 +48,9 @@ class Profile(models.Model):
         self.rep += added_points
         self.save()
     
+    
     def is_admin(self):
-        return (self.role == Role.ADMINISTRATOR or self.user.is_staff or self.user.is_superuser)
+        return (self.role == Role.ADMINISTRATOR or self.user.is_superuser)
     
     
     def can_load(self):
@@ -72,4 +73,4 @@ class Profile(models.Model):
     
     
     def __str__(self):
-        return "<Profile: " + self.user.username + ">"
+        return self.user.username + "'s Profile"

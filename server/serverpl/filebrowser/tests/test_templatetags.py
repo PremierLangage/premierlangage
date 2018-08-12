@@ -27,21 +27,6 @@ FAKE_FB_ROOT = join(settings.BASE_DIR,'filebrowser/tests/ressources')
 class TemplateTagTestCase(TestCase):
     """Tests filters defined in filebrowser.filter"""
     
-    @classmethod
-    def setUpTestData(self):
-        self.user = User.objects.create_user(username='user', password='12345', id=100)
-        self.user2 = User.objects.create_user(username='user2', password='12345', id=200)
-        self.user3 = User.objects.create_user(username='user3', password='12345', id=300)
-        self.user4 = User.objects.create_user(username='user4', password='12345', id=400)
-        
-        dir_path = join(FAKE_FB_ROOT, '100/')
-        if isdir(dir_path):
-            shutil.rmtree(dir_path)
-        self.d = Directory.objects.get(name='100', owner=self.user)
-        self.d.add_write_auth(self.user2)
-        self.d.add_read_auth(self.user3)
-    
-    
     def test_pdf(self):
         self.assertEqual(ff.icon('path/file.pdf'), "fas fa-file-pdf")
     
@@ -119,27 +104,3 @@ class TemplateTagTestCase(TestCase):
         self.assertTrue(ff.group_filter(group3, 'path'))
         self.assertFalse(ff.group_filter(group4, 'path'))
         self.assertFalse(ff.group_filter(group5, 'path'))
-    
-    
-    def test_can_read(self):
-        self.assertTrue(ff.can_read(self.d, self.user))
-        self.assertTrue(ff.can_read(self.d, self.user2))
-        self.assertTrue(ff.can_read(self.d, self.user3))
-        self.assertFalse(ff.can_read(self.d, self.user4))
-        self.assertFalse(ff.can_read(self.d.name, self.user4))
-    
-    
-    def test_can_write(self):
-        self.assertTrue(ff.can_write(self.d, self.user))
-        self.assertTrue(ff.can_write(self.d, self.user2))
-        self.assertFalse(ff.can_write(self.d, self.user3))
-        self.assertFalse(ff.can_write(self.d, self.user4))
-        self.assertFalse(ff.can_write(self.d.name, self.user4))
-    
-    
-    def test_is_owner(self):
-        self.assertTrue(ff.is_owner(self.d, self.user))
-        self.assertFalse(ff.is_owner(self.d, self.user2))
-        self.assertFalse(ff.is_owner(self.d, self.user3))
-        self.assertFalse(ff.is_owner(self.d, self.user4))
-        self.assertFalse(ff.is_owner(self.d.name, self.user4))

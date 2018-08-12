@@ -51,7 +51,7 @@ class IndexView(View):
             usersq = []
         
         if tag:
-            questions = question.filter(tags__name__contains=tag)
+            questions = questions.filter(tags__name__contains=tag)
             noans = noans.filter(tags__name__contains=tag)
             popular = popular.filter(tags__name__contains=tag)
             if request.user.is_authenticated:
@@ -87,6 +87,7 @@ class IndexView(View):
             "query": query if query else "",
             'rights': settings.QA_SETTINGS['right'],
             'active': active,
+            'tag_q': tag,
         })
 
 

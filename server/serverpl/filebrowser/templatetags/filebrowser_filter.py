@@ -119,32 +119,6 @@ def isdir(path):
 
 
 @register.filter
-def can_read(directory, user):
-    if isinstance(directory, str):
-        directory = Directory.objects.get(name=directory)
-    
-    return (directory.owner == user
-            or user in directory.read_auth.all() 
-            or user in directory.write_auth.all())
-
-
-@register.filter
-def can_write(directory, user):
-    if isinstance(directory, str):
-        directory = Directory.objects.get(name=directory)
-    
-    return directory.owner == user or user in directory.write_auth.all()
-
-
-@register.filter
-def is_owner(directory, user):
-    if isinstance(directory, str):
-        directory = Directory.objects.get(name=directory)
-    
-    return user == directory.owner
-
-
-@register.filter
 def icon(path):    
     ext = splitext(path)[1]
     

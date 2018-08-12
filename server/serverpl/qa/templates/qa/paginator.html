@@ -4,10 +4,10 @@
     <div class="row justify-content-md-center text-center h-100">
         <div class="col-md-auto d-flex text-center my-auto">
             {% if paginator.has_previous %}
-                <a href="?page=1&active={{ active_q }}{% if query %}&query={{ query|urlencode_q }}{% endif %}">
+                <a href="?page=1&active={{ active_q }}{% if query %}&query={{ query|urlencode_q }}{% endif %}{% if tag_q %}&tag={{ tag_q }}{% endif %}">
                     <i class="fas fa-angle-double-left fa-3x"></i>
                 </a>&nbsp;
-                <a href="?page={{ paginator.previous_page_number }}&active={{ active_q }}{% if query %}&query={{ query|urlencode_q }}{% endif %}">
+                <a href="?page={{ paginator.previous_page_number }}&active={{ active_q }}{% if query %}&query={{ query|urlencode_q }}{% endif %}{% if tag_q %}&tag={{ tag_q }}{% endif %}">
                     <i class="fas fa-angle-left fa-3x"></i>&nbsp;
                 </a>
             {% else %}&nbsp;
@@ -16,10 +16,10 @@
             {% endif %}
             <span class="align-items-center d-flex justify-content-center" style="font-size: 30px;">&nbsp;{{ paginator.number }}&nbsp;</span>
             {% if paginator.has_next %}
-                <a href="?page={{ paginator.next_page_number }}&active={{ active_q }}{% if query %}&query={{ query|urlencode_q }}{% endif %}">
+                <a href="?page={{ paginator.next_page_number }}&active={{ active_q }}{% if query %}&query={{ query|urlencode_q }}{% endif %}{% if tag_q %}&tag={{ tag_q }}{% endif %}">
                     <i class="fas fa-angle-right fa-3x"></i>
                 </a>&nbsp;
-                <a href="?page={{ paginator.paginator.num_pages }}&active={{ active_q }}{% if query %}&query={{ query|urlencode_q }}{% endif %}">
+                <a href="?page={{ paginator.paginator.num_pages }}&active={{ active_q }}{% if query %}&query={{ query|urlencode_q }}{% endif %}{% if tag_q %}&tag={{ tag_q }}{% endif %}">
                     <i class="fas fa-angle-double-right fa-3x"></i>
                 </a>&nbsp;
             {% else %}

@@ -17,6 +17,10 @@ class RenameForm(forms.Form):
     name = forms.CharField(max_length=1024)
 
 
+class NewFileForm(forms.Form):
+    name = forms.CharField(max_length=1024, help_text="Use '.pl' extension to start a new PL.")
+
+
 class CopyForm(forms.Form):
     destination = forms.CharField(max_length=4096, help_text=" * Path may be absolute or relative.")
 

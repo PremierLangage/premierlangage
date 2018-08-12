@@ -21,7 +21,7 @@ class ModelsTestCase(TestCase):
     
     
     def test_profile_str(self):
-        self.assertEqual(str(self.user.profile), "<Profile: user>")
+        self.assertEqual(str(self.user.profile), "user's Profile")
     
     
     def test_profile_mod_rep(self):

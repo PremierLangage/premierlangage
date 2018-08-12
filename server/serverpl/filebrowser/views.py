@@ -38,9 +38,10 @@ def index(request, path="home"):
     if path[0].isdigit(): # pragma: no cover
         raise Http404()
     
-    return render(request, 'filebrowser/filebrowser.html', {
-        'fb': Filebrowser(request, path=join(*path))
-    })
+    fb = Filebrowser(request, path=join(*path))
+    fb.load_options(request)
+    
+    return render(request, 'filebrowser/filebrowser.html', {'fb': fb})
 
 
 @login_required

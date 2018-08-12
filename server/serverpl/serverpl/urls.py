@@ -30,6 +30,5 @@ urlpatterns = [
     url(r'^filebrowser/',  include('filebrowser.urls',     namespace='filebrowser')),
     url(r'^profile/',      include('user_profile.urls',    namespace="profile")),
     url(r'^ask/',          include('qa.urls',              namespace='ask')),
-    url(r'^markdown/',     include('django_markdown.urls', namespace='markdown')),
     url(r'^admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

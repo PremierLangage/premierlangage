@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'classmanagement',
     'sandbox',
     'documentation',
-    'markdown_deux',
     'qa',
     'taggit',
     'hitcount',
@@ -78,7 +77,7 @@ SESSION_COOKIE_AGE = 5*365*24*60*60
 
 
 # Redirect when not authenticated to
-LOGIN_URL = "/playexo/login/"
+LOGIN_URL = "/courses/login/"
 
 
 # URLs module

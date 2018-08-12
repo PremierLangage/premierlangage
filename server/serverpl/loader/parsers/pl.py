@@ -142,6 +142,8 @@ class Parser:
             directory, path = get_location(self.directory, match.group('file'), current=self.path_parsed_file)
         except ObjectDoesNotExist:
             raise DirectoryNotFound(self.path_parsed_file, line, match.group('file'), self.lineno)
+        except ValueError:
+            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, "Syntax Error (path after ':' must be absolute)")
         
         self.dic['__extends'].append({
             'path': path.replace(directory.name+'/', ''),
@@ -187,7 +189,7 @@ class Parser:
         except FileNotFoundError:
             raise FileNotFound(self.path_parsed_file, line, path, lineno=self.lineno)
         except ValueError:
-            raise FileNotFound(self.path_parsed_file, line, match.group('file'), lineno=self.lineno, message="Path from another directory must be absolute")
+            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, "Syntax Error (path after ':' must be absolute)")
     
     
     def one_line_match(self, match, line):
@@ -287,7 +289,7 @@ class Parser:
         except FileNotFoundError:
             raise FileNotFound(self.path_parsed_file, line, path, lineno=self.lineno)
         except ValueError:
-            raise FileNotFound(self.path_parsed_file, line, match.group('file'), lineno=self.lineno, message="Path from another directory must be absolute")
+            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, "Syntax Error (path after ':' must be absolute)")
     
     
     def parse_line(self, line):

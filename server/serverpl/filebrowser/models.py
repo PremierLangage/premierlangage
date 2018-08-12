@@ -47,7 +47,7 @@ class Directory(models.Model):
     public = models.BooleanField(default=False, blank=True)
     
     def __str__(self):
-        return '<Directory: '+ self.name + '>'
+        return self.name
     
     
     def save(self, *args, **kwargs):
@@ -60,8 +60,6 @@ class Directory(models.Model):
     @receiver(post_save, sender=User)
     def add_user_read_public(sender, instance, created, **kwargs):
         if created:
-            for i in Directory.objects.filter(public=True):
-                i.read_auth.add(instance)
             if not isdir(join(settings.FILEBROWSER_ROOT, str(instance.id))):
                 os.mkdir(join(settings.FILEBROWSER_ROOT, str(instance.id)))
             Directory.objects.create(name=str(instance.id), owner=instance)
@@ -94,3 +92,24 @@ class Directory(models.Model):
         """Remove user to the reading authorization list."""
         if user in self.read_auth.all():
             self.read_auth.remove(user)
+    
+    
+    def can_read(self, user):
+        """Return True if user have read right on this directory, False if not."""
+        return (self.owner == user
+                or self.public
+                or user.profile.is_admin()
+                or user in self.read_auth.all() 
+                or user in self.write_auth.all())
+    
+    
+    def can_write(self, user):
+        """Return True if user have write right on this directory, False if not."""
+        return (self.owner == user 
+                or user.profile.is_admin()
+                or user in self.write_auth.all())
+    
+    
+    def is_owner(self, user):
+        """Return True if user is the owner of this directory, False if not."""
+        return user == self.owner or user.profile.is_admin()

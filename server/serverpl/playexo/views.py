@@ -13,7 +13,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.contrib.auth import logout
 from django.urls import reverse
 
 from loader.models import PLTP, PL
@@ -69,7 +68,6 @@ def activity_ajax(request):
 @csrf_exempt
 @login_required
 def activity_receiver(request):
-    print(request.user.profile.editor_theme.template)
     activity_id = request.session.get("current_activity", None)
     if activity_id == None:
         return HttpResponse("No activity found in the session", status=409)
@@ -152,9 +150,3 @@ def test_receiver(request, activity_name, pltp_sha1):
     request.session['current_pl'] = None
     request.session['testing'] = True
     return HttpResponseRedirect(reverse("playexo:activity_receiver"))
-
-
-
-def not_authenticated(request):
-    logout(request)
-    return render(request, 'playexo/not_authenticated.html', {})
