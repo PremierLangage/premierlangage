@@ -7,10 +7,14 @@
 
 
 import re, json, hashlib
-from os.path import join
+from os.path import join, isfile
+
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
+
 from loader.exceptions import SemanticError, SyntaxErrorPL, DirectoryNotFound, FileNotFound
 from loader.utils import get_location
+
 from serverpl.settings import FILEBROWSER_ROOT
 
 
@@ -20,7 +24,7 @@ class Parser:
     KEY = r'^(?P<key>[a-zA-Z_][a-zA-Z0-9_\.]*)\s*'
     COMMENT = r'(?P<comment>#.*)'
     VALUE = r'(?P<value>[^=@%#][^#]*?)\s*'
-    FILE = r'(?P<file>([a-zA-Z_][a-zA-Z0-9_]*:)?((\/)?[a-zA-Z0-9_.]+)(\/[a-zA-Z0-9_.]+)*)\s*'
+    FILE = r'(?P<file>([a-zA-Z0-9_]*:)?((\/)?[a-zA-Z0-9_.]+)(\/[a-zA-Z0-9_.]+)*)\s*'
 
     ONE_LINE = re.compile(KEY + r'(?P<operator>=|\%)\s*' + VALUE + COMMENT+r'?' + r'$')
     FROM_FILE_LINE = re.compile(KEY + r'(?P<operator>=@|\+=@)\s*' + FILE + COMMENT+r'?' + r'$')
@@ -274,6 +278,9 @@ class Parser:
             directory, path = get_location(self.directory, match.group('file'), current=self.path_parsed_file)
         except ValueError:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, "Syntax Error (path after ':' must be absolute)")
+        
+        if not isfile(join(settings.FILEBROWSER_ROOT, directory.name, path)):
+            raise FileNotFound(join(self.directory.root, self.path), line, join(directory.name, path), self.lineno, "PL not found")
         
         self.dic['__pl'].append({
             'path': path.replace(directory.name+'/', ''),

@@ -25,6 +25,11 @@
             {% for question in questions %}
                 {% include 'qa/list_questions.html' %}
             {% endfor %}
+            {% if not questions %}
+                <div class="p-3 pl-5 mb-2 bg-dark text-white qa-title text-center">
+                    No questions asked yet.
+                </div>
+            {% endif %}
             {% with paginator=questions active_q='questions' %}
                 {% include 'qa/paginator.html' %}
             {% endwith %}
@@ -35,6 +40,11 @@
             {% for question in noans %}
                 {% include 'qa/list_questions.html' %}
             {% endfor %}
+            {% if not noans %}
+                <div class="p-3 pl-5 mb-2 bg-dark text-white qa-title text-center">
+                    No unanswered question yet.
+                </div>
+            {% endif %}
             {% with paginator=noans active_q='noans' %}
                 {% include 'qa/paginator.html' %}
             {% endwith %}
@@ -45,6 +55,11 @@
             {% for question in popular %}
                 {% include 'qa/list_questions.html' %}
             {% endfor %}
+            {% if not popular %}
+                <div class="p-3 pl-5 mb-2 bg-dark text-white qa-title text-center">
+                    No questions asked yet.
+                </div>
+            {% endif %}
             {% with paginator=popular active_q='popular' %}
                 {% include 'qa/paginator.html' %}
             {% endwith %}
@@ -55,6 +70,11 @@
             {% for question in usersq %}
                 {% include 'qa/list_questions.html' %}
             {% endfor %}
+            {% if not popular %}
+                <div class="p-3 pl-5 mb-2 bg-dark text-white qa-title text-center">
+                    No questions asked yet.
+                </div>
+            {% endif %}
             {% with paginator=usersq active_q='usersq' %}
                 {% include 'qa/paginator.html' %}
             {% endwith %}
