@@ -50,10 +50,12 @@ class Profile(models.Model):
     
     
     def is_admin(self):
-        return (self.role == Role.ADMINISTRATOR or self.user.is_superuser)
+        """Return True if the user is an administrator (Role or django super user), False if not."""
+        return self.role == Role.ADMINISTRATOR or self.user.is_superuser
     
     
     def can_load(self):
+        """Return True if the user is at least an Instructor, False if not."""
         return self.role <= Role.INSTRUCTOR or self.is_admin()
 
      
