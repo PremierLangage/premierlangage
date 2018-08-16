@@ -1,24 +1,20 @@
-import logging
-import json
-
+import logging, json
 from collections import OrderedDict
 
 from django.utils.deprecation import MiddlewareMixin
 from django.contrib import auth
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.conf import settings
 
-from .thread_local import set_current_request
-
+from lti.thread_local import set_current_request
 from classmanagement.models import Course
-
 from user_profile.models import Profile
 from user_profile.enums import Role
 
 logger = logging.getLogger(__name__)
 
 
-class MultiLTILaunchAuthMiddleware(MiddlewareMixin):
+class LTIAuthMiddleware(MiddlewareMixin):
     """
     Middleware for authenticating users via an LTI launch URL.
 
@@ -38,17 +34,16 @@ class MultiLTILaunchAuthMiddleware(MiddlewareMixin):
     """
 
     def process_request(self, request):
-        logger.debug('inside process_request %s' % request.path)
-
+        
         # AuthenticationMiddleware is required so that request.user exists.
-        if not hasattr(request, 'user'):
+        if not hasattr(request, 'user'):  # pragma: no cover
             logger.debug('improperly configured: requeset has no user attr')
             raise ImproperlyConfigured(
                 "The Django LTI auth middleware requires the"
                 " authentication middleware to be installed.  Edit your"
                 " MIDDLEWARE_CLASSES setting to insert"
                 " 'django.contrib.auth.middleware.AuthenticationMiddleware'"
-                " before the PINAuthMiddleware class.")
+                " before the LTIAuthMiddleware class.")
 
         # These parameters should exist outside of session
         request.lti_initial_request = False
@@ -97,6 +92,7 @@ class MultiLTILaunchAuthMiddleware(MiddlewareMixin):
                     'lis_person_name_given': request.POST.get('lis_person_name_given', None),
                     'lis_person_sourcedid': request.POST.get('lis_person_sourcedid', None),
                     'lti_message_type': request.POST.get('lti_message_type', None),
+                    'oauth_consumer_key': request.POST.get('oauth_consumer_key', None),
                     'resource_link_description': request.POST.get('resource_link_description', None),
                     'resource_link_id': resource_link_id,
                     'resource_link_title': request.POST.get('resource_link_title', None),
@@ -117,24 +113,19 @@ class MultiLTILaunchAuthMiddleware(MiddlewareMixin):
                 course_id = lti_launch["context_id"]
                 course_name = lti_launch.get("context_title", "None")
                 course_label = lti_launch.get("context_label", "None")
+                consumer = lti_launch['oauth_consumer_key']
+                if course_id:
+                    try:
+                        course = Course.objects.get(consumer_id=course_id, consumer=consumer)
+                    except ObjectDoesNotExist:
+                        logger.info("New course created: '%s' (%s:%d)" % (course_name, consumer, course_id))
+                        course = Course(consumer_id=id, consumer=consumer, name=course_name, label=course_label)
+                        course.save()
+                    course.student.add(user)
                 
-                activity_id = lti_launch["resource_link_id"]
-                
-                course = Course.objects.filter(id=course_id) 
-                if not course:
-                    logger.info("New course created: '"+course_name+" ("+str(course_id)+")'.")
-                    course = Course(id=course_id, name=course_name, label=course_label)
-                    course.save()
-                else:
-                    course = course[0];
-                
-                course.student.add(user)
-
-                request.session["activity"] = activity_id
+                request.session["activity"] = lti_launch["resource_link_id"]
                 request.session["course_id"] = course_id
                 
-
-                user.profile.consumer_id = lti_launch['user_id']
                 #Adding role to user
                 for role in lti_launch["roles"]:
                     if role in ["urn:lti:role:ims/lis/Administrator", "Administrator"] and user.profile.role > Role.ADMINISTRATOR:
@@ -169,20 +160,5 @@ class MultiLTILaunchAuthMiddleware(MiddlewareMixin):
 
         setattr(request, 'LTI', request.session.get('LTI_LAUNCH', {}).get(resource_link_id, {}))
         set_current_request(request)
-        if not request.LTI:
+        if not request.LTI: # pragma: no cover
             logger.debug("Could not find LTI launch for resource_link_id %s", resource_link_id)
-
-    def clean_username(self, username, request):
-        """
-        Allows the backend to clean the username, if the backend defines a
-        clean_username method.
-        """
-        backend_str = request.session[auth.BACKEND_SESSION_KEY]
-        backend = auth.load_backend(backend_str)
-        try:
-            logger.debug('calling the backend %s clean_username with %s' % (backend, username))
-            username = backend.clean_username(username)
-            logger.debug('cleaned username is %s' % username)
-        except AttributeError:  # Backend has no clean_username method.
-            pass
-        return username

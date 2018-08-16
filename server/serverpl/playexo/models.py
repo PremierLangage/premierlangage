@@ -1,25 +1,20 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-#
-#  models.py
-#  
-#  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
-#  
 
 from datetime import datetime
 
+from jsonfield import JSONField
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-from jsonfield import JSONField
 
+from lti.models import LTIModel
 from loader.models import PLTP, PL
-
 from playexo.enums import State
 
 
 
-class Activity(models.Model):
+
+class Activity(LTIModel):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=200, null=False)
     pltp = models.ForeignKey(PLTP, null=False, on_delete=models.CASCADE)

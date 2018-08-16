@@ -2,7 +2,6 @@
 [run]
 omit =
     */apps.py
-    django_auth_lti/*
     serverpl/wsgi.py
     serverpl/install/*
     */test*

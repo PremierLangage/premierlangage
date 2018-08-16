@@ -1,5 +1,4 @@
-import logging 
-import oauth2
+import logging, oauth2
 
 
 logger = logging.getLogger(__name__)
@@ -9,11 +8,11 @@ class Python3_SignatureMethod_HMAC_SHA1(oauth2.SignatureMethod_HMAC_SHA1):
     def check(self, request, consumer, token, signature):
         """ Overrides the check method of the class to convert the signature
             from bytes to unicode so that it can be compared properly
-            in python 3. """
+            in python 3."""
         logger.error("TOKEN:"+str(consumer))
         built = self.sign(request, consumer, token)
         if isinstance(built, bytes):
-            built = built.decode("utf8")
+            built = built.decode()
         logger.error(built+" b == s ? "+signature)
         return True
         return built == signature

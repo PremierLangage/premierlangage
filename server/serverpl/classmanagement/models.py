@@ -1,19 +1,12 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-#
-#  models.py
-#  
-#  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
-#
-
-
 from django.db import models
 from django.contrib.auth.models import User
 
 from playexo.models import Activity
+from lti.models import LTIModel
 
 
-class Course(models.Model):
+
+class Course(LTIModel):
     id = models.CharField(max_length=30, primary_key=True, null=False)
     teacher = models.ManyToManyField(User, related_name="teacher")
     name = models.CharField(max_length=200, null=False)
@@ -28,7 +21,7 @@ class Course(models.Model):
     
     
     def is_teacher(self, user):
-         """Return True if the user is a teacher of the course."""
+        """Return True if the user is a teacher of the course."""
         return user in self.teacher.all() or user.profile.is_admin()
     
     

@@ -5,7 +5,7 @@ from urllib.parse import urlparse, urlunparse, parse_qs, urlencode
 
 from django.core import urlresolvers
 
-from .thread_local import get_current_request
+from lti.thread_local import get_current_request
 
 
 django_reverse = None

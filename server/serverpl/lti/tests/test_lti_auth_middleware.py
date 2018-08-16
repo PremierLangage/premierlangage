@@ -1,12 +1,13 @@
 import unittest
 import mock
 from mock import patch
+
 from django.test import RequestFactory
 from django.contrib.auth import models
-from django_auth_lti.middleware import LTIAuthMiddleware
+from lti.middleware import LTIAuthMiddleware
 
 
-@patch('django_auth_lti.middleware.logger')
+@patch('lti.middleware.logger')
 class TestLTIAuthMiddleware(unittest.TestCase):
     longMessage = True
 
@@ -27,7 +28,7 @@ class TestLTIAuthMiddleware(unittest.TestCase):
         request.session = {}
         return request
 
-    @patch('django_auth_lti.middleware.auth')
+    @patch('lti.middleware.auth')
     def test_roles_merged_with_custom_roles(self, mock_auth, mock_logger):
         """
         Assert that 'roles' list in session contains merged set of roles when custom role key is
@@ -37,11 +38,11 @@ class TestLTIAuthMiddleware(unittest.TestCase):
             'roles': 'RoleOne,RoleTwo',
             'test_custom_role_key': 'My,Custom,Roles',
         })
-        with patch('django_auth_lti.middleware.settings', LTI_CUSTOM_ROLE_KEY='test_custom_role_key'):
+        with patch('lti.middleware.settings', LTI_CUSTOM_ROLE_KEY='test_custom_role_key'):
             self.mw.process_request(request)
         self.assertEqual(request.LTI.get('roles'), ['RoleOne', 'RoleTwo', 'My', 'Custom', 'Roles'])
 
-    @patch('django_auth_lti.middleware.auth')
+    @patch('lti.middleware.auth')
     def test_roles_merge_with_empty_custom_roles(self, mock_auth, mock_logger):
         """
         Assert that 'roles' list in session contains original set when custom role key is defined with empty data.
@@ -50,11 +51,11 @@ class TestLTIAuthMiddleware(unittest.TestCase):
             'roles': 'RoleOne,RoleTwo',
             'test_custom_role_key': '',
         })
-        with patch('django_auth_lti.middleware.settings', LTI_CUSTOM_ROLE_KEY='test_custom_role_key'):
+        with patch('lti.middleware.settings', LTI_CUSTOM_ROLE_KEY='test_custom_role_key'):
             self.mw.process_request(request)
         self.assertEqual(request.LTI.get('roles'), ['RoleOne', 'RoleTwo'])
 
-    @patch('django_auth_lti.middleware.auth')
+    @patch('lti.middleware.auth')
     def test_roles_not_merged_with_no_role_key(self, mock_auth, mock_logger):
         """
         Assert that 'roles' list in session contains original set when no custom role key is defined.

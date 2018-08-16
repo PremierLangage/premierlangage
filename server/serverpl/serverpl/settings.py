@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'qa',
     'taggit',
     'hitcount',
+    'lti',
     'django_http_method',
     'django_markdown',
     'django.contrib.admin',
@@ -56,7 +57,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_auth_lti',
 ]
 
 # Middleware definition
@@ -66,10 +66,9 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django_auth_lti.middleware_patched.MultiLTILaunchAuthMiddleware',
+    'lti.middleware.LTIAuthMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 #Cookies settings
@@ -146,7 +145,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'django_auth_lti.backends.LTIAuthBackend',
+    'lti.backends.LTIAuthBackend',
 )
 
 LTI_OAUTH_CREDENTIALS = {
