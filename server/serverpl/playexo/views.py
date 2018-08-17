@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+    #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Python 3.5.4
 #
@@ -13,6 +13,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.contrib.auth import logout
 from django.urls import reverse
 
 from loader.models import PLTP, PL
@@ -150,3 +151,9 @@ def test_receiver(request, activity_name, pltp_sha1):
     request.session['current_pl'] = None
     request.session['testing'] = True
     return HttpResponseRedirect(reverse("playexo:activity_receiver"))
+
+
+
+def not_authenticated(request):
+    logout(request)
+    return render(request, 'playexo/not_authenticated.html', {})
