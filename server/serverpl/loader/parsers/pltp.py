@@ -7,8 +7,11 @@
 
 
 import re, json, hashlib
-from os.path import join
+from os.path import join, isfile, abspath
+
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
+
 from loader.exceptions import SemanticError, SyntaxErrorPL, DirectoryNotFound, FileNotFound
 from loader.utils import get_location
 from serverpl.settings import FILEBROWSER_ROOT
@@ -20,7 +23,7 @@ class Parser:
     KEY = r'^(?P<key>[a-zA-Z_][a-zA-Z0-9_\.]*)\s*'
     COMMENT = r'(?P<comment>#.*)'
     VALUE = r'(?P<value>[^=@%#][^#]*?)\s*'
-    FILE = r'(?P<file>([a-zA-Z_][a-zA-Z0-9_]*:)?((\/)?[a-zA-Z0-9_.]+)(\/[a-zA-Z0-9_.]+)*)\s*'
+    FILE = r'(?P<file>([a-zA-Z0-9_]*:)?((\/)?[a-zA-Z0-9_.]+)(\/[a-zA-Z0-9_.]+)*)\s*'
 
     ONE_LINE = re.compile(KEY + r'(?P<operator>=|\%)\s*' + VALUE + COMMENT+r'?' + r'$')
     FROM_FILE_LINE = re.compile(KEY + r'(?P<operator>=@|\+=@)\s*' + FILE + COMMENT+r'?' + r'$')
@@ -35,12 +38,12 @@ class Parser:
     def __init__(self, directory, rel_path):
         self.directory = directory
         self.path = rel_path
-        self.path_parsed_file = join(directory.root, rel_path).replace(FILEBROWSER_ROOT, '')
+        self.path_parsed_file = join(directory.root, rel_path)
         self.lineno = 1
         self.dic = dict()
         self.warning = list()
         
-        with open(join(directory.root, rel_path), 'r') as f:
+        with open(self.path_parsed_file, 'r') as f:
             self.lines = f.readlines()
         
         self._multiline_dic = None
@@ -138,7 +141,10 @@ class Parser:
         if not match.group('file'):
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)
         
-        directory, path = get_location(self.directory, match.group('file'), current=self.path_parsed_file)
+        try:
+            directory, path = get_location(self.directory, match.group('file'), current=self.path_parsed_file)
+        except ValueError:
+            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, "Syntax Error (path after ':' must be absolute)")
         
         self.dic['__extends'].append({
             'path': path.replace(directory.name+'/', ''),
@@ -170,7 +176,7 @@ class Parser:
         
         try:
             directory, path = get_location(self.directory, match.group('file'), current=self.path_parsed_file)
-            path = join(directory.root, path.replace(directory.name+'/', ''))
+            path = abspath(join(directory.root, path))
             with open(path, 'r') as f:
                 if '+' in op:
                     if not key in self.dic.keys():
@@ -183,7 +189,7 @@ class Parser:
         except FileNotFoundError:
             raise FileNotFound(self.path_parsed_file, line, path, lineno=self.lineno)
         except ValueError:
-            raise FileNotFound(self.path_parsed_file, line, match.group('file'), lineno=self.lineno, message="Path from another directory must be absolute")
+            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, "Syntax Error (path after ':' must be absolute)")
     
     
     def one_line_match(self, match, line):
@@ -267,10 +273,17 @@ class Parser:
         if not match.group('file'):
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)
         
-        directory, path = get_location(self.directory, match.group('file'), current=self.path_parsed_file)
+        try:
+            directory, path = get_location(self.directory, match.group('file'), current=self.path)
+            print("LE CHEMIN",path)
+        except ValueError:
+            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, "Syntax Error (path after ':' must be absolute)")
+        
+        if not isfile(join(directory.root, path)):
+            raise FileNotFound(join(self.directory.root, self.path), line, join(directory.name, path), self.lineno, "PL not found")
         
         self.dic['__pl'].append({
-            'path': path.replace(directory.name+'/', ''),
+            'path': path,
             'line': line,
             'lineno': self.lineno,
             'directory_name': directory.name

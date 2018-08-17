@@ -85,7 +85,7 @@ class ExoTestCase(TestCase):
         )
         
         self.assertContains(response,"Dominique Revuz")
-        self.assertContains(response,"<h2>Une fonction carre</h2>\n\n<p>Ecrivez une fonction <strong>carre</strong> qui retourne le")
+        self.assertContains(response,"Ecrivez une fonction **carre** qui retourne le")
         
         
         self.assertContains(response2, "Il y a des erreurs dans votre programme.", count=1)
@@ -107,7 +107,7 @@ class ExoTestCase(TestCase):
         )
         
         self.assertContains(response,"Dominique Revuz")
-        self.assertContains(response,"<h2>Une fonction carre</h2>\n\n<p>Ecrivez une fonction <strong>carre</strong> qui retourne le")
+        self.assertContains(response,"Ecrivez une fonction **carre** qui retourne le")
         
         
         self.assertContains(response2, "Test R\\u00e9ussi")

@@ -16,7 +16,7 @@ from playexo.request import SandboxSession
 
 
 lang = ['abap', 'abc', 'actionscript', 'ada', 'apache_conf', 'applescript', 'asciidoc', 'assembly_x86', 'autohotkey', 'batchfile', 'bro', 'c9search', 'c_cpp', 'cirru', 'clojure', 'cobol', 'coffee', 'coldfusion', 'csharp', 'csound_document', 'csound_orchestra', 'csound_score', 'css', 'curly', 'd', 'dart', 'diff', 'django', 'dockerfile', 'dot', 'drools', 'eiffel', 'ejs', 'elixir', 'elm', 'erlang', 'forth', 'fortran', 'ftl', 'gcode', 'gherkin', 'gitignore', 'glsl', 'gobstones', 'golang', 'graphqlschema', 'groovy', 'haml', 'handlebars', 'haskell', 'haskell_cabal', 'haxe', 'hjson', 'html', 'html_elixir', 'html_ruby', 'ini', 'io', 'jack', 'jade', 'java', 'javascript', 'json', 'jsoniq', 'jsp', 'jssm', 'jsx', 'julia', 'kotlin', 'latex', 'lean', 'less', 'liquid', 'lisp', 'live_script', 'livescript', 'logiql', 'lsl', 'lua', 'luapage', 'lucene', 'makefile', 'markdown', 'mask', 'matlab', 'maze', 'mel', 'mips_assembler', 'mipsassembler', 'mushcode', 'mysql', 'nix', 'nsis', 'objectivec', 'ocaml', 'pascal', 'perl', 'pgsql', 'php', 'pig', 'plain_text', 'powershell', 'praat', 'prolog', 'properties', 'protobuf', 'python', 'r', 'razor', 'rdoc', 'red', 'rhtml', 'rst', 'ruby', 'rust', 'sass', 'scad', 'scala', 'scheme', 'scss', 'sh', 'sjs', 'smarty', 'snippets', 'soy_template', 'space', 'sparql', 'sql', 'sqlserver', 'stylus', 'svg', 'swift', 'swig', 'tcl', 'tex', 'text', 'textile', 'toml', 'tsx', 'turtle', 'twig', 'typescript', 'vala', 'vbscript', 'velocity', 'verilog', 'vhdl', 'wollok', 'xml', 'xquery', 'yaml']
-default_load = '{% load static %}{% load markdown_deux_tags %}{% load input_fields_ajax %}{% load json_filter %}'
+default_load = '{% load static %}{% load django_markdown %}{% load input_fields_ajax %}{% load json_filter %}'
 pls_known = [
     ('form', 'form'), ('css', 'css'), ('pl', 'exo'),
     ('pltp', 'exo'), ('navigation', 'navigation'),
@@ -116,17 +116,17 @@ class ActivityInstance:
     def get_context(self, request):
         pltp = PLTP.objects.get(sha1=self.dic['pltp_sha1__'])
         pl_list = list()
-        pltp_f = True
+        is_pltp = True
         for item in pltp.pl.all():
             if 'pl_id__' in self.dic and item.id == self.dic['pl_id__']:
-                pltp_f = False
+                is_pltp = False
                 dic = self.intern_build()
                 answer = Answer.last_answer(item, request.user)
                 if answer:
                     dic['student_answer'] = answer
                 c = Context(dic)
                 c['user'] = request.user.profile
-                for key in ['text', 'texth', 'introduction', 'introductionh', "form", "title"]:
+                for key in ['text', 'texth', 'form', 'title']:
                     if key in dic:
                         dic[key] = Template(dic[key]).render(c)
                             
@@ -137,7 +137,15 @@ class ActivityInstance:
                 'title': item.json['title'],
             })
         
-        context = RequestContext(request, dic if not pltp_f else self.dic)
+        if is_pltp:
+            dic = dict(self.dic)
+            c = Context(dic)
+            c['user'] = request.user.profile
+            for key in ['introduction', 'introductionh']:
+                if key in dic:
+                    dic[key] = Template(dic[key]).render(c)
+        
+        context = RequestContext(request, dic)
         context['pl_list__'] = pl_list
         
         return context

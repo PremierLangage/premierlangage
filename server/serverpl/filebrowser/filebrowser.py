@@ -23,13 +23,13 @@
 #
 
 
-import os
+import os, copy
 
 from os.path import abspath, join, basename
 
 from django.conf import settings
 
-from filebrowser.filebrowser_option import ENTRY_OPTIONS, DIRECTORY_OPTIONS
+from filebrowser.filebrowser_option import ENTRY_OPTIONS, DIRECTORY_OPTIONS, READ, WRITE
 from filebrowser.models import Directory
 
 
@@ -46,7 +46,7 @@ class Filebrowser():
     """
     
     def __init__(self, request, path='home', root=None):
-        real = (path).split('/')
+        real = path.split('/')
         if real[0] == "home":
             real[0] = str(request.user.id)
         
@@ -55,10 +55,37 @@ class Filebrowser():
         self._real_relative = join(*real)
         self.home = path.split('/')[0]
         self.real_home = real[0]
-        self.entry_options = ENTRY_OPTIONS
-        self.directory_options = DIRECTORY_OPTIONS
+        self.entry_options = copy.deepcopy(ENTRY_OPTIONS)
+        self.directory_options = copy.deepcopy(DIRECTORY_OPTIONS)
         self.directory = Directory.objects.get(name=self._real_relative.split('/')[0])
         self.entries, self.length_max = self.list()
+    
+    
+    def _filter_category_options(self, category, request):
+        
+        for group_key, group in category.groups.items():
+            filtered_options = {}
+            
+            for option_key, option in group.options.items():
+                if option.right == READ and self.directory.can_read(request.user):
+                    filtered_options[option_key] = option
+                elif option.right == WRITE and self.directory.can_write(request.user):
+                    filtered_options[option_key] = option
+            
+            category.groups[group_key].options = filtered_options
+        
+        cleaned = {}
+        for group_key, group in  category.groups.items(): # removing empty group
+            if group.options:
+                cleaned[group_key] = group
+        category.groups = cleaned
+        
+        return category
+    
+    
+    def load_options(self, request):
+        self.entry_options = self._filter_category_options(self.entry_options, request)
+        self.directory_options = self._filter_category_options(self.directory_options, request)
     
     
     def full_path(self):

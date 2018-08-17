@@ -5,7 +5,6 @@
 
 {% block css %}
     <link rel="stylesheet" href="{% static '/css/filebrowser.css' %}" />
-    <link rel="stylesheet" href="{% static '/css/jqueryFileTree.css' %}" />
 {% endblock %}
 
 {% block content %}
@@ -19,8 +18,8 @@
         </ul> 
         <div class="card card-fb">
             
-            <div class="card-header no-padding card-header-fb">
-                <div class="row no-margin">
+            <div class="card-header p-0 card-header-fb">
+                <div class="row m-0">
                     <!-- Breadcrumb -->
                     {% include 'filebrowser/breadcrumb.html' %}
                     
@@ -33,8 +32,8 @@
             </div>
             
             <!-- Entries -->
-            <div class="card-body no-padding">
-                <table class="table table-hover no-margin" style="table-layout: fixed">
+            <div class="card-body p-0">
+                <table class="table table-hover m-0" style="table-layout: fixed">
                     <tbody>
                         {% include 'filebrowser/entries.html' %}
                     </tbody>
@@ -43,7 +42,7 @@
             
             {% if fb.full_path|in_repository %}
                 <div class="card-footer card-footer-fb">
-                    <div class="row no-margin">
+                    <div class="row m-0">
                         <i class="{{ fb.full_path|repository_host}} fa-2x"></i>&emsp; <a href="{{ fb.full_path|repository_url }}">{{ fb.full_path|repository_url }}</a>&nbsp;-&nbsp;<i>{{ fb.full_path|repository_branch }}</i>
                     </div>
                 </div>

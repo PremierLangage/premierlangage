@@ -78,7 +78,6 @@ def load_PLTP(directory, rel_path, force=False):
         pass
     
 
-    #~ path = createandtransforme(dirname(abspath(join(directory.root, rel_path[1:])))+"/dir"+splitext(basename(rel_path))[0], abspath(join(directory.root, rel_path[1:])), directory)
     path = dirname(abspath(join(directory.root, rel_path[1:])))+"/dir"+splitext(basename(rel_path))[0]
     dic, warnings = parse_file(directory, rel_path, path)
     
@@ -88,8 +87,7 @@ def load_PLTP(directory, rel_path, force=False):
             pl_directory = Directory.objects.get(name=item['directory_name'])
         except ObjectDoesNotExist:
             raise DirectoryNotFound(dic['__rel_path'], item['line'], item['path'], item['lineno'])
-        pl_directory, pl_path = get_location(directory, item['path'])
-        pl, pl_warnings = load_PL(pl_directory, pl_path)
+        pl, pl_warnings = load_PL(pl_directory, item['path'])
         warnings += pl_warnings
         pl_list.append(pl)
     
@@ -117,8 +115,8 @@ def load_PL(directory, rel_path):
         
         This function return a PL object but does not save it in the database
     """
+    print("LOADER",directory, rel_path)
     dic, warnings = parse_file(directory, rel_path)
-    
     
     name = splitext(basename(rel_path))[0]
     pl = PL(name=name, json=dic, directory=directory, rel_path=rel_path)

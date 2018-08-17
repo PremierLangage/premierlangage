@@ -625,7 +625,7 @@ def edit_pl_option(request, filebrowser, target):
 
 
 def test_pl_option(request, filebrowser, target):
-    """ Allwo to test a PL."""
+    """ Allow to test a PL."""
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
 
@@ -634,7 +634,7 @@ def test_pl_option(request, filebrowser, target):
         pl, warnings = load_file(filebrowser.directory, rel_path)
 
         if not pl:
-            messages.error(request, warnings)
+            messages.error(request, warnings.replace(settings.FILEBROWSER_ROOT, ""))
             return redirect_fb(filebrowser.relative)
 
         exercise = PLInstance(pl.json)
@@ -646,6 +646,7 @@ def test_pl_option(request, filebrowser, target):
         })
 
     except Exception as e: # pragma: no cover
+        msg = "Impossible to test '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
