@@ -30,7 +30,7 @@ class Parser:
     EXTENDS_LINE = re.compile(r'(extends|template)\s*=\s*' + FILE + COMMENT+r'?' + r'$')
     MULTI_LINE = re.compile(KEY + r'(?P<operator>==|\+=|\%=)\s*' + COMMENT+r'?' + r'$')
     PL_FILE_LINE = re.compile(r'@\s*'+ FILE + COMMENT+r'?' + r'$')
-    END_MULTI_LINE = re.compile(r'\s*==\s*')
+    END_MULTI_LINE = re.compile(r'==\s*')
     COMMENT_LINE = re.compile(r'\s*' + COMMENT + r'$')
     EMPTY_LINE = re.compile(r'\s*$')
 
