@@ -16,8 +16,9 @@ def subnlbybr(str):
 >>> subnlbybr("\\n")
 '<br/>'
     """
-    return "<br/>".join(str.split("\n"))
-
+    if str :
+       return "<br/>".join(str.split("\n"))
+    return None
 
 
 
