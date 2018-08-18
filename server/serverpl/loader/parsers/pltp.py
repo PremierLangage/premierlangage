@@ -275,7 +275,6 @@ class Parser:
         
         try:
             directory, path = get_location(self.directory, match.group('file'), current=self.path)
-            print("LE CHEMIN",path)
         except ValueError:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, "Syntax Error (path after ':' must be absolute)")
         
