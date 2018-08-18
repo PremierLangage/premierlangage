@@ -16,7 +16,7 @@ Comme vous pouvez le voir, des connaissances de bases en **HTML** sont nécessai
 
 Pour des formulaire plus compliqués, des connaissances sur les **gabarits Django** (**jinja2** simplifié) seront aussi nécessaire.
 
-Enfin, si l'écriture d'une [fonction build](./build.html) est nécessaire, des connaissances en Python 3 seront requis.
+Enfin, si l'écriture d'une [fonction build](build.md) est nécessaire, des connaissances en Python 3 seront requis.
 Ce guide vous guidera pas-à-pas dans l'écriture d'un formulaire personnalisé.
 
 ## Les Bases
@@ -113,7 +113,7 @@ Le formulaire devient:
 Ce formulaire permet donc maintenant de répondre à n'importe quelle question demandant un choix entre **deux réponses**.
 
 Deux réponses ? Voilà qui limite bien ce formulaire, améliorons-le afin qu'il puisse maintenant accepter un nombre non indéfinis de réponses.
-Nous aurons pour cela besoin d'une [fonction build](./build.html).
+Nous aurons pour cela besoin d'une [fonction build](build.md).
 
 Supposons que nous souhaitons pouvoir rentrer un nombre infinis de réponses grâce à des champs *answerX* où *X* représente un nombre entier, il nous dans un premier temps mettre l'ensemble de ces réponses dans une liste, c'est là qu'intervient la fonction build:
 ```python
