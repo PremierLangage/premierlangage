@@ -2,7 +2,7 @@ site_name: Premier Langage
 site_author: Q. Coumes, D. Revuz
 
 
-pages:
+nav:
 - Home: 'index.md'
 - Ecrire un exercice:
     - 'Bases': 'ecrire_pl.md'
