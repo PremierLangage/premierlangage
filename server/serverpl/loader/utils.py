@@ -25,14 +25,21 @@ def get_location(directory, path, current=""):
         
        raise:
            - django.core.exceptions.ObjectDoesNotExist if no Directory with name=other_directory_name could be found
-           - ValueError if a directory is given but the path after ':' isn't absolute
+           - SyntaxError if a directory is given but the path after ':' isn't absolute
     """
     if ':' in path:
-        directory, path = path.split(':')
-        directory = Directory.objects.get(name = directory)
+        directory_name, path = path.split(':')
+        if directory_name != 'home':
+            directory = Directory.objects.get(name=directory_name)
+        
+        try:
+            int(directory_name)
+            raise SyntaxError("Directory's name cannot be an integer")
+        except ValueError:
+            pass
         if path[0] != '/':
-            raise ValueError
-        print("LIB",path)
+            raise SyntaxError("Syntax Error (path after ':' must be absolute)")
+        
         return directory, normpath(path[1:])
     
     if path[0] == '/':

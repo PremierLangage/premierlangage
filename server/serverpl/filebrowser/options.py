@@ -40,7 +40,6 @@ from django.shortcuts import redirect, reverse, render
 from django.contrib import messages
 from django.http import HttpResponseNotAllowed, HttpResponse, HttpResponseBadRequest
 from django.db.utils import IntegrityError
-
 from django.conf import settings
 
 from filebrowser.models import Directory
@@ -51,8 +50,6 @@ from loader.loader import load_file
 
 from playexo.exercise import PLInstance
 
-
-BAD_CHAR = ['/', ' ',  ';', '#', '+', '&']
 
 def mkdir_option(request, filebrowser, target):
     """Create a new folder named target at filebrowser.full_path()"""
@@ -67,9 +64,9 @@ def mkdir_option(request, filebrowser, target):
     try:
         path = normpath(join(filebrowser.full_path(), name))
         
-        if any(c in name for c in BAD_CHAR):
+        if any(c in name for c in settings.FILEBROWSER_DISALLOWED_CHAR):
             messages.error(request, "Can't create directory '" + name
-                                  + "': name should not contain any of " + str(BAD_CHAR) + ".")
+                                  + "': name should not contain any of " + str(settings.FILEBROWSER_DISALLOWED_CHAR) + ".")
         elif isdir(path) or isfile(path):
             messages.error(request, "Can't create directory '" + name
                                   + "': this name is already used.")
@@ -118,9 +115,9 @@ def rename_option(request, filebrowser, target):
     try:
         path = normpath(join(filebrowser.full_path(), target))
         target_path = join(filebrowser.full_path(), name)
-        if any(c in name for c in BAD_CHAR):
+        if any(c in name for c in settings.FILEBROWSER_DISALLOWED_CHAR):
             messages.error(request, "Can't rename '" + target + "' to '" + name
-                                  + "': name should not contain any of " + str(BAD_CHAR) + ".")
+                                  + "': name should not contain any of " + str(settings.FILEBROWSER_DISALLOWED_CHAR) + ".")
         elif isfile(target_path) or isdir(target_path):
             messages.error(request, "Can't rename '" + target + "' to '" + name
                                   + "': this name is already used.")
@@ -426,9 +423,9 @@ def new_file_option(request, filebrowser, target):
     try:
         path = normpath(join(filebrowser.full_path(), name))
         
-        if any(c in name for c in BAD_CHAR): 
+        if any(c in name for c in settings.FILEBROWSER_DISALLOWED_CHAR): 
             messages.error(request, "Can't create file '" + name 
-                                  + "': name should not contain any of " + str(BAD_CHAR) + ".") 
+                                  + "': name should not contain any of " + str(settings.FILEBROWSER_DISALLOWED_CHAR) + ".") 
         
         elif isdir(path) or isfile(path): 
             messages.error(request, "Can't create file '" + name 

@@ -244,6 +244,11 @@ FILEBROWSER_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../home/'))
 # Default bank path
 BANK_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../bank/'))
 
+
+# Filebrowser settings
+FILEBROWSER_DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&']
+
+
 # Path to directory containing parsers
 PARSERS_ROOT = os.path.abspath(os.path.join(BASE_DIR,'loader/parsers/'))
 PARSERS_MODULE = 'loader.parsers'
