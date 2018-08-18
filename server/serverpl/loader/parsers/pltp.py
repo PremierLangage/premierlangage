@@ -335,7 +335,7 @@ class Parser:
             self.lineno += 1
         
         if self._multiline_key: # If a multiline value is still open at the end of the parsing
-            raise SyntaxErrorPL(join(self.directory.root, self.path), line[self._multiline_opened_lineno-1], self._multiline_opened_line, message="Multiline value never closed, start ")
+            raise SyntaxErrorPL(join(self.directory.root, self.path), self.lines[self._multiline_opened_lineno-1], self._multiline_opened_lineno, message="Multiline value never closed, start ")
         
         return self.dic, self.warning
 
