@@ -279,8 +279,6 @@ class Parser:
         except SyntaxError as e:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
         
-        print(join(directory.root, path))
-        print(isfile(join(directory.root, path)))
         if not isfile(join(directory.root, path)):
             raise FileNotFound(join(self.directory.root, self.path), line, join(directory.name, path), self.lineno, "PL not found")
         
