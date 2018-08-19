@@ -319,13 +319,19 @@ def clone_option(request, filebrowser, target):
         messages.error(request, "SSH link is not supported, please use HTTPS")
         
     else:
-        ret, out, err = gitcmd.clone(normpath(join(filebrowser.full_path(), target)),
-                                     url, destination, username, password)
-        
-        if not ret:
-            messages.success(request, htmlprint.code(out + err))
-        else:
+        path = normpath(join(filebrowser.full_path(), target))
+        ret, out, err = gitcmd.clone(path, url, destination, username, password)
+        if ret:
             messages.error(request, htmlprint.code(err + out))
+        else:
+            msg = htmlprint.code(out + err)
+            path = join(path, destination if destination else basename(splitext(url)[0]))
+            ret, out, err = gitcmd.set_url(path, url)
+            if not ret:
+                messages.success(request, msg)
+            else:
+                messages.error(request, htmlprint.code(err + out))
+                shutil.rmtree(path, ignore_errors=True)
 
     return redirect_fb(filebrowser.relative)
 

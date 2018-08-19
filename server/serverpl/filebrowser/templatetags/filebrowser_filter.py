@@ -22,11 +22,11 @@
 #  
 #  
 
-
-import gitcmd
-
+import re
+from urllib.parse import urlparse, urlunparse
 from os.path import splitext, basename, dirname
 
+import gitcmd
 from django import template
 
 from filebrowser.models import Directory
