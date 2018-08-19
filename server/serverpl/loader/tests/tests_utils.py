@@ -52,11 +52,10 @@ class UtilsTestCase(TestCase):
         self.assertEqual((self.dir2, 'first1/second1/third1/file.py'), get_location(self.dir1, path3))
         self.assertEqual((self.dir1, 'first1/second2/third2/file.py'), get_location(self.dir1, path4, current_path))
         self.assertEqual((self.dir1, 'first1/second1/file.py'), get_location(self.dir1, path5, current_path))
-        self.assertEqual((self.dir1, 'first1/second1/file.py'), get_location(self.dir1, path5, '/first1/second1/'))
         with self.assertRaises(ObjectDoesNotExist):
             get_location(self.dir1, path6)
         
-        with self.assertRaises(ValueError):
+        with self.assertRaises(SyntaxError):
             get_location(self.dir1, path7)
     
     

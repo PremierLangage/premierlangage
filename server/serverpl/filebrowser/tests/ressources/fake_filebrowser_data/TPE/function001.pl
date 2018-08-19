@@ -3,7 +3,7 @@ title=fonction
 author=Dominique Revuz 
 name= Une fonction bob
 tag=function 
-template=../../template.pl
+template=../template.pl
 text==
 # Fonctions 
 

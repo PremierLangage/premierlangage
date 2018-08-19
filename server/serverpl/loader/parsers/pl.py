@@ -6,7 +6,7 @@
 #  Copyright 2018 Coumes Quentin
 
 import re, json, os, shutil
-from os.path import join, basename, abspath, dirname
+from os.path import join, basename, abspath, dirname, isfile
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
@@ -142,14 +142,15 @@ class Parser:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)
         
         try:
-            directory, path = get_location(self.directory, match.group('file'), current=self.path_parsed_file)
-        except ObjectDoesNotExist:
-            raise DirectoryNotFound(self.path_parsed_file, line, match.group('file'), self.lineno)
+            directory, path = get_location(self.directory, match.group('file'), current=self.path)
         except SyntaxError as e:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
         
+        if not isfile(join(directory.root, path)):
+            raise FileNotFound(join(self.directory.root, self.path), line, join(directory.name, path), self.lineno, "PL not found")
+        
         self.dic['__extends'].append({
-            'path': path.replace(directory.name+'/', ''),
+            'path': path,
             'line': line,
             'lineno': self.lineno,
             'directory_name': directory.name

@@ -20,8 +20,7 @@ from sandbox.models import Sandbox
 
 
 FAKE_FB_ROOT = join(settings.BASE_DIR,'filebrowser/tests/ressources')
-VALUE = "# Copyright 2016 Dominique Revuz &lt;dr@univ-mlv.fr&gt;\ntitle=fonction\nauthor=Dominique \
-Revuz \nname= Une fonction bob\ntag=function \ntemplate=../../template.pl\ntext==\n# Fonctions \n\nEcrire une fonction **bob** qui retourne la valeur "
+VALUE = "text==\n# Fonctions \n\nEcrire une fonction **bob** qui retourne la valeur"
 
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
 class EditPLTestCase(TestCase):

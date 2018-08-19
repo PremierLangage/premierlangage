@@ -3,7 +3,7 @@ author=Dominique Revuz
 name= Boites d'oeufs (Operateurs)
 title= Modulo et Diviser
 tag= print|input|operator.mod|operator.floordiv
-template=../../soluce.pl
+template=../soluce.pl
 text==
 
 # Operator  // et % 
