@@ -115,7 +115,6 @@ def load_PL(directory, rel_path):
         
         This function return a PL object but does not save it in the database
     """
-    print("LOADER",directory, rel_path)
     dic, warnings = parse_file(directory, rel_path)
     
     name = splitext(basename(rel_path))[0]

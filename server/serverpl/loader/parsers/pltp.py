@@ -16,6 +16,7 @@ from loader.exceptions import SemanticError, SyntaxErrorPL, DirectoryNotFound, F
 from loader.utils import get_location
 from serverpl.settings import FILEBROWSER_ROOT
 
+BAD_CHAR = r''.join(settings.FILEBROWSER_DISALLOWED_CHAR)
 
 class Parser:
     """Parser used to parse pltp files with .pltp extension"""
@@ -23,7 +24,7 @@ class Parser:
     KEY = r'^(?P<key>[a-zA-Z_][a-zA-Z0-9_\.]*)\s*'
     COMMENT = r'(?P<comment>#.*)'
     VALUE = r'(?P<value>[^=@%#][^#]*?)\s*'
-    FILE = r'(?P<file>([a-zA-Z0-9_]*:)?((\/)?[a-zA-Z0-9_.]+)(\/[a-zA-Z0-9_.]+)*)\s*'
+    FILE = r'(?P<file>([a-zA-Z0-9_]*:)?((\/)?[^' + BAD_CHAR + r']+)(\/[^' + BAD_CHAR + r']+)*)\s*'
 
     ONE_LINE = re.compile(KEY + r'(?P<operator>=|\%)\s*' + VALUE + COMMENT+r'?' + r'$')
     FROM_FILE_LINE = re.compile(KEY + r'(?P<operator>=@|\+=@)\s*' + FILE + COMMENT+r'?' + r'$')
@@ -143,8 +144,8 @@ class Parser:
         
         try:
             directory, path = get_location(self.directory, match.group('file'), current=self.path_parsed_file)
-        except ValueError:
-            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, "Syntax Error (path after ':' must be absolute)")
+        except SyntaxError as e:
+            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
         
         self.dic['__extends'].append({
             'path': path.replace(directory.name+'/', ''),
@@ -188,8 +189,8 @@ class Parser:
             raise DirectoryNotFound(self.path_parsed_file, line, match.group('file'), self.lineno)
         except FileNotFoundError:
             raise FileNotFound(self.path_parsed_file, line, path, lineno=self.lineno)
-        except ValueError:
-            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, "Syntax Error (path after ':' must be absolute)")
+        except SyntaxError as e:
+            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
     
     
     def one_line_match(self, match, line):
@@ -275,8 +276,8 @@ class Parser:
         
         try:
             directory, path = get_location(self.directory, match.group('file'), current=self.path)
-        except ValueError:
-            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, "Syntax Error (path after ':' must be absolute)")
+        except SyntaxError as e:
+            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
         
         if not isfile(join(directory.root, path)):
             raise FileNotFound(join(self.directory.root, self.path), line, join(directory.name, path), self.lineno, "PL not found")
@@ -335,7 +336,7 @@ class Parser:
             self.lineno += 1
         
         if self._multiline_key: # If a multiline value is still open at the end of the parsing
-            raise SyntaxErrorPL(join(self.directory.root, self.path), line[self._multiline_opened_lineno-1], self._multiline_opened_line, message="Multiline value never closed, start ")
+            raise SyntaxErrorPL(join(self.directory.root, self.path), self.lines[self._multiline_opened_lineno-1], self._multiline_opened_lineno, message="Multiline value never closed, start ")
         
         return self.dic, self.warning
 
