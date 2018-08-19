@@ -73,7 +73,7 @@ def get_type(directory, path):
     ext = splitext(basename(path))[1]
     
     ext = '.pl' if not ext else ext
-    
+    # FIXME the list of autorised extension should not be closed    
     if ext in parsers:
         if parsers[ext]['type'] in ['pl', 'pltp']:
             return parsers[ext]['type']
