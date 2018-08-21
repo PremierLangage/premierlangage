@@ -118,8 +118,8 @@ class LTIAuthMiddleware(MiddlewareMixin):
                     try:
                         course = Course.objects.get(consumer_id=course_id, consumer=consumer)
                     except ObjectDoesNotExist:
-                        logger.info("New course created: '%s' (%s:%d)" % (course_name, consumer, course_id))
-                        course = Course(consumer_id=id, consumer=consumer, name=course_name, label=course_label)
+                        logger.info("New course created: '%s' (%s:%s)" % (course_name, consumer, course_id))
+                        course = Course.objects.create(consumer_id=course_id, consumer=consumer, name=course_name, label=course_label)
                         course.save()
                     course.student.add(user)
                 

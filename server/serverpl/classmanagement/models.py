@@ -7,7 +7,6 @@ from lti.models import LTIModel
 
 
 class Course(LTIModel):
-    id = models.CharField(max_length=30, primary_key=True, null=False)
     teacher = models.ManyToManyField(User, related_name="teacher")
     name = models.CharField(max_length=200, null=False)
     label = models.CharField(max_length=20, null=False)

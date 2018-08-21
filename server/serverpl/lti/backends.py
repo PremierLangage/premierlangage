@@ -4,10 +4,11 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth import logout
-from django.core.exceptions import PermissionDenied, DoesNotExists
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
+from django.db import IntegrityError
 
 from lti.request_validator import is_valid_request
-
+from user_profile.models import Profile
 
 logger = logging.getLogger(__name__)
 
@@ -62,10 +63,19 @@ class LTIAuthBackend(ModelBackend):
         
         try:
             logger.info('authenticate found an existing user for %s' % username)
-            user = UserModel.objects.get(consumer_id=user_id, consumer=request_key)
+            user = Profile.objects.get(consumer_id=user_id, consumer=request_key).user
         except ObjectDoesNotExist:
             logger.info('authenticate created a new user for %s' % username)
-            user = UserModel.objects.create_user(consumer_id=user_id, consumer=request_key, username=username)
+            i = 0
+            while True:
+                try:
+                    user = UserModel.objects.create_user(username=username + ("" if not i else str(i)))
+                except IntegrityError:
+                    i += 1
+                    continue
+                break
+            user.profile.consumer = request_key
+            user.profile.consumer_id = consumer_id=user_id
             
         # update the user
         if email:
