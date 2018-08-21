@@ -17,7 +17,7 @@ DEBUG = True
 SYSLOG = False
 
 # List of Allowed Hosts
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', 'pl-test.u-pem.fr']
 
 
 # Used by mail_admins log handler, 
