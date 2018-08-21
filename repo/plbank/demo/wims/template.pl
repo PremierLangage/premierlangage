@@ -24,7 +24,7 @@ try:
     session = r.json()['wims_session']
 except JSONDecodeError:
     raise ValueError("Response from '" + url_session
-        + "' is not a valid json format. Received :\n\n" + r.content)
+        + "' is not a valid json format. Received :\n\n" + str(r.content))
 ==
 
 form==
@@ -33,3 +33,4 @@ form==
 
 buttons==
 ==
+
