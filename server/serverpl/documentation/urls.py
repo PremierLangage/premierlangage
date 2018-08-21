@@ -5,8 +5,8 @@ from django.conf.urls import url
 
 from documentation import views
 
-app_name = 'publisher'
+app_name = 'documentation'
 
 urlpatterns = [
-    url(r'^(\w*/?)$', views.documentation),
+    url(r'^(\w*/?)$', views.documentation, name='documentation'),
 ]

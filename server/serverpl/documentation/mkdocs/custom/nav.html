@@ -20,7 +20,7 @@
                             {% for nav_item in nav_item.children %}
                             <tr>
                                 <td>
-                                    <a href="{{ nav_item.url }}">{{ nav_item.title }}</a>
+                                    <a href="/documentation/{{ nav_item.url }}">{{ nav_item.title }}</a>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -31,7 +31,7 @@
             {% else %}
             <div class="card">
                 <div class="card-header">
-                    <a href="{{ nav_item.url }}">{{ nav_item.title }}</a>
+                    <a href="/documentation/{{ nav_item.url }}">{{ nav_item.title }}</a>
                 </div>
             </div>
             {% endif %}
