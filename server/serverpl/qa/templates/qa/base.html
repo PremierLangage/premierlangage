@@ -53,11 +53,11 @@
                             <div class="form-group">
                                 <label for="tags">
                                     Tags (comma-separated list)
-                                    <button type="button" class="btn" style="background-color:transparent;"  data-toggle="tooltip" data-placement="top" title="3 to 15 characters, must only contain letters, digits or hyphens ('-')">
+                                    <button type="button" class="btn" style="background-color:transparent;"  data-toggle="tooltip" data-placement="top" title="Must only contain letters, digits or hyphens ('-')">
                                         <i class="far fa-question-circle"></i>
                                     </button>
                                 </label>
-                                <input name="tags" class="form-control" type="text" data-role="tagsinput" value="" pattern="[A-Za-z0-9\-]{3,15}" required />
+                                <input name="tags" class="form-control" type="text" data-role="tagsinput" value="" pattern="[A-Za-z0-9\-\,]" required />
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>

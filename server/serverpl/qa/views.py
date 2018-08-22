@@ -73,11 +73,11 @@ class IndexView(View):
             if request.user.is_authenticated:
                 usersq = usersq.filter(include & exclude)
         
-        questions = questions.annotate(num_answers=Count('qaanswer'))
-        noans = noans.annotate(num_answers=Count('qaanswer'))
-        popular = popular.annotate(num_answers=Count('qaanswer'))
+        questions = questions.annotate(num_answers=Count('qaanswer', distinct=True))
+        noans = noans.annotate(num_answers=Count('qaanswer', distinct=True))
+        popular = popular.annotate(num_answers=Count('qaanswer', distinct=True))
         if request.user.is_authenticated:
-            usersq = usersq.annotate(num_answers=Count('qaanswer'))
+            usersq = usersq.annotate(num_answers=Count('qaanswer', distinct=True))
         
         return render(request, self.template_name, {
             "questions": Paginator(questions, self.question_per_page).get_page(page if page else 1),
