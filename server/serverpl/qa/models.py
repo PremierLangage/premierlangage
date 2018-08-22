@@ -44,6 +44,7 @@ class QAQuestion(models.Model, HitCountMixin, DateMixin):
         sign = 1 if self.points > 0 else -1 if self.points < 0 else 0
         seconds = epoch_seconds(self.pub_date) - 1134028003
         self.popularity = round(sign * order + seconds / 45000, 7)
+        self.save()
     
     
     def has_accepted_answer(self):
@@ -87,6 +88,11 @@ class QAAnswer(models.Model, DateMixin):
         super(QAAnswer, self).save(*args, **kwargs)
     
     
+    def mod_points(self, points):
+        self.points += points
+        self.save()
+    
+    
     def delete(self, *args, **kwargs):
         self.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['CREATE_ANSWER'])
         if self.answer:
@@ -124,19 +130,23 @@ class QAAnswerVote(VoteParent):
         if self.pk is None: # New vote
             if self.value:
                 self.answer.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['UPVOTE_ANSWER'])
+                self.answer.mod_points(1)
             else:
                 self.answer.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['DOWNVOTE_ANSWER'])
+                self.answer.mod_points(-1)
         else: # Changed vote
             if self.value:
                 self.answer.user.profile.mod_rep(
                     settings.QA_SETTINGS['reputation']['UPVOTE_ANSWER']
                   - settings.QA_SETTINGS['reputation']['DOWNVOTE_ANSWER']
                 )
+                self.answer.mod_points(2)
             else:
                 self.answer.user.profile.mod_rep(
                     settings.QA_SETTINGS['reputation']['DOWNVOTE_ANSWER']
                   - settings.QA_SETTINGS['reputation']['UPVOTE_ANSWER']
                 )
+                self.answer.mod_points(-2)
         super(QAAnswerVote, self).save(*args, **kwargs)
     
     

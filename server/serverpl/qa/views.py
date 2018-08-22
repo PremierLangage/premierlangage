@@ -189,9 +189,9 @@ class AnswerView(HttpMethodMixin, View):
         if 'answer' in params:
             params['answer'] = bool(int(params['answer']))
             answer[0].question.qaanswer_set.all().update(answer=False)
-        
-        params['update_date'] = timezone.now()
-        params['update_user'] = request.user
+        else:
+            params['update_date'] = timezone.now()
+            params['update_user'] = request.user
         answer.update(**params)
         
         if 'answer' in params:
