@@ -67,6 +67,15 @@ _extends_ permet d'étendre un autre fichier, c'est à dire de récupérer l'ens
 
 Ces balises permettent d'éviter de devoir réécrire les clés les plus compliquées pouvant servir pour plusieurs exercices (formulaire, fonction d'évaluation, etc...).
 
+## Espaces de Noms 
+
+Si votre cles contient un point par exemple :
+
+    avant.apres= valeur
+Ceci est interprete comme : 
+avant est une clef dont la valeur est un dictionnaire, et une des cles de ce dictionnaire est la cles apres.
+Cette definition est recursive.
+
 
 ### Clés réservées
 Bien qu'il soit possible d'attribuer une valeur à n'importe quel clés, il est important de noter que certaines sont réservées pour l'interface et pour le traitement de l'exercice, ces clés réservées sont:
