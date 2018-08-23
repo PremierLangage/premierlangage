@@ -149,8 +149,9 @@ class Parser:
         directory_name = self.directory.name
         if not isfile(join(self.directory.root, path)):
             for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if not l.isdigit()]:
-                if isfile(join(settings.FILEBROWSER_ROOT, lib, path)):
-                    directory_name = l
+                if isfile(join(settings.FILEBROWSER_ROOT, lib, match.group('file')[1:])):
+                    directory_name = lib
+                    path = match.group('file')[1:]
                     break
             else:
                 raise FileNotFound(join(self.directory.root, self.path), line, join(self.directory.name, path), self.lineno, "PL not found")
@@ -188,7 +189,7 @@ class Parser:
             path = abspath(join(self.directory.root, path))
             if not isfile(path):
                 for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if not l.isdigit()]:
-                    if isfile(join(settings.FILEBROWSER_ROOT, lib, path)):
+                    if isfile(join(settings.FILEBROWSER_ROOT, lib, match.group('file')[1:])):
                         path = join(settings.FILEBROWSER_ROOT, lib, path)
                         break
                 else:
@@ -297,7 +298,7 @@ class Parser:
             path = abspath(join(self.directory.root, path))
             if not isfile(path):
                 for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if not l.isdigit()]:
-                    if isfile(join(settings.FILEBROWSER_ROOT, lib, path)):
+                    if isfile(join(settings.FILEBROWSER_ROOT, lib, match.group('file')[1:])):
                         path = join(settings.FILEBROWSER_ROOT, lib, path)
                         break
                 else:
