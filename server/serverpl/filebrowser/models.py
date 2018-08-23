@@ -53,9 +53,6 @@ class Directory(models.Model):
     def save(self, *args, **kwargs):
         self.root = os.path.join(settings.FILEBROWSER_ROOT, self.name)
         super(Directory, self).save(*args, **kwargs)
-	# FIXME public should be un information yes/no
-        if self.public:
-            [self.add_read_auth(u) for u in User.objects.all()]
     
     
     @receiver(post_save, sender=User)

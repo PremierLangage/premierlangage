@@ -7,18 +7,14 @@
 
 
 import logging, hashlib, htmlprint
-
 from os.path import splitext, basename, join, abspath, dirname
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings
 
-from loader.utils import get_location
 from loader.parser import parse_file, get_type
 from loader.models import PL, PLTP
-
 from filebrowser.models import Directory
-
-from serverpl.settings import DEBUG
 
 logger = logging.getLogger(__name__)
 
@@ -45,12 +41,11 @@ def load_file(directory, rel_path, force=False):
         else:
             raise Exception("Type '" + typ + "' is not yet implemented")
     except Exception as e: # pragma: no cover 
-        if not DEBUG:
+        if not settings.DEBUG:
             return (None, htmlprint.code(str(e))) 
-        return (None, (
-            htmlprint.code(str(e))
-            + '<br>DEBUG set to True - Showing Traceback :<br>'
-            + htmlprint.html_exc()))
+        return (None, (htmlprint.code(str(e))
+                       + '<br>DEBUG set to True - Showing Traceback :<br>'
+                       + htmlprint.html_exc()))
 
 
 
