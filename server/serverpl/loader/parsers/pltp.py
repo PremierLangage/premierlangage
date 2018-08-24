@@ -7,7 +7,7 @@
 
 
 import re, json, hashlib
-from os.path import join, isfile, abspath
+from os.path import join, isfile, abspath, dirname
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -143,9 +143,16 @@ class Parser:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)
         
         try:
-            directory, path = get_location(self.directory, match.group('file'), current=self.path_parsed_file)
+            path = get_location(self.directory, match.group('file'), current=self.path_parsed_file)
         except SyntaxError as e:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
+        
+        directory_name = self.directory.name
+        if not isfile(join(self.directory.root, path)):
+            for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if not l.isdigit()]:
+                if isfile(join(settings.FILEBROWSER_ROOT, lib, match.group('file')[1:])):
+                    directory_name = lib
+                    path = match.group('file')[1:]
         
         self.dic['__extends'].append({
             'path': path.replace(directory.name+'/', ''),
@@ -176,11 +183,19 @@ class Parser:
             self.add_warning("Key '" + key + "' overwritten at line " + str(self.lineno))
         
         try:
-            directory, path = get_location(self.directory, match.group('file'), current=self.path_parsed_file)
-            path = abspath(join(directory.root, path))
+            path = get_location(self.directory, match.group('file'), current=dirname(self.path))
+            path = abspath(join(self.directory.root, path))
+            if not isfile(path):
+                for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if not l.isdigit()]:
+                    if isfile(join(settings.FILEBROWSER_ROOT, lib, match.group('file')[1:])):
+                        path = join(settings.FILEBROWSER_ROOT, lib, path)
+                        break
+                else:
+                    raise FileNotFoundError
+            
             with open(path, 'r') as f:
                 if '+' in op:
-                    if not key in self.dic.keys():
+                    if not key in self.dic:
                         raise SemanticError(self.path_parsed_file, line, self.lineno, "Trying to append to non-existent key '"+key+"'.")
                     self.dic[key] += f.read()
                 else:
@@ -275,18 +290,25 @@ class Parser:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)
         
         try:
-            directory, path = get_location(self.directory, match.group('file'), current=self.path)
+            path = get_location(self.directory, match.group('file'), current=dirname(self.path))
         except SyntaxError as e:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
         
-        if not isfile(join(directory.root, path)):
-            raise FileNotFound(join(self.directory.root, self.path), line, join(directory.name, path), self.lineno, "PL not found")
+        directory_name = self.directory.name
+        if not isfile(join(self.directory.root, path)):
+            for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if not l.isdigit()]:
+                if isfile(join(settings.FILEBROWSER_ROOT, lib, match.group('file')[1:])):
+                    directory_name = lib
+                    path = match.group('file')[1:]
+                    break
+            else:
+                raise FileNotFound(join(self.directory.root, self.path), line, join(self.directory.name, path), self.lineno, "PL not found")
         
         self.dic['__pl'].append({
             'path': path,
             'line': line,
             'lineno': self.lineno,
-            'directory_name': directory.name
+            'directory_name': directory_name
         })
     
     

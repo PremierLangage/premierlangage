@@ -6,8 +6,9 @@
 #  Copyright 2018 Coumes Quentin
 #  
 
-from os.path import join, dirname, normpath, isfile
+from os.path import join, dirname, normpath, isfile, basename
 
+import gitcmd
 from django.conf import settings
 
 from filebrowser.models import Directory
@@ -19,33 +20,38 @@ def get_location(directory, path, current=""):
        params:
            - directory: [Directory] Directory containing the currently parsed file
            - path:      [str]       Path to the file needed
+           - current:   [str]       Current position relative to directory
         
        return:
-           (directory, path)
+           A path to the file relative to directory
         
        raise:
-           - django.core.exceptions.ObjectDoesNotExist if no Directory with name=other_directory_name could be found
            - SyntaxError if a directory is given but the path after ':' isn't absolute
     """
-    if ':' in path:
+    if ':' in path: # Contains a reference
         directory_name, path = path.split(':')
-        if directory_name != 'home':
-            directory = Directory.objects.get(name=directory_name)
-        
-        try:
-            int(directory_name)
-            raise SyntaxError("Directory's name cannot be an integer")
-        except ValueError:
-            pass
-        if path[0] != '/':
+        if not path.startswith('/'):
             raise SyntaxError("Syntax Error (path after ':' must be absolute)")
+        if directory_name != 'home':
+            path = join(directory_name, path[1:])
+        else:
+            path = path[1:]
         
-        return directory, normpath(path[1:])
+    elif path.startswith('/'): # Absolute path
+        abs_curr = join(directory.root, current)
+        if gitcmd.in_repository(abs_curr):
+            top = gitcmd.top_level(abs_curr)[1]
+            if settings.FILEBROWSER_ROOT in top: # Check if the repo is inside FILEBROWSER_ROOT
+                path = join(basename(top), path[1:])
+            else:
+                path = path[1:]
+        else:
+            path = path[1:]
+            
+    else: # Relative path 
+        path = join(current, path)
     
-    if path[0] == '/':
-        return directory, normpath(path[1:])
-    
-    return directory, normpath(join(dirname(current), path))
+    return normpath(path)
 
 
 def extends_dict(target, source):
