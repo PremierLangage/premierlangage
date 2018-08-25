@@ -59,7 +59,7 @@ import serverpl.pysrc.plparser
 		for key in ["type","text","title","answer"]:
 			if not key in dico :
 				return False," Votre exercice n'a pas de balise *"+key+"* obligatoire"
-		return True," OK touts les balise demandés sont présentes"
+		return True," OK touts les balise demandées sont présentes"
 ==
 
 
