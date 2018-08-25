@@ -57,6 +57,7 @@ def activity_ajax(request):
             Answer(value=status['inputs'], user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id__']), seed=exercise.dic['seed'], grade=-1).save()
         elif success:
             feedback_type = "success"
+            #  i  wanted to delete the seed in the Answer but we need it for the statistics
             Answer(value=status['inputs'], user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id__']), seed=exercise.dic['seed'], grade=100).save()
         else:
             feedback_type = "fail"
@@ -83,6 +84,8 @@ def activity_receiver(request):
     
     current_pl = request.session.get("current_pl", None)
     current_pl = None if current_pl == None else PL.objects.get(id=current_pl)
+    # FIXME the code above is current_pl = PL.objects.get(id=current_pl,None)
+    # and i think the default value of get is None
     exercise = ActivityInstance(request, activity, current_pl)
     
     if request.method == 'GET' and request.GET.get("action", None):
@@ -98,9 +101,11 @@ def activity_receiver(request):
             Answer(value=value, user=request.user, pl=current_pl, seed=exercise.dic['seed'], grade=-1).save()
         
         elif current_pl and action == "next":
+            # introduire ici l'appel de la fonction next de l'activite
+            # si elle existe sinon le code suivant
             for current, next in zip(activity.pltp.pl.all(), list(activity.pltp.pl.all())[1:]+[None]):
                 if current_pl.id == current.id:
-                    request.session["current_pl"] = None if next == None else next.id
+                    request.session["current_pl"] = None if next == None else next.id # FIXME pourquoi le test
                     break
             else:
                 request.session["current_pl"] = None
