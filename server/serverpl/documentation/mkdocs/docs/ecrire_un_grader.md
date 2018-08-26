@@ -19,7 +19,7 @@ le grader pas exigant suivant qui est toujours satisfait du travail de l'étudia
 ```
   grader==
   import json
-  print(json.dumps({"success":True,"error":"","message":" Bravo !!!"}))
+  print(json.dumps({"success":True,"error":"","feedback":" Bravo !!!"}))
   ==
 ```
 Remarquez que ce grader écrit sur la sortie standard un dictionnaire au format json.
