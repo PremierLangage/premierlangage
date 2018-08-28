@@ -26,7 +26,7 @@ class Feedback:
     """
 	Classe de stockage et de production des sorties d'un exercie pl
     """
-    def __init__(self):
+    def __init__(self, template=None):
         self.compilation = False # No error yet
         self.success = True
         self.showinput= False
@@ -34,9 +34,11 @@ class Feedback:
         self.feedbacktext=""
         self.div=[]
         self.asio=False
-        with open("template.html", "r") as f:
-            self.template = Template(f.read())
-       
+        if not template :
+            with open("template.html", "r") as f:
+                self.template = Template(f.read())
+        else:
+            self.template = template
 
     def addInput(self,newinput):
         self.executionhistory.append(("input",subnlbybr(newinput)))
