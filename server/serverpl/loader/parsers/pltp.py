@@ -8,6 +8,7 @@
 
 import re, json, hashlib
 from os.path import join, isfile, abspath, dirname
+import os
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
