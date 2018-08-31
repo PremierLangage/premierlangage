@@ -26,10 +26,10 @@ def get_sandbox():
     tried = "Tried sandboxes:<br>"
     for sandbox in sandboxes:
         try:
-            r = requests.head(sandbox.url, timeout=2)
+            r = requests.head(sandbox.url + "?version=1.0.0", timeout=2)
             if r.status_code == 200:
                 break
-            tried += "- "+str(sandbox)+"(code received: "+str(r.status_code)+")<br>"
+            tried += "- " + str(sandbox) + "(code received: " + str(r.status_code) + ")<br>"
         except Exception as e:
             if DEBUG:   
                 tried += "- "+str(sandbox)+"<br>"+"DEBUG:<br>"+str(e)
@@ -62,55 +62,42 @@ def make_tar(files):
 
 class SandboxSession:
     
-    def __init__(self, dic, studentfile=None, timeout=3):
-        sandbox = get_sandbox()
+    def __init__(self, dic, exec_timeout=5, test=False, params=""):
         
-        self.dic = dic
-        self.studentfile = studentfile
-        self.url = sandbox.url
-        self.name = sandbox.name
-        self.timeout = timeout
+        self.sandbox = sandbox = get_sandbox()
+        self.dic = dict(dic)
+        self.exec_timeout = exec_timeout
+        self.test = test
+        self.params = params
         
-        logger.info("Executing on sandbox '"+sandbox.url+" ("+sandbox.name+")'.")
+        logger.info("Executing on sandbox '" + self.sandbox.url + " (" + self.sandbox.name + ")'.")
     
     
-    def call(self, timeout=10):
-        """ Call the sandbox
-        TODO: add the variable studentfilename issue #24 if it is needed
-        """
+    def _build_env(self):
+        env = dict(self.dic['__files'])
+        tmp = self.dic
+        del tmp['__files']
         
-        payload = dict(self.dic['__file'])
+        env['pl.json'] = json.dumps(tmp)
         
-        tmp = dict(self.dic)
-        del tmp['__file']
-        payload['pl.json'] = json.dumps(tmp)
-        if 'grader' in self.dic and 'grader.py' not in payload:
-            payload['grader.py'] = self.dic['grader']
-        if self.studentfile is not None:
-            payload['student'] = self.studentfile
+        if 'grader' in self.dic and 'grader.py' not in env:
+            env['grader.py'] = self.dic['grader']
         
+        if 'builder' in self.dic and 'builder.py' not in env:
+            env['builder.py'] = self.dic['builder']
         
-        self.tar = make_tar(payload)
+        return env
+    
+    
+    def call_build(self, request_timeout=10):
+        files = {'environment.tgz': make_tar(self._build_env())}
         
-        hsh = hashlib.sha1()
-        hsh.update(self.tar)
-        tar_hash = hsh.hexdigest()
-        
-        files = {'environment.tgz': self.tar}
-        
-        try: 
-            data={'execution_timeout': self.timeout, 'tar_hash': tar_hash}
-            response = requests.post(self.url, data=data, files=files, timeout=10)
-            response = response.text
-        except Exception as e:
-            response = {
-                'feedback': ("Erreur de la sandbox '"
-                            + self.name + "', si l'erreur persiste, "
-                            + "merci de contacter votre professeur<br><br>"),
-                'grade': "info",
-                'error': traceback.format_exc(),
-                'other': [],
-            }
-            response = json.dumps(response)
+        data={
+            'execution_timeout': self.exec_timeout,
+            'params': self.params,
+        }
+        if self.test:
+            data['test'] = True
             
+        response = requests.post(self.sandbox.url + "build/", data=data, files=files, timeout=request_timeout)
         return response

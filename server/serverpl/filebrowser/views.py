@@ -113,9 +113,12 @@ def preview_pl(request):
                 preview = exercise.render(request)
         
         except Exception as e: # pragma: no cover
-            preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
-                + basename(rel_path) + "': \n\n" \
-                + htmlprint.code(str(e)) + "</div>"
+            preview = ('<div class="alert alert-danger" role="alert"> Failed to load \''
+                       + basename(rel_path) + "': \n\n"
+                       + htmlprint.code(str(e)))
+            if settings.DEBUG:
+                preview += "\n\nDEBUG set to True:\n" + htmlprint.html_exc()
+            preview += "</div>"
         finally:
             shutil.move(path+".bk", path)
             return HttpResponse(

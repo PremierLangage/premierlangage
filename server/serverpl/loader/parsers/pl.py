@@ -125,7 +125,7 @@ class Parser:
         self.dic['__format'] = '.pl'
         self.dic['__rel_path'] = self.path_parsed_file
         self.dic['__comment'] = ''
-        self.dic['__file'] = dict()
+        self.dic['__files'] = dict()
         self.dic['__dependencies'] = [self.path_parsed_file]
         self.dic['__extends'] = list()
     
@@ -283,7 +283,7 @@ class Parser:
     
     
     def sandbox_file_line_match(self, match, line):
-        """ Map content of file to self.dic['__file'][name].
+        """ Map content of file to self.dic['__files'][name].
             
             Raise from loader.exceptions:
                 - SyntaxErrorPL if no group 'file' was found
@@ -307,7 +307,7 @@ class Parser:
             
             self.dic['__dependencies'].append(path)
             with open(path, 'r') as f:
-                self.dic['__file'][name] = f.read()
+                self.dic['__files'][name] = f.read()
 
         except ObjectDoesNotExist:
             raise DirectoryNotFound(self.path_parsed_file, line, match.group('file'), self.lineno)

@@ -18,8 +18,9 @@ from playexo.request import SandboxSession
 lang = ['abap', 'abc', 'actionscript', 'ada', 'apache_conf', 'applescript', 'asciidoc', 'assembly_x86', 'autohotkey', 'batchfile', 'bro', 'c9search', 'c_cpp', 'cirru', 'clojure', 'cobol', 'coffee', 'coldfusion', 'csharp', 'csound_document', 'csound_orchestra', 'csound_score', 'css', 'curly', 'd', 'dart', 'diff', 'django', 'dockerfile', 'dot', 'drools', 'eiffel', 'ejs', 'elixir', 'elm', 'erlang', 'forth', 'fortran', 'ftl', 'gcode', 'gherkin', 'gitignore', 'glsl', 'gobstones', 'golang', 'graphqlschema', 'groovy', 'haml', 'handlebars', 'haskell', 'haskell_cabal', 'haxe', 'hjson', 'html', 'html_elixir', 'html_ruby', 'ini', 'io', 'jack', 'jade', 'java', 'javascript', 'json', 'jsoniq', 'jsp', 'jssm', 'jsx', 'julia', 'kotlin', 'latex', 'lean', 'less', 'liquid', 'lisp', 'live_script', 'livescript', 'logiql', 'lsl', 'lua', 'luapage', 'lucene', 'makefile', 'markdown', 'mask', 'matlab', 'maze', 'mel', 'mips_assembler', 'mipsassembler', 'mushcode', 'mysql', 'nix', 'nsis', 'objectivec', 'ocaml', 'pascal', 'perl', 'pgsql', 'php', 'pig', 'plain_text', 'powershell', 'praat', 'prolog', 'properties', 'protobuf', 'python', 'r', 'razor', 'rdoc', 'red', 'rhtml', 'rst', 'ruby', 'rust', 'sass', 'scad', 'scala', 'scheme', 'scss', 'sh', 'sjs', 'smarty', 'snippets', 'soy_template', 'space', 'sparql', 'sql', 'sqlserver', 'stylus', 'svg', 'swift', 'swig', 'tcl', 'tex', 'text', 'textile', 'toml', 'tsx', 'turtle', 'twig', 'typescript', 'vala', 'vbscript', 'velocity', 'verilog', 'vhdl', 'wollok', 'xml', 'xquery', 'yaml']
 default_load = '{% load static %}{% load django_markdown %}{% load input_fields_ajax %}{% load json_filter %}'
 
-# FIXME add a comment to explain this list, maybe it should be defined elsewere
-pls_known = [
+# List of tuple (pl_key, block_name) to replace every block 'block_name' of the template with the
+# content of 'pl_key'
+context_key = [
     ('form', 'form'), ('css', 'css'), ('pl', 'exo'),
     ('pltp', 'exo'), ('navigation', 'navigation'),
     ('load', 'load'), ('state', 'state'), ('end_script', 'end_script'),
@@ -42,8 +43,7 @@ class ActivityInstance:
         
         if pl:
             seed = Answer.last_seed(pl, request.user)
-            # FIXME  if last Answer is a success then reset seed.
-            if 'oneshot' in pl.json or not seed or Answer.last_success(pl,request.user) == True : #
+            if 'oneshot' in pl.json or not seed or Answer.last_success(pl,request.user) == True :
                 seed = time.time()
 
             self.dic.update({
@@ -102,20 +102,8 @@ class ActivityInstance:
                     + "merci de prévenir votre professeur:<br>" + htmlprint.html_exc())
     
     
-    #@timeout_decorator.timeout(5, use_signals=False)
     def intern_build(self):
-        try:
-            dic = dict(self.dic)
-            if 'build' in self.dic:
-                exec(self.dic['build'], globals())
-                dic = build(self.dic)
-            elif 'before' in self.dic:
-                exec(self.dic['before'], dic)
-        except Exception as e:
-            raise Exception("Error while executing build or before:\n\n"
-                + str(type(e)) + "\n" 
-                + str(traceback.format_exc())
-            )
+        response = SandboxSession(self.dic)
         return dic
     
     
@@ -161,7 +149,7 @@ class ActivityInstance:
         raw = '{% extends "playexo/default_pltp_exo.html" %}' + default_load
         if 'pl_id__' in self.dic:
             raw = '{% extends "playexo/default_pl_exo.html" %}' + default_load
-            for key, block_name in pls_known:
+            for key, block_name in context_key:
                 if key in self.dic:
                     raw  += "{% block " + block_name + " %}{{ " + key + " }}{% endblock %}"
             
@@ -184,9 +172,36 @@ class PLInstance(ActivityInstance):
              self.dic['seed'] = time.time()
     
     
+    def intern_build(self):
+        response = SandboxSession(self.dic).call_build()
+        response = json.loads(response.text)
+        if response['status'] < 0:
+            raise Exception("An error occured on the sandbox (code: %d, env: %s):\n\n%s"
+                            % (response['status'], response['id'], response['sandboxerr']))
+        if response['status'] > 0:
+            msg = ("An error occured during the execution of the build/before script. (exit code: "
+                   + str(response['status']) + "):")
+            if response['stdout']:
+                msg += "\n\nstdout:\n" + response['stdout']
+            if response['stderr']:
+                msg += "\n\nstderr:\n" + response['stderr']
+            raise Exception(msg)
+        
+        context = dict(response['context'])
+        keys = list(response.keys())
+        for key in keys:
+            response[key+"__"] = response[key]
+        for key in keys:
+            del response[key]
+        del response['context__']
+        
+        context.update(response)
+        return context
+    
+    
     def get_template(self): 
         raw = '{% extends "playexo/preview.html" %}' + default_load
-        for key, block_name in pls_known:
+        for key, block_name in context_key:
             if key in self.dic:
                 raw  += "{% block " + block_name + " %}{{ " + key + " }}{% endblock %}"
         return raw
