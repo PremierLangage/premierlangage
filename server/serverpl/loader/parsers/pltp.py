@@ -6,9 +6,8 @@
 #  Copyright 2018 Coumes Quentin
 
 
-import re, json, hashlib
+import re, json, hashlib,os
 from os.path import join, isfile, abspath, dirname
-import os
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
