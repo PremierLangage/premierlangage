@@ -189,8 +189,8 @@ class Parser:
             path = abspath(join(self.directory.root, path))
             if not isfile(path):
                 for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if not l.isdigit()]:
-                    if isfile(join(settings.FILEBROWSER_ROOT, lib, match.group('file')[1:])):
-                        path = join(settings.FILEBROWSER_ROOT, lib, path)
+                    path = join(settings.FILEBROWSER_ROOT, lib, match.group('file')[1:])
+                    if isfile(path):
                         break
                 else:
                     raise FileNotFoundError
@@ -298,8 +298,8 @@ class Parser:
             path = abspath(join(self.directory.root, path))
             if not isfile(path):
                 for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if not l.isdigit()]:
-                    if isfile(join(settings.FILEBROWSER_ROOT, lib, match.group('file')[1:])):
-                        path = join(settings.FILEBROWSER_ROOT, lib, path)
+                    path = join(settings.FILEBROWSER_ROOT, lib, match.group('file')[1:])
+                    if isfile(path):
                         break
                 else:
                     raise FileNotFoundError
