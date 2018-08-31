@@ -247,6 +247,6 @@ PARSERS_MODULE = 'loader.parsers'
 # Wims modules URL
 WIMS_MODULE_URL = "https://wims-preprod.u-pem.fr/"
 WIMS_IDENT='pltest'
-WIMS_QUSER='jdelver'
+WIMS_QUSER='qcoumes'
 WIMS_PASSWD='toto'
-WIMS_COURSE='4833504'
+WIMS_COURSE='8109815'
