@@ -12,7 +12,7 @@ text==
 
 Créez deux variables A et Kiki avec comme valeurs respectives "bob" et 1.12345.
 
-il suffit de les initialisées avec les bonnes valeurs.
+il suffit de les initialiser avec les bonnes valeurs.
 
 
 ==
@@ -20,9 +20,9 @@ il suffit de les initialisées avec les bonnes valeurs.
 # Choisir pltest ou soluce ou expectedoutput
 
 pltest==
->>> A
+>>> A # doit etre une chaine 
 'bob'
->>> Kiki
+>>> Kiki # python distingue majuscule et minuscule
 1.12345
 ==
 
