@@ -83,11 +83,17 @@ class SandboxSession:
         
         tmp = dict(self.dic)
         del tmp['__file']
-        payload['pl.json'] = json.dumps(tmp)
+        import jsonpickle
+        payload['pl.json'] = jsonpickle.encode(tmp) #json.dumps(tmp)
         if 'grader' in self.dic and 'grader.py' not in payload:
             payload['grader.py'] = self.dic['grader']
+        if 'soluce' in self.dic and 'soluce.py' not in payload:
+            payload['soluce.py'] = self.dic['soluce']
         if self.studentfile is not None:
-            payload['student'] = self.studentfile
+            if  'studentfilename' in self.dic and self.dic['studentfilename']:
+                payload[self.dic['studentfilename']]= self.studentfile
+            else:
+                payload['student'] = self.studentfile
         
         
         self.tar = make_tar(payload)
