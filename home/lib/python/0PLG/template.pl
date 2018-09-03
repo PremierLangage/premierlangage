@@ -5,11 +5,7 @@
 
 name=/python/0PLG/template.pl
 
-grader==
-from plgrader import Grader
-g=Grader()
-print(g.grade())
-==
+
 
 @ /pysrc/src/__init__.py
 @/pysrc/src/plgrader.py
@@ -18,7 +14,11 @@ print(g.grade())
 @/pysrc/src/pldoctest.py
 @/pysrc/src/template.html
 
-
+grader==
+from plgrader import Grader
+g=Grader()
+print(g.grade())
+==
 
 
 

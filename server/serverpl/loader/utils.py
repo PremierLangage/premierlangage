@@ -60,6 +60,8 @@ def extends_dict(target, source):
     for key, value in source.items():
         if key == '__dependencies':
             target[key] += value
+        elif key == '__file':
+            extends_dict(target[key], value)
         elif key not in target or not target[key]:
             target[key] = value
     
