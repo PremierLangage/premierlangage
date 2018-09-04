@@ -67,6 +67,15 @@ _extends_ permet d'étendre un autre fichier, c'est à dire de récupérer l'ens
 
 Ces balises permettent d'éviter de devoir réécrire les clés les plus compliquées pouvant servir pour plusieurs exercices (formulaire, fonction d'évaluation, etc...).
 
+## Espaces de Noms 
+
+Si votre cles contient un point par exemple :
+
+    avant.apres= valeur
+Ceci est interprete comme : 
+avant est une clef dont la valeur est un dictionnaire, et une des cles de ce dictionnaire est la cles apres.
+Cette definition est recursive.
+
 
 ### Clés réservées
 Bien qu'il soit possible d'attribuer une valeur à n'importe quel clés, il est important de noter que certaines sont réservées pour l'interface et pour le traitement de l'exercice, ces clés réservées sont:
@@ -92,13 +101,13 @@ Bien qu'il soit possible d'attribuer une valeur à n'importe quel clés, il est 
 
 ## Différence PL / PLTP
 
-L'ensemble des opérateurs vus dans [Format](#Format) ont un comportement identique dans les PL et les PLTP.  
+L'ensemble des opérateurs vus dans [Format](#Format) ont un comportement identique dans les PL et les PLTP.
 Sauf  l'opérateur **@** !!
 
 ### PL
 Dans un pl l'oéprateur **@**  indique un fichier que l'on souhaite voire dans le contexte d'exécution sur la sandbox:
 
-il est classique de trouvez dans un template la ligne :  
+il est classique de trouvez dans un template la ligne :
 ```
 @ /pysrc/src/utils.py
 ```
@@ -108,53 +117,67 @@ Le fichier utils.py contenant des fonctions qui simplifies l'écriture des grade
 
 ### PLTP
 
-Dans un PLTP, l'opérateur **@** permet d'ajouter un PL à la feuille d'exercice, il se présente de différentes manières:
+Dans un PLTP, l'opérateur **@** permet d'ajouter un PL à la feuille d'exercice.
 
 ```
 @ /path/to/file.pl
-
-@ ../relative/path/file.pl
-
-@ autre_repertoire:/path/to/file.pl
 ```
 
-Le premier cas indique un chemin absolue depuis le même dépot que le PLTP.
-Le second cas indique un chemin relatif au pltp dans le même dépot que celui-ci.
-Le dernier cas indique le chemin d'un fichier situé dans le dépot 'autre_répertoire'.
+## Les références de fichiers
+Il y a trois manière de référencé un fichier:
+
+* Avec un chemin relatif (ex: `../../fichier.ext`)
+
+* Avec un chemin absolu (ex: `/chemin/vers/fichier.ext`):
+	* Si le fichier contenant la référence est dans un répository git, le chemin partira de la racine de celui-ci.
+	* Sinon, le chemin partira de la racine du dossier *home* de l'utilisateur.
+
+* Avec une référence de dossier (ex: `dossier:/chemin/vers/fichier.ext`):
+	* Si la référence est exactement **'home'**, le chemin partira de la racine du dossier *home* de l'utilisateur.
+	* Sinon, le chemin partira de `home/[dossier]`.
+
+Si à n'importe quelle moment, un fichier n'est pas trouvé dans le home de l'utilisateur, celui-ci sera cherché dans les librairies.
 
 Ainsi, avec une arbre de repertoire comme celui-ci:
 
 ```
-repertoire_1/
+home/
 ├──dossier1/
 │  ├─ exo1.pl
-
-repertoire_2/
-├──dossier2/
+├──git1/
 │  ├─ exo2.pl
 │  ├─ feuille.pltp
+
+
+lib/
+├──dossier2/
+│  ├─ exo3.pl
 ```
 
-Il est possible de référencer *exo2.pl* dans *feuille.pltp* de plusieurs manière:
+Il est possible de référencer *exo1.pl* dans *feuille.pltp* de plusieurs manière:
+
+```
+@ ../exo1.pl
+@ home:/dossier1/exo1.pl
+@ dossier1:/exo1.pl
+```
+
+De même, il est possible de référencer *exo2.pl* dans *feuille.pltp* de plusieurs manière:
 
 ```
 @ exo2.pl
-@ /dossier2/exo2.pl
-@ repertoire_2:/dossier2/exo2.pl
+@ /exo2.pl
+@ home:/git1/exo2.pl
 ```
 
-*exo1.pl* se trouvant dans un autre répertoire que *feuille.pltp*, il n'est en revanche possible de le référencer que d'une seul manière:
+Pour référencer *exo3.pl* de lib dans *feuille.pltp*:
+```
+@ /dossier2/exo3.pl
+```
 
-```
-@ repertoire_1:/dossier1/exo1.pl
-```
-
-Une feuille d'exercice voulant donc référencer ces deux exercice contiendrait donc:
-
-```
-@ exo2.pl
-@ repertoire_1:/dossier1/exo1.pl
-```
+Bien entendu, cela pose plusieurs limitations:
+* Ne pas créer de dossier/cloner de dépot s'appelant `home`
+* Ne pas avoir de chemin de fichier identique à ceux d'une librairie
 
 ### PL
 Dans un PLTP, l'opérateur **@** permet d'associer un fichier au PL qui sera envoyé à la sandbox avec la réponse de l'élève.

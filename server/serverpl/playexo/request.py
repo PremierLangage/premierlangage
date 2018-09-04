@@ -75,7 +75,9 @@ class SandboxSession:
     
     
     def call(self, timeout=10):
-        """ Call the sandbox """
+        """ Call the sandbox
+        TODO: add the variable studentfilename issue #24 if it is needed
+        """
         
         payload = dict(self.dic['__file'])
         

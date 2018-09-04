@@ -1,6 +1,17 @@
-# Écriture d'un Build
+TODO: accents
 
-Dans l'exercice pl si l'on souhaite utiliser un build, il faut soit déclarer une fonction **build** dans une balise **build** soit déclarer un script dans la balise *before*.
+# Écriture d'un Build / before
+
+
+Dans certains cas nous souhaitons pouvoir modifer l'exercice avant qu'il soit presente a l'eleve pour tout un tas de raisons mais la plus simple etant d'apporter un element aleatoire a l'exercice. C'est le role du script **before** qui est appele juste avant l'affichage de l'exercice.
+
+	Toute la structure de l'exercice peut ^etre ainsi modifiee. Attention a ne pas tout faire dans un exercice, pour les notes et l'activite des eleves sur la plateforme d'autres outils existent il ne faut pas les reecrire dasn le code d'un exercice. Un exercice est une question, une reponse (interaction), et un resultat (note, feedback).
+
+
+
+Dans l'exercice pl si l'on souhaite utiliser un build, il faut:
+- soit déclarer dans une balise **build**  une fonction **build** 
+- soit déclarer un script dans la balise *before*.
 
 Ce script doit être écrit en **python 3**, il est nécessaire d'avoir des connaissances en python, proportionelles à vos objectifs.
 
@@ -64,3 +75,5 @@ random.seed(seed)
 [...]
 ```
  
+
+

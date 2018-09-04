@@ -73,7 +73,17 @@ class Answer(models.Model):
         answers = Answer.objects.filter(pl=pl, user=user).order_by("-date")
         return None if not answers else answers[0].seed
     
-    
+
+
+    @staticmethod
+    def last_success(pl, user):
+        answers = Answer.objects.filter(pl=pl, user=user).order_by("-date")
+        # FIXME if last Answer grade is -1 this is no good
+        return False if not answers else answers[0].grade > 0
+
+
+
+
     @staticmethod
     def last_answer(pl, user):
         answers = Answer.objects.filter(pl=pl, user=user).order_by("-date")
@@ -87,7 +97,8 @@ class Answer(models.Model):
     
     @staticmethod
     def pl_state(pl, user):
-        """Return the state of the answer with the highest grade."""
+        """Return the state of the answer with the highest grade.
+        Used to set the color state """
         answers = Answer.objects.filter(user=user, pl=pl).order_by("-grade")
         return State.by_grade(None if not answers else answers[0].grade)
     
