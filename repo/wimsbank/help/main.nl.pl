@@ -1,0 +1,11 @@
+title=main.nl
+type=wims
+extends=plbank:/demo/wims/template.pl
+level=help
+subject=main.nl
+notion=
+ident=pltest
+quser=qcoumes
+passwd=toto
+course=8109815
+url=https://wims.u-pem.fr/wims.cgi?lang=fr&cmd=new&module=help/main.nl/

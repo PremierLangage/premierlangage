@@ -1,0 +1,11 @@
+title=natuurkunde-1.nl
+type=wims
+extends=plbank:/demo/wims/template.pl
+level=H3
+subject=physics
+notion=natuurkunde-1
+ident=pltest
+quser=qcoumes
+passwd=toto
+course=8109815
+url=https://wims.u-pem.fr/wims.cgi?lang=fr&cmd=new&module=H3/physics/natuurkunde-1.nl

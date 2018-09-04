@@ -1,0 +1,11 @@
+title=ruimtemeetkunde-0.nl
+type=wims
+extends=plbank:/demo/wims/template.pl
+level=H3
+subject=geometry
+notion=ruimtemeetkunde-0
+ident=pltest
+quser=qcoumes
+passwd=toto
+course=8109815
+url=https://wims.u-pem.fr/wims.cgi?lang=fr&cmd=new&module=H3/geometry/ruimtemeetkunde-0.nl

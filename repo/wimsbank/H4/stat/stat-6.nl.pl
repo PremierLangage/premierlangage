@@ -1,0 +1,11 @@
+title=stat-6.nl
+type=wims
+extends=plbank:/demo/wims/template.pl
+level=H4
+subject=stat
+notion=stat-6
+ident=pltest
+quser=qcoumes
+passwd=toto
+course=8109815
+url=https://wims.u-pem.fr/wims.cgi?lang=fr&cmd=new&module=H4/stat/stat-6.nl
