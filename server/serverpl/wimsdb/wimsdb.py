@@ -39,7 +39,7 @@ def wimsexodb(exo_content,path,exo,wims_path):
     else :
         dic['title']=(wims_path[:-1].split('/')[-1] if not exo else exo.split('.')[0])
 
-    template_dic, warnings = parse_file(Directory.objects.get(name='lib'), "demo/wims/template.pl",True)
+    template_dic, warnings = parse_file(Directory.objects.get(name='plbank'), "demo/wims/template.pl",True)
     for key,value in template_dic.items():
         if not key in dic:
             dic[key] = value
@@ -106,5 +106,7 @@ def wimsdb(path,wims_path):
                         os.makedirs(wims_path+dir)
                     wimsdb(path + dir, wims_path + dir)
 
-
-wimsdb('modules/', '../../repo/wimsbank/')
+try :
+    wimsdb('modules/', '../../repo/wimsbank/')
+except:
+    pass
