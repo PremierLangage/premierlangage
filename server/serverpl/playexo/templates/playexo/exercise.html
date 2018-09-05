@@ -1,9 +1,9 @@
-{% extends "playexo/base.html" %}
+{% extends "classmanagement/base.html" %}
 
 {% load static %}
 
 
-lock header_script %}
+{% block header_script %}
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
             tex2jax: {
@@ -20,10 +20,10 @@ lock header_script %}
     <div class="row">
         <div class="col-md-1"></div>
         <div id="navigation" class="col-md-2">
-            {% navigation %}
+            {{ navigation }}
         </div>
         <div id="exercise" class="col-md-8">
-            {% exercise %}
+            {{ exercise }}
         </div>
         <div class="col-md-1"></div>
     </div>

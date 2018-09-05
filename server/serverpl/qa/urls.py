@@ -1,5 +1,5 @@
 from django.conf.urls import include
-from django.urls import path, re_path
+from django.urls import path
 from qa import views
 
 app_name = 'ask'

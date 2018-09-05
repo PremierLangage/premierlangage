@@ -14,6 +14,7 @@ from django.template.loader import get_template
 from lti.models import LTIModel, LTIgrade
 from loader.models import PLTP, PL
 from playexo.enums import State
+from playexo.request import SandboxBuild, SandboxEval
 
 
 
@@ -36,9 +37,15 @@ class SessionActivity(models.Model):
         unique_together = ('user', 'activity')
     
     
-    def exercise(self):
+    def exercise(self, pl=None):
+        """Return the SessionExercice corresponding to self.current_pl.
+        
+        If the optionnal parameter 'pl' is given, will instead return the SessionExercice
+        corresponding to pl.
+        
+        Raise IntegrityError if no session for either self.current_pl or pl was found."""
         try:
-            return next(i for i in self.sessionexercise_set.all() if i.pl == self.current_pl)
+            return next(i for i in self.sessionexercise_set.all() if i.pl == (self.current_pl if not pl else pl))
         except StopIteration:
             raise IntegrityError("'current_pl' of SessionActivity does not have a corresponding "
                                  + "SessionExercise")
@@ -51,14 +58,13 @@ class SessionExercise(models.Model):
     sandbox_url = models.CharField(max_length=300, null=True)
     envid = models.UUIDField(null=True)
     context = JSONField(null=True)
-    activity_session = models.ForeignKey(SessionActivity, on_delete=models.CASCADE)
     
     class Meta:
         unique_together = ('pl', 'activity_session')
     
     
     @receiver(post_save, sender=SessionActivity)
-    def create_user_profile(sender, instance, created, **kwargs):
+    def create_session_exercise(sender, instance, created, **kwargs):
         if created:
             for pl in instance.activity.pltp.pl.all():
                 SessionExercise.objects.create(activity_session=instance, pl=pl)
@@ -71,16 +77,66 @@ class SessionExercise(models.Model):
                 self.context = dict(self.pl.json)
             else:
                 self.context = dict(self.activity_session.activity.pltp.json)
+            self.context['activity_id__'] = self.activity_session.activity.id
         super().save(*args, **kwargs)
     
     
+    def add_to_context(self, key, value):
+        self.context[key] = value
+        self.save()
+    
+    
+    def evaluate(self, uuid, sandbox_url, answers):
+        context = {}
+        answer = {}
+        evaluator = SandboxEval(uuid, sandbox_url, answers)
+        if not evaluator.check():
+            context = self.intern_build()
+            evaluator = SandboxEval(context['id__'], context['sandbox_url__'], answers)
+        
+        response = evaluator.call()
+        if response['status'] < 0: # Sandbox Error
+            feedback = response['feedback']
+            if self.request.user.profile.can_load():
+                feedback += "\n\n" + response['sandboxerr']
+        
+        elif response['status'] > 0:  # Evaluator Error
+            feedback = response['feedback']
+            if self.request.user.profile.can_load():
+                feedback += "\n\nReceived on stderr:\n" + response['stderr']
+        
+        else: # Success
+            context = dict(response['context'])
+            feedback = response['feedback']
+            answer = {
+                "answers": answers,
+                "user": self.request.user,
+                "pl": self.pl,
+                "seed": context['seed'],
+                "grade": response['grade'],
+                "activity": self.activity_session.activity,
+            }
+            
+            keys = list(response.keys())
+            for key in keys:
+                response[key+"__"] = response[key]
+            for key in keys:
+                del response[key]
+            del response['context__']
+            context.update(response)
+            context['feedback__'] = feedback
+            self.context.update(context)
+            self.save()
+        return answer
+    
+    
     def _build(self):
-        response = SandboxBuild(dict(self.exercise.context)).call()
+        response = SandboxBuild(dict(self.context)).call()
         
         if response['status'] < 0:
             msg = ("Une erreur s'est produit c'est produite sur la sandbox (exit code: %d, env: %s)."
                    + " Merci de prévenir votre professeur.") % (response['status'], response['id'])
-            if self.user.profile.can_load():
+            if self.activity_session.user.profile.can_load():
                 msg += "\n\n" + response['sandboxerr']
             raise Exception(msg)
         
@@ -89,7 +145,7 @@ class SessionExercise(models.Model):
                     + ("(exit code: %d, env: %s). Merci de prévenir votre professeur"
                        % (response['status'], response['id']))
                   )
-            if self.user.profile.can_load() and response['stderr']:
+            if self.activity_session.user.profile.can_load() and response['stderr']:
                 msg += "\n\nReçu sur stderr:\n" + response['stderr']
             raise Exception(msg)
         
@@ -102,11 +158,11 @@ class SessionExercise(models.Model):
         del response['context__']
         
         context.update(response)
-        self.exercise.context.update(context)
-        self.exercise.save()
+        self.context.update(context)
+        self.save()
     
     
-    def _get_navigation(self):
+    def _get_navigation(self, request):
         pl_list = []
         pl_list.append({
                 'id'   : None,
@@ -119,38 +175,47 @@ class SessionExercise(models.Model):
                 'state': Answer.pl_state(pl, self.activity_session.user),
                 'title': pl.json['title'],
             })
-        return get_template("playexo/navigation.html").render({
+        context = dict(self.context)
+        context.update({
             "pl_list__": pl_list,
+            'pl_id__': self.pl.id if self.pl else None
         })
+        return get_template("playexo/navigation.html").render(context)
     
     
-    def _get_exercise(self):
+    def _get_exercise(self, request):
         pl = self.pl
+        seed = Answer.last_seed(pl, self.activity_session.user)
+        if 'oneshot' in self.context or not seed or Answer.last_success(pl, self.activity_session.user) == True :
+            seed = time.time()
+        self.add_to_context('seed', seed)
         
-        dic = dict(self.context)
-        dic['user_settings__'] = self.activity_session.user.profile
-        dic['user__'] = self.activity_session.user
         
         if pl:
-            dic.update(self._build())
+            self._build()
+            dic = dict(self.context)
+            dic['user_settings__'] = self.activity_session.user.profile
+            dic['user__'] = self.activity_session.user
             dic['pl_id__'] = pl.id
-            answer = Answer.last_answer(pl, self.user)
-            if answer:
-                dic['answer__'] = answer.answers
+            dic['answer__'] = Answer.last_answer(pl, self.activity_session.user)
             for key in dic:
-                dic[key] = Template(dic[key]).render(Context(dic))
-            return get_template("playexo/pl.html").render(Context(dic))
+                dic[key] = Template(dic[key]).render(RequestContext(request, dic))
+            return get_template("playexo/pl.html").render(dic)
         
         else:
+            dic = dict(self.context)
+            dic['user_settings__'] = self.activity_session.user.profile
+            dic['user__'] = self.activity_session.user
+            dic['first_pl__'] = self.activity_session.activity.pltp.pl.all()[0].id
             for key in dic:
-                dic[key] = Template(dic[key]).render(Context(dic))
-            return get_template("playexo/pltp.html").render(Context(dic))
+                dic[key] = Template(dic[key]).render(RequestContext(request, dic))
+            return get_template("playexo/pltp.html").render(dic)
     
     
-    def get_context(self):
+    def get_context(self, request):
         return {
-            "navigation": self._get_navigation(),
-            "exercise": self._get_exercise(),
+            "navigation": self._get_navigation(request),
+            "exercise": self._get_exercise(request),
         }
 
 
@@ -175,20 +240,14 @@ class Answer(models.Model):
     @staticmethod
     def last_success(pl, user):
         answers = Answer.objects.filter(pl=pl, user=user).order_by("-date")
-        # FIXME if last Answer grade is -1 this is no good
-        return False if not answers else answers[0].grade > 0
+        return False if not answers or answers[0].grade is None else answers[0].grade > 0
     
     
     
     @staticmethod
     def last_answer(pl, user):
         answers = Answer.objects.filter(pl=pl, user=user).order_by("-date")
-        if not answers:
-            return None
-        for answer in [i.value for i in answers]:
-            if answer:
-                return answer
-        return None
+        return {} if not answers else answers[0].answers
     
     
     @staticmethod

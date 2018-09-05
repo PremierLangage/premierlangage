@@ -16,9 +16,7 @@ from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 
 from loader.models import PLTP, PL
-
-from playexo.models import SessionActivity, Activity
-
+from playexo.models import SessionActivity, Activity, Answer
 from classmanagement.models import Course
 
 
@@ -28,37 +26,30 @@ logger = logging.getLogger(__name__)
 @login_required
 @csrf_exempt
 def evaluate(request, activity_id, pl_id):
-    pass
-    #~ exercise = PLInstance(exercise)
-    #~ status = json.loads(request.body.decode())
+    status = json.loads(request.body.decode())
+    session = SessionActivity.objects.get(user=request.user, activity=activity)
+    pl = get_object_or_404(PL, id=pl_id)
+    exercise = session.exercise(pl)
     
-    #~ if status['requested_action'] == 'save':
-        #~ feedback_type = "info"
-        #~ feedback = "Réponse enregistré avec succès"
-        #~ Answer(
-            #~ value=status['inputs'],
-            #~ user=request.user,
-            #~ pl=PL.objects.get(id=exercise.dic['pl_id__']),
-            #~ seed=exercise.dic['seed'],
-            #~ grade=-1
-        #~ ).save()
-        #~ return HttpResponse(json.dumps({'feedback_type': feedback_type, 'feedback': feedback}), content_type='application/json')
-    
-    #~ elif status['requested_action'] == 'submit': # Validate
-        #~ success, feedback = exercise.evaluate(status['inputs']) 
-       
-        #~ if success == None:
-            #~ feedback_type = "info"
-            #~ Answer(value=status['inputs'], user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id__']), seed=exercise.dic['seed'], grade=-1).save()
-        #~ elif success:
-            #~ feedback_type = "success"
-            #~ #  i  wanted to delete the seed in the Answer but we need it for the statistics
-            #~ Answer(value=status['inputs'], user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id__']), seed=exercise.dic['seed'], grade=100).save()
-        #~ else:
-            #~ feedback_type = "fail"
-            #~ Answer(value=status['inputs'], user=request.user, pl=PL.objects.get(id=exercise.dic['pl_id__']), seed=exercise.dic['seed'], grade=0).save()
-        #~ return HttpResponse(json.dumps({'feedback_type': feedback_type, 'feedback': feedback}), content_type='application/json')
-    #~ return HttpResponseBadRequest("Missing action in status")
+    if 'requested_action' in status:
+        if status['requested_action'] == 'save':
+            Answer.objects.create(
+                answers=status['inputs'],
+                user=request.user,
+                pl=pl,
+                seed=exercise.dic['seed']
+            )
+        
+        elif status['requested_action'] == 'submit': # Validate
+            answer = exercise.evaluate(status['inputs']) 
+            Answer.objects.create(**answer).save()
+            
+        return HttpResponse(
+            json.dumps(exercise.get_context(request)), 
+            content_type='application/json'
+        )
+    else:
+        return HttpResponseBadRequest("Missing action in status")
 
 
 
@@ -82,7 +73,7 @@ def activity(request, activity_id):
             session.save()
         
         elif session.current_pl and action == "reset":
-            Answer.objects.create(user=request.user, pl=current_pl)
+            Answer.objects.create(user=request.user, pl=session.current_pl)
         
         elif session.current_pl and action == "next":
             for previous, next in zip(activity.pltp.pl.all(), list(activity.pltp.pl.all())[1:]+[None]):
@@ -97,5 +88,5 @@ def activity(request, activity_id):
             return HttpResponseRedirect(reverse("playexo:activity", args=[activity_id]))  # Remove get arguments from URL
     
     if session.current_pl:
-        Answer.objects.create(user=request.user, pl=current_pl)
-    return render(request, 'playexo/exercise.html', session.exercise().get_context())
+        Answer.objects.create(user=request.user, pl=session.current_pl)
+    return render(request, 'playexo/exercise.html', session.exercise().get_context(request))
