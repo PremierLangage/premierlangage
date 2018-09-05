@@ -108,7 +108,7 @@ def preview_pl(request):
             else:
                 if warnings:
                     [messages.warning(request, warning) for warning in warnings]
-                exercise = PLInstance(pl.json)
+                exercise = PLInstance(pl.json, request)
                 request.session['exercise'] = dict(exercise.dic)
                 preview = exercise.render(request)
         
@@ -132,23 +132,15 @@ def preview_pl(request):
         exercise = request.session.get('exercise', None)
         if exercise:
             
-            exercise = PLInstance(exercise)
-            success, feedback = exercise.evaluate(post['inputs'])
-            if (success == None):
-                feedback_type = "info"
-            elif success:
-                feedback_type = "success"
-            else:
-                feedback_type = "failed"
+            exercise = PLInstance(exercise, request)
+            data = post['data']
+            response, _ = exercise.evaluate(data['id'], data['sandbox_url'], data['answers'])
+            
             return HttpResponse(
-                json.dumps({
-                    'feedback_type': feedback_type,
-                    'feedback': feedback
-                }),
+                json.dumps(data),
                 content_type='application/json',
                 status=200
             )
-    
     
     return HttpResponseBadRequest(content="Couldn't resolve ajax request")
 

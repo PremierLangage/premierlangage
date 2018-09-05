@@ -12,7 +12,7 @@ from django.template import Template, RequestContext, Context
 from loader.models import PLTP
 
 from playexo.models import Answer
-from playexo.request import SandboxSession
+from playexo.request import SandboxBuild, SandboxEval
 
 
 lang = ['abap', 'abc', 'actionscript', 'ada', 'apache_conf', 'applescript', 'asciidoc', 'assembly_x86', 'autohotkey', 'batchfile', 'bro', 'c9search', 'c_cpp', 'cirru', 'clojure', 'cobol', 'coffee', 'coldfusion', 'csharp', 'csound_document', 'csound_orchestra', 'csound_score', 'css', 'curly', 'd', 'dart', 'diff', 'django', 'dockerfile', 'dot', 'drools', 'eiffel', 'ejs', 'elixir', 'elm', 'erlang', 'forth', 'fortran', 'ftl', 'gcode', 'gherkin', 'gitignore', 'glsl', 'gobstones', 'golang', 'graphqlschema', 'groovy', 'haml', 'handlebars', 'haskell', 'haskell_cabal', 'haxe', 'hjson', 'html', 'html_elixir', 'html_ruby', 'ini', 'io', 'jack', 'jade', 'java', 'javascript', 'json', 'jsoniq', 'jsp', 'jssm', 'jsx', 'julia', 'kotlin', 'latex', 'lean', 'less', 'liquid', 'lisp', 'live_script', 'livescript', 'logiql', 'lsl', 'lua', 'luapage', 'lucene', 'makefile', 'markdown', 'mask', 'matlab', 'maze', 'mel', 'mips_assembler', 'mipsassembler', 'mushcode', 'mysql', 'nix', 'nsis', 'objectivec', 'ocaml', 'pascal', 'perl', 'pgsql', 'php', 'pig', 'plain_text', 'powershell', 'praat', 'prolog', 'properties', 'protobuf', 'python', 'r', 'razor', 'rdoc', 'red', 'rhtml', 'rst', 'ruby', 'rust', 'sass', 'scad', 'scala', 'scheme', 'scss', 'sh', 'sjs', 'smarty', 'snippets', 'soy_template', 'space', 'sparql', 'sql', 'sqlserver', 'stylus', 'svg', 'swift', 'swig', 'tcl', 'tex', 'text', 'textile', 'toml', 'tsx', 'turtle', 'twig', 'typescript', 'vala', 'vbscript', 'velocity', 'verilog', 'vhdl', 'wollok', 'xml', 'xquery', 'yaml']
@@ -33,6 +33,7 @@ context_key = [
 class ActivityInstance:
     """Used to run a PLTP and its PL. """
     def __init__(self, request, activity, pl=None):
+        self.request = request
         self.dic = {
             'activity_name__': activity.name,
             'activity_id__'  : activity.id,
@@ -40,8 +41,8 @@ class ActivityInstance:
             'pltp_title__'   : activity.pltp.json["title"],
             'pltp_sha1__'    : activity.pltp.sha1,
         }
-        
         if pl:
+            self.pl = pl
             seed = Answer.last_seed(pl, request.user)
             if 'oneshot' in pl.json or not seed or Answer.last_success(pl,request.user) == True :
                 seed = time.time()
@@ -56,55 +57,76 @@ class ActivityInstance:
             self.dic.update(activity.pltp.json)
     
     
-    def evaluate(self, response):
-        dic = self.intern_build()
-        dic['response'] = response
-        if 'evaluator' not in self.dic:
-            try:
-                answer = response.get('answer')
-                if 'timeout' in locals():
-                    sandbox_session = SandboxSession(self.dic, studentfile=answer, timeout=timeout)
-                else:
-                    sandbox_session = SandboxSession(self.dic, studentfile=answer)
-                    
-                response = json.loads(sandbox_session.call())
-                state = response['grade']
-                feedback = response['feedback']
-                if 'error' in response:
-                    feedback  += '\n\n' + htmlprint.code(response['error'])
-                return (None if state == "info" else True if state else False, feedback)
-            except KeyError as e:
-                return (
-                    None,
-                   ( "La réponse reçu par la sandbox n'est pas au bon format :<br>"
-                        + htmlprint.html_exc())
-                )
-            except Exception as e:
-                s = ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte,"
-                              + "merci de prévenir votre professeur:<br>"
-                              + htmlprint.html_exc())
-                return None, s
-        else:
-            try:
-                exec(dic['evaluator'], dic)
-                if not 'grade' in dic \
-                        or type(dic['grade'][0]) not in [int, bool, type(None)] \
-                        or type(dic['grade'][1]) != str:
-                    return None, ("/!\ ATTENTION: La fonction d'évaluation de cet"
-                        + " exercice est incorrecte, merci de prévenir votre professeur:<br>"
-                        + " evaluator/before should declare a tuple called 'grade' (bool, str).")
-                # FIXME ceci est redondant avec le code de reinitialisation de la seed
-                # ecrit plus haut mais fonctionne en mode test
-                del dic['seed']
-                return dic['grade']
-            except Exception as e:
-                return None, ("/!\ ATTENTION: La fonction d'évaluation de cet exercice est incorrecte"
-                    + "merci de prévenir votre professeur:<br>" + htmlprint.html_exc())
-    
-    
     def intern_build(self):
-        response = SandboxSession(self.dic)
-        return dic
+        response = SandboxBuild(self.dic).call()
+        
+        if response['status'] < 0:
+            msg = ("An error occured on the sandbox (exit code: %d, env: %s). Merci de prévenir"
+                   + " votre professeur.") % (response['status'], response['id'])
+            if self.request.user.profile.can_load():
+                msg += "\n\n" + response['sandboxerr']
+            raise Exception(msg)
+        
+        if response['status'] > 0:
+            msg = (("An error occured during the execution of the build/before script (exit code:"
+                    + "%d, env: %s). Merci de prévenir votre professeur")
+                   % (response['status'], response['id']))
+            if self.request.user.profile.can_load() and response['stderr']:
+                msg += "\n\nReceived on stderr:\n" + response['stderr']
+            raise Exception(msg)
+        
+        context = dict(response['context'])
+        keys = list(response.keys())
+        for key in keys:
+            response[key+"__"] = response[key]
+        for key in keys:
+            del response[key]
+        del response['context__']
+        
+        context.update(response)
+        return context
+    
+    
+    def evaluate(self, uuid, sandbox_url, answers):
+        context = {}
+        answer = {}
+        evaluator = SandboxEval(uuid, sandbox_url, answers)
+        if not evaluator.check():
+            context = self.intern_build()
+            evaluator = SandboxEval(context['id__'], context['sandbox_url__'], answers)
+        
+        response = evaluator.call()
+        if response['status'] < 0: # Sandbox Error
+            feedback = response['feedback']
+            if self.request.user.profile.can_load():
+                feedback += "\n\n" + response['sandboxerr']
+        
+        elif response['status'] > 0:  # Evaluator Error
+            feedback = response['feedback']
+            if self.request.user.profile.can_load():
+                feedback += "\n\nReceived on stderr:\n" + response['stderr']
+        
+        else: # Success
+            context = dict(response['context'])
+            feedback = response['feedback']
+            answer = {
+                "value": answers,
+                "user": self.request.user,
+                "pl": self.pl,
+                "seed": context['seed'],
+                "grade": response['grade'],
+            }
+            
+            keys = list(response.keys())
+            for key in keys:
+                response[key+"__"] = response[key]
+            for key in keys:
+                del response[key]
+            del response['context__']
+            context.update(response)
+            context['feedback__'] = feedback
+        
+        return context, answer
     
     
     def get_context(self, request):
@@ -166,37 +188,11 @@ class ActivityInstance:
     
 class PLInstance(ActivityInstance):
     """Used to run/evaluate a PL alone, uses evaluate() and intern_build() of ActivityInstance."""
-    def __init__(self, pl_dic):
+    def __init__(self, pl_dic, request):
+        self.request = request
         self.dic = pl_dic
         if not 'seed' in pl_dic:
              self.dic['seed'] = time.time()
-    
-    
-    def intern_build(self):
-        response = SandboxSession(self.dic).call_build()
-        response = json.loads(response.text)
-        if response['status'] < 0:
-            raise Exception("An error occured on the sandbox (code: %d, env: %s):\n\n%s"
-                            % (response['status'], response['id'], response['sandboxerr']))
-        if response['status'] > 0:
-            msg = ("An error occured during the execution of the build/before script. (exit code: "
-                   + str(response['status']) + "):")
-            if response['stdout']:
-                msg += "\n\nstdout:\n" + response['stdout']
-            if response['stderr']:
-                msg += "\n\nstderr:\n" + response['stderr']
-            raise Exception(msg)
-        
-        context = dict(response['context'])
-        keys = list(response.keys())
-        for key in keys:
-            response[key+"__"] = response[key]
-        for key in keys:
-            del response[key]
-        del response['context__']
-        
-        context.update(response)
-        return context
     
     
     def get_template(self): 

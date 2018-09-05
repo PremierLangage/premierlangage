@@ -34,24 +34,5 @@ op1 = random.randint(20, 100)
 op2 = random.randint(20, 100)
 ==
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@ /builder/builder.py
 
