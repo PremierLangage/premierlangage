@@ -32,27 +32,19 @@
         <script src="{% static 'js/popper.js' %}" ></script>
         <script src="{% static 'js/bootstrap.js' %}" ></script>
         <script src="{% static 'js/fontawesome-all.js' %}" ></script>
+        <script src="{% static 'js/pl.js' %}" ></script>
         {% block header_script %}{% endblock %}
     </head>
     
     <body>
         <div id="header">
-            {% block topbar %}{% include "playexo/top_bar.html" %}{% endblock %}
+            {% block topbar %}{% include "classmanagement/top_bar.html" %}{% endblock %}
         </div>
         <div id="content">
             {% block alert %}{% include "playexo/alert.html" %}{% endblock %}
             {% block content %}{% endblock %}
         </div>
-<!--
-        <div id="footer">
-            <footer class="footer">
-                {% block footer %}{% include "playexo/footer.html" %}{% endblock %}
-            </footer>
-            <script src="{% static 'playexo/js/footer.js' %}"></script> 
-        </div>
--->
     
-    <script src="{% static 'js/pl.js' %}" ></script>
     {% block end_script %}{% endblock %}
     
     <!-- Copy tool -->

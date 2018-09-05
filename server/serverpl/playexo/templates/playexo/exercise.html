@@ -1,1 +1,33 @@
+{% extends "playexo/base.html" %}
 
+{% load markdown_deux_tags %}
+{% load static %}
+
+
+lock header_script %}
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$%','%$'],],
+                skipTags: ["script","noscript","style"],
+            }
+        });
+    </script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-2">
+            <!-- Navigation -->
+            {% include "playexo/navigation.html" %}
+        </div>
+        <div id="exercise" class="col-md-8">
+            <!-- Exo -->
+            {{ exercise|safe }}
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+{% endblock %}

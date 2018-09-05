@@ -1,24 +1,5 @@
-{% load markdown_deux_tags %}
-{% load static %}
-{% load input_fields_ajax %}
-{% load json_filter %}
-
-{% block header_script %}
-    <script type="text/x-mathjax-config">
-        MathJax.Hub.Config({
-            tex2jax: {
-                inlineMath: [['$%','%$'],],
-                skipTags: ["script","noscript","style"],
-            }
-        });
-    </script>
-
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-{% endblock %}
-
-{% block content %}
 {% include "playexo/alert.html" %}
-<div id="exercise" class="card">
+<div class="card">
     <div class="card-header">
         <div class="text-center"><h1>{% if 'title'%}{{ title }}{% endif %}</h1></div>
         <div class="text-left">{% if 'author' %}{{ author }}{% endif %}</div>
