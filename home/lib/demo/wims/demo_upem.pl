@@ -7,3 +7,4 @@ passwd=toto
 course=8109815
 url=https://wims.u-pem.fr/wims.cgi?module=U1/algebra/mateq.en&cmd=new
 
+
