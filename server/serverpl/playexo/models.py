@@ -7,18 +7,17 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
-from lti.models import LTIModel
+from lti.models import LTIModel, LTIgrade
 from loader.models import PLTP, PL
 from playexo.enums import State
 
 
 
 
-class Activity(LTIModel):
-    id = models.IntegerField(primary_key=True)
+class Activity(LTIModel,LTIgrade):
     name = models.CharField(max_length=200, null=False)
     pltp = models.ForeignKey(PLTP, null=False, on_delete=models.CASCADE)
-    open = models.BooleanField(null = False, default = True)
+    open = models.BooleanField(null=False, default=True)
     
     def __str__(self):
         return str(self.id)+" "+self.name

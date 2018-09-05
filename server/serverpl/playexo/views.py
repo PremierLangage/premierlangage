@@ -67,15 +67,11 @@ def activity_ajax(request):
 
 @csrf_exempt
 @login_required
-def activity_receiver(request):
-    activity_id = request.session.get("current_activity", None)
-    if activity_id == None:
-        return HttpResponse("No activity found in the session", status=409)
-    
+def activity_receiver(request, activity_id, test=False):
     if request.method == "POST": # Received ajax request
         return activity_ajax(request)
     
-    if request.session.get("testing", False):
+    if test:
         activity = get_object_or_404(ActivityTest, id=activity_id)
     else:
         activity = get_object_or_404(Activity, id=activity_id)
@@ -104,40 +100,12 @@ def activity_receiver(request):
             else:
                 request.session["current_pl"] = None
         
-        return HttpResponseRedirect(reverse("playexo:activity_receiver"))
+        return HttpResponseRedirect(reverse("playexo:activity_receiver",args=[activity_id]))
     
     request.session['exercise'] = exercise.dic
     if current_pl:
         Answer(value={}, user=request.user, pl=PL.objects.get(id=current_pl.id), seed=exercise.dic['seed'], grade=-1).save()
     return HttpResponse(exercise.render(request))
-
-
-
-@login_required
-@csrf_exempt
-def lti_receiver(request, activity_name, pltp_sha1):
-    activity_id = request.session.pop("activity", None)
-    course_id = request.session.pop("course_id", None)
-    if not activity_id or not course_id:
-        raise PermissionDenied("Impossible d'accéder à la page, la requête LTI doit contenir une ID d'activité ainsi que d'une ID de classe.")
-    
-    try:
-        activity = Activity.objects.get(id=activity_id)
-    except:
-        try:
-            pltp = PLTP.objects.get(sha1=pltp_sha1)
-        except:
-            raise Http404("Impossible de charger le TP associé à cette activité, celle-ci n'existe peut être plus sur la plateforme, merci de contacter votre professeur")
-        activity = Activity(name=activity_name, pltp=pltp, id=activity_id)
-        activity.save()
-        logger.info("New activity created: '"+activity_name+" ("+str(activity_id)+")' and added to course of id "+str(course_id))
-        Course.objects.get(id=course_id).activity.add(activity)
-    
-    request.session['current_activity'] = activity_id
-    request.session['current_pl'] = None
-    request.session['testing'] = False
-    return HttpResponseRedirect(reverse("playexo:activity_receiver"))
-
 
 
 @login_required
