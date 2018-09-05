@@ -77,7 +77,7 @@ def activity_receiver(request, activity_id, test=False):
         activity = get_object_or_404(Activity, id=activity_id)
     
     current_pl = request.session.get("current_pl", None)
-    current_pl = None if current_pl == None else PL.objects.get(id=current_pl)
+    current_pl = None if current_pl is None else PL.objects.get(id=current_pl)
     exercise = ActivityInstance(request, activity, current_pl)
     
     if request.method == 'GET' and request.GET.get("action", None):

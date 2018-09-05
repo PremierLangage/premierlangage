@@ -44,7 +44,7 @@
             <br>
             <center>
                 <div id="default_button" class="btn-group">
-                        <a type=button class="btn btn-warning" href="/playexo/activity/?action=reset">
+                        <a type="button" class="btn btn-warning" href="/playexo/activity/{{activity_id__}}?action=reset">
                             <i class="fas fa-undo"></i></span> Réinitialiser
                         </a>
                         {% if code %}
@@ -58,7 +58,7 @@
                 </div>
                 <div id="next_button" style="display: None; color: white;">
                     <br>
-                    <a type="button" class="btn btn-lg btn-success" href="/playexo/activity/?action=next">
+                    <a type="button" class="btn btn-lg btn-success" href="/playexo/activity/{{activity_id__}}?action=next">
                         Suivant<span class="glyphicon glyphicon-arrow-right"></span>
                     </a>
                 </div>
@@ -83,7 +83,7 @@ $( document ).ready(function(){
         var status = {requested_action: 'submit', inputs: inputs};
         $.ajax({
             type : "POST",
-            url : "/playexo/activity/",
+            url : "/playexo/activity/{{activity_id__}}/",
             data: JSON.stringify(status, null, '\t'),
             contentType: 'application/json;charset=UTF-8',
             success: function(returned_status) {
@@ -101,7 +101,7 @@ $( document ).ready(function(){
         var status = {requested_action: 'save', inputs: inputs};
         $.ajax({
             type : "POST",
-            url : "/playexo/activity/",
+            url : "/playexo/activity/{{activity_id__}}/",
             data: JSON.stringify(status, null, '\t'),
             contentType: 'application/json;charset=UTF-8',
             success: function(returned_status) {
