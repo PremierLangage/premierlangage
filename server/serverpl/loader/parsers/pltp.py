@@ -14,9 +14,11 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from loader.exceptions import SemanticError, SyntaxErrorPL, DirectoryNotFound, FileNotFound
 from loader.utils import get_location
-from serverpl.settings import FILEBROWSER_ROOT
+
 
 BAD_CHAR = r''.join(settings.FILEBROWSER_DISALLOWED_CHAR)
+
+
 
 class Parser:
     """Parser used to parse pltp files with .pltp extension"""
@@ -304,7 +306,7 @@ class Parser:
                     break
             else:
                 raise FileNotFound(join(self.directory.root, self.path), line, join(self.directory.name, path), self.lineno, "PL not found")
-        
+
         self.dic['__pl'].append({
             'path': path,
             'line': line,

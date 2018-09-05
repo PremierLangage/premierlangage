@@ -1,6 +1,5 @@
 {% extends "playexo/base.html" %}
 
-{% load markdown_deux_tags %}
 {% load static %}
 
 
@@ -20,13 +19,11 @@ lock header_script %}
 {% block content %}
     <div class="row">
         <div class="col-md-1"></div>
-        <div class="col-md-2">
-            <!-- Navigation -->
-            {% include "playexo/navigation.html" %}
+        <div id="navigation" class="col-md-2">
+            {% navigation %}
         </div>
         <div id="exercise" class="col-md-8">
-            <!-- Exo -->
-            {{ exercise|safe }}
+            {% exercise %}
         </div>
         <div class="col-md-1"></div>
     </div>

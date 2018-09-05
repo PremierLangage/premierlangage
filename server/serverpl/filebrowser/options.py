@@ -41,11 +41,10 @@ from django.contrib import messages
 from django.http import HttpResponseNotAllowed, HttpResponse, HttpResponseBadRequest
 from django.db.utils import IntegrityError
 from django.conf import settings
-
 from filebrowser.models import Directory
 from filebrowser.utils import redirect_fb
 from filebrowser.filter import is_pl
-
+from playexo.models import Activity
 from loader.loader import load_file
 
 from playexo.exercise import PLInstance
@@ -468,14 +467,12 @@ def load_pltp_option(request, filebrowser, target):
             if warnings:  # pragma: no cover 
                 for warning in warnings:
                     messages.warning(request, warning)
-            url_lti = request.scheme + "://" + request.get_host()+"/playexo/activity/lti/"+pltp.name+"/"+pltp.sha1+"/"
-            url_test = "/playexo/activity/test/"+pltp.name+"/"+pltp.sha1+"/"
+            activity = Activity.objects.create(name=pltp.name, pltp=pltp)
+            url_lti = request.build_absolute_uri(reverse("playexo:activity", args=[activity.pk]))
             messages.success(request, "L'activité <b>'"+pltp.name+"'</b> a bien été créée et a pour URL LTI: \
                                       <br>&emsp;&emsp;&emsp; <input id=\"copy\" style=\"width: 700px;\" value=\""+url_lti+"\">  \
                                       <button class=\"btn\" data-clipboard-action=\"copy\" data-clipboard-target=\"#copy\"><i class=\"far fa-copy\"></i> Copier\
-                                      </button><br>L'activité sera créée lorsqu'une personne cliquera sur le lien \
-                                      depuis un client LTI. Pour la tester en local, cliquez <a target=\"_blank\" \
-                                      href=\""+url_test+"\">ici</a>.""")
+                                      </button>")
     except Exception as e: # pragma: no cover
         msg = "Impossible to load '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))

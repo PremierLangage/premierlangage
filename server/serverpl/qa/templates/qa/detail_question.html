@@ -1,0 +1,482 @@
+{% extends "qa/base.html" %}
+
+{% load static %}
+{% load django_markdown %}
+{% load qa_tags %}
+{% load http_method %}
+
+{% block content_qa %}
+    <!-- Question -->
+    <div class="p-2 mb-2 bg-question">
+        <div class="row">
+            <div class="col-1 p-0">
+                <div class="qainfo-details{% if question.points > 0 %} text-success{% endif%}{% if question.points < 0 %} text-danger{% endif%}">
+                    {{ question.points }}<br>
+                    Votes<br>
+                    <div class="mr-2 thumbs">
+                        <a href="{% url 'ask:question_vote' question.id %}?vote=up" type="button" class="btn btn-sm thumbs-btn" data-toggle="tooltip" data-placement="top" title="Vote Up this question">
+                            {% if request.user|voted_up_question:question %}
+                                <i class="text-success fas fa-thumbs-up"></i>
+                            {% else %}
+                                <i class="far fa-thumbs-up"></i>
+                            {% endif %}
+                        </a>
+                    </div>
+                    <div class="thumbs">
+                        <a href="{% url 'ask:question_vote' question.id %}?vote=down" type="button" class="btn btn-sm thumbs-btn" data-toggle="tooltip" data-placement="top" title="Vote Up this question">
+                            {% if request.user|voted_down_question:question %}
+                                <i class="text-danger fas fa-thumbs-down"></i>
+                            {% else %}
+                                <i class="far fa-thumbs-down"></i>
+                            {% endif %}
+                        </a>
+                    </div>
+                </div>
+                <hr>
+                <div class="qainfo-details">
+                    {{ question.hit_count.hits }}<br>
+                    Views
+                </div>
+            </div>
+            <div class="col-11 pl-4">
+                <strong>{{ question.title }}</strong>
+                <hr class="m-1"/>
+                {{ question.description|markdown }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-1 p-0"></div>
+            <div class="col-11 p-0">
+                {% for tag in question.tags.all %}
+                    <div class="p-1 mr-2 tags">
+                        <a href="{% url 'ask:index' %}?tag={{ tag.slug }}"><tag>{{ tag.slug }}</tag></a>
+                    </div>
+                {% endfor %}<br>
+                {% if user|can_edit_question:question %}
+                    <a href="javascript:void(0)" class="float-left ml-3" data-toggle="modal" data-target="#editQuestion" >edit</a>
+                {% endif %}
+                {% if user|can_delete_question:question %}
+                    <a href="javascript:void(0)" class="float-left ml-3" data-toggle="modal" data-target="#deleteQuestion" >delete</a>
+                {% endif %}
+                <div class="float-right m-0 mr-3 tags p-2 pr-3 ml-5">
+                    asked {{ question.pub_date_verbose }}<br>
+                    <img width=50 class="float-left" src="{{ question.user.profile.avatar.url }}">
+                    <p class="float-left">&nbsp;{{ question.user.username }}
+                        <br>
+                        &nbsp;{{ question.user.profile.rep }}</p>
+                </div>
+                {% if question.update_date %}
+                    <div class="float-right m-0 mr-3 tags p-2 pr-3 ml-5">
+                        updated {{ question.update_date_verbose }}<br>
+                        <img width=50 class="float-left" src="{{ question.update_user.profile.avatar.url }}">
+                        <p class="float-left">&nbsp;{{ question.update_user.username }}
+                        <br>
+                        &nbsp;{{ question.update_user.profile.rep }}</p>
+                    </div>
+                {% endif %}
+                <br>
+                <br>
+                <br>
+                <br>
+                <hr class="mt-2 mb-2"/>
+                <!-- Question's comment -->
+                <div class="pl-5">
+                    {% for comment in question.qaquestioncomment_set.all %}
+                        <div class="p-2 mb-2 bg-comment">
+                            <small>
+                                <img width=20 class="float-left" src="{{ comment.user.profile.avatar.url }}"> &nbsp;
+                                <small class="float-left;">
+                                    {{ comment.user.username }} ({{ comment.user.profile.rep }}) commented {{ comment.pub_date_verbose }}
+                                    {% if comment.update_date %}
+                                        , updated {{ comment.update_date_verbose }}
+                                    {% endif %}
+                                </small>
+                                {% if user|can_delete_comment:comment %}
+                                    <a href="javascript:void(0)" class="float-right ml-3" data-toggle="modal" data-target="#deleteCommentQuestion{{comment.pk}}" >delete</a>&emsp;
+                                {% endif %}
+                                {% if user|can_edit_comment:comment %}
+                                    <a href="javascript:void(0)" class="float-right ml-3" data-toggle="modal" data-target="#editCommentQuestion{{comment.pk}}" >edit</a>&emsp;
+                                {% endif %}
+                                <hr class="m-1"/>
+                                {{ comment.comment_text }}
+                            </small>
+                        </div>
+                        <!-- Delete questions's comment confirmation modal -->
+                        {% if user|can_delete_comment:comment %}
+                            <div id="deleteCommentQuestion{{comment.pk}}" class="modal" tabindex="-1" role="dialog">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Do you really want to delete this comment ?</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <button type="button" class="w-25 float-left btn btn-lg btn-warning" data-dismiss="modal">No</button>
+                                            <div class="w-25 float-right">
+                                                <form class="form-inline" method="post" action="{% url 'ask:question_comment' question.pk comment.pk %}">
+                                                    {% csrf_token %}
+                                                    {% http_delete %}
+                                                    <button type="submit" class="w-100 btn btn-lg btn-primary">Yes</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <!-- Edit answer comment modal -->
+                        {% if user|can_edit_comment:comment %}
+                            <div id="editCommentQuestion{{comment.pk}}" class="modal" tabindex="-1" role="dialog">
+                                <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Edit comment</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body p-2">
+                                            <form method="post" action="{% url 'ask:question_comment' question.id comment.id %}">
+                                                {% csrf_token %}
+                                                {% http_patch %}
+                                                <div class="form-group">
+                                                    <input name="comment_text" class="form-control" id="comment_text" value="{{comment.comment_text}}" />
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Submit</button>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-warning" data-dismiss="modal">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% if user|can_post_comment %}
+                    <form method="post" class="form-group form-inline" action="{% url 'ask:question_comment' question.id question.id %}">
+                        {% csrf_token %}
+                        <input type="text" class="form-control" style="width:80%;" name="comment_text" placeholder="Comment..."/>
+                        <button type="submit" class="btn btn-primary"><i class="far fa-comment-alt"></i> Add Comment</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="p-2 mt-1 mb-2 bg-{% if num_answers == 0 %}danger{% elif question.has_accepted_answer %}success{% else %}warning{% endif %} text-white qa-title">
+        {{ num_answer }} Answers
+    </div>
+    <!-- Answers -->
+    {% for answer in answers %}
+        <div class="p-2 mb-2 bg-question {% if answer.answer %}border border-success rounded{% endif %}">
+            <div class="row">
+                <div class="col-1 p-0">
+                    <div class="qainfo-details{% if answer.points > 0 %} text-success{% endif%}{% if answer.points < 0 %} text-danger{% endif%}">
+                        {{ answer.points }}<br>
+                        Votes<br>
+                        <div class="mr-2 thumbs">
+                        <a href="{% url 'ask:answer_vote' question.id answer.pk %}?vote=up" type="button" class="btn btn-sm thumbs-btn" data-toggle="tooltip" data-placement="top" title="Vote Up this question">
+                            {% if request.user|voted_up_answer:answer %}
+                                <i class="text-success fas fa-thumbs-up"></i>
+                            {% else %}
+                                <i class="far fa-thumbs-up"></i>
+                            {% endif %}
+                        </a>
+                    </div>
+                    <div class="thumbs">
+                        <a href="{% url 'ask:answer_vote' question.id answer.pk %}?vote=down" type="button" class="btn btn-sm thumbs-btn" data-toggle="tooltip" data-placement="top" title="Vote Up this question">
+                            {% if request.user|voted_down_answer:answer %}
+                                <i class="text-danger fas fa-thumbs-down"></i>
+                            {% else %}
+                                <i class="far fa-thumbs-down"></i>
+                            {% endif %}
+                        </a>
+                    </div>
+                    </div>
+                    <hr>
+                    {% if user.is_authenticated and answer.question.user == user and not answer.question.closed %}
+                        <form action="{% url 'ask:answer' answer.pk %}" method="post">
+                            {% csrf_token %}
+                            {% http_patch %}
+                            <center>
+                                <input type="text" name="answer" value="{% if answer.answer %}0{% else %}1{% endif %}" hidden/>
+                                <button type="submit" class="btn thumbs-btn" data-toggle="tooltip" data-placement="bottom" title="Accept this answer">
+                                    <i class="fas fa-check fa-2x text-{% if answer.answer %}success{% else %}muted{% endif %}"></i>
+                                </button>
+                            </center>
+                        </form>
+                    {% else %}
+                        <div class="qainfo-details">
+                            <center>
+                                <i class="fas fa-check fa-2x text-{% if answer.answer %}success{% else %}muted{% endif %}"></i>
+                            </center>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="col-11 pl-4">
+                    {{ answer.answer_text|markdown }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-1 p-0"></div>
+                <div class="col-11 p-0">
+                    <div class="float-right m-0 mr-3 tags p-2 pr-3 ml-5">
+                        answered {{ answer.pub_date_verbose }}<br>
+                        <img width=50 class="float-left" src="{{ answer.user.profile.avatar.url }}">
+                        <p class="float-left">&nbsp;{{ answer.user.username }}
+                            <br>
+                            &nbsp;{{ answer.user.profile.rep }}</p>
+                    </div>
+                    {% if answer.update_date %}
+                        <div class="float-right m-0 mr-3 tags p-2 pr-3 ml-5">
+                            updated {{ answer.update_date_verbose }}<br>
+                            <img width=50 class="float-left" src="{{ answer.update_user.profile.avatar.url }}">
+                            <p class="float-left">&nbsp;{{ answer.update_user.username }}
+                            <br>
+                            &nbsp;{{ answer.update_user.profile.rep }}</p>
+                        </div>
+                    {% endif %}
+                    {% if user|can_edit_answer:answer %}
+                        <small class="float-left mb-0">
+                            <a href="javascript:void(0)" class="float-right ml-3" data-toggle="modal" data-target="#editAnswer{{answer.pk}}" >edit</a>&emsp;
+                        </small>
+                    {% endif %}
+                    {% if user|can_delete_answer:answer %}
+                        <small>
+                            <a href="javascript:void(0)" class="float-left ml-3" data-toggle="modal" data-target="#deleteAnswer{{answer.pk}}" >delete</a>&emsp;
+                        </small>
+                    {% endif %}
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <hr class="mb-2 mt-2"/>
+                    <!-- Answers's comment -->
+                    <div class="pl-5">
+                        {% for comment in answer.qaanswercomment_set.all %}
+                            <div class="p-2 mb-2 bg-comment">
+                                <small>
+                                    <img width=20 class="float-left" src="{{ comment.user.profile.avatar.url }}"> &nbsp;
+                                    <small class="float-left;">
+                                        {{ comment.user.username }} ({{ comment.user.profile.rep }}) commented {{ comment.pub_date_verbose }}
+                                        {% if comment.update_date %}
+                                            , updated {{ comment.update_date_verbose }}
+                                        {% endif %}
+                                    </small>
+                                    {% if user|can_delete_comment:comment %}
+                                        <a href="javascript:void(0)" class="float-right ml-3" data-toggle="modal" data-target="#deleteCommentAnswer{{comment.pk}}" >delete</a>&emsp;
+                                    {% endif %}
+                                    {% if user|can_edit_comment:comment %}
+                                        <a href="javascript:void(0)" class="float-right ml-3" data-toggle="modal" data-target="#editCommentAnswer{{comment.pk}}" >edit</a>&emsp;
+                                    {% endif %}
+                                    <hr class="m-1"/>
+                                    {{ comment.comment_text }}
+                                </small>
+                            </div>
+                            <!-- Delete answer's comment confirmation modal -->
+                            {% if user|can_delete_comment:comment %}
+                                <div id="deleteCommentAnswer{{comment.pk}}" class="modal" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Do you really want to delete this comment ?</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <button type="button" class="w-25 float-left btn btn-lg btn-warning" data-dismiss="modal">No</button>
+                                                <div class="w-25 float-right">
+                                                    <form class="form-inline" method="post" action="{% url 'ask:answer_comment' question.pk comment.pk %}">
+                                                        {% csrf_token %}
+                                                        {% http_delete %}
+                                                        <button type="submit" class="w-100 btn btn-lg btn-primary">Yes</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <!-- Edit question comment modal -->
+                            {% if user|can_edit_comment:comment %}
+                                <div id="editCommentAnswer{{comment.pk}}" class="modal" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Edit comment</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body p-2">
+                                                <form method="post" action="{% url 'ask:answer_comment' question.id comment.id %}">
+                                                    {% csrf_token %}
+                                                    {% http_patch %}
+                                                    <div class="form-group">
+                                                        <input name="comment_text" class="form-control" id="comment_text" value="{{comment.comment_text}}" />
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-warning" data-dismiss="modal">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% if user|can_post_comment %}
+                        <form method="post" class="form-group form-inline" action="{% url 'ask:answer_comment' question.id answer.pk %}">
+                            {% csrf_token %}
+                            <input type="text" class="form-control" style="width:80%;" name="comment_text" placeholder="Comment..."/>
+                            <button type="submit" class="btn btn-primary"><i class="far fa-comment-alt"></i> Add Comment</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <!-- Delete answer confirmation modal -->
+        {% if user|can_delete_answer:answer %}
+            <div id="deleteAnswer{{answer.pk}}" class="modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Do you really want to delete this answer ?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <button type="button" class="w-25 float-left btn btn-lg btn-warning" data-dismiss="modal">No</button>
+                            <div class="w-25 float-right">
+                                <form class="form-inline" method="post" action="{% url 'ask:answer' answer.pk %}">
+                                    {% csrf_token %}
+                                    {% http_delete %}
+                                    <button type="submit" class="w-100 btn btn-lg btn-primary">Yes</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <!-- Edit question confirmation modal -->
+        {% if user|can_edit_answer:answer %}
+            <div id="editAnswer{{answer.pk}}" class="modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit Answer</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body p-2">
+                            <form method="post" action="{% url 'ask:answer' answer.id %}">
+                                {% csrf_token %}
+                                {% http_patch %}
+                                <div class="form-group">
+                                    <label for="answer_text">Réponse</label>
+                                    <textarea name="answer_text" class="form-control" id="answer_text" rows="4">{{ answer.answer_text }}</textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-warning" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+    <!-- Your answer form -->
+    {% if user|can_post_answer %}
+        <div class="mt-5 p-2 bg-info">
+            <h4>Your Answer</h4>
+            <p class="m-0">
+                Thanks for contributing an answer on PL !<br>
+                Please be sure to answer the question. Provide details and share your research!
+                <br>
+                But avoid asking for help, clarification, or responding to other answers (use comments for this).
+            </p>
+        </div>
+        <form class="mb-4" method="post" action="{% url 'ask:answer' question.id %}">
+            {% csrf_token %}
+            <textarea style="width:100%" name="answer_text" rows="6" tabindex="101" data-wz-state="8" data-min-length="">{{answer_text}}</textarea>
+            <br>
+            <input class="btn pull-right btn-success" type="submit" value="Submit Answer" />
+        </form>
+    {% endif %}
+    
+    <!-- Delete question confirmation modal -->
+    {% if user|can_delete_question:question %}
+        <div id="deleteQuestion" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Do you really want to delete this question ?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <button type="button" class="w-25 float-left btn btn-lg btn-warning" data-dismiss="modal">No</button>
+                        <div class="w-25 float-right">
+                            <form class="form-inline" method="post" action="{% url 'ask:question' question.id %}">
+                                {% csrf_token %}
+                                {% http_delete %}
+                                <button type="submit" class="w-100 btn btn-lg btn-primary">Yes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    
+    <!-- Edit question confirmation modal -->
+    {% if user|can_edit_question:question %}
+        <div id="editQuestion" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Question</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body p-2">
+                        <form method="post" action="{% url 'ask:question' question.id %}">
+                            {% csrf_token %}
+                            {% http_patch %}
+                            <div class="form-group">
+                                <label for="title">Title</label>
+                                <input name="title" type="text" class="form-control" id="title" value="{{ question.title }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea name="description" class="form-control" id="description" rows="4">{{ question.description }}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="tags">Tags (comma-separated list)</label>
+                                <input name="tags" class="form-control" type="text" data-role="tagsinput" value="{% for tag in question.tags.all %}{{ tag.slug}},{% endfor %}" />
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-warning" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

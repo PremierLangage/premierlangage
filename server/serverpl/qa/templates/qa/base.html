@@ -1,0 +1,67 @@
+{% extends "classmanagement/base.html" %}
+
+{% load static %}
+{% load qa_tags %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/qa.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/tagsinput.css' %}">
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/tagsinput.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="p-3 pl-5 mb-2 bg-secondary text-white qa-title">
+            <a class="text-white qa-title" href="{% url 'ask:index' %}">Frequently Ask Questions</a>
+            {% if user|can_post_question %}
+                <button class="btn btn-primary float-right ml-5" data-toggle="modal" data-target="#newQuestion">
+                    <i class="fas fa-question"></i> Ask a question
+                </button>
+            {% endif %}
+            <form method="get" class="form-group form-inline float-right ml-5" action="{% url 'ask:index' %}">
+                <input type="text" class="form-control" name="query" placeholder="Search..." value="{{ query }}"/>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
+            </form>
+        </div>
+        {% block content_qa %}{% endblock %}
+    </div>
+    <!-- New question modal -->
+    {% if user|can_post_question %}
+        <div id="newQuestion" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">New Question</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body p-2">
+                        <form method="post" action="{% url 'ask:create_question' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="title">Title</label>
+                                <input name="title" type="text" class="form-control" id="title" value="" />
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea name="description" class="form-control" id="description" rows="4"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="tags">Tags (comma-separated list)</label>
+                                <input name="tags" class="form-control" type="text" data-role="tagsinput" value="" />
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-warning" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

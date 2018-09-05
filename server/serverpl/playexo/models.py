@@ -1,71 +1,168 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-#
-#  models.py
-#  
-#  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
-#  
+# coding: utf-8
 
-from datetime import datetime
+import time
 
-from django.db import models
+from jsonfield import JSONField
+from django.db import models, IntegrityError
+from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.utils import timezone
-from jsonfield import JSONField
+from django.dispatch import receiver
+from django.template import Template, RequestContext, Context
+from django.template.loader import get_template
 
+from lti.models import LTIModel, LTIgrade
 from loader.models import PLTP, PL
-
 from playexo.enums import State
 
 
 
-class Activity(models.Model):
-    id = models.IntegerField(primary_key=True)
+class Activity(LTIModel, LTIgrade):
     name = models.CharField(max_length=200, null=False)
-    pltp = models.ForeignKey(PLTP, null=False, on_delete=models.CASCADE)
-    open = models.BooleanField(null = False, default = True)
+    open = models.BooleanField(null=False, default=True)
+    pltp = models.ForeignKey(PLTP, on_delete=models.CASCADE)
     
     def __str__(self):
-        return str(self.id)+" "+self.name
+        return str(self.id) + " " + self.name
 
 
-class ActivityTest(models.Model):
-    name = models.CharField(max_length=200, null=False)
-    pltp = models.ForeignKey(PLTP, null=False,  on_delete=models.CASCADE)
-    date = models.DateTimeField(null=False, default=timezone.now)
+
+class SessionActivity(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
+    current_pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=True)
+    
+    class Meta:
+        unique_together = ('user', 'activity')
     
     
-    @staticmethod
-    def delete_outdated():
-        activities = ActivityTest.objects.get.all().sort_by("date")
-        for activity in activities:
-            if (datetime.utcnow() - activity.date) > timedelta(days=1):
-                activity.delete()
+    def exercise(self):
+        try:
+            return next(i for i in self.sessionexercise_set.all() if i.pl == self.current_pl)
+        except StopIteration:
+            raise IntegrityError("'current_pl' of SessionActivity does not have a corresponding "
+                                 + "SessionExercise")
+
+
+
+class SessionExercise(models.Model):
+    pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=True)
+    activity_session = models.ForeignKey(SessionActivity, on_delete=models.CASCADE)
+    sandbox_url = models.CharField(max_length=300, null=True)
+    envid = models.UUIDField(null=True)
+    context = JSONField(null=True)
+    activity_session = models.ForeignKey(SessionActivity, on_delete=models.CASCADE)
+    
+    class Meta:
+        unique_together = ('pl', 'activity_session')
+    
+    
+    @receiver(post_save, sender=SessionActivity)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            for pl in instance.activity.pltp.pl.all():
+                SessionExercise.objects.create(activity_session=instance, pl=pl)
+            SessionExercise.objects.create(activity_session=instance)  # For the pltp
+    
+    
+    def save(self, *args, **kwargs):
+        if not self.context:
+            if self.pl:
+                self.context = dict(self.pl.json)
             else:
-                break
-                
+                self.context = dict(self.activity_session.activity.pltp.json)
+        super().save(*args, **kwargs)
+    
+    
+    def _build(self):
+        response = SandboxBuild(dict(self.exercise.context)).call()
         
-    def __str__(self):
-        return self.name
+        if response['status'] < 0:
+            msg = ("Une erreur s'est produit c'est produite sur la sandbox (exit code: %d, env: %s)."
+                   + " Merci de prévenir votre professeur.") % (response['status'], response['id'])
+            if self.user.profile.can_load():
+                msg += "\n\n" + response['sandboxerr']
+            raise Exception(msg)
+        
+        if response['status'] > 0:
+            msg = ("Une erreur s'est produite lors de l'exécution du script d'évaluation "
+                    + ("(exit code: %d, env: %s). Merci de prévenir votre professeur"
+                       % (response['status'], response['id']))
+                  )
+            if self.user.profile.can_load() and response['stderr']:
+                msg += "\n\nReçu sur stderr:\n" + response['stderr']
+            raise Exception(msg)
+        
+        context = dict(response['context'])
+        keys = list(response.keys())
+        for key in keys:
+            response[key+"__"] = response[key]
+        for key in keys:
+            del response[key]
+        del response['context__']
+        
+        context.update(response)
+        self.exercise.context.update(context)
+        self.exercise.save()
+    
+    
+    def _get_navigation(self):
+        pl_list = []
+        pl_list.append({
+                'id'   : None,
+                'state': None,
+                'title': self.activity_session.activity.pltp.json['title'],
+        })
+        for pl in self.activity_session.activity.pltp.pl.all():
+            pl_list.append({
+                'id'   : pl.id,
+                'state': Answer.pl_state(pl, self.activity_session.user),
+                'title': pl.json['title'],
+            })
+        return get_template("playexo/navigation.html").render({
+            "pl_list__": pl_list,
+        })
+    
+    
+    def _get_exercise(self):
+        pl = self.pl
+        
+        dic = dict(self.context)
+        dic['user_settings__'] = self.activity_session.user.profile
+        dic['user__'] = self.activity_session.user
+        
+        if pl:
+            dic.update(self._build())
+            dic['pl_id__'] = pl.id
+            answer = Answer.last_answer(pl, self.user)
+            if answer:
+                dic['answer__'] = answer.answers
+            for key in dic:
+                dic[key] = Template(dic[key]).render(Context(dic))
+            return get_template("playexo/pl.html").render(Context(dic))
+        
+        else:
+            for key in dic:
+                dic[key] = Template(dic[key]).render(Context(dic))
+            return get_template("playexo/pltp.html").render(Context(dic))
+    
+    
+    def get_context(self):
+        return {
+            "navigation": self._get_navigation(),
+            "exercise": self._get_exercise(),
+        }
+
 
 
 class Answer(models.Model):
-    STARTED = 'ST'
-    FAILED = 'FA'
-    SUCCEEDED = 'SU'
-    NOT_STARTED = 'NS'
-    STATE = (
-        (STARTED, 'Commencé'),
-        (FAILED, 'Echoué'),
-        (SUCCEEDED, 'Réussi'),
-    )
-    
-    value = JSONField()
-    user = models.ForeignKey(User, null=False, on_delete=models.CASCADE)
-    pl = models.ForeignKey(PL, null=False, on_delete=models.CASCADE)
-    seed = models.CharField(max_length=50, null=True)
-    date = models.DateTimeField(null=False, default=timezone.now)
-    grade = models.IntegerField(null=False)
+    answers = JSONField(default='{}')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    pl = models.ForeignKey(PL, on_delete=models.CASCADE)
+    activity = models.ForeignKey(Activity, null=True, on_delete=models.CASCADE)
+    seed = models.CharField(max_length=100, default=time.time)
+    date = models.DateTimeField(default=timezone.now)
+    grade = models.IntegerField(null=True)
     
     
     @staticmethod
@@ -96,8 +193,7 @@ class Answer(models.Model):
     
     @staticmethod
     def pl_state(pl, user):
-        """Return the state of the answer with the highest grade.
-        Used to set the color state """
+        """Return the state of the answer with the highest grade."""
         answers = Answer.objects.filter(user=user, pl=pl).order_by("-grade")
         return State.by_grade(None if not answers else answers[0].grade)
     

@@ -155,6 +155,7 @@ class Parser:
                     break
             else:
                 raise FileNotFound(join(self.directory.root, self.path), line, join(self.directory.name, path), self.lineno, "PL not found")
+
         
         self.dic['__extends'].append({
             'path': path,

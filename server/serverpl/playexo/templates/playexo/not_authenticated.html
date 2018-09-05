@@ -1,30 +1,56 @@
 {% extends "playexo/base.html" %}
 
-
-{% block header_script %}
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('#Modal').modal({backdrop: 'static', keyboard: false});
-            $("#Modal").modal('show', {backdrop: 'static', keyboard: false});
-        });
-    </script>
-{% endblock %}
-
 {% block content %}
-    <div id="Modal" class="modal" role="dialog">
-        <div class="modal-dialog modal-lg">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <center><h2 class="modal-title">Vous n'êtes actuellement pas identifié.</h4></center>
+    <div class="container">
+        <div class="card mb-4">
+            <div class="card-header">
+                <center>
+                    <h3>Se connecter</h3>
+                </center>
+            </div>
+            <div class="card-body">
+                <center>
+                    {% if next %}
+                        <p class="text-warning">You need to be log-in to see this page.</p>
+                    {% endif %}
+                    {% if form.errors %}
+                        <p class="text-danger">Your username or password didn't match.</p>
+                    {% endif %}
+                </center>
+                <div class="row justify-content-md-center mb-5">
+                    <div class="col-md-auto">
+                        <form method="post" action="{% url 'classmanagement:login' %}">
+                            {% csrf_token %}
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text"><i class="fas fa-user fa-fw"></i></div>
+                                </div>
+                                <input name="username" maxlength="254" required="" autofocus="" id="id_username" type="text" placeholder="username">
+                            </div>
+                            <div class="input-group mb-2">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text"><i class="fas fa-unlock-alt fa-fw"></i></div>
+                                </div>
+                                <input name="password" maxlength="254" required="" autofocus="" id="id_password" type="password" placeholder="********">
+                            </div>
+                            <input type="hidden" name="next" value="{{ next }}">
+                            <center><button type="submit" class="btn btn-primary">Log-in</button></center>
+                        </form>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <center>
-                        <h4>Merci de vous connecter à ce site depuis la plateforme d'apprentissage en ligne de votre université (Moodle, E-Learning, Canvas...).</h4>
-                        <br><br>
-                        <h6>Si vous êtes administrateur, Vous pouvez vous connecter depuis la <a href="/admin">page d'administration</a>.</h6>
-                    </center>
+                <div class="row justify-content-md-center">
+                    <div class="col-md-8">
+                        <p>
+                            You account will be automatically created the first time you connect 
+                            to Premier Langage from a LMS (Moodle, E-Learning, Canvas...).<br>
+                            <br>
+                            If you have connected at least once, you should have received an email 
+                            containing your credentials on the email address associated with your LMS.
+                            You can also still connect from your LMS.
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
 {% endblock %}

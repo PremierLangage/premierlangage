@@ -11,16 +11,17 @@ import logging
 
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponseNotAllowed, HttpResponseBadRequest
+from django.shortcuts import redirect, reverse
 from django.urls import reverse
 
 from classmanagement.models import Course
 
 from playexo.models import Answer, Activity
-from playexo.views import activity_receiver
 from playexo.enums import State
 
 
@@ -229,11 +230,17 @@ def student_summary(request, course_id, student_id):
         'activities': tp,
         'course_id': course_id,
     })
-    
-    
+
+
 @login_required
 def redirect_activity(request, activity_id):
     request.session['current_activity'] = activity_id
     request.session['current_pl'] = None
     request.session['testing'] = False
-    return HttpResponseRedirect(reverse(activity_receiver))
+    return HttpResponseRedirect(reverse("playexo:activity"))
+
+
+
+def disconnect(request):
+    logout(request)
+    return redirect(reverse('classmanagement:login'))

@@ -6,10 +6,16 @@
 #  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
 #  
 
+<<<<<<< HEAD
 import subprocess, os, shutil
 from os.path import join, isdir
 
 from django.test import TestCase, override_settings
+=======
+from os.path import join
+
+from django.test import TestCase
+>>>>>>> origin/lti_multiple_consumer
 from django.conf import settings
 from django.contrib.auth.models import User
 

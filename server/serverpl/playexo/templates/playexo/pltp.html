@@ -1,0 +1,28 @@
+{% extends 'playexo/default_nav.html' %}
+
+{% block tag %}
+    {% load static %}
+{% endblock %}
+
+
+{% block exo %}
+    <div class="card">
+        <div class="card-header">
+            <div class="text-center"><h1>{% if 'title'%}{{ title }}{% endif %}</h1></div>
+            <div class="text-left">{% if 'author' %}{{ author }}{% endif %}</div>
+        </div>
+        
+        <div class="card-body">
+            {% if teacher %}
+                <pre><u>Note de l'enseignant (visible seulement par les enseignant):</u><br>
+                {% if request.user.pluser.can_load and "teacher" %}{{ teacher|markdown }}{% endif %}</pre>
+            {% endif %}
+            {% if "introduction" %}{{ introduction|markdown }}{% endif %}
+            {% if "introductionh" %}{{ introductionh|safe }}{% endif %}
+            <br>
+            <center><a style="white-space: normal;" href="{{ request.path }}?action=pl&pl_id={{pl_list__.0.id}}" type="button" class="btn btn-success btn-lg">
+                Commencer
+            </a></center>
+        </div>
+    </div>
+{% endblock %}
