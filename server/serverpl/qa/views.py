@@ -64,8 +64,8 @@ class IndexView(View):
                      | reduce(operator.or_, (Q(tags__name__icontains=i) for i in include))
                      if include else Q())
             exclude = (reduce(operator.or_, (~Q(title__icontains=i) for i in exclude))
-                     | reduce(operator.or_, (~Q(description__icontains=i) for i in exclude))
-                     | reduce(operator.or_, (~Q(tags__name__icontains=i) for i in exclude))
+                     & reduce(operator.or_, (~Q(description__icontains=i) for i in exclude))
+                     & reduce(operator.or_, (~Q(tags__name__icontains=i) for i in exclude))
                      if exclude else Q())
             questions = questions.filter(include & exclude)
             noans = noans.filter(include & exclude)
@@ -73,11 +73,11 @@ class IndexView(View):
             if request.user.is_authenticated:
                 usersq = usersq.filter(include & exclude)
         
-        questions = questions.annotate(num_answers=Count('qaanswer'))
-        noans = noans.annotate(num_answers=Count('qaanswer'))
-        popular = popular.annotate(num_answers=Count('qaanswer'))
+        questions = questions.annotate(num_answers=Count('qaanswer', distinct=True))
+        noans = noans.annotate(num_answers=Count('qaanswer', distinct=True))
+        popular = popular.annotate(num_answers=Count('qaanswer', distinct=True))
         if request.user.is_authenticated:
-            usersq = usersq.annotate(num_answers=Count('qaanswer'))
+            usersq = usersq.annotate(num_answers=Count('qaanswer', distinct=True))
         
         return render(request, self.template_name, {
             "questions": Paginator(questions, self.question_per_page).get_page(page if page else 1),
@@ -189,9 +189,9 @@ class AnswerView(HttpMethodMixin, View):
         if 'answer' in params:
             params['answer'] = bool(int(params['answer']))
             answer[0].question.qaanswer_set.all().update(answer=False)
-        
-        params['update_date'] = timezone.now()
-        params['update_user'] = request.user
+        else:
+            params['update_date'] = timezone.now()
+            params['update_user'] = request.user
         answer.update(**params)
         
         if 'answer' in params:
