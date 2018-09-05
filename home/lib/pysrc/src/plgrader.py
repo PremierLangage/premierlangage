@@ -34,20 +34,20 @@ def compare(s1,s2):
 
 
 class Grader:
-    def __init__(self):
+    def __init__(self, template=None):
         try:
             self.pld= json.load(open("pl.json","r"))
             
         except Exception as e:
             
-            self.fb = Feedback()
+            self.fb = Feedback(template)
             #self.fb.addFeedback( "# erreur de plateforme \n pl.json illissible\n")
             self.fb.adddiv("err","# erreur de plateforme \n pl.json illissible\n")
             self.fb.success = True
             self.fb.flags="-Wall -ansi"
             self.doOutput()
             sys.exit(1)
-        self.fb =  Feedback()
+        self.fb =  Feedback(template)
         self.fb.success=True
         self.fb.flags="-Wall -ansi"
         
@@ -119,7 +119,7 @@ class Grader:
             self.fb.success = False
         
         
-        dico_response = { "success": self.fb.success , "errormessages" : "","feedback": self.fb.feedback(), "other": "","error":"XK11","execution": "","grade":"1"}
+        dico_response = { "success": self.fb.success , "errormessages" : "","feedback": self.fb.feedback(), "other": "","error": "","execution": "","grade":"1"}
         return(json.dumps(dico_response))
 
     def expectedoutput(self):
@@ -146,7 +146,7 @@ class Grader:
             if self.fb.showinput and stdinput :
                 self.fb.addOutput("input:\n"+stdinput)
             #self.fb.addOutput(expected)
-            self.fb.adddiv("ventree output"+str(i),"Entrée :"+self.fb.resultat(subnlbybr(stdinput))+"Attendue:"+self.fb.resultat(subnlbybr(expected))+"Obtenue:"+self.fb.resultat(subnlbybr(expected)))
+            self.fb.adddiv("entree output"+str(i),"Entrée :"+self.fb.resultat(subnlbybr(stdinput))+"Attendue:"+self.fb.resultat(subnlbybr(expected))+"Obtenue:"+self.fb.resultat(subnlbybr(expected)))
             self.fb.success = True
         elif r :
             if "nohint" in self.pld: # don't tel the answer
@@ -286,7 +286,8 @@ class Grader:
         return True
 
     def dopltest(self):
-
+        
+        
         if not "pltest" in self.pld :
             return False
         try:
@@ -307,6 +308,7 @@ class Grader:
             r,out=self.execute(['python3','-B','-m','pldoctest','pltest.py'],instr=None)
 
         self.fb.success = r
+        
         if r :
            res=0
            i=0
@@ -321,7 +323,7 @@ class Grader:
               
            
            #self.fb.adddiv("testT",out)
-
+           
             
         else:
             #r,out=self.execute(['python3','-B','-m','pldoctest','-f','pltest.py'],instr=None)
@@ -343,6 +345,7 @@ class Grader:
                     i+=1
                 
             self.fb.addOutput(out)
+        
         return True
 
     def grade(self):
