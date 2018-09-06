@@ -1,0 +1,11 @@
+title=U1~graph~oefgraph.fr
+type=wims
+extends=plbank:/demo/wims/template.pl
+level=devel
+subject=kobylansDev
+notion=U1~graph~graph
+ident=pltest
+quser=qcoumes
+passwd=toto
+course=8109815
+url=https://wims.u-pem.fr/wims.cgi?lang=fr&cmd=new&module=devel/kobylansDev/U1~graph~oefgraph.fr

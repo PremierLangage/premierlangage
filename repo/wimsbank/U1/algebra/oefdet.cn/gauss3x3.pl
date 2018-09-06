@@ -1,0 +1,12 @@
+title=初等变换 3x3
+
+type=wims
+extends=plbank:/demo/wims/template.pl
+level=U1
+subject=algebra
+notion=det
+ident=pltest
+quser=qcoumes
+passwd=toto
+course=8109815
+url=https://wims.u-pem.fr/wims.cgi?lang=fr&cmd=new&module=U1/algebra/oefdet.cn&exo=gauss3x3

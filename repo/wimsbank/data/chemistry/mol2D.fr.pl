@@ -1,0 +1,11 @@
+title=mol2D.fr
+type=wims
+extends=plbank:/demo/wims/template.pl
+level=data
+subject=chemistry
+notion=mol2D
+ident=pltest
+quser=qcoumes
+passwd=toto
+course=8109815
+url=https://wims.u-pem.fr/wims.cgi?lang=fr&cmd=new&module=data/chemistry/mol2D.fr

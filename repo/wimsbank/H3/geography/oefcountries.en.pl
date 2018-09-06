@@ -1,0 +1,11 @@
+title=oefcountries.en
+type=wims
+extends=plbank:/demo/wims/template.pl
+level=H3
+subject=geography
+notion=countries
+ident=pltest
+quser=qcoumes
+passwd=toto
+course=8109815
+url=https://wims.u-pem.fr/wims.cgi?lang=fr&cmd=new&module=H3/geography/oefcountries.en
