@@ -2,6 +2,8 @@
 
 import time
 
+import htmlprint
+from enumfields import EnumIntegerField
 from jsonfield import JSONField
 from django.db import models, IntegrityError
 from django.db.models.signals import post_save
@@ -13,7 +15,7 @@ from django.template.loader import get_template
 
 from lti.models import LTIModel, LTIgrade
 from loader.models import PLTP, PL
-from playexo.enums import State
+from playexo.enums import State, EnvStatus
 from playexo.request import SandboxBuild, SandboxEval
 
 
@@ -56,6 +58,7 @@ class SessionExercise(models.Model):
     pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=True)
     activity_session = models.ForeignKey(SessionActivity, on_delete=models.CASCADE)
     sandbox_url = models.CharField(max_length=300, null=True)
+    status = EnumIntegerField(EnvStatus, default=EnvStatus.DEFAULT)
     envid = models.UUIDField(null=True)
     context = JSONField(null=True)
     
@@ -88,45 +91,50 @@ class SessionExercise(models.Model):
     
     def evaluate(self, uuid, sandbox_url, answers):
         context = {}
-        answer = {}
         evaluator = SandboxEval(uuid, sandbox_url, answers)
         if not evaluator.check():
             context = self.intern_build()
             evaluator = SandboxEval(context['id__'], context['sandbox_url__'], answers)
         
         response = evaluator.call()
+        answer = {
+            "answers": answers,
+            "user": self.activity_session.user,
+            "pl": self.pl,
+            "activity": self.activity_session.activity,
+        }
+        
         if response['status'] < 0: # Sandbox Error
             feedback = response['feedback']
-            if self.request.user.profile.can_load():
-                feedback += "\n\n" + response['sandboxerr']
+            if self.activity_session.user.profile.can_load():
+                feedback += "<br><br>" + htmlprint.code(response['sandboxerr'])
         
         elif response['status'] > 0:  # Evaluator Error
-            feedback = response['feedback']
-            if self.request.user.profile.can_load():
-                feedback += "\n\nReceived on stderr:\n" + response['stderr']
+            feedback = ("Une erreur s'est produite lors de l'exécution du script d'évaluation "
+                        + ("(exit code: %d, env: %s). Merci de prévenir votre professeur"
+                           % (response['status'], response['id'])))
+            if self.activity_session.user.profile.can_load():
+                feedback += "<br><br>Received on stderr:<br>" + htmlprint.code(response['stderr'])
         
         else: # Success
             context = dict(response['context'])
             feedback = response['feedback']
-            answer = {
-                "answers": answers,
-                "user": self.request.user,
-                "pl": self.pl,
-                "seed": context['seed'],
-                "grade": response['grade'],
-                "activity": self.activity_session.activity,
-            }
-            
-            keys = list(response.keys())
-            for key in keys:
-                response[key+"__"] = response[key]
-            for key in keys:
-                del response[key]
-            del response['context__']
-            context.update(response)
-            context['feedback__'] = feedback
-            self.context.update(context)
-            self.save()
+            answer["grade"] = response['grade']
+            answer["seed"] = context['seed'],
+        
+        keys = list(response.keys())
+        for key in keys:
+            response[key+"__"] = response[key]
+        for key in keys:
+            del response[key]
+        del response['context__']
+        context.update(response)
+        context['feedback__'] = feedback
+        
+        self.status = EnvStatus.EVALUATED
+        self.context.update(context)
+        self.save()
+        
         return answer
     
     
@@ -137,17 +145,20 @@ class SessionExercise(models.Model):
             msg = ("Une erreur s'est produit c'est produite sur la sandbox (exit code: %d, env: %s)."
                    + " Merci de prévenir votre professeur.") % (response['status'], response['id'])
             if self.activity_session.user.profile.can_load():
-                msg += "\n\n" + response['sandboxerr']
+                msg += "<br><br>" + htmlprint.code(response['sandboxerr'])
             raise Exception(msg)
         
         if response['status'] > 0:
-            msg = ("Une erreur s'est produite lors de l'exécution du script d'évaluation "
+            msg = ("Une erreur s'est produite lors de l'exécution du script before/build "
                     + ("(exit code: %d, env: %s). Merci de prévenir votre professeur"
                        % (response['status'], response['id']))
                   )
             if self.activity_session.user.profile.can_load() and response['stderr']:
-                msg += "\n\nReçu sur stderr:\n" + response['stderr']
+                msg += "<br><br>Reçu sur stderr:<br>" + htmlprint.code(response['stderr'])
             raise Exception(msg)
+        
+        self.envid = response['id']
+        self.sandbox_url = response['sandbox_url']
         
         context = dict(response['context'])
         keys = list(response.keys())
@@ -159,10 +170,11 @@ class SessionExercise(models.Model):
         
         context.update(response)
         self.context.update(context)
+        self.status = EnvStatus.BUILT
         self.save()
     
     
-    def _get_navigation(self, request):
+    def get_navigation(self, request):
         pl_list = []
         pl_list.append({
                 'id'   : None,
@@ -183,7 +195,7 @@ class SessionExercise(models.Model):
         return get_template("playexo/navigation.html").render(context)
     
     
-    def _get_exercise(self, request):
+    def get_exercise(self, request):
         pl = self.pl
         seed = Answer.last_seed(pl, self.activity_session.user)
         if 'oneshot' in self.context or not seed or Answer.last_success(pl, self.activity_session.user) == True :
@@ -192,7 +204,8 @@ class SessionExercise(models.Model):
         
         
         if pl:
-            self._build()
+            if self.status == EnvStatus.DEFAULT:
+                self._build()
             dic = dict(self.context)
             dic['user_settings__'] = self.activity_session.user.profile
             dic['user__'] = self.activity_session.user
@@ -214,8 +227,8 @@ class SessionExercise(models.Model):
     
     def get_context(self, request):
         return {
-            "navigation": self._get_navigation(request),
-            "exercise": self._get_exercise(request),
+            "navigation": self.get_navigation(request),
+            "exercise": self.get_exercise(request),
         }
 
 

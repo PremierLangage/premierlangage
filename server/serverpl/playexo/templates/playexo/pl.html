@@ -9,9 +9,9 @@
         <div class="card-body">
             {% if 'text'%}{{ text|markdown }}{% endif %}
             
-            {% if feedback %}
+            {% if feedback__ %}
             <div id="feedback_info" class="alert alert-info feedback">
-                {{ feedback|safe }}
+                {{ feedback__|safe }}
             </div>
             {% endif %}
             
@@ -58,12 +58,12 @@ $( document ).ready(function(){
         var status = {requested_action: 'submit', inputs: inputs};
         $.ajax({
             type : "POST",
-            url : "{% url 'playexo:activity' activity_id__ %}",
+            url : "{% url 'playexo:evaluate' activity_id__ pl_id__%}",
             data: JSON.stringify(status, null, '\t'),
             contentType: 'application/json;charset=UTF-8',
             success: function(returned_status) {
                 status = returned_status;
-                onReturn(status.feedback_type, status.feedback);
+                onReturn(status.exercise, status.navigation);
             }
         });
     });
@@ -76,12 +76,12 @@ $( document ).ready(function(){
         var status = {requested_action: 'save', inputs: inputs};
         $.ajax({
             type : "POST",
-            url : "{% url 'playexo:activity' activity_id__ %}",
+            url : "{% url 'playexo:evaluate' activity_id__ pl_id__%}",
             data: JSON.stringify(status, null, '\t'),
             contentType: 'application/json;charset=UTF-8',
             success: function(returned_status) {
                 status = returned_status;
-                onReturn(status.feedback_type, status.feedback);
+                onReturn(status.exercise, status.navigation);
             }
         });
     });
@@ -101,7 +101,6 @@ function wait(ms){
 function getInputs(){
     var inputs = {};
     $( "[id^='form_']" ).each(function() {
-        var type = this.id.slice(5,8); // type of field, a 3 letter code, cf input tag defs
         var id = this.id.slice(9); // name of the variable
         var value = $(this).val();
         if ($(this).is(':radio')) {
@@ -126,33 +125,14 @@ function getInputs(){
     return inputs;
 }
 
-function onReturn(feedback_type, feedback) {
-    $( "#feedback_success" ).hide();
-    $( "#feedback_success").css('animation', 'fadeOut 1s forwards');
-    $( "#feedback_info" ).hide();
-    $( "#feedback_info").css('animation', 'fadeOut 1s forwards');
-    $( "#feedback_danger" ).hide();
-    $( "#feedback_danger").css('animation', 'fadeOut 1s forwards');
-    
-    $('#navigation').load(document.URL + " #navigation>*","");
-    if (feedback_type == "success") {
-        $( "#next_button" ).toggle();
-        $( "#feedback_success" ).html(feedback);
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub,feedback_success]);
-        $( "#feedback_success" ).toggle();
-        $( "#feedback_success").css('animation', 'growIn 1s forwards');
+function onReturn(exercise, navigation) {
+    if (exercise) {
+        console.log("Exercise OK");
+        $( "#exercise" ).html(exercise);
     }
-    else if (feedback_type == "info") {
-        $( "#feedback_info" ).html(feedback);
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub,feedback_info]);
-        $( "#feedback_info" ).toggle();
-        $( "#feedback_info").css('animation', 'growIn 1s forwards');
-    }
-    else {
-        $( "#feedback_danger" ).html(feedback);
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub,feedback_danger]);
-        $( "#feedback_danger" ).toggle();
-        $( "#feedback_danger").css('animation', 'growIn 1s forwards');
+    if (navigation) {
+        console.log("Navigation OK");
+        $( "#navigation" ).html(navigation);
     }
 }
 </script>

@@ -19,11 +19,11 @@ form==
 evaluator==
 try: 
     if int(response['answer']) == op1 + op2:
-        grade = (True, "Bonne réponse")
+        grade = (100, "Bonne réponse")
     else:
-        grade = (False, "Mauvaise réponse")
+        grade = (0, "Mauvaise réponse")
 except:
-    grade = (None, "Merci de rentrer un entier")
+    grade = (-1, "Merci de rentrer un entier")
 ==
 
 
@@ -35,4 +35,6 @@ op2 = random.randint(20, 100)
 ==
 
 @ /builder/builder.py
+@ /grader/grader.py
+
 

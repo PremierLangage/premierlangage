@@ -62,7 +62,7 @@ class SandboxEval:
     
     
     def check(self):
-        r = requests.head(self.sandbox.url + "env/" + self.uuid + "/", timeout=1)
+        r = requests.head(self.sandbox.url + "env/%s/" % str(self.uuid), timeout=1)
         return 200 <= r.status_code <= 299
     
     
@@ -71,5 +71,5 @@ class SandboxEval:
             'answers': json.dumps(self.answers),
         }
         logger.info("Evaluating on sandbox '" + self.sandbox.url + " (" + self.sandbox.name + ")'.")
-        response = requests.post(self.sandbox.url + "eval/%s/" % self.uuid, data=data, timeout=request_timeout)
+        response = requests.post(self.sandbox.url + "eval/%s/" % str(self.uuid), data=data, timeout=request_timeout)
         return json.loads(response.text)

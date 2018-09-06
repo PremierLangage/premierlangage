@@ -22,7 +22,7 @@ class Profile(LTIModel):
     
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     student_id = models.PositiveIntegerField(unique=True, null=True, blank=True)
-    editor_theme = EnumIntegerField(EditorTheme, default=EditorTheme.MONOKAI)
+    editor_theme = EnumIntegerField(EditorTheme, default=EditorTheme.ECLIPSE)
     role = EnumIntegerField(Role, default=Role.LEARNER)
     color_blindness = EnumIntegerField(ColorBlindness, default=ColorBlindness.NONE)
     activity = models.ManyToManyField(Activity, blank=True)

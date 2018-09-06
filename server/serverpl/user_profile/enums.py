@@ -14,7 +14,7 @@ from functools import total_ordering
 
 
 @unique
-class ColorBlindness(Enum):                           
+class ColorBlindness(Enum):
     """Used by .models.Profile to define the user's color blindness."""
     
     NONE = 0

@@ -62,6 +62,7 @@ class ActivityRenderer():
             evaluator = SandboxEval(context['id__'], context['sandbox_url__'], answers)
         
         response = evaluator.call()
+        print(response)
         if response['status'] < 0: # Sandbox Error
             feedback = response['feedback']
             if self.request.user.profile.can_load():

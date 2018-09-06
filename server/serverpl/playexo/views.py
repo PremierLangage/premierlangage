@@ -27,7 +27,8 @@ logger = logging.getLogger(__name__)
 @csrf_exempt
 def evaluate(request, activity_id, pl_id):
     status = json.loads(request.body.decode())
-    session = SessionActivity.objects.get(user=request.user, activity=activity)
+    activity = get_object_or_404(Activity, id=activity_id)
+    session = get_object_or_404(SessionActivity, user=request.user, activity=activity)
     pl = get_object_or_404(PL, id=pl_id)
     exercise = session.exercise(pl)
     
@@ -39,17 +40,25 @@ def evaluate(request, activity_id, pl_id):
                 pl=pl,
                 seed=exercise.dic['seed']
             )
+            return HttpResponse(json.dumps({
+                "exercise": exercise.get_exercise(request),
+                "navigation": None,
+            }), content_type='application/json')
         
         elif status['requested_action'] == 'submit': # Validate
-            answer = exercise.evaluate(status['inputs']) 
-            Answer.objects.create(**answer).save()
-            
-        return HttpResponse(
-            json.dumps(exercise.get_context(request)), 
-            content_type='application/json'
-        )
+            answer = exercise.evaluate(exercise.envid, exercise.sandbox_url, status['inputs']) 
+            Answer.objects.create(**answer)
+            return HttpResponse(
+                json.dumps({
+                    "navigation": exercise.get_navigation(request),
+                    "exercise": exercise.get_exercise(request),
+                }), 
+                content_type='application/json'
+            )
+        
+        return HttpResponseBadRequest("Unknown action")
     else:
-        return HttpResponseBadRequest("Missing action in status")
+        return HttpResponseBadRequest("Missing action")
 
 
 

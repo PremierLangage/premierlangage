@@ -70,8 +70,8 @@ def edit_profile(request):
         if editor_theme != None: # Can be 0
             request.user.profile.editor_theme = editor_theme
         
-        request.user.profile.confirm = True if confirm == 'on' else False
-        request.user.save()
+        request.user.profile.confirm = confirm == 'on'
+        request.user.profile.save()
         messages.info(request, "Paramètres sauvergardés.")
     
     form = ProfileForm(initial={
