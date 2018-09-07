@@ -19,7 +19,7 @@ def wimsexodb(exo_content,path,exo,wims_path):
         'quser':settings.WIMS_QUSER,
         'passwd':settings.WIMS_PASSWD,
         'course':settings.WIMS_COURSE,
-        'url':'https://wims.u-pem.fr/wims.cgi?lang=fr&cmd=new&module='+wims[1]+'/'+wims[2]+'/'+wims[3]+("" if not exo else '&exo='+exo.split('.')[0]),
+        'url':'https://wims.u-pem.fr/wims.cgi?lang=fr&embededwindow=true&cmd=new&module='+wims[1]+'/'+wims[2]+'/'+wims[3]+("" if not exo else '&exo='+exo.split('.')[0]),
         '__extends':[{
             "path":"demo/wims/template",
             "directory_name":"plbank",
@@ -68,7 +68,7 @@ def wimsexopl(exo_content,path,exo,wims_path):
     f.write('quser='+settings.WIMS_QUSER+'\n')
     f.write('passwd='+settings.WIMS_PASSWD+'\n')
     f.write('course='+settings.WIMS_COURSE+'\n')
-    f.write('url=https://wims.u-pem.fr/wims.cgi?lang=fr&cmd=new&module='+wims[1]+'/'+wims[2]+'/'+wims[3]+('\n' if not exo else '&exo='+exo.split('.')[0]+'\n'))
+    f.write('url=https://wims.u-pem.fr/wims.cgi?lang=fr&embededwindow=true&cmd=new&module='+wims[1]+'/'+wims[2]+'/'+wims[3]+('\n' if not exo else '&exo='+exo.split('.')[0]+'\n'))
     f.close()
 
 
