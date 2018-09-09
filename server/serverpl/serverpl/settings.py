@@ -25,7 +25,7 @@ ALLOWED_HOSTS = ['127.0.0.1']
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 25
 SERVER_EMAIL = 'root@localhost'
-ADMINS = [
+ADMINS = []
 # Write email in console instead of sending it if DEBUG is True
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

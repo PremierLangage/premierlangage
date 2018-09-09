@@ -1,11 +1,18 @@
-import django, random
+import os, sys
+sys.path.append(os.path.realpath(os.path.join(__file__, '../../../')))
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "serverpl.settings")
+
+import django
+django.setup()
+
+import random, string
 from django.contrib.auth.models import User
 from filebrowser.models import Directory
 
-try :
+try:
     random.seed = (os.urandom(1024))
     passwd = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
-    user = User.objects.create_user(username='PremierLangage', password=password)
+    user = User.objects.create_user(username='PremierLangage', password=passwd)
     user.save()
 except django.db.utils.IntegrityError:
     user = User.objects.get(username='PremierLangage')
