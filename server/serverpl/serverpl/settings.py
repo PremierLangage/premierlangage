@@ -1,5 +1,6 @@
 import os
 from django.contrib.messages import constants as messages
+import dj_database_url
 
 
 
@@ -14,25 +15,19 @@ SECRET_KEY = "o!m$n&s4=kcftm1de1m+7!36a=8x38wrr)m9)i@ru7j-*c7vgm"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-SYSLOG = False
 
 # List of Allowed Hosts
-ALLOWED_HOSTS = ['127.0.0.1', 'pl-test.u-pem.fr']
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Used by mail_admins log handler, 
 # set ENABLE_MAIL_ADMINS to True to use it (DEBUG should also be set to False)
-ENABLE_MAIL_ADMINS = True
-MAIL_HOST = 'smtp.u-pem.fr'
-MAIL_PORT = 25
-SERVER_EMAIL = 'pl@pl-test.u-pem.fr'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25
+SERVER_EMAIL = 'root@localhost'
 ADMINS = [
-    #('Coumes Quentin',      'qcoumes@etud.u-pem.fr'),
-    #('Revuz Dominique',     'Dominique.Revuz@u-pem.fr'),
-    #('Cuvelier Nicolas',    'ncuvelie@etud.u-pem.fr'),
-]
-# Write email in console instead of sending it if ENABLE_MAIL_ADMINS is False or DEBUG is True
-if DEBUG or not ENABLE_MAIL_ADMINS:
+# Write email in console instead of sending it if DEBUG is True
+if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
@@ -46,7 +41,6 @@ INSTALLED_APPS = [
     'sandbox',
     'documentation',
     'markdown_deux',
-    #'qa',
     'taggit',
     'hitcount',
     'django_markdown',
@@ -122,7 +116,6 @@ DATABASES = {
     }
 }
 # Update database configuration with $DATABASE_URL.
-import dj_database_url
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
 
@@ -190,31 +183,7 @@ LOGGING = {
         }
     },
     'loggers': {
-        'django':{
-            'handlers': ['console', 'mail_admins'],
-            'level': 'INFO',
-        },
-        'sandbox':{
-            'handlers': ['console', 'mail_admins'],
-            'level': 'INFO',
-        },
-        'classmanagement':{
-            'handlers': ['console', 'mail_admins'],
-            'level': 'INFO',
-        },
-        'documentation':{
-            'handlers': ['console', 'mail_admins'],
-            'level': 'INFO',
-        },
-        'filebrowser':{
-            'handlers': ['console', 'mail_admins'],
-            'level': 'INFO',
-        },
-        'playexo':{
-            'handlers': ['console', 'mail_admins'],
-            'level': 'INFO',
-        },
-        'django_auth_lti':{
+        '':{
             'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
         },
@@ -241,9 +210,6 @@ MEDIA_URL = '/tmp/'
 # Default Filebrowser's path
 FILEBROWSER_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../home/'))
 
-# Default bank path
-BANK_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../bank/'))
-
 
 # Filebrowser settings
 FILEBROWSER_DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&']
@@ -252,3 +218,10 @@ FILEBROWSER_DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&']
 # Path to directory containing parsers
 PARSERS_ROOT = os.path.abspath(os.path.join(BASE_DIR,'loader/parsers/'))
 PARSERS_MODULE = 'loader.parsers'
+
+
+# Allow a file '[PL_ROOT]/server/serverpl/serverpl/config.py' to override any of the settings above.
+try:
+    from serverpl.config import *
+except:
+    pass
