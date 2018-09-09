@@ -7,20 +7,20 @@
 # 
 
 
-import logging, tempfile, tarfile, json, os, hashlib, requests, traceback
+import logging, json, requests, os
 
-from sandbox.models import Sandbox
-from playexo.utils import get_sandbox, tar_from_dic
+from django.conf import settings
 
+from playexo.utils import tar_from_dic
+from playexo.exception import SandboxUnavailable
 
 logger = logging.getLogger(__name__)
 
 
 class SandboxBuild:
     
-    def __init__(self, dic, test=False):
-        
-        self.sandbox = get_sandbox()
+    def __init__(self, dic, sandbox=None, test=False):
+        self.sandbox = settings.SANDBOX if sandbox is None else sandbox
         self.dic = dict(dic)
         self.test = test
     
@@ -42,34 +42,50 @@ class SandboxBuild:
     
     
     def call(self, request_timeout=10):
-        files = {'environment.tgz': tar_from_dic(self._build_env())}
-        
-        if self.test:
-            data['test'] = True
-        
-        logger.info("Building on sandbox '" + self.sandbox.url + " (" + self.sandbox.name + ")'.")
-        response = requests.post(self.sandbox.url + "build/", files=files, timeout=request_timeout)
-        return json.loads(response.text)
+        try:
+            files = {'environment.tgz': tar_from_dic(self._build_env())}
+            data = {'test': True} if self.test else {}
+            logger.info("Building on sandbox '" + self.sandbox + "'.")
+            url = os.path.join(self.sandbox, "build/")
+            response = requests.post(url, data=data, files=files, timeout=request_timeout)
+            return json.loads(response.text)
+        except json.decoder.JSONDecodeError:
+            logger.critical("Sandbox '" + url + "' returned a non JSON response:\n" + response.text)
+            raise SandboxUnavailable
+        except:
+            logger.exception("Could not join the sandbox '" + url + "'.")
+            raise SandboxUnavailable
 
 
 
 class SandboxEval:
     
-    def __init__(self, uuid, sandbox, answers):
+    def __init__(self, uuid, answers, sandbox=None):
         self.uuid = uuid
-        self.sandbox = get_sandbox(sandbox)
+        self.sandbox = settings.SANDBOX if sandbox is None else sandbox
         self.answers = answers
     
     
     def check(self):
-        r = requests.head(self.sandbox.url + "env/%s/" % str(self.uuid), timeout=1)
-        return 200 <= r.status_code <= 299
+        try:
+            url = os.path.join(self.sandbox, "env/%s/")
+            r = requests.head(url % str(self.uuid), timeout=1)
+            return 200 <= r.status_code <= 299
+        except:
+            logger.exception("Could not join the sandbox '" + url + "'.")
+            raise SandboxUnavailable
     
     
     def call(self, request_timeout=10):
-        data={
-            'answers': json.dumps(self.answers),
-        }
-        logger.info("Evaluating on sandbox '" + self.sandbox.url + " (" + self.sandbox.name + ")'.")
-        response = requests.post(self.sandbox.url + "eval/%s/" % str(self.uuid), data=data, timeout=request_timeout)
-        return json.loads(response.text)
+        try:
+            data={'answers': json.dumps(self.answers),}
+            logger.info("Evaluating on sandbox '" + self.sandbox + "'.")
+            url = os.path.join(self.sandbox, "eval/%s/")
+            response = requests.post(url % str(self.uuid), data=data, timeout=request_timeout)
+            return json.loads(response.text)
+        except json.decoder.JSONDecodeError:
+            logger.critical("Sandbox '" + url + "' returned a non JSON response:\n" + response.text)
+            raise SandboxUnavailable
+        except:
+            logger.exception("Could not join the sandbox '" + url + "'.")
+            raise SandboxUnavailable

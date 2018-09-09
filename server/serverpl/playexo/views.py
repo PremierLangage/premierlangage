@@ -8,16 +8,14 @@
 
 import json, logging
 
-from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 
-from loader.models import PLTP, PL
+from loader.models import PL
 from playexo.models import SessionActivity, Activity, Answer
-from classmanagement.models import Course
 
 
 logger = logging.getLogger(__name__)
@@ -38,20 +36,22 @@ def evaluate(request, activity_id, pl_id):
                 answers=status['inputs'],
                 user=request.user,
                 pl=pl,
-                seed=exercise.dic['seed']
+                seed=exercise.context['seed']
             )
             return HttpResponse(json.dumps({
-                "exercise": exercise.get_exercise(request),
+                "exercise":None,
                 "navigation": None,
+                "feedback": "Réponse(s) sauvegardé.",
             }), content_type='application/json')
         
         elif status['requested_action'] == 'submit': # Validate
-            answer = exercise.evaluate(exercise.envid, exercise.sandbox_url, status['inputs']) 
+            answer, feedback, context = exercise.evaluate(exercise.envid, status['inputs']) 
             Answer.objects.create(**answer)
             return HttpResponse(
                 json.dumps({
-                    "navigation": exercise.get_navigation(request),
+                    "navigation": exercise.get_navigation(request,context),
                     "exercise": exercise.get_exercise(request),
+                    "feedback": feedback,
                 }), 
                 content_type='application/json'
             )
@@ -86,7 +86,7 @@ def activity(request, activity_id):
         
         elif session.current_pl and action == "next":
             for previous, next in zip(activity.pltp.pl.all(), list(activity.pltp.pl.all())[1:]+[None]):
-                if current_pl == previous:
+                if previous == session.current_pl:
                     session.current_pl = next
                     session.save()
             else:
@@ -94,8 +94,12 @@ def activity(request, activity_id):
                 session.save()
         
         if action:
-            return HttpResponseRedirect(reverse("playexo:activity", args=[activity_id]))  # Remove get arguments from URL
+            return redirect(reverse("playexo:activity", args=[activity_id]))  # Remove get arguments from URL
     
     if session.current_pl:
-        Answer.objects.create(user=request.user, pl=session.current_pl)
+        Answer.objects.create(
+            user=request.user,
+            pl=session.current_pl,
+            answers=Answer.last_answer(session.current_pl, request.user)
+        )
     return render(request, 'playexo/exercise.html', session.exercise().get_context(request))

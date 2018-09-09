@@ -39,7 +39,7 @@ class State(Enum):
     def by_grade(cls, grade):
         """Return the corresponding enum member according to grade."""
         if grade is None:
-            return cls.NOT_STARTED
+            return cls.STARTED
         if grade == 100:
             return cls.SUCCEEDED
         if grade <= 99 and grade >= 1:
@@ -49,16 +49,3 @@ class State(Enum):
         if grade == -1:
             return cls.ERROR
         return cls.STARTED
-
-
-@unique
-class EnvStatus(Enum):
-    DEFAULT     = 0
-    BUILT       = 1
-    EVALUATED   = 2
-    
-    class Label:
-        DEFAULT   = "Default"
-        BUILT     = "Built"
-        EVALUATED = "Evaluated"
-    

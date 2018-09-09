@@ -47,8 +47,6 @@ from filebrowser.filter import is_pl
 from playexo.models import Activity
 from loader.loader import load_file
 
-from playexo.exercise import PLInstance
-
 
 def mkdir_option(request, filebrowser, target):
     """Create a new folder named target at filebrowser.full_path()"""
@@ -637,7 +635,7 @@ def test_pl_option(request, filebrowser, target):
             messages.error(request, warnings.replace(settings.FILEBROWSER_ROOT, ""))
             return redirect_fb(filebrowser.relative)
 
-        exercise = PLInstance(pl.json)
+        #~ exercise = PLInstance(pl.json)
         request.session['exercise'] = dict(exercise.dic)
         preview = exercise.render(request)
 

@@ -3,6 +3,9 @@
 
 import sys, json, jsonpickle, time
 
+from sandboxio import output, get_context, get_answers
+
+
 missing_evaluator_stderr = """\
 The key 'evaluator' was not found in the context.
 When using this grader, the PL must declare a script inside a key 'evaluator'. This script have
@@ -15,18 +18,14 @@ The script have access to every variable declared in the PL and its 'before' scr
 It should declare a variable 'grade' which should contain a tuple (int, feedback) where int is the grade between [0, 100]."""
 
 if __name__ == "__main__":
-    if len(sys.argv) < 4:
+    if len(sys.argv) < 5:
         msg = ("Sandbox did not call grader properly:\n"
-               +"Usage: python3 grader.py [input_json] [output_json] [feedback_file]")
+               +"Usage: python3 grader.py [input_json] [output_json] [answer_file] [feedback_file]")
         print(msg, file=sys.stderr)
         sys.exit(1)
-    input_json = sys.argv[1]
-    output_json = sys.argv[2]
-    feedback_file = sys.argv[3]
     
-    with open(input_json, "r") as f:
-        dic = json.load(f)
-    
+    dic = get_context()
+    dic['response'] = get_answers()
     if 'evaluator' in dic:
         glob = {}
         exec(dic['evaluator'], dic)
@@ -42,12 +41,4 @@ if __name__ == "__main__":
         print(missing_grade_stderr, file=sys.stderr)
         sys.exit(1)
     
-    with open(feedback_file, "w+") as f:
-        print(dic['grade'][1], file=f)
-    
-    with open(output_json, "w+") as f:
-        f.write(jsonpickle.encode(dic, unpicklable=False))
-    
-    print(dic['grade'][0])
-    
-    sys.exit(0)
+    output(dic['grade'][0], dic['grade'][1], dic)

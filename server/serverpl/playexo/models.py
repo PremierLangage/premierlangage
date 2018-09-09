@@ -10,7 +10,7 @@ from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.dispatch import receiver
-from django.template import Template, RequestContext, Context
+from django.template import Template, RequestContext
 from django.template.loader import get_template
 
 from lti.models import LTIModel, LTIgrade
@@ -57,8 +57,7 @@ class SessionActivity(models.Model):
 class SessionExercise(models.Model):
     pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=True)
     activity_session = models.ForeignKey(SessionActivity, on_delete=models.CASCADE)
-    sandbox_url = models.CharField(max_length=300, null=True)
-    status = EnumIntegerField(EnvStatus, default=EnvStatus.DEFAULT)
+    built = models.BooleanField(default=False)
     envid = models.UUIDField(null=True)
     context = JSONField(null=True)
     
@@ -89,12 +88,12 @@ class SessionExercise(models.Model):
         self.save()
     
     
-    def evaluate(self, uuid, sandbox_url, answers):
+    def evaluate(self, uuid, answers):
         context = {}
-        evaluator = SandboxEval(uuid, sandbox_url, answers)
+        evaluator = SandboxEval(uuid, answers)
         if not evaluator.check():
-            context = self.intern_build()
-            evaluator = SandboxEval(context['id__'], context['sandbox_url__'], answers)
+            self.build()
+            evaluator = SandboxEval(self.context['id__'], answers)
         
         response = evaluator.call()
         answer = {
@@ -106,7 +105,7 @@ class SessionExercise(models.Model):
         
         if response['status'] < 0: # Sandbox Error
             feedback = response['feedback']
-            if self.activity_session.user.profile.can_load():
+            if self.activity_session.user.profile.can_load() and response['sandboxerr']:
                 feedback += "<br><br>" + htmlprint.code(response['sandboxerr'])
         
         elif response['status'] > 0:  # Evaluator Error
@@ -119,6 +118,8 @@ class SessionExercise(models.Model):
         else: # Success
             context = dict(response['context'])
             feedback = response['feedback']
+            if self.activity_session.user.profile.can_load() and response['stderr']:
+                feedback += "<br><br>Received on stderr:<br>" + htmlprint.code(response['stderr'])
             answer["grade"] = response['grade']
             answer["seed"] = context['seed'],
         
@@ -129,16 +130,14 @@ class SessionExercise(models.Model):
             del response[key]
         del response['context__']
         context.update(response)
-        context['feedback__'] = feedback
         
-        self.status = EnvStatus.EVALUATED
-        self.context.update(context)
-        self.save()
+        dic = dict(self.context)
+        dic.update(context)
         
-        return answer
+        return answer, feedback, dic
     
     
-    def _build(self):
+    def build(self):
         response = SandboxBuild(dict(self.context)).call()
         
         if response['status'] < 0:
@@ -158,7 +157,7 @@ class SessionExercise(models.Model):
             raise Exception(msg)
         
         self.envid = response['id']
-        self.sandbox_url = response['sandbox_url']
+
         
         context = dict(response['context'])
         keys = list(response.keys())
@@ -170,11 +169,11 @@ class SessionExercise(models.Model):
         
         context.update(response)
         self.context.update(context)
-        self.status = EnvStatus.BUILT
+        self.built = True
         self.save()
     
     
-    def get_navigation(self, request):
+    def get_navigation(self, request, context=None):
         pl_list = []
         pl_list.append({
                 'id'   : None,
@@ -187,48 +186,52 @@ class SessionExercise(models.Model):
                 'state': Answer.pl_state(pl, self.activity_session.user),
                 'title': pl.json['title'],
             })
-        context = dict(self.context)
+        context = dict(self.context if not context else context)
         context.update({
             "pl_list__": pl_list,
             'pl_id__': self.pl.id if self.pl else None
         })
-        return get_template("playexo/navigation.html").render(context)
+        return get_template("playexo/navigation.html").render(context, request)
     
     
-    def get_exercise(self, request):
+    def get_exercise(self, request, context=None):
         pl = self.pl
         seed = Answer.last_seed(pl, self.activity_session.user)
         if 'oneshot' in self.context or not seed or Answer.last_success(pl, self.activity_session.user) == True :
             seed = time.time()
+            self.built = False
         self.add_to_context('seed', seed)
         
         
         if pl:
-            if self.status == EnvStatus.DEFAULT:
-                self._build()
-            dic = dict(self.context)
+            if not context:
+                if not self.built:
+                    self.build()
+                dic = dict(self.context)
+            else:
+                dic = dict(context)
             dic['user_settings__'] = self.activity_session.user.profile
             dic['user__'] = self.activity_session.user
             dic['pl_id__'] = pl.id
-            dic['answer__'] = Answer.last_answer(pl, self.activity_session.user)
+            dic['answers__'] = Answer.last_answer(pl, self.activity_session.user)
             for key in dic:
                 dic[key] = Template(dic[key]).render(RequestContext(request, dic))
             return get_template("playexo/pl.html").render(dic)
         
         else:
-            dic = dict(self.context)
+            dic = dict(self.context if not context else context)
             dic['user_settings__'] = self.activity_session.user.profile
             dic['user__'] = self.activity_session.user
             dic['first_pl__'] = self.activity_session.activity.pltp.pl.all()[0].id
             for key in dic:
                 dic[key] = Template(dic[key]).render(RequestContext(request, dic))
-            return get_template("playexo/pltp.html").render(dic)
+            return get_template("playexo/pltp.html").render(dic, request)
     
     
-    def get_context(self, request):
+    def get_context(self, request, context=None):
         return {
-            "navigation": self.get_navigation(request),
-            "exercise": self.get_exercise(request),
+            "navigation": self.get_navigation(request, context),
+            "exercise": self.get_exercise(request, context),
         }
 
 
@@ -267,7 +270,7 @@ class Answer(models.Model):
     def pl_state(pl, user):
         """Return the state of the answer with the highest grade."""
         answers = Answer.objects.filter(user=user, pl=pl).order_by("-grade")
-        return State.by_grade(None if not answers else answers[0].grade)
+        return State.NOT_STARTED if not answers else State.by_grade(answers[0].grade)
     
     
     @staticmethod

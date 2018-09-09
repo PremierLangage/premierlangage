@@ -25,8 +25,6 @@ from filebrowser.utils import redirect_fb
 
 from loader.loader import load_file
 
-from playexo.exercise import PLInstance
-
 from django.conf import settings
 
 

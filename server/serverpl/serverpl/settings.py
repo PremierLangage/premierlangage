@@ -263,6 +263,10 @@ USE_L10N = True
 USE_TZ = True
 
 
+#Sandbox url:
+SANDBOX = 'http://127.0.0.1:7000/sandbox'
+
+
 # Static files (CSS, JavaScript, Images)
 STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'serverpl/static'))
 STATIC_URL = '/static/'

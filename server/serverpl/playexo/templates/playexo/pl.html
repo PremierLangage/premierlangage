@@ -1,139 +1,139 @@
 {% load django_markdown %}
 
-    <div class="card">
-        <div class="card-header">
-            <div class="text-center"><h1>{% if 'title'%}{{ title }}{% endif %}</h1></div>
-            <div class="text-left">{% if 'author' %}{{ author }}{% endif %}</div>
-        </div>
-        
-        <div class="card-body">
-            {% if 'text'%}{{ text|markdown }}{% endif %}
-            
-            {% if feedback__ %}
-            <div id="feedback_info" class="alert alert-info feedback">
-                {{ feedback__|safe }}
-            </div>
-            {% endif %}
-            
-            {% csrf_token %}
-            <div id="form">
-                {% block form %}{{ form|safe }}{% endblock %}
-            </div>
-            <br>
-            <center>
-                <div id="default_button" class="btn-group">
-                        <a type=button class="btn btn-warning" href="{% url 'playexo:activity' activity_id__ %}?action=reset">
-                            <i class="fas fa-undo"></i></span> Réinitialiser
-                        </a>
-                        <button id="save_button" class="btn btn-default btn-info">
-                            <i class="fas fa-save"></i> Sauvegarder
-                        </button>
-                        <button id="submit_button" class="btn btn-primary">
-                            <i class="fas fa-check"></i> Valider
-                        </button>
-                </div>
-                <div id="next_button" style="display: None; color: white;">
-                    <br>
-                    <a type="button" class="btn btn-lg btn-success" href="{% url 'playexo:activity' activity_id__ %}?action=next">
-                        Suivant<span class="glyphicon glyphicon-arrow-right"></span>
-                    </a>
-                </div>
-            </center>
-        </div>
+<div class="card">
+    <div class="card-header">
+        <div class="text-center"><h1>{% if 'title'%}{{ title }}{% endif %}</h1></div>
+        <div class="text-left">{% if 'author' %}{{ author }}{% endif %}</div>
     </div>
+    
+    <div class="card-body">
+        {% if 'text'%}
+            {% with texth__=text|markdown %}
+                {{ texth__|safe }}
+            {% endwith %}
+        {% endif %}
+        
+        <div id="feedback" class="alert alert-secondary feedback collapse">
+            {% with feedbackh__=feedback__|markdown %}
+                {{ feedbackh__|safe }}
+            {% endwith %}
+        </div>
+        {% csrf_token %}
+        <div id="form">
+            {% block form %}{{ form|safe }}{% endblock %}
+        </div>
+        <br>
+        <center>
+            <div id="default_button" class="btn-group">
+                    <a type=button class="btn btn-warning" href="{% url 'playexo:activity' activity_id__ %}?action=reset">
+                        <i class="fas fa-undo"></i></span> Réinitialiser
+                    </a>
+                    <button id="save_button" class="btn btn-default btn-info">
+                        <i class="fas fa-save"></i> Sauvegarder
+                    </button>
+                    <button id="submit_button" class="btn btn-primary">
+                        <i class="fas fa-check"></i> Valider
+                    </button>
+            </div>
+            <div id="next_button" style="display: None; color: white;">
+                <br>
+                <a type="button" class="btn btn-lg btn-success" href="{% url 'playexo:activity' activity_id__ %}?action=next">
+                    Suivant<span class="glyphicon glyphicon-arrow-right"></span>
+                </a>
+            </div>
+        </center>
+    </div>
+</div>
 
 {% block end_script %}
-<!--  script executed after page is loaded -->
-<script>
-{% if request.user.profile.confirm %}
-    window.onbeforeunload = function () {return confirm();}
-{% endif %}
-$( document ).ready(function(){
-    $( "#submit_button" ).click(function() {
-
-        window.onbeforeunload = function () {}
-
-        var inputs = getInputs();
-
-        var status = {requested_action: 'submit', inputs: inputs};
-        $.ajax({
-            type : "POST",
-            url : "{% url 'playexo:evaluate' activity_id__ pl_id__%}",
-            data: JSON.stringify(status, null, '\t'),
-            contentType: 'application/json;charset=UTF-8',
-            success: function(returned_status) {
-                status = returned_status;
-                onReturn(status.exercise, status.navigation);
-            }
-        });
-    });
+    <script>
+    {% if request.user.profile.confirm %}
+        window.onbeforeunload = function () {return confirm();}
+    {% endif %}
     
-    $( "#save_button" ).click(function() {
-        window.onbeforeunload = function () {}
 
-        var inputs = getInputs();
+    $( document ).ready(function(){
+        $( "#submit_button" ).click(function() {
 
-        var status = {requested_action: 'save', inputs: inputs};
-        $.ajax({
-            type : "POST",
-            url : "{% url 'playexo:evaluate' activity_id__ pl_id__%}",
-            data: JSON.stringify(status, null, '\t'),
-            contentType: 'application/json;charset=UTF-8',
-            success: function(returned_status) {
-                status = returned_status;
-                onReturn(status.exercise, status.navigation);
-            }
+            window.onbeforeunload = function () {}
+
+            var inputs = getInputs();
+
+            var status = {requested_action: 'submit', inputs: inputs};
+            $.ajax({
+                type : "POST",
+                url : "{% url 'playexo:evaluate' activity_id__ pl_id__%}",
+                data: JSON.stringify(status, null, '\t'),
+                contentType: 'application/json;charset=UTF-8',
+                success: function(returned_status) {
+                    status = returned_status;
+                    onReturn(status.exercise, status.navigation, status.feedback);
+                }
+            });
+        });
+        
+        $( "#save_button" ).click(function() {
+            window.onbeforeunload = function () {}
+
+            var inputs = getInputs();
+
+            var status = {requested_action: 'save', inputs: inputs};
+            $.ajax({
+                type : "POST",
+                url : "{% url 'playexo:evaluate' activity_id__ pl_id__%}",
+                data: JSON.stringify(status, null, '\t'),
+                contentType: 'application/json;charset=UTF-8',
+                success: function(returned_status) {
+                    status = returned_status;
+                    onReturn(status.exercise, status.navigation, status.feedback);
+                }
+            });
         });
     });
-});
 
-</script>
 
-<script>
-function wait(ms){
-    var start = new Date().getTime();
-    var end = start;
-    while(end < start + ms) {
-        end = new Date().getTime();
-    }
-}
-
-function getInputs(){
-    var inputs = {};
-    $( "[id^='form_']" ).each(function() {
-        var id = this.id.slice(9); // name of the variable
-        var value = $(this).val();
-        if ($(this).is(':radio')) {
-            if($(this).is(':checked')) {
+    function getInputs(){
+        var inputs = {};
+        $( "[id^='form_']" ).each(function() {
+            var id = this.id.slice(5); // name of the variable
+            var value = $(this).val();
+            if ($(this).is(':radio')) {
+                if($(this).is(':checked')) {
+                    inputs[id]=value;
+                }
+            }
+            else if ($(this).is(':checkbox')) {
+                if($(this).is(':checked')) {
+                    if (id in inputs) {
+                        inputs[id].push(value);
+                    }
+                    else {
+                        inputs[id] = [value]
+                    }
+                }
+            }
+            else {
                 inputs[id]=value;
             }
-        }
-        else if ($(this).is(':checkbox')) {
-            if($(this).is(':checked')) {
-                if (id in inputs) {
-                    inputs[id].push(value);
-                }
-                else {
-                    inputs[id] = [value]
-                }
-            }
-        }
-        else {
-            inputs[id]=value;
-        }
-    });
-    return inputs;
-}
+        });
+        return inputs;
+    }
 
-function onReturn(exercise, navigation) {
-    if (exercise) {
-        console.log("Exercise OK");
-        $( "#exercise" ).html(exercise);
+
+    function onReturn(exercise, navigation, feedback) {
+        if (exercise) {
+            $( "#exercise" ).html(exercise);
+        }
+        if (navigation) {
+            $( "#navigation" ).html(navigation);
+        }
+        if (feedback) {
+            $( "#feedback" ).hide()
+            setTimeout(function () {
+                $( "#feedback" ).html(feedback);
+                $( "#feedback" ).show();
+            }, 100);
+        }
     }
-    if (navigation) {
-        console.log("Navigation OK");
-        $( "#navigation" ).html(navigation);
-    }
-}
-</script>
+    </script>
 {% endblock %}
