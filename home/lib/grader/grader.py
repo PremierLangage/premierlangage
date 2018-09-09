@@ -3,7 +3,6 @@
 
 import sys, json, jsonpickle, time
 
-
 missing_evaluator_stderr = """\
 The key 'evaluator' was not found in the context.
 When using this grader, the PL must declare a script inside a key 'evaluator'. This script have
@@ -23,6 +22,7 @@ if __name__ == "__main__":
         sys.exit(1)
     input_json = sys.argv[1]
     output_json = sys.argv[2]
+    feedback_file = sys.argv[3]
     
     with open(input_json, "r") as f:
         dic = json.load(f)
@@ -42,7 +42,7 @@ if __name__ == "__main__":
         print(missing_grade_stderr, file=sys.stderr)
         sys.exit(1)
     
-    with open(sys.argv[3], "w+") as f:
+    with open(feedback_file, "w+") as f:
         print(dic['grade'][1], file=f)
     
     with open(output_json, "w+") as f:
