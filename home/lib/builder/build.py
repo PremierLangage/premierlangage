@@ -19,14 +19,7 @@ if __name__ == "__main__":
     if 'build' in dic:
         exec(dic['build'], globals())
         dic = build(dic)
-    elif 'before' in dic:
-        glob = {}
-        exec(dic['before'], dic)
-        exec("", glob)
-        for key in glob:
-            if key in dic and dic[key] == glob[key]:
-                del dic[key]
-            
+    
     with open(output_json, "w+") as f:
         f.write(jsonpickle.encode(dic, unpicklable=False))
     

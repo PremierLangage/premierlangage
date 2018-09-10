@@ -15,7 +15,7 @@ from django.template.loader import get_template
 
 from lti.models import LTIModel, LTIgrade
 from loader.models import PLTP, PL
-from playexo.enums import State, EnvStatus
+from playexo.enums import State
 from playexo.request import SandboxBuild, SandboxEval
 
 
@@ -87,6 +87,19 @@ class SessionExercise(models.Model):
         self.context[key] = value
         self.save()
     
+    
+    def get_from_context(self, key):
+        try:
+            if '.' in key:
+                val = self.context
+                for k in key.split('.'):
+                    val = val[key]
+            else:
+                val = self.context[key]
+            return val
+        except KeyError:
+            return None
+                
     
     def evaluate(self, uuid, answers):
         context = {}
@@ -195,38 +208,40 @@ class SessionExercise(models.Model):
     
     
     def get_exercise(self, request, context=None):
-        pl = self.pl
-        seed = Answer.last_seed(pl, self.activity_session.user)
-        if 'oneshot' in self.context or not seed or Answer.last_success(pl, self.activity_session.user) == True :
-            seed = time.time()
-            self.built = False
-        self.add_to_context('seed', seed)
-        
-        
-        if pl:
-            if not context:
-                if not self.built:
-                    self.build()
-                dic = dict(self.context)
+        try:
+            pl = self.pl
+            seed = Answer.last_seed(pl, self.activity_session.user)
+            if self.get_ or not seed:
+                seed = time.time()
+                self.built = False
+            self.add_to_context('seed', seed)
+            
+            
+            if pl:
+                if not context:
+                    if not self.built:
+                        self.build()
+                    dic = dict(self.context)
+                else:
+                    dic = dict(context)
+                dic['user_settings__'] = self.activity_session.user.profile
+                dic['user__'] = self.activity_session.user
+                dic['pl_id__'] = pl.id
+                dic['answers__'] = Answer.last_answer(pl, self.activity_session.user)
+                for key in dic:
+                    dic[key] = Template(dic[key]).render(RequestContext(request, dic))
+                return get_template("playexo/pl.html").render(dic)
+            
             else:
-                dic = dict(context)
-            dic['user_settings__'] = self.activity_session.user.profile
-            dic['user__'] = self.activity_session.user
-            dic['pl_id__'] = pl.id
-            dic['answers__'] = Answer.last_answer(pl, self.activity_session.user)
-            for key in dic:
-                dic[key] = Template(dic[key]).render(RequestContext(request, dic))
-            return get_template("playexo/pl.html").render(dic)
-        
-        else:
-            dic = dict(self.context if not context else context)
-            dic['user_settings__'] = self.activity_session.user.profile
-            dic['user__'] = self.activity_session.user
-            dic['first_pl__'] = self.activity_session.activity.pltp.pl.all()[0].id
-            for key in dic:
-                dic[key] = Template(dic[key]).render(RequestContext(request, dic))
-            return get_template("playexo/pltp.html").render(dic, request)
-    
+                dic = dict(self.context if not context else context)
+                dic['user_settings__'] = self.activity_session.user.profile
+                dic['user__'] = self.activity_session.user
+                dic['first_pl__'] = self.activity_session.activity.pltp.pl.all()[0].id
+                for key in dic:
+                    dic[key] = Template(dic[key]).render(RequestContext(request, dic))
+                return get_template("playexo/pltp.html").render(dic, request)
+        except Exception as e:
+            return get_template("playexo/error.html").render({"error_msg": str(e)})
     
     def get_context(self, request, context=None):
         return {

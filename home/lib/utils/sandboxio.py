@@ -24,7 +24,6 @@ def output(grade, feedback, context=None):
         grade - (int) Grade of the student. Should be an integer or implementing __int__.
         feedback - (str) Feedback shown to the student. Should be a str or implementing __str__.
         grade - (dict - optionnal) Modified context of the exercise."""
-    
     with open(sys.argv[3], "w+") as f:
         f.write(jsonpickle.encode(context if context else json.load(sys.argv[1]), unpicklable=False))
     

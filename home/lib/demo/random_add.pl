@@ -1,10 +1,8 @@
 #  Author: Coumes Quentin     Mail: qcoumes@etud.u-pem.fr
-#  Created: 2017-06-29
-#  Last Modified: 2017-06-29
-
-type=direct
 
 title= Addition Aléatoire
+
+author = Quentin Coumes
 
 text==
 Combien <i>font</i> ***{{ op1 }} + {{ op2 }}*** ?
@@ -16,7 +14,8 @@ form==
 </div>
 ==
 
-oneshot=True
+settings.oneshot=yes
+settings.reroll_on_success=yes
 
 evaluator==
 import traceback
@@ -41,7 +40,10 @@ op2 = random.randint(20, 100)
 ==
 
 @ /utils/sandboxio.py
-@ /builder/builder.py
-@ /grader/grader.py
+@ /builder/before.py [builder.py]
+@ /grader/evaluator.py [grader.py]
+
+
+
 
 
