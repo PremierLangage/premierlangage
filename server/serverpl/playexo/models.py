@@ -93,13 +93,20 @@ class SessionExercise(models.Model):
             if '.' in key:
                 val = self.context
                 for k in key.split('.'):
-                    val = val[key]
+                    val = val[k]
             else:
                 val = self.context[key]
             return val
-        except KeyError:
+        except KeyError as e:
             return None
-                
+    
+    
+    def reroll(self, grade, seed):
+        if grade:
+            return grade != 100
+        oneshot = self.get_from_context('settings.oneshot')
+        return not seed or oneshot
+    
     
     def evaluate(self, uuid, answers):
         context = {}
@@ -210,28 +217,34 @@ class SessionExercise(models.Model):
     def get_exercise(self, request, context=None):
         try:
             pl = self.pl
-            seed = Answer.last_seed(pl, self.activity_session.user)
-            if self.get_ or not seed:
-                seed = time.time()
-                self.built = False
-            self.add_to_context('seed', seed)
-            
-            
             if pl:
-                if not context:
-                    if not self.built:
-                        self.build()
-                    dic = dict(self.context)
-                else:
-                    dic = dict(context)
-                dic['user_settings__'] = self.activity_session.user.profile
-                dic['user__'] = self.activity_session.user
-                dic['pl_id__'] = pl.id
-                dic['answers__'] = Answer.last_answer(pl, self.activity_session.user)
+                highest_grade = Answer.highest_grade(pl, self.activity_session.user)
+                last = Answer.last(pl, self.activity_session.user)
+                
+                seed = last.seed if last else None
+                if self.reroll(highest_grade.grade, seed):
+                    seed = time.time()
+                    self.built = False
+                self.add_to_context('seed', seed)
+                
+                predic = {
+                    'user_settings__':  self.activity_session.user.profile,
+                    'user__':  self.activity_session.user,
+                    'pl_id__':  pl.id,
+                    'answers__':  last.answers if last else {},
+                    'grade__':  highest_grade.grade if highest_grade else None,
+                }
+                
+                if not self.built:
+                    self.build()
+                dic = dict(self.context)
+                dic.update(predic)
+                
                 for key in dic:
-                    dic[key] = Template(dic[key]).render(RequestContext(request, dic))
-                return get_template("playexo/pl.html").render(dic)
-            
+                    if type(dic[key]) is str:
+                        dic[key] = Template(dic[key]).render(RequestContext(request, dic))
+                
+                return get_template("playexo/pl.html").render(dic, request)
             else:
                 dic = dict(self.context if not context else context)
                 dic['user_settings__'] = self.activity_session.user.profile
@@ -240,8 +253,12 @@ class SessionExercise(models.Model):
                 for key in dic:
                     dic[key] = Template(dic[key]).render(RequestContext(request, dic))
                 return get_template("playexo/pltp.html").render(dic, request)
+        
         except Exception as e:
-            return get_template("playexo/error.html").render({"error_msg": str(e)})
+            error_msg = str(e)
+            if request.user.profile.can_load():
+                error_msg += "<br><br>" + htmlprint.html_exc()
+            return get_template("playexo/error.html").render({"error_msg": error_msg})
     
     def get_context(self, request, context=None):
         return {
@@ -262,23 +279,15 @@ class Answer(models.Model):
     
     
     @staticmethod
-    def last_seed(pl, user):
-        answers = Answer.objects.filter(pl=pl, user=user).order_by("-date")
-        return None if not answers else answers[0].seed
-    
-    
-    
-    @staticmethod
-    def last_success(pl, user):
-        answers = Answer.objects.filter(pl=pl, user=user).order_by("-date")
-        return False if not answers or answers[0].grade is None else answers[0].grade > 0
-    
+    def highest_grade(pl, user):
+        answers = Answer.objects.filter(pl=pl, user=user).order_by("-grade")
+        return answers[0] if answers else None
     
     
     @staticmethod
-    def last_answer(pl, user):
+    def last(pl, user):
         answers = Answer.objects.filter(pl=pl, user=user).order_by("-date")
-        return {} if not answers else answers[0].answers
+        return None if not answers else answers[0]
     
     
     @staticmethod

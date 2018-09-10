@@ -15,7 +15,8 @@ form==
 ==
 
 settings.oneshot=yes
-settings.reroll_on_success=yes
+settings.allow_reroll=yes
+
 
 evaluator==
 import traceback
@@ -35,13 +36,16 @@ except:
 before==
 import random
 random.seed(seed)
-op1 = random.randint(20, 100)
-op2 = random.randint(20, 100)
+op1 = random.randint(1, 10)
+op2 = random.randint(1, 10)
 ==
 
 @ /utils/sandboxio.py
 @ /builder/before.py [builder.py]
 @ /grader/evaluator.py [grader.py]
+
+
+
 
 
 

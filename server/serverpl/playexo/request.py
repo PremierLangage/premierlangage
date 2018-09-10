@@ -50,11 +50,13 @@ class SandboxBuild:
             response = requests.post(url, data=data, files=files, timeout=request_timeout)
             return json.loads(response.text)
         except json.decoder.JSONDecodeError:
-            logger.critical("Sandbox '" + url + "' returned a non JSON response:\n" + response.text)
-            raise SandboxUnavailable
+            msg = "Sandbox '" + url + "' returned a non JSON response:\n" + response.text
+            logger.critical(msg)
+            raise SandboxUnavailable(msg)
         except:
-            logger.exception("Could not join the sandbox '" + url + "'.")
-            raise SandboxUnavailable
+            msg = "Could not join the sandbox '" + url + "'."
+            logger.exception(msg)
+            raise SandboxUnavailable(msg)
 
 
 
@@ -72,8 +74,9 @@ class SandboxEval:
             r = requests.head(url % str(self.uuid), timeout=1)
             return 200 <= r.status_code <= 299
         except:
-            logger.exception("Could not join the sandbox '" + url + "'.")
-            raise SandboxUnavailable
+            msg = "Could not join the sandbox '" + url + "'."
+            logger.exception(msg)
+            raise SandboxUnavailable(msg)
     
     
     def call(self, request_timeout=10):
@@ -84,8 +87,10 @@ class SandboxEval:
             response = requests.post(url % str(self.uuid), data=data, timeout=request_timeout)
             return json.loads(response.text)
         except json.decoder.JSONDecodeError:
-            logger.critical("Sandbox '" + url + "' returned a non JSON response:\n" + response.text)
-            raise SandboxUnavailable
+            msg = "Sandbox '" + url + "' returned a non JSON response:\n" + response.text
+            logger.critical(msg)
+            raise SandboxUnavailable(msg)
         except:
-            logger.exception("Could not join the sandbox '" + url + "'.")
-            raise SandboxUnavailable
+            msg = "Could not join the sandbox '" + url + "'."
+            logger.exception(msg)
+            raise SandboxUnavailable(msg)

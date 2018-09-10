@@ -1,12 +1,12 @@
 title=Random add
 @ /demo/random_add.pl
-concept=giftrandom
+@ random_add_eval_func.pl
+
 
 introduction==
-
-des conneries 
-
-
+Des <i>additions</i> **aléatoires**
 ==
+
+
 
 

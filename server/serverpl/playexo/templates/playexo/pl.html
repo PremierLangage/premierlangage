@@ -3,7 +3,7 @@
 <div class="card">
     <div class="card-header">
         <div class="text-center"><h1>{% if 'title'%}{{ title }}{% endif %}</h1></div>
-        <div class="text-left">{% if 'author' %}{{ author }}{% endif %}</div>
+        <div class="float-left">{% if 'author' %}{{ author }}{% endif %}</div>
     </div>
     
     <div class="card-body">
@@ -25,15 +25,21 @@
         <br>
         <center>
             <div id="default_button" class="btn-group">
-                    <a type=button class="btn btn-warning" href="{% url 'playexo:activity' activity_id__ %}?action=reset">
-                        <i class="fas fa-undo"></i></span> Réinitialiser
+                <a type=button class="btn btn-warning" href="{% url 'playexo:activity' activity_id__ %}?action=reset">
+                    <i class="fas fa-undo"></i> Réinitialiser
+                </a>
+                {% firstof settings.reroll_limit 100 as reroll_limit__ %}
+                {% if settings.allow_reroll and grade__|add:"0" >= reroll_limit__|add:"0" %}
+                    <a title="Nouveau tirage aléatoire" type=button class="btn btn-warning float-right" href="{% url 'playexo:activity' activity_id__ %}?action=reroll">
+                       <i class="fas fa-dice"></i> Nouveau tirage
                     </a>
-                    <button id="save_button" class="btn btn-default btn-info">
-                        <i class="fas fa-save"></i> Sauvegarder
-                    </button>
-                    <button id="submit_button" class="btn btn-primary">
-                        <i class="fas fa-check"></i> Valider
-                    </button>
+                {% endif %}
+                <button id="save_button" class="btn btn-default btn-info">
+                    <i class="fas fa-save"></i> Sauvegarder
+                </button>
+                <button id="submit_button" class="btn btn-primary">
+                    <i class="fas fa-check"></i> Valider
+                </button>
             </div>
             <div id="next_button" style="display: None; color: white;">
                 <br>

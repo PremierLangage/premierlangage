@@ -70,6 +70,7 @@ def activity(request, activity_id):
     
     if request.method == 'GET':
         action = request.GET.get("action")
+        
         if action == "pl":
             pl_id = request.GET.get("pl_id")
             if not pl_id or not pl_id.isdigit():
@@ -84,6 +85,12 @@ def activity(request, activity_id):
         elif session.current_pl and action == "reset":
             Answer.objects.create(user=request.user, pl=session.current_pl)
         
+        elif session.current_pl and action == "reroll":
+            exercise = session.exercise()
+            exercise.built = False
+            exercise.seed = None
+            exercise.save()
+        
         elif session.current_pl and action == "next":
             for previous, next in zip(activity.pltp.pl.all(), list(activity.pltp.pl.all())[1:]+[None]):
                 if previous == session.current_pl:
@@ -97,9 +104,10 @@ def activity(request, activity_id):
             return redirect(reverse("playexo:activity", args=[activity_id]))  # Remove get arguments from URL
     
     if session.current_pl:
+        last = Answer.last(session.current_pl, request.user)
         Answer.objects.create(
             user=request.user,
             pl=session.current_pl,
-            answers=Answer.last_answer(session.current_pl, request.user)
+            answers=last.answers if last else {}
         )
     return render(request, 'playexo/exercise.html', session.exercise().get_context(request))
