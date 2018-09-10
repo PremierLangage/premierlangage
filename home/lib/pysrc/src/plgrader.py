@@ -9,6 +9,7 @@ def getOutput(inputstr=None):
     # FIXME
     pass
 
+
 def removespaces(s):
 	s= "".join(s.split(" "))
 	s= "".join(s.split("\n"))
@@ -177,7 +178,9 @@ class Grader:
         return self.execute(["python3","student"],instr=stdinput)
 
     def getSoluceOutput(self, stdinput=None):
-      
+        if "soluce" in self.pld:
+            with open("soluce.py","w") as f:
+                print(self.pld["soluce"],file=f)
         r,out = self.execute(["python3","soluce.py"],instr=stdinput)
         if not r:
             self.fb.adddiv("info","probleme with the soluce")
@@ -383,3 +386,4 @@ class Grader:
         else:
             self.fb.addFeedback("<H1> Problème exercice mal défini </H1>Contacter l'auteur, ou l'administrateur \n Passez à l'exercice suivant.")
         return self.doOutput()
+
