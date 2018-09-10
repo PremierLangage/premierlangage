@@ -63,9 +63,9 @@ class ActivityInstance:
             try:
                 answer = response.get('answer')
                 if 'timeout' in locals():
-                    sandbox_session = SandboxSession(self.dic, studentfile=answer, timeout=timeout)
+                    sandbox_session = SandboxSession(dic, studentfile=answer, timeout=timeout)
                 else:
-                    sandbox_session = SandboxSession(self.dic, studentfile=answer)
+                    sandbox_session = SandboxSession(dic, studentfile=answer)
                     
                 response = json.loads(sandbox_session.call())
                 state = response['grade']
@@ -110,7 +110,15 @@ class ActivityInstance:
                 exec(self.dic['build'], globals())
                 dic = build(self.dic)
             elif 'before' in self.dic:
-                exec(self.dic['before'], dic)
+
+                exec(dic['before'], dic)
+                l=list(dic.keys())
+                for key in l:
+                    if key=='__file':
+                        continue
+                    if key[0]=='_' :
+                        print("Killing key :",key)
+                        del dic[key]
         except Exception as e:
             raise Exception("Error while executing build or before:\n\n"
                 + str(type(e)) + "\n" 
