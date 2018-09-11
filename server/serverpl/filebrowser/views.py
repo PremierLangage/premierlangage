@@ -101,7 +101,7 @@ def preview_pl(request):
                 print(post['content'], file=f)
                 
             directory = Directory.objects.get(name=post['directory'])
-            rel_path = post['path'].replace(directory.name, "")
+            rel_path = post['path'].replace(directory.name+"/", "/")
             pl, warnings = load_file(directory, rel_path)
             if not pl:
                 preview = '<div class="alert alert-danger" role="alert"> Failed to load \''+basename(rel_path)+"': \n"+warnings+"</div>"
