@@ -6,7 +6,7 @@
 #  Copyright 2018 Coumes Quentin
 #  
 
-from os.path import join, dirname, normpath, isfile, basename
+from os.path import join, dirname, normpath, isfile, basename, realpath
 
 import gitcmd
 from django.conf import settings
@@ -41,7 +41,7 @@ def get_location(directory, path, current=""):
         abs_curr = join(directory.root, current)
         if gitcmd.in_repository(abs_curr):
             top = gitcmd.top_level(abs_curr)[1]
-            if settings.FILEBROWSER_ROOT in top: # Check if the repo is inside FILEBROWSER_ROOT
+            if realpath(settings.FILEBROWSER_ROOT) in realpath(top): # Check if the repo is inside FILEBROWSER_ROOT
                 path = join(basename(top), path[1:])
             else:
                 path = path[1:]
@@ -60,6 +60,8 @@ def extends_dict(target, source):
     for key, value in source.items():
         if key == '__dependencies':
             target[key] += value
+        elif key == '__file':
+            extends_dict(target[key], value)
         elif key not in target or not target[key]:
             target[key] = value
     

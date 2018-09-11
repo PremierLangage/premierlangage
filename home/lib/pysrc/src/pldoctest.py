@@ -1291,7 +1291,7 @@ class DocTestRunner:
         """
         # Keep track of the number of failures and tries.
         failures = tries = 0
-
+       
         # Save the option flags (since option directives can be used
         # to modify them).
         original_optionflags = self.optionflags
@@ -1387,6 +1387,7 @@ class DocTestRunner:
                     self.report_success(out, test, example, got,i)
                     
                 if quiet and failures <1:
+                    
                     self.report_success(out, test, example, got,i)
 
             elif outcome is FAILURE:
@@ -1458,7 +1459,7 @@ class DocTestRunner:
         the `DocTestRunner.report_*` methods.
         """
         self.test = test
-       
+        
         if compileflags is None:
             compileflags = _extract_future_flags(test.globs)
 
@@ -1493,7 +1494,7 @@ class DocTestRunner:
         # Make sure sys.displayhook just prints the value to stdout
         save_displayhook = sys.displayhook
         sys.displayhook = sys.__displayhook__
-     
+        
         try:
             return self.__run(test, compileflags, out)
         finally:
@@ -2164,7 +2165,7 @@ def testfile(filename, module_relative=True, name=None, package=None,
     # Read the file, convert it to a test, and run it.
     test = parser.get_doctest(text, globs, name, filename, 0)
     runner.run(test)
-
+    
     if report:
         runner.summarize()
 
@@ -2197,6 +2198,7 @@ def run_docstring_examples(f, globs, verbose=False, name="NoName",
     runner = DocTestRunner(verbose=verbose, optionflags=optionflags)
     for test in finder.find(f, name, globs=globs):
         runner.run(test, compileflags=compileflags)
+        
 
 ######################################################################
 ## 7. Unittest Support
@@ -2372,6 +2374,7 @@ class DocTestCase(unittest.TestCase):
         runner = DebugRunner(optionflags=self._dt_optionflags,
                              checker=self._dt_checker, verbose=False)
         runner.run(self._dt_test, clear_globs=False)
+        
         self.tearDown()
 
     def id(self):
@@ -2854,6 +2857,7 @@ def _test():
     # but since we are using argparse we are passing it manually now.
     verbose = args.verbose
     options = 0
+    
     for option in args.option:
         options |= OPTIONFLAGS_BY_NAME[option]
     if args.fail_fast:

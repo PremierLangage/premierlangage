@@ -42,7 +42,6 @@
                 {% endif %}
             {% endfor %}
         {% else %}
-        
             {% for text,type in feedback.div %}
                 {% if type == 'compil'%}
                     <div style="border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
@@ -57,7 +56,7 @@
                         <div style="text-align: center;border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
                             <button type="button" class="btn btn-block btn-success"
                                     data-toggle="collapse" data-target="#demo{{type}}">
-                                Test réussi
+                                Test 
                             </button>
                             <div id="demo{{type}}" class="collapse">
                                 <div class="card card-success" style="background-color: LightGreen;">
@@ -83,11 +82,7 @@
             {% endfor %}
         {% endif %}
     {% else %}
-<!--
-   ici 
--->
         {% if feedback.success %}
-        
             {% for text,type in feedback.div %}
                 {% if type == 'compil' %}
                 
@@ -99,7 +94,7 @@
                  <div style="text-align: center;border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
                             <button type="button" class="btn btn-block btn-success"
                                     data-toggle="collapse" data-target="#demo{{type}}">
-                                Test Réussi
+                                Test 
                             </button>
                             <div id="demo{{type}}" class="collapse">
                                 <div class="card card-success" style="background-color: LightGreen;">
@@ -110,7 +105,6 @@
                 {% endif %}
             {% endfor %}
         {% else %}
-        
             {% for text,type in feedback.div %}
                 {% if type == 'compil'%}
                     
@@ -124,7 +118,7 @@
                             <button type="button" class="btn btn-block btn-success"
                                     data-toggle="collapse" data-target="#demo{{type}}"
                                     aria-expanded="true" aria-controls="demo{{type}}">
-                                Test Réussi
+                                Test 
                             </button>
                             <div id="demo{{type}}" class="collapse">
                                 <div class="card card-succes;" style="background-color: LightGreen;" >
@@ -151,4 +145,3 @@
         {% endif %}
     {% endif %}
 {% endif %}
-

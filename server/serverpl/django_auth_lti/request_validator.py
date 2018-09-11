@@ -15,7 +15,6 @@ class Python3_SignatureMethod_HMAC_SHA1(oauth2.SignatureMethod_HMAC_SHA1):
         if isinstance(built, bytes):
             built = built.decode("utf8")
         logger.error(built+" b == s ? "+signature)
-        return True
         return built == signature
 
 

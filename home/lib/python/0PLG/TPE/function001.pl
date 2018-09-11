@@ -26,6 +26,11 @@ pltest==
 True
 ==
 
+# le code suivant permet de tester l'exercice (le grader est il correct)
+testcode==
+def bob():
+    return 1238
+==
 
 
 

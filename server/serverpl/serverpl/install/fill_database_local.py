@@ -1,4 +1,10 @@
+import os, sys
+sys.path.append(os.path.realpath(os.path.join(__file__, '../../../')))
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "serverpl.settings")
+
 import django
+django.setup()
+
 from django.contrib.auth.models import User
 from filebrowser.models import Directory
 from sandbox.models import Sandbox

@@ -471,7 +471,7 @@ def load_pltp_option(request, filebrowser, target):
             url_lti = request.scheme + "://" + request.get_host()+"/playexo/activity/lti/"+pltp.name+"/"+pltp.sha1+"/"
             url_test = "/playexo/activity/test/"+pltp.name+"/"+pltp.sha1+"/"
             messages.success(request, "L'activité <b>'"+pltp.name+"'</b> a bien été créée et a pour URL LTI: \
-                                      <br>&emsp;&emsp;&emsp; <input id=\"copy\" style=\"width: 700px;\" value=\""+url_lti+"\">  \
+                                      <br>&emsp;&emsp;&emsp; <input id=\"copy\" style=\"width: 700px;\" value=\""+url_lti+"\" readonly>  \
                                       <button class=\"btn\" data-clipboard-action=\"copy\" data-clipboard-target=\"#copy\"><i class=\"far fa-copy\"></i> Copier\
                                       </button><br>L'activité sera créée lorsqu'une personne cliquera sur le lien \
                                       depuis un client LTI. Pour la tester en local, cliquez <a target=\"_blank\" \
