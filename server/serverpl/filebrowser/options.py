@@ -33,7 +33,6 @@
 
 
 import os, shutil, magic, zipfile, tarfile, traceback, htmlprint, datetime, gitcmd
-
 from os.path import basename, splitext, isdir, join, isfile, abspath, normpath, dirname
 
 from django.shortcuts import redirect, reverse, render
@@ -41,10 +40,11 @@ from django.contrib import messages
 from django.http import HttpResponseNotAllowed, HttpResponse, HttpResponseBadRequest
 from django.db.utils import IntegrityError
 from django.conf import settings
+
 from filebrowser.models import Directory
 from filebrowser.utils import redirect_fb
 from filebrowser.filter import is_pl
-from playexo.models import Activity
+from playexo.models import Activity, SessionTest
 from loader.loader import load_file
 
 
@@ -595,10 +595,8 @@ def edit_pl_option(request, filebrowser, target):
                 [messages.warning(request, warning) for warning in warnings]
             
             try:
-                exercise = PLInstance(pl.json)
-                request.session['exercise'] = dict(exercise.dic)
-                
-                preview = exercise.render(request)
+                exercise = SessionTest(pl)
+                preview = exercise.get_exercise(request)
             except Exception as e:  # pragma: no cover 
                 preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
                     + basename(rel_path) + "': \n\n" \

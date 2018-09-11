@@ -54,33 +54,14 @@ class SessionActivity(models.Model):
 
 
 
-class SessionExercise(models.Model):
+class SessionExerciseAbstract(models.Model):
     pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=True)
-    activity_session = models.ForeignKey(SessionActivity, on_delete=models.CASCADE)
     built = models.BooleanField(default=False)
     envid = models.UUIDField(null=True)
     context = JSONField(null=True)
     
     class Meta:
-        unique_together = ('pl', 'activity_session')
-    
-    
-    @receiver(post_save, sender=SessionActivity)
-    def create_session_exercise(sender, instance, created, **kwargs):
-        if created:
-            for pl in instance.activity.pltp.pl.all():
-                SessionExercise.objects.create(activity_session=instance, pl=pl)
-            SessionExercise.objects.create(activity_session=instance)  # For the pltp
-    
-    
-    def save(self, *args, **kwargs):
-        if not self.context:
-            if self.pl:
-                self.context = dict(self.pl.json)
-            else:
-                self.context = dict(self.activity_session.activity.pltp.json)
-            self.context['activity_id__'] = self.activity_session.activity.id
-        super().save(*args, **kwargs)
+        abstract=True
     
     
     def add_to_context(self, key, value):
@@ -108,7 +89,7 @@ class SessionExercise(models.Model):
         return not seed or oneshot
     
     
-    def evaluate(self, uuid, answers):
+    def evaluate(self, uuid, answers, request):
         context = {}
         evaluator = SandboxEval(uuid, answers)
         if not evaluator.check():
@@ -118,27 +99,26 @@ class SessionExercise(models.Model):
         response = evaluator.call()
         answer = {
             "answers": answers,
-            "user": self.activity_session.user,
+            "user": request.user,
             "pl": self.pl,
-            "activity": self.activity_session.activity,
         }
         
         if response['status'] < 0: # Sandbox Error
             feedback = response['feedback']
-            if self.activity_session.user.profile.can_load() and response['sandboxerr']:
+            if request.user.profile.can_load() and response['sandboxerr']:
                 feedback += "<br><br>" + htmlprint.code(response['sandboxerr'])
         
         elif response['status'] > 0:  # Evaluator Error
             feedback = ("Une erreur s'est produite lors de l'exécution du script d'évaluation "
                         + ("(exit code: %d, env: %s). Merci de prévenir votre professeur"
                            % (response['status'], response['id'])))
-            if self.activity_session.user.profile.can_load():
+            if request.user.profile.can_load():
                 feedback += "<br><br>Received on stderr:<br>" + htmlprint.code(response['stderr'])
         
         else: # Success
             context = dict(response['context'])
             feedback = response['feedback']
-            if self.activity_session.user.profile.can_load() and response['stderr']:
+            if request.user.profile.can_load() and response['stderr']:
                 feedback += "<br><br>Received on stderr:<br>" + htmlprint.code(response['stderr'])
             answer["grade"] = response['grade']
             answer["seed"] = context['seed'],
@@ -157,13 +137,13 @@ class SessionExercise(models.Model):
         return answer, feedback, dic
     
     
-    def build(self):
+    def build(self, request):
         response = SandboxBuild(dict(self.context)).call()
         
         if response['status'] < 0:
             msg = ("Une erreur s'est produit c'est produite sur la sandbox (exit code: %d, env: %s)."
                    + " Merci de prévenir votre professeur.") % (response['status'], response['id'])
-            if self.activity_session.user.profile.can_load():
+            if request.user.profile.can_load():
                 msg += "<br><br>" + htmlprint.code(response['sandboxerr'])
             raise Exception(msg)
         
@@ -172,13 +152,11 @@ class SessionExercise(models.Model):
                     + ("(exit code: %d, env: %s). Merci de prévenir votre professeur"
                        % (response['status'], response['id']))
                   )
-            if self.activity_session.user.profile.can_load() and response['stderr']:
+            if request.user.profile.can_load() and response['stderr']:
                 msg += "<br><br>Reçu sur stderr:<br>" + htmlprint.code(response['stderr'])
             raise Exception(msg)
         
-        self.envid = response['id']
-
-        
+        self.envid = response['id']        
         context = dict(response['context'])
         keys = list(response.keys())
         for key in keys:
@@ -236,7 +214,7 @@ class SessionExercise(models.Model):
                 }
                 
                 if not self.built:
-                    self.build()
+                    self.build(request)
                 dic = dict(self.context)
                 dic.update(predic)
                 
@@ -260,12 +238,63 @@ class SessionExercise(models.Model):
                 error_msg += "<br><br>" + htmlprint.html_exc()
             return get_template("playexo/error.html").render({"error_msg": error_msg})
     
+    
     def get_context(self, request, context=None):
         return {
             "navigation": self.get_navigation(request, context),
             "exercise": self.get_exercise(request, context),
         }
 
+
+class SessionExercise(SessionExerciseAbstract):
+    activity_session = models.ForeignKey(SessionActivity, on_delete=models.CASCADE)
+    
+    class Meta:
+        unique_together = ('pl', 'activity_session')
+    
+    
+    @receiver(post_save, sender=SessionActivity)
+    def create_session_exercise(sender, instance, created, **kwargs):
+        if created:
+            for pl in instance.activity.pltp.pl.all():
+                SessionExercise.objects.create(activity_session=instance, pl=pl)
+            SessionExercise.objects.create(activity_session=instance)  # For the pltp
+    
+    
+    def save(self, *args, **kwargs):
+        if not self.context:
+            if self.pl:
+                self.context = dict(self.pl.json)
+            else:
+                self.context = dict(self.activity_session.activity.pltp.json)
+            self.context['activity_id__'] = self.activity_session.activity.id
+        super().save(*args, **kwargs)
+
+
+class SessionTest(SessionExerciseAbstract):
+    pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField(default=timezone.now)
+    
+    def get_exercise(self, request, context=None):
+        try:
+            return self.get_pl(request, context)
+        except Exception as e:
+            error_msg = str(e)
+            if request.user.profile.can_load():
+                error_msg += "<br><br>" + htmlprint.html_exc()
+            return get_template("playexo/error.html").render({"error_msg": error_msg})
+    
+    def save(self, *args, **kwargs):
+        if not self.context:
+            self.context = dict(self.pl.json)
+        
+        q = SessionTest.objects.filter(user=self.user).order_by("-date")
+        if len(q) >= 20:
+            for elem in q[20:]:
+                elem.delete()
+            
+        super().save(*args, **kwargs)
 
 
 class Answer(models.Model):
