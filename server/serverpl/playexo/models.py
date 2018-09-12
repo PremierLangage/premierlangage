@@ -57,7 +57,7 @@ class SessionActivity(models.Model):
 class SessionExerciseAbstract(models.Model):
     pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=True)
     built = models.BooleanField(default=False)
-    envid = models.UUIDField(null=True)
+    envid = models.CharField(max_length=300, null=True)
     context = JSONField(null=True)
     
     class Meta:
@@ -89,11 +89,11 @@ class SessionExerciseAbstract(models.Model):
         return not seed or oneshot
     
     
-    def evaluate(self, uuid, answers, request):
+    def evaluate(self, uuid, answers, request, test=False):
         context = {}
         evaluator = SandboxEval(uuid, answers)
         if not evaluator.check():
-            self.build()
+            self.build(request, test=test)
             evaluator = SandboxEval(self.context['id__'], answers)
         
         response = evaluator.call()
@@ -137,8 +137,8 @@ class SessionExerciseAbstract(models.Model):
         return answer, feedback, dic
     
     
-    def build(self, request):
-        response = SandboxBuild(dict(self.context)).call()
+    def build(self, request, test=False):
+        response = SandboxBuild(dict(self.context), test=test).call()
         
         if response['status'] < 0:
             msg = ("Une erreur s'est produit c'est produite sur la sandbox (exit code: %d, env: %s)."
@@ -192,37 +192,42 @@ class SessionExerciseAbstract(models.Model):
         return get_template("playexo/navigation.html").render(context, request)
     
     
+    def get_pl(self, request, context):
+        pl = self.pl
+        highest_grade = Answer.highest_grade(pl, self.activity_session.user)
+        last = Answer.last(pl, self.activity_session.user)
+        
+        seed = last.seed if last else None
+        if self.reroll(highest_grade.grade, seed):
+            seed = time.time()
+            self.built = False
+        self.add_to_context('seed', seed)
+        
+        predic = {
+            'user_settings__':  self.activity_session.user.profile,
+            'user__':  self.activity_session.user,
+            'pl_id__':  pl.id,
+            'answers__':  last.answers if last else {},
+            'grade__':  highest_grade.grade if highest_grade else None,
+        }
+        
+        if not self.built:
+            self.build(request)
+        dic = dict(self.context)
+        dic.update(predic)
+        
+        for key in dic:
+            if type(dic[key]) is str:
+                dic[key] = Template(dic[key]).render(RequestContext(request, dic))
+        
+        return get_template("playexo/pl.html").render(dic, request)
+    
+    
     def get_exercise(self, request, context=None):
         try:
             pl = self.pl
             if pl:
-                highest_grade = Answer.highest_grade(pl, self.activity_session.user)
-                last = Answer.last(pl, self.activity_session.user)
-                
-                seed = last.seed if last else None
-                if self.reroll(highest_grade.grade, seed):
-                    seed = time.time()
-                    self.built = False
-                self.add_to_context('seed', seed)
-                
-                predic = {
-                    'user_settings__':  self.activity_session.user.profile,
-                    'user__':  self.activity_session.user,
-                    'pl_id__':  pl.id,
-                    'answers__':  last.answers if last else {},
-                    'grade__':  highest_grade.grade if highest_grade else None,
-                }
-                
-                if not self.built:
-                    self.build(request)
-                dic = dict(self.context)
-                dic.update(predic)
-                
-                for key in dic:
-                    if type(dic[key]) is str:
-                        dic[key] = Template(dic[key]).render(RequestContext(request, dic))
-                
-                return get_template("playexo/pl.html").render(dic, request)
+                return self.get_pl(request, context=None)
             else:
                 dic = dict(self.context if not context else context)
                 dic['user_settings__'] = self.activity_session.user.profile
@@ -271,30 +276,69 @@ class SessionExercise(SessionExerciseAbstract):
         super().save(*args, **kwargs)
 
 
+
 class SessionTest(SessionExerciseAbstract):
-    pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateTimeField(default=timezone.now)
+    MAX_SESSION_PER_USER = 100
     
-    def get_exercise(self, request, context=None):
+    pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    date = models.DateTimeField(default=timezone.now, null=False)
+    
+    
+    def get_pl(self, request, context, answer=None):
+        pl = self.pl
+        
+        seed = None
+        if (answer['grade'] < 100 if answer else True):
+            seed = time.time()
+            self.built = False
+        self.add_to_context('seed', seed)
+
+        predic = {
+            'user_settings__':  self.user.profile,
+            'session__': self,
+            'user__':  self.user,
+            'pl_id__':  pl.id,
+        }
+        
+        if not self.built:
+            self.build(request, test=True)
+        dic = dict(self.context)
+        dic.update(predic)
+        
+        for key in dic:
+            if type(dic[key]) is str:
+                dic[key] = Template(dic[key]).render(RequestContext(request, dic))
+        
+        return get_template("playexo/preview.html").render(dic, request)
+    
+    
+    def get_exercise(self, request, context=None, answer=None):
         try:
-            return self.get_pl(request, context)
+            return self.get_pl(request, context, answer)
         except Exception as e:
             error_msg = str(e)
             if request.user.profile.can_load():
                 error_msg += "<br><br>" + htmlprint.html_exc()
             return get_template("playexo/error.html").render({"error_msg": error_msg})
     
+    
     def save(self, *args, **kwargs):
         if not self.context:
             self.context = dict(self.pl.json)
         
         q = SessionTest.objects.filter(user=self.user).order_by("-date")
-        if len(q) >= 20:
-            for elem in q[20:]:
+        if len(q) >= self.MAX_SESSION_PER_USER:
+            for elem in q[self.MAX_SESSION_PER_USER:]:
                 elem.delete()
             
         super().save(*args, **kwargs)
+    
+    
+    def delete(self, *args, **kwargs):
+        self.pl.delete()
+        super().delete(*args, **kwargs)
+
 
 
 class Answer(models.Model):

@@ -8,6 +8,10 @@
 
 {% block alert %}{% endblock %}
 
+{% block header_script %}
+    
+{% endblock %}
+
 {% block content %}
     <div class="row no-margin">
         <div class="col-md-6" style="border-right: solid 2px grey;">
@@ -42,6 +46,15 @@
                 </div>
             </div>
             <script src="{% static 'js/ace/ace.js' %}"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML" async></script>
+            <script type="text/x-mathjax-config">
+                MathJax.Hub.Config({
+                    tex2jax: {
+                        inlineMath: [['$%','%$'],],
+                        skipTags: ["script","noscript","style"],
+                    }
+                });
+            </script>
             <script>
                 window.onbeforeunload = function () {return confirm();}
                 var editorPL = ace.edit('editorPL');
@@ -63,16 +76,14 @@
                             return elem.value.replace( /\r?\n/g, "\r\n" );
                         }
                     };
-
-
+                    
                     $( "#quit_button" ).click(function() {
                         window.onbeforeunload = function () {}
                     });
                     $( "#download_env_button" ).click(function() {
                         window.onbeforeunload = function () {}
                     });
-
-
+                    
                     $( "#save_button" ).click(function() {
                         var input = $("#editor_input").val();
                         var path = "{{ filepath }}";

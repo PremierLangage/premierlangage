@@ -593,9 +593,9 @@ def edit_pl_option(request, filebrowser, target):
         else:
             if warnings:  # pragma: no cover 
                 [messages.warning(request, warning) for warning in warnings]
-            
+            pl.save()
             try:
-                exercise = SessionTest(pl)
+                exercise = SessionTest.objects.create(pl=pl, user=request.user)
                 preview = exercise.get_exercise(request)
             except Exception as e:  # pragma: no cover 
                 preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \

@@ -5,7 +5,7 @@ title= Addition Aléatoire
 author = Quentin Coumes
 
 text==
-Combien <i>font</i> ***{{ op1 }} + {{ op2 }}*** ?
+Combien <i>font</i> ***{{ op1 }} + {{ op2 }}*** ? $% \frac{a}{b} %$
 ==
 
 form==
@@ -43,6 +43,10 @@ op2 = random.randint(1, 10)
 @ /utils/sandboxio.py
 @ /builder/before.py [builder.py]
 @ /grader/evaluator.py [grader.py]
+
+
+
+
 
 
 

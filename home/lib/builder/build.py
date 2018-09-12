@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-import sys, json, jsonpickle, time
+import sys, json, jsonpickle
 
 
 if __name__ == "__main__":

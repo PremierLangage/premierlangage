@@ -1,3 +1,5 @@
+{% load django_markdown %}
+
 {% include "playexo/alert.html" %}
 <div class="card">
     <div class="card-header">
@@ -6,21 +8,21 @@
     </div>
     
     <div class="card-body">
-        {% if 'text'%}{{ text|markdown }}{% endif %}
-        {% if 'texth'%}{{ texth|safe }}{% endif %}
-
-        {% block feedback %}
-            <div id="feedback_success" class="alert alert-success feedback" style="display: None"></div>
-            <div id="feedback_info" class="alert alert-info feedback" style="display: None"></div>
-            <div id="feedback_danger" class="alert alert-danger feedback" style="display: None"></div>
-        {% endblock %}
+        {% if 'text'%}
+            {% with texth__=text|markdown %}
+                {{ texth__|safe }}
+            {% endwith %}
+        {% endif %}
         
+        <div id="feedback" class="alert alert-secondary feedback collapse">
+            {% with feedbackh__=feedback__|markdown %}
+                {{ feedbackh__|safe }}
+            {% endwith %}
+        </div>
         {% csrf_token %}
         <div id="form">
-            {% block form %}{% endblock %}
+            {% block form %}{{ form|safe }}{% endblock %}
         </div>
-        
-        {% block buttons %}
         <br>
         <center>
             <button id="submit_button" class="btn btn-primary">
@@ -30,14 +32,31 @@
                 <i class="fas fa-download"></i> Télécharger l'Environnement
             </a>
         </center>
-        {% endblock %}
     </div>
 </div>
-{% endblock %}
 
 {% block end_script %}
     <script>
-    $( document ).ready(function(){
+        $( "#submit_button" ).click(function() {
+            var inputs = getInputs();
+            var data = {
+                answers: inputs,
+                id: "{{id__}}",
+                session_id: "{{session__.id}}",
+                other: [],
+            }
+            var status = {requested_action: 'submit', data: data};
+            $.ajax({
+                type : "POST",
+                url : "/filebrowser/preview_pl/",
+                data: JSON.stringify(status, null, '\t'),
+                contentType: 'application/json;charset=UTF-8',
+                success: function(returned_status) {
+                    status = returned_status;
+                    onReturn(status.exercise, status.navigation, status.feedback);
+                }
+            });
+        });
         MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
         
         if(window.top != window.self) {
@@ -48,91 +67,44 @@
             window.onbeforeunload = function () {}
         });
 
-        $( "#submit_button" ).click(function() {
-            var inputs = getInputs();
-            var data = {
-                answers: inputs,
-                id: "{{id__}}",
-                sandbox_url: "{{sandbox_url__}}",
-                other: [],
-            }
-            var status = {requested_action: 'submit', data: data};
-            $.ajax({
-                type : "POST",
-                url : "/filebrowser/preview_pl/",
-                data: JSON.stringify(status, null, '\t'),
-                contentType: 'application/json;charset=UTF-8',
-                success: function(context) {
-                    onReturn(context);
+        function getInputs(){
+            var inputs = {};
+            $( "[id^='form_']" ).each(function() {
+                var id = this.id.slice(5); // name of the variable
+                var value = $(this).val();
+                if ($(this).is(':radio')) {
+                    if($(this).is(':checked')) {
+                        inputs[id]=value;
+                    }
                 }
-            });
-        });
-    });
-
-    function wait(ms){
-        var start = new Date().getTime();
-        var end = start;
-        while(end < start + ms) {
-            end = new Date().getTime();
-        }
-    }
-
-    function getInputs(){
-        var inputs = {};
-        $( "[id^='form_']" ).each(function() {
-            var id = this.id; // name of the variable
-            var value = $(this).val();
-            if ($(this).is(':radio')) {
-                if($(this).is(':checked')) {
+                else if ($(this).is(':checkbox')) {
+                    if($(this).is(':checked')) {
+                        if (id in inputs) {
+                            inputs[id].push(value);
+                        }
+                        else {
+                            inputs[id] = [value]
+                        }
+                    }
+                }
+                else {
                     inputs[id]=value;
                 }
-            }
-            else if ($(this).is(':checkbox')) {
-                if($(this).is(':checked')) {
-                    if (id in inputs) {
-                        inputs[id].push(value);
-                    }
-                    else {
-                        inputs[id] = [value]
-                    }
-                }
-            }
-            else {
-                inputs[id]=value;
-            }
-        });
-        return inputs;
-    }
+            });
+            return inputs;
+        }
 
-    function onReturn(feedback_type, feedback) {
-        $( "#feedback_success" ).hide();
-        $( "#feedback_success").css('animation', 'fadeOut 1s forwards');
-        $( "#feedback_info" ).hide();
-        $( "#feedback_info").css('animation', 'fadeOut 1s forwards');
-        $( "#feedback_danger" ).hide();
-        $( "#feedback_danger").css('animation', 'fadeOut 1s forwards');
-        
-        $('#navigation').load(document.URL + " #navigation>*","");
-        if (feedback_type == "success") {
-            $( "#default_button" ).toggle();
-            $( "#next_button" ).toggle();
-            $( "#feedback_success" ).html(feedback);
-            MathJax.Hub.Queue(["Typeset",MathJax.Hub,feedback_success]);
-            $( "#feedback_success" ).toggle();
-            $( "#feedback_success").css('animation', 'growIn 1s forwards');
+        function onReturn(exercise, navigation, feedback) {
+            if (exercise) {
+                $( "#preview" ).html(exercise);
+            }
+            if (feedback) {
+                $( "#feedback" ).hide()
+                setTimeout(function () {
+                    $( "#feedback" ).html(feedback);
+                    $( "#feedback" ).show();
+                }, 100);
+            }
         }
-        else if (feedback_type == "info") {
-            $( "#feedback_info" ).html(feedback);
-            MathJax.Hub.Queue(["Typeset",MathJax.Hub,feedback_info]);
-            $( "#feedback_info" ).toggle();
-            $( "#feedback_info").css('animation', 'growIn 1s forwards');
-        }
-        else {
-            $( "#feedback_danger" ).html(feedback);
-            MathJax.Hub.Queue(["Typeset",MathJax.Hub,feedback_danger]);
-            $( "#feedback_danger" ).toggle();
-            $( "#feedback_danger").css('animation', 'growIn 1s forwards');
-        }
-    }
     </script>
 {% endblock %}
