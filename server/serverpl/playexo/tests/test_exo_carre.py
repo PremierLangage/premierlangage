@@ -62,6 +62,7 @@ class ExoTestCase(TestCase):
             content_type='text/json',follow=True
         )
         
+        self.assertEqual(response2.status_code, 200)
         self.assertContains(response,"# Copyright 2016 Dominique Revuz")
         self.assertContains(response,"## Une fonction carre ##\nEcrivez une fonction **carre**")
         
