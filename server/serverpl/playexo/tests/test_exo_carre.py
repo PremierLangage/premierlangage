@@ -80,11 +80,13 @@ class ExoTestCase(TestCase):
             )
         
         self.assertEqual(response.status_code,200)
-        response2 = self.c.post('/filebrowser/preview_pl/',
-        json.dumps({"requested_action":"submit", "inputs": {"answer":response_eleve}}),
+        response2 = self.c.post(
+            '/filebrowser/preview_pl/',
+        	data=json.dumps({"requested_action":"submit", "inputs": {"answer":response_eleve}}),
             content_type='text/json', follow=True
         )
         
+        self.assertEqual(response2.status_code, 200)
         self.assertContains(response,"Dominique Revuz")
         self.assertContains(response,"Ecrivez une fonction **carre** qui retourne le")
         
