@@ -10,6 +10,9 @@ La posibilité pour l'élève de construire un parcours de révision en fonction
 ## Pour les enseignants
 
 Les parents pauvres des plateformes d'enseignement en ligne, nous souhaitons leur simplifier la vie !!
+A la fois la **puissance maximum** : possibilité d'inventer  de nouveau types d'exercices, et **super simple** des exercices QCM, Drag and drop, selection, etc qui prennent deux minutes à écrire. 
+
+
 ### Une interface de pilotage de classe 
 Statistiques et notes sur les élèves et les exercices. 
 Base de données et modules d'extension avec des API pour multiplier les moyens d'analyse.
@@ -35,4 +38,4 @@ le langage de descriptions de feuilles vas vous permettre de "coder" ces différ
 
 # Participer au projet 
 
-
+Nous sommes sur github le projet de conception est la github.com/plgitlogin/plconception
