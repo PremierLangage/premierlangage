@@ -38,4 +38,4 @@ le langage de descriptions de feuilles vas vous permettre de "coder" ces différ
 
 # Participer au projet 
 
-Nous sommes sur github le projet de conception est la github.com/plgitlogin/plconception
+Nous sommes sur github le projet de conception est la -> https://github.com/plgitlogin/plconception
