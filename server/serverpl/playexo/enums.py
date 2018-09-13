@@ -1,10 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-#
-#  enums.py
-#  
-#  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
-#  
+# coding: utf-8
 
 from enum import unique
 from enumfields import Enum
@@ -36,8 +30,10 @@ class State(Enum):
     
     
     @classmethod
-    def by_grade(cls, grade):
+    def by_grade(cls, grade=...):
         """Return the corresponding enum member according to grade."""
+        if grade is ...:
+            return cls.NOT_STARTED
         if grade is None:
             return cls.STARTED
         if grade == 100:

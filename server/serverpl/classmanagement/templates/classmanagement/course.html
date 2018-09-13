@@ -39,7 +39,7 @@
                         <div class="row">
                             <div style="width: calc(100% - 60px); float: left; height: 40px;">
                                 <h4 class="course-activity-title">
-                                    <a{% if item.open %} href="/courses/redirect/{{item.id}}"{% endif %}>
+                                    <a{% if item.open %} href="{% url 'playexo:activity' item.id %}"{% endif %}>
                                         {{ forloop.counter }}. {{ item.title }}
                                     </a>
                                 </h4>

@@ -27,6 +27,7 @@
         {% block css %}{% endblock %}
         
         <!-- JS -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML" async></script>
         <script src="{% static 'js/clipboard.min.js' %}"></script>
         <script src="{% static 'js/jquery_3.1.1.js' %}" ></script>
         <script src="{% static 'js/tether.min.js' %}" ></script>
@@ -46,9 +47,16 @@
             {% block alert %}{% include "playexo/alert.html" %}{% endblock %}
             {% block content %}{% endblock %}
         </div>
-
-    {% block end_script %}{% endblock %}
     
+    
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$%','%$'],],
+                skipTags: ["script","noscript","style"],
+            }
+        });
+    </script>   
     <!-- Copy tool -->
     <script>
         var clipboard = new ClipboardJS('.btn');
@@ -59,6 +67,7 @@
             console.log(e);
         });
     </script>
+    {% block end_script %}{% endblock %}
     </body>
 </html>
 

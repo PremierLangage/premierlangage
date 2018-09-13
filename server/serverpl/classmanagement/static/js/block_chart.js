@@ -30,20 +30,12 @@ $(document).ready(function(){
         }
     }
   
-    function addBlocks(id, noOfBlocks, classBlock, masterArray, blockArray, nb_line, div_height){
-        //~ blindness = "";
-        //~ if (masterArray[0][2] === "PR")
-            //~ blindness = "-protanopia";
-        //~ else if (masterArray[0][2] === "TR")
-            //~ blindness = "-tritanopia";
-        //~ else if (masterArray[0][2] === "DE")
-            //~ blindness = "-deuteranopia";
-            
+    function addBlocks(id, noOfBlocks, classBlock, masterArray, blockArray, nb_line, div_height){            
         for(b=0;b<noOfBlocks;b++){
             if (masterArray[i][0])
-                blockArray.push('<div style="width: '+90/nb_line+'%; height: '+div_height/nb_line+'px;" class="block '+classBlock+'"><p>'+ masterArray[i][0] +'</p></div>');
+                blockArray.push('<div style="width: '+98/nb_line+'%; height: '+div_height/nb_line+'px;" class="block '+classBlock+'"><p>'+ masterArray[i][0] +'</p></div>');
             else
-                blockArray.push('<div style="width: '+90/nb_line+'%; height: '+div_height/nb_line+'px;" class="block '+classBlock+'"></div>');
+                blockArray.push('<div style="width: '+98/nb_line+'%; height: '+div_height/nb_line+'px;" class="block '+classBlock+'"></div>');
         }
         return blockArray;
     }

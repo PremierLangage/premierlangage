@@ -45,7 +45,7 @@ def evaluate(request, activity_id, pl_id):
             }), content_type='application/json')
         
         elif status['requested_action'] == 'submit': # Validate
-            answer, feedback, context = exercise.evaluate(exercise.envid, status['inputs'], request)
+            answer, feedback, context = exercise.evaluate(request, status['inputs'])
             answer['activity'] = session.activity
             Answer.objects.create(**answer)
             return HttpResponse(

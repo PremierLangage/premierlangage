@@ -31,6 +31,13 @@ class Activity(LTIModel, LTIgrade):
 
 
 class SessionActivity(models.Model):
+    """Represents the state of an activity for a given user.
+    
+    Parameters:
+        user       - User corresponding to this session.
+        activity   - Activity corresponding to this session.
+        current_pl - Which PL is currently loaded (None if the PLTP is loaded)."""
+    
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
     current_pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=True)
@@ -39,22 +46,30 @@ class SessionActivity(models.Model):
         unique_together = ('user', 'activity')
     
     
-    def exercise(self, pl=None):
+    def exercise(self, pl=...):
         """Return the SessionExercice corresponding to self.current_pl.
         
-        If the optionnal parameter 'pl' is given, will instead return the SessionExercice
-        corresponding to pl.
+        If the optionnal parameter 'pl' is given (can be given as None for the PLTP), will instead
+        return the SessionExercice corresponding to pl.
         
-        Raise IntegrityError if no session for either self.current_pl or pl was found."""
+        Raise IntegrityError if no session for either self.current_pl or pl (if given) was found."""
         try:
-            return next(i for i in self.sessionexercise_set.all() if i.pl == (self.current_pl if not pl else pl))
+            return next(i for i in self.sessionexercise_set.all() if i.pl == (self.current_pl if pl==... else pl))
         except StopIteration:
             raise IntegrityError("'current_pl' of SessionActivity does not have a corresponding "
-                                 + "SessionExercise")
+                                 + "SessionExercise.")
 
 
 
 class SessionExerciseAbstract(models.Model):
+    """Abstract class to represent the state of a PL for a given user.
+    
+    Parameters:
+        pl      - PL corresponding to this session (None if it's the PLTP session).
+        built   - Whether the session is built (True), or need to be built (False).
+        envid   - Must contains the ID of the environment on the sandbox if the session is built.
+        context - Dictionnary of the PL (or PLTP)."""
+    
     pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=True)
     built = models.BooleanField(default=False)
     envid = models.CharField(max_length=300, null=True)
@@ -64,37 +79,39 @@ class SessionExerciseAbstract(models.Model):
         abstract=True
     
     
-    def add_to_context(self, key, value):
+    def add_to_context(self, key, value):  # TODO: Allowing to add key with the PL syntax (dict1.dict2.val)
+        """Add value corresponding to key in the context."""
         self.context[key] = value
         self.save()
     
     
     def get_from_context(self, key):
-        try:
-            if '.' in key:
-                val = self.context
-                for k in key.split('.'):
-                    val = val[k]
-            else:
-                val = self.context[key]
-            return val
-        except KeyError as e:
-            return None
+        """Get key from context.
+        
+        Does implement syntax of PL for nested dict. I.E.: 'dict1.dict2.[...].dictn.val' will return
+        'context['dict1']['dict2']...['dictn']['val']"""
+        if '.' in key:
+            val = self.context
+            for k in key.split('.'):
+                val = val[k]
+        else:
+            val = self.context[key]
+        return val
     
     
-    def reroll(self, grade, seed):
-        if grade:
-            return grade != 100
-        oneshot = self.get_from_context('settings.oneshot')
-        return not seed or oneshot
-    
-    
-    def evaluate(self, uuid, answers, request, test=False):
+    def evaluate(self, request, answers, test=False):
+        """Evaluate the exercise with the given answers according to the current context.
+        
+        Parameters:
+            request - (django.http.request) Current Django request object.
+            answers - (dict) Answers of the student.
+            test    - (bool) Whether this exercise is in a testing session or not.
+        """
         context = {}
-        evaluator = SandboxEval(uuid, answers)
-        if not evaluator.check():
+        evaluator = SandboxEval(self.envid, answers)
+        if not evaluator.check(): # Env could not be found on the sandbox, rebuilding (same seed will be used)
             self.build(request, test=test)
-            evaluator = SandboxEval(self.context['id__'], answers)
+            evaluator = SandboxEval(self.envid, answers)
         
         response = evaluator.call()
         answer = {
@@ -138,6 +155,12 @@ class SessionExerciseAbstract(models.Model):
     
     
     def build(self, request, test=False):
+        """Build the exercise with the given according to the current context.
+        
+        Parameters:
+            request - (django.http.request) Current Django request object.
+            test    - (bool) Whether this exercise is in a testing session or not.
+        """
         response = SandboxBuild(dict(self.context), test=test).call()
         
         if response['status'] < 0:
@@ -156,7 +179,6 @@ class SessionExerciseAbstract(models.Model):
                 msg += "<br><br>Reçu sur stderr:<br>" + htmlprint.code(response['stderr'])
             raise Exception(msg)
         
-        self.envid = response['id']        
         context = dict(response['context'])
         keys = list(response.keys())
         for key in keys:
@@ -166,33 +188,60 @@ class SessionExerciseAbstract(models.Model):
         del response['context__']
         
         context.update(response)
+        self.envid = response['id__']  
         self.context.update(context)
         self.built = True
         self.save()
+
+
+
+class SessionExercise(SessionExerciseAbstract):
+    """Class representing the state of a PL inside of a SessionActivity.
+    
+    Parameters:
+        pl      - PL corresponding to this session (None if it's the PLTP session).
+        built   - Whether the session is built (True), or need to be built (False).
+        envid   - Must contains the ID of the environment on the sandbox if the session is built.
+        context - Dictionnary of the PL (or PLTP).
+        activity_session - SessionActivity to which this SessionExercise belong."""
+    activity_session = models.ForeignKey(SessionActivity, on_delete=models.CASCADE)
+    
+    class Meta:
+        unique_together = ('pl', 'activity_session')
     
     
-    def get_navigation(self, request, context=None):
-        pl_list = []
-        pl_list.append({
-                'id'   : None,
-                'state': None,
-                'title': self.activity_session.activity.pltp.json['title'],
-        })
-        for pl in self.activity_session.activity.pltp.pl.all():
-            pl_list.append({
-                'id'   : pl.id,
-                'state': Answer.pl_state(pl, self.activity_session.user),
-                'title': pl.json['title'],
-            })
-        context = dict(self.context if not context else context)
-        context.update({
-            "pl_list__": pl_list,
-            'pl_id__': self.pl.id if self.pl else None
-        })
-        return get_template("playexo/navigation.html").render(context, request)
+    @receiver(post_save, sender=SessionActivity)
+    def create_session_exercise(sender, instance, created, **kwargs):
+        """When an ActivitySession is created, automatically create a SessionExercise for the PLTP
+        and every PL."""
+        if created:
+            for pl in instance.activity.pltp.pl.all():
+                SessionExercise.objects.create(activity_session=instance, pl=pl)
+            SessionExercise.objects.create(activity_session=instance)  # For the pltp
+    
+    
+    def save(self, *args, **kwargs):
+        """Automatically add the PL/PLTP json content to the context if context is empty when
+        saving."""
+        if not self.context:
+            if self.pl:
+                self.context = dict(self.pl.json)
+            else:
+                self.context = dict(self.activity_session.activity.pltp.json)
+            self.context['activity_id__'] = self.activity_session.activity.id
+        super().save(*args, **kwargs)
+    
+    
+    def reroll(self, grade=None, seed=None):
+        """Return whether the seed must be reroll (True) or not (False)."""
+        if grade:
+            return grade != 100
+        oneshot = self.get_from_context('settings.oneshot')
+        return not seed or oneshot
     
     
     def get_pl(self, request, context):
+        """Return a template of the PL rendered with context."""
         pl = self.pl
         highest_grade = Answer.highest_grade(pl, self.activity_session.user)
         last = Answer.last(pl, self.activity_session.user)
@@ -224,6 +273,9 @@ class SessionExerciseAbstract(models.Model):
     
     
     def get_exercise(self, request, context=None):
+        """Return a template of the PL or the PLTP rendered with self.context.
+         
+        If given, will use context instead."""
         try:
             pl = self.pl
             if pl:
@@ -244,6 +296,27 @@ class SessionExerciseAbstract(models.Model):
             return get_template("playexo/error.html").render({"error_msg": error_msg})
     
     
+    def get_navigation(self, request, context=None):
+        pl_list = []
+        pl_list.append({
+                'id'   : None,
+                'state': None,
+                'title': self.activity_session.activity.pltp.json['title'],
+        })
+        for pl in self.activity_session.activity.pltp.pl.all():
+            pl_list.append({
+                'id'   : pl.id,
+                'state': Answer.pl_state(pl, self.activity_session.user),
+                'title': pl.json['title'],
+            })
+        context = dict(self.context if not context else context)
+        context.update({
+            "pl_list__": pl_list,
+            'pl_id__': self.pl.id if self.pl else None
+        })
+        return get_template("playexo/navigation.html").render(context, request)
+    
+    
     def get_context(self, request, context=None):
         return {
             "navigation": self.get_navigation(request, context),
@@ -251,33 +324,20 @@ class SessionExerciseAbstract(models.Model):
         }
 
 
-class SessionExercise(SessionExerciseAbstract):
-    activity_session = models.ForeignKey(SessionActivity, on_delete=models.CASCADE)
-    
-    class Meta:
-        unique_together = ('pl', 'activity_session')
-    
-    
-    @receiver(post_save, sender=SessionActivity)
-    def create_session_exercise(sender, instance, created, **kwargs):
-        if created:
-            for pl in instance.activity.pltp.pl.all():
-                SessionExercise.objects.create(activity_session=instance, pl=pl)
-            SessionExercise.objects.create(activity_session=instance)  # For the pltp
-    
-    
-    def save(self, *args, **kwargs):
-        if not self.context:
-            if self.pl:
-                self.context = dict(self.pl.json)
-            else:
-                self.context = dict(self.activity_session.activity.pltp.json)
-            self.context['activity_id__'] = self.activity_session.activity.id
-        super().save(*args, **kwargs)
-
-
 
 class SessionTest(SessionExerciseAbstract):
+    """Class representing the state of a PL inside of a SessionActivity.
+    
+    Parameters:
+        pl      - PL corresponding to this session.
+        built   - Whether the session is built (True), or need to be built (False).
+        envid   - Must contains the ID of the environment on the sandbox if the session is built.
+        context - Dictionnary of the PL (or PLTP).
+        user    - User currently testing a PL.
+        date    - Date of the creation of the session.
+        
+    When the number of session for an user exceed MAX_SESSION_PER_USER, older session are deleted.
+    """
     MAX_SESSION_PER_USER = 100
     
     pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=False)
@@ -285,9 +345,31 @@ class SessionTest(SessionExerciseAbstract):
     date = models.DateTimeField(default=timezone.now, null=False)
     
     
-    def get_pl(self, request, context, answer=None):
-        pl = self.pl
+    def save(self, *args, **kwargs):
+        """Automatically add the PL's json content to the context if context is empty when
+        saving. Will also delete outdated session."""
+        if not self.context:
+            self.context = dict(self.pl.json)
         
+        q = SessionTest.objects.filter(user=self.user).order_by("-date")
+        if len(q) >= self.MAX_SESSION_PER_USER:
+            for elem in q[self.MAX_SESSION_PER_USER:]:
+                elem.delete()
+            
+        super().save(*args, **kwargs)
+    
+    
+    def delete(self, *args, **kwargs):
+        """Delete the corresponding PL when the session is deleted."""
+        self.pl.delete()
+        super().delete(*args, **kwargs)
+    
+    
+    def get_pl(self, request, context, answer=None):
+        """Return a template of the PL rendered with context.
+        
+        If answer is given, will determine if the seed must be reroll base on its grade."""
+        pl = self.pl
         seed = None
         if (answer['grade'] < 100 if answer else True):
             seed = time.time()
@@ -314,6 +396,10 @@ class SessionTest(SessionExerciseAbstract):
     
     
     def get_exercise(self, request, context=None, answer=None):
+        """Return a template of the PL or the PLTP rendered with self.context.
+        
+        If given, will use context instead.
+        If answer is given, will determine if the seed must be reroll base on its grade."""
         try:
             return self.get_pl(request, context, answer)
         except Exception as e:
@@ -321,23 +407,6 @@ class SessionTest(SessionExerciseAbstract):
             if request.user.profile.can_load():
                 error_msg += "<br><br>" + htmlprint.html_exc()
             return get_template("playexo/error.html").render({"error_msg": error_msg})
-    
-    
-    def save(self, *args, **kwargs):
-        if not self.context:
-            self.context = dict(self.pl.json)
-        
-        q = SessionTest.objects.filter(user=self.user).order_by("-date")
-        if len(q) >= self.MAX_SESSION_PER_USER:
-            for elem in q[self.MAX_SESSION_PER_USER:]:
-                elem.delete()
-            
-        super().save(*args, **kwargs)
-    
-    
-    def delete(self, *args, **kwargs):
-        self.pl.delete()
-        super().delete(*args, **kwargs)
 
 
 
@@ -367,7 +436,7 @@ class Answer(models.Model):
     def pl_state(pl, user):
         """Return the state of the answer with the highest grade."""
         answers = Answer.objects.filter(user=user, pl=pl).order_by("-grade")
-        return State.NOT_STARTED if not answers else State.by_grade(answers[0].grade)
+        return State.by_grade(answers[0].grade if answers else ...)
     
     
     @staticmethod
@@ -386,25 +455,23 @@ class Answer(models.Model):
                 'failed':      [ % failed, nbr failed],
                 'started:      [ % started, nbr started],
                 'not_started': [ % not started, nbr not started],
+                'error':       [ % error, nbr error],
             }
-        """
-        
+            
+            All data are strings."""
         state = {
             State.SUCCEEDED:   [0.0, 0],
             State.PART_SUCC:   [0.0, 0],
             State.FAILED:      [0.0, 0],
             State.STARTED:     [0.0, 0],
             State.NOT_STARTED: [0.0, 0],
+            State.ERROR:       [0.0, 0],
         }
         
         for pl in pltp.pl.all():
-            state[
-                State.STARTED if Answer.pl_state(pl, user) in [State.TEACHER_EXC, State.SANDBOX_EXC] else Answer.pl_state(pl, user)
-                ][1] += 1
+            state[Answer.pl_state(pl, user)][1] += 1
             
-        nb_pl = sum([state[k][1] for k in state]) 
-        nb_pl = 1 if not nb_pl else nb_pl
-        
+        nb_pl = max(sum([state[k][1] for k in state]), 1)
         for k, v in state.items():
             state[k] = [str(state[k][1]*100/nb_pl), str(state[k][1])]
         
@@ -445,15 +512,17 @@ class Answer(models.Model):
                 'failed':      [ % failed, nbr failed],
                 'started:      [ % started, nbr started],
                 'not_started': [ % not started, nbr not started],
+                'error':       [ % error, nbr error],
             }
-        """
-    
+            
+            All data are strings."""
         state = {
             State.SUCCEEDED:   [0.0, 0],
             State.PART_SUCC:   [0.0, 0],
             State.FAILED:      [0.0, 0],
             State.STARTED:     [0.0, 0],
             State.NOT_STARTED: [0.0, 0],
+            State.ERROR:       [0.0, 0],
         }
         
         for activity in course.activity.all():
@@ -461,9 +530,7 @@ class Answer(models.Model):
             for k in summary:
                 state[k][1] += int(summary[k][1])
         
-        nb_pl = sum([state[k][1] for k in state]) 
-        nb_pl = 1 if not nb_pl else nb_pl
-        
+        nb_pl = max(sum([state[k][1] for k in state]), 1)
         for k, v in state.items():
             state[k] = [str(state[k][1]*100/nb_pl), str(state[k][1])]
         

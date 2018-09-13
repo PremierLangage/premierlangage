@@ -128,7 +128,7 @@ def preview_pl(request):
             HttpResponseBadRequest(content="Couldn't resolve ajax request")
         
         exercise = SessionTest.objects.get(pk=post['data']['session_id'])
-        answer, feedback, context = exercise.evaluate(exercise.envid, post['data']['answers'], request, test=True)
+        answer, feedback, context = exercise.evaluate(request, post['data']['answers'], test=True)
         
         return HttpResponse(
             json.dumps({

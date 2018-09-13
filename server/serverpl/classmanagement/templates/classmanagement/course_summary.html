@@ -35,6 +35,10 @@
                 <table class="table">
                     <thead>
                         <tr>
+                            <th class="border border-0"></th>
+                            <th class="border"><center>Activity N°</center></th>
+                        </tr>
+                        <tr>
                             <th class="student-th">Élève</th>
                             {% for i in range_tp %}
                                 <th><center>{{ forloop.counter }}{% if forloop.counter < 10 %}&nbsp;{% endif %}</center></th>
