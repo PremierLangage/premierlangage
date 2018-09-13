@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-#
-#  views.py
-#  
-#  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
-#  
-
 import os, json, shutil, htmlprint
 
 from os.path import basename, join, dirname

@@ -1,5 +1,3 @@
-# coding: utf-8
-
 import time
 
 import htmlprint
@@ -13,17 +11,18 @@ from django.dispatch import receiver
 from django.template import Template, RequestContext
 from django.template.loader import get_template
 
-from lti.models import LTIModel, LTIgrade
+from lti.models import LTIModel
 from loader.models import PLTP, PL
 from playexo.enums import State
 from playexo.request import SandboxBuild, SandboxEval
+from classmanagement.models import Course
 
 
-
-class Activity(LTIModel, LTIgrade):
+class Activity(LTIModel):
     name = models.CharField(max_length=200, null=False)
     open = models.BooleanField(null=False, default=True)
     pltp = models.ForeignKey(PLTP, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
     
     def __str__(self):
         return str(self.id) + " " + self.name

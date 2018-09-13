@@ -1,11 +1,3 @@
-    #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# Python 3.5.4
-#
-#  Author: Coumes Quentin     Mail: qcoumes@etud.u-pem.fr
-#  Created: 2017-07-05
-#  Last Modified: 2017-11-16
-
 import json, logging
 
 from django.http import HttpResponse, HttpResponseBadRequest

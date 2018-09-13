@@ -1,7 +1,7 @@
-# coding: utf-8
-
 from enum import unique
+
 from enumfields import Enum
+
 
 @unique
 class State(Enum):

@@ -8,7 +8,6 @@ from django.conf import settings
 
 from lti.thread_local import set_current_request
 from classmanagement.models import Course
-from lti.models import LTIgrade
 from user_profile.models import Profile
 from user_profile.enums import Role
 
@@ -111,57 +110,12 @@ class LTIAuthMiddleware(MiddlewareMixin):
                     'user_image': request.POST.get('user_image', None),
                 }
                 
-                #Field for grade in moodle
-                outcome_url = lti_launch["lis_outcome_service_url"]
-                sourcedid_lti = lti_launch["lis_result_sourcedid"]
-                lti_grade = LTIgrade(outcome_url=outcome_url, sourcedid=sourcedid_lti, user=user)
-                lti_grade.save()
-                
-                #Check if course exist or update/create it
-                course_id = lti_launch["context_id"]
-                course_name = lti_launch.get("context_title", "None")
-                course_label = lti_launch.get("context_label", "None")
-                consumer = lti_launch['oauth_consumer_key']
-                if course_id:
-                    try:
-                        course = Course.objects.get(consumer_id=course_id, consumer=consumer)
-                    except ObjectDoesNotExist:
-                        logger.info("New course created: '%s' (%s:%s)" % (course_name, consumer, course_id))
-                        course = Course.objects.create(consumer_id=course_id, consumer=consumer, name=course_name, label=course_label)
-                    course.student.add(user)
-                
-                activity_id = lti_launch.get("resource_link_id")
-                if activity_id:
-                    activity = Activity.objects.get(consumer=consumer, consumer_id=activity_id)
-                request.session["activity"] = lti_launch["resource_link_id"]
-                request.session["course_idcourse_id"] = course_id
-                
-                #Adding role to user
-                for role in lti_launch["roles"]:
-                    if role in ["urn:lti:role:ims/lis/Administrator", "Administrator"] and user.profile.role > Role.ADMINISTRATOR:
-                       user.profile.role = Role.ADMINISTRATOR
-                    if role in ["urn:lti:role:ims/lis/Observer", "Observer"] and user.profile.role > Role.OBSERVER:
-                       user.profile.role = Role.OBSERVER
-                    if role in ["urn:lti:role:ims/lis/Learner", "Learner"] and user.profile.role > Role.LEARNER:
-                       user.profile.role = Role.LEARNER
-                    if role in ["urn:lti:role:ims/lis/Instructor", "Instructor"] and user.profile.role > Role.INSTRUCTOR:
-                       user.profile.role = Role.INSTRUCTOR
-                       course.teacher.add(user)
-                    if role in ["urn:lti:role:ims/lis/ContentDeveloper", "ContentDeveloper"] and user.profile.role > Role.CONTENT_DEVELOPER:
-                       user.profile.role = Role.CONTENT_DEVELOPER
-                user.save()
-                
-                # If a custom role key is defined in project, merge into existing role list
-                if hasattr(settings, 'LTI_CUSTOM_ROLE_KEY'):
-                    custom_roles = request.POST.get(settings.LTI_CUSTOM_ROLE_KEY, '').split(',')
-                    lti_launch['roles'] += filter(None, custom_roles)  # Filter out any empty roles
-
-                lti_launches = request.session.get('LTI_LAUNCH')
-                if not lti_launches:
-                    lti_launches = OrderedDict()
-                    request.session['LTI_LAUNCH'] = lti_launches
-                
-                lti_launches[resource_link_id] = lti_launch
+                # Creating and updating data according to lti_launch
+                Course.get_or_create_from_lti(request, user, lti_launch)
+                Activity.get_or_create_from_lti(request, user, lti_launch)
+                ActivityOutcome.get_or_create_from_lti(request, user, lti_launch)
+                user.profile.set_role_lti(lti_launch)
+            
             else:
                 # User could not be authenticated!
                 logger.warning('LTI authentication failed')

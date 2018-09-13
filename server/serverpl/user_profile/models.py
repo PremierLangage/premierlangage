@@ -31,6 +31,23 @@ class Profile(LTIModel):
     avatar = models.ImageField(upload_to=avatar_path, blank=True)
     
     
+    def set_role_lti(self, lti_launch):
+        """Set the user's role according to the LTI request."""
+        for role in lti_launch["roles"]:
+            if role in ["urn:lti:role:ims/lis/Administrator", "Administrator"]:
+               self.role = Role.ADMINISTRATOR
+            if role in ["urn:lti:role:ims/lis/Observer", "Observer"]:
+               self.role = Role.OBSERVER
+            if role in ["urn:lti:role:ims/lis/Learner", "Learner"]:
+               self.role = Role.LEARNER
+            if role in ["urn:lti:role:ims/lis/Instructor", "Instructor"]:
+               self.role = Role.INSTRUCTOR
+               course.teacher.add(user)
+            if role in ["urn:lti:role:ims/lis/ContentDeveloper", "ContentDeveloper"]:
+               self.role = Role.CONTENT_DEVELOPER
+        self.save()
+    
+    
     def mod_rep(self, added_points):
         """Core function to modify the reputation of the user profile."""
         self.rep += added_points
@@ -49,6 +66,7 @@ class Profile(LTIModel):
      
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):
+        """When a new user is created, create a corresponding profile."""
         if created:
             profile = Profile.objects.create(user=instance)
             profile.avatar.save(instance.username, File(generate_identicon(instance)))
@@ -56,7 +74,8 @@ class Profile(LTIModel):
     
     
     @receiver(post_save, sender=User)
-    def save_user_profile(sender, instance, **kwargs):
+    def save_user_profile(sender, instance, **kwargs):$
+        """Save the profile when its corresponding user is saved."""
         instance.profile.save()
         if instance.is_staff or instance.is_superuser:
             instance.profile.role = Role.ADMINISTRATOR

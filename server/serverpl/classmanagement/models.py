@@ -1,19 +1,46 @@
-# coding: utf-8
+import logging
 
 from django.db import models
 from django.contrib.auth.models import User
 
-from playexo.models import Activity
 from lti.models import LTIModel
 
 
+logger = logging.getLogger(__name__)
+
 
 class Course(LTIModel):
-    teacher = models.ManyToManyField(User, related_name="teacher")
-    name = models.CharField(max_length=200, null=False)
-    label = models.CharField(max_length=20, null=False)
+    teacher = models.ManyToManyField(User, related_name="teaches", blank=True)
     student = models.ManyToManyField(User, blank=True)
-    activity = models.ManyToManyField(Activity, blank=True)
+    name = models.CharField(max_length=200)
+    label = models.CharField(max_length=20)
+    
+    @classmethod
+    def get_or_create_from_lti(cls, request, user, lti_launch):
+        """Create a Course corresponding to the ressource in the LTI request.
+        
+        Returns a tuple of (object, created), where object is the retrieved or created object and
+        created is a boolean specifying whether a new object was created."""
+        course_id = lti_launch["context_id"]
+        course_name = lti_launch.get("context_title")
+        course_label = lti_launch.get("context_label")
+        consumer = lti_launch['oauth_consumer_key']
+        
+        try:
+            course = cls.objects.get(consumer_id=course_id, consumer=consumer)
+            created = True
+        except ObjectDoesNotExist:
+            logger.info("New course created: '%s' (%s:%s)" % (course_name, consumer, course_id))
+            course = cls.objects.create(consumer_id=course_id, consumer=consumer, name=course_name, label=course_label)
+            created = False
+            
+        course.student.add(user)
+        for role in lti_launch["roles"]:
+            if role in ["urn:lti:role:ims/lis/Instructor", "Instructor"]:
+               course.teacher.add(user)
+        course.save()
+        
+        return course, created
     
     
     def is_member(self, user):
