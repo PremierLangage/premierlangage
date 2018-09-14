@@ -15,10 +15,6 @@ def wimsexodb(exo_content,path,exo,wims_path):
         'subject':wims[2],
         'notion':wims[3].split('.')[0].replace('oef',''),
         '_format':'.pl',
-        'ident':settings.WIMS_IDENT,
-        'quser':settings.WIMS_QUSER,
-        'passwd':settings.WIMS_PASSWD,
-        'course':settings.WIMS_COURSE,
         'url':'https://wims.u-pem.fr/wims.cgi?lang=fr&cmd=new&module='+wims[1]+'/'+wims[2]+'/'+wims[3]+("" if not exo else '&exo='+exo.split('.')[0]),
         '__extends':[{
             "path":"demo/wims/template",
@@ -64,10 +60,6 @@ def wimsexopl(exo_content,path,exo,wims_path):
     f.write('level='+wims[1]+'\n')
     f.write('subject='+wims[2]+'\n')
     f.write('notion='+wims[3].split('.')[0].replace('oef','')+"\n")
-    f.write('ident='+settings.WIMS_IDENT+'\n')
-    f.write('quser='+settings.WIMS_QUSER+'\n')
-    f.write('passwd='+settings.WIMS_PASSWD+'\n')
-    f.write('course='+settings.WIMS_COURSE+'\n')
     f.write('url=https://wims.u-pem.fr/wims.cgi?lang=fr&cmd=new&module='+wims[1]+'/'+wims[2]+'/'+wims[3]+('\n' if not exo else '&exo='+exo.split('.')[0]+'\n'))
     f.close()
 
