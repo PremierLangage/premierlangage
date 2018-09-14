@@ -95,9 +95,6 @@ url= re.sub (r'session=(?P<session>.*?)(&|\n)','',url)
 ==
 
 form==
-{{delexo}}
-{{exo}}
-{{url}}
 <iframe width="100%" height="600" src="{{url}}&session={{user.1.wims_session}}"></iframe>
 ==
 
