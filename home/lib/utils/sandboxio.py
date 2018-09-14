@@ -25,7 +25,7 @@ def output(grade, feedback, context=None):
         feedback - (str) Feedback shown to the student. Should be a str or implementing __str__.
         grade - (dict - optionnal) Modified context of the exercise."""
     with open(sys.argv[3], "w+") as f:
-        f.write(jsonpickle.encode(context if context else json.load(sys.argv[1]), unpicklable=False))
+        f.write(jsonpickle.encode(context if context else get_context(), unpicklable=False))
     
     with open(sys.argv[4], "w+") as f:
         print(str(feedback), file=f)
@@ -33,3 +33,4 @@ def output(grade, feedback, context=None):
     print(int(grade))
     
     sys.exit(0)
+

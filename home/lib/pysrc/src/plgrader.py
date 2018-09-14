@@ -4,6 +4,7 @@
 from feedback import Feedback, subnlbybr
 import subprocess
 from plutils import *
+from sandboxio import output, get_context, get_answers
 import json
 def getOutput(inputstr=None):
     # FIXME
@@ -35,8 +36,12 @@ def compare(s1,s2):
 
 class Grader:
     def __init__(self):
+        answers = get_answers()
+        with open("student", "w+") as f:
+            f.write(answers['answer'])
         try:
             self.pld= json.load(open("pl.json","r"))
+            
             
         except Exception as e:
             
@@ -120,7 +125,7 @@ class Grader:
         
         
         dico_response = { "success": self.fb.success , "errormessages" : "","feedback": self.fb.feedback(), "other": "","error":"XK11","execution": "","grade":"1"}
-        return(json.dumps(dico_response))
+        output(100 if dico_response['success'] else 0, dico_response['feedback'])
 
     def expectedoutput(self):
         if not "expectedoutput" in self.pld:
@@ -380,3 +385,4 @@ class Grader:
         else:
             self.fb.addFeedback("<H1> Problème exercice mal défini </H1>Contacter l'auteur, ou l'administrateur \n Passez à l'exercice suivant.")
         return self.doOutput()
+

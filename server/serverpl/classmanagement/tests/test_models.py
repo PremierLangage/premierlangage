@@ -24,9 +24,8 @@ class ModelsTestCase(TestCase):
         teacher2 = User.objects.create_user(username='user2', password='12345')
 
         
-        course = Course.objects.create(id="id",name="coursename", label="courselabel")
+        course = Course.objects.create(name="coursename", label="courselabel")
         course.teacher.add(teacher1)
         course.teacher.add(teacher2)
-        self.assertEqual(str(course), "id" + ": [" + "courselabel] coursename")
-        
+
         self.assertEqual(True, course.is_member(teacher1))

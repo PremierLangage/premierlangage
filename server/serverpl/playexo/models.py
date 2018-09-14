@@ -149,6 +149,7 @@ class SessionExerciseAbstract(models.Model):
             "answers": answers,
             "user": request.user,
             "pl": self.pl,
+            "grade": response['grade'],
         }
         
         if response['status'] < 0: # Sandbox Error
@@ -168,7 +169,6 @@ class SessionExerciseAbstract(models.Model):
             feedback = response['feedback']
             if request.user.profile.can_load() and response['stderr']:
                 feedback += "<br><br>Received on stderr:<br>" + htmlprint.code(response['stderr'])
-            answer["grade"] = response['grade']
             answer["seed"] = context['seed'],
         
         keys = list(response.keys())
@@ -178,10 +178,11 @@ class SessionExerciseAbstract(models.Model):
             del response[key]
         del response['context__']
         context.update(response)
-        
+
         dic = dict(self.context)
         dic.update(context)
-        
+        dic['answers__'] = answers
+
         return answer, feedback, dic
     
     
@@ -416,13 +417,16 @@ class SessionTest(SessionExerciseAbstract):
         
         if not self.built:
             self.build(request, test=True)
-        dic = dict(self.context)
+        dic = dict(self.context if not context else context)
         dic.update(predic)
         
         for key in dic:
             if type(dic[key]) is str:
                 dic[key] = Template(dic[key]).render(RequestContext(request, dic))
-        
+        if 'answers__' in dic:
+            print('DICANSWER__', dic['answers__'])
+        if context and 'answers__' in context:
+            print('CONTEXTANSWER__', context['answers__'])
         return get_template("playexo/preview.html").render(dic, request)
     
     

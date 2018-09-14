@@ -7,7 +7,7 @@ __pycache__/
 htmlcov/
 .pytest_cache/
 media/
-migrations/
+migrations/00*
 
 ### OSX ###
 *.DS_Store

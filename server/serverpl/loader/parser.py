@@ -151,7 +151,7 @@ def parse_file(directory, path, extending=False):
                     raise MissingKey(join(directory.root, path), 'grader or grader.py',
                                      message="One of the following key must be present: ")
                 if not ('builder' in dic or ('__files' in dic and 'builder.py' in dic['__files'])):
-                    raise MissingKey(join(directory.root, path), 'grader or grader.py',
+                    raise MissingKey(join(directory.root, path), 'builder or builder.py',
                                      message="One of the following key must be present: ")
         
         for key in MUST_BE_STRING:

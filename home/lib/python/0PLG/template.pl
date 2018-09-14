@@ -17,13 +17,15 @@ print(g.grade())
 @/pysrc/src/plutils.py
 @/pysrc/src/pldoctest.py
 @/pysrc/src/template.html
-
+@ /builder/none.py [builder.py]
+@ /utils/sandboxio.py
 
 
 
 
 # une interface standard d'exercice avec un editeur pour la réponse
 form=@ /python/form/editorform.html
+
 
 
 
