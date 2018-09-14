@@ -9,6 +9,7 @@ pages:
     - 'Ecrire un formulaire': 'formulaire.md'
     - 'Ecrire un script d''évaluation': 'evaluator.md'
     - 'Ecrire un script build': 'build.md'
+    - 'Ecrire un pl utilisant wims': 'ecrire_pl_wims.md'
 - Parseur:
     - 'Ecrire un parseur': 'parser.md'
     - 'Exceptions prédéfinies': 'parser_exception.md'
