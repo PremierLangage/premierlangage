@@ -207,16 +207,16 @@ QA_SETTINGS = {
     'qa_description_optional': False,
     'reputation': {
         'CREATE_QUESTION': 10,
-        'CREATE_ANSWER': 5,
+        'CREATE_ANSWER': 20,
         'CREATE_ANSWER_COMMENT': 2,
         'CREATE_QUESTION_COMMENT': 2,
         'RECEIVE_QUESTION_COMMENT': 1,
         'RECEIVE_ANSWER_COMMENT': 1,
         'ANSWER_ACCEPTED': 20, # Half for the acceptor
-        'UPVOTE_QUESTION': 5,
-        'UPVOTE_ANSWER': 10,
-        'DOWNVOTE_QUESTION': -5,
-        'DOWNVOTE_ANSWER': -10,
+        'UPVOTE_QUESTION': 3,
+        'UPVOTE_ANSWER': 3,
+        'DOWNVOTE_QUESTION': -3,
+        'DOWNVOTE_ANSWER': -3,
     },
     'right': {
         'POST_QUESTION': 0,

@@ -17,7 +17,7 @@ def epoch_seconds(date):
 def parse_query(query):
     """Parse the given query, returning a tuple of strings list (include, exclude)."""
     exclude = re.compile(r'(?<=-")[^"]+?(?=")|(?<=-)\w+').findall(query)
-    for w in exclude:
+    for w in sorted(exclude, key=lambda i: len(i), reverse=True):
         query = query.replace(w, '')
     query = " " + query
     return re.compile(r'(?<=[+ ]")[^"]+?(?=")|(?<=[+ ])\w+').findall(query), exclude

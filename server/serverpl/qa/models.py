@@ -1,22 +1,19 @@
 import math
 
 from annoying.fields import AutoOneToOneField
-
 from django.conf import settings
 from django.db import models
 from django.db.models import F
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.text import slugify
-
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 from django_markdown.models import MarkdownField
-
 from hitcount.models import HitCountMixin
-
 from taggit.managers import TaggableManager
 
 from qa.mixins import DateMixin
 from qa.utils import epoch_seconds
-
 from user_profile.models import Profile
 
 
@@ -38,13 +35,16 @@ class QAQuestion(models.Model, HitCountMixin, DateMixin):
     
     
     def mod_points(self, points):
-        self.points += points
+        p = self.points + points
+        self.points = F('points') + points
         
-        order = math.log(max(abs(self.points), 1), 10)
-        sign = 1 if self.points > 0 else -1 if self.points < 0 else 0
+        order = math.log(max(abs(p), 1), 10)
+        sign = 1 if p > 0 else -1 if p < 0 else 0
         seconds = epoch_seconds(self.pub_date) - 1134028003
         self.popularity = round(sign * order + seconds / 45000, 7)
         self.save()
+        self.refresh_from_db()
+        
     
     
     def has_accepted_answer(self):
@@ -89,8 +89,9 @@ class QAAnswer(models.Model, DateMixin):
     
     
     def mod_points(self, points):
-        self.points += points
+        self.points = F('points') + points
         self.save()
+        self.refresh_from_db()
     
     
     def delete(self, *args, **kwargs):
@@ -125,6 +126,9 @@ class QAAnswerVote(VoteParent):
     """Model class to contain the votes for the answers."""
     answer = models.ForeignKey(QAAnswer, on_delete=models.CASCADE)
     
+    class Meta:
+        unique_together = (('user', 'answer'),)
+    
     
     def save(self, *args, **kwargs):
         if self.pk is None: # New vote
@@ -150,16 +154,15 @@ class QAAnswerVote(VoteParent):
         super(QAAnswerVote, self).save(*args, **kwargs)
     
     
-    def delete(self, *args, **kwargs):
-        if self.value:
-            self.answer.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['UPVOTE_ANSWER'])
+    @receiver(pre_delete, sender='qa.QAAnswerVote')
+    def on_delete(sender, instance, using, **kwargs):
+        if instance.value:
+            instance.answer.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['UPVOTE_ANSWER'])
+            instance.answer.points -= 1
         else:
-            self.answer.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['DOWNVOTE_ANSWER'])
-        super(QAAnswerVote, self).delete(*args, **kwargs)
-    
-    
-    class Meta:
-        unique_together = (('user', 'answer'),)
+            instance.answer.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['DOWNVOTE_ANSWER'])
+            instance.answer.points += 1
+        instance.answer.save()
 
 
 
@@ -167,6 +170,8 @@ class QAQuestionVote(VoteParent):
     """Model class to contain the votes for the questions."""
     question = models.ForeignKey(QAQuestion, on_delete=models.CASCADE)
     
+    class Meta:
+        unique_together = (('user', 'question'),)
     
     def save(self, *args, **kwargs):
         if self.pk is None: # New vote
@@ -193,19 +198,15 @@ class QAQuestionVote(VoteParent):
         super(QAQuestionVote, self).save(*args, **kwargs)
     
     
-    def delete(self, *args, **kwargs):
-        if self.value:
-            self.question.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['UPVOTE_QUESTION'])
-            self.question.points -= 1
+    @receiver(pre_delete, sender='qa.QAQuestionVote')
+    def on_delete(sender, instance, using, **kwargs):
+        if instance.value:
+            instance.question.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['UPVOTE_ANSWER'])
+            instance.question.points -= 1
         else:
-            self.question.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['DOWNVOTE_QUESTION'])
-            self.question.points += 1
-        self.question.save()
-        super(QAQuestionVote, self).delete(*args, **kwargs)
-    
-    
-    class Meta:
-        unique_together = (('user', 'question'),)
+            instance.question.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['DOWNVOTE_ANSWER'])
+            instance.question.points += 1
+        instance.question.save()
 
 
 
