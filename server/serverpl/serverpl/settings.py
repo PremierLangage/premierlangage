@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'user_profile',
     'loader',
     'classmanagement',
-    'sandbox',
     'documentation',
     'qa',
     'taggit',

@@ -29,7 +29,7 @@ class Course(LTIModel):
         try:
             course = cls.objects.get(consumer_id=course_id, consumer=consumer)
             created = True
-        except ObjectDoesNotExist:
+        except cls.DoesNotExist:
             logger.info("New course created: '%s' (%s:%s)" % (course_name, consumer, course_id))
             course = cls.objects.create(consumer_id=course_id, consumer=consumer, name=course_name, label=course_label)
             created = False
