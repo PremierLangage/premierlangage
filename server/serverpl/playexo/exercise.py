@@ -37,7 +37,7 @@ class ActivityInstance:
             'pltp_title__'   : activity.pltp.json["title"],
             'pltp_sha1__'    : activity.pltp.sha1,
         }
-        
+        self.request = request
         if pl:
             seed = Answer.last_seed(pl, request.user)
             if 'oneshot' in pl.json or not seed:
@@ -100,6 +100,7 @@ class ActivityInstance:
     def intern_build(self):
         try:
             dic = dict(self.dic)
+            dic['user__'] = self.request.user
             if 'build' in self.dic:
                 exec(self.dic['build'], globals())
                 dic = build(self.dic)
@@ -162,8 +163,9 @@ class ActivityInstance:
     
 class PLInstance(ActivityInstance):
     """Used to run/evaluate a PL alone, uses evaluate() and intern_build() of ActivityInstance."""
-    def __init__(self, pl_dic):
+    def __init__(self, pl_dic, request):
         self.dic = pl_dic
+        self.request = request
         if not 'seed' in pl_dic:
              self.dic['seed'] = time.time()
     

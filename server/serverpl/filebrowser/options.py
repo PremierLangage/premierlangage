@@ -492,7 +492,7 @@ def edit_pl_option(request, filebrowser, target):
             if warnings:
                 [messages.warning(request, warning) for warning in warnings]
             try:
-                exercise = PLInstance(pl.json)
+                exercise = PLInstance(pl.json,request)
                 request.session['exercise'] = dict(exercise.dic)
                 preview = exercise.render(request)
             except Exception as e:
@@ -531,7 +531,7 @@ def test_pl_option(request, filebrowser, target):
             messages.error(request, warnings)
             return redirect_fb(request.GET.get('relative_h', '.'))
 
-        exercise = PLInstance(pl.json)
+        exercise = PLInstance(pl.json,request)
         request.session['exercise'] = dict(exercise.dic)
         preview = exercise.render(request)
 

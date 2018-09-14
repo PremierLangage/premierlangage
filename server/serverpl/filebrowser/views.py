@@ -121,7 +121,7 @@ def preview_pl(request):
             else:
                 if warnings:
                     [messages.warning(request, warning) for warning in warnings]
-                exercise = PLInstance(pl.json)
+                exercise = PLInstance(pl.json,request)
                 request.session['exercise'] = dict(exercise.dic)
                 preview = exercise.render(request)
         
@@ -141,7 +141,7 @@ def preview_pl(request):
         exercise = request.session.get('exercise', None)
         
         if exercise:
-            exercise = PLInstance(exercise)
+            exercise = PLInstance(exercise,request)
             success, feedback = exercise.evaluate(post['inputs'])
             if (success == None):
                 feedback_type = "info"
