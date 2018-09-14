@@ -18,3 +18,4 @@ src/
 filebrowser/tests/ressources/*
 !filebrowser/tests/ressources/fake_filebrowser_data
 !filebrowser/tests/ressources/filter
+*/migrations/0*

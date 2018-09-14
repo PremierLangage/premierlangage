@@ -1,0 +1,84 @@
+{% extends "qa/base.html" %}
+
+{% load static %}
+
+{% block content_qa %}
+    <ul class="nav nav-tabs nav-justified" id="tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link {% if active == 'questions' %}active{% endif %}" id="recent-tab" data-toggle="tab" href="#recent" role="tab" aria-controls="recent" aria-selected="{% if active == 'questions' %}true{% else %}false{% endif %}">Recents</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if active == 'noans' %}active{% endif %}" id="noans-tab" data-toggle="tab" href="#noans" role="tab" aria-controls="noans" aria-selected="{% if active == 'noans' %}true{% else %}false{% endif %}">Not Answered</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if active == 'popular' %}active{% endif %}" id="popular-tab" data-toggle="tab" href="#popular" role="tab" aria-controls="popular" aria-selected="{% if active == 'popular' %}true{% else %}false{% endif %}">Populars</a>
+        </li>
+        {% if request.user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link {% if active == 'usersq' %}active{% endif %}" id="usersq-tab" data-toggle="tab" href="#usersq" role="tab" aria-controls="usersq" aria-selected="{% if active == 'usersq' %}true{% else %}false{% endif %}">My Questions</a>
+            </li>
+        {% endif %}
+    </ul>
+    
+    <div class="tab-content mb-5">
+        <div class="tab-pane fade{% if active == 'questions' %} show active{% endif %}" id="recent" role="tabpanel" aria-labelledby="recent-tab">
+            {% for question in questions %}
+                {% include 'qa/list_questions.html' %}
+            {% endfor %}
+            {% if not questions %}
+                <div class="p-3 pl-5 mb-2 bg-dark text-white qa-title text-center">
+                    No questions asked yet.
+                </div>
+            {% endif %}
+            {% with paginator=questions active_q='questions' %}
+                {% include 'qa/paginator.html' %}
+            {% endwith %}
+        </div>
+        
+        
+        <div class="tab-pane fade{% if active == 'noans' %} show active{% endif %}" id="noans" role="tabpanel" aria-labelledby="noans-tab">
+            {% for question in noans %}
+                {% include 'qa/list_questions.html' %}
+            {% endfor %}
+            {% if not noans %}
+                <div class="p-3 pl-5 mb-2 bg-dark text-white qa-title text-center">
+                    No unanswered question yet.
+                </div>
+            {% endif %}
+            {% with paginator=noans active_q='noans' %}
+                {% include 'qa/paginator.html' %}
+            {% endwith %}
+        </div>
+        
+        
+        <div class="tab-pane fade{% if active == 'popular' %} show active{% endif %}" id="popular" role="tabpanel" aria-labelledby="popular-tab">
+            {% for question in popular %}
+                {% include 'qa/list_questions.html' %}
+            {% endfor %}
+            {% if not popular %}
+                <div class="p-3 pl-5 mb-2 bg-dark text-white qa-title text-center">
+                    No questions asked yet.
+                </div>
+            {% endif %}
+            {% with paginator=popular active_q='popular' %}
+                {% include 'qa/paginator.html' %}
+            {% endwith %}
+        </div>
+        
+        
+        <div class="tab-pane fade{% if active == 'usersq' %} show active{% endif %}" id="usersq" role="tabpanel" aria-labelledby="usersq-tab">
+            {% for question in usersq %}
+                {% include 'qa/list_questions.html' %}
+            {% endfor %}
+            {% if not popular %}
+                <div class="p-3 pl-5 mb-2 bg-dark text-white qa-title text-center">
+                    No questions asked yet.
+                </div>
+            {% endif %}
+            {% with paginator=usersq active_q='usersq' %}
+                {% include 'qa/paginator.html' %}
+            {% endwith %}
+        </div>
+        
+    </div>
+{% endblock %}

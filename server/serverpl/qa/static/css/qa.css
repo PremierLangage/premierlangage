@@ -1,0 +1,62 @@
+body {
+    background: #F5F9FA !important;
+}
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    background-color: #6c757d !important;
+    color: white;
+}
+
+.nav-tabs .nav-link, .nav-tabs .nav-link {
+    background-color: white !important;
+    color: black;
+}
+
+.qa-title {
+    font-weight: bold;
+    font-size: 24px;
+    color: white;
+    font-family: Aller;
+}
+
+.bg-question {
+    background-color: #FFF !important;
+}
+
+.bg-comment {
+    background-color: #E1E5E6 !important;
+}
+
+.qainfo {
+    text-align: center;
+    vertical-align: middle;
+    width: 100%;
+    height: 100%;
+}
+
+.qainfo {
+    text-align: center;
+    vertical-align: middle;
+    width: 100%;
+    height: 100%;
+}
+
+.qainfo-details {
+    text-align: center;
+    vertical-align: middle;
+    width: 100%;
+}
+
+.tags {
+    display: inline-block;
+    font-size: 13px;
+    background-color: #F5F9FA !important;
+}
+
+.thumbs {
+    display: inline-block;
+}
+
+.thumbs-btn {
+    background-color:transparent;
+    padding: 0;
+}

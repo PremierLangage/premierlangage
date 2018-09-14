@@ -33,7 +33,6 @@
 
 
 import os, shutil, magic, zipfile, tarfile, traceback, htmlprint, datetime, gitcmd
-
 from os.path import basename, splitext, isdir, join, isfile, abspath, normpath, dirname
 
 from django.shortcuts import redirect, reverse, render
@@ -45,10 +44,8 @@ from django.conf import settings
 from filebrowser.models import Directory
 from filebrowser.utils import redirect_fb
 from filebrowser.filter import is_pl
-
+from playexo.models import Activity, SessionTest
 from loader.loader import load_file
-
-from playexo.exercise import PLInstance
 
 
 def mkdir_option(request, filebrowser, target):
@@ -468,14 +465,12 @@ def load_pltp_option(request, filebrowser, target):
             if warnings:  # pragma: no cover 
                 for warning in warnings:
                     messages.warning(request, warning)
-            url_lti = request.scheme + "://" + request.get_host()+"/playexo/activity/lti/"+pltp.name+"/"+pltp.sha1+"/"
-            url_test = "/playexo/activity/test/"+pltp.name+"/"+pltp.sha1+"/"
+            activity = Activity.objects.create(name=pltp.name, pltp=pltp)
+            url_lti = request.build_absolute_uri(reverse("playexo:activity", args=[activity.pk]))
             messages.success(request, "L'activité <b>'"+pltp.name+"'</b> a bien été créée et a pour URL LTI: \
-                                      <br>&emsp;&emsp;&emsp; <input id=\"copy\" style=\"width: 700px;\" value=\""+url_lti+"\">  \
+                                      <br>&emsp;&emsp;&emsp; <input id=\"copy\" style=\"width: 700px;\" value=\""+url_lti+"\" readonly>  \
                                       <button class=\"btn\" data-clipboard-action=\"copy\" data-clipboard-target=\"#copy\"><i class=\"far fa-copy\"></i> Copier\
-                                      </button><br>L'activité sera créée lorsqu'une personne cliquera sur le lien \
-                                      depuis un client LTI. Pour la tester en local, cliquez <a target=\"_blank\" \
-                                      href=\""+url_test+"\">ici</a>.""")
+                                      </button>")
     except Exception as e: # pragma: no cover
         msg = "Impossible to load '"+target+"' : "+ htmlprint.code(str(type(e)) + ' - ' + str(e))
         messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))
@@ -598,12 +593,10 @@ def edit_pl_option(request, filebrowser, target):
         else:
             if warnings:  # pragma: no cover 
                 [messages.warning(request, warning) for warning in warnings]
-            
+            pl.save()
             try:
-                exercise = PLInstance(pl.json)
-                request.session['exercise'] = dict(exercise.dic)
-                
-                preview = exercise.render(request)
+                exercise = SessionTest.objects.create(pl=pl, user=request.user)
+                preview = exercise.get_exercise(request)
             except Exception as e:  # pragma: no cover 
                 preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
                     + basename(rel_path) + "': \n\n" \
@@ -640,7 +633,7 @@ def test_pl_option(request, filebrowser, target):
             messages.error(request, warnings.replace(settings.FILEBROWSER_ROOT, ""))
             return redirect_fb(filebrowser.relative)
 
-        exercise = PLInstance(pl.json)
+        #~ exercise = PLInstance(pl.json)
         request.session['exercise'] = dict(exercise.dic)
         preview = exercise.render(request)
 

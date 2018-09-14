@@ -1,5 +1,7 @@
 title=all
-concept==gift
+introduction==
+Exo gift
+==
 @ /gift/all/SelectWithFeedback.pl
 @ /gift/all/SelectSet.pl
 @ /gift/all/Short.pl
@@ -12,4 +14,5 @@ concept==gift
 @ /gift/all/Description.pl
 @ /gift/all/RangeAvecTolerance.pl
 @ /gift/all/RangeAvecIntervalle.pl
-==
+
+

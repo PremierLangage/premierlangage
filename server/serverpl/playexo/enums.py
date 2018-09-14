@@ -1,13 +1,7 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-#
-#  enums.py
-#  
-#  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
-#  
-
 from enum import unique
+
 from enumfields import Enum
+
 
 @unique
 class State(Enum):
@@ -16,8 +10,7 @@ class State(Enum):
     FAILED      = 2
     STARTED     = 3
     NOT_STARTED = 4
-    TEACHER_EXC = 5
-    SANDBOX_EXC = 6
+    ERROR       = 5
     
     class Label:
         SUCCEEDED   = "Réussi"
@@ -25,8 +18,7 @@ class State(Enum):
         FAILED      = "Échoué"
         STARTED     = "Commencé"
         NOT_STARTED = "Non Commencé"
-        TEACHER_EXC = "Commencé"
-        SANDBOX_EXC = "Commencé"
+        ERROR       = "Commencé"
     
     class Template:
         SUCCEEDED   = "state-succeded"
@@ -34,23 +26,22 @@ class State(Enum):
         FAILED      = "state-failed"
         STARTED     = "state-started"
         NOT_STARTED = "state-unstarted"
-        TEACHER_EXC = "state-started"
-        SANDBOX_EXC = "state-started"
+        ERROR       = "state-started"
     
     
     @classmethod
-    def by_grade(cls, grade):
+    def by_grade(cls, grade=...):
         """Return the corresponding enum member according to grade."""
-        if grade == None or grade > 100:
+        if grade is ...:
             return cls.NOT_STARTED
+        if grade is None:
+            return cls.STARTED
         if grade == 100:
             return cls.SUCCEEDED
         if grade <= 99 and grade >= 1:
             return cls.PART_SUCC
-        if grade == 0 or grade == -2: # -2 for abandonment
+        if grade == 0:
             return cls.FAILED
-        if grade > -1:
-            return cls.STARTED
-        if -1000 <= grade <= -1999:
-            return cls.TEACHER_EXC
-        return cls.SANDBOX_EXC
+        if grade == -1:
+            return cls.ERROR
+        return cls.STARTED

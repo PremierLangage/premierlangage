@@ -15,7 +15,7 @@ from serverpl.settings import BASE_DIR
 
 
 def documentation(request, target=None):
-    if not isdir(join(BASE_DIR, 'documentation/templates/documentation/doc/')):
+    if not isdir(join(BASE_DIR, 'documentation/templates/documentation/doc/')): # pragma: no cover
         raise Http404("Impossible de charger la documentation, merci de contacter l'administrateur.")
 
     template = ('documentation/doc/index.html'

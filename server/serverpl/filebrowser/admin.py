@@ -5,4 +5,4 @@ from filebrowser.models import Directory
 
 @admin.register(Directory)
 class DirAdmin(admin.ModelAdmin):
-    list_display=('name', 'owner', 'remote')
+    list_display = ('name', 'owner', 'remote')

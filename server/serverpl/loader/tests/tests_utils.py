@@ -10,6 +10,7 @@ import subprocess, os, shutil
 from os.path import join, isdir
 
 from django.test import TestCase, override_settings
+
 from django.conf import settings
 from django.contrib.auth.models import User
 

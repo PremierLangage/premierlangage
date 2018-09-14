@@ -99,12 +99,16 @@ echo "Configuring database..."
 SECRET_KEY=$SECRET_KEY python3 manage.py makemigrations || { echo>&2 "ERROR: python3 manage.py makemigrations failed" ; exit 1; }
 SECRET_KEY=$SECRET_KEY python3 manage.py migrate || { echo>&2 "ERROR: python3 manage.py migrate failed" ; exit 1; }
 
+#Filling database
+python3 serverpl/install/fill_database_release.py || { echo>&2 "ERROR: python3 serverpl/install/fill_database_release.py failed" ; exit 1; }
+echo "Done !"
+
 
 # Creating super user
 echo
-read -p "Creating a super user for django ? [Y/n] " -n 1 -r
+read -p "Creating a super user for django ? [y/n] " -n 1 -r
 echo
-if [[ $REPLY =~ ^[Nn]$ ]]
+if [[ $REPLY =~ ^[Yy]$ ]]
 then
     echo "Creating super user account..."
     SECRET_KEY=$SECRET_KEY python3 manage.py createsuperuser || { echo>&2 "ERROR: python3 manage.py createsuperuser failed" ; exit 1; }

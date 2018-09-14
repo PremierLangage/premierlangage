@@ -1,46 +1,51 @@
 #  Author: Coumes Quentin     Mail: qcoumes@etud.u-pem.fr
-#  Created: 2017-06-29
-#  Last Modified: 2017-06-29
 
-type=direct
+
+
 
 title= Addition Aléatoire
 
+author = Quentin Coumes
+
 text==
-Combien font ***{{ op1 }} + {{ op2 }}*** ?
+Combien <i>font</i> ***{{ op1 }} + {{ op2 }}*** ?
 ==
 
 form==
 <div class="input-group">
-    <input id="form_txt_answer" type="number" class="form-control" placeholder="" required>
+    <input id="form_answer" type="number" class="form-control" value="{{ answers__.answer }}" required/>
 </div>
 ==
 
+settings.oneshot=yes
+settings.allow_reroll=yes
+
+
 evaluator==
+import traceback
+import sys
+
 try: 
     if int(response['answer']) == op1 + op2:
-        grade = (True, "Bonne réponse")
+        grade = (100, "Bonne réponse")
     else:
-        grade = (False, "Mauvaise réponse")
+        grade = (0, "Mauvaise réponse")
 except:
-    grade = (None, "Merci de rentrer un entier")
+    print(traceback.format_exc(), file=sys.stderr)
+    grade = (-1, "Merci de rentrer un entier")
 ==
 
 
 before==
 import random
 random.seed(seed)
-op1 = random.randint(20, 100)
-op2 = random.randint(20, 100)
+op1 = random.randint(1, 10)
+op2 = random.randint(1, 10)
 ==
 
-
-
-
-
-
-
-
+@ /utils/sandboxio.py
+@ /builder/before.py [builder.py]
+@ /grader/evaluator.py [grader.py]
 
 
 

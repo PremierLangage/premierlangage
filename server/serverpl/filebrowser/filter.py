@@ -17,7 +17,6 @@
 #
 
 
-
 import magic, os, gitcmd
 
 from os.path import isdir, isfile, basename, splitext
@@ -27,7 +26,6 @@ from django.conf import settings
 from loader.parser import get_parsers
 
 from filebrowser.models import Directory
-
 
 is_directory = isdir
 is_file = isfile
@@ -42,7 +40,8 @@ def in_repository(path):
 
 
 def is_directory_object(path):
-    if len(path.replace(settings.FILEBROWSER_ROOT, "").split('/')) < 3 and Directory.objects.filter(name=basename(path)):
+    if len(path.replace(settings.FILEBROWSER_ROOT, "").split('/')) < 3 and Directory.objects.filter(
+            name=basename(path)):
         return True
     return False
 
@@ -52,13 +51,14 @@ def is_not_directory_object(path):
 
 
 def is_remote(path):
-    path = path if settings.FILEBROWSER_ROOT not in path else path.replace(settings.FILEBROWSER_ROOT+'/', '')
+    path = path if settings.FILEBROWSER_ROOT not in path else path.replace(
+        settings.FILEBROWSER_ROOT + '/', '')
     parts = path.split('/')
-    
+
     directory = None
     try:
         directory = Directory.objects.get(name=parts[1])
-    except:
+    except Exception:
         pass
     return True if directory and directory.remote else False
 
@@ -72,8 +72,8 @@ def is_image(path):
 def is_text(path):
     if is_directory(path):
         return False
-    return (magic.from_file(path, mime=True).split('/')[0] == 'text' 
-         or not os.stat(path).st_size)
+    return (magic.from_file(path, mime=True).split('/')[0] == 'text'
+            or not os.stat(path).st_size)
 
 
 def is_audio(path):
@@ -94,17 +94,17 @@ def is_application(path):
     return magic.from_file(path, mime=True).split('/')[0] == 'application'
 
 
-def is_pl(path): 
+def is_pl(path):
     parsers = get_parsers()
     ext = splitext(path)[1]
     return is_not_directory(path) and ext in parsers and parsers[ext]['type'] == 'pl'
 
 
-def is_not_pl(path): 
+def is_not_pl(path):
     return not is_pl(path)
 
 
-def is_pltp(path): 
+def is_pltp(path):
     parsers = get_parsers()
     ext = splitext(path)[1]
     return is_not_directory(path) and ext in parsers and parsers[ext]['type'] == 'pltp'

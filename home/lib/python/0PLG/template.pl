@@ -5,27 +5,26 @@
 
 name=/python/0PLG/template.pl
 
-
-
-@ /pysrc/src/__init__.py
-@/pysrc/src/plgrader.py
-@/pysrc/src/feedback.py
-@/pysrc/src/plutils.py
-@/pysrc/src/pldoctest.py
-@/pysrc/src/template.html
-
 grader==
 from plgrader import Grader
 g=Grader()
 print(g.grade())
 ==
 
+@/pysrc/src/__init__.py
+@/pysrc/src/plgrader.py
+@/pysrc/src/feedback.py
+@/pysrc/src/plutils.py
+@/pysrc/src/pldoctest.py
+@/pysrc/src/template.html
+@ /builder/none.py [builder.py]
+@ /utils/sandboxio.py
+
+
 
 
 # une interface standard d'exercice avec un editeur pour la réponse
 form=@ /python/form/editorform.html
-
-
 
 
 

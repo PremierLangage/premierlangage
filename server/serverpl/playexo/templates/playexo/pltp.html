@@ -1,0 +1,30 @@
+{% load django_markdown %}
+
+<div class="card">
+    <div class="card-header">
+        <div class="introduction-center"><h1>{% if 'title'%}{{ title }}{% endif %}</h1></div>
+        <div class="introduction-left">{% if 'author' %}{{ author }}{% endif %}</div>
+    </div>
+    
+    <div class="card-body">
+        {% if request.user.pluser.can_load and teacher %}
+            <pre>
+                <u>Note de l'enseignant (visible seulement par les enseignant):</u>
+                <br>
+                {% with teacherh__=teacher|markdown %}
+                    {{ teacherh__|safe }}
+                {% endwith %}
+            </pre>
+        {% endif %}
+        {% if 'introduction'%}
+            {% with introductionh__=introduction|markdown %}
+                {{ introductionh__|safe }}
+            {% endwith %}
+        {% endif %}
+        
+        <br>
+        <center><a style="white-space: normal;" href="{% url 'playexo:activity' activity_id__ %}?action=pl&pl_id={{first_pl__}}" type="button" class="btn btn-success btn-lg">
+            Commencer
+        </a></center>
+    </div>
+</div>

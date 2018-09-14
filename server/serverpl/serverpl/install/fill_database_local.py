@@ -1,7 +1,12 @@
+import os, sys
+sys.path.append(os.path.realpath(os.path.join(__file__, '../../../')))
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "serverpl.settings")
+
 import django
+django.setup()
+
 from django.contrib.auth.models import User
 from filebrowser.models import Directory
-from sandbox.models import Sandbox
 
 
 # Create admin
@@ -21,10 +26,3 @@ try:
     Directory.objects.create(name="lib", owner=user, public=True)
 except django.db.utils.IntegrityError:
     print("Directory 'lib' already created")
-
-
-# Add local sandbox
-try:
-    Sandbox.objects.create(name="local", url="http://127.0.0.1:8000/sandbox/?action=execute", priority=200)
-except django.db.utils.IntegrityError:
-    print("Sandbox 'local' already created")

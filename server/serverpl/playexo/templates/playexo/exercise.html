@@ -1,0 +1,16 @@
+{% extends "classmanagement/base.html" %}
+
+{% load static %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div id="navigation" class="col-md-2">
+            {{ navigation }}
+        </div>
+        <div id="exercise" class="col-md-8">
+            {{ exercise }}
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+{% endblock %}
