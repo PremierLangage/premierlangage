@@ -1,10 +1,22 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-#
-#  utils.py
-#  
-#  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
-#  
+# coding: utf-8
+
+import logging, tempfile, tarfile, os, requests
+
+from serverpl.settings import DEBUG
+
+def tar_from_dic(files):
+    with tempfile.TemporaryDirectory() as tmp_dir, tempfile.TemporaryDirectory() as env_dir:
+        with tarfile.open(tmp_dir + "/environment.tgz", "w:gz") as tar:
+            for key in files:
+                with open(env_dir + "/" + key, "w") as f:
+                    print(files[key], file=f)
+                    
+                tar.add(env_dir, arcname=os.path.sep)
+            
+        with open(tmp_dir + "/environment.tgz", 'rb') as tar:
+                tar_stream = tar.read()
+            
+    return tar_stream
 
 
 def sum_key_value(dic, *arg, value=lambda k:k):

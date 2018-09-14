@@ -1,4 +1,4 @@
-import os
+import os, hashlib
 from django.contrib.messages import constants as messages
 import dj_database_url
 
@@ -40,9 +40,11 @@ INSTALLED_APPS = [
     'classmanagement',
     'sandbox',
     'documentation',
-    'markdown_deux',
+    'qa',
     'taggit',
     'hitcount',
+    'lti',
+    'django_http_method',
     'django_markdown',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -50,7 +52,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_auth_lti',
 ]
 
 # Middleware definition
@@ -60,7 +61,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django_auth_lti.middleware_patched.MultiLTILaunchAuthMiddleware',
+    'lti.middleware.LTIAuthMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -71,7 +72,7 @@ SESSION_COOKIE_AGE = 5*365*24*60*60
 
 
 # Redirect when not authenticated to
-LOGIN_URL = "/playexo/not_authenticated/"
+LOGIN_URL = "/courses/login/"
 
 
 # URLs module
@@ -138,12 +139,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'django_auth_lti.backends.LTIAuthBackend',
+    'lti.backends.LTIAuthBackend',
 )
 
 LTI_OAUTH_CREDENTIALS = {
     'moodle': 'secret',
 }
+
+LOGIN_REDIRECT_URL = '/'
 
 
 #Logger information
@@ -183,11 +186,66 @@ LOGGING = {
         }
     },
     'loggers': {
-        '':{
+        '': {
             'handlers': ['console', 'mail_admins'],
             'level': 'INFO',
         },
     },
+}
+
+# Ask's settings
+# Reputation contains the points awarded
+# Right contains the points needed for doing action, -1 to disable (do not apply for the owner)
+QA_SETTINGS = {
+    'qa_messages': True,
+    'qa_description_optional': False,
+    'reputation': {
+        'CREATE_QUESTION': 10,
+        'CREATE_ANSWER': 20,
+        'CREATE_ANSWER_COMMENT': 2,
+        'CREATE_QUESTION_COMMENT': 2,
+        'RECEIVE_QUESTION_COMMENT': 1,
+        'RECEIVE_ANSWER_COMMENT': 1,
+        'ANSWER_ACCEPTED': 20, # Half for the acceptor
+        'UPVOTE_QUESTION': 3,
+        'UPVOTE_ANSWER': 3,
+        'DOWNVOTE_QUESTION': -3,
+        'DOWNVOTE_ANSWER': -3,
+    },
+    'right': {
+        'POST_QUESTION': 0,
+        'POST_ANSWER': 0,
+        'POST_COMMENT': 0,
+        'EDIT_QUESTION': 500,
+        'EDIT_ANSWER': 500,
+        'EDIT_COMMENT': -1,
+        'DELETE_QUESTION': 2000,
+        'DELETE_ANSWER': 2000,
+        'DELETE_COMMENT': 2000,
+    },
+}
+
+# Hitcount settings
+HITCOUNT_KEEP_HIT_ACTIVE = { 'days': 1 }
+
+
+# Settings used for the creation of identicon (default avatar)
+IDENTICON_SETTINGS = {
+    'background': 'rgb(224,224,224)',
+    'foreground': [ 
+        'rgb(45,79,255)',
+        'rgb(254,180,44)',
+        'rgb(226,121,234)',
+        'rgb(30,179,253)',
+        'rgb(232,77,65)',
+        'rgb(49,203,115)',
+    ],
+    'row': 15,
+    'col': 15,
+    'padding': (20, 20, 20, 20),
+    'size': (300, 300),
+    'digest': hashlib.sha1,
+    'output_format': 'png',
 }
 
 
@@ -199,12 +257,16 @@ USE_L10N = True
 USE_TZ = True
 
 
+#Sandbox url:
+SANDBOX = 'http://127.0.0.1:7000/sandbox'
+
+
 # Static files (CSS, JavaScript, Images)
 STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'serverpl/static'))
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../tmp'))
-MEDIA_URL = '/tmp/'
+MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'media'))
+MEDIA_URL = '/media/'
 
 
 # Default Filebrowser's path

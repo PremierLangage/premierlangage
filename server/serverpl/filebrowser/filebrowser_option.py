@@ -72,7 +72,9 @@ class FilebrowserOption():
     
     def __init__(self, fa_icon, name, option, form=None, filter=None,
                  require_confirmation=False, color=GREY, outline=True,
-                 method=POST, balise=None, size=SMALL, classes=[], right=WRITE):
+                 method=POST, balise=None, size=SMALL, classes=None, right=WRITE):
+        if classes is None:
+            classes = []
         self.fa_icon = fa_icon
         self.text = name
         self.form = form

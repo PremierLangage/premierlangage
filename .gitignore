@@ -46,6 +46,8 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+media/
+migrations/0*
 
 # Translations
 *.mo
@@ -115,3 +117,4 @@ DEADJOE
 home/*
 !home/lib
 tmp
+.idea/

@@ -1,0 +1,145 @@
+{% load django_markdown %}
+
+<div class="card">
+    <div class="card-header">
+        <div class="text-center"><h1>{% if 'title'%}{{ title }}{% endif %}</h1></div>
+        <div class="float-left">{% if 'author' %}{{ author }}{% endif %}</div>
+    </div>
+    
+    <div class="card-body">
+        {% if 'text'%}
+            {% with texth__=text|markdown %}
+                {{ texth__|safe }}
+            {% endwith %}
+        {% endif %}
+        
+        <div id="feedback" class="alert alert-secondary feedback collapse">
+            {% with feedbackh__=feedback__|markdown %}
+                {{ feedbackh__|safe }}
+            {% endwith %}
+        </div>
+        {% csrf_token %}
+        <div id="form">
+            {% block form %}{{ form|safe }}{% endblock %}
+        </div>
+        <br>
+        <center>
+            <div id="default_button" class="btn-group">
+                <a type="button" class="btn btn-warning" href="{% url 'playexo:activity' activity_id__ %}?action=reset">
+                    <i class="fas fa-undo"></i> Réinitialiser
+                </a>
+                {% firstof settings.reroll_limit 100 as reroll_limit__ %}
+                {% if settings.allow_reroll and grade__|add:"0" >= reroll_limit__|add:"0" %}
+                    <a title="Nouveau tirage aléatoire" type="button" class="btn btn-warning float-right" href="{% url 'playexo:activity' activity_id__ %}?action=reroll">
+                       <i class="fas fa-dice"></i> Nouveau tirage
+                    </a>
+                {% endif %}
+                <button id="save_button" class="btn btn-default btn-info">
+                    <i class="fas fa-save"></i> Sauvegarder
+                </button>
+                <button id="submit_button" class="btn btn-primary">
+                    <i class="fas fa-check"></i> Valider
+                </button>
+            </div>
+            <div id="next_button" style="display: None; color: white;">
+                <br>
+                <a type="button" class="btn btn-lg btn-success" href="{% url 'playexo:activity' activity_id__ %}?action=next">
+                    Suivant<span class="glyphicon glyphicon-arrow-right"></span>
+                </a>
+            </div>
+        </center>
+    </div>
+</div>
+
+{% block end_script %}
+    <script>
+    {% if request.user.profile.confirm %}
+        window.onbeforeunload = function () {return confirm();}
+    {% endif %}
+    
+
+    $( document ).ready(function(){
+        $( "#submit_button" ).click(function() {
+
+            window.onbeforeunload = function () {}
+
+            var inputs = getInputs();
+
+            var status = {requested_action: 'submit', inputs: inputs};
+            $.ajax({
+                type : "POST",
+                url : "{% url 'playexo:evaluate' activity_id__ pl_id__%}",
+                data: JSON.stringify(status, null, '\t'),
+                contentType: 'application/json;charset=UTF-8',
+                success: function(returned_status) {
+                    status = returned_status;
+                    onReturn(status.exercise, status.navigation, status.feedback);
+                }
+            });
+        });
+        
+        $( "#save_button" ).click(function() {
+            window.onbeforeunload = function () {}
+
+            var inputs = getInputs();
+
+            var status = {requested_action: 'save', inputs: inputs};
+            $.ajax({
+                type : "POST",
+                url : "{% url 'playexo:evaluate' activity_id__ pl_id__%}",
+                data: JSON.stringify(status, null, '\t'),
+                contentType: 'application/json;charset=UTF-8',
+                success: function(returned_status) {
+                    status = returned_status;
+                    onReturn(status.exercise, status.navigation, status.feedback);
+                }
+            });
+        });
+    });
+
+
+    function getInputs(){
+        var inputs = {};
+        $( "[id^='form_']" ).each(function() {
+            var id = this.id.slice(5); // name of the variable
+            var value = $(this).val();
+            if ($(this).is(':radio')) {
+                if($(this).is(':checked')) {
+                    inputs[id]=value;
+                }
+            }
+            else if ($(this).is(':checkbox')) {
+                if($(this).is(':checked')) {
+                    if (id in inputs) {
+                        inputs[id].push(value);
+                    }
+                    else {
+                        inputs[id] = [value]
+                    }
+                }
+            }
+            else {
+                inputs[id]=value;
+            }
+        });
+        return inputs;
+    }
+
+
+    function onReturn(exercise, navigation, feedback) {
+        if (exercise) {
+            $( "#exercise" ).html(exercise);
+        }
+        if (navigation) {
+            $( "#navigation" ).html(navigation);
+        }
+        if (feedback) {
+            $( "#feedback" ).hide()
+            setTimeout(function () {
+                $( "#feedback" ).html(feedback);
+                $( "#feedback" ).show();
+            }, 100);
+        }
+    }
+    </script>
+{% endblock %}

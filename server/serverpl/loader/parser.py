@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 PL_MANDATORY_KEY = ['title', 'form']
 PLTP_MANDATORY_KEY = ['title', '__pl', 'introduction']
-MUST_BE_STRING = ['text', 'texth', 'introductionh', 'introduction', 'form', 'evaluator', 'before', 'author', 'title']
+MUST_BE_STRING = ['text', 'introduction', 'form', 'evaluator', 'before', 'author', 'title']
 
 
 def get_parsers():
@@ -147,6 +147,12 @@ def parse_file(directory, path, extending=False):
                 for key in PL_MANDATORY_KEY:
                     if key not in dic:
                         raise MissingKey(join(directory.root, path), key)
+                if not ('grader' in dic or ('__files' in dic and 'grader.py' in dic['__files'])):
+                    raise MissingKey(join(directory.root, path), 'grader or grader.py',
+                                     message="One of the following key must be present: ")
+                if not ('builder' in dic or ('__files' in dic and 'builder.py' in dic['__files'])):
+                    raise MissingKey(join(directory.root, path), 'builder or builder.py',
+                                     message="One of the following key must be present: ")
         
         for key in MUST_BE_STRING:
             if key in dic and type(dic[key]) != str:

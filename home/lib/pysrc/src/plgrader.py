@@ -3,6 +3,7 @@
 from feedback import Feedback, subnlbybr
 import subprocess
 from plutils import *
+from sandboxio import output, get_context, get_answers
 import json
 def getOutput(inputstr=None):
     # FIXME
@@ -40,9 +41,12 @@ def catch_except(string):
 
 class Grader:
     def __init__(self, template=None):
-        
+        answers = get_answers()
+        with open("student", "w+") as f:
+            f.write(answers['answer'])
         try:
             self.pld= json.load(open("pl.json","r"))
+            
             
         except Exception as e:
             
@@ -117,10 +121,7 @@ class Grader:
             self.fb.adddiv("fneeded", "la liste des mots obligatoires :"+self.pld["needed"]+". Raté !\n <br>ces mots doivent apparaitres dans votre solution !\n")
             self.fb.success = False
         
-        
-        dico_response = { "success": self.fb.success , "errormessages" : "","feedback": self.fb.feedback(), "other": "","error": "","execution": "","grade":"1"}
-        
-        return(json.dumps(dico_response))
+        output(100 if self.fb.success else 0, self.fb.feedback())
 
     def expectedoutput(self):
         if not "expectedoutput" in self.pld:
@@ -409,3 +410,4 @@ class Grader:
         else:
             self.fb.addFeedback("<H1> Problème exercice mal défini </H1>Contacter l'auteur, ou l'administrateur \n Passez à l'exercice suivant.")
         return self.doOutput()
+

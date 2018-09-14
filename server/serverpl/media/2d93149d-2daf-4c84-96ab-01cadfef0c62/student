@@ -1,0 +1,2 @@
+def carre(a):
+	return a

@@ -1,17 +1,10 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-#
-#  views.py
-#  
-#  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
-#  
-
 import os, json, shutil, htmlprint
 
 from os.path import basename, join, dirname
 
 
 from django.shortcuts import render, redirect, reverse
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -22,12 +15,9 @@ from filebrowser.filebrowser import Filebrowser
 from filebrowser.models import Directory
 from filebrowser.filebrowser_option import ENTRY_OPTIONS, DIRECTORY_OPTIONS
 from filebrowser.utils import redirect_fb
-
 from loader.loader import load_file
+from playexo.models import SessionTest
 
-from playexo.exercise import PLInstance
-
-from django.conf import settings
 
 
 
@@ -90,11 +80,9 @@ def preview_pl(request):
     if request.method != 'POST':
         return HttpResponse('405 Method Not Allowed', status=405)
     
-    
     post = json.loads(request.body.decode())
     if post['requested_action'] == 'preview': # Asking for preview
         try:
-           
             path = join(settings.FILEBROWSER_ROOT, post['path'])
             shutil.copyfile(path, path+".bk")
             with open(path, 'w+') as f: # Writting editor content into the file
@@ -108,14 +96,17 @@ def preview_pl(request):
             else:
                 if warnings:
                     [messages.warning(request, warning) for warning in warnings]
-                exercise = PLInstance(pl.json)
-                request.session['exercise'] = dict(exercise.dic)
-                preview = exercise.render(request)
+                pl.save()
+                exercise = SessionTest.objects.create(pl=pl, user=request.user)
+                preview = exercise.get_exercise(request)
         
         except Exception as e: # pragma: no cover
-            preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
-                + basename(rel_path) + "': \n\n" \
-                + htmlprint.code(str(e)) + "</div>"
+            preview = ('<div class="alert alert-danger" role="alert"> Failed to load \''
+                       + basename(rel_path) + "': \n\n"
+                       + htmlprint.code(str(e)))
+            if settings.DEBUG:
+                preview += "\n\nDEBUG set to True:\n" + htmlprint.html_exc()
+            preview += "</div>"
         finally:
             shutil.move(path+".bk", path)
             return HttpResponse(
@@ -125,27 +116,20 @@ def preview_pl(request):
             )
     
     elif post['requested_action'] == 'submit' : # Answer from the preview
+        if 'session_id' not in post['data'] or not post['data']['session_id']:
+            HttpResponseBadRequest(content="Couldn't resolve ajax request")
         
-        exercise = request.session.get('exercise', None)
-        if exercise:
-            
-            exercise = PLInstance(exercise)
-            success, feedback = exercise.evaluate(post['inputs'])
-            if (success == None):
-                feedback_type = "info"
-            elif success:
-                feedback_type = "success"
-            else:
-                feedback_type = "failed"
-            return HttpResponse(
-                json.dumps({
-                    'feedback_type': feedback_type,
-                    'feedback': feedback
-                }),
-                content_type='application/json',
-                status=200
-            )
-    
+        exercise = SessionTest.objects.get(pk=post['data']['session_id'])
+        answer, feedback, context = exercise.evaluate(request, post['data']['answers'], test=True)
+
+        return HttpResponse(
+            json.dumps({
+                "navigation": None,
+                "exercise": exercise.get_exercise(request, answer=answer, context=context),
+                "feedback": feedback,
+            }),
+            content_type='application/json'
+        )
     
     return HttpResponseBadRequest(content="Couldn't resolve ajax request")
 

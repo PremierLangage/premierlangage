@@ -1,0 +1,37 @@
+<div class="p-3 mb-0 bg-question {% if question.has_accepted_answer %}border border-success{% else %}border{% endif %}">
+    <div class="row">
+        <div class="col-1 p-0">
+            <div class="qainfo">
+                {{ question.hit_count.hits }}<br>
+                Views
+            </div>
+        </div>
+        <div class="col-1 p-0">
+            <div class="qainfo {% if question.points > 0 %} text-success{% elif question.points < 0 %} text-danger{% endif%}">
+                {{ question.points }}<br>
+                Votes
+            </div>
+        </div><div class="col-1 p-0">
+            <div class="qainfo{% if question.num_answers == 0 %} text-danger{% elif question.has_accepted_answer %} text-success{% endif %}">
+                {{ question.num_answers }}<br>
+                Answers
+            </div>
+        </div>
+        <div class="col-9 pl-4">
+            <a href="{% url 'ask:question' question.id %}">{{ question.title }}</a><br>
+            {% for tag in question.tags.all %}
+                <div class="p-1 mr-2 tags">
+                    <a href="{% url 'ask:index' %}?tag={{ tag.slug }}"><tag>{{ tag.slug }}</tag></a>
+                </div>
+            {% endfor %}
+            {% if question.update_date %}
+                <p class="float-right m-0">
+                    <small>, updated {{ question.update_date_verbose }} by {{ question.update_user.username }}</small>
+                </p>
+            {% endif %}
+            <p class="float-right m-0">
+                <small>asked {{ question.pub_date_verbose }} by {{ question.user.username }}</small>
+            </p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,144 @@
+{% if feedback.compile %}
+    <div style="border:1px solid black;padding:1%;margin:1%;background-color:Tomato;border-radius:4px;">
+    {% for text,type in feedback.div %}
+        {% if type == 'errcompilfin' %}
+            <div style="border:1px solid black;padding:1%;margin:1%;background-color:Black;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">    
+                <font style="color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                    <p>{{text}}</p>
+                </font>
+            </div>
+        {% else %}
+            <p>{{text}}</p>
+        {% endif %}
+    {% endfor %}
+    </div>
+
+{% else %}
+    {% if feedback.asio %}
+      
+        {% if feedback.success %}
+            {% for text,type in feedback.div %}
+                {% if type == 'compil' or type == 'vresume' %}
+                    <div style="border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;color:Green;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                        <p>{{text}}</p>
+                    </div>
+                {% else %}
+                <div style="border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;">
+                    <button type="button" class="btn btn-block btn-success"
+                            data-toggle="collapse" data-target="#demo{{type}}">
+                        Test True
+                    </button>
+                    <div id="demo{{type}}" class="collapse">
+                        <div class="card card-success;" style="background-color: LightGreen;">
+                            <p>{{text}}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            {% for text,type in feedback.div %}
+                {% if type == 'compil'%}
+                    <div style="border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                        <p>{{text}}</p> 
+                    </div>
+                {% elif type == 'fresume' %}
+                    <div style="border:1px solid black;padding:1%;margin:1%;background-color:IndianRed;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                        <p>{{text}}</p>
+                    </div>
+                {% else %}
+                    {% if type[0] == 'v'%}
+                        <div style="text-align: center;border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                            <button type="button" class="btn btn-block btn-success"
+                                    data-toggle="collapse" data-target="#demo{{type}}">
+                                Test réussi
+                            </button>
+                            <div id="demo{{type}}" class="collapse">
+                                <div class="card card-success" style="background-color: LightGreen;">
+                                    <p>{{text}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div style="text-align: center;border:1px solid black;padding:1%;margin:1%;background-color:DarkRed;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                            <button type="button" class="btn btn-block btn-danger"
+                                    data-toggle="collapse" data-target="#demo{{type}}"
+                                    aria-expanded="true" aria-controls="demo{{type}}">
+                                Test Échoué
+                            </button>
+                            <div id="demo{{type}}" class="show">
+                                <div class="card card-danger;" style="background-color: #721c24;" >
+                                    <p>{{text}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% else %}
+        {% if feedback.success %}
+            {% for text,type in feedback.div %}
+                {% if type == 'compil' or type == 'vresume' %}
+                    <div style="border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;color:Green;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                        <p>{{text}}</p>
+                    </div>
+                {% else %}
+                 <div style="text-align: center;border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                            <button type="button" class="btn btn-block btn-success"
+                                    data-toggle="collapse" data-target="#demo{{type}}">
+                                Test Réussi
+                            </button>
+                            <div id="demo{{type}}" class="collapse">
+                                <div class="card card-success" style="background-color: LightGreen;">
+                                    <p>{{text}}</p>
+                                </div>
+                            </div>
+                        </div>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            {% for text,type in feedback.div %}
+                {% if type == 'compil'%}
+                    <div style="border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                        <p>{{text}}</p> 
+                    </div>
+                {% elif type == 'fresume' %}
+                    <div style="border:1px solid black;padding:1%;margin:1%;background-color:IndianRed;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                        <p>{{text}}</p>
+                    </div>
+                {% else %}
+                    {% if type[0] == 'v'%}
+                        <div style="text-align: center;border:1px solid black;padding:1%;margin:1%;background-color:LightGreen;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                            <button type="button" class="btn btn-block btn-success"
+                                    data-toggle="collapse" data-target="#demo{{type}}"
+                                    aria-expanded="true" aria-controls="demo{{type}}">
+                                Test Réussi
+                            </button>
+                            <div id="demo{{type}}" class="collapse">
+                                <div class="card card-succes;" style="background-color: LightGreen;" >
+                                    <p>{{text}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div style="text-align: center;border:1px solid black;padding:1%;margin:1%;background-color:DarkRed;border-radius:4px;color:White;font-family:Monospace;font-size:0.8em;font-style:normal;font-weight:normal;">
+                            <button type="button" class="btn btn-block btn-danger"
+                                    data-toggle="collapse" data-target="#demo{{type}}"
+                                    aria-expanded="true" aria-controls="demo{{type}}">
+                                Test Échoué
+                            </button>
+                            <div id="demo{{type}}" class="show">
+                                <div class="card card-danger;" style="background-color: #721c24;" >
+                                    <p>{{text}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+{% endif %}
+
+

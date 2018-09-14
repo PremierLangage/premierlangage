@@ -63,13 +63,14 @@
                             return elem.value.replace( /\r?\n/g, "\r\n" );
                         }
                     };
-
-
+                    
                     $( "#quit_button" ).click(function() {
                         window.onbeforeunload = function () {}
                     });
-
-
+                    $( "#download_env_button" ).click(function() {
+                        window.onbeforeunload = function () {}
+                    });
+                    
                     $( "#save_button" ).click(function() {
                         var input = $("#editor_input").val();
                         var path = "{{ filepath }}";

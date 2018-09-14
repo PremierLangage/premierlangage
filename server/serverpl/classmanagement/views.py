@@ -1,26 +1,20 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# Python [Version]
-#
-#  Author: Coumes Quentin     Mail: qcoumes@etud.u-pem.fr
-#  Created: 2017-07-30
-#  Last Modified: 2017-07-30
-
+# coding: utf-8
 
 import logging
 
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponseNotAllowed, HttpResponseBadRequest
+from django.shortcuts import redirect, reverse
 from django.urls import reverse
 
 from classmanagement.models import Course
 
 from playexo.models import Answer, Activity
-from playexo.views import activity_receiver
 from playexo.enums import State
 
 
@@ -110,7 +104,8 @@ def course_summary(request, id):
     except:
         raise Http404("Impossible d'accéder à la page, cette classe n'existe pas.")
     if not request.user in course.teacher.all():
-        logger.warning("User '"+request.user.username+"' denied to access summary of course'"+course.name+"'.")
+        logger.info("User '" + request.user.username 
+                    + "' denied to access summary of course'" + course.name + "'.")
         raise PermissionDenied("Vous n'êtes pas professeur de cette classe.")
     
     activities = course.activity.all().order_by("id")
@@ -141,7 +136,7 @@ def course_summary(request, id):
     student = sorted(student, key=lambda k: k['lastname'])
     
     return render(request, 'classmanagement/course_summary.html', {
-        'state': [i for i in State if i not in [State.TEACHER_EXC, State.SANDBOX_EXC]],
+        'state': [i for i in State if i != State.ERROR],
         'name': course.name,
         'student': student,
         'range_tp': range(len(activities)),
@@ -181,7 +176,7 @@ def activity_summary(request, id, name):
     student = sorted(student, key=lambda k: k['lastname'])
     
     return render(request, 'classmanagement/activity_summary.html', {
-        'state': [i for i in State if i not in [State.TEACHER_EXC, State.SANDBOX_EXC]],
+        'state': [i for i in State if i != State.ERROR],
         'course_name': course.name,
         'activity_name': activity.name,
         'student': student,
@@ -223,17 +218,23 @@ def student_summary(request, course_id, student_id):
         })
         
     return render(request, 'classmanagement/student_summary.html', {
-        'state': [i for i in State if i not in [State.TEACHER_EXC, State.SANDBOX_EXC]],
+        'state': [i for i in State if i != State.ERROR],
         'course_name': course.name,
         'student': student,
         'activities': tp,
         'course_id': course_id,
     })
-    
-    
+
+
 @login_required
 def redirect_activity(request, activity_id):
     request.session['current_activity'] = activity_id
     request.session['current_pl'] = None
     request.session['testing'] = False
-    return HttpResponseRedirect(reverse(activity_receiver))
+    return HttpResponseRedirect(reverse("playexo:activity"))
+
+
+
+def disconnect(request):
+    logout(request)
+    return redirect(reverse('classmanagement:login'))
