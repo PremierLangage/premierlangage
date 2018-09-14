@@ -74,7 +74,7 @@ class Profile(LTIModel):
     
     
     @receiver(post_save, sender=User)
-    def save_user_profile(sender, instance, **kwargs):$
+    def save_user_profile(sender, instance, **kwargs):
         """Save the profile when its corresponding user is saved."""
         instance.profile.save()
         if instance.is_staff or instance.is_superuser:

@@ -1,4 +1,4 @@
-from models import LTIgrade
+from lti.models import LTIgrade
 import xml.etree.ElementTree as ET
 
 def replace_grade(request,grade):

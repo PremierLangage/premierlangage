@@ -1,8 +1,10 @@
 import time
 
 import htmlprint
+from django.shortcuts import get_object_or_404
 from enumfields import EnumIntegerField
 from jsonfield import JSONField
+from django.urls import resolve
 from django.db import models, IntegrityError
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
@@ -23,7 +25,37 @@ class Activity(LTIModel):
     open = models.BooleanField(null=False, default=True)
     pltp = models.ForeignKey(PLTP, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
-    
+
+    @classmethod
+    def get_or_create_from_lti(cls, request, lti_launch):
+        """Creates an Activity corresponding to ID in the url and sets its course according to the LTI request..
+
+        The corresponding Course must have already been created, Course.DoesNotExists will be
+        raised otherwise.
+
+        Returns a tuple of (object, created), where object is the retrieved or created object and
+        created is a boolean specifying whether a new object was created."""
+        course_id = lti_launch["context_id"]
+        consumer = lti_launch['oauth_consumer_key']
+        activity_id = lti_launch['resource_link_id']
+        course = Course.objects.get(consumer_id=course_id, consumer=consumer)
+
+        try:
+            return cls.objects.get(consumer_id=activity_id, consumer=consumer), False
+        except cls.DoesNotExists:
+            urlmatch = resolve(request.path)
+            if urlmatch.app_name + ":" + urlmatch.url_name != "playexo:activity":
+                logger.warning(request.path + " does not correspond to 'playexo:activity' in "
+                                              "Activity.get_or_create_from_lti")
+                raise Http404("Activity could not be found.")
+            activity_id = urlmatch.kwargs['activity_id']
+            parent = get_object_or_404(Activity, id=activity_id)
+            new = Activity.objects.create(outcome_url=outcome_url, sourcedid=sourcedid,
+                                          consumer_id=activity_id, consumer=consumer,
+                                          name=parent.name, pltp=parent.pltp, course=course)
+            return new, True
+
+
     def __str__(self):
         return str(self.id) + " " + self.name
 
@@ -261,7 +293,7 @@ class SessionExercise(SessionExerciseAbstract):
         
         if not self.built:
             self.build(request)
-        dic = dict(self.context)
+        dic = dict(self.context if not context else context)
         dic.update(predic)
         
         for key in dic:
@@ -278,7 +310,7 @@ class SessionExercise(SessionExerciseAbstract):
         try:
             pl = self.pl
             if pl:
-                return self.get_pl(request, context=None)
+                return self.get_pl(request, context)
             else:
                 dic = dict(self.context if not context else context)
                 dic['user_settings__'] = self.activity_session.user.profile

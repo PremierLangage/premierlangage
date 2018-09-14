@@ -111,10 +111,12 @@ class LTIAuthMiddleware(MiddlewareMixin):
                 }
                 
                 # Creating and updating data according to lti_launch
-                Course.get_or_create_from_lti(request, user, lti_launch)
-                Activity.get_or_create_from_lti(request, user, lti_launch)
-                ActivityOutcome.get_or_create_from_lti(request, user, lti_launch)
                 user.profile.set_role_lti(lti_launch)
+                Course.get_or_create_from_lti(request, user, lti_launch)
+                urlmatch = resolve(request.path)
+                if 'activity' in request.path:
+                    Activity.get_or_create_from_lti(request, user, lti_launch)
+                    ActivityOutcome.get_or_create_from_lti(request, user, lti_launch)
             
             else:
                 # User could not be authenticated!
