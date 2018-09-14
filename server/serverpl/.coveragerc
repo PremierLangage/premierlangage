@@ -3,5 +3,6 @@
 omit =
     */apps.py
     serverpl/wsgi.py
+    serverpl/config_example.py
     serverpl/install/*
     */test*

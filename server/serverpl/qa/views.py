@@ -309,9 +309,8 @@ class AbstractVoteView:
             pk - Primary Key of the foreign model of this vote.
                  The question_pk will be used if none is provided"""
         vote = request.GET.get('vote')
-        
         if not vote:
-            HttpResponseBadRequest()
+            return HttpResponseBadRequest()
         
         foreign = get_object_or_404(self.foreign_model, pk=pk if pk else question_pk)
         value = vote == "up"

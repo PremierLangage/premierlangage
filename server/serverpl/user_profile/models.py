@@ -6,8 +6,10 @@ from django.conf import settings
 from django.core.files import File
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models import F
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils import timezone
 
 from user_profile.utils import avatar_path, generate_identicon
 from user_profile.enums import Role, EditorTheme, ColorBlindness
@@ -50,8 +52,10 @@ class Profile(LTIModel):
     
     def mod_rep(self, added_points):
         """Core function to modify the reputation of the user profile."""
-        self.rep += added_points
+        
+        self.rep = F('rep') + added_points
         self.save()
+        self.refresh_from_db()
     
     
     def is_admin(self):
