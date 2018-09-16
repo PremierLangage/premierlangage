@@ -41,21 +41,23 @@ class SandboxBuild:
         return env
     
     def call(self, request_timeout=10):
+        files = {'environment.tgz': tar_from_dic(self._build_env())}
+        data = {'test': True} if self.test else {}
+        logger.info("Building on sandbox '" + self.sandbox + "'.")
+        url = os.path.join(self.sandbox, "build/")
+
         try:
-            files = {'environment.tgz': tar_from_dic(self._build_env())}
-            data = {'test': True} if self.test else {}
-            logger.info("Building on sandbox '" + self.sandbox + "'.")
-            url = os.path.join(self.sandbox, "build/")
             response = requests.post(url, data=data, files=files, timeout=request_timeout)
-            return json.loads(response.text)
+            response = json.loads(response.text)
         except json.decoder.JSONDecodeError:
             msg = "Sandbox '" + url + "' returned a non JSON response:\n" + response.text
             logger.critical(msg)
             raise SandboxUnavailable(msg)
-        except:
+        except Exception:
             msg = "Could not join the sandbox '" + url + "'."
             logger.exception(msg)
             raise SandboxUnavailable(msg)
+        return response
 
 
 
@@ -68,23 +70,23 @@ class SandboxEval:
     
     
     def check(self):
+        url = os.path.join(self.sandbox, "env/%s/")
         try:
-            url = os.path.join(self.sandbox, "env/%s/")
             r = requests.head(url % str(self.uuid), timeout=1)
             return 200 <= r.status_code <= 299
-        except:
+        except Exception:
             msg = "Could not join the sandbox '" + url + "'."
             logger.exception(msg)
             raise SandboxUnavailable(msg)
     
 
     def call(self, request_timeout=10):
+        data = {'answers': json.dumps(self.answers), }
+        logger.info("Evaluating on sandbox '" + self.sandbox + "'.")
+        url = os.path.join(self.sandbox, "eval/%s/")
         try:
-            data={'answers': json.dumps(self.answers),}
-            logger.info("Evaluating on sandbox '" + self.sandbox + "'.")
-            url = os.path.join(self.sandbox, "eval/%s/")
             response = requests.post(url % str(self.uuid), data=data, timeout=request_timeout)
-            return json.loads(response.text)
+            response = json.loads(response.text)
         except json.decoder.JSONDecodeError:
             msg = "Sandbox '" + url + "' returned a non JSON response:\n" + response.text
             logger.critical(msg)
@@ -93,3 +95,4 @@ class SandboxEval:
             msg = "Could not join the sandbox '" + url + "'."
             logger.exception(msg)
             raise SandboxUnavailable(msg)
+        return response
