@@ -5,7 +5,7 @@
 #  
 #  Copyright 2018 Coumes Quentin
 
-from os.path import splitext, basename, normpath, join, normpath
+from os.path import splitext, basename, normpath
 
 from django.conf import settings
 
@@ -41,7 +41,8 @@ class SemanticError(Exception):
 
 
 class DirectoryNotFound(Exception):
-    """Raised when a directory named with the syntax 'directory:path' couldn't be found in the database."""
+    """Raised when a directory named with the syntax 'directory:path'
+    could not be found in the database."""
 
     def __init__(self, path, line, name, lineno, message="Directory not found"):
         self.path = displayed_path(path)

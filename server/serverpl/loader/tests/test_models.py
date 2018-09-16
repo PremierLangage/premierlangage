@@ -1,23 +1,14 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-#
-#  test_models.py
-#  
-#  
-
-
 from django.test import TestCase, Client
 
 from loader.models import PL, PLTP
 
-import logging
 
 
 class ModelsTestCase(TestCase):
     
     @classmethod
-    def setUpTestData(self):
-        self.c = Client()
+    def setUpTestData(cls):
+        cls.c = Client()
        
         
     def test_pl(self):
@@ -36,14 +27,6 @@ class ModelsTestCase(TestCase):
         
         pltp = PLTP.objects.create(sha1=sha1, json={}, name=name, rel_path=rel_path)
         self.assertEqual(str(pltp), name)
-        
         pltp.pl.add(pl)
-        
         pltp.delete()
-        
-        #verifie que delete à bien fonctionné
-        try:
-            pltp.delete()
-            self.assertEqual("false", "true")
-        except:
-            self.assertEqual("true", "true")
+
