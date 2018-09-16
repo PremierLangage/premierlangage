@@ -67,7 +67,7 @@ class MoveTestCase(TestCase):
             )
             self.assertEqual(response.status_code, 200)
             self.assertContains(response, ("Impossible to move 'tests.txt' inside '../../../':"
-                                           "this directory does not exists."))
+                                           " this directory does not exists."))
         except AssertionError:
             m = list(response.context['messages'])
             if m:
@@ -88,7 +88,7 @@ class MoveTestCase(TestCase):
             )
             self.assertEqual(response.status_code, 200)
             self.assertContains(response, ("Impossible to move 'extract_test' inside '/': name"
-                                           "'extract_test' already exists in destination."))
+                                           " 'extract_test' already exists in destination."))
         except AssertionError:
             m = list(response.context['messages'])
             if m:

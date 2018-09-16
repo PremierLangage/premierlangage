@@ -37,7 +37,7 @@ class LTIOutcome(models.Model):
     
     class Meta:
         abstract = True
-        unique_together = ('outcome_url', 'sourcedid',)
+        unique_together = ('url', 'sourcedid',)
 
 
 

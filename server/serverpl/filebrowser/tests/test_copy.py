@@ -167,7 +167,7 @@ class CopyTestCase(TestCase):
       
             self.assertEqual(response.status_code, 200)
             self.assertContains(response, ("Impossible to copy 'TPE' in '../../':"
-                                           + "this directory does not exists."))
+                                           + " this directory does not exists."))
             
         except AssertionError :
             m = list(response.context['messages'])
