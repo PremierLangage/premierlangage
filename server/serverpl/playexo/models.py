@@ -43,20 +43,25 @@ class Activity(LTIModel):
         course_id = lti_launch["context_id"]
         consumer = lti_launch['oauth_consumer_key']
         activity_id = lti_launch['resource_link_id']
-        course = Course.objects.get(consumer_id=course_id, consumer=consumer)
+        activity_name = lti_launch['resource_link_title']
+        if not (course_id and activity_id and activity_name and consumer):
+            raise Http404("Could not create Activity: on of these parameters are missing:"
+                  + "[context_id, resource_link_id, resource_link_title, oauth_consumer_key]")
 
+        course = Course.objects.get(consumer_id=course_id, consumer=consumer)
         try:
             return cls.objects.get(consumer_id=activity_id, consumer=consumer), False
-        except cls.DoesNotExists:
+        except Activity.DoesNotExist:
             urlmatch = resolve(request.path)
-            if urlmatch.app_name + ":" + urlmatch.url_name != "playexo:activity":
+            if not urlmatch.app_name or not urlmatch.url_name:
+                urlmatch = None
+            if urlmatch and urlmatch.app_name + ":" + urlmatch.url_name != "playexo:activity":
                 logger.warning(request.path + " does not correspond to 'playexo:activity' in "
                                               "Activity.get_or_create_from_lti")
                 raise Http404("Activity could not be found.")
-            activity_id = urlmatch.kwargs['activity_id']
-            parent = get_object_or_404(Activity, id=activity_id)
+            parent = get_object_or_404(Activity, id=urlmatch.kwargs['activity_id'])
             new = Activity.objects.create(consumer_id=activity_id, consumer=consumer,
-                                          name=parent.name, pltp=parent.pltp, course=course)
+                                          name=activity_name, pltp=parent.pltp, course=course)
             return new, True
 
 

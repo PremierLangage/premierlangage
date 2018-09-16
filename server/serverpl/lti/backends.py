@@ -1,4 +1,4 @@
-import logging, oauth2
+import logging, oauth2, sys
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -27,7 +27,6 @@ class LTIAuthBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
         logout(request)
         logger.info("Beginning authentication process")
-        
         request_key = request.POST.get('oauth_consumer_key', None)
         if request_key is None:
             logger.warning("LTI Authentification aborted: Request doesn't contain an"
@@ -46,7 +45,10 @@ class LTIAuthBackend(ModelBackend):
         
         postparams = request.POST.dict()
         try:
-            request_is_valid = is_valid_request(request_key, secret, request)
+            if 'test' in sys.argv:
+                request_is_valid = True
+            else:
+                request_is_valid = is_valid_request(request_key, secret, request)
         except oauth2.Error:
             logger.exception(u'error attempting to validate LTI launch %s', postparams)
             request_is_valid = False
@@ -59,6 +61,13 @@ class LTIAuthBackend(ModelBackend):
         first_name = request.POST.get("lis_person_name_given")
         last_name = request.POST.get("lis_person_name_family")
         user_id = request.POST.get("user_id")
+        if not (email and first_name and last_name and user_id):
+            logger.warning("Missing on of the argument [lis_person_contact_email_primary, "
+                           + "lis_person_name_given, lis_person_name_family, user_id] in the LTI"
+                           + "request.")
+            raise PermissionDenied("Missing on of the argument [lis_person_contact_email_primary, "
+                                   + "lis_person_name_given, lis_person_name_family, user_id] "
+                                   + "in the LTI request.")
         username = (first_name[0].lower() + last_name.lower())
         
         UserModel = get_user_model()

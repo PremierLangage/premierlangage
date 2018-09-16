@@ -26,10 +26,10 @@ class PL(models.Model):
 class PLTP(models.Model):
     sha1 = models.CharField(primary_key=True, max_length=160)
     json = JSONField()
-    name = models.CharField(max_length=50, null=False)
+    name = models.CharField(max_length=50)
     pl = models.ManyToManyField(PL)
     directory = models.ForeignKey(Directory, on_delete=models.SET_NULL, null=True)
-    rel_path = models.CharField(max_length=360, null=False)
+    rel_path = models.CharField(max_length=360, null=True)
     
     def __str__(self):
         return self.name

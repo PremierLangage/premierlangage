@@ -20,19 +20,24 @@ class Course(LTIModel):
         """Create a Course corresponding to the ressource in the LTI request.
         
         Returns a tuple of (object, created), where object is the retrieved or created object and
-        created is a boolean specifying whether a new object was created."""
+        created is a boolean specifying whether a new object was created.
+
+        Return None, False if parameters are missing in lti_launch."""
         course_id = lti_launch["context_id"]
         course_name = lti_launch.get("context_title")
         course_label = lti_launch.get("context_label")
         consumer = lti_launch['oauth_consumer_key']
-        
+        if not (course_id and course_name and course_label and consumer):
+            return None, False
+
         try:
             course = cls.objects.get(consumer_id=course_id, consumer=consumer)
             created = True
         except cls.DoesNotExist:
-            logger.info("New course created: '%s' (%s:%s)" % (course_name, consumer, course_id))
             course = cls.objects.create(consumer_id=course_id, consumer=consumer,
                                         name=course_name, label=course_label)
+            logger.info("New course created: %d - '%s' (%s:%s)"
+                        % (course.pk, course.name, consumer, course_id))
             created = False
             
         course.student.add(user)
@@ -51,7 +56,7 @@ class Course(LTIModel):
     
     def is_teacher(self, user):
         """Return True if the user is a teacher of the course."""
-        return user in self.teacher.all() or user.profile.is_admin()
+        return user in self.teacher.all()
     
     
     def __str__(self):

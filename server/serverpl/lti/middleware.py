@@ -6,7 +6,6 @@ from django.contrib import auth
 from django.core.exceptions import ImproperlyConfigured
 
 from lti.models import ActivityOutcome
-from lti.thread_local import set_current_request
 from classmanagement.models import Course
 from playexo.models import Activity
 
@@ -34,7 +33,6 @@ class LTIAuthMiddleware(MiddlewareMixin):
     """
 
     def process_request(self, request):
-        
         # AuthenticationMiddleware is required so that request.user exists.
         if not hasattr(request, 'user'):  # pragma: no cover
             logger.debug('improperly configured: requeset has no user attr')
@@ -48,15 +46,11 @@ class LTIAuthMiddleware(MiddlewareMixin):
         # These parameters should exist outside of session
         request.lti_initial_request = False
         request.lti_authentication_successful = False
-
-        resource_link_id = None
         if request.method == 'POST' \
                 and request.POST.get('lti_message_type') == 'basic-lti-launch-request':
             request.lti_initial_request = True
-
             # authenticate and log the user in
             user = auth.authenticate(request=request)
-
             if user is not None:
                 # User is valid.  Set request.user and persist user in the session
                 # by logging the user in.
@@ -115,9 +109,11 @@ class LTIAuthMiddleware(MiddlewareMixin):
                 user.profile.set_role_lti(lti_launch)
                 Course.get_or_create_from_lti(user, lti_launch)
                 urlmatch = resolve(request.path)
-                if urlmatch.app_name + ":" + urlmatch.url_name == "playexo:activity":
+                if not urlmatch.app_name or not urlmatch.url_name:
+                    urlmatch = None
+                if urlmatch and urlmatch.app_name + ":" + urlmatch.url_name == "playexo:activity":
                     Activity.get_or_create_from_lti(request, lti_launch)
-                    ActivityOutcome.get_or_create_from_lti(request, user, lti_launch)
+                    ActivityOutcome.get_or_create_from_lti(user, lti_launch)
             
             else:
                 # User could not be authenticated!

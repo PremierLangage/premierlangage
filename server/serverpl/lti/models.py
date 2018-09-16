@@ -5,7 +5,6 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.http import Http404
-from django.urls import resolve
 
 
 logger = logging.getLogger(__name__)
@@ -20,8 +19,8 @@ class LTIModel(models.Model):
     
     CONSUMER = ((i, i) for i in settings.LTI_OAUTH_CREDENTIALS.keys())
     
-    consumer_id = models.PositiveIntegerField(null=True, blank=True)
-    consumer = models.CharField(max_length=100, choices=CONSUMER, null=True, blank=True)
+    consumer_id = models.CharField(max_length=200, null=True, blank=True)
+    consumer = models.CharField(max_length=200, choices=CONSUMER, null=True, blank=True)
 
     class Meta:
         abstract = True
@@ -45,7 +44,7 @@ class ActivityOutcome(LTIOutcome):
     activity = models.ForeignKey('playexo.Activity', on_delete=models.CASCADE)
     
     @classmethod
-    def get_or_create_from_lti(cls, request, user, lti_launch):
+    def get_or_create_from_lti(cls, user, lti_launch):
         """Create an ActivityOutcome corresponding to the ressource in the LTI request.
         
         The corresponding Activity must have already been created, Activity.DoesNotExists will be
@@ -55,19 +54,19 @@ class ActivityOutcome(LTIOutcome):
         Returns a tuple of (object, created), where object is the retrieved or created object and
         created is a boolean specifying whether a new object was created."""
         Activity = apps.get_model('playexo', 'Activity')
+        consumer = lti_launch['oauth_consumer_key']
         outcome_url = lti_launch['lis_outcome_service_url']
         sourcedid = lti_launch["lis_result_sourcedid"]
-        
+        activity_id = lti_launch['resource_link_id']
+        if not (sourcedid and outcome_url and activity_id and consumer):
+            raise Http404("Could not create ActivityOutcome: on of these parameters are missing:"
+                          + "[lis_result_sourcedid, lis_outcome_service_url, resource_link_id, "
+                          + "oauth_consumer_key]")
+
         try:
-            return cls.objects.get(outcome_url=outcome_url, sourcedid=sourcedid), False
-        except cls.DoesNotExists:
-            urlmatch = resolve(request.path)
-            if urlmatch.app_name + ":" + urlmatch.url_name != "playexo:activity":
-                logger.warning(request.path + " does not correspond to 'playexo:activity' in "
-                                              "Activity.get_or_create_from_lti")
-                raise Http404("Activity could not be found.")
-            activity_id = urlmatch.kwargs['activity_id']
-            activity = Activity.objects.get(id=activity_id)
-            outcome = cls.objects.create(outcome_url=outcome_url, sourcedid=sourcedid,
+            return cls.objects.get(url=outcome_url, sourcedid=sourcedid), False
+        except ActivityOutcome.DoesNotExist:
+            activity = Activity.objects.get(consumer_id=activity_id, consumer=consumer)
+            outcome = cls.objects.create(url=outcome_url, sourcedid=sourcedid,
                                          activity=activity, user=user)
             return outcome, True
