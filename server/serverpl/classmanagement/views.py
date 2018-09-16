@@ -65,7 +65,7 @@ def course_view(request, id):
                 raise Http404("L'activité d'ID '"+str(request.GET.get("id", None))+"' introuvable.")
     
     activity = list()
-    for item in course.activity.all().order_by("id"):
+    for item in course.activity_set.all().order_by("id"):
         pl = [
             {
                 'name': elem.json['title'],
@@ -108,7 +108,7 @@ def course_summary(request, id):
                     + "' denied to access summary of course'" + course.name + "'.")
         raise PermissionDenied("Vous n'êtes pas professeur de cette classe.")
     
-    activities = course.activity.all().order_by("id")
+    activities = course.activity_set.all().order_by("id")
     student = list()
     for user in course.student.all():
         tp = list()
@@ -198,7 +198,7 @@ def student_summary(request, course_id, student_id):
         raise PermissionDenied("Vous n'êtes pas professeur de cette classe.")
         
     student = User.objects.get(id=student_id)
-    activities = course.activity.all().order_by("id")
+    activities = course.activity_set.all().order_by("id")
     
     tp = list()
     for activity in activities:

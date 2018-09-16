@@ -1,2 +1,0 @@
-def carre(a):
-	return a*a

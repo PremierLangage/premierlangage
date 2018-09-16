@@ -4,7 +4,7 @@ Si vous le souhaitez, il vous est possible d'écrire un parseur utilisant votre 
 Le fichier contenant le parser doit respecter quelques consignes:
 
 * Une classe avec un constructeur acceptant un répertoire et un chemin
-* Une méthode **parse(self)** retournant un tuple:
+* Une méthode **parse(cls)** retournant un tuple:
     * Un dictionnaire contenant les clés du fichier parser
     * Une liste (peut être vide) de warnings (str).
 * Une fonction **get_parser()** retournant un dictionnaire à 3 clés:
@@ -13,7 +13,7 @@ Le fichier contenant le parser doit respecter quelques consignes:
     * __type__: Le type du fichier obtenu ('pl' ou 'pltp')
 * L'ensemble des erreurs (syntaxe, semantic, chemin_incorrect) doit lever une exception correspondante contenant le chemin du fichier en train d'être parser et si possible la ligne et le numéro de ligne. Certaines exceptions prédéfinies peuvent être importé de *loader.exceptions*, voir [Exceptions prédéfinies](./parser_exception/).
 
-De plus, le dictionnaire retourner par la méthode **parse(self)** doit respecter quelques règles:
+De plus, le dictionnaire retourner par la méthode **parse(cls)** doit respecter quelques règles:
 
 * PL & PLTP
     * Le dictionnaire doit contenir une clé *__format* contenant l'extension du fichier

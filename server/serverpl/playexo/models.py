@@ -556,7 +556,7 @@ class Answer(models.Model):
             State.ERROR:       [0.0, 0],
         }
         
-        for activity in course.activity.all():
+        for activity in course.activity_set.all():
             summary = Answer.pltp_summary(activity.pltp, user)
             for k in summary:
                 state[k][1] += int(summary[k][1])

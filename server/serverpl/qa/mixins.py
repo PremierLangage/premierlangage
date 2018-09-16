@@ -2,15 +2,11 @@
 
 import datetime
 
-from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
 from django.utils import timezone
-from django.utils.decorators import method_decorator
-from django.views.generic import View
 
 
 
-class DateMixin():
+class DateMixin:
     """Provide a method indicating how much time ago something was created according to pub_date
     field."""
     
