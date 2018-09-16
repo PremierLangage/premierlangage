@@ -89,7 +89,7 @@ class SandboxEval:
             msg = "Sandbox '" + url + "' returned a non JSON response:\n" + response.text
             logger.critical(msg)
             raise SandboxUnavailable(msg)
-        except:
+        except Exception:
             msg = "Could not join the sandbox '" + url + "'."
             logger.exception(msg)
             raise SandboxUnavailable(msg)

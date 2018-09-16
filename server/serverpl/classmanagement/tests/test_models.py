@@ -13,7 +13,7 @@ from django.contrib.auth.models import User
 
 from classmanagement.models import Course
 
-FAKE_FB_ROOT = join(settings.BASE_DIR,'classmanagement/tests/ressources')
+FAKE_FB_ROOT = join(settings.BASE_DIR, 'classmanagement/tests/ressources')
 
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
 class ModelsTestCase(TestCase):

@@ -8,8 +8,8 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
-from django.http import Http404, HttpResponseRedirect, HttpResponseNotAllowed, HttpResponseBadRequest
-from django.shortcuts import redirect, reverse
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import redirect
 from django.urls import reverse
 
 from classmanagement.models import Course
@@ -27,7 +27,11 @@ def index(request):
     course = list()
     for item in request.user.course_set.all():
         summary = Answer.user_course_summary(item, request.user)
-        completion = [{'name': "", 'count': summary[key][1], 'class': key.template} for key in summary]
+        completion = [{
+            'name': "",
+            'count': summary[key][1],
+            'class': key.template
+        } for key in summary]
         
         course.append({
             'id': item.id,
@@ -42,26 +46,29 @@ def index(request):
 
 @csrf_exempt
 @login_required
-def course_view(request, id):
+def course_view(request, pk):
     try:
-        course = Course.objects.get(id=id)
-    except:
-        raise Http404("Course (id: "+str(id)+") not found.")
+        course = Course.objects.get(id=pk)
+    except Course.DoesNotExist:
+        raise Http404("Course (id: " + str(pk) + ") not found.")
     if not course.is_member(request.user) and not request.user.profile.is_admin():
         logger.warning("User '"+request.user.username+"' denied to access course'"+course.name+"'.")
         raise PermissionDenied("Vous n'êtes pas membre de cette classe.")
     
     if request.method == 'GET':
         if request.GET.get("action", None) == "toggle_activity":
-            if not request.user in course.teacher.all():
-                logger.warning("User '"+request.user.username+"' denied to toggle course state'"+course.name+"'.")
-                raise PermissionDenied("Vous n'avez pas les droits nécessaires pour fermer/ouvrir cette activité.")
+            if request.user not in course.teacher.all():
+                logger.warning("User '" + request.user.username
+                               + "' denied to toggle course state'"+course.name+"'.")
+                raise PermissionDenied("Vous n'avez pas les droits nécessaires pour fermer/ouvrir"
+                                       + "cette activité.")
             try:
                 act = Activity.objects.get(id=request.GET.get("id", None))
                 act.open = not act.open
                 act.save()
-                logger.info("User '"+request.user.username+"' set activity '"+act.name+"' 'open' attribute to '"+str(act.open)+"' in '"+course.name+"'.")
-            except:
+                logger.info("User '" + request.user.username + "' set activity '" + act.name + "' "
+                            + "'open' attribute to '"+str(act.open)+"' in '"+course.name+"'.")
+            except Activity.DoesNotExist:
                 raise Http404("L'activité d'ID '"+str(request.GET.get("id", None))+"' introuvable.")
     
     activity = list()
@@ -83,7 +90,7 @@ def course_view(request, id):
             'pl': pl,
             'id': item.id,
             'open': item.open,
-            'width':str(100/len_pl),
+            'width': str(100/len_pl),
         })
         
     return render(request, 'classmanagement/course.html', {
@@ -91,19 +98,19 @@ def course_view(request, id):
         'activity': activity,
         'teacher': course.teacher.all(),
         'instructor': True if request.user in course.teacher.all() else False,
-        'course_id': id,
+        'course_id': pk,
     })
 
 
 
 @csrf_exempt
 @login_required
-def course_summary(request, id):
+def course_summary(request, pk):
     try:
-        course = Course.objects.get(id=id)
-    except:
+        course = Course.objects.get(id=pk)
+    except Course.DoesNotExist:
         raise Http404("Impossible d'accéder à la page, cette classe n'existe pas.")
-    if not request.user in course.teacher.all():
+    if request.user not in course.teacher.all():
         logger.info("User '" + request.user.username 
                     + "' denied to access summary of course'" + course.name + "'.")
         raise PermissionDenied("Vous n'êtes pas professeur de cette classe.")
@@ -116,9 +123,9 @@ def course_summary(request, id):
             summary = Answer.pltp_summary(activity.pltp, user)
             tp.append({
                 'state': [{
-                        'percent':summary[i][0],
-                        'count':  summary[i][1],
-                        'class':  i.template
+                        'percent': summary[i][0],
+                        'count':   summary[i][1],
+                        'class':   i.template
                     }
                     for i in summary
                 ],
@@ -132,7 +139,7 @@ def course_summary(request, id):
             'activities': tp,
         })
     
-    #Sort list by student's name
+    # Sort list by student's name
     student = sorted(student, key=lambda k: k['lastname'])
     
     return render(request, 'classmanagement/course_summary.html', {
@@ -140,20 +147,21 @@ def course_summary(request, id):
         'name': course.name,
         'student': student,
         'range_tp': range(len(activities)),
-        'course_id': id,
+        'course_id': pk,
     })
 
 
 
 @csrf_exempt
 @login_required
-def activity_summary(request, id, name):
+def activity_summary(request, pk, name):
     try:
-        course = Course.objects.get(id=id)
-    except:
+        course = Course.objects.get(id=pk)
+    except Course.DoesNotExist:
         raise Http404("Impossible d'accéder à la page, cette classe n'existe pas.")
     if request.user not in course.teacher.all():
-        logger.warning("User '"+request.user.username+"' denied to access summary of course'"+course.name+"'.")
+        logger.warning("User '" + request.user.username + "' denied to access summary of course'"
+                       + course.name + "'.")
         raise PermissionDenied("Vous n'êtes pas professeur de cette classe.")
     
     activity = Activity.objects.get(name=name)
@@ -172,7 +180,7 @@ def activity_summary(request, id, name):
             'question': tp,
         })
     
-    #Sort list by student's name
+    # Sort list by student's name
     student = sorted(student, key=lambda k: k['lastname'])
     
     return render(request, 'classmanagement/activity_summary.html', {
@@ -181,7 +189,7 @@ def activity_summary(request, id, name):
         'activity_name': activity.name,
         'student': student,
         'range_tp': range(len(activity.pltp.pl.all())),
-        'course_id': id,
+        'course_id': pk,
     })
 
 
@@ -191,10 +199,11 @@ def activity_summary(request, id, name):
 def student_summary(request, course_id, student_id):
     try:
         course = Course.objects.get(id=course_id)
-    except:
+    except Course.DoesNotExist:
         raise Http404("Impossible d'accéder à la page, cette classe n'existe pas.")
     if request.user not in course.teacher.all():
-        logger.warning("User '"+request.user.username+"' denied to access summary of course'"+course.name+"'.")
+        logger.warning("User '" + request.user.username + "' denied to access summary of course'"
+                       + course.name + "'.")
         raise PermissionDenied("Vous n'êtes pas professeur de cette classe.")
         
     student = User.objects.get(id=student_id)
