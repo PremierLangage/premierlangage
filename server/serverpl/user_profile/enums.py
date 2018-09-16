@@ -18,21 +18,21 @@ class ColorBlindness(Enum):
     """Used by .models.Profile to define the user's color blindness."""
     
     NONE = 0
-    PROTANOPIA = 1
+    PROTANOPIA   = 1
     DEUTERANOPIA = 2
-    TRITANOPIA = 3
+    TRITANOPIA   = 3
     
     class Label:
         NONE = 'Aucun'
-        PROTANOPIA = 'Protanope'
+        PROTANOPIA   = 'Protanope'
         DEUTERANOPIA = 'Deuteranope'
-        TRITANOPIA = 'Tritanope'
+        TRITANOPIA   = 'Tritanope'
     
     class Template:
         NONE = ''
         DEUTERANOPIA = 'deuteranopia'
-        PROTANOPIA =   'protanopia'
-        TRITANOPIA =   'tritanopia'
+        PROTANOPIA   = 'protanopia'
+        TRITANOPIA   = 'tritanopia'
 
 
 

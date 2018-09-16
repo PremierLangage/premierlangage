@@ -1,15 +1,10 @@
-import os
-from os.path import join, isdir
-
 from enumfields import EnumIntegerField
-from django.conf import settings
 from django.core.files import File
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import F
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.utils import timezone
 
 from user_profile.utils import avatar_path, generate_identicon
 from user_profile.enums import Role, EditorTheme, ColorBlindness
@@ -37,16 +32,15 @@ class Profile(LTIModel):
         """Set the user's role according to the LTI request."""
         for role in lti_launch["roles"]:
             if role in ["urn:lti:role:ims/lis/Administrator", "Administrator"]:
-               self.role = Role.ADMINISTRATOR
+                self.role = Role.ADMINISTRATOR
             if role in ["urn:lti:role:ims/lis/Observer", "Observer"]:
-               self.role = Role.OBSERVER
+                self.role = Role.OBSERVER
             if role in ["urn:lti:role:ims/lis/Learner", "Learner"]:
-               self.role = Role.LEARNER
+                self.role = Role.LEARNER
             if role in ["urn:lti:role:ims/lis/Instructor", "Instructor"]:
-               self.role = Role.INSTRUCTOR
-               course.teacher.add(user)
+                self.role = Role.INSTRUCTOR
             if role in ["urn:lti:role:ims/lis/ContentDeveloper", "ContentDeveloper"]:
-               self.role = Role.CONTENT_DEVELOPER
+                self.role = Role.CONTENT_DEVELOPER
         self.save()
     
     

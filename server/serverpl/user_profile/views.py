@@ -65,9 +65,9 @@ def edit_profile(request):
         editor_theme = request.POST.get("editor_theme", None)
         confirm = request.POST.get("confirm", False)
     
-        if color_blindness != None: # Can be 0
+        if color_blindness is not None:  # Can be 0
             request.user.profile.color_blindness = color_blindness
-        if editor_theme != None: # Can be 0
+        if editor_theme is not None:  # Can be 0
             request.user.profile.editor_theme = editor_theme
         
         request.user.profile.confirm = confirm == 'on'
