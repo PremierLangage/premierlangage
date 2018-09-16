@@ -3,7 +3,7 @@ import logging, oauth2
 
 logger = logging.getLogger(__name__)
 
-class Python3_SignatureMethod_HMAC_SHA1(oauth2.SignatureMethod_HMAC_SHA1):
+class Python3SignatureMethodHMACSHA1(oauth2.SignatureMethod_HMAC_SHA1):
     
     def check(self, request, consumer, token, signature):
         """ Overrides the check method of the class to convert the signature
@@ -19,7 +19,7 @@ class Python3_SignatureMethod_HMAC_SHA1(oauth2.SignatureMethod_HMAC_SHA1):
 
 def is_valid_request(consumer_key, consumer_secret, request):
     oauth_server = oauth2.Server()
-    signature_method = Python3_SignatureMethod_HMAC_SHA1()
+    signature_method = Python3SignatureMethodHMACSHA1()
     oauth_server.add_signature_method(signature_method)
     oauth_consumer = oauth2.Consumer(consumer_key, consumer_secret)
     try:

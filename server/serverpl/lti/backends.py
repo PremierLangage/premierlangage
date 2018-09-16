@@ -24,21 +24,24 @@ class LTIAuthBackend(ModelBackend):
     # Username prefix for users without an sis source id
     unknown_user_prefix = "cuid:"
     
-    def authenticate(self, request):
+    def authenticate(self, request, username=None, password=None, **kwargs):
         logout(request)
         logger.info("Beginning authentication process")
         
         request_key = request.POST.get('oauth_consumer_key', None)
         if request_key is None:
-            logger.warning("LTI Authentification aborted: Request doesn't contain an oauth_consumer_key; can't continue.")
+            logger.warning("LTI Authentification aborted: Request doesn't contain an"
+                           "oauth_consumer_key; can't continue.")
             raise PermissionDenied("Request doesn't contain an oauth_consumer_key; can't continue.")
         
         if not settings.LTI_OAUTH_CREDENTIALS:
-            logger.warning("LTI Authentification aborted: Missing LTI_OAUTH_CREDENTIALS in settings")
+            logger.warning("LTI Authentification aborted:"
+                           "Missing LTI_OAUTH_CREDENTIALS in settings")
             raise PermissionDenied("Missing LTI_OAUTH_CREDENTIALS in settings.")
         secret = settings.LTI_OAUTH_CREDENTIALS.get(request_key)
         if secret is None:
-            logger.warning("LTI Authentification aborted: Could not get a secret for key " + request_key)
+            logger.warning("LTI Authentification aborted: Could not get a secret for key "
+                           + request_key)
             raise PermissionDenied("Could not get a secret for key " + request_key)
         
         postparams = request.POST.dict()
@@ -51,8 +54,7 @@ class LTIAuthBackend(ModelBackend):
         if not request_is_valid:
             logger.warning("LTI Authentification aborted: signature check failed.")
             raise PermissionDenied("Invalid request: signature check failed.")
-        
-        user = None
+
         email = request.POST.get("lis_person_contact_email_primary")
         first_name = request.POST.get("lis_person_name_given")
         last_name = request.POST.get("lis_person_name_family")
@@ -69,13 +71,14 @@ class LTIAuthBackend(ModelBackend):
             i = 0
             while True:
                 try:
-                    user = UserModel.objects.create_user(username=username + ("" if not i else str(i)))
+                    user = UserModel.objects.create_user(
+                        username=username + ("" if not i else str(i)))
                 except IntegrityError:
                     i += 1
                     continue
                 break
             user.profile.consumer = request_key
-            user.profile.consumer_id = consumer_id=user_id
+            user.profile.consumer_id = user_id
             
         # update the user
         if email:

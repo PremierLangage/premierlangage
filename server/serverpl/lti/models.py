@@ -1,7 +1,14 @@
+import logging
+
 from django.apps import apps
 from django.conf import settings
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
+from django.http import Http404
+from django.urls import resolve
+
+
+logger = logging.getLogger(__name__)
 
 
 class LTIModel(models.Model):
@@ -21,15 +28,17 @@ class LTIModel(models.Model):
         unique_together = ('consumer_id', 'consumer_id',)
 
 
+
 class LTIOutcome(models.Model):
     """Abstract Model to store LTI outcome url and source id of a consumer's activity."""
-    outcome_url = models.CharField(max_length=300)
+    url = models.CharField(max_length=300)
     sourcedid = models.CharField(max_length=300)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     class Meta:
         abstract = True
         unique_together = ('outcome_url', 'sourcedid',)
+
 
 
 class ActivityOutcome(LTIOutcome):
@@ -52,7 +61,12 @@ class ActivityOutcome(LTIOutcome):
         try:
             return cls.objects.get(outcome_url=outcome_url, sourcedid=sourcedid), False
         except cls.DoesNotExists:
-            activity_id = int([i for i in request.path.split('/') if i])
+            urlmatch = resolve(request.path)
+            if urlmatch.app_name + ":" + urlmatch.url_name != "playexo:activity":
+                logger.warning(request.path + " does not correspond to 'playexo:activity' in "
+                                              "Activity.get_or_create_from_lti")
+                raise Http404("Activity could not be found.")
+            activity_id = urlmatch.kwargs['activity_id']
             activity = Activity.objects.get(id=activity_id)
             outcome = cls.objects.create(outcome_url=outcome_url, sourcedid=sourcedid,
                                          activity=activity, user=user)
