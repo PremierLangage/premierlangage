@@ -1,14 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-#
-#  test_parsers.py
-#
-#  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
-#
-
 import shutil
 
-from os.path import join, isdir, isfile
+from os.path import join, isdir
 
 from django.test import TestCase, Client, override_settings
 from django.conf import settings
@@ -17,21 +9,22 @@ from django.contrib.messages import constants as messages
 
 from filebrowser.models import Directory
 
+
 FAKE_FB_ROOT = join(settings.BASE_DIR, 'filebrowser/tests/ressources')
 
 
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
 class CreateDirectoryTestCase(TestCase):
     @classmethod
-    def setUpTestData(self):
-        self.user = User.objects.create_user(username='user', password='12345', id=100)
-        self.c = Client()
-        self.c.force_login(self.user, backend=settings.AUTHENTICATION_BACKENDS[0])
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='user', password='12345', id=100)
+        cls.c = Client()
+        cls.c.force_login(cls.user, backend=settings.AUTHENTICATION_BACKENDS[0])
         rel = join(settings.FILEBROWSER_ROOT, '100/')
         if isdir(rel):
             shutil.rmtree(join(rel))
-        self.folder = Directory.objects.get(name='100', owner=self.user)
-        shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder.root)
+        cls.folder = Directory.objects.get(name='100', owner=cls.user)
+        shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), cls.folder.root)
 
 
     def test_create_dir_method_not_allowed(self):
@@ -48,7 +41,7 @@ class CreateDirectoryTestCase(TestCase):
             {
                 'name' : 'dir_test2',
                 'option': 'directory-options-mkdir',
-                'target':'.',
+                'target': '.',
                    
             },
             follow=True
@@ -68,7 +61,7 @@ class CreateDirectoryTestCase(TestCase):
             {
                 'name' : 'dir_test2',
                 'option': 'directory-options-mkdir',
-                'target':'.',
+                'target': '.',
                    
             },
             follow=True
@@ -85,7 +78,7 @@ class CreateDirectoryTestCase(TestCase):
             {
                 
                 'option': 'directory-options-mkdir',
-                'target':'.',
+                'target': '.',
                    
             },
             follow=True
@@ -101,7 +94,7 @@ class CreateDirectoryTestCase(TestCase):
             {
                 'name' : 'dir/2',
                 'option': 'directory-options-mkdir',
-                'target':'.',
+                'target': '.',
                    
             },
             follow=True
@@ -119,7 +112,7 @@ class CreateDirectoryTestCase(TestCase):
             {
                 'name' : 'dir 2',
                 'option': 'directory-options-mkdir',
-                'target':'.',
+                'target': '.',
                    
             },
             follow=True

@@ -1,14 +1,5 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-#
-#  test_parsers.py
-#  
-#  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
-#  
-
 import os, shutil, subprocess
-
-from os.path import join, isdir
+from os.path import join
 
 from django.test import TestCase, Client, override_settings
 from django.conf import settings
@@ -18,7 +9,7 @@ from django.contrib.messages import constants as messages
 from filebrowser.models import Directory
 
 
-FAKE_FB_ROOT = join(settings.BASE_DIR,'filebrowser/tests/ressources')
+FAKE_FB_ROOT = join(settings.BASE_DIR, 'filebrowser/tests/ressources')
 
 
 
@@ -31,7 +22,8 @@ def command(cmd):
     )
     out, err = p.communicate()
     if p.returncode:
-        raise RuntimeError("Return code : " + str(p.returncode) + " - " + err.decode() + out.decode())
+        raise RuntimeError("Return code : " + str(p.returncode)
+                           + " - " + err.decode() + out.decode())
 
 
 
@@ -39,34 +31,34 @@ def command(cmd):
 class GitTestCase(TestCase):
     
     @classmethod
-    def setUpTestData(self):
-        self.user = User.objects.create_user(username='user', password='12345', id=100)
-        self.user2 = User.objects.create_user(username='user2', password='12345', id=200)
-        self.user3 = User.objects.create_user(username='user3', password='12345', id=300)
-        self.c = Client()
-        self.c.force_login(self.user,backend=settings.AUTHENTICATION_BACKENDS[0])
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='user', password='12345', id=100)
+        cls.user2 = User.objects.create_user(username='user2', password='12345', id=200)
+        cls.user3 = User.objects.create_user(username='user3', password='12345', id=300)
+        cls.c = Client()
+        cls.c.force_login(cls.user, backend=settings.AUTHENTICATION_BACKENDS[0])
         
-        self.folder = Directory.objects.get(name='100')
-        self.folder2 = Directory.objects.get(name='200')
-        self.host = Directory.objects.get(name='300')
+        cls.folder = Directory.objects.get(name='100')
+        cls.folder2 = Directory.objects.get(name='200')
+        cls.host = Directory.objects.get(name='300')
         
-        shutil.rmtree(self.folder.root)
-        shutil.rmtree(self.folder2.root)
-        shutil.rmtree(self.host.root)
-        shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder.root)
-        shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder2.root)
+        shutil.rmtree(cls.folder.root)
+        shutil.rmtree(cls.folder2.root)
+        shutil.rmtree(cls.host.root)
+        shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), cls.folder.root)
+        shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), cls.folder2.root)
         
-        command('git init --bare ' + self.host.root)
-        command('git init ' + self.folder.root)
-        command('git init ' + self.folder2.root)
+        command('git init --bare ' + cls.host.root)
+        command('git init ' + cls.folder.root)
+        command('git init ' + cls.folder2.root)
         cwd = os.getcwd()
-        os.chdir(self.folder2.root)
-        command('git remote add origin ' + self.host.root)
+        os.chdir(cls.folder2.root)
+        command('git remote add origin ' + cls.host.root)
         command('git add .')
         command('git commit -m "Initial commit"')
         command('git push --set-upstream origin master')
-        os.chdir(self.folder.root)
-        command('git remote add origin ' + self.host.root)
+        os.chdir(cls.folder.root)
+        command('git remote add origin ' + cls.host.root)
         command('touch to_be_pull')
         command('git add .')
         command('git commit -m "Initial commit"')
@@ -88,7 +80,7 @@ class GitTestCase(TestCase):
             '/filebrowser/home/TPE/opt/',
             {
                 'option': 'directory-git-status',
-                'target':'.',
+                'target': '.',
                 },
             follow=True
         )
@@ -100,7 +92,7 @@ class GitTestCase(TestCase):
             '/filebrowser/home/TPE/opt/',
             {
                 'option': 'directory-git-add',
-                'target':'.',
+                'target': '.',
                 },
             follow=True
         )
@@ -112,7 +104,7 @@ class GitTestCase(TestCase):
             '/filebrowser/home/TPE/opt/',
             {
                 'option': 'entry-git-checkout',
-                'target':'.',
+                'target': '.',
                 },
             follow=True
         )
@@ -140,7 +132,7 @@ class GitTestCase(TestCase):
             '/filebrowser/home/TPE/opt/',
             {
                 'option': 'directory-git-branch',
-                'target':'.',
+                'target': '.',
                 },
             follow=True
         )
@@ -176,12 +168,11 @@ class GitTestCase(TestCase):
             print("test", file=f)
         try:
             response = self.c.post(
-            '/filebrowser/home/TPE/opt/',
-            {
-                'commit':'mycommit',
-                'option': 'entry-git-commit',
-                'target':'function001.pl',
-            },
+                '/filebrowser/home/TPE/opt/', {
+                    'commit': 'mycommit',
+                    'option': 'entry-git-commit',
+                    'target': 'function001.pl',
+                },
                 follow=True
             )
             self.assertEqual(response.status_code, 200)
@@ -194,7 +185,7 @@ class GitTestCase(TestCase):
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
+                [print(i.level, ': ', i.message)for i in m]
             raise
     
     
@@ -205,12 +196,11 @@ class GitTestCase(TestCase):
             print("test2", file=f2)
         try:
             response = self.c.post(
-            '/filebrowser/home/opt/',
-            {
-                'commit':'mycommit2',
-                'option': 'directory-git-commit',
-                'target':'TPE',
-            },
+                '/filebrowser/home/opt/', {
+                    'commit': 'mycommit2',
+                    'option': 'directory-git-commit',
+                    'target': 'TPE',
+                },
                 follow=True
             )
             self.assertEqual(response.status_code, 200)
@@ -224,18 +214,17 @@ class GitTestCase(TestCase):
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
+                [print(i.level, ': ', i.message)for i in m]
             raise
     
     
     def test_commit_without_message(self):
         try:
             response = self.c.post(
-            '/filebrowser/home/TPE/opt/',
-            {
-                'option': 'entry-git-commit',
-                'target':'function001.pl',
-            },
+                '/filebrowser/home/TPE/opt/', {
+                    'option': 'entry-git-commit',
+                    'target': 'function001.pl',
+                },
                 follow=True
             )
             self.assertEqual(response.status_code, 400)
@@ -244,18 +233,17 @@ class GitTestCase(TestCase):
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
+                [print(i.level, ': ', i.message)for i in m]
             raise
     
     def test_push(self):
         open(join(FAKE_FB_ROOT, '100/TPE/function001.pl'), 'w+').close()
         try:
             response = self.c.post(
-            '/filebrowser/home/TPE/opt/',
-            {  
-                'option': 'directory-git-push',
-                'target': '.',
-            },
+                '/filebrowser/home/TPE/opt/', {
+                    'option': 'directory-git-push',
+                    'target': '.',
+                },
                 follow=True
             )
             self.assertEqual(response.status_code, 200)
@@ -265,7 +253,7 @@ class GitTestCase(TestCase):
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
+                [print(i.level, ': ', i.message)for i in m]
             raise
     
             
@@ -275,7 +263,7 @@ class GitTestCase(TestCase):
         
         try:
             response = self.c.get(
-            '/filebrowser/home/opt/?option=entry-git-checkout&target=.',
+                '/filebrowser/home/opt/?option=entry-git-checkout&target=.',
                 follow=True
             )
             self.assertEqual(response.status_code, 200)
@@ -288,7 +276,7 @@ class GitTestCase(TestCase):
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
+                [print(i.level, ': ', i.message)for i in m]
             raise
     
     
@@ -300,7 +288,7 @@ class GitTestCase(TestCase):
         
         try:
             response = self.c.get(
-            '/filebrowser/home/opt/?option=directory-git-checkout&target=.',
+                '/filebrowser/home/opt/?option=directory-git-checkout&target=.',
                 follow=True
             )
             self.assertEqual(response.status_code, 200)
@@ -312,7 +300,7 @@ class GitTestCase(TestCase):
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
+                [print(i.level, ': ', i.message)for i in m]
             raise
     
     def test_status(self):
@@ -321,7 +309,7 @@ class GitTestCase(TestCase):
         
         try:
             response = self.c.get(
-            '/filebrowser/home/opt/?option=directory-git-status&target=.',
+                '/filebrowser/home/opt/?option=directory-git-status&target=.',
                 follow=True
             )
             self.assertEqual(response.status_code, 200)
@@ -332,7 +320,7 @@ class GitTestCase(TestCase):
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
+                [print(i.level, ': ', i.message)for i in m]
             raise
     
     
@@ -342,7 +330,7 @@ class GitTestCase(TestCase):
         
         try:
             response = self.c.get(
-            '/filebrowser/home/opt/?option=directory-git-branch&target=.',
+                '/filebrowser/home/opt/?option=directory-git-branch&target=.',
                 follow=True
             )
             self.assertEqual(response.status_code, 200)
@@ -353,7 +341,7 @@ class GitTestCase(TestCase):
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
+                [print(i.level, ': ', i.message)for i in m]
             raise
     
     
@@ -363,7 +351,7 @@ class GitTestCase(TestCase):
         
         try:
             response = self.c.get(
-            '/filebrowser/home/TPE/opt/?option=entry-git-add&target=function001.pl',
+                '/filebrowser/home/TPE/opt/?option=entry-git-add&target=function001.pl',
                 follow=True
             )
             self.assertEqual(response.status_code, 200)
@@ -375,7 +363,7 @@ class GitTestCase(TestCase):
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
+                [print(i.level, ': ', i.message)for i in m]
             raise
     
     def test_change_branch(self):
@@ -384,13 +372,12 @@ class GitTestCase(TestCase):
         
         try:
             response = self.c.post(
-            '/filebrowser/home/TPE/opt/',
-            {
-                'name': 'test',
-                'new':True,
-                'option': 'directory-git-chbranch',
-                'target':'function001.pl',
-            },
+                '/filebrowser/home/TPE/opt/', {
+                    'name': 'test',
+                    'new': True,
+                    'option': 'directory-git-chbranch',
+                    'target': 'function001.pl',
+                },
                 follow=True
             )
             self.assertEqual(response.status_code, 200)
@@ -398,12 +385,11 @@ class GitTestCase(TestCase):
             self.assertEqual(messages.SUCCESS, m[0].level)
             
             response = self.c.post(
-            '/filebrowser/home/opt/',
-            {
-                'name': "master",
-                'option': 'directory-git-chbranch',
-                'target':'.',
-            },
+                '/filebrowser/home/opt/', {
+                    'name': "master",
+                    'option': 'directory-git-chbranch',
+                    'target': '.',
+                },
                 follow=True
             )
             self.assertEqual(response.status_code, 200)
@@ -413,7 +399,7 @@ class GitTestCase(TestCase):
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
+                [print(i.level, ': ', i.message)for i in m]
             raise
             
             
@@ -423,12 +409,11 @@ class GitTestCase(TestCase):
         
         try:
             response = self.c.post(
-            '/filebrowser/home/TPE/opt/',
-            {
-                'new':'password',
-                'option': 'directory-git-chbranch',
-                'target':'function001.pl',
-            },
+                '/filebrowser/home/TPE/opt/', {
+                    'new': 'password',
+                    'option': 'directory-git-chbranch',
+                    'target': 'function001.pl',
+                },
                 follow=True
             )
             self.assertEqual(response.status_code, 400)
@@ -438,21 +423,20 @@ class GitTestCase(TestCase):
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
+                [print(i.level, ': ', i.message)for i in m]
             raise
             
                     
     def test_pull(self):
         try:
             response = self.c.post(
-            '/filebrowser/home/TPE/opt/',
-            {
-                'username':'user3',
-                'password':'12345',
-                'url': "file://" + self.host.root,  
-                'option': 'directory-git-pull',
-                'target':'.',
-            },
+                '/filebrowser/home/TPE/opt/', {
+                    'username': 'user3',
+                    'password': '12345',
+                    'url': "file://" + self.host.root,
+                    'option': 'directory-git-pull',
+                    'target': '.',
+                },
                 follow=True
             )
             self.assertEqual(response.status_code, 200)
@@ -462,22 +446,21 @@ class GitTestCase(TestCase):
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
+                [print(i.level, ': ', i.message)for i in m]
             raise
             
             
     def test_clone(self):
         try:
             response = self.c.post(
-            '/filebrowser/home/TPE/opt/',
-            {
-                'username':'user3',
-                'password':'12345',
-                'url': "file://" + self.host.root, 
-                'destination':'essai', 
-                'option': 'directory-options-clone',
-                'target':'.',
-            },
+                '/filebrowser/home/TPE/opt/', {
+                    'username': 'user3',
+                    'password': '12345',
+                    'url': "file://" + self.host.root,
+                    'destination': 'essai',
+                    'option': 'directory-options-clone',
+                    'target': '.',
+                },
                 follow=True
             )
             self.assertEqual(response.status_code, 200)
@@ -487,18 +470,17 @@ class GitTestCase(TestCase):
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
+                [print(i.level, ': ', i.message)for i in m]
             raise
 
 
     def test_reset(self):
         try:
             response = self.c.post(
-            '/filebrowser/home/TPE/opt/',
-            {
-                'option': 'entry-git-reset',
-                'target':'function001.pl',
-            },
+                '/filebrowser/home/TPE/opt/', {
+                    'option': 'entry-git-reset',
+                    'target': 'function001.pl',
+                },
                 follow=True
             )
             self.assertEqual(response.status_code, 200)
@@ -508,8 +490,5 @@ class GitTestCase(TestCase):
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:")
-                [print(i.level,':',i.message) for i in m]
+                [print(i.level, ': ', i.message)for i in m]
             raise
-
-
-    

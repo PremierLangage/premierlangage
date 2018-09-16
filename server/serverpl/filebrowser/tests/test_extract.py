@@ -19,21 +19,21 @@ from django.contrib.auth.models import User
 from filebrowser.models import Directory
 
 
-FAKE_FB_ROOT = join(settings.BASE_DIR,'filebrowser/tests/ressources')
+FAKE_FB_ROOT = join(settings.BASE_DIR, 'filebrowser/tests/ressources')
 
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
 class ExtractTestCase(TestCase):
     
     @classmethod
-    def setUpTestData(self):
-        self.user = User.objects.create_user(username='user', password='12345', id=100)
-        self.c = Client()
-        self.c.force_login(self.user, backend=settings.AUTHENTICATION_BACKENDS[0])
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='user', password='12345', id=100)
+        cls.c = Client()
+        cls.c.force_login(cls.user, backend=settings.AUTHENTICATION_BACKENDS[0])
         rel = join(settings.FILEBROWSER_ROOT, '100/')
         if isdir(rel):
             shutil.rmtree(join(rel))
-        self.folder = Directory.objects.get(name='100', owner=self.user)
-        shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), self.folder.root)
+        cls.folder = Directory.objects.get(name='100', owner=cls.user)
+        shutil.copytree(join(FAKE_FB_ROOT, 'fake_filebrowser_data'), cls.folder.root)
 
 
     def test_extract_method_not_allowed(self):
@@ -41,7 +41,7 @@ class ExtractTestCase(TestCase):
                 '/filebrowser/home/opt/',
                 {
                     'option': 'entry-direct-extract',
-                    'target':'.dirtmp.zip',
+                    'target': '.dirtmp.zip',
                 },
                 follow=True
             )
@@ -49,12 +49,12 @@ class ExtractTestCase(TestCase):
     
         
     def test_is_zipfile(self):
-        rel = join(settings.FILEBROWSER_ROOT,'100/extract_test')
+        rel = join(settings.FILEBROWSER_ROOT, '100/extract_test')
         self.assertTrue(is_zipfile(join(rel, 'application.zip')))
         
     
     def test_zipfile(self):
-        rel = join(settings.FILEBROWSER_ROOT,'100/extract_test')
+        rel = join(settings.FILEBROWSER_ROOT, '100/extract_test')
         zfile = ZipFile(join(rel, 'application.zip'))
         self.assertEqual(zfile.testzip(), None)
         zfile.close()
@@ -62,7 +62,7 @@ class ExtractTestCase(TestCase):
 
     def test_open_zipfile(self):
         try:
-            rel = join(settings.FILEBROWSER_ROOT,'100/extract_test')
+            rel = join(settings.FILEBROWSER_ROOT, '100/extract_test')
             zfile = ZipFile(join(rel, 'application2.zip'))
             tab = list(zfile.namelist())
 
@@ -77,7 +77,7 @@ class ExtractTestCase(TestCase):
             
             rel = join(rel, 'application2')
             for i in range(0, len(tab)):
-                if(tab[i][-1] == '/'):
+                if tab[i][-1] == '/':
                     self.assertTrue(isdir(join(rel, tab[i][:-1])))
                 else:
                     self.assertTrue(isfile(join(rel, tab[i])))
@@ -85,18 +85,18 @@ class ExtractTestCase(TestCase):
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:") 
-                [print(i.level,':',i.message) for i in m]
+                [print(i.level, ': ', i.message)for i in m]
             raise
     
         
     def test_is_tarfile(self):
-        rel = join(settings.FILEBROWSER_ROOT,'100/extract_test')
+        rel = join(settings.FILEBROWSER_ROOT, '100/extract_test')
         self.assertTrue(is_tarfile(join(rel, 'application.tar')))
       
       
     def test_open_tarfile(self):
         try:
-            rel = join(settings.FILEBROWSER_ROOT,'100/extract_test')
+            rel = join(settings.FILEBROWSER_ROOT, '100/extract_test')
             tar = tarfile.open(join(rel, "application.tar"))
             tab = tar.getnames()
             
@@ -111,31 +111,31 @@ class ExtractTestCase(TestCase):
             
             rel = join(rel, 'application')
             for i in range(0, len(tab)):
-                if(isdir(tab[i])):
+                if isdir(tab[i]):
                     self.assertTrue(isdir(join(rel, tab[i])))
-                elif(isfile(tab[i])):
+                elif isfile(tab[i]):
                     self.assertTrue(isfile(join(rel, tab[i])))
         except AssertionError:
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:") 
-                [print(i.level,':',i.message) for i in m]
+                [print(i.level, ': ', i.message)for i in m]
             raise
         
 
     def test_is_targzfile(self):
-        rel = join(settings.FILEBROWSER_ROOT,'100/extract_test')
+        rel = join(settings.FILEBROWSER_ROOT, '100/extract_test')
         self.assertTrue(is_tarfile(join(rel, 'application.tar.gz')))
         
         
     def test_is_tarxzfile(self):
-        rel = join(settings.FILEBROWSER_ROOT,'100/extract_test')
+        rel = join(settings.FILEBROWSER_ROOT, '100/extract_test')
         self.assertTrue(is_tarfile(join(rel, 'application.tar.xz')))
         
         
     def test_open_targzfile(self):
         try:
-            rel = join(settings.FILEBROWSER_ROOT,'100/extract_test')
+            rel = join(settings.FILEBROWSER_ROOT, '100/extract_test')
             tar = tarfile.open(join(rel, "application.tar.gz"))
             tab = tar.getnames()
             
@@ -150,21 +150,21 @@ class ExtractTestCase(TestCase):
             
             rel = join(rel, 'application')
             for i in range(0, len(tab)):
-                if(isdir(tab[i])):
+                if isdir(tab[i]):
                     self.assertTrue(isdir(join(rel, tab[i])))
-                elif(isfile(tab[i])):
+                elif isfile(tab[i]):
                     self.assertTrue(isfile(join(rel, tab[i])))
         except AssertionError:
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:") 
-                [print(i.level,':',i.message) for i in m]
+                [print(i.level, ': ', i.message)for i in m]
             raise
                 
                 
     def test_open_tarxzfile(self):
         try:
-            rel = join(settings.FILEBROWSER_ROOT,'100/extract_test')
+            rel = join(settings.FILEBROWSER_ROOT, '100/extract_test')
             tar = tarfile.open(join(rel, "application.tar.xz"))
             tab = tar.getnames()
             
@@ -179,13 +179,13 @@ class ExtractTestCase(TestCase):
             
             rel = join(rel, 'application')
             for i in range(0, len(tab)):
-                if(isdir(tab[i])):
+                if isdir(tab[i]):
                     self.assertTrue(isdir(join(rel, tab[i])))
-                elif(isfile(tab[i])):
+                elif isfile(tab[i]):
                     self.assertTrue(isfile(join(rel, tab[i])))
         except AssertionError:
             m = list(response.context['messages'])
             if m:
                 print("\nFound messages:") 
-                [print(i.level,':',i.message) for i in m]
+                [print(i.level, ': ', i.message)for i in m]
             raise

@@ -24,7 +24,7 @@ class FilterTestCase(TestCase):
     """Tests filters defined in filebrowser.filter"""
     
     @classmethod
-    def setUpTestData(self):
+    def setUpTestData(cls):
         user = User.objects.create_user(username='user', password='12345')
         user.save()
         Directory.objects.create(name='dir1', owner=user).save()
@@ -96,4 +96,3 @@ class FilterTestCase(TestCase):
 
     def test_is_not_directory(self):
         self.assertTrue(filter.is_not_directory('text.txt'))
-      

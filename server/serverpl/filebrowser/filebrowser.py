@@ -25,7 +25,7 @@
 
 import os, copy
 
-from os.path import abspath, join, basename
+from os.path import abspath, join
 
 from django.conf import settings
 
@@ -34,7 +34,7 @@ from filebrowser.models import Directory
 
 
 
-class Filebrowser():
+class Filebrowser:
     """Filebrowser allowing to browse through a file tree.
     
     Attributes:
@@ -75,7 +75,7 @@ class Filebrowser():
             category.groups[group_key].options = filtered_options
         
         cleaned = {}
-        for group_key, group in  category.groups.items(): # removing empty group
+        for group_key, group in category.groups.items():  # removing empty group
             if group.options:
                 cleaned[group_key] = group
         category.groups = cleaned
@@ -110,11 +110,12 @@ class Filebrowser():
     
     
     def list(self):
-        """Return a list of tuple (name, path) corresponding to every entry at the current possition of the filebrowser."""
+        """Return a list of tuple (entry, max_with) where entry correspond to every
+        entry at the current possition of the filebrowser."""
         entries = []
         for rootdir, dirs, files in os.walk(self.full_path()):
             entries += sorted(
-                [{'name': elem, 'path': rootdir+'/'+elem} for elem in dirs ],
+                [{'name': elem, 'path': rootdir+'/'+elem} for elem in dirs],
                 key=lambda k: k['name']
             )
             entries += sorted(
@@ -122,9 +123,11 @@ class Filebrowser():
                 key=lambda k: k['name']
             )
             break
-        
-        return entries, (0 if not entries 
-                        else len(max(entries, key=lambda i:len(i['name']))['name']) + 12)  # 12 for the icon and padding
+
+        max_width = 0
+        if entries:
+            max_width = len(max(entries, key=lambda i: len(i['name']))['name']) + 12
+        return entries, max_width
     
     
     

@@ -1,12 +1,9 @@
-import os, json, shutil, htmlprint
+import json, shutil, htmlprint
+from os.path import basename, join
 
-from os.path import basename, join, dirname
-
-
-from django.shortcuts import render, redirect, reverse
+from django.shortcuts import render
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponse, Http404
@@ -20,12 +17,11 @@ from playexo.models import SessionTest
 
 
 
-
 @login_required
 def index(request, path="home"):
     """ Used by the filebrowser module to navigate """
     path = path.split('/')
-    if path[0].isdigit(): # pragma: no cover
+    if path[0].isdigit():  # pragma: no cover
         raise Http404()
     
     fb = Filebrowser(request, path=join(*path))
@@ -36,14 +32,13 @@ def index(request, path="home"):
 
 @login_required
 def apply_option(request, path="home"):
-    real = (path).split('/')
+    real = path.split('/')
     if real[0] == "home":
         real[0] = str(request.user.id)
-   
-    if request.method == 'GET':
-        option = request.GET.get('option')
-        target = request.GET.get('target')
-    elif request.method == 'POST':
+
+    option = request.GET.get('option')
+    target = request.GET.get('target')
+    if request.method == 'POST':
         option = request.POST.get('option')
         target = request.POST.get('target')
     
@@ -81,18 +76,24 @@ def preview_pl(request):
         return HttpResponse('405 Method Not Allowed', status=405)
     
     post = json.loads(request.body.decode())
-    if post['requested_action'] == 'preview': # Asking for preview
+    if post['requested_action'] == 'preview':  # Asking for preview
+        path = post.get('path')
+        directory = post.get('directory')
+        if not (path and directory):
+            return HttpResponseBadRequest("Missing parameter 'path' or 'directory'")
+
         try:
-            path = join(settings.FILEBROWSER_ROOT, post['path'])
+            path = join(settings.FILEBROWSER_ROOT, path)
             shutil.copyfile(path, path+".bk")
-            with open(path, 'w+') as f: # Writting editor content into the file
+            with open(path, 'w+') as f:  # Writting editor content into the file
                 print(post['content'], file=f)
                 
             directory = Directory.objects.get(name=post['directory'])
             rel_path = post['path'].replace(directory.name+"/", "/")
             pl, warnings = load_file(directory, rel_path)
             if not pl:
-                preview = '<div class="alert alert-danger" role="alert"> Failed to load \''+basename(rel_path)+"': \n"+warnings+"</div>"
+                preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
+                        + basename(rel_path) + "': \n" + warnings + "</div>"
             else:
                 if warnings:
                     [messages.warning(request, warning) for warning in warnings]
@@ -100,7 +101,7 @@ def preview_pl(request):
                 exercise = SessionTest.objects.create(pl=pl, user=request.user)
                 preview = exercise.get_exercise(request)
         
-        except Exception as e: # pragma: no cover
+        except Exception as e:  # pragma: no cover
             preview = ('<div class="alert alert-danger" role="alert"> Failed to load \''
                        + basename(rel_path) + "': \n\n"
                        + htmlprint.code(str(e)))
@@ -115,7 +116,7 @@ def preview_pl(request):
                 status=200
             )
     
-    elif post['requested_action'] == 'submit' : # Answer from the preview
+    elif post['requested_action'] == 'submit' :  # Answer from the preview
         if 'session_id' not in post['data'] or not post['data']['session_id']:
             HttpResponseBadRequest(content="Couldn't resolve ajax request")
         
@@ -150,21 +151,25 @@ def save_edit_receiver(request):
                 print(content, file=f)
         return HttpResponse(
             json.dumps({
-                'feedback': '<div id="success" class="alert alert-success feedback">'
-                          + '<i class="fas fa-check"></i> &nbsp Sauvegarde effectuée'
-                          + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
-                          + '<span aria-hidden="true">&times;</span>'
-                          + '</button></div>'}),
+                'feedback': ('<div id="success" class="alert alert-success feedback">'
+                             + '<i class="fas fa-check"></i> &nbsp Sauvegarde effectuée'
+                             + '<button type="button" class="close" data-dismiss="alert" '
+                             + 'aria-label="Close"><span aria-hidden="true">&times;</span>'
+                             + '</button></div>')
+            }),
             content_type='application/json'
         )
-    except Exception as e:
+    except Exception:
         return HttpResponse(
             json.dumps({
-                'feedback': '<div id="success" class="alert alert-success feedback">'
-                          + '<i class="fas fa-fire"></i> &nbsp Sauvegarde échouée'
-                          + '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
-                          + '<span aria-hidden="true">&times;</span>'
-                          + '</button></div>'}),
+                'feedback': ('<div id="success" class="alert alert-success feedback">'
+                             + '<i class="fas fa-fire"></i> &nbsp Sauvegarde échouée, si '
+                             + 'le problème persiste, merci de contacter un administrateur.'
+                             + '<button type="button" class="close" data-dismiss="alert" '
+                             + 'aria-label="Close">'
+                             + '<span aria-hidden="true">&times;</span>'
+                             + '</button></div>')
+            }),
             content_type='application/json'
         )
 
@@ -184,7 +189,8 @@ def edit_receiver(request):
             with open(join(settings.FILEBROWSER_ROOT, path), 'w+') as f:
                 print(content, file=f)
         messages.success(request, "File '"+basename(path)+"' successfully modified")
-    except Exception as e: # pragma: no cover
-        msg = "Impossible to modify '"+basename(path)+"' : "+ htmlprint.code(str(type(e)) + " - " + str(e))
+    except Exception as e:  # pragma: no cover
+        msg = ("Impossible to modify '" + basename(path) + "' : "
+               + htmlprint.code(str(type(e)) + " - " + str(e)))
         messages.error(request, msg)
     return redirect_fb(relative)
