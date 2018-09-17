@@ -1,4 +1,5 @@
-import os, hashlib
+import os, hashlib, logging
+
 from django.contrib.messages import constants as messages
 import dj_database_url
 
@@ -285,5 +286,7 @@ PARSERS_MODULE = 'loader.parsers'
 # Allow a file '[PL_ROOT]/server/serverpl/serverpl/config.py' to override any of the settings above.
 try:
     from serverpl.config import *
-except Exception:
+except:
+    logger = logging.getLogger(__name__)
+    logger.exception("No config file found.")
     pass

@@ -20,3 +20,4 @@ filebrowser/tests/ressources/*
 !filebrowser/tests/ressources/filter
 */migrations/0*
 media/
+serverpl/config.py
