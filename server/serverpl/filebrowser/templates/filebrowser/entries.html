@@ -13,7 +13,7 @@
                             {% for key, option in group.options.items %}
                                 {% if option|opt_filter:entry.path %}
                                     <{{ option.type }}
-                                        type="button" class="btn btn{{ option.outline }}{{ option.color }}{% for class in option.classes %} {{ class }}{% endfor %}" title="{{ option.text }}"
+                                        type="button" class="btn btn{{ option.outline }}{{ option.color }}{% for class in option.classes %} {{ class }}{% endfor %}" title="{{ option.name }}"
                                         {% if not option.form and option.require_confirmation %}
                                             data-toggle="modal" data-target="#confirmationModal{{group_key}}-{{key}}-{{forloop.parentloop.parentloop.counter0}}"
                                         {% endif %}
@@ -47,7 +47,7 @@
                                         {% for key, option in group.options.items %}
                                             {% if option|opt_filter:entry.path %}
                                                 <{{ option.type }}
-                                                    type="button" class="btn btn-dir btn{{ option.outline }}{{ option.color }}{% for class in option.classes %} {{ class }}{% endfor %}" title="{{ option.text }}"
+                                                    type="button" class="btn btn-dir btn{{ option.outline }}{{ option.color }}{% for class in option.classes %} {{ class }}{% endfor %}" title="{{ option.name }}"
                                                     {% if not option.form and option.require_confirmation %}
                                                         data-toggle="modal" data-target="#confirmationModal{{group_key}}-{{key}}-{{forloop.parentloop.parentloop.counter0}}"
                                                     {% endif %}
@@ -59,7 +59,7 @@
                                                     {% endif %}
                                                     {% for elem in option.balise %} {{ elem }} {% endfor %}
                                                     >
-                                                    <i class="{{ option.fa_icon }} fa-fw"></i>&emsp;{{ option.text }}
+                                                    <i class="{{ option.fa_icon }} fa-fw"></i>&emsp;{{ option.name }}
                                                 </{{ option.type }}>
                                             {% endif %}
                                         {% endfor %}
