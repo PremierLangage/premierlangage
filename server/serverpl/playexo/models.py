@@ -329,7 +329,8 @@ class SessionExercise(SessionExerciseAbstract):
                 dic['user__'] = self.activity_session.user
                 dic['first_pl__'] = self.activity_session.activity.pltp.pl.all()[0].id
                 for key in dic:
-                    dic[key] = Template(dic[key]).render(RequestContext(request, dic))
+                    if type(dic[key]) is str:
+                        dic[key] = Template(dic[key]).render(RequestContext(request, dic))
                 return get_template("playexo/pltp.html").render(dic, request)
         
         except Exception as e:
