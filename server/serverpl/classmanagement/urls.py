@@ -11,7 +11,7 @@ app_name = 'classmanagement'
 urlpatterns = [
     url(r'^course/(\d+)/$', views.course_view, name="course"),
     url(r'^course/(\d+)/student/(\d+)/summary/$', views.student_summary),
-    url(r'^course/(\d+)/(\w+)/summary/$', views.activity_summary),
+    url(r'^course/(\d+)/(\d+)/summary/$', views.activity_summary),
     url(r'^course/(\d+)/summary/$', views.course_summary),
     url(r'^redirect/(\d+)/$', views.redirect_activity),
     url(r'^logout/$', views.disconnect, name="logout"),
