@@ -60,11 +60,13 @@ class FilebrowserOption:
     
     def __init__(self, fa_icon, name, option, form=None, filter=None,
                  require_confirmation=False, color=GREY, outline=True,
-                 method=POST, balise=None, size=SMALL, classes=None, right=WRITE):
+                 method=POST, balise=None, size=SMALL, classes=None,
+                 right=WRITE, confirm_msg=None):
         if classes is None:
             classes = []
         self.fa_icon = fa_icon
-        self.text = name
+        self.name = name
+        self.confirm_msg = confirm_msg
         self.form = form
         self.require_confirmation = require_confirmation
         self.option = option
@@ -138,7 +140,7 @@ ENTRY_OPTIONS = OptionsCategory({
             "add":      FilebrowserOption("fas fa-plus",   "Git Add",      add_option, method=GET),
             "commit":   FilebrowserOption("fas fa-edit",   "Git Commit",   commit_option, form=CommitForm),
             "reset":    FilebrowserOption("fas fa-undo",   "Git Reset",    reset_option, color=YELLOW, form=ResetForm),
-            "checkout": FilebrowserOption("fas fa-eraser", "Git Checkout", checkout_option, color=RED, require_confirmation=True, method=GET),
+            "checkout": FilebrowserOption("fas fa-eraser", "Git Checkout", checkout_option, color=RED, require_confirmation=True, method=GET, confirm_msg="Will reset all your local changes up to your last commit."),
         }, icon="fab fa-git-square fa-lg", filter=in_repository),
 })
 
@@ -163,7 +165,7 @@ DIRECTORY_OPTIONS = OptionsCategory({
             "add":      FilebrowserOption("fas fa-plus",               "Git Add",         add_option, method=GET),
             "commit":   FilebrowserOption("fas fa-edit",               "Git Commit",      commit_option, form=CommitForm),
             "reset":    FilebrowserOption("fas fa-undo",               "Git Reset",       reset_option, color=YELLOW, form=ResetForm),
-            "checkout": FilebrowserOption("fas fa-eraser",             "Git Checkout",    checkout_option, color=RED, require_confirmation=True, method=GET),
+            "checkout": FilebrowserOption("fas fa-eraser",             "Git Checkout",    checkout_option, color=RED, require_confirmation=True, method=GET, confirm_msg="Will reset all your local changes to to your last commit."),
         }, icon='fab fa-git-square fa-lg', filter=in_repository),
 })
 

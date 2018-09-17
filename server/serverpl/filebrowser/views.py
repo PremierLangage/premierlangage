@@ -14,6 +14,7 @@ from filebrowser.filebrowser_option import ENTRY_OPTIONS, DIRECTORY_OPTIONS
 from filebrowser.utils import redirect_fb
 from loader.loader import load_file
 from playexo.models import SessionTest
+from playexo.utils import render_feedback
 
 
 
@@ -127,7 +128,7 @@ def preview_pl(request):
             json.dumps({
                 "navigation": None,
                 "exercise": exercise.get_exercise(request, answer=answer, context=context),
-                "feedback": feedback,
+                "feedback": render_feedback(feedback),
             }),
             content_type='application/json'
         )
@@ -183,9 +184,12 @@ def edit_receiver(request):
     content = request.POST.get('editor_input', '')
     path = request.POST.get('path', '')
     relative = request.POST.get('relative', '')
-    
+
     try:
         if content:
+            content = content.replace('\r\n', '\n')
+            if content.endswith('\n\n'):
+                content = content[:-1]
             with open(join(settings.FILEBROWSER_ROOT, path), 'w+') as f:
                 print(content, file=f)
         messages.success(request, "File '"+basename(path)+"' successfully modified")
