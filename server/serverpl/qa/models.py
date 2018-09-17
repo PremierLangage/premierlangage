@@ -1,10 +1,8 @@
 import math
 
-from annoying.fields import AutoOneToOneField
 from django.conf import settings
 from django.db import models
 from django.db.models import F
-from django.utils.encoding import python_2_unicode_compatible
 from django.utils.text import slugify
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
@@ -16,6 +14,8 @@ from qa.mixins import DateMixin
 from qa.utils import epoch_seconds
 from user_profile.models import Profile
 
+
+REPUTATION = settings.QA_SETTINGS['reputation']
 
 
 class QAQuestion(models.Model, HitCountMixin, DateMixin):
@@ -54,12 +54,12 @@ class QAQuestion(models.Model, HitCountMixin, DateMixin):
     def save(self, *args, **kwargs):
         if not self.pk:
             self.slug = slugify(self.title)
-            self.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['CREATE_QUESTION'])
+            self.user.profile.mod_rep(REPUTATION['CREATE_QUESTION'])
         super(QAQuestion, self).save(*args, **kwargs)
     
     
     def delete(self, *args, **kwargs):
-        self.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['CREATE_QUESTION'])
+        self.user.profile.mod_rep(-REPUTATION['CREATE_QUESTION'])
         super(QAQuestion, self).delete(*args, **kwargs)
     
     
@@ -84,7 +84,7 @@ class QAAnswer(models.Model, DateMixin):
     
     def save(self, *args, **kwargs):
         if self.pk is None:
-            self.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['CREATE_ANSWER'])
+            self.user.profile.mod_rep(REPUTATION['CREATE_ANSWER'])
         super(QAAnswer, self).save(*args, **kwargs)
     
     
@@ -95,10 +95,10 @@ class QAAnswer(models.Model, DateMixin):
     
     
     def delete(self, *args, **kwargs):
-        self.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['CREATE_ANSWER'])
+        self.user.profile.mod_rep(-REPUTATION['CREATE_ANSWER'])
         if self.answer:
-            self.question.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['ANSWER_ACCEPTED']//2)
-            self.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['ANSWER_ACCEPTED'])
+            self.question.user.profile.mod_rep(-REPUTATION['ANSWER_ACCEPTED']//2)
+            self.user.profile.mod_rep(-REPUTATION['ANSWER_ACCEPTED'])
         super(QAAnswer, self).delete(*args, **kwargs)
     
     
@@ -131,25 +131,21 @@ class QAAnswerVote(VoteParent):
     
     
     def save(self, *args, **kwargs):
-        if self.pk is None: # New vote
+        if self.pk is None:  # New vote
             if self.value:
-                self.answer.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['UPVOTE_ANSWER'])
+                self.answer.user.profile.mod_rep(REPUTATION['UPVOTE_ANSWER'])
                 self.answer.mod_points(1)
             else:
-                self.answer.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['DOWNVOTE_ANSWER'])
+                self.answer.user.profile.mod_rep(REPUTATION['DOWNVOTE_ANSWER'])
                 self.answer.mod_points(-1)
-        else: # Changed vote
+        else:  # Changed vote
             if self.value:
-                self.answer.user.profile.mod_rep(
-                    settings.QA_SETTINGS['reputation']['UPVOTE_ANSWER']
-                  - settings.QA_SETTINGS['reputation']['DOWNVOTE_ANSWER']
-                )
+                self.answer.user.profile.mod_rep(REPUTATION['UPVOTE_ANSWER']
+                                                 - REPUTATION['DOWNVOTE_ANSWER'])
                 self.answer.mod_points(2)
             else:
-                self.answer.user.profile.mod_rep(
-                    settings.QA_SETTINGS['reputation']['DOWNVOTE_ANSWER']
-                  - settings.QA_SETTINGS['reputation']['UPVOTE_ANSWER']
-                )
+                self.answer.user.profile.mod_rep(REPUTATION['DOWNVOTE_ANSWER']
+                                                 - REPUTATION['UPVOTE_ANSWER'])
                 self.answer.mod_points(-2)
         super(QAAnswerVote, self).save(*args, **kwargs)
     
@@ -157,10 +153,10 @@ class QAAnswerVote(VoteParent):
     @receiver(pre_delete, sender='qa.QAAnswerVote')
     def on_delete(sender, instance, using, **kwargs):
         if instance.value:
-            instance.answer.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['UPVOTE_ANSWER'])
+            instance.answer.user.profile.mod_rep(-REPUTATION['UPVOTE_ANSWER'])
             instance.answer.points -= 1
         else:
-            instance.answer.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['DOWNVOTE_ANSWER'])
+            instance.answer.user.profile.mod_rep(-REPUTATION['DOWNVOTE_ANSWER'])
             instance.answer.points += 1
         instance.answer.save()
 
@@ -174,25 +170,21 @@ class QAQuestionVote(VoteParent):
         unique_together = (('user', 'question'),)
     
     def save(self, *args, **kwargs):
-        if self.pk is None: # New vote
+        if self.pk is None:  # New vote
             if self.value:
-                self.question.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['UPVOTE_QUESTION'])
+                self.question.user.profile.mod_rep(REPUTATION['UPVOTE_QUESTION'])
                 self.question.mod_points(1)
             else:
-                self.question.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['DOWNVOTE_QUESTION'])
+                self.question.user.profile.mod_rep(REPUTATION['DOWNVOTE_QUESTION'])
                 self.question.mod_points(-1)
-        else: # Changed vote
+        else:  # Changed vote
             if self.value:
-                self.question.user.profile.mod_rep(
-                    settings.QA_SETTINGS['reputation']['UPVOTE_QUESTION']
-                  - settings.QA_SETTINGS['reputation']['DOWNVOTE_QUESTION']
-                )
+                self.question.user.profile.mod_rep(REPUTATION['UPVOTE_QUESTION']
+                                                   - REPUTATION['DOWNVOTE_QUESTION'])
                 self.question.mod_points(2)
             else:
-                self.question.user.profile.mod_rep(
-                    settings.QA_SETTINGS['reputation']['DOWNVOTE_QUESTION']
-                  - settings.QA_SETTINGS['reputation']['UPVOTE_QUESTION']
-                )
+                self.question.user.profile.mod_rep(REPUTATION['DOWNVOTE_QUESTION']
+                                                   - REPUTATION['UPVOTE_QUESTION'])
                 self.question.mod_points(-2)
         self.question.save()
         super(QAQuestionVote, self).save(*args, **kwargs)
@@ -201,10 +193,10 @@ class QAQuestionVote(VoteParent):
     @receiver(pre_delete, sender='qa.QAQuestionVote')
     def on_delete(sender, instance, using, **kwargs):
         if instance.value:
-            instance.question.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['UPVOTE_ANSWER'])
+            instance.question.user.profile.mod_rep(-REPUTATION['UPVOTE_ANSWER'])
             instance.question.points -= 1
         else:
-            instance.question.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['DOWNVOTE_ANSWER'])
+            instance.question.user.profile.mod_rep(-REPUTATION['DOWNVOTE_ANSWER'])
             instance.question.points += 1
         instance.question.save()
 
@@ -236,14 +228,14 @@ class QAAnswerComment(BaseComment):
     
     def save(self, *args, **kwargs):
         if self.pk is None:
-            self.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['CREATE_ANSWER_COMMENT'])
-            self.answer.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['RECEIVE_ANSWER_COMMENT'])
+            self.user.profile.mod_rep(REPUTATION['CREATE_ANSWER_COMMENT'])
+            self.answer.user.profile.mod_rep(REPUTATION['RECEIVE_ANSWER_COMMENT'])
         super(QAAnswerComment, self).save(*args, **kwargs)
     
     
     def delete(self, *args, **kwargs):
-        self.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['CREATE_ANSWER_COMMENT'])
-        self.answer.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['RECEIVE_ANSWER_COMMENT'])
+        self.user.profile.mod_rep(-REPUTATION['CREATE_ANSWER_COMMENT'])
+        self.answer.user.profile.mod_rep(-REPUTATION['RECEIVE_ANSWER_COMMENT'])
         super(QAAnswerComment, self).delete(*args, **kwargs)
 
 
@@ -257,12 +249,12 @@ class QAQuestionComment(BaseComment):
     
     def save(self, *args, **kwargs):
         if self.pk is None:
-            self.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['CREATE_QUESTION_COMMENT'])
-            self.question.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['RECEIVE_QUESTION_COMMENT'])
+            self.user.profile.mod_rep(REPUTATION['CREATE_QUESTION_COMMENT'])
+            self.question.user.profile.mod_rep(REPUTATION['RECEIVE_QUESTION_COMMENT'])
         super(QAQuestionComment, self).save(*args, **kwargs)
     
     
     def delete(self, *args, **kwargs):
-        self.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['CREATE_QUESTION_COMMENT'])
-        self.question.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['RECEIVE_QUESTION_COMMENT'])
+        self.user.profile.mod_rep(-REPUTATION['CREATE_QUESTION_COMMENT'])
+        self.question.user.profile.mod_rep(-REPUTATION['RECEIVE_QUESTION_COMMENT'])
         super(QAQuestionComment, self).delete(*args, **kwargs)

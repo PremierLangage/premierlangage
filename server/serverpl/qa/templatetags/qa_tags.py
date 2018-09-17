@@ -3,13 +3,15 @@
 from urllib.parse import quote
 
 from django import template
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
 from qa.models import QAAnswerVote, QAQuestionVote
 
 
-register = template.Library()
+RIGHTS = settings.QA_SETTINGS['right']
 
+register = template.Library()
 
 
 @register.filter
@@ -65,72 +67,71 @@ def voted_down_answer(user, answer):
 def can_edit_question(user, question):
     if user.is_anonymous:
         return False
-    return (question.user == user 
+    return (question.user == user
             or user.profile.is_admin
-            or (rights.EDIT_QUESTION >= 0 and user.profile.rep >= rights.EDIT_QUESTION))
+            or (0 <= RIGHTS['EDIT_QUESTION'] <= max(user.profile.rep, 0)))
 
 
 @register.filter
 def can_edit_answer(user, answer):
     if user.is_anonymous:
         return False
-    return (answer.user == user 
+    return (answer.user == user
             or user.profile.is_admin
-            or (rights.EDIT_ANSWER >= 0 and user.profile.rep >= rights.EDIT_ANSWER))
+            or (0 <= RIGHTS['EDIT_ANSWER'] <= max(user.profile.rep, 0)))
 
 
 @register.filter
 def can_edit_comment(user, comment):
     if user.is_anonymous:
         return False
-    return (comment.user == user 
-            or user.profile.is_admin
-            or (rights.EDIT_COMMENT >= 0 and user.profile.rep >= rights.EDIT_COMMENT))
+    return (comment.user == user
+            or user.profile.is_admin or (0 <= RIGHTS['EDIT_COMMENT'] <= max(user.profile.rep, 0)))
 
 
 @register.filter
 def can_post_question(user):
     if user.is_anonymous:
         return False
-    return user.profile.is_admin or (rights.POST_QUESTION >= 0 and user.profile.rep >= rights.POST_QUESTION)
+    return user.profile.is_admin or (0 <= RIGHTS['POST_QUESTION'] <= max(user.profile.rep, 0))
 
 
 @register.filter
 def can_post_answer(user):
     if user.is_anonymous:
         return False
-    return user.profile.is_admin or (rights.POST_ANSWER >= 0 and user.profile.rep >= rights.POST_ANSWER)
+    return user.profile.is_admin or (0 <= RIGHTS['POST_ANSWER'] <= max(user.profile.rep, 0))
 
 
 @register.filter
 def can_post_comment(user):
     if user.is_anonymous:
         return False
-    return user.profile.is_admin or (rights.POST_COMMENT >= 0 and user.profile.rep >= rights.POST_COMMENT)
+    return user.profile.is_admin or (0 <= RIGHTS['POST_COMMENT'] <= max(user.profile.rep, 0))
 
 
 @register.filter
 def can_delete_question(user, question):
     if user.is_anonymous:
         return False
-    return (question.user == user 
+    return (question.user == user
             or user.profile.is_admin
-            or (rights.DELETE_QUESTION >= 0 and user.profile.rep >= rights.DELETE_QUESTION))
+            or (0 <= RIGHTS['DELETE_QUESTION'] <= max(user.profile.rep, 0)))
 
 
 @register.filter
 def can_delete_answer(user, answer):
     if user.is_anonymous:
         return False
-    return (answer.user == user 
+    return (answer.user == user
             or user.profile.is_admin
-            or (rights.DELETE_ANSWER >= 0 and user.profile.rep >= rights.DELETE_ANSWER))
+            or (0 <= RIGHTS['DELETE_ANSWER'] <= max(user.profile.rep, 0)))
 
 
 @register.filter
 def can_delete_comment(user, comment):
     if user.is_anonymous:
         return False
-    return (comment.user == user 
+    return (comment.user == user
             or user.profile.is_admin
-            or (rights.DELETE_COMMENT >= 0 and user.profile.rep >= rights.DELETE_COMMENT))
+            or (0 <= RIGHTS['DELETE_COMMENT'] <= max(user.profile.rep, 0)))

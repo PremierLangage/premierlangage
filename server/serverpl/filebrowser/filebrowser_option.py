@@ -1,23 +1,11 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-#
-#  filebrowser_option.py
-#  
-#  Copyright 2018 Coumes Quentin
-
-
-from django.contrib import messages
-from django.shortcuts import redirect, reverse
-
 from filebrowser.form import *
 from filebrowser.options import *
 from filebrowser.filter import *
-from filebrowser.models import Directory
 
 
 #####
-# Bootstrap button classes
-    # Color
+## Bootstrap button classes
+# Color
 GREY = "-secondary"
 DARK_BLUE = "-primary"
 LIGHT_BLUE = "-info"
@@ -26,25 +14,25 @@ RED = "-danger"
 YELLOW = "-warning"
 WHITE = "-light"
 BLACK = "-dark"
-    # Outline
+# Outline
 OUTLINE = "-outline"
-    # Size
+# Size
 SMALL = "small"
 BIG = "big" 
 
 #####
-# Methods
+## Methods
 POST = 'POST'
 GET = 'GET'
 
 #####
-# Rights
+## Rights
 READ = 'R'
 WRITE = 'W'
 
 
 
-class FilebrowserOption():
+class FilebrowserOption:
     """ Class representing an option in the filebrowser.
     
     Mandatory Attributes:
@@ -80,8 +68,8 @@ class FilebrowserOption():
         self.form = form
         self.require_confirmation = require_confirmation
         self.option = option
-        self.filter = filter;
-        self.color = color;
+        self.filter = filter
+        self.color = color
         self.outline = OUTLINE if outline else ""
         self.method = method
         self.type = 'button' if method == POST else 'a'
@@ -90,19 +78,19 @@ class FilebrowserOption():
         self.classes = classes
         self.right = right
         
-        if form and method == GET: # pragma: no cover
+        if form and method == GET:  # pragma: no cover
             raise ValueError("An option can't have a form while using GET method")
-        if require_confirmation and method == POST: # pragma: no cover
+        if require_confirmation and method == POST:  # pragma: no cover
             raise ValueError("require_confirmation can't be True with a POST method")
 
 
 
-class OptionsGroup():
+class OptionsGroup:
     
     def __init__(self, name, options, icon=None, dropdown=True, filter=None):
-        if (not icon and dropdown): # pragma: no cover
+        if not icon and dropdown:  # pragma: no cover
             raise ValueError('A FA5 icon must be provided if dropdown is True (default)')
-        for k in options.keys(): # pragma: no cover
+        for k in options.keys():  # pragma: no cover
             if '-' in k:
                 raise ValueError("Dashes '-' are not allowed inside options key.")
         
@@ -114,10 +102,10 @@ class OptionsGroup():
 
 
 
-class OptionsCategory():
+class OptionsCategory:
     
     def __init__(self, groups):
-        for k in groups.keys(): # pragma: no cover
+        for k in groups.keys():  # pragma: no cover
             if '-' in k:
                 raise ValueError("Dashes '-' are not allowed inside groups key.")
         
@@ -128,7 +116,6 @@ class OptionsCategory():
         return self.groups[group].options[option].option
 
 
-
 ####################################################################################################
 # Filebrowser entries options.
 ENTRY_OPTIONS = OptionsCategory({
@@ -137,7 +124,7 @@ ENTRY_OPTIONS = OptionsCategory({
             "edit":    FilebrowserOption("fas fa-edit",  "Edit", edit_option,      size=BIG, method=GET, filter=[is_text, is_not_pl]),
             "test":    FilebrowserOption("fas fa-check", "Test", test_pl_option,   size=BIG, method=GET, filter=is_pl, right=READ),
             "load":    FilebrowserOption("fas fa-play",  "Load", load_pltp_option, size=BIG, method=GET, filter=is_pltp, right=READ),
-            "extract":  FilebrowserOption("fas fa-share-square","Extract",  extract_option, filter=is_archive, method=GET, size=BIG),
+            "extract":  FilebrowserOption("fas fa-share-square", "Extract",  extract_option, filter=is_archive, method=GET, size=BIG),
         }, dropdown=False),
     "options": OptionsGroup('Options', {
             "rename":   FilebrowserOption("fas fa-pencil-alt",  "Rename",   rename_option, form=RenameForm),
@@ -150,7 +137,7 @@ ENTRY_OPTIONS = OptionsCategory({
     "git": OptionsGroup('Git', {
             "add":      FilebrowserOption("fas fa-plus",   "Git Add",      add_option, method=GET),
             "commit":   FilebrowserOption("fas fa-edit",   "Git Commit",   commit_option, form=CommitForm),
-            "reset":    FilebrowserOption("fas fa-undo",   "Git Reset",    reset_option, color=YELLOW, form=ResetForm, method=POST),
+            "reset":    FilebrowserOption("fas fa-undo",   "Git Reset",    reset_option, color=YELLOW, form=ResetForm),
             "checkout": FilebrowserOption("fas fa-eraser", "Git Checkout", checkout_option, color=RED, require_confirmation=True, method=GET),
         }, icon="fab fa-git-square fa-lg", filter=in_repository),
 })
@@ -172,10 +159,10 @@ DIRECTORY_OPTIONS = OptionsCategory({
             "pull":     FilebrowserOption("fas fa-cloud-download-alt", "Git Pull",        pull_option, form=LoginForm),
             "status":   FilebrowserOption("fas fa-info-circle",        "Git Status",      status_option, method=GET),
             "branch":   FilebrowserOption("fas fa-list-ul",            "List Branch",     branch_option, method=GET),
-            "chbranch": FilebrowserOption("fas fa-code-branch",        "Change Branch",   change_branch_option, method=POST, form=ChangeBranchForm),
+            "chbranch": FilebrowserOption("fas fa-code-branch",        "Change Branch",   change_branch_option, form=ChangeBranchForm),
             "add":      FilebrowserOption("fas fa-plus",               "Git Add",         add_option, method=GET),
             "commit":   FilebrowserOption("fas fa-edit",               "Git Commit",      commit_option, form=CommitForm),
-            "reset":    FilebrowserOption("fas fa-undo",               "Git Reset",       reset_option, color=YELLOW, form=ResetForm, method=POST),
+            "reset":    FilebrowserOption("fas fa-undo",               "Git Reset",       reset_option, color=YELLOW, form=ResetForm),
             "checkout": FilebrowserOption("fas fa-eraser",             "Git Checkout",    checkout_option, color=RED, require_confirmation=True, method=GET),
         }, icon='fab fa-git-square fa-lg', filter=in_repository),
 })

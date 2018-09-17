@@ -31,12 +31,12 @@ def evaluate(request, activity_id, pl_id):
                 seed=exercise.context['seed']
             )
             return HttpResponse(json.dumps({
-                "exercise":None,
+                "exercise": None,
                 "navigation": None,
                 "feedback": "Réponse(s) sauvegardé.",
             }), content_type='application/json')
         
-        elif status['requested_action'] == 'submit': # Validate
+        elif status['requested_action'] == 'submit':  # Validate
             answer, feedback, context = exercise.evaluate(request, status['inputs'])
             answer['activity'] = session.activity
             Answer.objects.create(**answer)
@@ -48,7 +48,6 @@ def evaluate(request, activity_id, pl_id):
                 }), 
                 content_type='application/json'
             )
-        
         return HttpResponseBadRequest("Unknown action")
     else:
         return HttpResponseBadRequest("Missing action")
@@ -57,7 +56,7 @@ def evaluate(request, activity_id, pl_id):
 
 @csrf_exempt
 @login_required
-def activity(request, activity_id):
+def activity_view(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
     session, _ = SessionActivity.objects.get_or_create(user=request.user, activity=activity)
     
@@ -85,7 +84,8 @@ def activity(request, activity_id):
             exercise.save()
         
         elif session.current_pl and action == "next":
-            for previous, next in zip(activity.pltp.pl.all(), list(activity.pltp.pl.all())[1:]+[None]):
+            pls = activity.pltp.pl.all()
+            for previous, next in zip(pls, list(pls[1:]) + [None]):
                 if previous == session.current_pl:
                     session.current_pl = next
                     session.save()
@@ -94,7 +94,8 @@ def activity(request, activity_id):
                 session.save()
         
         if action:
-            return redirect(reverse("playexo:activity", args=[activity_id]))  # Remove get arguments from URL
+            # Remove get arguments from URL
+            return redirect(reverse("playexo:activity", args=[activity_id]))
     
     if session.current_pl:
         last = Answer.last(session.current_pl, request.user)

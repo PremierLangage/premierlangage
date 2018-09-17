@@ -1,26 +1,14 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-#
-#  test_filter.py
-#  
-#  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
-#  
-
-import shutil
-from os.path import join, isdir
+from os.path import join
 
 from django.conf import settings
 from django.test import TestCase, override_settings
-from django.contrib.auth.models import User
 
-from filebrowser.models import Directory
 from filebrowser.templatetags import filebrowser_filter as ff
 from filebrowser.filebrowser_option import FilebrowserOption, OptionsGroup
 
 
-
 RES_DIR = join(settings.BASE_DIR, "filebrowser/tests/ressources/filter/")
-FAKE_FB_ROOT = join(settings.BASE_DIR,'filebrowser/tests/ressources')
+FAKE_FB_ROOT = join(settings.BASE_DIR, 'filebrowser/tests/ressources')
 
 
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
@@ -79,11 +67,12 @@ class TemplateTagTestCase(TestCase):
     
     
     def test_opt_filter(self):
-        group1 = FilebrowserOption("t",  "t", lambda i:None)
-        group2 = FilebrowserOption("t",  "t", lambda i:None, filter=lambda i:True)
-        group3 = FilebrowserOption("t",  "t", lambda i:None, filter=[lambda i:True,lambda i:True])
-        group4 = FilebrowserOption("t",  "t", lambda i:None, filter=lambda i:False)
-        group5 = FilebrowserOption("t",  "t", lambda i:None, filter=[lambda i:True,lambda i:False])
+        group1 = FilebrowserOption("t", "t", lambda i: None)
+        group2 = FilebrowserOption("t", "t", lambda i: None, filter=lambda i: True)
+        group3 = FilebrowserOption("t", "t", lambda i: None, filter=[lambda i: True, lambda i:True])
+        group4 = FilebrowserOption("t", "t", lambda i: None, filter=lambda i: False)
+        group5 = FilebrowserOption("t", "t", lambda i: None,
+                                   filter=[lambda i: True, lambda i:False])
         
         self.assertTrue(ff.opt_filter(group1, 'path'))
         self.assertTrue(ff.opt_filter(group2, 'path'))
@@ -94,10 +83,10 @@ class TemplateTagTestCase(TestCase):
     
     def test_group_filter(self):
         group1 = OptionsGroup('test', {}, dropdown=False)
-        group2 = OptionsGroup('test', {}, dropdown=False, filter=lambda i:True)
-        group3 = OptionsGroup('test', {}, dropdown=False, filter=[lambda i:True,lambda i:True])
-        group4 = OptionsGroup('test', {}, dropdown=False, filter=lambda i:False)
-        group5 = OptionsGroup('test', {}, dropdown=False, filter=[lambda i:True,lambda i:False])
+        group2 = OptionsGroup('test', {}, dropdown=False, filter=lambda i: True)
+        group3 = OptionsGroup('test', {}, dropdown=False, filter=[lambda i: True, lambda i:True])
+        group4 = OptionsGroup('test', {}, dropdown=False, filter=lambda i: False)
+        group5 = OptionsGroup('test', {}, dropdown=False, filter=[lambda i: True, lambda i:False])
         
         self.assertTrue(ff.group_filter(group1, 'path'))
         self.assertTrue(ff.group_filter(group2, 'path'))

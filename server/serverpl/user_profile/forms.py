@@ -24,12 +24,11 @@ class ProfileForm(forms.Form):
         label='Daltonisme ', 
         help_text='<a target="_blank" href="/profile/color_blindness_preview/">prévisualisation</a>'
     )
-    
-    
+
     editor_theme = EnumIntegerField(EditorTheme).formfield(
         label='Thème de l\'éditeur ', 
         help_text='<a target="_blank" href="/profile/editor_preview/">prévisualisation</a>'
     )
-    
 
-    confirm = forms.BooleanField(required=False, label="Confirmation exercice :", help_text="Confirmer avant de quitter un exercice")
+    confirm = forms.BooleanField(required=False, label="Confirmation exercice :",
+                                 help_text="Confirmer avant de quitter un exercice")

@@ -12,6 +12,7 @@ from os.path import splitext, basename, join, abspath, dirname
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 
+from loader.exceptions import DirectoryNotFound
 from loader.parser import parse_file, get_type
 from loader.models import PL, PLTP
 from filebrowser.models import Directory
@@ -35,21 +36,21 @@ def load_file(directory, rel_path, force=False):
     try:
         typ = get_type(directory, rel_path)
         if typ == 'pltp':
-            return load_PLTP(directory, rel_path, force)
+            return load_pltp(directory, rel_path, force)
         elif typ == 'pl':
-            return load_PL(directory, rel_path)
+            return load_pl(directory, rel_path)
         else:
             raise Exception("Type '" + typ + "' is not yet implemented")
-    except Exception as e: # pragma: no cover 
+    except Exception as e:  # pragma: no cover
         if not settings.DEBUG:
-            return (None, htmlprint.code(str(e))) 
+            return None, htmlprint.code(str(e))
         return (None, (htmlprint.code(str(e))
                        + '<br>DEBUG set to True - Showing Traceback :<br>'
                        + htmlprint.html_exc()))
 
 
 
-def load_PLTP(directory, rel_path, force=False):
+def load_pltp(directory, rel_path, force=False):
     """ Load the given file as a PLTP. Save it and its PL in the database.
         
         Return:
@@ -68,12 +69,15 @@ def load_PLTP(directory, rel_path, force=False):
         existing = PLTP.objects.get(sha1=sha1)
         if not force:
             return None, None
-        existing.delete() # Delete the current PLTP entry if force is False
-    except: # If the PLTP does not exist, keep going
+        existing.delete()  # Delete the current PLTP entry if force is False
+    except PLTP.DoesNotExist:  # If the PLTP does not exist, keep going
         pass
     
 
-    path = dirname(abspath(join(directory.root, rel_path[1:])))+"/dir"+splitext(basename(rel_path))[0]
+    path = join(
+        dirname(abspath(join(directory.root, rel_path[1:]))),
+        "dir" + splitext(basename(rel_path))[0]
+    )
     dic, warnings = parse_file(directory, rel_path, path)
     
     pl_list = list()
@@ -82,7 +86,7 @@ def load_PLTP(directory, rel_path, force=False):
             pl_directory = Directory.objects.get(name=item['directory_name'])
         except ObjectDoesNotExist:
             raise DirectoryNotFound(dic['__rel_path'], item['line'], item['path'], item['lineno'])
-        pl, pl_warnings = load_PL(pl_directory, item['path'])
+        pl, pl_warnings = load_pl(pl_directory, item['path'])
         warnings += pl_warnings
         pl_list.append(pl)
     
@@ -101,7 +105,7 @@ def load_PLTP(directory, rel_path, force=False):
 
 
 
-def load_PL(directory, rel_path):
+def load_pl(directory, rel_path):
     """ Load the given path as a PL.
     
         Return:

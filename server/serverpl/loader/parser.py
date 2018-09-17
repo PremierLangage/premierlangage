@@ -7,15 +7,15 @@
 
 
 
-import os, importlib, logging ,shutil
-
-from os.path import basename, splitext, join, dirname, abspath
+import os, importlib, logging
+from os.path import basename, splitext, join
 
 from django.core.exceptions import ObjectDoesNotExist
 
 from serverpl.settings import PARSERS_ROOT, PARSERS_MODULE
 from loader.utils import extends_dict
-from loader.exceptions import UnknownExtension, UnknownType, DirectoryNotFound, FileNotFound, MissingKey
+from loader.exceptions import (UnknownExtension, UnknownType, DirectoryNotFound, FileNotFound,
+                               MissingKey)
 from filebrowser.models import Directory
 
 
@@ -44,24 +44,34 @@ def get_parsers():
             try:
                 module = importlib.import_module(PARSERS_MODULE+"."+splitext(f)[0])
                 parser = module.get_parser()
-                if type(parser) != dict or set(parser.keys()) != {'ext', 'type', 'parser'} or parser['type'] not in ['pl', 'pltp']:
+                if type(parser) != dict \
+                        or set(parser.keys()) != {'ext', 'type', 'parser'} \
+                        or parser['type'] not in ['pl', 'pltp']:
                     raise ValueError
                 for ext in parser['ext']:
                     if ext not in parsers:
                         parsers[ext] = {'type': parser['type'], 'parser': parser['parser']}
                     else :
-                        logger.error("Two parsers are trying to parse the same extension ('"+str(parsers[ext])+"' and '"+str(parser['parser'])+"')")
+                        logger.error("Two parsers are trying to parse the same extension ('"
+                                     + str(parsers[ext]) + "' and '" + str(parser['parser']) + "')")
             except NameError:
-                logger.error("Function 'get_parser()' not defined in '"+f+"'")
+                logger.error("Function 'get_parser()' not defined in '" + f + "'")
             except ValueError:
                 if type(parser) != dict:
-                    logger.error("Function 'get_parser()' of file '"+f+"' must return a dictionnary (currently return '"+str(type(parser))+").")
+                    logger.error("Function 'get_parser()' of file '" + f
+                                 + "' must return a dictionnary (currently return '"
+                                 + str(type(parser)) + ").")
                 elif set(parser.keys()) != {'ext', 'type', 'parser'}:
-                    logger.error("Function 'get_parser()' of file '"+f+"' must return a dictionnary containing 3 keys: 'type', 'ext' and 'parser' (return dictionnary contains "+str(set(parser.keys()))+").")
+                    logger.error("Function 'get_parser()' of file '" + f
+                                 + "' must return a dictionnary containing 3 keys: 'type', "
+                                 + "'ext' and 'parser' (return dictionnary contains "
+                                 + str(set(parser.keys())) + ").")
                 else:
-                    logger.error("Function 'get_parser()' of file '"+f+"' must return a dictionnary where dictionnary['type'] is either 'pl' or 'pltp' (currently is '"+parser['type']+"').")
-            #except:
-                #logger.error("Could not import parser '"+f+"'\n"+traceback.format_exc())
+                    logger.error("Function 'get_parser()' of file '" + f + "' must return a"
+                                 + "dictionnary where dictionnary['type'] is either 'pl' or 'pltp'"
+                                   " (currently is '" + parser['type'] + "').")
+            except Exception:
+                logger.exception("Could not import parser '" + f + "'")
     return parsers
 
 
@@ -78,7 +88,8 @@ def get_type(directory, path):
         if parsers[ext]['type'] in ['pl', 'pltp']:
             return parsers[ext]['type']
         else:
-            logger.warning("Unknown type : '"+ parsers[ext]['type'] + "' of parser '" + str(parsers[ext]['parser']) + "'")
+            logger.warning("Unknown type : '" + parsers[ext]['type']
+                           + "' of parser '" + str(parsers[ext]['parser']) + "'")
             raise UnknownType(parsers[ext]['type'], parsers[ext]['parser'])
     
     raise UnknownExtension(path, join(directory.name, path))
@@ -104,11 +115,11 @@ def process_extends(dic):
         except ObjectDoesNotExist:
             raise DirectoryNotFound(dic['__rel_path'], item['line'], item['path'], item['lineno'])
         except UnknownExtension as e:
-            raise UnknownExtension(e.path, e.name, message="extending from " + dic['__rel_path'] + " -- unknow extension  ")
+            raise UnknownExtension(e.path, e.name, message=("extending from " + dic['__rel_path']
+                                                            + " -- unknow extension  "))
         except FileNotFoundError:
-            raise FileNotFound(dic['__rel_path'], item['line'], join(item['directory_name'], item['path']), lineno=item['lineno'])
-        except ValueError:
-            raise FileNotFound(self.path_parsed_file, line, match.group('file'), lineno=self.lineno, message="Path from another directory must be absolute")
+            raise FileNotFound(dic['__rel_path'], item['line'],
+                               join(item['directory_name'], item['path']), lineno=item['lineno'])
     
     return dic, warnings
 
@@ -156,9 +167,9 @@ def parse_file(directory, path, extending=False):
         
         for key in MUST_BE_STRING:
             if key in dic and type(dic[key]) != str:
-                raise TypeError("Key : '"+key+"' is '"+str(type(dic[key]))+"' but must be a string.")
-        
-       
+                raise TypeError("Key : '" + key + "' is '" + str(type(dic[key]))
+                                + "' but must be a string.")
+
         return dic, warnings
     
     raise UnknownExtension(path, join(directory.name, path))

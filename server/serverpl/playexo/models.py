@@ -1,8 +1,8 @@
-import time
+import time, logging
 
 import htmlprint
+from django.http import Http404
 from django.shortcuts import get_object_or_404
-from enumfields import EnumIntegerField
 from jsonfield import JSONField
 from django.urls import resolve
 from django.db import models, IntegrityError
@@ -20,39 +20,48 @@ from playexo.request import SandboxBuild, SandboxEval
 from classmanagement.models import Course
 
 
+logger = logging.getLogger(__name__)
+
+
 class Activity(LTIModel):
     name = models.CharField(max_length=200, null=False)
-    open = models.BooleanField(null=False, default=True)
+    open = models.BooleanField(default=True)
     pltp = models.ForeignKey(PLTP, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
 
     @classmethod
     def get_or_create_from_lti(cls, request, lti_launch):
-        """Creates an Activity corresponding to ID in the url and sets its course according to the LTI request..
+        """Creates an Activity corresponding to ID in the url and sets
+        its course according to the LTI request..
 
-        The corresponding Course must have already been created, Course.DoesNotExists will be
-        raised otherwise.
+        The corresponding Course must have already been created,
+        Course.DoesNotExists will be raised otherwise.
 
-        Returns a tuple of (object, created), where object is the retrieved or created object and
-        created is a boolean specifying whether a new object was created."""
+        Returns a tuple of (object, created), where object is the
+        retrieved or created object and created is a boolean specifying
+        whether a new object was created."""
         course_id = lti_launch["context_id"]
         consumer = lti_launch['oauth_consumer_key']
         activity_id = lti_launch['resource_link_id']
-        course = Course.objects.get(consumer_id=course_id, consumer=consumer)
+        activity_name = lti_launch['resource_link_title']
+        if not (course_id and activity_id and activity_name and consumer):
+            raise Http404("Could not create Activity: on of these parameters are missing:"
+                  + "[context_id, resource_link_id, resource_link_title, oauth_consumer_key]")
 
+        course = Course.objects.get(consumer_id=course_id, consumer=consumer)
         try:
             return cls.objects.get(consumer_id=activity_id, consumer=consumer), False
-        except cls.DoesNotExists:
+        except Activity.DoesNotExist:
             urlmatch = resolve(request.path)
-            if urlmatch.app_name + ":" + urlmatch.url_name != "playexo:activity":
+            if not urlmatch.app_name or not urlmatch.url_name:
+                urlmatch = None
+            if urlmatch and urlmatch.app_name + ":" + urlmatch.url_name != "playexo:activity":
                 logger.warning(request.path + " does not correspond to 'playexo:activity' in "
                                               "Activity.get_or_create_from_lti")
                 raise Http404("Activity could not be found.")
-            activity_id = urlmatch.kwargs['activity_id']
-            parent = get_object_or_404(Activity, id=activity_id)
-            new = Activity.objects.create(outcome_url=outcome_url, sourcedid=sourcedid,
-                                          consumer_id=activity_id, consumer=consumer,
-                                          name=parent.name, pltp=parent.pltp, course=course)
+            parent = get_object_or_404(Activity, id=urlmatch.kwargs['activity_id'])
+            new = Activity.objects.create(consumer_id=activity_id, consumer=consumer,
+                                          name=activity_name, pltp=parent.pltp, course=course)
             return new, True
 
 
@@ -85,7 +94,10 @@ class SessionActivity(models.Model):
         
         Raise IntegrityError if no session for either self.current_pl or pl (if given) was found."""
         try:
-            return next(i for i in self.sessionexercise_set.all() if i.pl == (self.current_pl if pl==... else pl))
+            return next(
+                i for i in self.sessionexercise_set.all()
+                if i.pl == (self.current_pl if pl is ... else pl)
+            )
         except StopIteration:
             raise IntegrityError("'current_pl' of SessionActivity does not have a corresponding "
                                  + "SessionExercise.")
@@ -107,10 +119,10 @@ class SessionExerciseAbstract(models.Model):
     context = JSONField(null=True)
     
     class Meta:
-        abstract=True
-    
-    
-    def add_to_context(self, key, value):  # TODO: Allowing to add key with the PL syntax (dict1.dict2.val)
+        abstract = True
+
+    # TODO: Allowing to add key with the PL syntax (dict1.dict2.val)
+    def add_to_context(self, key, value):
         """Add value corresponding to key in the context."""
         self.context[key] = value
         self.save()
@@ -140,7 +152,7 @@ class SessionExerciseAbstract(models.Model):
         """
         context = {}
         evaluator = SandboxEval(self.envid, answers)
-        if not evaluator.check(): # Env could not be found on the sandbox, rebuilding (same seed will be used)
+        if not evaluator.check():
             self.build(request, test=test)
             evaluator = SandboxEval(self.envid, answers)
         
@@ -152,7 +164,7 @@ class SessionExerciseAbstract(models.Model):
             "grade": response['grade'],
         }
         
-        if response['status'] < 0: # Sandbox Error
+        if response['status'] < 0:  # Sandbox Error
             feedback = response['feedback']
             if request.user.profile.can_load() and response['sandboxerr']:
                 feedback += "<br><br>" + htmlprint.code(response['sandboxerr'])
@@ -164,7 +176,7 @@ class SessionExerciseAbstract(models.Model):
             if request.user.profile.can_load():
                 feedback += "<br><br>Received on stderr:<br>" + htmlprint.code(response['stderr'])
         
-        else: # Success
+        else:  # Success
             context = dict(response['context'])
             feedback = response['feedback']
             if request.user.profile.can_load() and response['stderr']:
@@ -196,7 +208,7 @@ class SessionExerciseAbstract(models.Model):
         response = SandboxBuild(dict(self.context), test=test).call()
         
         if response['status'] < 0:
-            msg = ("Une erreur s'est produit c'est produite sur la sandbox (exit code: %d, env: %s)."
+            msg = ("Une erreur s'est produit sur la sandbox (exit code: %d, env: %s)."
                    + " Merci de prévenir votre professeur.") % (response['status'], response['id'])
             if request.user.profile.can_load():
                 msg += "<br><br>" + htmlprint.code(response['sandboxerr'])
@@ -204,9 +216,8 @@ class SessionExerciseAbstract(models.Model):
         
         if response['status'] > 0:
             msg = ("Une erreur s'est produite lors de l'exécution du script before/build "
-                    + ("(exit code: %d, env: %s). Merci de prévenir votre professeur"
-                       % (response['status'], response['id']))
-                  )
+                   + ("(exit code: %d, env: %s). Merci de prévenir votre professeur"
+                      % (response['status'], response['id'])))
             if request.user.profile.can_load() and response['stderr']:
                 msg += "<br><br>Reçu sur stderr:<br>" + htmlprint.code(response['stderr'])
             raise Exception(msg)
@@ -329,12 +340,11 @@ class SessionExercise(SessionExerciseAbstract):
     
     
     def get_navigation(self, request, context=None):
-        pl_list = []
-        pl_list.append({
-                'id'   : None,
-                'state': None,
-                'title': self.activity_session.activity.pltp.json['title'],
-        })
+        pl_list = [{
+            'id': None,
+            'state': None,
+            'title': self.activity_session.activity.pltp.json['title'],
+        }]
         for pl in self.activity_session.activity.pltp.pl.all():
             pl_list.append({
                 'id'   : pl.id,
@@ -403,7 +413,7 @@ class SessionTest(SessionExerciseAbstract):
         If answer is given, will determine if the seed must be reroll base on its grade."""
         pl = self.pl
         seed = None
-        if (answer['grade'] < 100 if answer else True):
+        if answer['grade'] < 100 if answer else True:
             seed = time.time()
             self.built = False
         self.add_to_context('seed', seed)
@@ -535,8 +545,8 @@ class Answer(models.Model):
     
     @staticmethod
     def user_course_summary(course, user):
-        """
-            Give information about the completion of every PL of this user in course as a dict of 5 tuples:
+        """Give information about the completion of every PL of this
+            user in course as a dict of 5 tuples:
             {
                 'succeeded':   [ % succeeded, nbr succeeded],
                 'part_succ':   [ % part_succ, nbr part_succ],
@@ -556,7 +566,7 @@ class Answer(models.Model):
             State.ERROR:       [0.0, 0],
         }
         
-        for activity in course.activity.all():
+        for activity in course.activity_set.all():
             summary = Answer.pltp_summary(activity.pltp, user)
             for k in summary:
                 state[k][1] += int(summary[k][1])

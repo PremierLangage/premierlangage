@@ -8,16 +8,13 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 
-from user_profile.models import Profile
-
-
 
 class ModelsTestCase(TestCase):
     """ Test functions of user_profile.models modules. """
     
     @classmethod
-    def setUpTestData(self):
-        self.user = User.objects.create_user(username='user', password='12345', id=100)
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='user', password='12345', id=100)
     
     
     def test_profile_str(self):

@@ -6,4 +6,4 @@ from classmanagement.models import Course
     
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    list_display=('__str__', 'name', 'id')
+    list_display = ('__str__', 'name', 'id')

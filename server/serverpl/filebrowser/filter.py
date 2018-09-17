@@ -1,20 +1,11 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-#
-#  filter.py
-#  
-#  Copyright 2018 Coumes Quentin
+"""
+FILTERS
 
+Filters are function which, given an absolute path to an entry, should return whether an option
+should be displayed (True) or not (False).
 
-########################
-#       FILTERS        #
-########################
-#
-# Filters are function which, given an absolute path to an entry, should return whether an option should
-# be displayed (True) or not (False).
-#
-# These function should be keep simple and fast as they may be called many times
-#
+These function should be keep simple and fast as they may be called many times
+"""
 
 
 import magic, os, gitcmd

@@ -9,10 +9,8 @@
 from django.test import TestCase
 
 
-from loader.exceptions import SyntaxErrorPL, SemanticError, DirectoryNotFound, FileNotFound,\
-UnknownType, UnknownExtension, MissingKey
-
-from os.path import abspath
+from loader.exceptions import (SyntaxErrorPL, SemanticError, DirectoryNotFound, FileNotFound,
+                               UnknownType, UnknownExtension, MissingKey)
 
 
 class ExceptionsTestCase(TestCase):
@@ -46,7 +44,7 @@ class ExceptionsTestCase(TestCase):
         message = "Directory not found"
         str_message = path + " -- " + message + " : line " + lineno + " - '" + name + "'\n" + line
         
-        self.assertEqual(str(DirectoryNotFound(path, line, name, lineno, message)),str_message)
+        self.assertEqual(str(DirectoryNotFound(path, line, name, lineno, message)), str_message)
     
     
     def test_file_not_found_str(self):
@@ -55,9 +53,11 @@ class ExceptionsTestCase(TestCase):
         lineno = '45'
         path_not_found = 'dir1'
         message = "File not found"
-        str_message = path + " " + "at line " + lineno + " -- " + message + " : '" + path_not_found + "'\n" + line
+        str_message = (path + " " + "at line " + lineno + " -- "
+                       + message + " : '" + path_not_found + "'\n" + line)
         
-        self.assertEqual(str(FileNotFound(path, line, path_not_found, lineno, message)), str_message)
+        self.assertEqual(str(FileNotFound(path, line, path_not_found, lineno, message)),
+                         str_message)
 
 
     def test_unknown_extension_str(self):
@@ -66,7 +66,7 @@ class ExceptionsTestCase(TestCase):
         message = "Unknown Extension"
         str_message = path + " -- " + message + " : '.pl' of file '" + name + "'" 
         
-        self.assertEqual(str( UnknownExtension(path, name, message)), str_message)
+        self.assertEqual(str(UnknownExtension(path, name, message)), str_message)
     
     
     def test_unknown_type_str(self):
@@ -75,7 +75,7 @@ class ExceptionsTestCase(TestCase):
         message = "Unknown Type"
         str_message = message + " : '" + typ + "' of parser '" + parser + "'" 
         
-        self.assertEqual(str(UnknownType(typ, parser, message)),str_message)
+        self.assertEqual(str(UnknownType(typ, parser, message)), str_message)
     
     
     def test_missing_key_str(self):
@@ -84,4 +84,4 @@ class ExceptionsTestCase(TestCase):
         message = "error"
         str_message = message + " : '" + key + "' in file " + path
         
-        self.assertEqual(str(MissingKey(path, key, message)   ),str_message)
+        self.assertEqual(str(MissingKey(path, key, message)), str_message)

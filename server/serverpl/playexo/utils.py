@@ -1,8 +1,7 @@
 # coding: utf-8
 
-import logging, tempfile, tarfile, os, requests
+import tempfile, tarfile, os
 
-from serverpl.settings import DEBUG
 
 def tar_from_dic(files):
     with tempfile.TemporaryDirectory() as tmp_dir, tempfile.TemporaryDirectory() as env_dir:
@@ -19,7 +18,7 @@ def tar_from_dic(files):
     return tar_stream
 
 
-def sum_key_value(dic, *arg, value=lambda k:k):
+def sum_key_value(dic, *arg, value=lambda k: k):
     """ Returns a dict containing the sum of the value for each key of given dict.
         Does not modify given dicts.
         

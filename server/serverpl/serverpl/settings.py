@@ -65,7 +65,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-#Cookies settings
+# Cookies settings
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_COOKIE_AGE = 5*365*24*60*60
 
@@ -78,7 +78,7 @@ LOGIN_URL = "/courses/login/"
 ROOT_URLCONF = 'serverpl.urls'
 
 
-#Overriding messages.ERROR to 'danger' to correspond with the bootstrap alert class
+# Overriding messages.ERROR to 'danger' to correspond with the bootstrap alert class
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
@@ -148,7 +148,7 @@ LTI_OAUTH_CREDENTIALS = {
 LOGIN_REDIRECT_URL = '/'
 
 
-#Logger information
+# Logger information
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -162,7 +162,8 @@ LOGGING = {
     },
     'formatters': {
         'verbose': {
-            'format': '[%(asctime)-15s] %(levelname)s -- File: %(pathname)s line n°%(lineno)d -- %(message)s',
+            'format': '[%(asctime)-15s] %(levelname)s -- '
+                      'File: %(pathname)s line n°%(lineno)d -- %(message)s',
             'datefmt': '%Y/%m/%d %H:%M:%S'
         },
         'simple': {
@@ -205,7 +206,7 @@ QA_SETTINGS = {
         'CREATE_QUESTION_COMMENT': 2,
         'RECEIVE_QUESTION_COMMENT': 1,
         'RECEIVE_ANSWER_COMMENT': 1,
-        'ANSWER_ACCEPTED': 20, # Half for the acceptor
+        'ANSWER_ACCEPTED': 20,  # Half for the acceptor
         'UPVOTE_QUESTION': 3,
         'UPVOTE_ANSWER': 3,
         'DOWNVOTE_QUESTION': -3,
@@ -225,7 +226,7 @@ QA_SETTINGS = {
 }
 
 # Hitcount settings
-HITCOUNT_KEEP_HIT_ACTIVE = { 'days': 1 }
+HITCOUNT_KEEP_HIT_ACTIVE = {'days': 1}
 
 
 # Settings used for the creation of identicon (default avatar)
@@ -256,7 +257,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-#Sandbox url:
+# Sandbox url:
 SANDBOX = 'http://127.0.0.1:7000/sandbox'
 
 
@@ -277,12 +278,12 @@ FILEBROWSER_DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&']
 
 
 # Path to directory containing parsers
-PARSERS_ROOT = os.path.abspath(os.path.join(BASE_DIR,'loader/parsers/'))
+PARSERS_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'loader/parsers/'))
 PARSERS_MODULE = 'loader.parsers'
 
 
 # Allow a file '[PL_ROOT]/server/serverpl/serverpl/config.py' to override any of the settings above.
 try:
     from serverpl.config import *
-except:
+except Exception:
     pass

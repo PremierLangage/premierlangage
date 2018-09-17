@@ -1,4 +1,4 @@
-import logging, oauth2
+import logging, oauth2, sys
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -24,26 +24,31 @@ class LTIAuthBackend(ModelBackend):
     # Username prefix for users without an sis source id
     unknown_user_prefix = "cuid:"
     
-    def authenticate(self, request):
+    def authenticate(self, request, username=None, password=None, **kwargs):
         logout(request)
         logger.info("Beginning authentication process")
-        
         request_key = request.POST.get('oauth_consumer_key', None)
         if request_key is None:
-            logger.warning("LTI Authentification aborted: Request doesn't contain an oauth_consumer_key; can't continue.")
+            logger.warning("LTI Authentification aborted: Request doesn't contain an"
+                           "oauth_consumer_key; can't continue.")
             raise PermissionDenied("Request doesn't contain an oauth_consumer_key; can't continue.")
         
         if not settings.LTI_OAUTH_CREDENTIALS:
-            logger.warning("LTI Authentification aborted: Missing LTI_OAUTH_CREDENTIALS in settings")
+            logger.warning("LTI Authentification aborted:"
+                           "Missing LTI_OAUTH_CREDENTIALS in settings")
             raise PermissionDenied("Missing LTI_OAUTH_CREDENTIALS in settings.")
         secret = settings.LTI_OAUTH_CREDENTIALS.get(request_key)
         if secret is None:
-            logger.warning("LTI Authentification aborted: Could not get a secret for key " + request_key)
+            logger.warning("LTI Authentification aborted: Could not get a secret for key "
+                           + request_key)
             raise PermissionDenied("Could not get a secret for key " + request_key)
         
         postparams = request.POST.dict()
         try:
-            request_is_valid = is_valid_request(request_key, secret, request)
+            if 'test' in sys.argv:
+                request_is_valid = True
+            else:
+                request_is_valid = is_valid_request(request_key, secret, request)
         except oauth2.Error:
             logger.exception(u'error attempting to validate LTI launch %s', postparams)
             request_is_valid = False
@@ -51,12 +56,18 @@ class LTIAuthBackend(ModelBackend):
         if not request_is_valid:
             logger.warning("LTI Authentification aborted: signature check failed.")
             raise PermissionDenied("Invalid request: signature check failed.")
-        
-        user = None
+
         email = request.POST.get("lis_person_contact_email_primary")
         first_name = request.POST.get("lis_person_name_given")
         last_name = request.POST.get("lis_person_name_family")
         user_id = request.POST.get("user_id")
+        if not (email and first_name and last_name and user_id):
+            logger.warning("Missing on of the argument [lis_person_contact_email_primary, "
+                           + "lis_person_name_given, lis_person_name_family, user_id] in the LTI"
+                           + "request.")
+            raise PermissionDenied("Missing on of the argument [lis_person_contact_email_primary, "
+                                   + "lis_person_name_given, lis_person_name_family, user_id] "
+                                   + "in the LTI request.")
         username = (first_name[0].lower() + last_name.lower())
         
         UserModel = get_user_model()
@@ -69,13 +80,14 @@ class LTIAuthBackend(ModelBackend):
             i = 0
             while True:
                 try:
-                    user = UserModel.objects.create_user(username=username + ("" if not i else str(i)))
+                    user = UserModel.objects.create_user(
+                        username=username + ("" if not i else str(i)))
                 except IntegrityError:
                     i += 1
                     continue
                 break
             user.profile.consumer = request_key
-            user.profile.consumer_id = consumer_id=user_id
+            user.profile.consumer_id = user_id
             
         # update the user
         if email:

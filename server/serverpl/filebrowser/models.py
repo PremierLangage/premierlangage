@@ -1,38 +1,11 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-#
-#  models.py
-#  
-#  Copyright 2018 Coumes Quentin
-#  
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#  
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#  
-#  You should have received a copy of the GNU General Public License
-#  along with this program; if not, write to the Free Software
-#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
-#  MA 02110-1301, USA.
-#  
-#
-
-import os, subprocess
-
+import os
 from os.path import isdir, join
 
-from urllib.parse import urlparse
 
 from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
-
 from django.conf import settings
 
 
@@ -70,13 +43,13 @@ class Directory(models.Model):
     
     def add_write_auth(self, user):
         """Add user to the writing authorization list."""
-        if not user in self.write_auth.all():
+        if user not in self.write_auth.all():
             self.write_auth.add(user)
     
     
     def add_read_auth(self, user):
         """Add user to the reading authorization list."""
-        if not user in self.read_auth.all():
+        if user not in self.read_auth.all():
             self.read_auth.add(user)
     
     

@@ -17,26 +17,26 @@ from django.contrib.auth.models import User
 from filebrowser.models import Directory
 
 
-FAKE_FB_ROOT = join(settings.BASE_DIR,'filebrowser/tests/ressources')
+FAKE_FB_ROOT = join(settings.BASE_DIR, 'filebrowser/tests/ressources')
 
 
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
 class ModelTestCase(TestCase):
     
     @classmethod
-    def setUpTestData(self):
-        self.user = User.objects.create_user(username='user', password='12345', id=100)
-        self.user2 = User.objects.create_user(username='user2', password='12345', id=200)
-        self.user3 = User.objects.create_user(username='user3', password='12345', id=300)
-        self.user4 = User.objects.create_user(username='user4', password='12345', id=400)
-        self.user5 = User.objects.create_user(username='user5', password='12345', id=500)
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(username='user', password='12345', id=100)
+        cls.user2 = User.objects.create_user(username='user2', password='12345', id=200)
+        cls.user3 = User.objects.create_user(username='user3', password='12345', id=300)
+        cls.user4 = User.objects.create_user(username='user4', password='12345', id=400)
+        cls.user5 = User.objects.create_user(username='user5', password='12345', id=500)
         
         dir_path = join(FAKE_FB_ROOT, '100/')
         if isdir(dir_path):
             shutil.rmtree(dir_path)
-        self.d = Directory.objects.get(name='100', owner=self.user)
-        self.d.add_write_auth(self.user2)
-        self.d.add_read_auth(self.user3)
+        cls.d = Directory.objects.get(name='100', owner=cls.user)
+        cls.d.add_write_auth(cls.user2)
+        cls.d.add_read_auth(cls.user3)
     
     
     def test_add_remove_write(self):
@@ -56,9 +56,9 @@ class ModelTestCase(TestCase):
     
     
     def test_is_repository(self):
-        self.d.remote=True
+        self.d.remote = True
         self.assertTrue(self.d.is_repository())
-        self.d.remote=False
+        self.d.remote = False
         self.assertFalse(self.d.is_repository())
     
     

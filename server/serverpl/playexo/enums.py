@@ -38,7 +38,7 @@ class State(Enum):
             return cls.STARTED
         if grade == 100:
             return cls.SUCCEEDED
-        if grade <= 99 and grade >= 1:
+        if 99 >= grade >= 1:
             return cls.PART_SUCC
         if grade == 0:
             return cls.FAILED

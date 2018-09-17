@@ -3,7 +3,6 @@ from functools import reduce
 
 from django.conf import settings
 from django.http import HttpResponseBadRequest, Http404
-from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
 from django.urls import reverse
@@ -19,9 +18,11 @@ from hitcount.views import HitCountMixin
 from django_http_method import HttpMethodMixin
 
 from qa.models import (QAAnswer, QAAnswerComment, QAAnswerVote, QAQuestion, QAQuestionComment,
-                      QAQuestionVote)
+                       QAQuestionVote)
 from qa.utils import parse_query
 
+
+REPUTATION = settings.QA_SETTINGS['reputation']
 
 
 
@@ -39,7 +40,7 @@ class IndexView(View):
         
         try: 
             int(page)
-        except:
+        except Exception:
             page = None
         
         questions = QAQuestion.objects.order_by("-pub_date")
@@ -59,14 +60,14 @@ class IndexView(View):
             
         if query:
             include, exclude = parse_query(query)
-            include = (reduce(operator.or_, (Q(title__icontains=i) for i in include))
-                     | reduce(operator.or_, (Q(description__icontains=i) for i in include))
-                     | reduce(operator.or_, (Q(tags__name__icontains=i) for i in include))
-                     if include else Q())
-            exclude = (reduce(operator.or_, (~Q(title__icontains=i) for i in exclude))
-                     & reduce(operator.or_, (~Q(description__icontains=i) for i in exclude))
-                     & reduce(operator.or_, (~Q(tags__name__icontains=i) for i in exclude))
-                     if exclude else Q())
+            include = ((reduce(operator.or_, (Q(title__icontains=i) for i in include))
+                        | reduce(operator.or_, (Q(description__icontains=i) for i in include))
+                        | reduce(operator.or_, (Q(tags__name__icontains=i) for i in include)))
+                       if include else Q())
+            exclude = ((reduce(operator.or_, (~Q(title__icontains=i) for i in exclude))
+                        & reduce(operator.or_, (~Q(description__icontains=i) for i in exclude))
+                        & reduce(operator.or_, (~Q(tags__name__icontains=i) for i in exclude)))
+                       if exclude else Q())
             questions = questions.filter(include & exclude)
             noans = noans.filter(include & exclude)
             popular = popular.filter(include & exclude)
@@ -196,11 +197,11 @@ class AnswerView(HttpMethodMixin, View):
         
         if 'answer' in params:
             if params['answer']:
-                answer[0].question.user.profile.mod_rep(settings.QA_SETTINGS['reputation']['ANSWER_ACCEPTED']//2)
-                answer[0].user.profile.mod_rep(settings.QA_SETTINGS['reputation']['ANSWER_ACCEPTED'])
+                answer[0].question.user.profile.mod_rep(REPUTATION['ANSWER_ACCEPTED']//2)
+                answer[0].user.profile.mod_rep(REPUTATION['ANSWER_ACCEPTED'])
             else:
-                answer[0].question.user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['ANSWER_ACCEPTED']//2)
-                answer[0].user.profile.mod_rep(-settings.QA_SETTINGS['reputation']['ANSWER_ACCEPTED'])
+                answer[0].question.user.profile.mod_rep(-REPUTATION['ANSWER_ACCEPTED']//2)
+                answer[0].user.profile.mod_rep(-REPUTATION['ANSWER_ACCEPTED'])
         
         return redirect(reverse('ask:question', args=[answer[0].question.pk]))
     

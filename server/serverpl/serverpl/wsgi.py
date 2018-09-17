@@ -14,7 +14,7 @@ from django.core.wsgi import get_wsgi_application
 
 path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-if not path in sys.path:
+if path not in sys.path:
     sys.path.append(path)
 
 

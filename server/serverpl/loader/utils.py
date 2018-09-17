@@ -1,17 +1,7 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-#
-#  utils.py
-#  
-#  Copyright 2018 Coumes Quentin
-#  
-
-from os.path import join, dirname, normpath, isfile, basename, realpath
+from os.path import join, normpath, basename, realpath
 
 import gitcmd
 from django.conf import settings
-
-from filebrowser.models import Directory
 
 
 def get_location(directory, path, current=""):
@@ -28,7 +18,7 @@ def get_location(directory, path, current=""):
        raise:
            - SyntaxError if a directory is given but the path after ':' isn't absolute
     """
-    if ':' in path: # Contains a reference
+    if ':' in path:  # Contains a reference
         directory_name, path = path.split(':')
         if not path.startswith('/'):
             raise SyntaxError("Syntax Error (path after ':' must be absolute)")
@@ -37,18 +27,19 @@ def get_location(directory, path, current=""):
         else:
             path = path[1:]
         
-    elif path.startswith('/'): # Absolute path
+    elif path.startswith('/'):  # Absolute path
         abs_curr = join(directory.root, current)
         if gitcmd.in_repository(abs_curr):
             top = gitcmd.top_level(abs_curr)[1]
-            if realpath(settings.FILEBROWSER_ROOT) in realpath(top): # Check if the repo is inside FILEBROWSER_ROOT
+            # Check if the repo is inside FILEBROWSER_ROOT
+            if realpath(settings.FILEBROWSER_ROOT) in realpath(top):
                 path = join(basename(top), path[1:])
             else:
                 path = path[1:]
         else:
             path = path[1:]
             
-    else: # Relative path 
+    else:  # Relative path
         path = join(current, path)
     
     return normpath(path)

@@ -1,12 +1,10 @@
 import re, pytz
-from datetime import datetime, timedelta
-from math import log
+from datetime import datetime
 
 from django.conf import settings
 
 
 EPOCH = pytz.timezone(settings.TIME_ZONE).localize(datetime(1970, 1, 1))
-
 
 
 def epoch_seconds(date):
