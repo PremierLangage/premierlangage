@@ -1,6 +1,7 @@
 import logging
 
-from django.urls import resolve
+from django.shortcuts import redirect
+from django.urls import resolve, reverse
 from django.utils.deprecation import MiddlewareMixin
 from django.contrib import auth
 from django.core.exceptions import ImproperlyConfigured
@@ -112,9 +113,9 @@ class LTIAuthMiddleware(MiddlewareMixin):
                 if not urlmatch.app_name or not urlmatch.url_name:
                     urlmatch = None
                 if urlmatch and urlmatch.app_name + ":" + urlmatch.url_name == "playexo:activity":
-                    Activity.get_or_create_from_lti(request, lti_launch)
+                    activity, _ = Activity.get_or_create_from_lti(request, lti_launch)
                     ActivityOutcome.get_or_create_from_lti(user, lti_launch)
-            
+                    return redirect(reverse('playexo:activity', args=[activity.id]))
             else:
                 # User could not be authenticated!
                 logger.warning('LTI authentication failed')
