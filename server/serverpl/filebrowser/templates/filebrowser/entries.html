@@ -25,7 +25,7 @@
                                         {% endif %}
                                         {% for elem in option.balise %} {{ elem }} {% endfor %}
                                         >
-                                        <i class="{{ option.fa_icon }} fa-fw"></i> {% if option.size == "big"  %}{{ option.text}}{% endif %}
+                                        <i class="{{ option.fa_icon }} fa-fw"></i> {% if option.size == "big"  %}{{ option.name}}{% endif %}
                                     </{{ option.type }}>
                                 {% endif %}
                             {% endfor %}

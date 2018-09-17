@@ -8,7 +8,7 @@ from django.urls import reverse
 
 from loader.models import PL
 from playexo.models import SessionActivity, Activity, Answer
-
+from playexo.utils import render_feedback
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +44,7 @@ def evaluate(request, activity_id, pl_id):
                 json.dumps({
                     "navigation": exercise.get_navigation(request, context),
                     "exercise": exercise.get_exercise(request),
-                    "feedback": feedback,
+                    "feedback": render_feedback(feedback),
                 }), 
                 content_type='application/json'
             )
