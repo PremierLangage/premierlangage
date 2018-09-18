@@ -8,7 +8,7 @@ If any problem occurs during the installation, see the section ***Troubleshootin
 - zip
 
 ### Python
-We recommend you to use [python virtual environment](https://docs.python.org/3/tutorial/venv.html) to make a clean install and to be 
+We recommend you to use a [python virtual environment](https://docs.python.org/3/tutorial/venv.html) to make a clean install and to be 
 sure that PL's packages will not conflict with your already installed packages.
 
 You can install virtualenv with:
@@ -34,30 +34,42 @@ You can see that your environment is running if its name appear at the start of 
 Every module installed with pip while running a python environment will be installed on said environment.
 
 
+
+
 ## Local/Dev
 To use the project on localhost:
 
 - Move to premierlangage/server/serverpl/ and run install_local.sh
 - Run the server (*python3 manage.py runserver*)
 
+To execute exercises, you will also need to set up a sandbox, you can find one [here](https://github.com/plgitlogin/sandbox),
+and set the settings `SANDBOX` to the corresponding url (I.E. `http://127.0.0.1:7000/sandbox`).
+
+
+
+
 ## Deployment
-- Move to premierlangage/server/serverpl/ and run install_release.sh
+- Move to `premierlangage/server/serverpl/` and run `install_release.sh`
 - Create a super user for the server by entering informations when prompted
-- Change important settings in server/serverpl/serverpl/settings.py (like SECRET_KEY)
-- Run the server (*python3 manage.py collectstatic*)
-- Run the server (*python3 manage.py runserver*)
+- You can override settings (like SECRET_KEY, SANDBOX or ALLOWED_HOSTS), by creating a file `premierlangage/server/serverpl/serverpl/config.py` and declaring such settings.
+- From `premierlangage/server/serverpl/`, run `python3 manage.py collectstatic`
+- Finally the server : `python3 manage.py runserver`
+
+
 
 ### Logging
 Default facility used for syslog is local7.
 To enable logging on a custom log file, you should created a new file ending by .conf in '/etc/rsyslog.d/' containing:
 
-  local7.*	/var/log/django.log # 'replace django.log with whatever you want'
-  $EscapeControlCharactersOnReceive off
-  & stop
+```
+local7.*	/var/log/django.log # 'replace django.log with whatever you want'
+$EscapeControlCharactersOnReceive off
+& stop
+```
 
 And restart syslog and rsyslog services
 
-Configure mails option in server/serverpl/serverpl/settings.py to enable the logger to sent mail.
+Configure mails option in `premierlangage/server/serverpl/serverpl/config.py` to enable the logger to send mail.
 
 
 ## Troubleshooting
