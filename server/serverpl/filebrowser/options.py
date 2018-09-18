@@ -630,7 +630,7 @@ def test_pl_option(request, filebrowser, target):
         if not pl:
             messages.error(request, warnings.replace(settings.FILEBROWSER_ROOT, ""))
             return redirect_fb(filebrowser.relative)
-
+        pl.save()
         exercise = SessionTest.objects.create(pl=pl, user=request.user)
         preview = exercise.get_exercise(request)
 

@@ -6,7 +6,7 @@
 #  Copyright 2018 Coumes Quentin
 
 
-import logging, hashlib, htmlprint
+import logging, hashlib, htmlprint, time
 from os.path import splitext, basename, join, abspath, dirname
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -62,7 +62,7 @@ def load_pltp(directory, rel_path, force=False):
     name = splitext(basename(rel_path))[0]
     
     sha1 = hashlib.sha1()
-    sha1.update((directory.name+':'+rel_path).encode('utf-8'))
+    sha1.update((directory.name+':'+rel_path+str(time.time())).encode('utf-8'))
     sha1 = sha1.hexdigest()
     
     try:

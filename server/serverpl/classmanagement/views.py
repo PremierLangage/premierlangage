@@ -131,6 +131,7 @@ def course_summary(request, pk):
                 ],
                 'name': activity.pltp.json['title'],
                 'activity_name': activity.name,
+                'id': activity.id,
             })
         student.append({
             'lastname': user.last_name,
@@ -154,7 +155,7 @@ def course_summary(request, pk):
 
 @csrf_exempt
 @login_required
-def activity_summary(request, pk, name):
+def activity_summary(request, pk, activity_pk):
     try:
         course = Course.objects.get(id=pk)
     except Course.DoesNotExist:
@@ -164,7 +165,7 @@ def activity_summary(request, pk, name):
                        + course.name + "'.")
         raise PermissionDenied("Vous n'êtes pas professeur de cette classe.")
     
-    activity = Activity.objects.get(name=name)
+    activity = Activity.objects.get(pk=activity_pk)
     student = list()
     for user in course.student.all():
         tp = list()
@@ -222,6 +223,7 @@ def student_summary(request, course_id, student_id):
         tp.append({
             'name': activity.pltp.json['title'],
             'activity_name': activity.name,
+            'id': activity.id,
             'width': str(100/len_tp),
             'pl': question,
         })

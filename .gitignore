@@ -118,3 +118,4 @@ home/*
 !home/lib
 tmp
 .idea/
+serverpl/config.py

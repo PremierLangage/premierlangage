@@ -2,6 +2,9 @@
 
 import tempfile, tarfile, os
 
+from django.template import Template, Context
+
+
 
 def tar_from_dic(files):
     with tempfile.TemporaryDirectory() as tmp_dir, tempfile.TemporaryDirectory() as env_dir:
@@ -34,3 +37,10 @@ def sum_key_value(dic, *arg, value=lambda k: k):
                 result[k] += value(v)
     
     return result
+
+
+def render_feedback(feedback):
+    return Template(
+        "{% load django_markdown %}"
+        + "{% with feedbackh__=feedback__|markdown %}{{feedbackh__|safe}}{% endwith %}"
+    ).render(Context({'feedback__': feedback}))
