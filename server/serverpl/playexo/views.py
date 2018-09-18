@@ -85,10 +85,14 @@ def activity_view(request, activity_id):
         
         elif session.current_pl and action == "next":
             pls = activity.pltp.pl.all()
+            print(session.current_pl)
             for previous, next in zip(pls, list(pls[1:]) + [None]):
+                print(previous, next)
+                print(previous == session.current_pl)
                 if previous == session.current_pl:
                     session.current_pl = next
                     session.save()
+                    break
             else:
                 session.current_pl = None
                 session.save()

@@ -41,12 +41,14 @@
                     <i class="fas fa-check"></i> Valider
                 </button>
             </div>
-            <div id="next_button" style="display: None; color: white;">
+            {% if grade__|add:"0" > 0 %}
+            <div id="next_button">
                 <br>
                 <a type="button" class="btn btn-lg btn-success" href="{% url 'playexo:activity' activity_id__ %}?action=next">
                     Suivant<span class="glyphicon glyphicon-arrow-right"></span>
                 </a>
             </div>
+            {% endif %}
         </center>
     </div>
 </div>
