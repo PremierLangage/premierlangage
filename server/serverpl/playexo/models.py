@@ -279,7 +279,10 @@ class SessionExercise(SessionExerciseAbstract):
         """Return whether the seed must be reroll (True) or not (False)."""
         if grade:
             return grade != 100
-        oneshot = self.get_from_context('settings.oneshot')
+        try:
+             oneshot = self.get_from_context('settings.oneshot')
+        except:
+            oneshot = None
         return not seed or oneshot
     
     
