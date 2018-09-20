@@ -149,6 +149,7 @@ class SessionExerciseAbstract(models.Model):
             request - (django.http.request) Current Django request object.
             answers - (dict) Answers of the student.
             test    - (bool) Whether this exercise is in a testing session or not.
+            FIXME test not used ?
         """
         context = {}
         evaluator = SandboxEval(self.envid, answers)
