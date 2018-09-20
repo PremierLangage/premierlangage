@@ -13,7 +13,6 @@ from django.shortcuts import redirect
 from django.urls import reverse
 
 from classmanagement.models import Course
-
 from playexo.models import Answer, Activity
 from playexo.enums import State
 
@@ -97,7 +96,7 @@ def course_view(request, pk):
         'name': course.name,
         'activity': activity,
         'teacher': course.teacher.all(),
-        'instructor': True if request.user in course.teacher.all() else False,
+        'instructor': course.is_teacher(request.user),
         'course_id': pk,
     })
 
