@@ -37,24 +37,20 @@ Every module installed with pip while running a python environment will be insta
 
 
 ## Local/Dev
-To use the project on localhost:
-
-- Move to premierlangage/server/serverpl/ and run install_local.sh
-- Run the server (*python3 manage.py runserver*)
-
-To execute exercises, you will also need to set up a sandbox, you can find one [here](https://github.com/plgitlogin/sandbox),
-and set the settings `SANDBOX` to the corresponding url (I.E. `http://127.0.0.1:7000/sandbox`).
-
-
-
+- Move to `premierlangage/server/serverpl/` and run `install_local.sh`
+- Create a super user for the server by entering informations when prompted
+- Run the server: `python3 manage.py runserver`
 
 ## Deployment
 - Move to `premierlangage/server/serverpl/` and run `install_release.sh`
 - Create a super user for the server by entering informations when prompted
 - You can override settings (like SECRET_KEY, SANDBOX or ALLOWED_HOSTS), by creating a file `premierlangage/server/serverpl/serverpl/config.py` and declaring such settings.
 - From `premierlangage/server/serverpl/`, run `python3 manage.py collectstatic`
-- Finally the server : `python3 manage.py runserver`
 
+
+## Sandbox
+To execute exercises, you will also need to set up a sandbox, you can find one [here](https://github.com/plgitlogin/sandbox),
+and set the settings `SANDBOX` to the corresponding url (I.E. `http://127.0.0.1:7000/sandbox`).
 
 
 ### Logging
