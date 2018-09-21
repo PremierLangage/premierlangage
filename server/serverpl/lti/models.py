@@ -24,7 +24,7 @@ class LTIModel(models.Model):
 
     class Meta:
         abstract = True
-        unique_together = ('consumer_id', 'consumer_id',)
+        unique_together = ('consumer', 'consumer_id',)
 
 
 
