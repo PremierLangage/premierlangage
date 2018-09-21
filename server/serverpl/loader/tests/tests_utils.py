@@ -95,23 +95,28 @@ class UtilsTestCase(TestCase):
     
     def test_extends_dic(self):
         target = {
-            'name': 'Testdic',
-            'author': 'Tester',
-            'emptylist': [],
-            'emptydic': {}
+            'in_both': 'test',
+            'in_target': 'test',
+            'list_both': [1],
+            'list_target': [1],
+            'dic_target': {"1": 1},
         }
         source = {
-            'name': 'Dictest',
-            'newkey': 'values',
-            'emptylist': ['elem'],
-            'emptydic': {'key': 'elem'}
+            'in_both': 'test2',
+            'in_source': 'test2',
+            'list_both': [2],
+            'list_source': [2],
+            'dic_source': {"2": 2},
         }
         result = {
-            'name': 'Testdic',
-            'newkey': 'values',
-            'emptylist': ['elem'],
-            'emptydic': {'key': 'elem'},
-            'author': 'Tester'
+            'in_both': 'test',
+            'in_target': 'test',
+            'in_source': 'test2',
+            'list_both': [1, 2],
+            'list_target': [1],     
+            'list_source': [2],
+            'dic_target': {"1": 1},
+            'dic_source': {"2": 2},
         }
         
         self.assertEqual(extends_dict(target, source), result)
