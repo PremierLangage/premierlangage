@@ -34,7 +34,7 @@
             </div>
             
             {% for item in activity %}
-                <div class="card course-panel{% if instructor %}-instructor{%endif%}">
+                <div class="card">
                     <div class="card-body">
                         <div class="row">
                             <div style="width: calc(100% - 60px); float: left; height: 40px;">
@@ -48,12 +48,12 @@
                             <div style="width: 60px; float: left; height: 40px;" class="text-right pull-right">
                                 <h3>
                                     {% if not item.open %}
-                                        {% if instructor or request.user.profile.is_admin %}
+                                        {% if instructor %}
                                             &emsp;<a href="{{ request.path }}?action=toggle_activity&id={{item.id}}"><i class="fas fa-toggle-off"></i></a>
                                         {% else %}
                                             <i class="fas fa-toggle-off">
                                         {% endif %}
-                                    {% elif item.open and instructor or request.user.pluser.is_admin %}
+                                    {% elif item.open and instructor %}
                                         {% if instructor or request.user.profile.is_admin %}
                                             &emsp;<a href="{{ request.path }}?action=toggle_activity&id={{item.id}}"><i class="fas fa-toggle-on"></i></a>
                                         {% else %}
