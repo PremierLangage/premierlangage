@@ -41,12 +41,12 @@
             </div>
             <script src="{% static 'js/ace/ace.js' %}"></script>
             <script>
-                window.onbeforeunload = function () {return confirm();}
                 var editorPL = ace.edit('editorPL');
                     editorPL.session.setMode("ace/mode/python");
                     editorPL.setTheme("{{ request.user.profile.editor_theme.template }}");
                     editorPL.setShowInvisibles(true);
 
+                window.onbeforeunload = function () {return /* editorPL.session.getUndoManager().isClean() ||n */ confirm();}
                 var inputPL = $('input[name="editor_input"]');
                     editorPL.getSession().on("change", function () {
                     {% if request.user.profile.confirm %}
@@ -70,9 +70,11 @@
                             contentType: 'application/json;charset=UTF-8',
                             success: function (returned_status) {
                                 status = returned_status;
+				// editorPL.session.getUndoManager().markClean();
                                 onReturn2(status.feedback);
                             }
                         });
+			
                     });
                 });
                 function onReturn2(feedback) {
