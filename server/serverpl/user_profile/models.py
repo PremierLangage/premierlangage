@@ -77,7 +77,18 @@ class Profile(LTIModel):
         instance.profile.save()
         if instance.is_staff or instance.is_superuser:
             instance.profile.role = Role.ADMINISTRATOR
-    
+
+
+    def save(self, *args, **kwargs):
+        """Fix the IntegrityError when creating a new user and modifying default profile."""
+        if self.pk is None:
+            p = Profile.objects.filter(user=self.user)
+            p.delete()
+            super(Profile, self).save(*args, **kwargs)
+            self.avatar.save(self.user.username, File(generate_identicon(self.user)))
+        else:
+            super(Profile, self).save(*args, **kwargs)
+
     
     def __str__(self):
         return self.user.username + "'s Profile"

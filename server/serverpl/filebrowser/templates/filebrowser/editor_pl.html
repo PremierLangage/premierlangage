@@ -2,6 +2,9 @@
 
 {% load static %}
 
+{% block title %}{{ filename }}{% endblock %}
+
+
 {% block css %}
     <link rel="stylesheet" href="{% static '/css/filebrowser.css' %}" />
 {% endblock %}
