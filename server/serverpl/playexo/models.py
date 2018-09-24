@@ -167,20 +167,21 @@ class SessionExerciseAbstract(models.Model):
         if response['status'] < 0:  # Sandbox Error
             feedback = response['feedback']
             if request.user.profile.can_load() and response['sandboxerr']:
-                feedback += "<br><br>" + htmlprint.code(response['sandboxerr'])
+                feedback += "<br><hr>Sandbox error:<br>" + htmlprint.code(response['sandboxerr'])
+                feedback += "<br><hr>Received on stderr:<br>" + htmlprint.code(response['stderr'])
         
         elif response['status'] > 0:  # Evaluator Error
             feedback = ("Une erreur s'est produite lors de l'exécution du script d'évaluation "
                         + ("(exit code: %d, env: %s). Merci de prévenir votre professeur"
                            % (response['status'], response['id'])))
             if request.user.profile.can_load():
-                feedback += "<br><br>Received on stderr:<br>" + htmlprint.code(response['stderr'])
+                feedback += "<br><hr>Received on stderr:<br>" + htmlprint.code(response['stderr'])
         
         else:  # Success
             context = dict(response['context'])
             feedback = response['feedback']
             if request.user.profile.can_load() and response['stderr']:
-                feedback += "<br><br>Received on stderr:<br>" + htmlprint.code(response['stderr'])
+                feedback += "<br><hr>Received on stderr:<br>" + htmlprint.code(response['stderr'])
             answer["seed"] = context['seed'],
         
         keys = list(response.keys())

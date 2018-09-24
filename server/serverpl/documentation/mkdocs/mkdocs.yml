@@ -10,10 +10,16 @@ nav:
     - 'Affichage / Formulaire': 'affichage.md'
     - 'Évaluation': 'evaluation.md'
     - "Ecrire une Feuille d'Exercices": 'pltp.md'
-- Parseur:
-    - 'Ecrire un parseur': 'parser.md'
-    - 'Exceptions prédéfinies': 'parser_exception.md'
-    - 'Exemple': 'parser_exemple.md'
+- Builders:
+    - 'index': 'builder_index.md'
+    - 'before': 'before.md'
+    - 'build': 'build.md'
+- Formulaires:
+    - 'index': 'form_index.md'
+- Graders:
+    - 'index': 'grader_index.md'
+    - 'evaluator': 'evaluator.md'
+    - 'evalfunc': 'evalfunc.md'
 
 theme:
     name: null

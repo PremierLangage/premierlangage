@@ -244,7 +244,8 @@ Bien entendu, cela pose plusieurs limitations:
 ## Écrire un Exercice
 
 Le déroulement d'un exercice sous Premier Langage se compose de 3 parties:
-* **[La construction](../construction/)**, à l'aide d'un script *builder.py* (optionnel)
+
+* **[La Construction](../construction/)**, à l'aide d'un script *builder.py* (optionnel)
 * **[L'Affichage](../affichage/)**, à l'aide des clés *title*, *author*, *text* et *form*
 * **[L'Évaluation](../evaluation/)**, à l'aide d'un script *grader.py*
 

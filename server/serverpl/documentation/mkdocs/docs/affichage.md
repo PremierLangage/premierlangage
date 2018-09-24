@@ -1,22 +1,22 @@
-# L'Affichage
+# Affichage et Formulaire
 L'affichage d'un exercice se fait à l'aide de 4 clés:
 * **title** : Le titre de l'exercice
 * **author** : L'auteur de l'exercice (optionnel)
 * **text** : L'énoncé de l'exercice
 * **form** : Le formulaire de l'exercice
 
-Les clés sont affichées de cette façon:
-[!write_pl_display.png](write_pl_display.png)
+Les clés sont affichées suivant cette disposition:
+![la]({% static 'documentation/img/write_pl_display.png' %})
 
 
 
 ## text
 La clé **text** supporte le *HTML* ainsi que le [Markdown](https://fr.wikipedia.org/wiki/Markdown),
 c'est dans cette clé que l'énoncé de l'exercice doit être écris. Il est possible de plus
-d'afficher n'importe qu'elle variable de l'exercice à l'aide de la syntaxe `{{ var }}`,
+d'afficher n'importe qu'elle variable de l'exercice à l'aide de la syntaxe `{% templatetag openvariable %} var {% templatetag closevariable %}`,
 par exemple:
 ```
-text = Quel est le **résultat** de: <i>{{ op1 }}</i> + <i>{{ op2 }}</i> ?
+text = Quel est le **résultat** de: <i>{% templatetag openvariable %} op1 {% templatetag closevariable %}</i> + <i>{% templatetag openvariable %} op2 {% templatetag closevariable %}</i> ?
 
 op1 = 10
 op2 = 20
@@ -106,10 +106,7 @@ form==
 <input type="checkbox" id="form_langage" value="python"> Python
 <input type="checkbox" id="form_langage" value="caml"> Caml
 <input type="checkbox" id="form_langage" value="java"> Java
-==Le déroulement d'un exercice sous Premier Langage se compose de 3 parties:
-* **La construction**, à l'aide d'un script *builder.py* (optionnel)
-* **L'affichage**, à l'aide des clés *title*, *author*, *text* et *form*
-* **L'évaluation**, à l'aide d'un script *grader.py*
+==
 ```
 Enverra, si l'utilisateur choisi C, Python et Java:
 ```python
@@ -125,16 +122,16 @@ Si l'utilisateur choisi juste C:
 ```
 
 De la même manière que pour la clé **text**, il est possible d'utiliser n'importe
-quel variable de l'exercice dans le formulaire avec la syntaxe `{{ var }}`:
+quel variable de l'exercice dans le formulaire avec la syntaxe `{% templatetag openvariable %} var {% templatetag closevariable %}`:
 ```html
 l1 = C
 l2 = Python
 l3 = Caml
 
 form==
-<input type="checkbox" id="form_langage" value="{{ l1 }}"> {{ l1 }}
-<input type="checkbox" id="form_langage" value="{{ l2 }}"> {{ l2 }}
-<input type="checkbox" id="form_langage" value="{{ l3 }}"> {{ l3 }}
+<input type="checkbox" id="form_langage" value="{% templatetag openvariable %} l1 {% templatetag closevariable %}"> {% templatetag openvariable %} l1 {% templatetag closevariable %}
+<input type="checkbox" id="form_langage" value="{% templatetag openvariable %} l2 {% templatetag closevariable %}"> {% templatetag openvariable %} l2 {% templatetag closevariable %}
+<input type="checkbox" id="form_langage" value="{% templatetag openvariable %} l3 {% templatetag closevariable %}"> {% templatetag openvariable %} l3 {% templatetag closevariable %}
 ==
 ```
 ___
@@ -153,10 +150,10 @@ créer rapidement un bouton radio pour chaque réponse, peut importe le nombre d
 ```
 form==
 {% for answer in list_answer %}
-    <input type="radio" id="form_langage" name="name" value="{{ answer }}"> {{ answer }}
+    <input type="radio" id="form_langage" name="name" value="{% templatetag openvariable %} answer {% templatetag closevariable %}"> {% templatetag openvariable %} answer {% templatetag closevariable %}
 {% endfor %}
 ==
 ```
 
-Nous venons tout juste de déclarer une formulaire réutilisable par n'importe quel
+Nous venons tout juste de déclarer un formulaire réutilisable par n'importe quel
 exercice déclarant une telle liste de réponse.
