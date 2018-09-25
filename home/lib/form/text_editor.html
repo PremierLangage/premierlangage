@@ -1,16 +1,21 @@
 {% load static %}
+{% load playexo_tags %}
 
-<!-- Do not tabulate this div as the tabulation will appear in the editor -->
-<div id="editor" style="resize: both; overflow: auto; border: 1px #E7E7E7 solid; border-width: 1px; border-color: #BBB; border-radius: 4px; height: {% if editor.height %}{{ editor.height}}{% else %}400{% endif %}px; #E7E7E7 solid;">
-{% if answers__.answer and answers__.answer != "" %}{{ answers__.answer }}{% else %}{{ editor.code }}{% endif %}</div>
+{% with editorid__=editor.id %}
+    {% firstof answers__|dict_value:editorid__ answers__.answer editor.code as answer_editor__ %}
 
-<!-- Input in which editor's content is copied -->
-<input id="{% if editor.id %}form_{{ editor.id }}{% else %}form_answer{% endif %}"
-       type="hidden"
-       style="display: none;"
-       value="{% if answers__.answer and answers__.answer != "" %}{{ answers__.answer }}{% else %}{{ editor.code }}{% endif %}"
->
+    <!-- Do not tabulate this div as the tabulation will appear in the editor -->
+    <div id="editor" style="resize: both; overflow: auto; border: 1px #E7E7E7 solid; border-width: 1px; border-color: #BBB; border-radius: 4px; height: {% if editor.height %}{{ editor.height}}{% else %}400{% endif %}px; #E7E7E7 solid;"
+    >{{ answer_editor__ }}</div>
 
+    <!-- Input in which editor's content is copied -->
+
+    <input id="{% if editor.id %}form_{{ editor.id }}{% else %}form_answer{% endif %}"
+           type="hidden"
+           style="display: none;"
+           value="{{ answer_editor__ }}"
+    >
+{% endwith %}
 
 <script src="{% static 'ace/ace.js' %}" type="text/javascript" charset="utf-8"></script>
 <script src="{% static 'ace/ext-modelist.js' %}"></script>
@@ -57,8 +62,10 @@
     );
 
 
-    var input = $('input[id="{% if editor.id %}form_{{ editor.id }}{% else %}form_answer{% endif %}}"]');
-        editor.getSession().on("change", function() {
+    var input = $( "#{% if editor.id %}form_{{ editor.id }}{% else %}form_answer{% endif %}" );
+    editor.session.on("change", function() {
+        console.log("ON CHAGE");
+        console.log(input)
         input.val(editor.getSession().getValue());
     });
 </script>
