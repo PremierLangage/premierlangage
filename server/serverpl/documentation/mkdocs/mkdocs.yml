@@ -10,6 +10,8 @@ nav:
     - 'Affichage / Formulaire': 'affichage.md'
     - 'Évaluation': 'evaluation.md'
     - "Ecrire une Feuille d'Exercices": 'pltp.md'
+- Templates:
+    - 'Index': 'template_index.md'
 - Builders:
     - 'Index': 'builder_index.md'
     - 'before': 'before.md'

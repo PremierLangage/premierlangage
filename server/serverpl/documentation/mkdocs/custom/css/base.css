@@ -12,6 +12,10 @@ ul.nav .main {
     font-weight: bold;
 }
 
+.a-nav:hover {
+    text-decoration: none;
+}
+
 .nav-scroll {
     font-weight: bold;
     position: fixed;

@@ -6,7 +6,7 @@
                 {% if nav_item.children %}
                     <div class="card">
                         <div class="card-header">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{ loop.index }}"><i class="fas fa-bars"></i> &emsp; {{ nav_item.title }}</a>
+                            <a data-toggle="collapse" class="a-nav" data-parent="#accordion" href="#collapse{{ loop.index }}"><i class="fas fa-bars"></i>&emsp;{{ nav_item.title }}</a>
                         </div>
                         <div id="collapse{{ loop.index }}" class="panel-collapse collapse in">
                             <div class="card-body">

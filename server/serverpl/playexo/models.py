@@ -130,15 +130,20 @@ class SessionExerciseAbstract(models.Model):
     
     def get_from_context(self, key):
         """Get key from context.
-        
+
+        Return False is key does not exists.
+
         Does implement syntax of PL for nested dict. I.E.: 'dict1.dict2.[...].dictn.val' will return
         'context['dict1']['dict2']...['dictn']['val']"""
-        if '.' in key:
-            val = self.context
-            for k in key.split('.'):
-                val = val[k]
-        else:
-            val = self.context[key]
+        try:
+            if '.' in key:
+                val = self.context
+                for k in key.split('.'):
+                    val = val[k]
+            else:
+                val = self.context[key]
+        except KeyError:
+            return False
         return val
     
     
