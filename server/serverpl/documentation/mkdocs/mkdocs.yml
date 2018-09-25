@@ -5,19 +5,20 @@ site_author: Q. Coumes, D. Revuz
 nav:
 - Home: 'index.md'
 - Ecrire un exercice:
-    - 'Bases': 'introduction.md'
+    - 'Le Langage': 'langage_pl.md'
     - 'Construction': 'construction.md'
     - 'Affichage / Formulaire': 'affichage.md'
     - 'Évaluation': 'evaluation.md'
     - "Ecrire une Feuille d'Exercices": 'pltp.md'
 - Builders:
-    - 'index': 'builder_index.md'
+    - 'Index': 'builder_index.md'
     - 'before': 'before.md'
     - 'build': 'build.md'
 - Formulaires:
-    - 'index': 'form_index.md'
+    - 'Index': 'form_index.md'
+    - 'Éditeur de Texte': 'text_editor.md'
 - Graders:
-    - 'index': 'grader_index.md'
+    - 'Index': 'grader_index.md'
     - 'evaluator': 'evaluator.md'
     - 'evalfunc': 'evalfunc.md'
 

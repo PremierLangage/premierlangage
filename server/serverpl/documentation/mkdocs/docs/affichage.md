@@ -6,7 +6,7 @@ L'affichage d'un exercice se fait à l'aide de 4 clés:
 * **form** : Le formulaire de l'exercice
 
 Les clés sont affichées suivant cette disposition:
-![la]({% static 'documentation/img/write_pl_display.png' %})
+![write_display_pl]({% static 'documentation/img/write_pl_display.png' %})
 
 
 
@@ -23,7 +23,7 @@ op2 = 20
 ```
 A l'affichage, après traitement du markdown, du HTML et des variables le texte 
 suivant sera affiché:  
-"Quel est le **résultat** de: *10* + *20* ?"
+> Quel est le **résultat** de: *10* + *20* ?
 
 
 
