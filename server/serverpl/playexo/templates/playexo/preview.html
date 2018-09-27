@@ -14,7 +14,7 @@
             {% endwith %}
         {% endif %}
         
-        <div id="feedback" class="alert alert-secondary feedback collapse">
+        <div id="feedback" class="alert feedback collapse">
             {% with feedbackh__=feedback__|markdown %}
                 {{ feedbackh__|safe }}
             {% endwith %}
