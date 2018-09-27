@@ -28,6 +28,7 @@ class Activity(LTIModel):
     open = models.BooleanField(default=True)
     pltp = models.ForeignKey(PLTP, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
+    parent = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True)
 
     @classmethod
     def get_or_create_from_lti(cls, request, lti_launch):
@@ -61,8 +62,17 @@ class Activity(LTIModel):
                 raise Http404("Activity could not be found.")
             parent = get_object_or_404(Activity, id=urlmatch.kwargs['activity_id'])
             new = Activity.objects.create(consumer_id=activity_id, consumer=consumer,
-                                          name=activity_name, pltp=parent.pltp, course=course)
+                                          name=activity_name, pltp=parent.pltp, course=course,
+                                          parent=parent)
             return new, True
+    
+    
+    def reload(self):
+        """Reload every session using this activity."""
+        for act_sess in self.sessionactivity_set.all():
+            for exer_sess in act_sess.sessionexercise_set.all():
+                exer_sess.reload()
+    
 
 
     def __str__(self):
@@ -120,7 +130,16 @@ class SessionExerciseAbstract(models.Model):
     
     class Meta:
         abstract = True
-
+    
+    def reload(self):
+        if self.pl:
+            self.context = dict(self.pl.json)
+            self.built = False
+            self.envid = None
+        else:
+            self.context = dict(self.activity_session.activity.pltp.json)
+        self.save()
+    
     # TODO: Allowing to add key with the PL syntax (dict1.dict2.val)
     def add_to_context(self, key, value):
         """Add value corresponding to key in the context."""
@@ -274,6 +293,7 @@ class SessionExercise(SessionExerciseAbstract):
                 self.context = dict(self.pl.json)
             else:
                 self.context = dict(self.activity_session.activity.pltp.json)
+        if 'activity_id__' not in self.context:
             self.context['activity_id__'] = self.activity_session.activity.id
         super().save(*args, **kwargs)
     

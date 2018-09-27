@@ -40,7 +40,6 @@ def sum_key_value(dic, *arg, value=lambda k: k):
 
 
 def render_feedback(feedback):
-    print("RENDERED FEEDBACK")
     return Template(
         "{% load django_markdown %}{% with fh=f|markdown %}{{fh|safe}}{% endwith %}"
     ).render(Context({'f': feedback}))

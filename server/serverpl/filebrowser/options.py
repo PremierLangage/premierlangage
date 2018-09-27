@@ -30,7 +30,7 @@ from django.conf import settings
 
 from filebrowser.utils import redirect_fb
 from playexo.models import Activity, SessionTest
-from loader.loader import load_file
+from loader.loader import load_file, reload_pltp
 
 
 def mkdir_option(request, filebrowser, target):
@@ -443,7 +443,7 @@ def load_pltp_option(request, filebrowser, target):
     """ Load the target"""
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
-
+    
     try:
         rel_path = join(*(filebrowser.relative.split('/')[1:] + [target]))
         pltp, warnings = load_file(filebrowser.directory, rel_path, True)
@@ -469,6 +469,37 @@ def load_pltp_option(request, filebrowser, target):
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
     return redirect_fb(filebrowser.relative)
 
+
+def reload_pltp_option(request, filebrowser, target):
+    """Reload a given activity with the targeted PLTP."""
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    activity_id = request.POST.get('activity_id')
+    if not activity_id:
+        return HttpResponseBadRequest("Missing 'activity_id' parameter")
+    
+    try:
+        activity = Activity.objects.get(id=activity_id)
+        rel_path = join(*(filebrowser.relative.split('/')[1:] + [target]))
+        pltp, warnings = reload_pltp(filebrowser.directory, rel_path, activity.pltp)
+
+        if not pltp and not warnings:  # pragma: no cover
+            messages.info(request, "This PLTP is already loaded")
+        elif not pltp:  # pragma: no cover
+            messages.error(request, "Failed to load '"+target+"': \n"+warnings)
+        else:
+            activity.reload()
+            if warnings:  # pragma: no cover
+                for warning in warnings:
+                    messages.warning(request, warning)
+            messages.success(request, "L'activité <b>'"+pltp.name+"'</b> a bien été rechargé.")
+    except Exception as e:  # pragma: no cover
+        msg = "Impossible to load '"+target+"' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
+        messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))
+        if settings.DEBUG:
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
+    return redirect_fb(filebrowser.relative)
 
 
 def move_option(request, filebrowser, target):
