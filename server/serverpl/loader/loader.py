@@ -119,3 +119,56 @@ def load_pl(directory, rel_path):
     name = splitext(basename(rel_path))[0]
     pl = PL(name=name, json=dic, directory=directory, rel_path=rel_path)
     return pl, [htmlprint.code(warning) for warning in warnings]
+
+
+def reload_pltp(directory, rel_path, original):
+    """Reload the given file as a PLTP. Also reload its PL, but without modyfing their ID.
+
+        Return:
+            - (PLTP, []) if the PLTP was loaded successfully
+            - (PLTP, warning_list) if the PLTP was loaded with warnings
+    """
+    try:
+        name = splitext(basename(rel_path))[0]
+        
+        sha1 = hashlib.sha1()
+        sha1.update((directory.name + ':' + rel_path + str(time.time())).encode('utf-8'))
+        sha1 = sha1.hexdigest()
+        
+        path = join(
+            dirname(abspath(join(directory.root, rel_path[1:]))),
+            "dir" + splitext(basename(rel_path))[0]
+        )
+        dic, warnings = parse_file(directory, rel_path, path)
+        
+        if len(dic['__pl']) != len(original.pl.all()):
+            raise ValueError(("Number of PL in the activity (%d) differs from the number of PL in this"
+                              + "PLTP (%d).") % (len(dic['__pl']), len(pltp.pl.all())))
+        
+        pl_list = list()
+        for item in dic['__pl']:
+            try:
+                pl_directory = Directory.objects.get(name=item['directory_name'])
+            except ObjectDoesNotExist:
+                raise DirectoryNotFound(dic['__rel_path'], item['line'], item['path'], item['lineno'])
+            pl, pl_warnings = load_pl(pl_directory, item['path'])
+            warnings += pl_warnings
+            pl_list.append(pl)
+        
+        for pl, origin in zip(pl_list, original.pl.all()):
+            origin.json = pl.json
+            origin.save()
+            logger.info("PL '" + str(origin.id) + " (" + origin.name + ")' has been updated.")
+        
+        pltp = PLTP(name=name, sha1=sha1, json=dic, directory=directory, rel_path=rel_path)
+        original.json = pltp.json
+        original.save()
+        logger.info("PLTP '" + original.sha1 + " (" + original.name + ")' has been updated.")
+        
+        return original, [htmlprint.code(warning) for warning in warnings]
+    except Exception as e:  # pragma: no cover
+        if not settings.DEBUG:
+            return None, htmlprint.code(str(e))
+        return (None, (htmlprint.code(str(e))
+                       + '<br>DEBUG set to True - Showing Traceback :<br>'
+                       + htmlprint.html_exc()))

@@ -43,6 +43,19 @@ class UploadForm(forms.Form):
                                      "directly on the plateform")
 
 
+class ReloadPLTPForm(forms.Form):
+    activity_id = forms.IntegerField(help_text="<br>ID of the activity which should be reloaded "
+                                               "with this PLTP. It should be the ID inside the URL "
+                                               "used on your LTI consumer (Moodle, Blackboard, "
+                                               "...), and not the URL in your address bar after "
+                                               "clicking on said URL.<br><br><strong>Caution: The "
+                                               "order in which PL are included should stay the"
+                                               " same, as well as the total number of PL. May "
+                                               "not work if the PLTP used to reload activity is too"
+                                               " different than the original one.</strong>",
+                                     label="Activity ID")
+
+
 class ResetForm(forms.Form):
     MODE = (
         ('mixed', 'mixed'),
