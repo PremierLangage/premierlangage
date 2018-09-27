@@ -205,6 +205,9 @@ class SessionExerciseAbstract(models.Model):
             request - (django.http.request) Current Django request object.
             test    - (bool) Whether this exercise is in a testing session or not.
         """
+        self.context = self.pl.json
+        self.context['seed'] = time.time()
+        self.save()
         response = SandboxBuild(dict(self.context), test=test).call()
         
         if response['status'] < 0:
