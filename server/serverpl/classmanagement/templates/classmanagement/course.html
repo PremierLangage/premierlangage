@@ -37,7 +37,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
-                            <div style="width: calc(100% - 60px); float: left; height: 40px;">
+                            <div style="width: calc(100% - 65px); float: left; height: 40px;">
                                 <h4 class="course-activity-title">
                                     <a{% if item.open %} href="{% url 'playexo:activity' item.id %}"{% endif %}>
                                         {{ forloop.counter }}. {{ item.title }}
@@ -45,7 +45,7 @@
                                 </h4>
                             </div>
                         
-                            <div style="width: 60px; float: left; height: 40px;" class="text-right pull-right">
+                            <div style="width: 63px; float: left; height: 40px;">
                                 <h3>
                                     {% if not item.open %}
                                         {% if instructor %}
