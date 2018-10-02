@@ -56,7 +56,9 @@
 {% block end_script %}
     <script>
     {% if request.user.profile.confirm %}
-        window.onbeforeunload = function () {return confirm();}
+        window.onbeforeunload = function () {
+		// return confirm();
+	}
     {% endif %}
     
 
