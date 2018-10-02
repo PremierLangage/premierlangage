@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 #  pltp.py
-#  
+#
 #  Copyright 2018 Coumes Quentin
 
 
@@ -195,7 +195,7 @@ class Parser:
         path = get_location(self.directory, filename, current=dirname(self.path))
         path = abspath(join(self.directory.root, path))
         try:
-            if not isfile(path):
+            if not isfile(path) and match.group('file').startswith('/'):
                 for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if not l.isdigit()]:
                     path = join(settings.FILEBROWSER_ROOT, lib, filename[1:])
                     if isfile(path):
@@ -314,7 +314,7 @@ class Parser:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
         
         directory_name = self.directory.name
-        if not isfile(join(self.directory.root, path)):
+        if not isfile(join(self.directory.root, path)) and match.group('file').startswith('/')œ:
             for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if not l.isdigit()]:
                 if isfile(join(settings.FILEBROWSER_ROOT, lib, match.group('file')[1:])):
                     directory_name = lib
@@ -359,7 +359,7 @@ class Parser:
             self.dic['__comment'] += '\n' + self.COMMENT_LINE.match(line).group('comment')
         
         elif not self.EMPTY_LINE.match(line):
-            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)    
+            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)
     
     
     def parse(self):
@@ -391,7 +391,7 @@ class Parser:
 def get_parser():
     """ Used to dynamicaly add parser to the loader.
         Should return dictionnary containing :
-            - a list of extension using this parser, 
+            - a list of extension using this parser,
             - the class object
             - the type parsed ('pl' or 'pltp')."""
         
