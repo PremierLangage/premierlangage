@@ -489,7 +489,7 @@ def reload_pltp_option(request, filebrowser, target):
         elif not pltp:  # pragma: no cover
             messages.error(request, "Failed to load '"+target+"': \n"+warnings)
         else:
-            activity.sessionactivity_set.all().delete()
+            activity.reload()
             if warnings:  # pragma: no cover
                 for warning in warnings:
                     messages.warning(request, warning)

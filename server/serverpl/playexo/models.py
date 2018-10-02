@@ -70,6 +70,13 @@ class Activity(LTIModel):
             return new, True
     
     
+    def reload(self):
+        """Reload every session using this activity."""
+        self.sessionactivity_set.all().delete()
+        for i in Activity.objects.filter(parent=self):
+            i.sessionactivity_set.all().delete()
+    
+    
     def __str__(self):
         return str(self.id) + " " + self.name
 
@@ -124,16 +131,6 @@ class SessionExerciseAbstract(models.Model):
     
     class Meta:
         abstract = True
-    
-    def reload(self):
-        if self.pl:
-            self.context = dict(self.pl.json)
-            self.built = False
-            self.envid = None
-        else:
-            self.context = dict(self.activity_session.activity.pltp.json)
-        self.save()
-    
     
     # TODO: Allowing to add key with the PL syntax (dict1.dict2.val)
     def add_to_context(self, key, value):
