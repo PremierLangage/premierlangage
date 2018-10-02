@@ -84,7 +84,7 @@ def display_option(request, filebrowser, target):
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
 
-    return redirect_fb(filebrowser.relative)  # pragma: no cover 
+    return redirect_fb(filebrowser.relative)  # pragma: no cover
 
 
 def rename_option(request, filebrowser, target):
@@ -175,7 +175,7 @@ def add_option(request, filebrowser, target):
     
     if not ret:
         messages.success(request, "Entry successfully added to the index.")
-    else:  # pragma: no cover 
+    else:  # pragma: no cover
         messages.error(request, "Nothing to add." if not err else htmlprint.code(err + out))
     
     return redirect_fb(filebrowser.relative)
@@ -196,7 +196,7 @@ def reset_option(request, filebrowser, target):
     
     if not ret:
         messages.success(request, htmlprint.code(out + err))
-    else:  # pragma: no cover 
+    else:  # pragma: no cover
         messages.error(request, htmlprint.code(err + out))
     
     return redirect_fb(filebrowser.relative)
@@ -216,7 +216,7 @@ def commit_option(request, filebrowser, target):
 
     if not ret:
         messages.success(request, htmlprint.code(out + err))
-    else:  # pragma: no cover 
+    else:  # pragma: no cover
         messages.error(request, htmlprint.code(err + out))
 
     return redirect_fb(filebrowser.relative)
@@ -237,7 +237,7 @@ def change_branch_option(request, filebrowser, target):
     
     if not ret:
         messages.success(request, htmlprint.code(out + err))
-    else:  # pragma: no cover 
+    else:  # pragma: no cover
         messages.error(request, htmlprint.code(err + out))
 
     return redirect_fb(filebrowser.relative)
@@ -253,7 +253,7 @@ def checkout_option(request, filebrowser, target):
     
     if not ret:
         messages.success(request, "Entry successfully checked out.")
-    else:  # pragma: no cover 
+    else:  # pragma: no cover
         messages.error(request, "Nothing to checked out." if not err else htmlprint.code(err + out))
 
     return redirect_fb(filebrowser.relative)
@@ -400,7 +400,7 @@ def download_option(request, filebrowser, target):
         if isdir(path):
             os.remove(npath)
     
-    return redirect_fb(filebrowser.relative)  # pragma: no cover 
+    return redirect_fb(filebrowser.relative)  # pragma: no cover
 
 
 
@@ -416,26 +416,26 @@ def new_file_option(request, filebrowser, target):
     try:
         path = normpath(join(filebrowser.full_path(), name))
         
-        if any(c in name for c in settings.FILEBROWSER_DISALLOWED_CHAR): 
+        if any(c in name for c in settings.FILEBROWSER_DISALLOWED_CHAR):
             messages.error(request, ("Can't create file '" + name
                                      + "': name should not contain any of "
                                      + str(settings.FILEBROWSER_DISALLOWED_CHAR) + "."))
         
-        elif isdir(path) or isfile(path): 
+        elif isdir(path) or isfile(path):
             messages.error(request, ("Can't create file '" + name
                                      + "': this name is already used."))
-        else: 
+        else:
             f = open(path, "w")
             f.close()
-            messages.success(request, "File '" + name + "' successfully created !") 
+            messages.success(request, "File '" + name + "' successfully created !")
  
     except Exception as e:  # pragma: no cover
         msg = "Impossible to create '"+name+"' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
-        messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, "")) 
-        if settings.DEBUG: 
-            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc()) 
+        messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))
+        if settings.DEBUG:
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
  
-    return redirect_fb(filebrowser.relative) 
+    return redirect_fb(filebrowser.relative)
 
 
 
@@ -450,10 +450,10 @@ def load_pltp_option(request, filebrowser, target):
 
         if not pltp and not warnings:  # pragma: no cover
             messages.info(request, "This PLTP is already loaded")
-        elif not pltp:  # pragma: no cover 
+        elif not pltp:  # pragma: no cover
             messages.error(request, "Failed to load '"+target+"': \n"+warnings)
         else:
-            if warnings:  # pragma: no cover 
+            if warnings:  # pragma: no cover
                 for warning in warnings:
                     messages.warning(request, warning)
             activity = Activity.objects.create(name=pltp.name, pltp=pltp)
@@ -489,7 +489,7 @@ def reload_pltp_option(request, filebrowser, target):
         elif not pltp:  # pragma: no cover
             messages.error(request, "Failed to load '"+target+"': \n"+warnings)
         else:
-            activity.reload()
+            activity.sessionactivity_set.all().delete()
             if warnings:  # pragma: no cover
                 for warning in warnings:
                     messages.warning(request, warning)
@@ -599,7 +599,7 @@ def edit_option(request, filebrowser, target):
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
     
-    return redirect_fb(filebrowser.relative)  # pragma: no cover 
+    return redirect_fb(filebrowser.relative)  # pragma: no cover
 
 
 
@@ -619,13 +619,13 @@ def edit_pl_option(request, filebrowser, target):
             preview = ('<div class="alert alert-danger" role="alert"> Failed to load \''
                        + target + "': \n" + warnings + "</div>")
         else:
-            if warnings:  # pragma: no cover 
+            if warnings:  # pragma: no cover
                 [messages.warning(request, warning) for warning in warnings]
             pl.save()
             try:
                 exercise = SessionTest.objects.create(pl=pl, user=request.user)
                 preview = exercise.get_exercise(request)
-            except Exception as e:  # pragma: no cover 
+            except Exception as e:  # pragma: no cover
                 preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
                     + basename(rel_path) + "': \n\n" \
                     + htmlprint.code(str(e)) + "</div>"
@@ -645,7 +645,7 @@ def edit_pl_option(request, filebrowser, target):
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
     
-    return redirect_fb(filebrowser.relative)  # pragma: no cover 
+    return redirect_fb(filebrowser.relative)  # pragma: no cover
 
 
 
@@ -676,7 +676,7 @@ def test_pl_option(request, filebrowser, target):
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
     
-    return redirect_fb(filebrowser.relative)  # pragma: no cover 
+    return redirect_fb(filebrowser.relative)  # pragma: no cover
 
 
 
