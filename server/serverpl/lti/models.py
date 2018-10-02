@@ -18,7 +18,6 @@ class LTIModel(models.Model):
     """
     
     CONSUMER = ((i, i) for i in settings.LTI_OAUTH_CREDENTIALS.keys())
-    
     consumer_id = models.CharField(max_length=200, null=True, blank=True)
     consumer = models.CharField(max_length=200, choices=CONSUMER, null=True, blank=True)
 
