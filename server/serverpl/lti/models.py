@@ -10,20 +10,21 @@ from django.http import Http404
 logger = logging.getLogger(__name__)
 
 
+
 class LTIModel(models.Model):
     """Mixin for models that can be created through LTI.
     
-    This Mixin add an optionnal id corresponding to the ID of the object on the consumer's server 
+    This Mixin add an optionnal id corresponding to the ID of the object on the consumer's server
     and the name of the consumer itself must be a key of settings.LTI_OAUTH_CREDENTIALS.
     """
     
     CONSUMER = ((i, i) for i in settings.LTI_OAUTH_CREDENTIALS.keys())
     consumer_id = models.CharField(max_length=200, null=True, blank=True)
     consumer = models.CharField(max_length=200, choices=CONSUMER, null=True, blank=True)
-
+    
     class Meta:
         abstract = True
-        unique_together = ('consumer', 'consumer_id',)
+        unique_together = ("consumer", "consumer_id")
 
 
 
@@ -41,6 +42,7 @@ class LTIOutcome(models.Model):
 
 class ActivityOutcome(LTIOutcome):
     activity = models.ForeignKey('playexo.Activity', on_delete=models.CASCADE)
+    
     
     @classmethod
     def get_or_create_from_lti(cls, user, lti_launch):
@@ -61,7 +63,7 @@ class ActivityOutcome(LTIOutcome):
             raise Http404("Could not create ActivityOutcome: on of these parameters are missing:"
                           + "[lis_result_sourcedid, lis_outcome_service_url, resource_link_id, "
                           + "oauth_consumer_key]")
-
+        
         try:
             return cls.objects.get(url=outcome_url, sourcedid=sourcedid), False
         except ActivityOutcome.DoesNotExist:
