@@ -12,7 +12,7 @@ http://github.com/nimdanor/python-pl-bank/)
 
 L'idée de ce grader est de permettre d'ecrire des exercices de python ou l'on fournis  des tests à la norme [doctest](https://docs.python.org/3/library/doctest.html) par exemple l'exercice pl suivant 
 
-'''
+'''python
     extends=/template/pltest.pl
     title= démo
     author= DR
