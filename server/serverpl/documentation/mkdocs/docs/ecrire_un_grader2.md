@@ -32,11 +32,13 @@ True
 Voici le template :
 
 ```python
-@ pltest_doc.py
+
 @ evaluator.py [grader.py]
 @ feedback2.py
 @ template.html
 @ /utils/sandboxio.py
 builder=@ /template/donobuild.py # devrai disparaitre dans une version ultérieur
 form=@ /python/form/editorform.html
+# du code plus spécifique pour faire les tests pltests:
+@ pltest_doc.py
 ```
