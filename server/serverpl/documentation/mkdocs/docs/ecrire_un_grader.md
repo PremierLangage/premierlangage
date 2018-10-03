@@ -49,22 +49,24 @@ La sortie erreur standard sera récupérée et affichée à l'étudiant.
 
 Pour vous aider à écrire votre grader le fichier **lib/utils/sandbox.io** contient l'api suivante:
 
-  get_answers()
+```
+  get_answers()  
   """Return a dictionnary containing every answer."""
   Un dictionnaire contenant pour chaque input de id="form_XXX" dans la form de l'exercice 
   une entrée XXX contenant la valeur (en json) de l'input.
   
   TODO : un exemple 
 
-  get_context()
+  get_context(). 
   """Return the dictionnary containing the context of the exercise."""
   Le dictionnaire de l'exercice. 
   
-  output(grade, feedback, context=None)
+  output(grade, feedback, context=None). 
   """Used to output the grade, feedback and context to the sandbox 
         grade - (int) Grade of the student. Should be an integer or implementing __int__.
         feedback - (str) Feedback shown to the student. Should be a str or implementing __str__.
         grade - (dict - optionnal) Modified context of the exercise."""
+```
 
   Permet de terminer l'exécution du grader en créeant les fichier et sorties nécessaires.
 
