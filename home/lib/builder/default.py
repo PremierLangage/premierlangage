@@ -18,8 +18,12 @@ if __name__ == "__main__":
         dic = json.load(f)
     
     if 'before' not in dic:
-        print("Missing before clause quitting ",file=sys.stderr)
-        sys.edit(1)
+        if 'build' not in dic:
+            print("Missing before or build clause quitting ",file=sys.stderr)
+            sys.edit(1)
+
+        exec(dic['build'], globals())
+        dic = build(dic)
     else:
         glob = {}
         exec(dic['before'], dic)
