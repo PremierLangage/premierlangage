@@ -12,7 +12,7 @@ http://github.com/nimdanor/python-pl-bank/)
 
 L'idée de ce grader est de permettre d'ecrire des exercices de python ou l'on fournis  des tests à la norme [doctest](https://docs.python.org/3/library/doctest.html) par exemple l'exercice pl suivant 
 
-'''python
+```python
     extends=/template/pltest.pl
     title= démo
     author= DR
@@ -26,6 +26,6 @@ L'idée de ce grader est de permettre d'ecrire des exercices de python ou l'on f
     >>> f() == 3457 # f() == 3457 je veux m'assurer que c'est pas un affichage
     True
     ==
-'''
+```
 
   
