@@ -45,19 +45,23 @@ sont nécessaires, je vous invites à vous rendre sur la page correpsondante
 de [w3schools](https://www.w3schools.com/html/html_forms.asp) si besoin d'une
 piqûre de rappel.
 
-**form** est donc composé d'un ensemble de balise HTML `<input>`. Afin d'être interprétées
-par Premier Langage, ces balises doivent chacune avoir un ID unique de la forme
+**form** est donc composé d'un ensemble de balise HTML `<input>`. Afin d'être interprétées et prisent en compte 
+par Premier Langage, ces balises doivent chacune avoir OBLIGATOIREMENT un ID unique de la forme
 `form_[id]`, où **id** sera la clé associée à la réponse lors de l'évaluation
 de l'exercice. Le champs **name** n'est donc requis pour aucun `<input>`,
 excepté celui de type *radio*, n'autorisant ainsi seulement une seul case
-d'un groupe de case radio avec le même **name** à être cochée.
+d'un groupe de case radio avec le même **name** à être cochée, votre form devra vérifier cette condition.
 
-La clé ne doit contenir ni balise `<form></form>`, ni bouton de type **submit**.
+La clé ne doit contenir ni balise `<form></form>`, ni bouton de type **submit** qui sont automatiquement ajoutés dans le code de la page html.
 
 Un formulaire peut être relativement simple, un champs texte, par exemple:
 ```html
 form = <input id="form_answer" type="text" required>
 ```
+
+Dans cet exemple vous obtiendrez dans le fichier answer.json un dictionnaire avec une seul clé "answer" ayant pour valeur la réponse de l'utilisateur. 
+
+
 
 Il est possible d'utiliser n'importe quelle type d'*input* accépté par *HTML5*, **excepté**  ***submit***:
 * text
@@ -157,3 +161,8 @@ form==
 
 Nous venons tout juste de déclarer un formulaire réutilisable par n'importe quel
 exercice déclarant une telle liste de réponse.
+
+
+
+* **[La Construction](../construction/)**, à l'aide d'un script *builder.py* (optionnel)
+* **[L'Évaluation](../evaluation/)**, à l'aide d'un script *grader.py*
