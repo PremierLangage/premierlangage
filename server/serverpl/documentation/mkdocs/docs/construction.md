@@ -94,3 +94,6 @@ Si il est négatif, il s'agit d'un code interne à la sandbox (à communiquer à
 en cas de besoin), et un message d'erreur de la sandbox vous sera donné en plus de *stderr*.
 
 
+
+* **[L'Affichage](../affichage/)**, à l'aide des clés *title*, *author*, *text* et *form*
+* **[L'Évaluation](../evaluation/)**, à l'aide d'un script *grader.py*
