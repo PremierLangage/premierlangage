@@ -195,8 +195,8 @@ Il y a trois manière de référencé un fichier:
     * Sinon, le chemin partira de la racine du dossier *home* de l'utilisateur.
     * Enfin, si les fichier n'est pas trouvé, celui-ci sera cherché dans les librairies standard de Premier Langage..
 * Avec une référence de dossier (ex: `dossier:/chemin/vers/fichier.ext`):
-    * Si la référence est exactement **'home'**, le chemin partira de la racine du dossier *home* de l'utilisateur.
-    * Sinon, le chemin partira de `home/[dossier]`.
+    * Si la référence est exactement **'home'**, le chemin partira de la racine du dossier *home* de l'utilisateur (cette syntaxe est déconseillée).
+    * Sinon, le chemin partira de `home/[dossier]`, ce qui permet de faire référence a un fichier dans un autre repository.
 
 
 Ainsi, avec une arbre de repertoire comme celui-ci:
@@ -239,6 +239,11 @@ Pour référencer *exo3.pl* de lib dans *feuille.pltp*:
 Bien entendu, cela pose plusieurs limitations:
 * Ne pas créer de dossier/cloner de dépot s'appelant `home`
 * Ne pas avoir de chemin de fichier identique à ceux d'une librairie
+
+
+## Repository
+
+L'écriture d'exercice ne doit pas être une activité solitaire nous vous conseillons d'avoir un repository git pour partager l'écriture de vos exercice. C'est avec cela en tête que la syntaxe des référence de fichiers à été définie.
 
 
 ## Écrire un Exercice
