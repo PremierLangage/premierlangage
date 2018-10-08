@@ -9,8 +9,7 @@ from filebrowser.models import Directory
 
 
 FAKE_FB_ROOT = join(settings.BASE_DIR, 'filebrowser/tests/ressources')
-VALUE = "text==\n# Fonctions \n\nEcrire une fonction **bob** qui retourne la valeur"
-
+VALUE = "text==\n# Fonctions\n\nEcrire une fonction **bob** qui retourne la valeur"
 
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
 class EditPLTestCase(TestCase):
@@ -45,7 +44,6 @@ class EditPLTestCase(TestCase):
                 '/filebrowser/home/TPE/opt/?option=entry-direct-edit_pl&target=function001.pl',
                 follow=True
             )
-            
             self.assertEqual(response.status_code, 200)
             self.assertContains(response, VALUE)
         except AssertionError:

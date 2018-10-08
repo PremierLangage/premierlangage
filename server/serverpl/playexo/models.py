@@ -43,11 +43,12 @@ class Activity(LTIModel):
         Returns a tuple of (object, created), where object is the
         retrieved or created object and created is a boolean specifying
         whether a new object was created."""
-        course_id = lti_launch["context_id"]
-        consumer = lti_launch['oauth_consumer_key']
-        activity_id = lti_launch['resource_link_id']
-        activity_name = lti_launch['resource_link_title']
-        if not (course_id and activity_id and activity_name and consumer):
+        course_id = lti_launch.get("context_id")
+        consumer = lti_launch.get('oauth_consumer_key')
+        activity_id = lti_launch.get('resource_link_id')
+        activity_name = lti_launch.get('resource_link_title')
+        if not all([course_id, activity_id, activity_name, consumer]):
+            # TODO : Use BadRequest Exception
             raise Http404("Could not create Activity: on of these parameters are missing:"
                           + "[context_id, resource_link_id, resource_link_title, "
                             "oauth_consumer_key]")
@@ -56,14 +57,14 @@ class Activity(LTIModel):
         try:
             return cls.objects.get(consumer_id=activity_id, consumer=consumer), False
         except Activity.DoesNotExist:
-            urlmatch = resolve(request.path)
-            if not urlmatch.app_name or not urlmatch.url_name:
-                urlmatch = None
-            if urlmatch and urlmatch.app_name + ":" + urlmatch.url_name != "playexo:activity":
+            match = resolve(request.path)
+            if not match.app_name or not match.url_name:
+                match = None
+            if not match or (match and match.app_name + ":" + match.url_name != "playexo:activity"):
                 logger.warning(request.path + " does not correspond to 'playexo:activity' in "
                                               "Activity.get_or_create_from_lti")
                 raise Http404("Activity could not be found.")
-            parent = get_object_or_404(Activity, id=urlmatch.kwargs['activity_id'])
+            parent = get_object_or_404(Activity, id=match.kwargs['activity_id'])
             new = Activity.objects.create(consumer_id=activity_id, consumer=consumer,
                                           name=activity_name, pltp=parent.pltp, course=course,
                                           parent=parent)
@@ -77,7 +78,7 @@ class Activity(LTIModel):
             i.sessionactivity_set.all().delete()
     
     
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return str(self.id) + " " + self.name
 
 
@@ -141,15 +142,20 @@ class SessionExerciseAbstract(models.Model):
     
     def get_from_context(self, key):
         """Get key from context.
-        
+
+        Return False is key does not exists.
+
         Does implement syntax of PL for nested dict. I.E.: 'dict1.dict2.[...].dictn.val' will return
         'context['dict1']['dict2']...['dictn']['val']"""
-        if '.' in key:
-            val = self.context
-            for k in key.split('.'):
-                val = val[k]
-        else:
-            val = self.context[key]
+        try:
+            if '.' in key:
+                val = self.context
+                for k in key.split('.'):
+                    val = val[k]
+            else:
+                val = self.context[key]
+        except KeyError:
+            return False
         return val
     
     
@@ -178,20 +184,21 @@ class SessionExerciseAbstract(models.Model):
         if response['status'] < 0:  # Sandbox Error
             feedback = response['feedback']
             if request.user.profile.can_load() and response['sandboxerr']:
-                feedback += "<br><br>" + htmlprint.code(response['sandboxerr'])
+                feedback += "<br><hr>Sandbox error:<br>" + htmlprint.code(response['sandboxerr'])
+                feedback += "<br><hr>Received on stderr:<br>" + htmlprint.code(response['stderr'])
         
         elif response['status'] > 0:  # Evaluator Error
             feedback = ("Une erreur s'est produite lors de l'exécution du script d'évaluation "
                         + ("(exit code: %d, env: %s). Merci de prévenir votre professeur"
                            % (response['status'], response['id'])))
             if request.user.profile.can_load():
-                feedback += "<br><br>Received on stderr:<br>" + htmlprint.code(response['stderr'])
+                feedback += "<br><hr>Received on stderr:<br>" + htmlprint.code(response['stderr'])
         
         else:  # Success
             context = dict(response['context'])
             feedback = response['feedback']
             if request.user.profile.can_load() and response['stderr']:
-                feedback += "<br><br>Received on stderr:<br>" + htmlprint.code(response['stderr'])
+                feedback += "<br><hr>Received on stderr:<br>" + htmlprint.code(response['stderr'])
             answer["seed"] = context['seed'],
         
         keys = list(response.keys())
