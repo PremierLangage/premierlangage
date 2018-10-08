@@ -1,61 +1,104 @@
-# Écriture d'une Fonction d'Évaluation
+# Before
 
-La clé **evaluator** contient le script qui sera appelée avec la réponse de l'élève afin de le corriger.
+## Résumé
 
-Ce script étant déclarer en **python 3**, il est nécessaire d'avoir des connaissances en python.
+* **Inclusion:** `@ /lib/grader/evaluator.py [grader.py]`
 
-
-Le script **evalutor** permet d'évaluer la réponse d'un utilisateur à l'exercice.
-Pour cela est défini un dictionnaire  **response** contenant tout les éléments de réponse de l'élève. 
-
-Toutes les clefs de l'exercice (y compris les celles créer par **build**) sont acessibles comme des variables locales dans l'evaluator. 
+* **Dépendance:**
+    * `@ /utils/sandboxio.py`
 
 
-## Les Bases
+* **Clés utilisées**: `evaluator/evaluator.py, evaluator, response, StopBeforeExec`
+___
 
-Pour fournir l'évaluation à la plateforme 
-Le script doit définir un itérable (tuple, list...) appelé ***grade***.
-Cet itérable doit contenir deux élement:
 
-* fraction : L'élève à réussi (1 à 100) ou échoué (0) l'exercice. Affiche d'une information, abandon, problèmes, etc (négatif).
-* feedback : String contenant le feedback de l'évaluation qui sera affiché à l'élève (ou l'information pour négatif).
 
-Ce script doit être déclaré dans le PL grâce à la clé **evaluator**, dans l'exemple suivant l'exercice demande une réponse simple
-la réponse de l'élève est stocker dans response['answer'] (voire l'input dans la balise form voir [formulaire](./formulaire/),
-la bonne réponse à été placéé directement dans l'énoncé du pl ou placée par *build* :
+## Utilisation
+Ce grader permet de déclarer un script Python 3 dans la clé `evaluator`
+chargé de corriger la réponse de l'élève.
+ 
+Ce script à accès directement à l'ensemble des
+variables déclarées dans le PL ainsi que dans le builder il a de plus accès à
+l'ensemble des réponses de l'élève dans le dictionnaire `response`.
+Par exemple, en supposant que le PL utilise un champ `form_answer`, le script
+evaluator aura accès a la variable `response['answer']`.
+
+Ce évalue la réponse en déclarant un tuple (note, feedback) dans la variable
+**grade**: `grade = (100, "Bonne réponse")`. La note doit être incluse dans [-1, 100].
+
+L'exécution se déroulant en dehors d'une fonction, il n'est pas possible d'utiliser
+`return` ou `yield` pour arrêter le script. Une Exception spécifique à donc été mis
+en place pour ceci: `raise StopEvaluatorExec`.
+
+De plus, ce script peut modifier temporairement les variables du contexte de l'exercice
+(form, text...), pour cela, il suffit de modifié les variables du même nom dans
+le script. Ces modifications ne seront utilisé que pour l'affichage du feedback mais ne
+sont pas enregistré dans la session de l'elève.
+
+* Avantages :
+    * Simple et rapide d'utilisation, `globals()` étant le contexte de l'exercice.
+    * Possibilité d'utilisé les modules built-in ainsi que d'importer tout fichier
+      ajouté à l'exercice grâce à la syntaxe `@ monscript.py`
+    * Permet de déclarer des clés de type : 
+      `int, float, string, list, dict and NoneType`. Tout autre type encodera
+      `type.__dict__`.
+* Inconvénients :
+    * Le contexte de l'exercice étant `globals()`, il est possible d'écraser par
+      erreur des clés. Il est important de noter que les fonctions, classes et modules
+      sont aussi dans `globals()`, il faut donc encore une fois faire attention aux 
+      noms utilisés. Il est pour cette raison recommandé de ne pas importer `*`
+      (`from x import *`).
+
+***Attention:*** Le script doit être indenté à l'aide de 4 espaces ou de tabulations.
+___
+
+
+
+## Débugage
+Il est possible de *print* dans *sys.stderr* à des fins de débugage. Ces prints
+ne seront affiché qu'aux professeurs:
 ```python
-evaluator==
-if response['answer'] == answer:
-    grade = (True, "Bonne réponse")
-else:
-    grade = (False, "Mauvaise réponse)
-==
+import sys
+print("debug", file=sys.stderr)
 ```
+___
 
-<i class="fas fa-exclamation-triangle"></i> **Attention :** Il est important de faire attention au nom donné aux variables, celles-ci pouvant écraser les clés du PL, il est donc possible d'écraser des clés importantes (telle que *form*) par mégarde.
 
-## Modules et Fonctions Secondaires
-N'importe quel module peut être importé dans le script, de même, plusieurs fonctions annexes peuvent être déclarées et être appelée par celui-ci. Par exemple, avec un PL déclarant un **n** aléatoire et l'élève devant donner la racine carré de ce **n**:
-```python
+
+## Example
+```
+@ /utils/sandboxio.py
+@ /grader/evaluator.py [grader.py]
+
+form==
+<input id="form_answer" type="number" value="{{ answers__.answer }}" required/>
+==
+
+op1 = 32
+op2 = 26
+
 evaluator==
-import math
+import traceback
+import sys
 
-def is_sqrt(i, j):
-    return math.pow(i,2) == j
-
-try:
-    if is_sqrt(int(reponse['square']), n):
-        grade = (True, "Bonne réponse")
-    else
-        grade = (False, "Mauvaise Réponse")
+try: 
+    if int(response['answer']) == int(op1) + int(op2):
+        grade = (100, "Bonne réponse")
+    else:
+        grade = (0, "Mauvaise réponse")
 except:
-    grade = (None, "Merci de rentrer un entier")
+    print(traceback.format_exc(), file=sys.stderr)
+    grade = (-1, "Merci de rentrer un entier")
 ==
+
 ```
 
-Il est important de noter que les fonctions et les modules sont aussi des variables en python, il faut donc encore une fois faire attention au nom utilisé.
 
 
-## Exercice de Programmation
 
-Pour les exercice de programmation, il ne faut pour l'instant fournir aucun evaluator, le plateforme effectuera la correction d'elle même.
+
+
+
+
+
+

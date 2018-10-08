@@ -2,7 +2,7 @@
 
 ## Résumé
 
-* **Inclusion:** `@ /lib/grader/build.py [builder.py]`
+* **Inclusion:** `@ /lib/builder/build.py [builder.py]`
 
 * **Clés utilisées**: `builder/builder.py, build`
 ___
@@ -14,7 +14,7 @@ Ce builder permet de déclarer un script Python 3 dans la clé `build`.
 Ce script doit déclaré une fonction qui peut modifier, créer ou
 supprimer des clés du context de l'exercice.
 
-Le fonction build à pour prototype `def build(dict)` où dict est un dictionnaire
+Le fonction build à pour prototype `def build(dic)` où dict est un dictionnaire
 contenant l'ensemble des variables de l'exercice. La fonction doit retourner un
 dictionnaire, qui est le contexte modifié.
 
