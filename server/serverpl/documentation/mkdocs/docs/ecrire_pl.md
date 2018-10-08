@@ -1,34 +1,31 @@
 # Écrire un Exercice
 ## Introduction
 
-PL est un format de fichier permettant l'écriture d'exercices très différents. L'évaluation ainsi que le formulaire de réponse de l'exercice étant intégré à celui-ci, les possibilités sont quasiment infinis (les limites étant le langage Python ainsi que les différents langages web: HTML, JS, etc...). 
+PL est un format de fichier permettant l'écriture d'exercices très différents:
+- exercices de programmation (python,C, ...)
+- QCM 
+
+
+L'évaluation ainsi que le formulaire de réponse de l'exercice étant intégré à celui-ci, les possibilités sont quasiment infinis (les limites étant le langage Python ainsi que les différents langages web: HTML, JS, etc...). 
 
 ## Quelque remarques pratiques
 
 Pour apprendre à écrire des exercices pl le plus simple et de se connecter à PL [connection.md](connection.md).
-Puis dans le repertoire home de créer un fichier avec l'extention pl.
+Puis dans votre repertoire personnel (tab home) de créer un fichier avec l'extention pl.
 
 
-## Format
-Le format PL est un ensemble de déclaration de couple clé, valeur. Ces déclarations ce font avec une syntaxe simple que voici:
+## Format syntaxe pl
+
+Le format PL est un ensemble de déclaration de couple clé, valeur.
+
+Ces déclarations ce font avec la syntaxe que voici:
 
 * "**=**" (_clé = valeur_) : Permet l'attribution d'une valeur sur une ligne, exemple: _title=Exercice 1_
 
-* "**=@**" (_clé =@ valeur_) : Permet d'attribuer le contenu d'un fichier à la clé, exemple: _enonce=@ /python/enonce/exercice3.txt_
+* "**=@**" (_clé =@ valeur_) : Permet d'affecter le contenu d'un fichier comme valeur de la clé, exemple: _enonce=@ /python/enonce/exercice3.txt_
 
-* "**+=@**" (_clé +=@ valeur_) : Permet d'ajouter le contenu d'un fichier à une clé déjà existante, exemple: _enonce+=@ /python/enonce/exercice3.txt_
+* "**+=@**" (_clé +=@ valeur_) : Permet d'ajouter le contenu d'un fichier à la valeur d'une clé déjà existante, exemple: _enonce+=@ /python/enonce/exercice3.txt_
 
-* "**%**" (_clé % valeur_) : Permet d'assigner un dictionnaire à la clé au format json, exemple: _enonce % { "name": "Jake", "Age": 20 }_
-
-* "**=%**" : Permet d'assigner un dictionnaire à la clé au format json. Cet opérateur permet l'écriture du json sur plusieurs lignes, de la ligne suivant _clé=&zwj;%_ à la ligne précédant le prochain _==_ exemple:
-```
-clé =%
-{
-    "name": "Jake",
-    "age": 20,
-}
-==
-```
 
 * "**=&zwj;=**" : Permet l'attribution d'une valeur sur plusieurs lignes, de la ligne suivant _clé=&zwj;=_ à la ligne précédant le prochain _==_
 
@@ -58,9 +55,23 @@ plusieurs
 lignes
 ==
 ```
+Parfois il est compliqué de convertir des chaines de caractères en objet python, dans ce cas il est possible d'utiliser le format json (normé et complet) avec les deux operateurs suivant:
 
-### Clés Particulières
-Il existe une clés particulière associée au symbole "=": la clé  "_extends_"(_extends= /python/patron-exercice.pl_)
+* "**%**" (_clé % valeur_) : Permet d'assigner un dictionnaire à la clé,la valeur étant au format json et convertie en  objet python au moment de l'affectation exemple: _person % { "name": "Jake", "Age": 20 }_ dans cet exemple la valeur est le dictionnaire avec les deux  entrées _name_ et _Age_
+
+* "**=%**" : Permet d'assigner une donnée au format json à la clé . Cet opérateur permet l'écriture du json sur plusieurs lignes, de la ligne suivant _clé=&zwj;%_ à la ligne précédant le prochain _==_ exemple:
+```
+clé =%
+{
+    "name": "Jake",
+    "age": 20,
+}
+==
+```
+
+### Extend un opérateur a part
+
+Il existe une clé particulière associée au symbole "=": la clé  "_extends_"(_extends= /python/patron-exercice.pl_)
 
 _extends_ permet d'étendre un autre fichier, c'est à dire de récupérer l'ensemble des clés de ce fichier puis, si n'importe laquelle de ces clés est aussi déclaré dans votre fichier, cette dernière écrasera celle du fichier étendue. Le chemin doit respecter la syntaxe de l'opérateur **@** du PLTP (voir Différence PL / PLTP -> PLTP)
 
@@ -68,7 +79,7 @@ _extends_ permet d'étendre un autre fichier, c'est à dire de récupérer l'ens
 Ces balises permettent d'éviter de devoir réécrire les clés les plus compliquées pouvant servir pour plusieurs exercices (formulaire, fonction d'évaluation, etc...).
 
 
-###Personnalisation de l'éditeur
+### Personnalisation de l'éditeur
 
 Possibilité de changer les paramètres de l'éditeur dans un fichier pl.
 
@@ -88,10 +99,10 @@ Possibilité de changer les paramètres de l'éditeur dans un fichier pl.
 
 Si votre cles contient un point par exemple :
 
-    avant.apres= valeur
-Ceci est interprete comme : 
-avant est une clef dont la valeur est un dictionnaire, et une des cles de ce dictionnaire est la cles apres.
-Cette definition est recursive.
+    _top.in= given_
+Ceci est interprèté comme : 
+_top_ est une clef dont la valeur est un dictionnaire, et une des clé de ce dictionnaire est la clé _in_ de valeur _given_.
+Cette definition est recursive: _a.b.c=bob_ signifie bob est la valeur de la clef _c_ d'un dictionnaire qui est la valeur de clé _b_ dans le dictionnaire qui est la valeur de la clé _a_ de notre exercice.
 
 
 ### Clés réservées
@@ -111,10 +122,13 @@ Bien qu'il soit possible d'attribuer une valeur à n'importe quel clés, il est 
 #### PL
 * _text_ - Énoncé de l'exercice, le contenu de cette clé est interprété comme du markdown.
 * _texth_ - Énoncé de l'exercice, le contenu de cette clé est interprété comme du html.
-* _build_  Clé contenant une fonction build (ancienne syntaxe: utiliser de préférence _before_)
+* _build_  Clé contenant une fonction build (ancienne syntaxe: utiliser de préférence _before_), à utiliser avec le builder /builder/build.py
 * _before_ - Code python permettant de modifier l'exercice avant sont exécution sur le navigateur, en particulier modifier des clefs avec des éléments plus variées (liste, dictionnaire, utilisation d'aléatoire, etc...). Ce code sera exécuté avant l'affichage et avant l'évaluation de l'exercice.  Voir la page [Écrire un Build](./build/).
-* _evaluator_ - Code python permettant d'évaluer la réponse l'élève. Voir la page [Écrire un Évaluateur](./evaluator/)
+
 * _form_ - Formulaire HTML permettant à l'élève de répondre. Voir la page [Écrire un Formulaire](./formulaire/) .
+Les deux balise suivantes sont plus techniques.
+* _grader_ - Code python permettant d'évaluer la réponse de l'élève. Voir la page [Écrire un Évaluateur](./ecrire_un_grader/)
+*_builder_ - Code python permettant de modifier la construction de l'exercice. Voir la page [Ecrire un builder](./ecrire_un_builder/) à priori vous devez utiliser les builders prédéfinis.
 
 ## Différence PL / PLTP
 
