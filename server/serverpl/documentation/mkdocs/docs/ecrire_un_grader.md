@@ -1,98 +1,78 @@
 
-# Ecriture d'un grader (pour l'évaluation de programmes)
 
-## Introduction 
+# Ecriture d'un grader 
+
+
+L'objectif de cette page de documentation est d'écrire ce script grader pour qu'il soit compatible avec la plateforme.
+Et qu'il permettent d'évaluer la réponse de l'étudiant.
+
+## La balide grader
+
+A priori vous n'avez pas a spécifier de balise grader car vous utiliser un patron d'exercice qui contient déjà cette balise.
+
+Si vous devez le conseil est d'ecrire un script python en vous inspirant des grader existant et en lisant la section suivante.
+
+En terme de syntaxe vous pouvez définir votre grader de deux façons soit avec  une balise grader :
+
+    grader==
+    import sandboxio 
+    if len(sys.argv)<4:
+      print(" grader incorrect pas assez d'arguments ",file=sys.stderr)
+    ...
+    ==
+soit en  utilisant la syntaxe alias (recommandé car plus commode):
+
+  @ /quelquepartsurmoncompte/mongradergenial.py [grader.py]
+
+
+##  Programmation du grader 
 Toutes les évaluation d'un exercice sont faites en utilisant un serveur "sandbox" c'est à dire un bac à sable
 où il n'y a pas de risque d'éxécuter du code mal écrit ou mal intentioné.
 
-Le serveur sanbox recoit une archive qu'il déploie dans un répertoire temporaire puis une fois placé sur ce repertoire
-lance la commande : python3 grader.py
+Le serveur sanbox recoit une archive qu'il déploie dans un répertoire temporaire puis une fois placé dans ce repertoire
+lance la commande : 
 
-L'objectif de cette page de documentation est d'écrire ce script grader pour qu'il soit compatible avec la plateforme.
-Et qu'il permettent d'évaluaer la réponse de l'étudiant.
+  python3 grader.py pl.json anwser.json sortie.json feedback 
 
-# La balide grader
+Le fichier python3 **grader.py** doit être défini dans l'exercice (la balise grader ou un fichier avec comme alias grader.py).
 
-Vous pouvez dans la  balise grader  d'un exercice pl définir directement le code python de votre grader. Par exemple,
-le grader pas exigant suivant qui est toujours satisfait du travail de l'étudiant :
+Le fichier **pl.json** est le fichier qui contient le dictionnaire de l'exercice en json.
 
-```
-  grader==
-  import json
-  print(json.dumps({"success":True,"error":"","feedback":" Bravo !!!"}))
-  ==
-```
-Remarquez que ce grader écrit sur la sortie standard un dictionnaire au format json.
-C'est ce qui est attendu par le serveur pl pour obtenir l'évaluation de l'exercice.
+Le fichier **anwser.json** est fournis par la plateforme il contient la réponse de l'étudiant en json (la structure de ce fichier est définie par la balise **form** ).
 
+Le fichier **sortie.json** contiendra après le grader le nouveau "dictionnaire" de l'exercice modifié par l'évaluation de la réponse de l'élève (voire la section grader avancé pour l'utilisation de cette possibilité), par défaut fichier vide.
 
+Le fichier **feedback** contiendra le feedback de l'évaluation, c'est à dire une string qui contient du markdown ou du html et qui sera affiché à l'étudiant.
 
-# Un premier exercice avec votre grader
+Enfin le grader fournis sur la sortie standard un entier de 0 à 100 qui est l'évaluation (grade) 0 echec total, 100 sucess total.
 
+La sortie erreur standard sera récupérée et affichée à l'étudiant.
 
-Créez un exercice qui ne contient que les trois balises suivantes: **title**,**form**, et **grader**.
+Pour vous aider à écrire votre grader le fichier **lib/utils/sandbox.io** contient l'api suivante:
 
-  C'est l'exercice minimal celui qui à un titre, une champs de saisie pour l'élève et une évaluation de la réponse.
+  get_answers()
+  """Return a dictionnary containing every answer."""
+  Un dictionnaire contenant pour chaque input de id="form_XXX" dans la form de l'exercice 
+  une entrée XXX contenant la valeur (en json) de l'input.
+  
+  TODO : un exemple 
 
-```
-  title= Je dit toujours OUI
-  # nous avons ajouté la ligne suivante pour rendre l'exo plus agréable à regarder.
-  texth==
-  <h3 style="color:RED" >Quelque soit la réponse c'est oui !!!</h3> 
-  ==
-  # ici nous avons un champs de saisie text avec le titre réponse 
-  form==
-  <span class="input-group-addon">Réponse</span>
-  <input id="form_txt_answer" type="text" class="form-control" placeholder="NON" required>
-  ==
+  get_context()
+  """Return the dictionnary containing the context of the exercise."""
+  Le dictionnaire de l'exercice. 
+  
+  output(grade, feedback, context=None)
+  """Used to output the grade, feedback and context to the sandbox 
+        grade - (int) Grade of the student. Should be an integer or implementing __int__.
+        feedback - (str) Feedback shown to the student. Should be a str or implementing __str__.
+        grade - (dict - optionnal) Modified context of the exercise."""
 
-  # voici notre grader toujours aussi gentil.
-  grader==
-  import json
-  print(json.dumps({"success":True,"feedback":" Bravo mon coco !!!"}))
-  ==
-```
+  Permet de terminer l'exécution du grader en créeant les fichier et sorties nécessaires.
+
+Pour l'utiliser il suffit d'avoir une ligne :
+
+  @ /utils/sandboxio.py
 
 
-Testez en créant un nouveau fichier sur pl, Editez le et faites des tests avec le mode preview .
+Fin de la première partie.
 
-
-Vous obtenez toujours un Bravo mon coco !!! sur fond vert.
-
-## Lecture de la réponse de l'étudiant 
-
-Pour faire l'évaluation de l'exercice.
-
-
-
-```
-  title= Tester l'existance
-  # nous avons ajouté la ligne suivante pour rendre l'exo plus agréable à regarder.
-  text==
-  **Si vous validez sans réponse il n'y aura pas de fichier réponse "student"
-  dans le répertoire de la sandbox !!!** 
-
-  Ainsi l'énoncé de cette exercice est : ~~répondez quelque chose~~ !!!
-  ==
-
-  form==
-  <span class="input-group-addon">Réponse</span>
-  <input id="form_txt_answer" type="text" class="form-control" placeholder="NON" required>
-  ==
-
-
-  grader==
-  import json
-  import os
-  feedback=""
-  if os.path.isfile('./student'):
-      feedback += "Bravo Student exist et contient : \n"
-      with open("./student","r") as f:
-          feedback += f.read()
-      print(json.dumps({"success":True,"feedback": feedback}))
-  else:
-      feedback += "Student n'existe pas \n"
-      print(json.dumps({"success":False,"feedback": feedback}))
-  ==
-
-```

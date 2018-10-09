@@ -10,3 +10,7 @@ pre {
     height: 100%;
     width:  100%;
 }
+
+button, html [type="button"], [type="reset"], [type="submit"] {
+    -webkit-appearance: none;
+}
