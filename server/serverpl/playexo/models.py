@@ -199,7 +199,8 @@ class SessionExerciseAbstract(models.Model):
             feedback = response['feedback']
             if request.user.profile.can_load() and response['stderr']:
                 feedback += "<br><br>Received on stderr:<br>" + htmlprint.code(response['stderr'])
-            answer['seed'] = context['seed']
+            if 'seed' in context:
+                answer['seed'] = context['seed']
         
         keys = list(response.keys())
         for key in keys:
