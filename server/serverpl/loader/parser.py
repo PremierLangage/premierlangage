@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 #  parser.py
-#  
+#
 #  Copyright 2018 Coumes Quentin
 
 
@@ -83,7 +83,7 @@ def get_type(directory, path):
     ext = splitext(basename(path))[1]
     
     ext = '.pl' if not ext else ext
-    # FIXME the list of autorised extension should not be closed    
+    # FIXME the list of autorised extension should not be closed
     if ext in parsers:
         if parsers[ext]['type'] in ['pl', 'pltp']:
             return parsers[ext]['type']
@@ -139,16 +139,13 @@ def parse_file(directory, path, extending=False):
     
     parsers = get_parsers()
     ext = splitext(basename(path))[1]
-    
     if not ext:
         ext = '.pl'
         path += '.pl'
-    
     if ext in parsers:
         dic, warnings = parsers[ext]['parser'](directory, path).parse()
         dic, ext_warnings = process_extends(dic)
         warnings += ext_warnings
-        
         if not extending:
             if parsers[ext]['type'] == 'pltp':
                 for key in PLTP_MANDATORY_KEY:

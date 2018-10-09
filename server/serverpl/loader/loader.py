@@ -78,7 +78,7 @@ def load_pltp(directory, rel_path, force=False):
         dirname(abspath(join(directory.root, rel_path[1:]))),
         "dir" + splitext(basename(rel_path))[0]
     )
-    dic, warnings = parse_file(directory, rel_path, path)
+    dic, warnings = parse_file(directory, rel_path)
     
     pl_list = list()
     for item in dic['__pl']:
@@ -140,7 +140,7 @@ def reload_pltp(directory, rel_path, original):
             dirname(abspath(join(directory.root, rel_path[1:]))),
             "dir" + splitext(basename(rel_path))[0]
         )
-        dic, warnings = parse_file(directory, rel_path, path)
+        dic, warnings = parse_file(directory, rel_path)
         
         pl_list = list()
         for item in dic['__pl']:
