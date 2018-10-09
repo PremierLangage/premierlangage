@@ -265,6 +265,7 @@ PARSERS_MODULE = 'loader.parsers'
 try:
     from serverpl.config import *
 except:
-    logger = logging.getLogger(__name__)
-    logger.exception("No config file found.")
+    if "VERBOSE" in os.environ:
+        logger = logging.getLogger(__name__)
+        logger.exception("No config file found.")
     pass
