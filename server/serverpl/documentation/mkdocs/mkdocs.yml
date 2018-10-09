@@ -9,7 +9,8 @@ nav:
     - 'Construction': 'construction.md'
     - 'Affichage / Formulaire': 'affichage.md'
     - 'Évaluation': 'evaluation.md'
-    - "Ecrire une Feuille d'Exercices": 'pltp.md'
+    - 'Paramètres': 'pl_settings.md'
+- Ecrire une Feuille d'Exercices: 'pltp.md'
 - Templates:
     - 'Index': 'template_index.md'
 - Builders:

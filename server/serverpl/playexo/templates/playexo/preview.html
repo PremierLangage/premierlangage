@@ -6,14 +6,14 @@
         <div class="text-center"><h1>{% if 'title'%}{{ title }}{% endif %}</h1></div>
         <div class="text-left">{% if 'author' %}{{ author }}{% endif %}</div>
     </div>
-    
+
     <div class="card-body">
         {% if 'text'%}
             {% with texth__=text|markdown %}
                 {{ texth__|safe }}
             {% endwith %}
         {% endif %}
-        
+
         <div id="feedback" class="alert feedback collapse">
             {% with feedbackh__=feedback__|markdown %}
                 {{ feedbackh__|safe }}
@@ -58,11 +58,11 @@
             });
         });
         MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-        
+
         if(window.top != window.self) {
             $('#home-link').remove();
         }
-        
+
         $( "#download_env_button" ).click(function() {
             window.onbeforeunload = function () {}
         });
