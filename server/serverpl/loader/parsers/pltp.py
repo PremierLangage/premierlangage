@@ -314,7 +314,7 @@ class Parser:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
         
         directory_name = self.directory.name
-        if not isfile(join(self.directory.root, path)) and match.group('file').startswith('/')œ:
+        if not isfile(join(self.directory.root, path)) and match.group('file').startswith('/'):
             for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if not l.isdigit()]:
                 if isfile(join(settings.FILEBROWSER_ROOT, lib, match.group('file')[1:])):
                     directory_name = lib
