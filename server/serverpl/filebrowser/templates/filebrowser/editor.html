@@ -43,28 +43,54 @@
             </div>
             <script src="{% static 'js/ace/ace.js' %}"></script>
             <script>
-                var editorPL = ace.edit('editorPL');
+                $(document).ready(function() {
+                    const editorPL = ace.edit('editorPL');
+                    const inputPL = $('input[name="editor_input"]');
+                    const buttonSave = $("#save_button");
+                    const buttonQuit = $("#quit_button");
+                    const viewFeedback =  $("#save_feedback");
+
+                    let editingChanged = false;
+                    window.onbeforeunload = function(e) {
+                        if (editingChanged) {
+                            const message = "Vous-vous quitter la page sans enregistrer vos modifications ?";
+                            e = e || window.event;
+                            if (e)
+                                e.returnValue = message;
+                            return message;
+                        }
+                        window.onbeforeunload = null;
+                        return null;
+                    };
+                    
                     editorPL.session.setMode("ace/mode/python");
                     editorPL.setTheme("{{ request.user.profile.editor_theme.template }}");
-                    editorPL.setShowInvisibles(true);
-
-                window.onbeforeunload = function () {return /* editorPL.session.getUndoManager().isClean() ||n */ confirm();}
-                var inputPL = $('input[name="editor_input"]');
+                    editorPL.setShowInvisibles(true);             
                     editorPL.getSession().on("change", function () {
-                    {% if request.user.profile.confirm %}
-                        window.onbeforeunload = function () {return confirm();}
-                    {% endif %}
-                    inputPL.val(editorPL.getSession().getValue());
-                });
-                $( document ).ready(function() {
-                    $( "#quit_button" ).click(function() {
-                        window.onbeforeunload = function () {}
+                        {% if request.user.profile.confirm %}
+                            beginEditing();
+                        {% endif %}
+                        inputPL.val(editorPL.getSession().getValue());
                     });
+                    editorPL.focus();
 
-                    $("#save_button").click(function () {
-                        var input = $("#editor_input").val();
-                        var path = "{{ filepath }}";
-                        var status = {requested_action: 'save', editor_input: input, path: path};
+                    buttonQuit.click(endEditing);
+                    buttonSave.click(saveChanges);
+                    
+                    function beginEditing() {
+                        editingChanged = true;
+                        buttonSave.prop('disabled', false);
+                    }
+                    
+                    function endEditing() {
+                        editingChanged = false;
+                        buttonSave.prop('disabled', true);
+                    }
+
+                    function saveChanges() {
+                        const input = $("#editor_input").val();
+                        const path = "{{ filepath }}";
+                        let status = {requested_action: 'save', editor_input: input, path: path};
                         $.ajax({
                             type: "POST",
                             url: "/filebrowser/save_edit/",
@@ -72,16 +98,13 @@
                             contentType: 'application/json;charset=UTF-8',
                             success: function (returned_status) {
                                 status = returned_status;
-				// editorPL.session.getUndoManager().markClean();
-                                onReturn2(status.feedback);
+                                endEditing();
+                                viewFeedback.html(status.feedback);
                             }
                         });
-			
-                    });
+                    }         
                 });
-                function onReturn2(feedback) {
-                    $( "#save_feedback" ).html(feedback);
-                }
+
             </script>
             <div class="col-md-1"></div>
     </div>
