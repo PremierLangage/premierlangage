@@ -53,7 +53,7 @@
                     let editingChanged = false;
                     window.onbeforeunload = function(e) {
                         if (editingChanged) {
-                            const message = "Vous-vous quitter la page sans enregistrer vos modifications ?";
+                            const message = "Voulez-vous vraiment quitter cette page ?";
                             e = e || window.event;
                             if (e)
                                 e.returnValue = message;

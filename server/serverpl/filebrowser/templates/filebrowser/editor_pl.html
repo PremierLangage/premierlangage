@@ -55,6 +55,7 @@
                     const buttonPreview =  $("#preview_button");
                     const buttonDownload = $("#download_env_button");
                     const viewFeedback =  $("#save_feedback");
+                    const viewPreview =  $("#preview");
 
                     let editingChanged = false;
 
@@ -66,7 +67,7 @@
 
                     window.onbeforeunload = function(e) {
                         if (editingChanged) {
-                            const message = "Vous-vous quitter la page sans enregistrer vos modifications ?";
+                            const message = "Voulez-vous vraiment quitter cette page ?";
                             e = e || window.event;
                             if (e)
                                 e.returnValue = message;
@@ -86,7 +87,6 @@
                     editorPL.setTheme("{{ request.user.profile.editor_theme.template }}");
                     editorPL.setShowInvisibles(true);
                     editorPL.focus();
-                    
                     buttonSave.prop('disabled', true);
 
                     buttonQuit.click(endEditing);     
@@ -124,6 +124,7 @@
                     }
                 
                     function previewPL() {
+                        editorPL.focus();
                         const POST = {
                             content: $("#editor_input").val(),
                             path: "{{ filepath }}",
@@ -137,7 +138,7 @@
                             data: JSON.stringify(POST, null, '\t'),
                             contentType: 'application/json;charset=UTF-8',
                             success: function(returned_status) {
-                                $('#preview').html(returned_status.preview);
+                                viewPreview.html(returned_status.preview);
                             }
                         });
                     }
