@@ -1,41 +1,43 @@
 # premierlangage
 
-Le projet premier langage à pour objectif de fournir une plateforme d'exercices en auto correction facile d'utilisation.
+The "premier langage" project aims to provide an easy-to-use, automatically-corrected exercise platform.
 
-## Pour élèves 
- 
-Une interface simple et intuitive des exercices.
-La posibilité pour l'élève de construire un parcours de révision en fonction de ces besoins.
+## For Students
 
-## Pour les enseignants
+An intuitive and simple interface for exercises.
+The possibility, for the student, to create a course reviewing path fitting his needs.
 
-Les parents pauvres des plateformes d'enseignement en ligne, nous souhaitons leur simplifier la vie !!
-A la fois la **puissance maximum** : possibilité d'inventer  de nouveau types d'exercices, et **super simple** des exercices QCM, Drag and drop, selection, etc qui prennent deux minutes à écrire. 
+## For Teachers
+
+We wish to simplify the life of the poor parents of online teaching platforms !!
+Both the **maximal potential** : possibility to design new exercises types, and **super easy**, MCQ exercises, drag and drop, selection... that takes two minutes to write.
 
 
-### Une interface de pilotage de classe 
-Statistiques et notes sur les élèves et les exercices. 
-Base de données et modules d'extension avec des API pour multiplier les moyens d'analyse.
-Analyse par mot clefs, concepts, classement, distributions, positionnement etc.
+### A classroom leading interface
 
-### Un langage de conception d'exercice 
-Un langage de définitions d'exercice à la fois très simple et complet basé sur python, 
-en effet il est possible de programmer en python et en java script toutes idées que l'on peut avoir 
-sans perdre l'intégration sur la plateforme.
+Statistiques and scores on the students and exercises.
+Database and plug-ins with API to multiply the analysing means.
+Keywords analyse, concepts, leaderboards, distributions, positioning...
 
-### Un langage de gestion des feuilles et des classes
-#### les classes 
-En fonction de votre besoin vous pouvez soit travailler sur une classe sur laquelle
-vous souhaiter pouvoir indiquer à des groupes d'élèves des exercices spécifiques (notion non comprise,
-exercices plus simples, exercices plus motivants,).
-Vous souhaiter organiser vos groupes de travail facilement. 
-Vous souhaiter organiser des exercices de groupes (compétitions, mises en communs, projets, jeux).
-#### Les feuilles 
-Vous avez une liste d'exercices et vous souhaiter que les élèves la fasse le plus vite possible
-et qu'a la fin la (les) notion(s) importantes soit comprises. 
-L'hétérogénéité des élèves veux dire que certains execices sont utiles pour des élèves et pas pour d'autre, 
-le langage de descriptions de feuilles vas vous permettre de "coder" ces différences.
+### An exercise conception language
 
-# Participer au projet 
+An exercise definition language, both very easy and complete, based on Python,
+it is indeed possible to code with Python and JavaScript every ideas that we may have without losing the platform integration.
 
-Nous sommes sur github le projet de conception est la -> https://github.com/plgitlogin/plconception
+### A Sheet and classroom management language
+
+#### Classrooms
+
+According to your needs you can either :
+- Work on a class, on which you wish to be able to indicate, to student groups, specific exercises (misunderstood units, simpler exercises, more motivating exercises).
+- Organise your workgroups more easily.
+- Organise group exercises (competitions, worksharing, projects, games).
+
+#### Sheets
+
+You have an exercises list, you want the student to complete it as fast as possible and that, in the end, they understand the importants units.
+The student disparity means that some exercises are useful for some students and maybe not for some other students: the sheet descriptions language will allow you to "code" those differences.
+
+# Participate on this project
+
+We are on Github, you can find the conception project here -> https://github.com/plgitlogin/plconception
