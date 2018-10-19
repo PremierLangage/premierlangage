@@ -25,7 +25,7 @@
 
 import os, copy
 
-from os.path import abspath, join
+from os.path import abspath, join, dirname
 
 from django.conf import settings
 
@@ -49,7 +49,6 @@ class Filebrowser:
         real = path.split('/')
         if real[0] == "home":
             real[0] = str(request.user.id)
-        
         self.root = settings.FILEBROWSER_ROOT if not root else root
         self.relative = path
         self._real_relative = join(*real)
@@ -60,10 +59,10 @@ class Filebrowser:
         self.directory = Directory.objects.get(name=self._real_relative.split('/')[0])
         self.entries, self.length_max = self.list()
     
-    
     def _filter_category_options(self, category, request):
         
         for group_key, group in category.groups.items():
+
             filtered_options = {}
             
             for option_key, option in group.options.items():
@@ -81,18 +80,15 @@ class Filebrowser:
         category.groups = cleaned
         
         return category
-    
-    
+     
     def load_options(self, request):
         self.entry_options = self._filter_category_options(self.entry_options, request)
         self.directory_options = self._filter_category_options(self.directory_options, request)
-    
-    
+      
     def full_path(self):
         """Return the absolute path of the current position of the filebrowser."""
         return abspath(os.path.join(self.root, self._real_relative))
-    
-    
+     
     def breadcrumb(self):
         """Return the breadcrumb corresponding to the current position o the filebrowser"""
         path = self.home
@@ -103,11 +99,15 @@ class Filebrowser:
         
         return bc
     
-    
     def list_root(self):
         """ Return the list of every entry of FILEBROWSER_ROOT."""
         return ['home'] + [r for r in os.listdir(settings.FILEBROWSER_ROOT) if not r.isdigit()]
     
+    def can_read(self, request):
+        return self.directory.can_read(request.user)
+    
+    def can_write(self, request):
+        return self.directory.can_read(request.user)
     
     def list(self):
         """Return a list of tuple (entry, max_with) where entry correspond to every

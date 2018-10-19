@@ -1,73 +1,95 @@
-import json, shutil, htmlprint
-from os.path import basename, join
+import json, shutil, htmlprint, errno 
+from os.path import abspath, basename, join
 
+from django.core import serializers
 from django.shortcuts import render
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponse, Http404
-
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+from django.http import HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponseNotFound, HttpResponse, JsonResponse, Http404
+from django.template.loader import render_to_string
 from filebrowser.filebrowser import Filebrowser
 from filebrowser.models import Directory
 from filebrowser.filebrowser_option import ENTRY_OPTIONS, DIRECTORY_OPTIONS
 from filebrowser.utils import redirect_fb
+from filebrowser.filter import *
+from filebrowser.templatetags.filebrowser_filter import *
 from loader.loader import load_file
 from playexo.models import SessionTest
 from playexo.utils import render_feedback
 
 
-
 @login_required
-def index(request, path="home"):
+def index(request):
     """ Used by the filebrowser module to navigate """
-    path = path.split('/')
-    if path[0].isdigit():  # pragma: no cover
-        raise Http404()
-    
-    fb = Filebrowser(request, path=join(*path))
-    fb.load_options(request)
-    
-    return render(request, 'filebrowser/filebrowser.html', {'fb': fb})
-
+    return render(request, 'filebrowser/filebrowser.html', {})
 
 @login_required
-def apply_option(request, path="home"):
-    real = path.split('/')
-    if real[0] == "home":
-        real[0] = str(request.user.id)
+def directories(request):
 
-    option = request.GET.get('option')
-    target = request.GET.get('target')
-    if request.method == 'POST':
-        option = request.POST.get('option')
-        target = request.POST.get('target')
-    
-    if not option:
-        return HttpResponseBadRequest("'option' parameter is missing")
-    if not target:
-        return HttpResponseBadRequest("'target' parameter is missing")
-    
+    userId = str(request.user.id)
+    root = abspath(os.path.join(settings.FILEBROWSER_ROOT, userId))
+    root_len = len(root)
+    def build_tree(path):
+        hierarchy = {
+            'type': 'folder',
+            'name': os.path.basename(path),
+            'path': path,
+            'relative': path[:root_len],
+            'icon': icon(path),
+        }
+        try:
+            hierarchy['children'] = [
+                build_tree(os.path.join(path, contents)) 
+                for contents in os.listdir(path) 
+                if not hidden(os.path.join(path, contents))
+            ]
+            hierarchy['children'].sort(key=lambda e: e['type'], reverse=True)
+        except OSError as e:
+            if e.errno != errno.ENOTDIR:
+                raise
+            hierarchy['type'] = 'file'
+        return hierarchy
+
+    lib = build_tree(abspath(os.path.join(settings.FILEBROWSER_ROOT, 'lib')))
+    home = build_tree(abspath(os.path.join(settings.FILEBROWSER_ROOT, userId)))
+    home["name"] = 'home'
+    return HttpResponse(json.dumps([home, lib]), content_type='application/json')
+
+@login_required
+def open_file(request, path):
+    """ Open the file at path."""
+    if request.method != 'GET':
+        return HttpResponseNotAllowed(['GET'])
     try:
-        category, group, option = option.split('-')
-        fb = Filebrowser(request, path=path)
-        if category == "entry":
-            return ENTRY_OPTIONS.get_option(group, option)(request, fb, target)
-        else:
-            return DIRECTORY_OPTIONS.get_option(group, option)(request, fb, target)
-    
-    except Exception as e:
-        messages.error(
-            request,
-            ("Impossible to apply the option "
-                + option + " : "
-                + (htmlprint.code(str(type(e)) + " - " + str(e))
-                   if not settings.DEBUG
-                   else htmlprint.html_exc()))
-        )
-    
-    return redirect_fb(path)
+        with open(path) as f:
+            content = f.read()
+        return JsonResponse({'content': content })
+    except Exception as e:  # pragma: no cover
+        msg = ("Impossible to open '" + path + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e)))
+        messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))
+        if settings.DEBUG:
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
+        return HttpResponseNotFound(msg)
 
+@login_required
+@csrf_exempt
+def save_file(request):
+    """ View used to saved a newly edited file. """
+    if not request.method == 'POST':
+        return HttpResponseNotAllowed(['POST'])
+        
+    post = json.loads(request.body)
+    path = post['path']
+    content = post['content']
+    try:
+        if content:
+            with open(join(settings.FILEBROWSER_ROOT, path), 'w') as f:
+                print(content, file=f)
+            return JsonResponse({'success': True})
+    except Exception as e:
+        return HttpResponseNotFound(str(e))
 
 @login_required
 @csrf_exempt
@@ -82,7 +104,6 @@ def preview_pl(request):
         directory = post.get('directory')
         if not (path and directory):
             return HttpResponseBadRequest("Missing parameter 'path' or 'directory'")
-
         try:
             path = join(settings.FILEBROWSER_ROOT, path)
             shutil.copyfile(path, path+".bk")
@@ -134,67 +155,3 @@ def preview_pl(request):
         )
     
     return HttpResponseBadRequest(content="Couldn't resolve ajax request")
-
-
-
-@login_required
-@csrf_exempt
-def save_edit_receiver(request):
-    """ View used to saved a newly edited file. """
-    if not request.method == 'POST':
-        return HttpResponseNotAllowed(['POST'])
-    post = json.loads(request.body.decode())
-    content = post['editor_input']
-    path = post['path']
-    try:
-        if content:
-            with open(join(settings.FILEBROWSER_ROOT, path), 'w') as f:
-                print(content, file=f)
-        return HttpResponse(
-            json.dumps({
-                'feedback': ('<div id="success" class="alert alert-success feedback">'
-                             + '<i class="fas fa-check"></i> &nbsp Sauvegarde effectuée'
-                             + '<button type="button" class="close" data-dismiss="alert" '
-                             + 'aria-label="Close"><span aria-hidden="true">&times;</span>'
-                             + '</button></div>')
-            }),
-            content_type='application/json'
-        )
-    except Exception:
-        return HttpResponse(
-            json.dumps({
-                'feedback': ('<div id="success" class="alert alert-success feedback">'
-                             + '<i class="fas fa-fire"></i> &nbsp Sauvegarde échouée, si '
-                             + 'le problème persiste, merci de contacter un administrateur.'
-                             + '<button type="button" class="close" data-dismiss="alert" '
-                             + 'aria-label="Close">'
-                             + '<span aria-hidden="true">&times;</span>'
-                             + '</button></div>')
-            }),
-            content_type='application/json'
-        )
-
-
-@login_required
-def edit_receiver(request):
-    """ View used to saved a newly edited file. """
-    if not request.method == 'POST':
-        return HttpResponseNotAllowed(['POST'])
-    
-    content = request.POST.get('editor_input', '')
-    path = request.POST.get('path', '')
-    relative = request.POST.get('relative', '')
-
-    try:
-        if content:
-            content = content.replace('\r\n', '\n')
-            if content.endswith('\n\n'):
-                content = content[:-1]
-            with open(join(settings.FILEBROWSER_ROOT, path), 'w+') as f:
-                print(content, file=f)
-        messages.success(request, "File '"+basename(path)+"' successfully modified")
-    except Exception as e:  # pragma: no cover
-        msg = ("Impossible to modify '" + basename(path) + "' : "
-               + htmlprint.code(str(type(e)) + " - " + str(e)))
-        messages.error(request, msg)
-    return redirect_fb(relative)

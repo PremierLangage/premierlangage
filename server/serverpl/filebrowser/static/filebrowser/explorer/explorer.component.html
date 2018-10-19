@@ -1,0 +1,29 @@
+<div class='tree'>
+    <ul class='container-folders'>
+        <li ng-repeat='item in $ctrl.items track by item.path' class='border-bottom'>
+        <md-menu md-offset="200 0">
+            <div 
+                id='{{item.path}}'
+                class='item item--folder'
+                ng-click='$ctrl.select(item)'  
+                ng-on-contextmenu="$event.preventDefault(); $mdMenu.open()"
+                ng-attr-drop-active="{{item['drop-active']}}"
+                droppable drop="$ctrl.handleDrop"
+                draggable item="item">
+                <span>
+                    <i class="{{ item.icon }}"></i>&nbsp;<span>{{item.name}}</span>
+                </span>    
+                <div class="overlay"></div>
+            </div>
+            <md-menu-content width="4" ng-mouseleave="$mdMenu.close()">
+                <md-menu-item ng-repeat="item in [1, 2, 3]">
+                <md-button>
+                    Option {{item}}
+                </md-button>
+                </md-menu-item>
+            </md-menu-content>
+            </md-menu>
+            <explorer ng-if='item.expanded' items="item.children"></explorer>
+        </li>
+    </ul>
+</div>

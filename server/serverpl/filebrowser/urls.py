@@ -12,9 +12,8 @@ app_name = 'filebrowser'
 
 urlpatterns = [
     path(r'', views.index, name='index'),
-    path(r'save_edit/', views.save_edit_receiver, name='save_edit_receiver'),
-    path(r'edit_file/', views.edit_receiver, name='edit_receiver'),
+    path(r'directories', views.directories, name='directories'),
+    path(r'save_file/', views.save_file, name='save_file'),
+    path(r'open_file/<path:path>', views.open_file, name='open_file'),
     path(r'preview_pl/', views.preview_pl, name='preview_pl'),
-    path(r'<path:path>/opt/', views.apply_option, name='apply_option'),
-    path(r'<path:path>/', views.index, name='index'),
 ]

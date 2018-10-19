@@ -92,7 +92,7 @@ def isdir(path):
 
 
 @register.filter
-def icon(path):    
+def icon(path):
     ext = splitext(path)[1]
     
     if is_directory(path):

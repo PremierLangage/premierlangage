@@ -1,0 +1,77 @@
+
+.editor__explorer {
+    position: relative;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.editor__tab-bar--explorer {
+    padding: 0 0 0 16px;
+}
+
+
+#navigation {
+    margin-top: 8px;
+    overflow-y: auto;
+    margin: 0;
+    height: 100vh;
+}
+
+.tree {
+    padding: 0;
+    margin: 0; 
+}
+
+
+.tree ul { 
+    margin: 0; 
+    padding: 0; 
+    list-style-type: none; 
+}
+
+.tree ul li {
+    padding-left: 16px; 
+}
+
+.tree li .item { 
+    position: relative; 
+    height: 32px;
+}
+
+.tree li .item .overlay { 
+    position: absolute; 
+    left: 0; 
+    top: 0; 
+    /* width: 100vh; */
+    width: 300px; 
+    height: 100%;
+    display: none; 
+    right: -8px; 
+    left: auto !important;
+}
+
+.tree li .item:hover .overlay, .tree li .item.selected .overlay { 
+    display: block; 
+    background: rgba(66,66,66,0.1);
+}
+
+
+.item--folder {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.drag {
+    opacity: 0.5;
+}
+
+.over {
+    box-shadow: inset 0px 0px 0px 2px #CCC;
+}
+
+.over ~ .container-folders  {
+    background: rgba(66,66,66,0.1);
+}

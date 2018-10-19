@@ -25,7 +25,7 @@ from os.path import basename, splitext, isdir, join, isfile, normpath
 
 from django.shortcuts import reverse, render
 from django.contrib import messages
-from django.http import HttpResponseNotAllowed, HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponseNotAllowed, HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.conf import settings
 
 from filebrowser.utils import redirect_fb
@@ -119,8 +119,6 @@ def rename_option(request, filebrowser, target):
 
     return redirect_fb(filebrowser.relative)
 
-
-
 def copy_option(request, filebrowser, target):
     """ Copy targeted entry to POST['destination'] """
     if request.method != 'POST':
@@ -164,8 +162,6 @@ def copy_option(request, filebrowser, target):
         
     return redirect_fb(filebrowser.relative)
 
-
-
 def add_option(request, filebrowser, target):
     """ Execute a git add on the targeted entry."""
     if request.method != 'GET':
@@ -179,8 +175,6 @@ def add_option(request, filebrowser, target):
         messages.error(request, "Nothing to add." if not err else htmlprint.code(err + out))
     
     return redirect_fb(filebrowser.relative)
-
-
 
 def reset_option(request, filebrowser, target):
     """ Execute a git reset on the targeted entry."""
@@ -200,8 +194,6 @@ def reset_option(request, filebrowser, target):
         messages.error(request, htmlprint.code(err + out))
     
     return redirect_fb(filebrowser.relative)
-
-
 
 def commit_option(request, filebrowser, target):
     """ Execute an add and commit of the targeted entry with the informations of POST. """
@@ -264,7 +256,7 @@ def status_option(request, filebrowser, target):
     """ Execute a git status on the targeted entry."""
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
-    
+
     ret, out, err = gitcmd.status(normpath(join(filebrowser.full_path(), target)))
     
     if not ret:
@@ -435,7 +427,7 @@ def new_file_option(request, filebrowser, target):
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
  
-    return redirect_fb(filebrowser.relative)
+    return JsonResponse({'status': 200})
 
 
 
@@ -583,14 +575,14 @@ def edit_option(request, filebrowser, target):
         path = normpath(join(filebrowser.full_path(), target))
         with open(path) as f:
             content = f.read()
-
-        return render(request, 'filebrowser/editor.html', {
+        return JsonResponse({
             'file_content': content,
             'relative': filebrowser.relative,
             'filename': basename(path),
             'filepath': path.replace(settings.FILEBROWSER_ROOT+'/', ''),
             'dir_name': filebrowser.directory.name,
         })
+
 
     except Exception as e:  # pragma: no cover
         msg = ("Impossible to edit '" + target + "' : "
@@ -629,7 +621,7 @@ def edit_pl_option(request, filebrowser, target):
                 preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
                     + basename(rel_path) + "': \n\n" \
                     + htmlprint.code(str(e)) + "</div>"
-        return render(request, 'filebrowser/editor_pl.html', {
+        return JsonResponse({
             'file_content': content,
             'filename': basename(path),
             'relative': filebrowser.relative,
