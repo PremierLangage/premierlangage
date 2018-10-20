@@ -1,20 +1,22 @@
-import json, shutil, htmlprint, errno 
+import errno
+import json
+import shutil
 from os.path import abspath, basename, join
 
-from django.core import serializers
-from django.shortcuts import render
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
-from django.http import HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponseNotFound, HttpResponse, JsonResponse, Http404
+from django.core import serializers
+from django.http import (Http404, HttpResponse, HttpResponseBadRequest,
+                         HttpResponseNotAllowed, HttpResponseNotFound,
+                         JsonResponse)
+from django.shortcuts import render
 from django.template.loader import render_to_string
-from filebrowser.filebrowser import Filebrowser
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+
+import htmlprint
 from filebrowser.models import Directory
-from filebrowser.filebrowser_option import ENTRY_OPTIONS, DIRECTORY_OPTIONS
-from filebrowser.utils import redirect_fb
-from filebrowser.filter import *
-from filebrowser.templatetags.filebrowser_filter import *
+from filebrowser.utils import *
 from loader.loader import load_file
 from playexo.models import SessionTest
 from playexo.utils import render_feedback
@@ -23,73 +25,8 @@ from playexo.utils import render_feedback
 @login_required
 def index(request):
     """ Used by the filebrowser module to navigate """
+    print(settings.FILEBROWSER_ROOT)
     return render(request, 'filebrowser/filebrowser.html', {})
-
-@login_required
-def directories(request):
-
-    userId = str(request.user.id)
-    root = abspath(os.path.join(settings.FILEBROWSER_ROOT, userId))
-    root_len = len(root)
-    def build_tree(path):
-        hierarchy = {
-            'type': 'folder',
-            'name': os.path.basename(path),
-            'path': path,
-            'relative': path[:root_len],
-            'icon': icon(path),
-        }
-        try:
-            hierarchy['children'] = [
-                build_tree(os.path.join(path, contents)) 
-                for contents in os.listdir(path) 
-                if not hidden(os.path.join(path, contents))
-            ]
-            hierarchy['children'].sort(key=lambda e: e['type'], reverse=True)
-        except OSError as e:
-            if e.errno != errno.ENOTDIR:
-                raise
-            hierarchy['type'] = 'file'
-        return hierarchy
-
-    lib = build_tree(abspath(os.path.join(settings.FILEBROWSER_ROOT, 'lib')))
-    home = build_tree(abspath(os.path.join(settings.FILEBROWSER_ROOT, userId)))
-    home["name"] = 'home'
-    return HttpResponse(json.dumps([home, lib]), content_type='application/json')
-
-@login_required
-def open_file(request, path):
-    """ Open the file at path."""
-    if request.method != 'GET':
-        return HttpResponseNotAllowed(['GET'])
-    try:
-        with open(path) as f:
-            content = f.read()
-        return JsonResponse({'content': content })
-    except Exception as e:  # pragma: no cover
-        msg = ("Impossible to open '" + path + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e)))
-        messages.error(request, msg.replace(settings.FILEBROWSER_ROOT, ""))
-        if settings.DEBUG:
-            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
-        return HttpResponseNotFound(msg)
-
-@login_required
-@csrf_exempt
-def save_file(request):
-    """ View used to saved a newly edited file. """
-    if not request.method == 'POST':
-        return HttpResponseNotAllowed(['POST'])
-        
-    post = json.loads(request.body)
-    path = post['path']
-    content = post['content']
-    try:
-        if content:
-            with open(join(settings.FILEBROWSER_ROOT, path), 'w') as f:
-                print(content, file=f)
-            return JsonResponse({'success': True})
-    except Exception as e:
-        return HttpResponseNotFound(str(e))
 
 @login_required
 @csrf_exempt

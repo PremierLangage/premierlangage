@@ -1,7 +1,7 @@
 <div class='editor__tab-bar editor__tab-bar--main border-bottom'>
     <div ng-repeat='document in $ctrl.documents() track by document.path' 
          class='editor__tab-bar-item' 
-         ng-class="$ctrl.isActive(document) ? 'active' : ''">
+         ng-class="$ctrl.isSelection(document) ? 'active' : ''">
         <md-tooltip>{{document.path}}</md-tooltip>
         <i class="{{document.icon}}"></i>
         &emsp;<span ng-click='$ctrl.select(document)'>{{document.name}}</span>&emsp;

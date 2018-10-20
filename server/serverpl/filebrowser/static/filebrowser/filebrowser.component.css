@@ -24,13 +24,16 @@
 .editor__container {
     display: flex;
     flex: 1 1 auto;
-    height: calc(95vh - 95px);
+    height: calc(96vh - 95px);
 }
 
 .editor__footer {
     flex: 0 1 32px;
     background-color:#CCCCCC11;
     border-top: 1px solid #5a5a5a;
+    align-content: center;
+    align-items: center;
+    font-size: 14px;
 }
 
 .editor__tab-bar {

@@ -43,7 +43,6 @@
     position: absolute; 
     left: 0; 
     top: 0; 
-    /* width: 100vh; */
     width: 300px; 
     height: 100%;
     display: none; 
@@ -56,12 +55,20 @@
     background: rgba(66,66,66,0.1);
 }
 
-
 .item--folder {
     display: flex;
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
+}
+
+.item--input {
+    margin-top: 8px;
+}
+
+.item--input input {
+    width: 100%;
+    border: 1px solid rgba(66,66,66,0.1);
 }
 
 .drag {

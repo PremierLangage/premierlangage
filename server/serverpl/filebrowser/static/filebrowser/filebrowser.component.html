@@ -12,4 +12,11 @@
             <editor style='height: 100%;'></editor>
         </div>
     </div>
-<div class='editor__footer'></div>
+<div class='editor__footer'>
+    <ng-container ng-if="$ctrl.hasRepo()">
+        &emsp; <i class="{{$ctrl.repo().host}} fa-1x"></i>&emsp; 
+            <a href="{{$ctrl.repo().url}} ">{{$ctrl.repo().url}} </a>&nbsp;
+            -&nbsp;<i>{{$ctrl.repo().branch}} 
+        </i>
+    </ng-container>
+</div>

@@ -45,20 +45,17 @@ class Filebrowser:
         directory_options (FilebrowserOption): List of every options applicable to self.directory
     """
     
-    def __init__(self, request, path='home', root=None):
-        real = path.split('/')
-        if real[0] == "home":
-            real[0] = str(request.user.id)
-        self.root = settings.FILEBROWSER_ROOT if not root else root
+    def __init__(self, request, path):
+        user_id = str(request.user.id)
+
+        self.root = settings.FILEBROWSER_ROOT
+        self.path = abspath(os.path.join(self.root, path))
         self.relative = path
-        self._real_relative = join(*real)
-        self.home = path.split('/')[0]
-        self.real_home = real[0]
+        self.home = self.relative.split('/')[0]
         self.entry_options = copy.deepcopy(ENTRY_OPTIONS)
         self.directory_options = copy.deepcopy(DIRECTORY_OPTIONS)
-        self.directory = Directory.objects.get(name=self._real_relative.split('/')[0])
-        self.entries, self.length_max = self.list()
-    
+        self.directory = Directory.objects.get(name=self.home)
+
     def _filter_category_options(self, category, request):
         
         for group_key, group in category.groups.items():
@@ -84,50 +81,13 @@ class Filebrowser:
     def load_options(self, request):
         self.entry_options = self._filter_category_options(self.entry_options, request)
         self.directory_options = self._filter_category_options(self.directory_options, request)
-      
-    def full_path(self):
-        """Return the absolute path of the current position of the filebrowser."""
-        return abspath(os.path.join(self.root, self._real_relative))
-     
-    def breadcrumb(self):
-        """Return the breadcrumb corresponding to the current position o the filebrowser"""
-        path = self.home
-        bc = [{'name': path, 'link': path}]
-        for elem in [i for i in self._real_relative.split('/') if i][1:]:
-            bc.append({'name': elem, 'link': join(path, elem)})
-            path = join(path, elem)
-        
-        return bc
-    
-    def list_root(self):
-        """ Return the list of every entry of FILEBROWSER_ROOT."""
-        return ['home'] + [r for r in os.listdir(settings.FILEBROWSER_ROOT) if not r.isdigit()]
-    
+
     def can_read(self, request):
         return self.directory.can_read(request.user)
     
     def can_write(self, request):
         return self.directory.can_read(request.user)
-    
-    def list(self):
-        """Return a list of tuple (entry, max_with) where entry correspond to every
-        entry at the current possition of the filebrowser."""
-        entries = []
-        for rootdir, dirs, files in os.walk(self.full_path()):
-            entries += sorted(
-                [{'name': elem, 'path': rootdir+'/'+elem} for elem in dirs],
-                key=lambda k: k['name']
-            )
-            entries += sorted(
-                [{'name': elem, 'path': rootdir+'/'+elem} for elem in files],
-                key=lambda k: k['name']
-            )
-            break
 
-        max_width = 0
-        if entries:
-            max_width = len(max(entries, key=lambda i: len(i['name']))['name']) + 12
-        return entries, max_width
     
     
     

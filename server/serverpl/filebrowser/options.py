@@ -34,7 +34,7 @@ from loader.loader import load_file, reload_pltp
 
 
 def mkdir_option(request, filebrowser, target):
-    """Create a new folder named target at filebrowser.full_path()"""
+    """Create a new folder named target at filebrowser.path"""
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
     
@@ -44,7 +44,7 @@ def mkdir_option(request, filebrowser, target):
         return HttpResponseBadRequest("Missing 'name' or parameter")
 
     try:
-        path = normpath(join(filebrowser.full_path(), name))
+        path = normpath(join(filebrowser.path, name))
         
         if any(c in name for c in settings.FILEBROWSER_DISALLOWED_CHAR):
             messages.error(request, ("Can't create directory '" + name
@@ -72,7 +72,7 @@ def display_option(request, filebrowser, target):
         return HttpResponseNotAllowed(['GET'])
 
     try:
-        path = normpath(join(filebrowser.full_path(), target))
+        path = normpath(join(filebrowser.path, target))
         with open(path) as f:
             lines = f.readlines()
         return render(request, 'filebrowser/file.html', {'file': lines, 'filename': basename(path)})
@@ -86,7 +86,6 @@ def display_option(request, filebrowser, target):
 
     return redirect_fb(filebrowser.relative)  # pragma: no cover
 
-
 def rename_option(request, filebrowser, target):
     """ Rename targeted entry with POST['name'] """
     if request.method != 'POST':
@@ -97,8 +96,8 @@ def rename_option(request, filebrowser, target):
         return HttpResponseBadRequest("Missing 'name' parameter.")
 
     try:
-        path = normpath(join(filebrowser.full_path(), target))
-        target_path = join(filebrowser.full_path(), name)
+        path = normpath(join(filebrowser.path, target))
+        target_path = join(filebrowser.path, name)
         if any(c in name for c in settings.FILEBROWSER_DISALLOWED_CHAR):
             messages.error(request, ("Can't rename '" + target + "' to '" + name
                                      + "': name should not contain any of "
@@ -130,12 +129,12 @@ def copy_option(request, filebrowser, target):
 
     try:
         if destination[0] == '/':
-            ndestination = join(filebrowser.root, filebrowser.real_home, destination[1:])
+            ndestination = join(filebrowser.root, filebrowser.home, destination[1:])
         else:
-            ndestination = normpath(join(filebrowser.full_path(), destination))
-        path = normpath(join(filebrowser.full_path(), target))
+            ndestination = normpath(join(filebrowser.path, destination))
+        path = normpath(join(filebrowser.path, target))
         
-        if join(filebrowser.root, filebrowser.real_home) not in ndestination:
+        if join(filebrowser.root, filebrowser.home) not in ndestination:
             messages.error(request, ("Impossible to copy '" + target + "' in '" + destination
                                      + "': this directory does not exists."))
         
@@ -145,13 +144,11 @@ def copy_option(request, filebrowser, target):
         
         elif isdir(path):
             shutil.copytree(path, ndestination)
-            messages.success(request,
-                             "'" + target + "' successfully copied to '" + destination + "' !")
+            messages.success(request, "'" + target + "' successfully copied to '" + destination + "' !")
         
         else :
             shutil.copyfile(path, ndestination)
-            messages.success(request,
-                             "'" + target + "' successfully copied to '" + destination + "' !")
+            messages.success(request, "'" + target + "' successfully copied to '" + destination + "' !")
     
     except Exception as e:  # pragma: no cover
         msg = ("Impossible to copy '" + target + "' : "
@@ -167,7 +164,7 @@ def add_option(request, filebrowser, target):
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
     
-    ret, out, err = gitcmd.add(normpath(join(filebrowser.full_path(), target)))
+    ret, out, err = gitcmd.add(normpath(join(filebrowser.path, target)))
     
     if not ret:
         messages.success(request, "Entry successfully added to the index.")
@@ -184,7 +181,7 @@ def reset_option(request, filebrowser, target):
     commit = request.POST.get('commit')
     mode = request.POST.get('mode')
     
-    ret, out, err = gitcmd.reset(normpath(join(filebrowser.full_path(), target)),
+    ret, out, err = gitcmd.reset(normpath(join(filebrowser.path, target)),
                                  mode if mode else 'mixed',
                                  commit if commit else 'HEAD')
     
@@ -204,7 +201,7 @@ def commit_option(request, filebrowser, target):
     if not commit:
         return HttpResponseBadRequest("Missing 'commit' parameter")
     
-    ret, out, err = gitcmd.commit(normpath(join(filebrowser.full_path(), target)), commit)
+    ret, out, err = gitcmd.commit(normpath(join(filebrowser.path, target)), commit)
 
     if not ret:
         messages.success(request, htmlprint.code(out + err))
@@ -212,7 +209,6 @@ def commit_option(request, filebrowser, target):
         messages.error(request, htmlprint.code(err + out))
 
     return redirect_fb(filebrowser.relative)
-
 
 
 def change_branch_option(request, filebrowser, target):
@@ -225,7 +221,7 @@ def change_branch_option(request, filebrowser, target):
     if not branch:
         return HttpResponseBadRequest("Missing 'branch' parameter")
     
-    ret, out, err = gitcmd.checkout(normpath(join(filebrowser.full_path(), target)), branch, new)
+    ret, out, err = gitcmd.checkout(normpath(join(filebrowser.path, target)), branch, new)
     
     if not ret:
         messages.success(request, htmlprint.code(out + err))
@@ -235,13 +231,12 @@ def change_branch_option(request, filebrowser, target):
     return redirect_fb(filebrowser.relative)
 
 
-
 def checkout_option(request, filebrowser, target):
     """ Execute a checkout of the targeted entry with the informations of POST. """
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
     
-    ret, out, err = gitcmd.checkout(normpath(join(filebrowser.full_path(), target)))
+    ret, out, err = gitcmd.checkout(normpath(join(filebrowser.path, target)))
     
     if not ret:
         messages.success(request, "Entry successfully checked out.")
@@ -257,7 +252,7 @@ def status_option(request, filebrowser, target):
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
 
-    ret, out, err = gitcmd.status(normpath(join(filebrowser.full_path(), target)))
+    ret, out, err = gitcmd.status(normpath(join(filebrowser.path, target)))
     
     if not ret:
         messages.success(request, htmlprint.code(out + err))
@@ -273,7 +268,7 @@ def branch_option(request, filebrowser, target):
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
     
-    ret, out, err = gitcmd.branch(normpath(join(filebrowser.full_path(), target)))
+    ret, out, err = gitcmd.branch(normpath(join(filebrowser.path, target)))
     
     if not ret:
         messages.success(request, htmlprint.code(out + err))
@@ -300,7 +295,7 @@ def clone_option(request, filebrowser, target):
         messages.error(request, "SSH link is not supported, please use HTTPS")
         
     else:
-        path = normpath(join(filebrowser.full_path(), target))
+        path = normpath(join(filebrowser.path, target))
         ret, out, err = gitcmd.clone(path, url, destination, username, password)
         if ret:
             messages.error(request, htmlprint.code(err + out))
@@ -326,7 +321,7 @@ def pull_option(request, filebrowser, target):
     username = request.POST.get('username')
     password = request.POST.get('password')
     
-    ret, out, err = gitcmd.pull(normpath(join(filebrowser.full_path(), target)),
+    ret, out, err = gitcmd.pull(normpath(join(filebrowser.path, target)),
                                 username=username, password=password)
     
     if not ret:
@@ -346,7 +341,7 @@ def push_option(request, filebrowser, target):
     username = request.POST.get('username')
     password = request.POST.get('password')
     
-    ret, out, err = gitcmd.push(normpath(join(filebrowser.full_path(), target)),
+    ret, out, err = gitcmd.push(normpath(join(filebrowser.path, target)),
                                 username=username, password=password)
     
     if not ret:
@@ -363,7 +358,7 @@ def download_option(request, filebrowser, target):
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
 
-    path = normpath(normpath(join(filebrowser.full_path(), target)))
+    path = normpath(normpath(join(filebrowser.path, target)))
     filename = basename(path) + datetime.datetime.now().strftime("_%dd-%mm-%yy-%Hh-%Mm-%Ss")
     npath = path + datetime.datetime.now().strftime("_%dd-%mm-%yy-%Hh-%Mm-%Ss")
     try:
@@ -406,7 +401,7 @@ def new_file_option(request, filebrowser, target):
         return HttpResponseBadRequest("Missing 'name' parameter")
         
     try:
-        path = normpath(join(filebrowser.full_path(), name))
+        path = normpath(join(filebrowser.path, name))
         
         if any(c in name for c in settings.FILEBROWSER_DISALLOWED_CHAR):
             messages.error(request, ("Can't create file '" + name
@@ -504,13 +499,13 @@ def move_option(request, filebrowser, target):
         return HttpResponseBadRequest("Missing argument 'destination'")
 
     try:
-        path = normpath(join(filebrowser.full_path(), target))
+        path = normpath(join(filebrowser.path, target))
         if destination[0] == '/':
-            ndestination = join(filebrowser.root, filebrowser.real_home, destination[1:])
+            ndestination = join(filebrowser.root, filebrowser.home, destination[1:])
         else:
-            ndestination = normpath(join(filebrowser.full_path(), destination))
+            ndestination = normpath(join(filebrowser.path, destination))
         
-        if join(filebrowser.root, filebrowser.real_home) not in ndestination:
+        if join(filebrowser.root, filebrowser.home) not in ndestination:
             messages.error(request, ("Impossible to move '" + target + "' inside '" + destination
                                      + "': this directory does not exists."))
         
@@ -552,7 +547,7 @@ def delete_option(request, filebrowser, target):
         return HttpResponseNotAllowed(['GET'])
 
     try:
-        path = normpath(join(filebrowser.full_path(), target))
+        path = normpath(join(filebrowser.path, target))
         if isdir(path):
             shutil.rmtree(path, ignore_errors=True)
         else:
@@ -572,7 +567,7 @@ def edit_option(request, filebrowser, target):
         return HttpResponseNotAllowed(['GET'])
 
     try:
-        path = normpath(join(filebrowser.full_path(), target))
+        path = normpath(join(filebrowser.path, target))
         with open(path) as f:
             content = f.read()
         return JsonResponse({
@@ -601,7 +596,7 @@ def edit_pl_option(request, filebrowser, target):
         return HttpResponseNotAllowed(['GET'])
 
     try:
-        path = normpath(join(filebrowser.full_path(), target))
+        path = normpath(join(filebrowser.path, target))
         with open(path) as f:
             content = f.read()
         
@@ -686,7 +681,7 @@ def upload_option(request, filebrowser, target):
     
     try:
         
-        path = normpath(join(filebrowser.full_path(), name))
+        path = normpath(join(filebrowser.path, name))
         if isfile(path) or isdir(path):
             messages.error(request, "This file's name is already used")
         
@@ -714,14 +709,14 @@ def extract_option(request, filebrowser, target):
     
     try:
         
-        path = normpath(join(filebrowser.full_path(), target))
+        path = normpath(join(filebrowser.path, target))
         mime = magic.from_file(path, mime=True).split('/')[1]
         if mime == 'zip':
             with zipfile.ZipFile(path) as arc:
-                arc.extractall(join(filebrowser.full_path(), splitext(target)[0]))
+                arc.extractall(join(filebrowser.path, splitext(target)[0]))
         elif mime in ['x-xz', 'gzip']:
             with tarfile.open(path) as arc:
-                arc.extractall(join(filebrowser.full_path(), splitext(target)[0]))
+                arc.extractall(join(filebrowser.path, splitext(target)[0]))
         else:
             raise ValueError("Can't extract '"+mime+"' files.")
         messages.success(request, "Archive '"+target+"' successfully extracted.")

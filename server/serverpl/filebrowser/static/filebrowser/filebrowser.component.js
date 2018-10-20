@@ -6,6 +6,15 @@ angular.module('fileBrowserApp')
         this.items = function() {
             return FileBrowserService.items;
         };
+
+        this.hasRepo = function() {
+            return FileBrowserService.selectedFolder && FileBrowserService.selectedFolder.repo;
+        }
+
+        this.repo = function() {
+            return FileBrowserService.selectedFolder.repo;
+        }
+
         FileBrowserService.loadExplorer(error => {
             this.loadingExplorer = false;
         });

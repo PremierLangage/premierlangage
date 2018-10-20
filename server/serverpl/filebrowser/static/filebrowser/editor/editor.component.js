@@ -7,12 +7,10 @@ angular.module('fileBrowserApp')
      
     
         let editor;
+
         this.select = FileBrowserService.selectDocument;
         this.remove = FileBrowserService.removeDocument;
-
-        this.isActive = function(document) {
-            return document.path === FileBrowserService.selectedDocument.path;
-        };
+        this.isSelection = FileBrowserService.isSelectedFile;
 
         this.documents = function () {
             return FileBrowserService.documents;
