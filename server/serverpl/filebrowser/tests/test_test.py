@@ -3,7 +3,11 @@
 #
 #  test_test.py
 #  
-#  
+#
+__doc__='''
+    Test la fonction test du filebrowser.
+    
+'''
 
 import shutil
 
@@ -24,9 +28,13 @@ class TestTestCase(TestCase):
     
     @classmethod
     def setUpTestData(cls):
+        '''
+
+        '''
         cls.user = User.objects.create_user(username='user', password='12345', id=100)
         cls.c = Client()
         cls.c.force_login(cls.user, backend=settings.AUTHENTICATION_BACKENDS[0])
+        # redefinition  setting filebrowser root pour avoir un racine bien initialisée avec le repertoire ressource
         rel = join(settings.FILEBROWSER_ROOT, '100/')
         if isdir(rel):
             shutil.rmtree(join(rel)) 
@@ -35,6 +43,7 @@ class TestTestCase(TestCase):
 
     
     def tearDown(self):
+
         if isdir(join(FAKE_FB_ROOT, 'directory')):
             shutil.rmtree(join(FAKE_FB_ROOT, 'directory'))
     
@@ -47,7 +56,7 @@ class TestTestCase(TestCase):
                 'target': 'function001.pl',
                    
             },
-            follow=True
+            follow=True  # redirection
         )
         self.assertEqual(response.status_code, 405)
     
