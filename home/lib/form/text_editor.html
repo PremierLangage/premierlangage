@@ -1,0 +1,74 @@
+{% load static %}
+{% load playexo_tags %}
+
+{% with editorid__=editor.id %}
+    {% firstof answers__|dict_value:editorid__ answers__.answer editor.code as answer_editor__ %}
+
+    <!-- Do not tabulate this div as the tabulation will appear in the editor -->
+    <div id="editor" style="resize: both; overflow: auto; border: 1px #E7E7E7 solid; border-width: 1px; border-color: #BBB; border-radius: 4px; height: {% if editor.height %}{{ editor.height}}{% else %}400{% endif %}px; #E7E7E7 solid;"
+    >{{ answer_editor__ }}</div>
+
+    <!-- Input in which editor's content is copied -->
+
+    <input id="{% if editor.id %}form_{{ editor.id }}{% else %}form_answer{% endif %}"
+           type="hidden"
+           style="display: none;"
+           value="{{ answer_editor__ }}"
+    >
+{% endwith %}
+
+<script src="{% static 'ace/ace.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'ace/ext-modelist.js' %}"></script>
+<script>
+    window.define = window.define || ace.define;
+    var editor = ace.edit('editor');
+
+    // Set the theme according to user's preferences.
+    editor.setTheme(
+        "{{ user_settings__.editor_theme.template }}"
+    );
+
+    // Set syntax highlight language to 'editor.language', default to python.
+    editor.session.setMode(
+        "ace/mode/{% if editor.language %}{{editor.language}}{% else %}python{% endif %}"
+    );
+
+    // Set tabulation size to 'editor.tabsize', default to 4.
+    editor.session.setTabSize(
+        {% if editor.tabsize %}{{ editor.tabsize }}{% else %}4{% endif %}
+    );
+
+    // Set the font size to 'editor.fontsize', default to 12
+    editor.setFontSize(
+        {% if editor.fontsize %}{{ editor.fontsize }}{% else %}12{% endif %}
+    );
+
+    // Will display indent guide if 'editor.indentguide' is different
+    // than 'false' (not case sensitive), default to true
+    editor.setDisplayIndentGuides(
+        {% if editor.indentguide|lower == "false" %}false{% else %}true{% endif %}
+    );
+
+    // Will display invisible characters (like spaces or new lines) if 'editor.showinvisible'
+    // is different than 'false' (not case sensitive), default to true
+    editor.setShowInvisibles(
+        {% if editor.showinvisible|lower == "false" %}false{% else %}true{% endif %}
+    );
+
+    // Will use use space instead of tabulation if 'editor.spacetab'
+    // is different than 'false' (not case sensitive), default to true
+    editor.session.setUseSoftTabs(
+        {% if editor.spacetab|lower == "false" %}false{% else %}true{% endif %}
+    );
+
+
+    var input = $( "#{% if editor.id %}form_{{ editor.id }}{% else %}form_answer{% endif %}" );
+    editor.session.on("change", function() {
+        console.log("ON CHAGE");
+        console.log(input)
+        input.val(editor.getSession().getValue());
+    });
+</script>
+
+
+

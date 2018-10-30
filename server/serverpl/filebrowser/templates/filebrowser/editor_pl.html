@@ -46,52 +46,86 @@
             </div>
             <script src="{% static 'js/ace/ace.js' %}"></script>
             <script>
-                var editorPL = ace.edit('editorPL');
-                    editorPL.session.setMode("ace/mode/python");
-                    editorPL.setTheme("{{ request.user.profile.editor_theme.template }}");
-                    editorPL.setShowInvisibles(true);
-                window.onbeforeunload = function () {return /* editorPL.session.getUndoManager().isClean() || */ confirm();}
+                $(document).ready(function() {
+                    
+                    const editorPL = ace.edit('editorPL');
+                    const inputPL = $('input[name="editor_input"]');
+                    const buttonSave = $("#save_button");
+                    const buttonQuit = $("#quit_button");
+                    const buttonPreview =  $("#preview_button");
+                    const buttonDownload = $("#download_env_button");
+                    const viewFeedback =  $("#save_feedback");
+                    const viewPreview =  $("#preview");
 
-                var inputPL = $('input[name="editor_input"]');
-                    editorPL.getSession().on("change", function () {
-                    {% if request.user.profile.confirm %}
-                        window.onbeforeunload = function () {return confirm();}
-                    {% endif %}
-                    inputPL.val(editorPL.getSession().getValue());
-                });
+                    let editingChanged = false;
 
-                $( document ).ready(function(){
                     $.valHooks.textarea = {
                         get: function( elem ) {
                             return elem.value.replace( /\r?\n/g, "\r\n" );
                         }
                     };
-                    
-                    $( "#quit_button" ).click(function() {
-                        window.onbeforeunload = function () {}
+
+                    window.onbeforeunload = function(e) {
+                        if (editingChanged) {
+                            const message = "Voulez-vous vraiment quitter cette page ?";
+                            e = e || window.event;
+                            if (e)
+                                e.returnValue = message;
+                            return message;
+                        }
+                        window.onbeforeunload = null;
+                        return null;
+                    };
+                       
+                    editorPL.getSession().on("change", function () {
+                        {% if request.user.profile.confirm %}
+                            beginEditing();
+                        {% endif %}
+                        inputPL.val(editorPL.getSession().getValue());
                     });
-                    $( "#download_env_button" ).click(function() {
-                        window.onbeforeunload = function () {}
-                    });
+                    editorPL.session.setMode("ace/mode/python");
+                    editorPL.setTheme("{{ request.user.profile.editor_theme.template }}");
+                    editorPL.setShowInvisibles(true);
+                    editorPL.focus();
+                    buttonSave.prop('disabled', true);
+
+                    buttonQuit.click(endEditing);     
+                    buttonSave.click(saveChanges);
+                    buttonPreview.click(previewPL);
+                    buttonDownload.click(endEditing);
+
+
+                    function beginEditing() {
+                        editingChanged = true;
+                        buttonSave.prop('disabled', false);
+                    }
                     
-                    $( "#save_button" ).click(function() {
-                        var input = $("#editor_input").val();
-                        var path = "{{ filepath }}";
-                        var status = {requested_action: 'save', editor_input: input, path: path};
+                    function endEditing() {
+                        editingChanged = false;
+                        buttonSave.prop('disabled', true);
+                    }
+
+                    function saveChanges() {
+                        const input = $("#editor_input").val();
+                        const path = "{{ filepath }}";
+                        let status = {requested_action: 'save', editor_input: input, path: path};
+                     
                         $.ajax({
                             type : "POST",
                             url : "/filebrowser/save_edit/",
                             data: JSON.stringify(status, null, '\t'),
                             contentType: 'application/json;charset=UTF-8',
                             success: function(returned_status) {
+                                endEditing();
                                 status = returned_status;
-                                onReturn2(status.feedback);
+                                viewFeedback.html(status.feedback);
                             }
                         });
-                    });
-          
-                    $( "#preview_button" ).click(function() {
-                        var POST = {
+                    }
+                
+                    function previewPL() {
+                        editorPL.focus();
+                        const POST = {
                             content: $("#editor_input").val(),
                             path: "{{ filepath }}",
                             directory: "{{ dir_name }}",
@@ -104,19 +138,12 @@
                             data: JSON.stringify(POST, null, '\t'),
                             contentType: 'application/json;charset=UTF-8',
                             success: function(returned_status) {
-                                $('#preview').html(returned_status.preview);
+                                viewPreview.html(returned_status.preview);
                             }
                         });
-                    });
+                    }
                 });
-
-
-                function onReturn2(feedback) {
-                    $( "#save_feedback" ).html(feedback);
-                }
             </script>
             <div id="preview" class="col-md-6">{{ preview|safe }}</div>
-    </div>
-    
-    
+    </div>   
 {% endblock %}

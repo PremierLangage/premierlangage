@@ -5,16 +5,25 @@ site_author: Q. Coumes, D. Revuz
 nav:
 - Home: 'index.md'
 - Ecrire un exercice:
-    - 'Bases': 'ecrire_pl.md'
-    - 'Ecrire un formulaire': 'formulaire.md'
-    - 'Ecrire un script d''évaluation': 'evaluator.md'
-    - 'Ecrire un script build': 'build.md'
-- Parseur:
-    - 'Ecrire un parseur': 'parser.md'
-    - 'Exceptions prédéfinies': 'parser_exception.md'
-    - 'Exemple': 'parser_exemple.md'
-- grader:
-    - 'Ecrire un grader': 'ecrire_un_grader.md'
+    - 'Le Langage': 'langage_pl.md'
+    - 'Construction': 'construction.md'
+    - 'Affichage / Formulaire': 'affichage.md'
+    - 'Évaluation': 'evaluation.md'
+    - 'Paramètres': 'pl_settings.md'
+- Ecrire une Feuille d'Exercices: 'pltp.md'
+- Templates:
+    - 'Index': 'template_index.md'
+- Builders:
+    - 'Index': 'builder_index.md'
+    - 'before': 'before.md'
+    - 'build': 'build.md'
+- Formulaires:
+    - 'Index': 'form_index.md'
+    - 'Éditeur de Texte': 'text_editor.md'
+- Graders:
+    - 'Index': 'grader_index.md'
+    - 'evaluator': 'evaluator.md'
+    - 'evalfunc': 'evalfunc.md'
 
 theme:
     name: null

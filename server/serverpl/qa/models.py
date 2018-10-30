@@ -18,6 +18,7 @@ from user_profile.models import Profile
 REPUTATION = settings.QA_SETTINGS['reputation']
 
 
+
 class QAQuestion(models.Model, HitCountMixin, DateMixin):
     """Model class to contain every question in the forum"""
     slug = models.SlugField(max_length=200)
@@ -44,7 +45,6 @@ class QAQuestion(models.Model, HitCountMixin, DateMixin):
         self.popularity = round(sign * order + seconds / 45000, 7)
         self.save()
         self.refresh_from_db()
-        
     
     
     def has_accepted_answer(self):
@@ -97,14 +97,13 @@ class QAAnswer(models.Model, DateMixin):
     def delete(self, *args, **kwargs):
         self.user.profile.mod_rep(-REPUTATION['CREATE_ANSWER'])
         if self.answer:
-            self.question.user.profile.mod_rep(-REPUTATION['ANSWER_ACCEPTED']//2)
+            self.question.user.profile.mod_rep(-REPUTATION['ANSWER_ACCEPTED'] // 2)
             self.user.profile.mod_rep(-REPUTATION['ANSWER_ACCEPTED'])
         super(QAAnswer, self).delete(*args, **kwargs)
     
     
     def __str__(self):  # pragma: no cover
         return self.answer_text
-    
     
     class Meta:
         ordering = ['-answer', '-pub_date']
@@ -115,7 +114,6 @@ class VoteParent(models.Model):
     """Abstract model to define the basic elements to every single vote."""
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     value = models.BooleanField(default=True)
-    
     
     class Meta:
         abstract = True
@@ -128,7 +126,6 @@ class QAAnswerVote(VoteParent):
     
     class Meta:
         unique_together = (('user', 'answer'),)
-    
     
     def save(self, *args, **kwargs):
         if self.pk is None:  # New vote
@@ -210,7 +207,7 @@ class BaseComment(models.Model, DateMixin):
                                     related_name="updated_comment")
     comment_text = models.CharField(max_length=400)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
-
+    
     class Meta:
         abstract = True
     

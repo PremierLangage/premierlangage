@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 #  loader.py
-#  
+#
 #  Copyright 2018 Coumes Quentin
 
 
@@ -14,8 +14,9 @@ from django.conf import settings
 
 from loader.exceptions import DirectoryNotFound
 from loader.parser import parse_file, get_type
-from loader.models import PL, PLTP
+from loader.models import PL, PLTP, Index
 from filebrowser.models import Directory
+
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +63,7 @@ def load_pltp(directory, rel_path, force=False):
     name = splitext(basename(rel_path))[0]
     
     sha1 = hashlib.sha1()
-    sha1.update((directory.name+':'+rel_path+str(time.time())).encode('utf-8'))
+    sha1.update((directory.name + ':' + rel_path + str(time.time())).encode('utf-8'))
     sha1 = sha1.hexdigest()
     
     try:
@@ -73,12 +74,11 @@ def load_pltp(directory, rel_path, force=False):
     except PLTP.DoesNotExist:  # If the PLTP does not exist, keep going
         pass
     
-
     path = join(
         dirname(abspath(join(directory.root, rel_path[1:]))),
         "dir" + splitext(basename(rel_path))[0]
     )
-    dic, warnings = parse_file(directory, rel_path, path)
+    dic, warnings = parse_file(directory, rel_path)
     
     pl_list = list()
     for item in dic['__pl']:
@@ -92,14 +92,14 @@ def load_pltp(directory, rel_path, force=False):
     
     for pl in pl_list:
         pl.save()
-        logger.info("PL '"+str(pl.id)+" ("+pl.name+")' has been added to the database")
+        logger.info("PL '" + str(pl.id) + " (" + pl.name + ")' has been added to the database")
     
     pltp = PLTP(name=name, sha1=sha1, json=dic, directory=directory, rel_path=rel_path)
     pltp.save()
-    logger.info("PLTP '"+sha1+" ("+name+")' has been added to the database")
+    logger.info("PLTP '" + sha1 + " (" + name + ")' has been added to the database")
     
     for pl in pl_list:
-        pltp.pl.add(pl)
+        Index.objects.create(pltp=pltp, pl=pl)
     
     return pltp, [htmlprint.code(warning) for warning in warnings]
 
@@ -121,6 +121,7 @@ def load_pl(directory, rel_path):
     return pl, [htmlprint.code(warning) for warning in warnings]
 
 
+
 def reload_pltp(directory, rel_path, original):
     """Reload the given file as a PLTP. Also reload its PL, but without modyfing their ID.
 
@@ -139,29 +140,36 @@ def reload_pltp(directory, rel_path, original):
             dirname(abspath(join(directory.root, rel_path[1:]))),
             "dir" + splitext(basename(rel_path))[0]
         )
-        dic, warnings = parse_file(directory, rel_path, path)
-        
-        if len(dic['__pl']) != len(original.pl.all()):
-            raise ValueError(("Number of PL in the activity (%d) differs from the number of PL in this"
-                              + "PLTP (%d).") % (len(dic['__pl']), len(pltp.pl.all())))
+        dic, warnings = parse_file(directory, rel_path)
         
         pl_list = list()
         for item in dic['__pl']:
             try:
                 pl_directory = Directory.objects.get(name=item['directory_name'])
             except ObjectDoesNotExist:
-                raise DirectoryNotFound(dic['__rel_path'], item['line'], item['path'], item['lineno'])
+                raise DirectoryNotFound(dic['__rel_path'], item['line'], item['path'],
+                                        item['lineno'])
             pl, pl_warnings = load_pl(pl_directory, item['path'])
             warnings += pl_warnings
             pl_list.append(pl)
         
-        for pl, origin in zip(pl_list, original.pl.all()):
-            origin.json = pl.json
-            origin.save()
-            logger.info("PL '" + str(origin.id) + " (" + origin.name + ")' has been updated.")
+        originals = list(original.pl.all())
+        original.pl.clear()
+        for pl in pl_list:
+            correspond = list(filter(lambda i: i.directory == pl.directory and i.rel_path == pl.rel_path,
+                                     originals))
+            if correspond:
+                correspond = correspond[0]
+                correspond.json = pl.json
+                correspond.save()
+                logger.info("PL '" + str(correspond.id) + " (" + correspond.name + ")' has been updated.")
+                Index.objects.create(pltp=original, pl=correspond)
+            else:
+                pl.save()
+                logger.info("PL '" + str(pl.id) + " (" + pl.name + ")' has been created.")
+                Index.objects.create(pltp=original, pl=pl)
         
-        pltp = PLTP(name=name, sha1=sha1, json=dic, directory=directory, rel_path=rel_path)
-        original.json = pltp.json
+        original.json = dic
         original.save()
         logger.info("PLTP '" + original.sha1 + " (" + original.name + ")' has been updated.")
         

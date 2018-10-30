@@ -12,6 +12,17 @@ ul.nav .main {
     font-weight: bold;
 }
 
+.a-nav:hover {
+    text-decoration: none;
+}
+
+.nav-scroll {
+    font-weight: bold;
+    position: fixed;
+    overflow-y: auto;
+    max-height: 76%;
+}
+
 .col-md-3 {
     padding-left: 0;
 }

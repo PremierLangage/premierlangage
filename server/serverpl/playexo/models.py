@@ -1,26 +1,28 @@
-import time, logging
+import logging
+import time
 
 import htmlprint
+from django.contrib.auth.models import User
+from django.db import IntegrityError, models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from jsonfield import JSONField
-from django.urls import resolve
-from django.db import models, IntegrityError
-from django.db.models.signals import post_save
-from django.contrib.auth.models import User
-from django.utils import timezone
-from django.dispatch import receiver
-from django.template import Template, RequestContext
+from django.template import RequestContext, Template
 from django.template.loader import get_template
+from django.urls import resolve
+from django.utils import timezone
+from jsonfield import JSONField
 
+from classmanagement.models import Course
+from loader.models import PL, PLTP
 from lti.models import LTIModel
-from loader.models import PLTP, PL
 from playexo.enums import State
 from playexo.request import SandboxBuild, SandboxEval
-from classmanagement.models import Course
 
 
 logger = logging.getLogger(__name__)
+
 
 
 class Activity(LTIModel):
@@ -29,7 +31,8 @@ class Activity(LTIModel):
     pltp = models.ForeignKey(PLTP, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
     parent = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True)
-
+    
+    
     @classmethod
     def get_or_create_from_lti(cls, request, lti_launch):
         """Creates an Activity corresponding to ID in the url and sets
@@ -41,26 +44,28 @@ class Activity(LTIModel):
         Returns a tuple of (object, created), where object is the
         retrieved or created object and created is a boolean specifying
         whether a new object was created."""
-        course_id = lti_launch["context_id"]
-        consumer = lti_launch['oauth_consumer_key']
-        activity_id = lti_launch['resource_link_id']
-        activity_name = lti_launch['resource_link_title']
-        if not (course_id and activity_id and activity_name and consumer):
+        course_id = lti_launch.get("context_id")
+        consumer = lti_launch.get('oauth_consumer_key')
+        activity_id = lti_launch.get('resource_link_id')
+        activity_name = lti_launch.get('resource_link_title')
+        if not all([course_id, activity_id, activity_name, consumer]):
+            # TODO : Use BadRequest Exception
             raise Http404("Could not create Activity: on of these parameters are missing:"
-                  + "[context_id, resource_link_id, resource_link_title, oauth_consumer_key]")
-
+                          + "[context_id, resource_link_id, resource_link_title, "
+                            "oauth_consumer_key]")
+        
         course = Course.objects.get(consumer_id=course_id, consumer=consumer)
         try:
             return cls.objects.get(consumer_id=activity_id, consumer=consumer), False
         except Activity.DoesNotExist:
-            urlmatch = resolve(request.path)
-            if not urlmatch.app_name or not urlmatch.url_name:
-                urlmatch = None
-            if urlmatch and urlmatch.app_name + ":" + urlmatch.url_name != "playexo:activity":
+            match = resolve(request.path)
+            if not match.app_name or not match.url_name:
+                match = None
+            if not match or (match and match.app_name + ":" + match.url_name != "playexo:activity"):
                 logger.warning(request.path + " does not correspond to 'playexo:activity' in "
                                               "Activity.get_or_create_from_lti")
                 raise Http404("Activity could not be found.")
-            parent = get_object_or_404(Activity, id=urlmatch.kwargs['activity_id'])
+            parent = get_object_or_404(Activity, id=match.kwargs['activity_id'])
             new = Activity.objects.create(consumer_id=activity_id, consumer=consumer,
                                           name=activity_name, pltp=parent.pltp, course=course,
                                           parent=parent)
@@ -69,13 +74,12 @@ class Activity(LTIModel):
     
     def reload(self):
         """Reload every session using this activity."""
-        for act_sess in self.sessionactivity_set.all():
-            for exer_sess in act_sess.sessionexercise_set.all():
-                exer_sess.reload()
+        self.sessionactivity_set.all().delete()
+        for i in Activity.objects.filter(parent=self):
+            i.sessionactivity_set.all().delete()
     
-
-
-    def __str__(self):
+    
+    def __str__(self):  # pragma: no cover
         return str(self.id) + " " + self.name
 
 
@@ -95,7 +99,6 @@ class SessionActivity(models.Model):
     class Meta:
         unique_together = ('user', 'activity')
     
-    
     def exercise(self, pl=...):
         """Return the SessionExercice corresponding to self.current_pl.
         
@@ -105,8 +108,8 @@ class SessionActivity(models.Model):
         Raise IntegrityError if no session for either self.current_pl or pl (if given) was found."""
         try:
             return next(
-                i for i in self.sessionexercise_set.all()
-                if i.pl == (self.current_pl if pl is ... else pl)
+                    i for i in self.sessionexercise_set.all()
+                    if i.pl == (self.current_pl if pl is ... else pl)
             )
         except StopIteration:
             raise IntegrityError("'current_pl' of SessionActivity does not have a corresponding "
@@ -131,15 +134,6 @@ class SessionExerciseAbstract(models.Model):
     class Meta:
         abstract = True
     
-    def reload(self):
-        if self.pl:
-            self.context = dict(self.pl.json)
-            self.built = False
-            self.envid = None
-        else:
-            self.context = dict(self.activity_session.activity.pltp.json)
-        self.save()
-    
     # TODO: Allowing to add key with the PL syntax (dict1.dict2.val)
     def add_to_context(self, key, value):
         """Add value corresponding to key in the context."""
@@ -149,16 +143,36 @@ class SessionExerciseAbstract(models.Model):
     
     def get_from_context(self, key):
         """Get key from context.
-        
+
+        Return False is key does not exists.
+
         Does implement syntax of PL for nested dict. I.E.: 'dict1.dict2.[...].dictn.val' will return
         'context['dict1']['dict2']...['dictn']['val']"""
-        if '.' in key:
-            val = self.context
-            for k in key.split('.'):
-                val = val[k]
-        else:
-            val = self.context[key]
+        try:
+            if '.' in key:
+                val = self.context
+                for k in key.split('.'):
+                    val = val[k]
+            else:
+                val = self.context[key]
+        except KeyError:
+            return False
         return val
+    
+    
+    def reroll(self, seed, grade=None):
+        """Return whether the seed must be reroll (True) or not (False).
+
+        Seed must be reroll if:
+            - seed does not exists yet
+            - oneshot is set, grade is provided and less than oneshot_threshold
+              (100 if not provided)"""
+        oneshot = bool(self.get_from_context('settings.oneshot'))
+        oneshot_threshold = self.get_from_context('settings.oneshot_threshold')
+        oneshot_threshold = (int(oneshot_threshold)
+                             if oneshot_threshold and oneshot_threshold.isdigit()
+                             else 100)
+        return not seed or (oneshot and grade is not None and grade < oneshot_threshold)
     
     
     def evaluate(self, request, answers, test=False):
@@ -178,42 +192,42 @@ class SessionExerciseAbstract(models.Model):
         response = evaluator.call()
         answer = {
             "answers": answers,
-            "user": request.user,
-            "pl": self.pl,
-            "grade": response['grade'],
+            "user"   : request.user,
+            "pl"     : self.pl,
+            "grade"  : response['grade'],
         }
         
         if response['status'] < 0:  # Sandbox Error
             feedback = response['feedback']
             if request.user.profile.can_load() and response['sandboxerr']:
-                feedback += "<br><br>" + htmlprint.code(response['sandboxerr'])
+                feedback += "<br><hr>Sandbox error:<br>" + htmlprint.code(response['sandboxerr'])
+                feedback += "<br><hr>Received on stderr:<br>" + htmlprint.code(response['stderr'])
         
-        elif response['status'] > 0:  # Evaluator Error
-            feedback = ("Une erreur s'est produite lors de l'exécution du script d'évaluation "
+        elif response['status'] > 0:  # Grader Error
+            feedback = ("Une erreur s'est produite lors de l'exécution du grader "
                         + ("(exit code: %d, env: %s). Merci de prévenir votre professeur"
                            % (response['status'], response['id'])))
             if request.user.profile.can_load():
-                feedback += "<br><br>Received on stderr:<br>" + htmlprint.code(response['stderr'])
+                feedback += "<br><hr>Received on stderr:<br>" + htmlprint.code(response['stderr'])
         
         else:  # Success
             context = dict(response['context'])
             feedback = response['feedback']
             if request.user.profile.can_load() and response['stderr']:
                 feedback += "<br><br>Received on stderr:<br>" + htmlprint.code(response['stderr'])
-            answer["seed"] = context['seed'],
         
         keys = list(response.keys())
         for key in keys:
-            response[key+"__"] = response[key]
+            response[key + "__"] = response[key]
         for key in keys:
             del response[key]
         del response['context__']
         context.update(response)
-
+        
         dic = dict(self.context)
         dic.update(context)
         dic['answers__'] = answers
-
+        
         return answer, feedback, dic
     
     
@@ -247,13 +261,13 @@ class SessionExerciseAbstract(models.Model):
         context = dict(response['context'])
         keys = list(response.keys())
         for key in keys:
-            response[key+"__"] = response[key]
+            response[key + "__"] = response[key]
         for key in keys:
             del response[key]
         del response['context__']
         
         context.update(response)
-        self.envid = response['id__']  
+        self.envid = response['id__']
         self.context.update(context)
         self.built = True
         self.save()
@@ -273,7 +287,6 @@ class SessionExercise(SessionExerciseAbstract):
     
     class Meta:
         unique_together = ('pl', 'activity_session')
-    
     
     @receiver(post_save, sender=SessionActivity)
     def create_session_exercise(sender, instance, created, **kwargs):
@@ -298,41 +311,35 @@ class SessionExercise(SessionExerciseAbstract):
         super().save(*args, **kwargs)
     
     
-    def reroll(self, grade=None, seed=None):
-        """Return whether the seed must be reroll (True) or not (False)."""
-        if grade:
-            return grade != 100
-        try:
-             oneshot = self.get_from_context('settings.oneshot')
-        except:
-            oneshot = None
-        return not seed or oneshot
-    
-    
     def get_pl(self, request, context):
         """Return a template of the PL rendered with context."""
         pl = self.pl
         highest_grade = Answer.highest_grade(pl, self.activity_session.user)
         last = Answer.last(pl, self.activity_session.user)
         
-        seed = last.seed if last else None
-        if self.reroll(highest_grade.grade, seed):
+        seed = (last.seed if last
+                else self.context['seed'] if 'seed' in self.context
+        else None)
+        if self.reroll(seed, highest_grade.grade):
             seed = time.time()
             self.built = False
         self.add_to_context('seed', seed)
         
-        predic = {
-            'user_settings__':  self.activity_session.user.profile,
-            'user__':  self.activity_session.user,
-            'pl_id__':  pl.id,
-            'answers__':  last.answers if last else {},
-            'grade__':  highest_grade.grade if highest_grade else None,
-        }
-        
         if not self.built:
             self.build(request)
-        dic = dict(self.context if not context else context)
-        dic.update(predic)
+        
+        dic = {
+            **self.context,
+            **{
+                'user_settings__': self.activity_session.user.profile,
+                'user__'         : self.activity_session.user,
+                'pl_id__'        : pl.id,
+                'answers__'      : last.answers if last else {},
+                'grade__'        : highest_grade.grade if highest_grade else None,
+            },
+        }
+        if context:
+            dic = {**context, **dic}
         
         for key in dic:
             if type(dic[key]) is str:
@@ -343,7 +350,7 @@ class SessionExercise(SessionExerciseAbstract):
     
     def get_exercise(self, request, context=None):
         """Return a template of the PL or the PLTP rendered with self.context.
-         
+        
         If given, will use context instead."""
         try:
             pl = self.pl
@@ -368,7 +375,7 @@ class SessionExercise(SessionExerciseAbstract):
     
     def get_navigation(self, request, context=None):
         pl_list = [{
-            'id': None,
+            'id'   : None,
             'state': None,
             'title': self.activity_session.activity.pltp.json['title'],
         }]
@@ -381,7 +388,7 @@ class SessionExercise(SessionExerciseAbstract):
         context = dict(self.context if not context else context)
         context.update({
             "pl_list__": pl_list,
-            'pl_id__': self.pl.id if self.pl else None
+            'pl_id__'  : self.pl.id if self.pl else None
         })
         return get_template("playexo/navigation.html").render(context, request)
     
@@ -389,7 +396,7 @@ class SessionExercise(SessionExerciseAbstract):
     def get_context(self, request, context=None):
         return {
             "navigation": self.get_navigation(request, context),
-            "exercise": self.get_exercise(request, context),
+            "exercise"  : self.get_exercise(request, context),
         }
 
 
@@ -424,7 +431,7 @@ class SessionTest(SessionExerciseAbstract):
         if len(q) >= self.MAX_SESSION_PER_USER:
             for elem in q[self.MAX_SESSION_PER_USER:]:
                 elem.delete()
-            
+        
         super().save(*args, **kwargs)
     
     
@@ -439,29 +446,33 @@ class SessionTest(SessionExerciseAbstract):
         
         If answer is given, will determine if the seed must be reroll base on its grade."""
         pl = self.pl
-        seed = None
-        if answer['grade'] < 100 if answer else True:
+        seed = self.context['seed'] if 'seed' in self.context else None
+        if self.reroll(seed, answer['grade'] if answer else None):
             seed = time.time()
             self.built = False
-        self.add_to_context('seed', seed)
-
-        predic = {
-            'user_settings__':  self.user.profile,
-            'session__': self,
-            'user__':  self.user,
-            'pl_id__':  pl.id,
-        }
+            self.add_to_context('seed', seed)
         
         if not self.built:
             self.build(request, test=True)
-        dic = dict(self.context if not context else context)
-        dic.update(predic)
         
+        dic = {
+            **self.context,
+            **{
+                'user_settings__': self.user.profile,
+                'session__'      : self,
+                'user__'         : self.user,
+                'pl_id__'        : pl.id,
+            },
+        }
+        if context:
+            dic = {**context, **dic}
+        
+
         for key in dic:
             if type(dic[key]) is str:
                 dic[key] = Template(dic[key]).render(RequestContext(request, dic))
         return get_template("playexo/preview.html").render(dic, request)
-
+    
     
     def get_exercise(self, request, context=None, answer=None):
         """Return a template of the PL or the PLTP rendered with self.context.
@@ -510,7 +521,7 @@ class Answer(models.Model):
     @staticmethod
     def pltp_state(pltp, user):
         """Return a list of tuples (pl_id, state) where state follow pl_state() rules."""
-        return [(pl.id, Answer.pl_state(pl, user)) for pl in pltp.pl.all()] 
+        return [(pl.id, Answer.pl_state(pl, user)) for pl in pltp.pl.all()]
     
     
     @staticmethod
@@ -528,27 +539,27 @@ class Answer(models.Model):
             
             All data are strings."""
         state = {
-            State.SUCCEEDED:   [0.0, 0],
-            State.PART_SUCC:   [0.0, 0],
-            State.FAILED:      [0.0, 0],
-            State.STARTED:     [0.0, 0],
+            State.SUCCEEDED  : [0.0, 0],
+            State.PART_SUCC  : [0.0, 0],
+            State.FAILED     : [0.0, 0],
+            State.STARTED    : [0.0, 0],
             State.NOT_STARTED: [0.0, 0],
-            State.ERROR:       [0.0, 0],
+            State.ERROR      : [0.0, 0],
         }
         
         for pl in pltp.pl.all():
             state[Answer.pl_state(pl, user)][1] += 1
-            
+        
         nb_pl = max(sum([state[k][1] for k in state]), 1)
         for k, v in state.items():
-            state[k] = [str(state[k][1]*100/nb_pl), str(state[k][1])]
+            state[k] = [str(state[k][1] * 100 / nb_pl), str(state[k][1])]
         
         return state
     
     
     @staticmethod
     def course_state(course):
-        """ 
+        """
             Return every pltp state of every user of this course as a list of dicts:
             {
                 'user_id': id,
@@ -585,12 +596,12 @@ class Answer(models.Model):
             
             All data are strings."""
         state = {
-            State.SUCCEEDED:   [0.0, 0],
-            State.PART_SUCC:   [0.0, 0],
-            State.FAILED:      [0.0, 0],
-            State.STARTED:     [0.0, 0],
+            State.SUCCEEDED  : [0.0, 0],
+            State.PART_SUCC  : [0.0, 0],
+            State.FAILED     : [0.0, 0],
+            State.STARTED    : [0.0, 0],
             State.NOT_STARTED: [0.0, 0],
-            State.ERROR:       [0.0, 0],
+            State.ERROR      : [0.0, 0],
         }
         
         for activity in course.activity_set.all():
@@ -600,6 +611,6 @@ class Answer(models.Model):
         
         nb_pl = max(sum([state[k][1] for k in state]), 1)
         for k, v in state.items():
-            state[k] = [str(state[k][1]*100/nb_pl), str(state[k][1])]
+            state[k] = [str(state[k][1] * 100 / nb_pl), str(state[k][1])]
         
         return state

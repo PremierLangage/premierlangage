@@ -13,6 +13,38 @@ function getSearchTerm()
 }
 
 $(function() {
+    $('h1').on('reached', function() {
+        var bol = false;
+        var h1 = this;
+
+        $('li').each(function() {
+            if ($(this).find("a").html() === $(h1).html()) {
+                bol = true;
+                return false;
+            }
+        });
+        if (bol) {
+            $('li').each(function() {
+                if ($(this).find("a").html() === $(h1).html())
+                    $(this).addClass("active-toc");
+                else
+                    $(this).removeClass("active-toc");
+            });
+        }
+    });
+    $(document).on('scroll', function() {
+        $('h1').each(function() {
+            var wt = $(window).scrollTop();
+            var at = $(this).position().top;
+            var dt = at - wt;
+            if( dt >= 0 && dt < 100)
+                $(this).trigger('reached');
+                
+        });
+    });
+})
+
+$(function() {
     $('h2').on('reached', function() {
         var bol = false;
         var h2 = this;
@@ -76,6 +108,37 @@ $(function() {
     });
 })
 
+$(function() {
+    $('h4').on('reached', function() {
+        var bol = false;
+        var h4 = this;
+
+        $('li').each(function() {
+            if ($(this).find("a").html() === $(h4).html()) {
+                bol = true;
+                return false;
+            }
+        });
+        if (bol) {
+            $('li').each(function() {
+                if ($(this).find("a").html() === $(h4).html())
+                    $(this).addClass("active-toc");
+                else
+                    $(this).removeClass("active-toc");
+            });
+        }
+    });
+    $(document).on('scroll', function() {
+        $('h4').each(function() {
+            var wt = $(window).scrollTop();
+            var at = $(this).position().top;
+            var dt = at - wt;
+            if( dt >= 0 && dt < 100)
+                $(this).trigger('reached');
+                
+        });
+    });
+})
 
 $(document).ready(function() {
 

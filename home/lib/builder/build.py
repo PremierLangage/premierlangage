@@ -19,8 +19,14 @@ if __name__ == "__main__":
     if 'build' in dic:
         exec(dic['build'], globals())
         dic = build(dic)
+    else:
+        print(("Builder 'build' need a script declaring a function build() in "
+               + "the key 'build'. See documentation related to this builder."),
+              file = sys.stderr)
+        sys.exit(1)
     
     with open(output_json, "w+") as f:
         f.write(jsonpickle.encode(dic, unpicklable=False))
     
     sys.exit(0)
+

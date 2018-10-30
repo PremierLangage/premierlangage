@@ -45,7 +45,7 @@ def evaluate(request, activity_id, pl_id):
                     "navigation": exercise.get_navigation(request, context),
                     "exercise": exercise.get_exercise(request),
                     "feedback": render_feedback(feedback),
-                }), 
+                }),
                 content_type='application/json'
             )
         return HttpResponseBadRequest("Unknown action")
@@ -87,8 +87,6 @@ def activity_view(request, activity_id):
             pls = activity.pltp.pl.all()
             print(session.current_pl)
             for previous, next in zip(pls, list(pls[1:]) + [None]):
-                print(previous, next)
-                print(previous == session.current_pl)
                 if previous == session.current_pl:
                     session.current_pl = next
                     session.save()
