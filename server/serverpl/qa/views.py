@@ -38,7 +38,7 @@ class IndexView(View):
         query = request.GET.get('query')
         active = request.GET.get('active', 'questions')
         
-        try: 
+        try:
             int(page)
         except Exception:
             page = None
@@ -97,7 +97,6 @@ class QuestionView(HttpMethodMixin, View):
     """Handle requests interacting with Question."""
     
     template_name = 'qa/detail_question.html'
-    
     
     def post(self, request):
         """Create a question."""
@@ -190,12 +189,12 @@ class AnswerView(HttpMethodMixin, View):
         if 'answer' in params:
             params['answer'] = bool(int(params['answer']))
             answer[0].question.qaanswer_set.all().update(answer=False)
-        else:
+        if 'answer_text' in params:
             params['update_date'] = timezone.now()
             params['update_user'] = request.user
         answer.update(**params)
         
-        if 'answer' in params:
+        if 'answer' in params: # Updating reps if an answer was (un)chosen
             if params['answer']:
                 answer[0].question.user.profile.mod_rep(REPUTATION['ANSWER_ACCEPTED']//2)
                 answer[0].user.profile.mod_rep(REPUTATION['ANSWER_ACCEPTED'])
@@ -301,7 +300,7 @@ class AbstractVoteView:
     
     # TODO: Use an ajax request instead of redirecting to ask:question. This would remove the
     # necessity for question_pk and improve user experience.
-    # TODO2: Use POST method instead of GET
+    # TODO: Use POST method instead of GET
     def get(self, request, question_pk, pk=None):
         """Create a vote.
         

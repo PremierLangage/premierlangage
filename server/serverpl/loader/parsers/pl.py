@@ -295,6 +295,8 @@ class Parser:
             self._multiline_json = False
         else:
             self.add_dic2(self.dic, self._multiline_key.split("."), line, "+=")
+            
+            a =  i >= i*2
     
     
     def sandbox_file_line_match(self, match, line):
