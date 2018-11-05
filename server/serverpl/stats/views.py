@@ -18,7 +18,7 @@ def user(request):
     queryset = Answer.objects.all()
     i=1
     userdic={}
-
+    datedic=Counter()
     for a in queryset :
         if a.user not in  userdic:
             userdic[a.user.id]=[]
@@ -36,12 +36,36 @@ def user(request):
     })
 
 
+@login_required
+def tags(request):
+    queryset = Answer.objects.all()
+    tdic=Counter()
+    dic="empty"
+    for a in queryset :
+        pl = a.pl
+        dic = pl.json
+
+        if "tag" in dic:
+            lt = dic['tag'].split('|')
+            for t in lt:
+                tdic[t]+= 1
+        else:
+            tdic['NONE'] +=1
+    return render(request, "stats/stats.html", {
+        "show": str(tdic),
+    })
 
 @login_required
 def datestats(request):
-    queryset = Answer.objects.all()
+    # if not User :
+    #     queryset = Answer.objects.all()
+    # else:
+    queryset = Answer.objects.filter(user= request.user)
+    if len(queryset)<1:
+        queryset = Answer.objects.all()
     datedic = Counter()
     gooddic = Counter()
+    meandic = dict()
     for a in queryset :
         if a.date:
             sdate = datetime.datetime.strftime(a.date, "%Y/%m/%d")
@@ -50,14 +74,23 @@ def datestats(request):
                 gooddic[sdate] += 1
             else:
                 gooddic[sdate] += 0
+    height = max(datedic.values())
+    mean = ( sum(gooddic.values())/sum(datedic.values()))*height
+    hzondic=dict()
+    for k in gooddic.keys():
+        meandic[k] = (gooddic[k]/datedic[k])*height
+        hzondic[k]= mean
 
-    plt.figure(num=plt.gcf().number, figsize=(8, 14))
+    plt.figure(num=plt.gcf().number, figsize=(12, 14))
     plt.gca().set_title( 'Tentatives et tentatives réussies ', fontsize=20)
     plt.plot(list(datedic.values()))
     plt.plot(list(gooddic.values()),"red")
+    plt.plot(list(meandic.values()), "green")
+    plt.plot(list(hzondic.values()), "green")
+
     x = mpld3.fig_to_html(plt.gcf())
     return render(request, "stats/stats.html", {
-        "show": x,
+        "show": "coucou:"+x,
     })
 
 class Counter(dict):
