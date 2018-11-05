@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'taggit',
     'hitcount',
     'lti',
+    'stats',
     'django_http_method',
     'django_markdown',
     'django.contrib.admin',
