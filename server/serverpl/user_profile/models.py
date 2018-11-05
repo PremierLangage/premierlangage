@@ -53,12 +53,12 @@ class Profile(LTIModel):
     
     
     def is_admin(self):
-        """Return True if the user is an administrator (Role or django super user), False if not."""
-        return self.role == Role.ADMINISTRATOR or self.user.is_superuser
+        """Returns whether the user is an administrator (Role or django su / staff)."""
+        return self.role == Role.ADMINISTRATOR or self.user.is_superuser or self.user.is_staff
     
     
     def can_load(self):
-        """Return True if the user is at least an Instructor, False if not."""
+        """Returns True if the user is at least an Instructor, False if not."""
         return self.role <= Role.INSTRUCTOR or self.is_admin()
 
      
