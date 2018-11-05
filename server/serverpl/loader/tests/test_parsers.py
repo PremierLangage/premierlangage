@@ -20,7 +20,7 @@ from loader.exceptions import UnknownExtension, MissingKey
 from serverpl.settings import BASE_DIR
 
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'loader/tests/')
+FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'loader/tests/tmp')
 
 
 
