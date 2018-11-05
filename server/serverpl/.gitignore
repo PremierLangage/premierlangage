@@ -21,3 +21,4 @@ filebrowser/tests/ressources/*
 */migrations/0*
 media/
 serverpl/config.py
+loader/tests/tmp

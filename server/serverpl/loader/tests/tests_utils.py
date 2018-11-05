@@ -19,12 +19,13 @@ from filebrowser.models import Directory
 from loader.utils import get_location, extends_dict, displayed_path
 
 
+
 def command(cmd):
     p = subprocess.Popen(
-        cmd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        shell=True
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True
     )
     out, err = p.communicate()
     if p.returncode:
@@ -32,12 +33,15 @@ def command(cmd):
                            + err.decode() + out.decode())
 
 
+
 FAKE_FB_ROOT = join(settings.BASE_DIR, 'loader/tests/tmp')
+
 
 
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
 class UtilsTestCase(TestCase):
     """ Test functions of loader.utils modules. """
+    
     
     @classmethod
     def setUpTestData(cls):
@@ -67,8 +71,8 @@ class UtilsTestCase(TestCase):
         exception = 'ref:relative/path/file.py'
         
         # Absolute outside of repo
-        self.assertEqual('first1/second1/third1/file.py', get_location(self.dir, absolute,
-                                                                       current_path))
+        self.assertEqual('first1/second1/third1/file.py',
+                         get_location(self.dir, absolute, current_path))
         self.assertEqual('first1/second1/third1/file.py', get_location(self.dir, absolute))
         # Absolute in a repo
         self.assertEqual('repo1/first1/second1/third1/file.py', get_location(self.dir, absolute,
@@ -95,28 +99,31 @@ class UtilsTestCase(TestCase):
     
     def test_extends_dic(self):
         target = {
-            'in_both': 'test',
-            'in_target': 'test',
-            'list_both': [1],
+            'in_both'    : 'test',
+            'in_target'  : 'test',
+            'list_both'  : [1],
             'list_target': [1],
-            'dic_target': {"1": 1},
+            'dic_target' : {"1": 1},
+            'dic_both'   : {"1": 1},
         }
         source = {
-            'in_both': 'test2',
-            'in_source': 'test2',
-            'list_both': [2],
+            'in_both'    : 'test2',
+            'in_source'  : 'test2',
+            'list_both'  : [2],
             'list_source': [2],
-            'dic_source': {"2": 2},
+            'dic_source' : {"2": 2},
+            'dic_both'   : {"2": 2},
         }
         result = {
-            'in_both': 'test',
-            'in_target': 'test',
-            'in_source': 'test2',
-            'list_both': [1, 2],
-            'list_target': [1],     
+            'in_both'    : 'test',
+            'in_target'  : 'test',
+            'in_source'  : 'test2',
+            'list_both'  : [1, 2],
+            'list_target': [1],
             'list_source': [2],
-            'dic_target': {"1": 1},
-            'dic_source': {"2": 2},
+            'dic_target' : {"1": 1},
+            'dic_source' : {"2": 2},
+            'dic_both'   : {"1": 1, "2": 2}
         }
         
         self.assertEqual(extends_dict(target, source), result)

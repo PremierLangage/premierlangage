@@ -6,13 +6,12 @@
 #  Copyright 2018 Coumes Quentin
 
 
-
 import os, importlib, logging
 from os.path import basename, splitext, join
 
 from django.core.exceptions import ObjectDoesNotExist
 
-from serverpl.settings import PARSERS_ROOT, PARSERS_MODULE
+from django.conf import settings
 from loader.utils import extends_dict
 from loader.exceptions import (UnknownExtension, UnknownType, DirectoryNotFound, FileNotFound,
                                MissingKey)
@@ -21,11 +20,10 @@ from filebrowser.models import Directory
 
 logger = logging.getLogger(__name__)
 
-
-
 PL_MANDATORY_KEY = ['title', 'form']
 PLTP_MANDATORY_KEY = ['title', '__pl', 'introduction']
 MUST_BE_STRING = ['text', 'introduction', 'form', 'evaluator', 'before', 'author', 'title']
+
 
 
 def get_parsers():
@@ -39,10 +37,11 @@ def get_parsers():
         two parsers parse the same extension."""
     
     parsers = dict()
-    for f in os.listdir(PARSERS_ROOT):
-        if f.endswith(".py") and "__" not in f:
+    for file_name in os.listdir(settings.PARSERS_ROOT):
+        if file_name.endswith(".py") and "__" not in file_name:
             try:
-                module = importlib.import_module(PARSERS_MODULE+"."+splitext(f)[0])
+                module = importlib.import_module(
+                        settings.PARSERS_MODULE + "." + splitext(file_name)[0])
                 parser = module.get_parser()
                 if type(parser) != dict \
                         or set(parser.keys()) != {'ext', 'type', 'parser'} \
@@ -51,27 +50,27 @@ def get_parsers():
                 for ext in parser['ext']:
                     if ext not in parsers:
                         parsers[ext] = {'type': parser['type'], 'parser': parser['parser']}
-                    else :
+                    else:
                         logger.error("Two parsers are trying to parse the same extension ('"
                                      + str(parsers[ext]) + "' and '" + str(parser['parser']) + "')")
             except NameError:
-                logger.error("Function 'get_parser()' not defined in '" + f + "'")
+                logger.error("Function 'get_parser()' not defined in '" + file_name + "'")
             except ValueError:
                 if type(parser) != dict:
-                    logger.error("Function 'get_parser()' of file '" + f
+                    logger.error("Function 'get_parser()' of file '" + file_name
                                  + "' must return a dictionnary (currently return '"
                                  + str(type(parser)) + ").")
                 elif set(parser.keys()) != {'ext', 'type', 'parser'}:
-                    logger.error("Function 'get_parser()' of file '" + f
+                    logger.error("Function 'get_parser()' of file '" + file_name
                                  + "' must return a dictionnary containing 3 keys: 'type', "
                                  + "'ext' and 'parser' (return dictionnary contains "
                                  + str(set(parser.keys())) + ").")
                 else:
-                    logger.error("Function 'get_parser()' of file '" + f + "' must return a"
+                    logger.error("Function 'get_parser()' of file '" + file_name + "' must return a"
                                  + "dictionnary where dictionnary['type'] is either 'pl' or 'pltp'"
                                    " (currently is '" + parser['type'] + "').")
             except Exception:
-                logger.exception("Could not import parser '" + f + "'")
+                logger.exception("Could not import parser '" + file_name + "'")
     return parsers
 
 
@@ -166,7 +165,7 @@ def parse_file(directory, path, extending=False):
             if key in dic and type(dic[key]) != str:
                 raise TypeError("Key : '" + key + "' is '" + str(type(dic[key]))
                                 + "' but must be a string.")
-
+        
         return dic, warnings
     
     raise UnknownExtension(path, join(directory.name, path))

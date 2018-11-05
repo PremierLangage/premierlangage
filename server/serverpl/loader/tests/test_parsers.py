@@ -8,19 +8,20 @@
 
 import os
 
-from mock import patch
-from loader import parser
-
-from django.test import TestCase
 from django.contrib.auth.models import User
+from django.test import TestCase, override_settings
+from mock import patch
+
 from filebrowser.models import Directory
+from loader import parser
 from loader.exceptions import UnknownExtension
 from serverpl.settings import BASE_DIR
 
 
-@patch('loader.parser.PARSERS_ROOT', os.path.join(BASE_DIR, 'loader/tests/fake_parsers/'))
-@patch('loader.parser.PARSERS_MODULE', "loader.tests.fake_parsers")
+
 @patch('loader.parser.logger')
+@override_settings(PARSERS_ROOT=os.path.join(BASE_DIR, 'loader/tests/fake_parsers/'))
+@override_settings(PARSERS_MODULE="loader.tests.fake_parsers")
 class ParsersTestCase(TestCase):
     """ Test functions of loader.parser modules but parse_file() and process_extends(). """
     
