@@ -58,11 +58,11 @@ def apply_option(request, path="home"):
     
     except Exception as e:
         messages.error(
-            request, 
-            ("Impossible to apply the option " 
-                + option + " : " 
+            request,
+            ("Impossible to apply the option "
+                + option + " : "
                 + (htmlprint.code(str(type(e)) + " - " + str(e))
-                   if not settings.DEBUG 
+                   if not settings.DEBUG
                    else htmlprint.html_exc()))
         )
     

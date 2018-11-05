@@ -1,23 +1,24 @@
-import time, logging
+import logging
+import time
 
 import htmlprint
+from django.contrib.auth.models import User
+from django.db import IntegrityError, models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from jsonfield import JSONField
-from django.urls import resolve
-from django.db import models, IntegrityError
-from django.db.models.signals import post_save
-from django.contrib.auth.models import User
-from django.utils import timezone
-from django.dispatch import receiver
-from django.template import Template, RequestContext
+from django.template import RequestContext, Template
 from django.template.loader import get_template
+from django.urls import resolve
+from django.utils import timezone
+from jsonfield import JSONField
 
+from classmanagement.models import Course
+from loader.models import PL, PLTP
 from lti.models import LTIModel
-from loader.models import PLTP, PL
 from playexo.enums import State
 from playexo.request import SandboxBuild, SandboxEval
-from classmanagement.models import Course
 
 
 logger = logging.getLogger(__name__)
@@ -159,6 +160,21 @@ class SessionExerciseAbstract(models.Model):
         return val
     
     
+    def reroll(self, seed, grade=None):
+        """Return whether the seed must be reroll (True) or not (False).
+
+        Seed must be reroll if:
+            - seed does not exists yet
+            - oneshot is set, grade is provided and less than oneshot_threshold
+              (100 if not provided)"""
+        oneshot = bool(self.get_from_context('settings.oneshot'))
+        oneshot_threshold = self.get_from_context('settings.oneshot_threshold')
+        oneshot_threshold = (int(oneshot_threshold)
+                             if oneshot_threshold and oneshot_threshold.isdigit()
+                             else 100)
+        return not seed or (oneshot and grade is not None and grade < oneshot_threshold)
+    
+    
     def evaluate(self, request, answers, test=False):
         """Evaluate the exercise with the given answers according to the current context.
         
@@ -187,8 +203,8 @@ class SessionExerciseAbstract(models.Model):
                 feedback += "<br><hr>Sandbox error:<br>" + htmlprint.code(response['sandboxerr'])
                 feedback += "<br><hr>Received on stderr:<br>" + htmlprint.code(response['stderr'])
         
-        elif response['status'] > 0:  # Evaluator Error
-            feedback = ("Une erreur s'est produite lors de l'exécution du script d'évaluation "
+        elif response['status'] > 0:  # Grader Error
+            feedback = ("Une erreur s'est produite lors de l'exécution du grader "
                         + ("(exit code: %d, env: %s). Merci de prévenir votre professeur"
                            % (response['status'], response['id'])))
             if request.user.profile.can_load():
@@ -198,8 +214,7 @@ class SessionExerciseAbstract(models.Model):
             context = dict(response['context'])
             feedback = response['feedback']
             if request.user.profile.can_load() and response['stderr']:
-                feedback += "<br><hr>Received on stderr:<br>" + htmlprint.code(response['stderr'])
-            answer["seed"] = context['seed'],
+                feedback += "<br><br>Received on stderr:<br>" + htmlprint.code(response['stderr'])
         
         keys = list(response.keys())
         for key in keys:
@@ -296,41 +311,35 @@ class SessionExercise(SessionExerciseAbstract):
         super().save(*args, **kwargs)
     
     
-    def reroll(self, grade=None, seed=None):
-        """Return whether the seed must be reroll (True) or not (False)."""
-        if grade:
-            return grade != 100
-        try:
-            oneshot = self.get_from_context('settings.oneshot')
-        except:
-            oneshot = None
-        return not seed or oneshot
-    
-    
     def get_pl(self, request, context):
         """Return a template of the PL rendered with context."""
         pl = self.pl
         highest_grade = Answer.highest_grade(pl, self.activity_session.user)
         last = Answer.last(pl, self.activity_session.user)
         
-        seed = last.seed if last else None
-        if self.reroll(highest_grade.grade, seed):
+        seed = (last.seed if last
+                else self.context['seed'] if 'seed' in self.context
+        else None)
+        if self.reroll(seed, highest_grade.grade):
             seed = time.time()
             self.built = False
         self.add_to_context('seed', seed)
         
-        predic = {
-            'user_settings__': self.activity_session.user.profile,
-            'user__'         : self.activity_session.user,
-            'pl_id__'        : pl.id,
-            'answers__'      : last.answers if last else {},
-            'grade__'        : highest_grade.grade if highest_grade else None,
-        }
-        
         if not self.built:
             self.build(request)
-        dic = dict(self.context if not context else context)
-        dic.update(predic)
+        
+        dic = {
+            **self.context,
+            **{
+                'user_settings__': self.activity_session.user.profile,
+                'user__'         : self.activity_session.user,
+                'pl_id__'        : pl.id,
+                'answers__'      : last.answers if last else {},
+                'grade__'        : highest_grade.grade if highest_grade else None,
+            },
+        }
+        if context:
+            dic = {**context, **dic}
         
         for key in dic:
             if type(dic[key]) is str:
@@ -437,24 +446,28 @@ class SessionTest(SessionExerciseAbstract):
         
         If answer is given, will determine if the seed must be reroll base on its grade."""
         pl = self.pl
-        seed = None
-        if answer['grade'] < 100 if answer else True:
+        seed = self.context['seed'] if 'seed' in self.context else None
+        if self.reroll(seed, answer['grade'] if answer else None):
             seed = time.time()
             self.built = False
-        self.add_to_context('seed', seed)
-        
-        predic = {
-            'user_settings__': self.user.profile,
-            'session__'      : self,
-            'user__'         : self.user,
-            'pl_id__'        : pl.id,
-        }
+            self.add_to_context('seed', seed)
         
         if not self.built:
             self.build(request, test=True)
-        dic = dict(self.context if not context else context)
-        dic.update(predic)
         
+        dic = {
+            **self.context,
+            **{
+                'user_settings__': self.user.profile,
+                'session__'      : self,
+                'user__'         : self.user,
+                'pl_id__'        : pl.id,
+            },
+        }
+        if context:
+            dic = {**context, **dic}
+        
+
         for key in dic:
             if type(dic[key]) is str:
                 dic[key] = Template(dic[key]).render(RequestContext(request, dic))

@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 #
 #  request.py
-#  
+#
 #  Copyright 2017 Dominique Revuz <dr@univ-mlv.fr>
-# 
+#
 
 
 import logging, json, requests, os

@@ -2,9 +2,9 @@
 
 ## Résumé
 
-* **Inclusion:** `@ /lib/grader/before.py [builder.py]`
+* **Inclusion:** `@ /lib/builder/before.py [builder.py]`
 
-* **Clés utilisées**: `builder/builder.py, before, response, StopBeforeExec`
+* **Clés utilisées**: `builder / builder.py, before, StopBeforeExec`
 ___
 
 
