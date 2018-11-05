@@ -12,6 +12,8 @@ gunicorn
 jinja2
 jsonfield
 markdown
+matplotlib
+mpl3d
 mkdocs
 mock
 oauth2
