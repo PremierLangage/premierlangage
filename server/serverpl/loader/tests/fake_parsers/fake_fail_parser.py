@@ -6,7 +6,3 @@ class Parser:
     
     def parse(self):
         return {}, []
-
-
-
-def get_parser(): return {'ext': ['.pl'], 'parser': Parser, 'type': 'pl'}

@@ -20,6 +20,7 @@ from filebrowser.models import Directory
 
 logger = logging.getLogger(__name__)
 
+FILE_TYPE = ['pl', 'pltp']
 PL_MANDATORY_KEY = ['title', 'form']
 PLTP_MANDATORY_KEY = ['title', '__pl', 'introduction']
 MUST_BE_STRING = ['text', 'introduction', 'form', 'evaluator', 'before', 'author', 'title']
@@ -45,7 +46,7 @@ def get_parsers():
                 parser = module.get_parser()
                 if type(parser) != dict \
                         or set(parser.keys()) != {'ext', 'type', 'parser'} \
-                        or parser['type'] not in ['pl', 'pltp']:
+                        or parser['type'] not in FILE_TYPE:
                     raise ValueError
                 for ext in parser['ext']:
                     if ext not in parsers:
@@ -53,7 +54,7 @@ def get_parsers():
                     else:
                         logger.error("Two parsers are trying to parse the same extension ('"
                                      + str(parsers[ext]) + "' and '" + str(parser['parser']) + "')")
-            except NameError:
+            except AttributeError:
                 logger.error("Function 'get_parser()' not defined in '" + file_name + "'")
             except ValueError:
                 if type(parser) != dict:
@@ -69,7 +70,7 @@ def get_parsers():
                     logger.error("Function 'get_parser()' of file '" + file_name + "' must return a"
                                  + "dictionnary where dictionnary['type'] is either 'pl' or 'pltp'"
                                    " (currently is '" + parser['type'] + "').")
-            except Exception:
+            except Exception:  # pragma: no cover
                 logger.exception("Could not import parser '" + file_name + "'")
     return parsers
 
@@ -82,14 +83,8 @@ def get_type(directory, path):
     ext = splitext(basename(path))[1]
     
     ext = '.pl' if not ext else ext
-    # FIXME the list of autorised extension should not be closed
     if ext in parsers:
-        if parsers[ext]['type'] in ['pl', 'pltp']:
-            return parsers[ext]['type']
-        else:
-            logger.warning("Unknown type : '" + parsers[ext]['type']
-                           + "' of parser '" + str(parsers[ext]['parser']) + "'")
-            raise UnknownType(parsers[ext]['type'], parsers[ext]['parser'])
+        return parsers[ext]['type']
     
     raise UnknownExtension(path, join(directory.name, path))
 
@@ -137,6 +132,7 @@ def parse_file(directory, path, extending=False):
     path = path if path[0] != '/' else path[1:]
     
     parsers = get_parsers()
+    print(parsers)
     ext = splitext(basename(path))[1]
     if not ext:
         ext = '.pl'
