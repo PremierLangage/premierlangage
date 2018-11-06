@@ -8,5 +8,7 @@ urlpatterns = [
     url(r'^$', views.user),
     url(r'^date$', views.datestats),
     url(r'^tags$', views.tags),
+    url(r'^grid$', views.grid),
+
 ]
 
