@@ -48,7 +48,6 @@ class Parser:
         
         with open(self.path_parsed_file) as f:
             self.lines = f.readlines()
-        
         self._multiline_dic = None
         self._multiline_key = None
         self._multiline_opened_lineno = None

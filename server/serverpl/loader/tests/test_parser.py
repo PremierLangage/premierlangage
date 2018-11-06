@@ -1,10 +1,4 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-#
-#  test_parsers.py
-#  
-#  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
-#  
 
 import os
 import shutil
@@ -28,7 +22,7 @@ FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'loader/tests/tmp')
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
 @override_settings(PARSERS_ROOT=os.path.join(BASE_DIR, 'loader/tests/fake_parsers/'))
 @override_settings(PARSERS_MODULE="loader.tests.fake_parsers")
-class ParsersTestCase(TestCase):
+class ParserTestCase(TestCase):
     """ Test functions of loader.parser modules but parse_file() and process_extends(). """
     
     
