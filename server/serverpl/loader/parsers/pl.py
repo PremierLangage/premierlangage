@@ -64,13 +64,11 @@ class Parser:
     def set_value(self, dic, key, value, op):
         if op == '=':
             dic[key] = value
-        
         if op == '==':
             if value == '':
                 dic[key] = value
-        
         if op == '+=':
-            dic[key] += value
+            dic[key] = dic.get(key, '') + value
     
     
     def add_dic(self, dic, list_key, value, line, op):
@@ -140,7 +138,7 @@ class Parser:
     def extends_line_match(self, match, line):
         """ Appends file, line and lineno to self.dic['__extends'] so that it can be later processed
             by loader.parser.
-            
+
             Raise from loader.exceptions
                 - SyntaxErrorPL if no group 'file' was found.
                 - DirectoryNotFound if the directory indicated by the pl couldn't be found"""
@@ -175,7 +173,7 @@ class Parser:
     def from_file_line_match(self, match, line):
         """ Map (or append) the content if the file corresponding to file)
             to the key
-            
+
             Raise from loader.exceptions:
                 - SyntaxErrorPL if no group 'file' or 'key' was found
                 - SemanticError if trying to append a nonexistent key
@@ -222,7 +220,7 @@ class Parser:
     def one_line_match(self, match, line):
         """ Map value to key if operator is '=',
             Map json.loads(value) if operator is '%'
-            
+
             Raise from loader.exceptions:
                 - SyntaxErrorPL if no group 'value', 'key' or 'operator' was found
                               if operator is '%' and value isn't a well formated json"""
@@ -237,12 +235,14 @@ class Parser:
         
         if match.group('operator') == '=':
             self.add_dic(self.dic, keys, value, line, op)
+        elif match.group('operator') == '%':
+            pass  # TODO
     
     
     def multi_line_match(self, match, line):
         """ Set self._multiline_key and self._multiline_opened_lineno.
             Also set self._multiline_json if operator is '=%'
-            
+
             Raise from loader.exceptions:
                 - SyntaxErrorPL if no group 'key' or 'operator' was found"""
         
@@ -260,7 +260,7 @@ class Parser:
             
             self._multiline_key = key
             self._multiline_opened_lineno = self.lineno
-            if op == '=%':
+            if op == '%=':
                 self._multiline_json = True
             
             if op != '+=':  # Allow next lines to be concatenated
@@ -275,7 +275,7 @@ class Parser:
     def while_multi_line(self, line):
         """ Append line to self.dic[self._multiline_key] if line does
             not match END_MULTI_LINE.
-            
+
             Raise from loader.exceptions:
                 - SyntaxErrorPL if self._multiline_json is True, line match END_MULTI_LINE
                   and string consisting of all readed line is not a well formated json."""
@@ -299,7 +299,7 @@ class Parser:
     
     def sandbox_file_line_match(self, match, line):
         """ Map content of file to self.dic['__files'][name].
-            
+
             Raise from loader.exceptions:
                 - SyntaxErrorPL if no group 'file' was found
                 - DirectoryNotFound if trying to load from a nonexistent directory
@@ -335,7 +335,7 @@ class Parser:
     
     def parse_line(self, line):
         """ Parse the given line by calling the appropriate function according to regex match.
-        
+
             Raise loader.exceptions.SyntaxErrorPL if the line wasn't match by any regex."""
         
         if self._multiline_key:
@@ -365,11 +365,11 @@ class Parser:
     
     def parse(self):
         """ Parse the given file.
-        
+
             Return a tuple (dic, warning) where:
                 - dic is a dictionnary containing every key of the parse file.
                 - warning is a list (may be empty) containing every warning
-            
+
             Raise SyntaxErrorPL if a multi line key is still open at the end of the file."""
         
         self.fill_meta()

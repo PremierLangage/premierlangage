@@ -16,7 +16,7 @@ from django.test import TestCase, override_settings
 
 from filebrowser.models import Directory
 from loader import parser
-from loader.exceptions import UnknownExtension, MissingKey
+from loader.exceptions import UnknownExtension, MissingKey, DirectoryNotFound, FileNotFound
 from serverpl.settings import BASE_DIR
 
 
@@ -39,7 +39,7 @@ class ParsersTestCase(TestCase):
         if os.path.isdir(dir_name):
             shutil.rmtree(dir_name)
         cls.dir = Directory.objects.create(name='dir1', owner=cls.user)
-        shutil.copytree(os.path.join(FAKE_FB_ROOT, 'fake_pl'), cls.dir.root)
+        shutil.copytree(os.path.join(FAKE_FB_ROOT, '../fake_pl'), cls.dir.root)
     
     
     def test_get_parsers(self, mock_logger):
@@ -76,5 +76,46 @@ class ParsersTestCase(TestCase):
     
     
     def test_parse_file(self, mock_logger):
+        parser.parse_file(self.dir, "working.pl")
+        parser.parse_file(self.dir, "extend.pl")
+        with self.assertRaises(TypeError):
+            parser.parse_file(self.dir, "test_not_string_key.pl")
         with self.assertRaises(MissingKey):
-            parser.parse_file(self.dir, "test_no_title")
+            parser.parse_file(self.dir, "test_missing_key.pltp")
+        with self.assertRaises(MissingKey):
+            parser.parse_file(self.dir, "test_no_grader.pl")
+        with self.assertRaises(MissingKey):
+            parser.parse_file(self.dir, "test_no_builder.pl")
+        # testing .pl concatenation
+        with self.assertRaises(MissingKey):
+            parser.parse_file(self.dir, "test_missing_key")
+        with self.assertRaises(UnknownExtension):
+            parser.parse_file(self.dir, "pl.unknown")
+    
+    
+    def test_process_extends(self, mock_logger):
+        parser.parse_file(self.dir, "extend.pl")
+        with self.assertRaises(UnknownExtension):
+            parser.parse_file(self.dir, "extend_unknown.pl")
+        
+        dic = {
+            '__rel_path': "unknown.pl",
+            '__extends' : [{
+                'path'          : 'unknown.pl',
+                'line'          : "0",
+                'lineno'        : 0,
+                'directory_name': self.dir.name
+            }]
+        }
+        with self.assertRaises(FileNotFound):
+            parser.process_extends(dic)
+        
+        dir_name = os.path.join(FAKE_FB_ROOT, "dir2")
+        if os.path.isdir(dir_name):
+            shutil.rmtree(dir_name)
+        dir2 = Directory.objects.create(name='dir2', owner=self.user)
+        shutil.copytree(os.path.join(FAKE_FB_ROOT, '../fake_pl'), dir2.root)
+        dir2.delete()
+        
+        with self.assertRaises(DirectoryNotFound):
+            parser.parse_file(dir2, "extend_no_dir.pl")

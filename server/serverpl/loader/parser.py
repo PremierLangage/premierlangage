@@ -13,15 +13,14 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from django.conf import settings
 from loader.utils import extends_dict
-from loader.exceptions import (UnknownExtension, UnknownType, DirectoryNotFound, FileNotFound,
-                               MissingKey)
+from loader.exceptions import UnknownExtension, DirectoryNotFound, FileNotFound, MissingKey
 from filebrowser.models import Directory
 
 
 logger = logging.getLogger(__name__)
 
 FILE_TYPE = ['pl', 'pltp']
-PL_MANDATORY_KEY = ['title', 'form']
+PL_MANDATORY_KEY = ['title', 'text', 'form']
 PLTP_MANDATORY_KEY = ['title', '__pl', 'introduction']
 MUST_BE_STRING = ['text', 'introduction', 'form', 'evaluator', 'before', 'author', 'title']
 
@@ -132,7 +131,7 @@ def parse_file(directory, path, extending=False):
     path = path if path[0] != '/' else path[1:]
     
     parsers = get_parsers()
-    print(parsers)
+    
     ext = splitext(basename(path))[1]
     if not ext:
         ext = '.pl'
