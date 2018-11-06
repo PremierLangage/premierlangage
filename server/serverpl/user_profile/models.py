@@ -60,7 +60,7 @@ class Profile(LTIModel):
     def can_load(self):
         """Returns True if the user is at least an Instructor, False if not."""
         return self.role <= Role.INSTRUCTOR or self.is_admin()
-    
+
      
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):
@@ -71,6 +71,12 @@ class Profile(LTIModel):
             profile.save()
     
     
+    @receiver(post_save, sender=User)
+    def save_user_profile(sender, instance, **kwargs):
+        """Save the profile when its corresponding user is saved."""
+        instance.profile.save()
+
+
     def save(self, *args, **kwargs):
         """Fix the IntegrityError when creating a new user and modifying default profile."""
         if self.pk is None:
@@ -80,7 +86,7 @@ class Profile(LTIModel):
             self.avatar.save(self.user.username, File(generate_identicon(self.user)))
         else:
             super(Profile, self).save(*args, **kwargs)
-    
+
     
     def __str__(self):
         return self.user.username + "'s Profile"
