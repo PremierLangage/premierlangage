@@ -21,7 +21,7 @@ FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'loader/tests/tmp')
 @override_settings(PARSERS_ROOT=os.path.join(BASE_DIR, 'loader/tests/fake_parsers/'))
 @override_settings(PARSERS_MODULE="loader.tests.fake_parsers")
 class LoaderTestCase(TestCase):
-    """ Test functions of loader.parser modules but parse_file() and process_extends(). """
+    """ Test functions of loader.loader """
     
     
     @classmethod

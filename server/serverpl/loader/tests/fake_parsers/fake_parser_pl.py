@@ -48,7 +48,6 @@ class Parser:
         
         with open(self.path_parsed_file) as f:
             self.lines = f.readlines()
-        
         self._multiline_dic = None
         self._multiline_key = None
         self._multiline_opened_lineno = None
@@ -64,13 +63,11 @@ class Parser:
     def set_value(self, dic, key, value, op):
         if op == '=':
             dic[key] = value
-        
         if op == '==':
             if value == '':
                 dic[key] = value
-        
         if op == '+=':
-            dic[key] += value
+            dic[key] = dic.get(key, '') + value
     
     
     def add_dic(self, dic, list_key, value, line, op):
@@ -237,6 +234,8 @@ class Parser:
         
         if match.group('operator') == '=':
             self.add_dic(self.dic, keys, value, line, op)
+        elif match.group('operator') == '%':
+            pass  # TODO
     
     
     def multi_line_match(self, match, line):
@@ -260,7 +259,7 @@ class Parser:
             
             self._multiline_key = key
             self._multiline_opened_lineno = self.lineno
-            if op == '=%':
+            if op == '%=':
                 self._multiline_json = True
             
             if op != '+=':  # Allow next lines to be concatenated
