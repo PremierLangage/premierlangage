@@ -15,20 +15,6 @@ FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'loader/tests/tmp')
 
 
 
-def print_dict(dic, indent=""):
-    for key, val in dic.items():
-        if key == "__files":
-            continue
-        print(indent + key + ": ", end="")
-        if type(val) == dict:
-            print("\n")
-            print_dict(val, indent=indent + "\t")
-        else:
-            print(val, end="")
-        print("\n")
-
-
-
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
 class PlParserTestCase(TestCase):
     """ Test functions of parsers/pl.py """
@@ -59,7 +45,4 @@ class PlParserTestCase(TestCase):
     
     
     def test_parse(self):
-        dic, war = pl.Parser(self.dir, "full.pl").parse()
-        #  print_dict(dic)
-        #  for w in war:
-        #      print(w)
+        pl.Parser(self.dir, "full.pl").parse()

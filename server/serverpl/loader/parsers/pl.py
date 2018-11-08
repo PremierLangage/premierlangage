@@ -61,10 +61,27 @@ class Parser:
         self.warning.append(self.path_parsed_file + ' -- ' + message)
     
     
-    def dic_add_key(self, key, value):
-        if key in self.dic:
-            self.add_warning("Key '" + key + "' overwritten at line " + str(self.lineno))
-        self.dic[key] = value
+    def dic_add_key(self, key, value, append=False, replace=False):
+        """Add the value to the key in the dictionnary, parse the key to create sub dictionnaries.
+         Append the value if append is set to True.
+         Does not generate a warning when the key already exists if replace is set to True """
+        current_dic = self.dic
+        sub_keys = key.split(".")
+        
+        for k in sub_keys:
+            if k == '':
+                raise SyntaxErrorPL
+        for k in sub_keys[:-1]:  # creating sub dictionnaries
+            current_dic[k] = current_dic.get(k, dict())
+            current_dic = current_dic[k]
+        key = sub_keys[-1]
+        
+        if key in current_dic and not append and not replace:
+            self.add_warning("Key '" + '.'.join(sub_keys) + "' overwritten at line " + str(self.lineno))
+        if append:
+            current_dic[key] += value
+        else:
+            current_dic[key] = value
     
     
     def fill_meta(self):
@@ -145,7 +162,7 @@ class Parser:
                     if key not in self.dic:
                         raise SemanticError(self.path_parsed_file, line, self.lineno,
                                             "Trying to append to non-existent key '" + key + "'.")
-                    self.dic[key] += f.read()
+                    self.dic_add_key(key, f.read(), append=True)
                 else:
                     self.dic_add_key(key, f.read())
         except ObjectDoesNotExist:
@@ -224,7 +241,8 @@ class Parser:
                                     message="Illegal character before or after end of multi line")
             if self._multiline_json:
                 try:
-                    self.dic_add_key(self._multiline_key, json.loads(self.dic[self._multiline_key]))
+                    self.dic_add_key(self._multiline_key, json.loads(self.dic[self._multiline_key]),
+                                     replace=True)
                 except Exception:
                     SyntaxErrorPL(join(self.directory.root, self.path),
                                   self.lines[self._multiline_opened_lineno - 1],
@@ -233,7 +251,7 @@ class Parser:
             self._multiline_key = None
             self._multiline_json = False
         else:
-            self.dic[self._multiline_key] += line
+            self.dic_add_key(self._multiline_key, line, append=True)
     
     
     def sandbox_file_line_match(self, match, line):

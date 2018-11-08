@@ -18,12 +18,15 @@ form==
 tests
 ==
 
-a %=
+azeaze %=
 {"a" : 1,
 "b" : 2}
 ==
 
-title = new title
+azeaze %=
+{"a" : 1,
+"b" : 2}
+==
 
 b%{"a" : 1, "b" : 2}
 b%{"a" : 1, "b" : 2}
@@ -36,14 +39,8 @@ settings.allow_reroll=yes
 @ /grader/evaluator.py [grader.py]
 
 e.f.g = 1
-
-
-
-
-
-
-
-
-
-
-
+e.f.h = 2
+e.f.g +=
+2
+==
+e.f.h = 1
