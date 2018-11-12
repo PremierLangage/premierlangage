@@ -67,25 +67,29 @@ class Parser:
          Does not generate a warning when the key already exists if replace is set to True """
         current_dic = self.dic
         sub_keys = key.split(".")
-        
         for k in sub_keys:
             if k == '':
-                raise SyntaxErrorPL
+                raise SyntaxErrorPL(self.path_parsed_file, self.lines[self.lineno - 1], self.lineno)
         for k in sub_keys[:-1]:  # creating sub dictionnaries
             current_dic[k] = current_dic.get(k, dict())
             current_dic = current_dic[k]
-        key = sub_keys[-1]
+        last_key = sub_keys[-1]
         
-        if key in current_dic and not append and not replace:
+        if last_key in current_dic and not append and not replace:
             self.add_warning(
-                    "Key '" + '.'.join(sub_keys) + "' overwritten at line " + str(self.lineno))
+                    "Key '" + key + "' overwritten at line " + str(self.lineno))
         if append:
-            current_dic[key] += value
+            if last_key not in current_dic:
+                line = self._multiline_opened_lineno if self._multiline_key else self.lineno
+                raise SemanticError(self.path_parsed_file, self.lines[line - 1], line,
+                                    "Trying to append to non-existent key '" + key + "'.")
+            current_dic[last_key] += value
         else:
-            current_dic[key] = value
+            current_dic[last_key] = value
     
     
     def dic_get_subkeys_value(self, key):
+        """Get the value of the key in the dictionary. Parse the key to find sub dictionnaries"""
         current_dic = self.dic
         sub_keys = key.split('.')
         for k in sub_keys[:-1]:
@@ -112,9 +116,6 @@ class Parser:
                 - SyntaxErrorPL if no group 'file' was found.
                 - DirectoryNotFound if the directory indicated by the pl couldn't be found"""
         
-        if not match.group('file'):
-            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)
-        
         try:
             path = get_location(self.directory, match.group('file'), current=dirname(self.path))
         except SyntaxError as e:
@@ -123,7 +124,7 @@ class Parser:
         directory_name = self.directory.name
         if not isfile(join(self.directory.root, path)):
             for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if not l.isdigit()]:
-                if isfile(join(settings.FILEBROWSER_ROOT, lib, match.group('file')[1:])):
+                if isfile(join(settings.FILEBROWSER_ROOT, lib, match.group('file'))):
                     directory_name = lib
                     path = match.group('file')[1:]
                     break
@@ -149,15 +150,12 @@ class Parser:
                 - DirectoryNotFound if trying to load from a nonexistent directory
                 - FileNotFound if the given file do not exists."""
         
-        if not match.group('file') or not match.group('key') or not match.group('operator'):
-            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)
-        
         key = match.group('key')
         op = match.group('operator')
         
-        path = get_location(self.directory, match.group('file'), current=dirname(self.path))
-        path = abspath(join(self.directory.root, path))
         try:
+            path = get_location(self.directory, match.group('file'), current=dirname(self.path))
+            path = abspath(join(self.directory.root, path))
             if not isfile(path) and match.group('file').startswith('/'):
                 for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if not l.isdigit()]:
                     path = join(settings.FILEBROWSER_ROOT, lib, match.group('file')[1:])
@@ -168,13 +166,10 @@ class Parser:
             
             with open(path) as f:
                 if '+' in op:
-                    if key not in self.dic:
-                        raise SemanticError(self.path_parsed_file, line, self.lineno,
-                                            "Trying to append to non-existent key '" + key + "'.")
                     self.dic_add_key(key, f.read(), append=True)
                 else:
                     self.dic_add_key(key, f.read())
-        except ObjectDoesNotExist:
+        except ObjectDoesNotExist:  # pragma: no cover
             raise DirectoryNotFound(self.path_parsed_file, line, match.group('file'), self.lineno)
         except FileNotFoundError:
             raise FileNotFound(self.path_parsed_file, line, path, lineno=self.lineno)
@@ -190,9 +185,6 @@ class Parser:
                 - SyntaxErrorPL if no group 'value', 'key' or 'operator' was found
                               if operator is '%' and value isn't a well formated json"""
         
-        if not (match.group('key') and match.group('value') and match.group('operator')):
-            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)
-        
         value = match.group('value')
         key = match.group('key')
         op = match.group('operator')
@@ -202,7 +194,7 @@ class Parser:
         elif op == '%':
             try:
                 self.dic_add_key(key, json.loads(value))
-            except Exception:
+            except json.decoder.JSONDecodeError:
                 raise SyntaxErrorPL(join(self.directory.root, self.path),
                                     line,
                                     self.lineno,
@@ -213,30 +205,18 @@ class Parser:
     
     def multi_line_match(self, match, line):
         """ Set self._multiline_key and self._multiline_opened_lineno.
-            Also set self._multiline_json if operator is '=%'
+            Also set self._multiline_json if operator is '=%'"""
 
-            Raise from loader.exceptions:
-                - SyntaxErrorPL if no group 'key' or 'operator' was found"""
-        
-        if match.group('key'):
-            if not match.group('operator'):
-                raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)
-            
-            key = match.group('key')
-            op = match.group('operator')
-            
-            self._multiline_key = key
-            self._multiline_opened_lineno = self.lineno
-            if op == '%=':
-                self._multiline_json = True
-            
-            if op != '+=':  # Allow next lines to be concatenated
-                self.dic_add_key(key, '')
-        
-        else:
-            raise SyntaxErrorPL(join(self.directory.root, self.path),
-                                self.lines[self._multiline_opened_lineno - 1],
-                                self._multiline_opened_lineno, message="Invalid multiline syntax ")
+        key = match.group('key')
+        op = match.group('operator')
+
+        self._multiline_key = key
+        self._multiline_opened_lineno = self.lineno
+        if op == '%=':
+            self._multiline_json = True
+
+        if op != '+=':  # Allow next lines to be concatenated
+            self.dic_add_key(key, '')
     
     
     def while_multi_line(self, line):
@@ -247,15 +227,12 @@ class Parser:
                 - SyntaxErrorPL if self._multiline_json is True, line match END_MULTI_LINE
                   and string consisting of all readed line is not a well formated json."""
         if self.END_MULTI_LINE.match(line):
-            if len(line) != 3:
-                raise SyntaxErrorPL(join(self.directory.root, self.path), line, str(self.lineno),
-                                    message="Illegal character before or after end of multi line")
             if self._multiline_json:
                 try:
                     self.dic_add_key(self._multiline_key, json.loads(self.dic[self._multiline_key]),
                                      replace=True)
-                except Exception:
-                    SyntaxErrorPL(join(self.directory.root, self.path),
+                except json.decoder.JSONDecodeError:
+                    raise SyntaxErrorPL(join(self.directory.root, self.path),
                                   self.lines[self._multiline_opened_lineno - 1],
                                   self._multiline_opened_lineno,
                                   message="Invalid JSON syntax starting ")
@@ -278,12 +255,9 @@ class Parser:
                 - DirectoryNotFound if trying to load from a nonexistent directory
                 - FileNotFound if the given file do not exists."""
         
-        if not match.group('file'):
-            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)
-        
-        path = get_location(self.directory, match.group('file'), current=dirname(self.path))
-        path = abspath(join(self.directory.root, path))
         try:
+            path = get_location(self.directory, match.group('file'), current=dirname(self.path))
+            path = abspath(join(self.directory.root, path))
             if not isfile(path) and match.group('file').startswith('/'):
                 for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if not l.isdigit()]:
                     path = join(settings.FILEBROWSER_ROOT, lib, match.group('file')[1:])
@@ -297,7 +271,7 @@ class Parser:
             with open(path) as f:
                 self.dic['__files'][name] = f.read()
         
-        except ObjectDoesNotExist:
+        except ObjectDoesNotExist:  # pragma: no cover
             raise DirectoryNotFound(self.path_parsed_file, line, match.group('file'), self.lineno)
         except FileNotFoundError:
             raise FileNotFound(self.path_parsed_file, line, path, lineno=self.lineno)

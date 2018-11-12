@@ -8,6 +8,7 @@ title+test
 
 #comment
 extends=working.pl
+extends=fake.pl
 
 test=@working.pl
 test+=@working.pl
@@ -33,6 +34,8 @@ settings.allow_reroll=yes
 @ /utils/sandboxio.py
 @ /builder/before.py [builder.py]
 @ /grader/evaluator.py [grader.py]
+@ /fake.pl
+fake=@/fake.pl
 
 e.f.g = 1
 e.f.h = 2

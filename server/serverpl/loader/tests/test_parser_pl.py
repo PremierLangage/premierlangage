@@ -9,6 +9,7 @@ from django.test import TestCase, override_settings
 
 from filebrowser.models import Directory
 from loader.parsers import pl
+from loader.exceptions import SyntaxErrorPL, FileNotFound, SemanticError, DirectoryNotFound
 
 
 FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'loader/tests/tmp')
@@ -23,11 +24,21 @@ class PlParserTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(username='user', password='12345')
+        
         dir_name = os.path.join(FAKE_FB_ROOT, "dir1")
         if os.path.isdir(dir_name):
             shutil.rmtree(dir_name)
         cls.dir = Directory.objects.create(name='dir1', owner=cls.user)
         shutil.copytree(os.path.join(FAKE_FB_ROOT, '../fake_pl'), cls.dir.root)
+        
+        dir_name = os.path.join(FAKE_FB_ROOT, "dir2")
+        if os.path.isdir(dir_name):
+            shutil.rmtree(dir_name)
+        cls.dir2 = Directory.objects.create(name='dir2', owner=cls.user)
+        os.makedirs(cls.dir2.root)
+        
+        with open(os.path.join(FAKE_FB_ROOT, 'dir2', 'fake.pl'), "w") as f:
+            f.write("a=a")
     
     
     def test_init_parser(self):
@@ -59,10 +70,37 @@ class PlParserTestCase(TestCase):
         }, dic["__extends"])
         # =@ +=@
         with open(os.path.join(FAKE_FB_ROOT, "dir1/working.pl")) as f:
-            self.assertEqual(len(dic['test']), 2*len(f.read()))
+            self.assertEqual(len(dic['test']), 2 * len(f.read()))
         # sub keys
         self.assertEqual('12', dic['e']['f']['g'])
         # % %=
-        self.assertEqual({'a': 1, 'b' : 2}, dic['e']['f']['i'])
-        self.assertEqual({'a': 1, 'b' : 2}, dic['a'])
-        self.assertEqual({'a': 1, 'b' : 2}, dic['b'])
+        self.assertEqual({'a': 1, 'b': 2}, dic['e']['f']['i'])
+        self.assertEqual({'a': 1, 'b': 2}, dic['a'])
+        self.assertEqual({'a': 1, 'b': 2}, dic['b'])
+    
+    
+    def test_parse_errors(self):
+        with self.assertRaises(SyntaxErrorPL):
+            pl.Parser(self.dir, "no_string_in_sub_key.pl").parse()
+        with self.assertRaises(SyntaxErrorPL):
+            pl.Parser(self.dir, "syntax_extends.pl").parse()
+        with self.assertRaises(SyntaxErrorPL):
+            pl.Parser(self.dir, "syntax_file.pl").parse()
+        with self.assertRaises(SyntaxErrorPL):
+            pl.Parser(self.dir, "syntax_error.pl").parse()
+        with self.assertRaises(FileNotFound):
+            pl.Parser(self.dir, "extends_no_lib.pl").parse()
+        with self.assertRaises(SyntaxErrorPL):
+            pl.Parser(self.dir, "open_multiline.pl").parse()
+        with self.assertRaises(SemanticError):
+            pl.Parser(self.dir, "append_no_key.pl").parse()
+        with self.assertRaises(FileNotFound):
+            pl.Parser(self.dir, "no_file_from.pl").parse()
+        with self.assertRaises(SyntaxErrorPL):
+            pl.Parser(self.dir, "invalid_one_line_json.pl").parse()
+        with self.assertRaises(SyntaxErrorPL):
+            pl.Parser(self.dir, "invalid_multiline_json.pl").parse()
+        with self.assertRaises(FileNotFound):
+            pl.Parser(self.dir, "no_file_sandbox.pl").parse()
+        with self.assertRaises(SyntaxErrorPL):
+            pl.Parser(self.dir, "syntax_sandbox.pl").parse()
