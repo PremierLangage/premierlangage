@@ -28,7 +28,7 @@ class Parser:
     FILE = r'(?P<file>([a-zA-Z0-9_]*:)?((\/)?[^' + BAD_CHAR + r']+)(\/[^' + BAD_CHAR + r']+)*)\s*'
     ALIAS = r'((\[\s*(?P<alias>[a-zA-Z_.][a-zA-Z0-9_.]*)\s*\])\s*?)?'
     
-    ONE_LINE = re.compile(KEY + r'(?P<operator>=|\%)\s*' + VALUE + COMMENT + r'?$')
+    ONE_LINE = re.compile(KEY + r'(?P<operator>=|\%|\+)\s*' + VALUE + COMMENT + r'?$')
     FROM_FILE_LINE = re.compile(KEY + r'(?P<operator>=@|\+=@)\s*' + FILE + COMMENT + r'?$')
     EXTENDS_LINE = re.compile(r'(extends|template)\s*=\s*' + FILE + COMMENT + r'?$')
     MULTI_LINE = re.compile(KEY + r'(?P<operator>==|\+=|\%=)\s*' + COMMENT + r'?$')
@@ -77,11 +77,20 @@ class Parser:
         key = sub_keys[-1]
         
         if key in current_dic and not append and not replace:
-            self.add_warning("Key '" + '.'.join(sub_keys) + "' overwritten at line " + str(self.lineno))
+            self.add_warning(
+                    "Key '" + '.'.join(sub_keys) + "' overwritten at line " + str(self.lineno))
         if append:
             current_dic[key] += value
         else:
             current_dic[key] = value
+    
+    
+    def dic_get_subkeys_value(self, key):
+        current_dic = self.dic
+        sub_keys = key.split('.')
+        for k in sub_keys[:-1]:
+            current_dic = current_dic[k]
+        return current_dic[sub_keys[-1]]
     
     
     def fill_meta(self):
@@ -194,10 +203,12 @@ class Parser:
             try:
                 self.dic_add_key(key, json.loads(value))
             except Exception:
-                SyntaxErrorPL(join(self.directory.root, self.path),
-                              line,
-                              self.lineno,
-                              message="Invalid JSON syntax starting ")
+                raise SyntaxErrorPL(join(self.directory.root, self.path),
+                                    line,
+                                    self.lineno,
+                                    message="Invalid JSON syntax starting ")
+        elif op == '+':
+            self.dic_add_key(key, value, append=True)
     
     
     def multi_line_match(self, match, line):
@@ -223,9 +234,9 @@ class Parser:
                 self.dic_add_key(key, '')
         
         else:
-            SyntaxErrorPL(join(self.directory.root, self.path),
-                          self.lines[self._multiline_opened_lineno - 1],
-                          self._multiline_opened_lineno, message="Invalid multiline syntax ")
+            raise SyntaxErrorPL(join(self.directory.root, self.path),
+                                self.lines[self._multiline_opened_lineno - 1],
+                                self._multiline_opened_lineno, message="Invalid multiline syntax ")
     
     
     def while_multi_line(self, line):
@@ -248,6 +259,11 @@ class Parser:
                                   self.lines[self._multiline_opened_lineno - 1],
                                   self._multiline_opened_lineno,
                                   message="Invalid JSON syntax starting ")
+            # remove last \n in a multiline value
+            else:
+                self.dic_add_key(self._multiline_key,
+                                 self.dic_get_subkeys_value(self._multiline_key)[:-1],
+                                 replace=True)
             self._multiline_key = None
             self._multiline_json = False
         else:

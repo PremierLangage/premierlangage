@@ -1,14 +1,16 @@
 title=test
 
 title+=
-bla
+test
 ==
+
+title+test
+
 #comment
 extends=working.pl
 
 test=@working.pl
 test+=@working.pl
-test=@working.pl
 
 text==
 tests
@@ -18,17 +20,11 @@ form==
 tests
 ==
 
-azeaze %=
+a %=
 {"a" : 1,
 "b" : 2}
 ==
 
-azeaze %=
-{"a" : 1,
-"b" : 2}
-==
-
-b%{"a" : 1, "b" : 2}
 b%{"a" : 1, "b" : 2}
 
 settings.oneshot=yes
@@ -44,3 +40,5 @@ e.f.g +=
 2
 ==
 e.f.h = 1
+e.f.i%{"a": 1, "b" : 2}
+
