@@ -29,10 +29,10 @@ class Directory(models.Model):
     
     
     @receiver(post_save, sender=User)
-    def add_user_read_public(sender, instance, created, **kwargs):
+    def mkdir_on_new_user(sender, instance, created, **kwargs):
         if created:
             if not isdir(join(settings.FILEBROWSER_ROOT, str(instance.id))):
-                os.mkdir(join(settings.FILEBROWSER_ROOT, str(instance.id)))
+                os.makedirs(join(settings.FILEBROWSER_ROOT, str(instance.id)))
             Directory.objects.create(name=str(instance.id), owner=instance)
     
     
