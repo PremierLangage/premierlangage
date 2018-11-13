@@ -137,7 +137,7 @@ class SessionExerciseAbstract(models.Model):
     def add_to_context(self, key, value):
         """Add value corresponding to key in the context."""
 
-        current_dic = self.dic
+        current_dic = self.context
         sub_keys = key.split(".")
         for k in sub_keys:
             if k == '':
@@ -146,8 +146,8 @@ class SessionExerciseAbstract(models.Model):
             current_dic[k] = current_dic.get(k, dict())
             current_dic = current_dic[k]
         last_key = sub_keys[-1]
-        
-        self.context[last_key] = value
+
+        current_dic[last_key] = value
         self.save()
     
     
