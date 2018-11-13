@@ -134,10 +134,20 @@ class SessionExerciseAbstract(models.Model):
     class Meta:
         abstract = True
     
-    # TODO: Allowing to add key with the PL syntax (dict1.dict2.val)
     def add_to_context(self, key, value):
         """Add value corresponding to key in the context."""
-        self.context[key] = value
+
+        current_dic = self.dic
+        sub_keys = key.split(".")
+        for k in sub_keys:
+            if k == '':
+                raise KeyError("Empty sub-key are not allowed")
+        for k in sub_keys[:-1]:  # creating sub dictionnaries
+            current_dic[k] = current_dic.get(k, dict())
+            current_dic = current_dic[k]
+        last_key = sub_keys[-1]
+        
+        self.context[last_key] = value
         self.save()
     
     
