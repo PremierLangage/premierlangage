@@ -1,16 +1,19 @@
-import json, shutil, htmlprint
+import json
+import shutil
 from os.path import basename, join
 
-from django.shortcuts import render
+import htmlprint
+import requests
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseNotAllowed
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponseBadRequest, HttpResponseNotAllowed, HttpResponse, Http404
 
 from filebrowser.filebrowser import Filebrowser
+from filebrowser.filebrowser_option import DIRECTORY_OPTIONS, ENTRY_OPTIONS
 from filebrowser.models import Directory
-from filebrowser.filebrowser_option import ENTRY_OPTIONS, DIRECTORY_OPTIONS
 from filebrowser.utils import redirect_fb
 from loader.loader import load_file
 from playexo.models import SessionTest
@@ -31,12 +34,13 @@ def index(request, path="home"):
     return render(request, 'filebrowser/filebrowser.html', {'fb': fb})
 
 
+
 @login_required
 def apply_option(request, path="home"):
     real = path.split('/')
     if real[0] == "home":
         real[0] = str(request.user.id)
-
+    
     option = request.GET.get('option')
     target = request.GET.get('target')
     if request.method == 'POST':
@@ -60,13 +64,14 @@ def apply_option(request, path="home"):
         messages.error(
             request,
             ("Impossible to apply the option "
-                + option + " : "
-                + (htmlprint.code(str(type(e)) + " - " + str(e))
-                   if not settings.DEBUG
-                   else htmlprint.html_exc()))
+             + option + " : "
+             + (htmlprint.code(str(type(e)) + " - " + str(e))
+                if not settings.DEBUG
+                else htmlprint.html_exc()))
         )
     
     return redirect_fb(path)
+
 
 
 @login_required
@@ -82,19 +87,19 @@ def preview_pl(request):
         directory = post.get('directory')
         if not (path and directory):
             return HttpResponseBadRequest("Missing parameter 'path' or 'directory'")
-
+        
         try:
             path = join(settings.FILEBROWSER_ROOT, path)
-            shutil.copyfile(path, path+".bk")
+            shutil.copyfile(path, path + ".bk")
             with open(path, 'w+') as f:  # Writting editor content into the file
                 print(post['content'], file=f)
-                
+            
             directory = Directory.objects.get(name=post['directory'])
-            rel_path = post['path'].replace(directory.name+"/", "/")
+            rel_path = post['path'].replace(directory.name + "/", "/")
             pl, warnings = load_file(directory, rel_path)
             if not pl:
                 preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
-                        + basename(rel_path) + "': \n" + warnings + "</div>"
+                          + basename(rel_path) + "': \n" + warnings + "</div>"
             else:
                 if warnings:
                     [messages.warning(request, warning) for warning in warnings]
@@ -110,25 +115,25 @@ def preview_pl(request):
                 preview += "\n\nDEBUG set to True:\n" + htmlprint.html_exc()
             preview += "</div>"
         finally:
-            shutil.move(path+".bk", path)
+            shutil.move(path + ".bk", path)
             return HttpResponse(
                 json.dumps({'preview': preview}),
                 content_type='application/json',
                 status=200
             )
     
-    elif post['requested_action'] == 'submit' :  # Answer from the preview
+    elif post['requested_action'] == 'submit':  # Answer from the preview
         if 'session_id' not in post['data'] or not post['data']['session_id']:
             HttpResponseBadRequest(content="Couldn't resolve ajax request")
         
         exercise = SessionTest.objects.get(pk=post['data']['session_id'])
         answer, feedback, context = exercise.evaluate(request, post['data']['answers'], test=True)
-
+        
         return HttpResponse(
             json.dumps({
                 "navigation": None,
-                "exercise": exercise.get_exercise(request, answer=answer, context=context),
-                "feedback": render_feedback(feedback),
+                "exercise"  : exercise.get_exercise(request, answer=answer, context=context),
+                "feedback"  : render_feedback(feedback),
             }),
             content_type='application/json'
         )
@@ -175,6 +180,7 @@ def save_edit_receiver(request):
         )
 
 
+
 @login_required
 def edit_receiver(request):
     """ View used to saved a newly edited file. """
@@ -184,7 +190,7 @@ def edit_receiver(request):
     content = request.POST.get('editor_input', '')
     path = request.POST.get('path', '')
     relative = request.POST.get('relative', '')
-
+    
     try:
         if content:
             content = content.replace('\r\n', '\n')
@@ -192,9 +198,19 @@ def edit_receiver(request):
                 content = content[:-1]
             with open(join(settings.FILEBROWSER_ROOT, path), 'w+') as f:
                 print(content, file=f)
-        messages.success(request, "File '"+basename(path)+"' successfully modified")
+        messages.success(request, "File '" + basename(path) + "' successfully modified")
     except Exception as e:  # pragma: no cover
         msg = ("Impossible to modify '" + basename(path) + "' : "
                + htmlprint.code(str(type(e)) + " - " + str(e)))
         messages.error(request, msg)
     return redirect_fb(relative)
+
+
+
+@login_required
+def download_env(request, envid):
+    r = requests.get(join(settings.SANDBOX, "env", envid, ""))
+    response = HttpResponse(r)
+    response['Content-Type'] = "application/gzip"
+    response['Content-Disposition'] = r.headers['Content-Disposition']
+    return response
