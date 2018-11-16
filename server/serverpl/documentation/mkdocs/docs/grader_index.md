@@ -1,9 +1,9 @@
 # Index des Graders
 
-Ici se trouve la liste de l'ensemble des graders de la librairie PL. Pour chacun, un example
+Ici se trouve la liste des graders prédéfinis de la librairie PL. Pour chacun, un exemple
 est présent ainsi qu'une liste de mots-clés afin de plus facilement le retrouver.
 
-Pour apprendre à créer un builder, voir [Évaluation](../evaluation/)
+Pour apprendre à créer un grader, voir [Évaluation](../evaluation/)
 ___
 
 
@@ -54,7 +54,7 @@ ___
 Example:
 ```
 @ /utils/sandboxio.py
-@ /grader/evaluator.py [grader.py]
+@ /grader/evalfunc.py [grader.py]
 
 form==
 <input id="form_answer" type="number" value="{{ answers__.answer }}" required/>
