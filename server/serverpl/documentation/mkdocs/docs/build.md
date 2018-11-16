@@ -26,6 +26,9 @@ dictionnaire, qui est le contexte modifié.
     * Permet de déclarer des clés de type : 
       `int, float, string, list, dict and NoneType`. Tout autre type encodera
       `type.__dict__`.
+    * Permet d'écrire des tests pour le build en utilisant les bibliothèques
+      usuelles de test unitaire de Python (en mettant aussi la fonction `build`
+      dans un fichier inclu).
 * Inconvénients :
     * Nécessite l'écriture d'une fonction et d'accèder à un dictionnaire
       pour chaque modification de variable, ce qui peut devenir vite redondant.
