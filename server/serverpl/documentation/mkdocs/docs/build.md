@@ -15,7 +15,7 @@ Ce builder permet de déclarer un script Python 3 dans la clé `build`.
 Ce script doit déclarer une fonction qui peut modifier, créer ou
 supprimer des clés du contexte de l'exercice.
 
-Le fonction build à pour prototype `def build(dic)` où dict est un dictionnaire
+Le fonction `build` a pour prototype `def build(dic)` où dic est un dictionnaire
 contenant l'ensemble des variables de l'exercice. La fonction doit retourner un
 dictionnaire, qui est le contexte modifié.
 
