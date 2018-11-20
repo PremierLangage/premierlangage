@@ -54,15 +54,16 @@ student % {"name": "Jake", "age": 20}
 ___
 
 
-* L'opérateur `=%` : Permet d'assigner un dictionnaire à une clé. Le contenu de la
+* L'opérateur `%=` : Permet d'assigner un dictionnaire à une clé. Le contenu de la
                     clé peut être écris sur plusieurs lignes et doit être au format
                     **json**, par exemple:
 ```
-student =%
+student %=
 {
     "name": "Jake",
     "age": 20
 }
+==
 ```
 ___
 
