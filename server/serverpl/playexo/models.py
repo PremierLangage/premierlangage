@@ -158,16 +158,14 @@ class SessionExerciseAbstract(models.Model):
 
         Does implement syntax of PL for nested dict. I.E.: 'dict1.dict2.[...].dictn.val' will return
         'context['dict1']['dict2']...['dictn']['val']"""
+        current_dic = self.context
+        sub_keys = key.split('.')
         try:
-            if '.' in key:
-                val = self.context
-                for k in key.split('.'):
-                    val = val[k]
-            else:
-                val = self.context[key]
+            for k in sub_keys[:-1]:
+                current_dic = current_dic[k]
+            return current_dic[sub_keys[-1]]
         except KeyError:
             return False
-        return val
     
     
     def reroll(self, seed, grade=None):
@@ -292,11 +290,11 @@ class SessionExercise(SessionExerciseAbstract):
         built   - Whether the session is built (True), or need to be built (False).
         envid   - Must contains the ID of the environment on the sandbox if the session is built.
         context - Dictionnary of the PL (or PLTP).
-        activity_session - SessionActivity to which this SessionExercise belong."""
-    activity_session = models.ForeignKey(SessionActivity, on_delete=models.CASCADE)
+        session_activity - SessionActivity to which this SessionExercise belong."""
+    session_activity = models.ForeignKey(SessionActivity, on_delete=models.CASCADE)
     
     class Meta:
-        unique_together = ('pl', 'activity_session')
+        unique_together = ('pl', 'session_activity')
     
     @receiver(post_save, sender=SessionActivity)
     def create_session_exercise(sender, instance, created, **kwargs):
@@ -304,8 +302,8 @@ class SessionExercise(SessionExerciseAbstract):
         and every PL."""
         if created:
             for pl in instance.activity.pltp.pl.all():
-                SessionExercise.objects.create(activity_session=instance, pl=pl)
-            SessionExercise.objects.create(activity_session=instance)  # For the pltp
+                SessionExercise.objects.create(session_activity=instance, pl=pl)
+            SessionExercise.objects.create(session_activity=instance)  # For the pltp
     
     
     def save(self, *args, **kwargs):
@@ -315,17 +313,17 @@ class SessionExercise(SessionExerciseAbstract):
             if self.pl:
                 self.context = dict(self.pl.json)
             else:
-                self.context = dict(self.activity_session.activity.pltp.json)
+                self.context = dict(self.session_activity.activity.pltp.json)
         if 'activity_id__' not in self.context:
-            self.context['activity_id__'] = self.activity_session.activity.id
+            self.context['activity_id__'] = self.session_activity.activity.id
         super().save(*args, **kwargs)
     
     
     def get_pl(self, request, context):
         """Return a template of the PL rendered with context."""
         pl = self.pl
-        highest_grade = Answer.highest_grade(pl, self.activity_session.user)
-        last = Answer.last(pl, self.activity_session.user)
+        highest_grade = Answer.highest_grade(pl, self.session_activity.user)
+        last = Answer.last(pl, self.session_activity.user)
         
         seed = (last.seed if last
                 else self.context['seed'] if 'seed' in self.context
@@ -341,8 +339,8 @@ class SessionExercise(SessionExerciseAbstract):
         dic = {
             **self.context,
             **{
-                'user_settings__': self.activity_session.user.profile,
-                'user__'         : self.activity_session.user,
+                'user_settings__': self.session_activity.user.profile,
+                'user__'         : self.session_activity.user,
                 'pl_id__'        : pl.id,
                 'answers__'      : last.answers if last else {},
                 'grade__'        : highest_grade.grade if highest_grade else None,
@@ -368,9 +366,9 @@ class SessionExercise(SessionExerciseAbstract):
                 return self.get_pl(request, context)
             else:
                 dic = dict(self.context if not context else context)
-                dic['user_settings__'] = self.activity_session.user.profile
-                dic['user__'] = self.activity_session.user
-                dic['first_pl__'] = self.activity_session.activity.pltp.pl.all()[0].id
+                dic['user_settings__'] = self.session_activity.user.profile
+                dic['user__'] = self.session_activity.user
+                dic['first_pl__'] = self.session_activity.activity.pltp.pl.all()[0].id
                 for key in dic:
                     if type(dic[key]) is str:
                         dic[key] = Template(dic[key]).render(RequestContext(request, dic))
@@ -387,12 +385,12 @@ class SessionExercise(SessionExerciseAbstract):
         pl_list = [{
             'id'   : None,
             'state': None,
-            'title': self.activity_session.activity.pltp.json['title'],
+            'title': self.session_activity.activity.pltp.json['title'],
         }]
-        for pl in self.activity_session.activity.pltp.pl.all():
+        for pl in self.session_activity.activity.pltp.pl.all():
             pl_list.append({
                 'id'   : pl.id,
-                'state': Answer.pl_state(pl, self.activity_session.user),
+                'state': Answer.pl_state(pl, self.session_activity.user),
                 'title': pl.json['title'],
             })
         context = dict(self.context if not context else context)
