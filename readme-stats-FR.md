@@ -1,3 +1,5 @@
+# Pour la BDD anonymisé
+deziper le fichier utils/db.sqlite3.zip et le mettre dans server/serverpl/
 
 # Ceci est la branche stats
 
