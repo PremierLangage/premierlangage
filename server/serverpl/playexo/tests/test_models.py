@@ -9,6 +9,12 @@ from playexo.models import Activity, SessionActivity, SessionExercise
 
 
 
+class R:
+    
+    def __init__(self, path="/"): self.path = path
+
+
+
 class ModelTestCase(TestCase):
     
     @classmethod
@@ -17,10 +23,6 @@ class ModelTestCase(TestCase):
     
     
     def test_create_activity(self):
-        class R:
-            
-            def __init__(self, path="/"): self.path = path
-        
         course = Course.objects.create(name="test", label="bidon", consumer="bidon",
                                        consumer_id="bidon")
         params = {
@@ -31,8 +33,7 @@ class ModelTestCase(TestCase):
         }
         with self.assertRaises(Http404):
             Activity.get_or_create_from_lti(R(), params)
-            
-            
+        
         pltp = PLTP.objects.create(sha1="", name="pltp test")
         Activity.objects.create(name="test", pltp=pltp, id=1)
         activity = Activity.get_or_create_from_lti(R("/playexo/activity/1/"), params)
@@ -77,6 +78,7 @@ class ModelTestCase(TestCase):
         with self.assertRaises(KeyError):
             sessionexercise.add_to_context("a.", False)
     
+    
     def test_sessionexercise_reroll(self):
         activity = Activity.objects.create(name="test", pltp=PLTP(sha1="", name="pltp test"))
         sessionactivity = SessionActivity.objects.create(user=self.user, activity=activity)
@@ -88,5 +90,11 @@ class ModelTestCase(TestCase):
         sessionexercise.add_to_context("settings.oneshot", True)
         self.assertEqual(sessionexercise.reroll(1., 70), True)
         self.assertEqual(sessionexercise.reroll(1., 90), False)
+    
+    
+    def test_sessionexercise_build(self):
+        activity = Activity.objects.create(name="test", pltp=PLTP(sha1="", name="pltp test"))
+        sessionactivity = SessionActivity.objects.create(user=self.user, activity=activity)
+        sessionexercise = SessionExercise.objects.create(session_activity=sessionactivity)
         
-        #TODO tests
+        #sessionexercise.build(R())
