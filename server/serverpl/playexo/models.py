@@ -13,6 +13,7 @@ from django.template.loader import get_template
 from django.urls import resolve
 from django.utils import timezone
 from jsonfield import JSONField
+from playexo.exception import SandboxError, BeforeScriptError
 
 from classmanagement.models import Course
 from loader.models import PL, PLTP
@@ -256,7 +257,7 @@ class SessionExerciseAbstract(models.Model):
                    + " Merci de prévenir votre professeur.") % (response['status'], response['id'])
             if request.user.profile.can_load():
                 msg += "<br><br>" + htmlprint.code(response['sandboxerr'])
-            raise Exception(msg)
+            raise SandboxError(msg)
         
         if response['status'] > 0:
             msg = ("Une erreur s'est produite lors de l'exécution du script before/build "
@@ -264,7 +265,7 @@ class SessionExerciseAbstract(models.Model):
                       % (response['status'], response['id'])))
             if request.user.profile.can_load() and response['stderr']:
                 msg += "<br><br>Reçu sur stderr:<br>" + htmlprint.code(response['stderr'])
-            raise Exception(msg)
+            raise BeforeScriptError(msg)
         
         context = dict(response['context'])
         keys = list(response.keys())
