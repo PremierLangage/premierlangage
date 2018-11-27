@@ -1,11 +1,13 @@
-<div class='editor__tab-bar editor__tab-bar--main border-bottom'>
+<div class='editor__tab-bar border-bottom'>
     <div ng-repeat='document in $ctrl.documents() track by document.path' 
          class='editor__tab-bar-item' 
          ng-class="$ctrl.isSelection(document) ? 'active' : ''">
         <md-tooltip>{{document.path}}</md-tooltip>
-        <i class="{{document.icon}}"></i>
-        &emsp;<span ng-click='$ctrl.select(document)'>{{document.name}}</span>&emsp;
-        <span ng-click='$ctrl.remove(document)'>X</span>
+        <i class="{{document.icon}}"></i> 
+        &emsp;<span ng-click='$ctrl.selectTab(document)'>{{document.name}}</span>&emsp;
+        <span ng-click='$ctrl.removeTab(document)'>&times;</span>
     </div>
 </div>
-<div id='monaco-editor'></div>
+<div class='editor__tab-content' id='monaco-editor'>
+    <h4 class='center-x-y'>PL Editor</h4>
+</div>

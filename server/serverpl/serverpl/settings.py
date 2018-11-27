@@ -28,6 +28,7 @@ if DEBUG:
 
 # Application definition
 INSTALLED_APPS = [
+    'client',
     'filebrowser',
     'playexo',
     'user_profile',

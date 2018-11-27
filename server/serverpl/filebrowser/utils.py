@@ -1,8 +1,9 @@
 from django.shortcuts import redirect
+from django.conf import settings
 
 
 import magic, os, gitcmd
-from os.path import isdir, dirname, isfile, basename, splitext
+from os.path import abspath, join, isdir, dirname, isfile, basename, splitext
 
 WORD_EXT       = ['.doc', '.docm', '.docx', '.dot', '.dotm', '.dotx', '.odt', '.wps']
 EXCEL_EXT      = ['.xlsx', '.xlsm', '.xlsb', '.xltx', '.xltm', '.xls', '.xlt', '.xlam', '.xla', '.xlw', '.xlr', '.csv', '.ods', '.xlc']
@@ -95,3 +96,6 @@ def hidden(path):
 def redirect_fb(path=''):
     response = redirect('/filebrowser/' + path)
     return response
+
+def to_abs_path(path):
+    return abspath(join(settings.FILEBROWSER_ROOT, path))

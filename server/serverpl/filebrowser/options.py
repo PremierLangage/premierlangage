@@ -728,3 +728,5 @@ def extract_option(request, filebrowser, target):
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
     
     return redirect_fb(filebrowser.relative)
+
+"""

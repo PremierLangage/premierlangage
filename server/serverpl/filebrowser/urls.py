@@ -7,13 +7,14 @@
 
 from django.urls import path
 from filebrowser import views
-from filebrowser import api
 app_name = 'filebrowser'
 
 urlpatterns = [
     path(r'', views.index, name='index'),
     path(r'preview_pl/', views.preview_pl, name='preview_pl'),
-    path(r'api/directories', api.directories, name='directories'),
-    path(r'api/document/', api.save_document, name='save_document'),
-    path(r'api/document/<path:path>', api.get_document, name='get_document'),
+    path(r'api/directories', views.directories, name='directories'),
+    path(r'api/document/', views.save_document, name='save_document'),
+    path(r'api/load_pltp/<path:path>', views.load_pltp, name='load_pltp'),
+    path(r'api/test_pl/<path:path>', views.test_pl, name='test_pl'),
+    path(r'api/document/<path:path>', views.get_document, name='get_document'),
 ]

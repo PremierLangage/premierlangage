@@ -1,32 +1,28 @@
-
-.editor__main {
+.editor__tab-content {
     display: flex;
-    flex: 1;
-    flex-direction: column;
-    background-color: white;
-}
-
-#monaco-editor {
     height: calc(100% - 60px);
 }
 
+#monaco-editor {
+    height: calc(100%);
+}
 
 .editor__tab-bar-item {
     display: inline-flex;
     height: 100%;
     align-items: center;
     cursor: pointer;
-    min-width: 110px;
     position: relative;
     font-size: 14px;
     color: #5a5a5a;
-    opacity: 1;
     font-style: normal;
     padding: 0px 5px;
+    background-color: #CCCCCC11;
 }
 
 .editor__tab-bar-item.active {
     border-bottom: 1px solid #5a5a5a;
+    background-color: #CCCCCC66;
 }
 
 .editor__tab-bar-item .icon {
@@ -40,4 +36,3 @@
 .editor__tab-bar-item .btn-close:hover {
     opacity: 1;
 }
-
