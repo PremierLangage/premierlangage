@@ -137,7 +137,7 @@ class SessionExerciseAbstract(models.Model):
     
     def add_to_context(self, key, value):
         """Add value corresponding to key in the context."""
-
+        
         current_dic = self.context
         sub_keys = key.split(".")
         for k in sub_keys:
@@ -147,7 +147,7 @@ class SessionExerciseAbstract(models.Model):
             current_dic[k] = current_dic.get(k, dict())
             current_dic = current_dic[k]
         last_key = sub_keys[-1]
-
+        
         current_dic[last_key] = value
         self.save()
     
@@ -329,7 +329,7 @@ class SessionExercise(SessionExerciseAbstract):
         seed = (last.seed if last
                 else self.context['seed'] if 'seed' in self.context
         else None)
-        if self.reroll(seed, highest_grade.grade):
+        if highest_grade is not None and self.reroll(seed, highest_grade.grade):
             seed = time.time()
             self.built = False
         self.add_to_context('seed', seed)
@@ -476,7 +476,6 @@ class SessionTest(SessionExerciseAbstract):
         if context:
             dic = {**context, **dic}
         
-
         for key in dic:
             if type(dic[key]) is str:
                 dic[key] = Template(dic[key]).render(RequestContext(request, dic))

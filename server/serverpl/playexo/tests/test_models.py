@@ -5,7 +5,9 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.http import Http404
-from django.test import TestCase, override_settings
+from django.test import TestCase, override_settings, Client
+from django.test.client import RequestFactory
+
 
 from classmanagement.models import Course
 from filebrowser.models import Directory
@@ -40,9 +42,12 @@ class ModelTestCase(TestCase):
             shutil.rmtree(dir_name)
         cls.dir = Directory.objects.create(name='dir1', owner=cls.user)
         shutil.copytree(os.path.join(FAKE_FB_ROOT, '../fake_pl'), cls.dir.root)
-        cls.pl = load_file(cls.dir, "working.pl")[0]
+        cls.pl = load_file(cls.dir, "random_add.pl")[0]
         cls.pl.json['seed'] = 2
         cls.pl.save()
+        cls.pltp = load_file(cls.dir, "random_all.pltp")[0]
+        cls.pltp.save()
+        cls.factory = RequestFactory()
     
     
     def test_create_activity(self):
@@ -57,8 +62,7 @@ class ModelTestCase(TestCase):
         with self.assertRaises(Http404):
             Activity.get_or_create_from_lti(R(), params)
         
-        pltp = PLTP.objects.create(sha1="", name="pltp test")
-        Activity.objects.create(name="test", pltp=pltp, id=1)
+        Activity.objects.create(name="test", pltp=self.pltp, id=1)
         activity = Activity.get_or_create_from_lti(R("/playexo/activity/1/"), params)
         self.assertEqual(activity, (Activity.objects.get(pk=activity[0].pk), True))
         
@@ -71,7 +75,7 @@ class ModelTestCase(TestCase):
     
     
     def test_reload_activity(self):
-        activity1 = Activity.objects.create(name="test", pltp=PLTP(sha1="", name="pltp test"))
+        activity1 = Activity.objects.create(name="test", pltp=self.pltp)
         activity2 = Activity.objects.create(name="test", parent=activity1,
                                             pltp=PLTP(sha1="", name="pltp test"))
         sessionactivity1 = SessionActivity.objects.create(user=self.user, activity=activity1)
@@ -84,7 +88,7 @@ class ModelTestCase(TestCase):
     
     
     def test_sessionactivity_exercise(self):
-        activity = Activity.objects.create(name="test", pltp=PLTP(sha1="", name="pltp test"))
+        activity = Activity.objects.create(name="test", pltp=self.pltp)
         sessionactivity = SessionActivity.objects.create(user=self.user, activity=activity)
         self.assertIs(None, sessionactivity.exercise().pl)
         with self.assertRaises(IntegrityError):
@@ -92,7 +96,7 @@ class ModelTestCase(TestCase):
     
     
     def test_sessionexercise_add_get_context(self):
-        activity = Activity.objects.create(name="test", pltp=PLTP(sha1="", name="pltp test"))
+        activity = Activity.objects.create(name="test", pltp=self.pltp)
         sessionactivity = SessionActivity.objects.create(user=self.user, activity=activity)
         sessionexercise = SessionExercise.objects.create(session_activity=sessionactivity)
         sessionexercise.add_to_context("a.b.c", 4)
@@ -103,7 +107,7 @@ class ModelTestCase(TestCase):
     
     
     def test_sessionexercise_reroll(self):
-        activity = Activity.objects.create(name="test", pltp=PLTP(sha1="", name="pltp test"))
+        activity = Activity.objects.create(name="test", pltp=self.pltp)
         sessionactivity = SessionActivity.objects.create(user=self.user, activity=activity)
         sessionexercise = SessionExercise.objects.create(session_activity=sessionactivity)
         self.assertEqual(sessionexercise.reroll(None), True)
@@ -116,7 +120,7 @@ class ModelTestCase(TestCase):
     
     
     def test_sessionexercise_build(self):
-        activity = Activity.objects.create(name="test", pltp=PLTP(sha1="", name="pltp test"))
+        activity = Activity.objects.create(name="test", pltp=self.pltp)
         s_activity = SessionActivity.objects.create(user=self.user, activity=activity)
         
         s_exercise = SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
@@ -138,7 +142,7 @@ class ModelTestCase(TestCase):
     
     
     def test_sessionexercise_eval(self):
-        activity = Activity.objects.create(name="test", pltp=PLTP(sha1="", name="pltp test"))
+        activity = Activity.objects.create(name="test", pltp=self.pltp)
         s_activity = SessionActivity.objects.create(user=self.user, activity=activity)
         
         s_exercise = SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
@@ -155,7 +159,7 @@ class ModelTestCase(TestCase):
         e = s_exercise.evaluate(R(user=self.user),
                                 {'answer': s_exercise.context['op1'] + s_exercise.context['op2']})
         self.assertTrue("Sandbox error:" in e[1])
-
+        
         broken_pl = load_file(self.dir, "broken_grader.pl")[0]
         broken_pl.save()
         s_exercise = SessionExercise.objects.create(session_activity=s_activity, pl=broken_pl)
@@ -163,3 +167,9 @@ class ModelTestCase(TestCase):
         e = s_exercise.evaluate(R(user=self.user),
                                 {'answer': s_exercise.context['op1'] + s_exercise.context['op2']})
         self.assertTrue("Une erreur s'est produite lors de l'exécution du grader ", e[1])
+    
+    
+    def test_sessionexercice_get_pl(self):
+        activity = Activity.objects.create(name="test", pltp=self.pltp)
+        s_activity = SessionActivity.objects.create(user=self.user, activity=activity)
+        s_exercice = SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
