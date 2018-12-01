@@ -1,53 +1,22 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FormsModule } from '@angular/forms';
-
 import { NgModule } from '@angular/core';
-import { MonacoEditorModule, NgxMonacoEditorConfig } from 'ngx-monaco-editor';
-import { AngularSplitModule } from 'angular-split';
-
-import { 
-         MatSidenavModule, 
-         MatToolbarModule,
-         MatButtonModule,
-         MatIconModule,
-         MatListModule,
-      } from "@angular/material"
-
+import { SharedModule } from './shared/shared.module'
 import { AppComponent } from './app.component';
-import { PlEditorComponent } from './pleditor/pleditor.component';
+import { EditorComponent } from './editor/editor.component';
 import { AppRoutingModule } from './app.routing.module';
-import { ExplorerComponent } from './pleditor/explorer/explorer.component';
-
-
-const monacoConfig: NgxMonacoEditorConfig = {
-  baseUrl: './static/client/assets/',
-  defaultOptions: { scrollBeyondLastLine: false },
-  onMonacoLoad: () => { 
-    const monaco = (<any>window).monaco;
-    console.log(monaco);
-  }
-};
+import { AskComponent } from './ask/ask.component';
+import { DocumentationComponent } from './documentation/documentation.component';
+import { CoursesModule } from './courses/courses.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PlEditorComponent,
-    ExplorerComponent,
+    EditorComponent,
+    AskComponent,
+    DocumentationComponent,
   ],
   imports: [
-    BrowserModule,
-    FormsModule,
-
-    BrowserAnimationsModule,
-    MatSidenavModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
-    MatListModule,
-
-    MonacoEditorModule.forRoot(monacoConfig),
-    AngularSplitModule,
+    SharedModule,
+    CoursesModule,
     AppRoutingModule,
   ],
   providers: [],

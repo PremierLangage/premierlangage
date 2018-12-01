@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static '/css/editor.css' %}" />
+{% endblock %}
+
+{% block alert %}{% endblock %}
+
+{% block content %}
+    <div class="row no-margin">
+            <div class="col-md-1"></div>
+            <div id="preview" class="col-md-9">{{ preview|safe }}</div>
+            <div class="col-md-1"></div>
+    </div>
+{% endblock %}

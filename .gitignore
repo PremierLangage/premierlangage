@@ -119,3 +119,5 @@ home/*
 tmp
 .idea/
 serverpl/config.py
+
+client/

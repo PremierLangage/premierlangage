@@ -23,6 +23,7 @@
     "@angular/router": "^7.0.4",
     "angular-split": "^1.0.4",
     "core-js": "^2.5.4",
+    "hammerjs": "^2.0.8",
     "ngx-monaco-editor": "^6.0.0",
     "webpack-bundle-tracker": "^0.4.2-beta",
     "zone.js": "^0.8.26"

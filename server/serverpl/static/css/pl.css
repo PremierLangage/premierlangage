@@ -1,0 +1,38 @@
+.mdl-layout__header {
+    background-color: #343A40;
+}
+
+.mdl-layout-title {
+    margin-right: 16px;
+}
+
+.mdl-layout__header-row .mdl-navigation__link {
+    padding: 0px 8px;
+}
+
+.page-content {
+    position: relative;
+    padding: 2rem 8rem;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+    color: initial;
+}
+
+/* fix bootstrap rendering on chrome and safari */
+button, html [type="button"], [type="reset"], [type="submit"] {
+    -webkit-appearance: none;
+}
+
+@media (max-width: 768px) {
+   
+    .page-content {
+        padding: 2rem 1rem;
+    }
+
+}

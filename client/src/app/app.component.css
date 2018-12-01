@@ -12,29 +12,29 @@
 }
 
 .toolbar {
-    background-color: #343A40;
-    color: #FFF;
+    background-color: #FFF;
+    color: rgba(0,0,0,.92);
     height: 96px;
 }
 
 .toolbar__title {
     margin: 0px 2rem;
     font-size: 24px;
+    color: #EA5C33;
 }
 
 .toolbar__item {
     display: flex;
     align-items: center;
-    padding-right: 0.5rem;
-    padding-left: 0.5rem;
+    padding: .5rem .5rem;
     text-decoration: none;
     font-size: initial;
     line-height: 20px;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(0,0,0,.7);
 }
 
 .toolbar__item:hover {
-    color: rgba(255, 255, 255, 1);
+    color: #EA5C33;
 }
 .toolbar__spacer {
     flex: 1 1 auto;

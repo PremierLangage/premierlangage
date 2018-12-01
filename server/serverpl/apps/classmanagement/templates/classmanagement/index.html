@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'classmanagement/css/courses.css' %}" />
+{% endblock %}
+
+{% block content %}
+    <h4>Cours</h4><hr/>
+    {% for item in course %}
+    
+        <a class='course-item' href='courses/course/{{item.id}}'>
+            <div class='course-figure'>
+                <figure style='background-image: url("{% static "classmanagement/images/course.png" %}");'></figure>
+            </div>
+            <div class='course-content'>
+                
+                <span class='course-name'>{{item.name}}</span>
+                <p class='course-label'>
+                    {% if not item.label %}
+                    Aucune description disponible pour ce cours.
+                    {% else %}
+                    {{item.label}}
+                    {% endif %}
+                </p>
+            </div>
+        </a>
+    {% endfor %}
+{% endblock %}
