@@ -50,8 +50,12 @@ la seed du context de l'exercice:
 import random
 random.seed(seed)
 ```
-___
-
+Si Sympy est utilisé, il faut instancier Random :
+```python
+import random
+rd = random.Random()
+rd.seed(seed)
+```
 
 
 ## Débugage
