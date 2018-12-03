@@ -24,6 +24,15 @@ a:hover {
     color: initial;
 }
 
+.container-messages {
+    z-index: 100; 
+    position: absolute; 
+    top: 16px; 
+    right: 16px; 
+    width: 320px; 
+    height: 400px; 
+    overflow: auto;
+}
 /* fix bootstrap rendering on chrome and safari */
 button, html [type="button"], [type="reset"], [type="submit"] {
     -webkit-appearance: none;

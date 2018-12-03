@@ -1,6 +1,7 @@
 {% load django_markdown %}
 
 {% include "playexo/alert.html" %}
+
 <div class="card">
     <div class="card-header">
         <div class="text-center"><h1>{% if 'title'%}{{ title }}{% endif %}</h1></div>
@@ -19,11 +20,12 @@
                 {{ feedbackh__|safe }}
             {% endwith %}
         </div>
+        
         {% csrf_token %}
         <div id="form">
             {% block form %}{{ form|safe }}{% endblock %}
         </div>
-        <br>
+        
         <center>
             <button id="submit_button" class="btn btn-primary">
                 <i class="fas fa-check"></i> Valider
@@ -43,17 +45,28 @@
                 answers: inputs,
                 id: "{{id__}}",
                 session_id: "{{session__.id}}",
-                other: [],
+                other: []
             }
-            var status = {requested_action: 'submit', data: data};
+            var status = { 
+                name: 'preview_pl', 
+                requested_action: 'submit', 
+                //csrfmiddlewaretoken: '{{ csrf_token }}',
+                data: data
+            };
+            $.ajaxSetup({
+                headers: { "X-CSRFToken": '{{csrf_token}}' }
+            });
             $.ajax({
                 type : "POST",
-                url : "/filebrowser/preview_pl/",
+                url : "/filebrowser/option",
                 data: JSON.stringify(status, null, '\t'),
                 contentType: 'application/json;charset=UTF-8',
                 success: function(returned_status) {
                     status = returned_status;
                     onReturn(status.exercise, status.navigation, status.feedback);
+                },
+                error: error => {
+                    alert(JSON.stringify(error));
                 }
             });
         });
@@ -100,6 +113,7 @@
             }
             if (feedback) {
                 $( "#feedback" ).hide()
+                console.log(feedback)
                 setTimeout(function () {
                     $( "#feedback" ).html(feedback);
                     $( "#feedback" ).show();

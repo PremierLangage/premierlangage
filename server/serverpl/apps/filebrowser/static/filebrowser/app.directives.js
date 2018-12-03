@@ -1,4 +1,4 @@
-angular.module('plEditor')
+angular.module('app')
 .directive('draggable', function() {
   return function(scope, element) {
     // this gives us the native JS object
@@ -26,7 +26,8 @@ angular.module('plEditor')
       false
     );
   }
-}).directive('droppable', function() {
+})
+.directive('droppable', function() {
   return {
     scope: {
       drop: '&'
@@ -90,4 +91,14 @@ angular.module('plEditor')
       );
     }
   }
+})
+.directive('autoFocus', function($timeout) {
+  return {
+      link: function (scope, element, attrs) {
+          attrs.$observe("autoFocus", function(newValue){
+              if (newValue === "true")
+                  $timeout(function(){element.focus()});
+          });
+      }
+  };
 });

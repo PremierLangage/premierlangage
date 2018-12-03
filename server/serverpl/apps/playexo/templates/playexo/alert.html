@@ -11,9 +11,9 @@
     dans la vue correspondante.
 {% endcomment %}
 
-<div class="container">
+<div class='container-messages'>
     {% for message in messages %}
-        <div id="message" class="alert alert-{{ message.tags }} alert-dismissable" style="margin-top: -20px">
+        <div class="message" class="alert alert-{{ message.tags }} alert-dismissable" style="margin-bottom: 16px">
             {% if message.tags == "danger" %}
                 <i class="fas fa-fire"></i>
             {% elif message.tags == "success" %}

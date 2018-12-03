@@ -1,5 +1,5 @@
 <div class='editor__tab-bar border-bottom'>
-    <div ng-repeat='document in $ctrl.documents() track by document.path' 
+    <div ng-repeat='document in $ctrl.openedDocuments() track by document.path' 
          class='editor__tab-bar-item' 
          ng-class="$ctrl.isSelection(document) ? 'active' : ''">
         <md-tooltip>{{document.path}}</md-tooltip>
@@ -8,6 +8,13 @@
         <span ng-click='$ctrl.removeTab(document)'>&times;</span>
     </div>
 </div>
-<div class='editor__tab-content' id='monaco-editor'>
-    <h4 class='center-x-y'>PL Editor</h4>
+
+<div class='editor__content'>
+    <div id='monaco-editor' ng-style='$ctrl.editorWidth()'>
+        <!--<h4 class='center-x-y'>Aucun document sélectionné</h4>-->
+    </div>
+
+    <div id='editor-preview' ng-if='$ctrl.preview' ng-bind-html='$ctrl.preview | unsafe'>
+    </div>
 </div>
+

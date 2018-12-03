@@ -1,0 +1,83 @@
+<div class="workspace">
+    <!-- EXPLORER -->
+    <div class="explorer">
+        <div>
+            <div class='explorer__header border-bottom'><span>EXPLORER</span></div>
+            <div class="explorer-tree">
+                <explorer documents='$ctrl.documents()'></explorer>
+            </div>
+        </div>
+        <md-progress-circular ng-if='$ctrl.loading' class='center' md-mode="indeterminate" md-diameter="50"></md-progress-circular>
+    </div>
+    <!-- END EXPLORER -->
+      
+    <!-- MAIN -->
+    <div class="editor border">
+        <monaco></monaco>
+    </div>
+    <!-- END MAIN -->
+</div>
+
+<!-- FOOTER-->
+<div class='footer'>
+    <ng-container ng-if="$ctrl.hasRepo()">
+        &emsp; <i class="{{$ctrl.repo().host}} fa-1x"></i>&emsp; 
+            <a href="{{$ctrl.repo().url}} ">{{$ctrl.repo().url}} </a>&nbsp;
+            -&nbsp;<i>{{$ctrl.repo().branch}} 
+        </i>
+    </ng-container>
+</div>
+<!-- END FOOTER -->
+<script type="text/ng-template" id="git-clone.template.html">
+<md-dialog aria-label='Git Clone Dialog'>
+  <md-dialog-content style="padding: 1rem 3rem;display: flex;width: 400px;">
+    <h2>Git Clone</h2>
+    <md-input-container>
+        <label>Url</label>
+        <input required name="url" aria-label="url" ng-model="url">
+    </md-input-container>
+
+    <md-input-container>
+        <label>Destination (optional)</label>
+        <input name="destination" aria-label="destination" ng-model="destination">
+    </md-input-container>
+    
+    <md-input-container>
+        <label>Username (optional)</label>
+        <input name="username" aria-label="username" ng-model="username">
+    </md-input-container>
+
+    <md-input-container>
+        <label>Password (optional)</label>
+        <input type='password' aria-label="password" name="password" ng-model="password">
+    </md-input-container>
+
+  </md-dialog-content>
+  <md-dialog-actions> 
+    <md-button ng-disabled='!url' ng-click="ok()" class="md-primary">CLONE</md-button>
+    <md-button ng-click="hide()" class="md-primary">CANCEL</md-button>
+  </md-dialog-actions>
+</md-dialog>
+</script>
+
+<script type="text/ng-template" id="git-command.template.html">
+<md-dialog aria-label='Git Clone Dialog'>
+  <md-dialog-content style="padding: 1rem 3rem;display: flex;width: 400px;">
+    <h2>Git Command</h2>
+    <md-input-container>
+        <label>Username (optional)</label>
+        <input name="username" aria-label="username" ng-model="username">
+    </md-input-container>
+
+    <md-input-container>
+        <label>Password (optional)</label>
+        <input type='password' aria-label="password" name="password" ng-model="password">
+    </md-input-container>
+
+  </md-dialog-content>
+  <md-dialog-actions>
+    <md-button ng-click="ok()" class="md-primary">OK</md-button>
+    <md-button ng-click="hide()" class="md-primary">CANCEL</md-button>
+  </md-dialog-actions>
+</md-dialog>
+</script>

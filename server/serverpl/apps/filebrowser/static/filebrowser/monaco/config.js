@@ -1,14 +1,15 @@
 // https://microsoft.github.io/monaco-editor/playground.html#interacting-with-the-editor-adding-an-action-to-an-editor-instance
-
-function loadMonacoEditor(completion) {
+export function config(editorService, completion) {
+    
     require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.14.3/min/vs' }});
+   
     window.MonacoEnvironment = {
         getWorkerUrl: function(workerId, label) {
             return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
                 self.MonacoEnvironment = {
                 baseUrl: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.14.3/min/'
                 };
-                    importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.14.3/min/vs/base/worker/workerMain.js');`
+                importScripts('https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.14.3/min/vs/base/worker/workerMain.js');`
             )}`;
         }
     };
@@ -36,6 +37,7 @@ function loadMonacoEditor(completion) {
             pl: 'premierlangage',
             pltp: 'premierlangage'
         };
+        
         const LANGUAGE_ID = 'premierlangage';   
         const BUILT_IN_WORDS = {
             title: "Titre de l'exercice/feuille d'exercice",
@@ -77,7 +79,7 @@ function loadMonacoEditor(completion) {
             ]
         });
     
-        let editor = monaco.editor.create($('#monaco-editor').get(0), {
+        const editor = monaco.editor.create($('#monaco-editor').get(0), {
             value: '',
             theme: 'premierlangage',
             language: '',
@@ -85,6 +87,7 @@ function loadMonacoEditor(completion) {
             renderControlCharacters: true,
             renderLineHighlight: true,
             renderIndentGuides: true,
+            automaticLayout: true,
         });
         
         editor.findLanguage = function(document) {
@@ -109,11 +112,12 @@ function loadMonacoEditor(completion) {
                     id: "Preview",
                     command: {
                         id: editor.addCommand(0, function() {
-                            alert('TODO NOT IMPLEMENTED');
+                            editorService.previewPL(model.uri);
                         }, ''),
                         title: "Preview"
                     }
                 }];
+
                 const lines = model.getValue().split('\n');
                 let match;
                 for (let i = 0; i < lines.length; i++) {
@@ -125,11 +129,11 @@ function loadMonacoEditor(completion) {
                             id: match.input,
                             command: { 
                                 id: editor.addCommand(0, function() {
-                                    const document = EditorService.findDocument(path);
+                                    const document = editorService.findDocument(path);
                                     if (document) {
-                                        EditorService.openFile(document);
+                                        editorService.openFile(document);
                                     } else {
-                                        alert(path);
+                                        alert('Impossible to open ' + path);
                                     }
                                 }, ''),
                                 title: 'Open'
@@ -209,61 +213,16 @@ function loadMonacoEditor(completion) {
             },
         });
           
-        // COMMANDS
+          // COMMANDS
         editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function() {
-            EditorService.saveDocument();
+            editorService.saveDocument();
         });
-    
+
         editor.onDidChangeModelContent(function (e) {
-            EditorService.updateDocument(editor.getValue());
+            editorService.updateDocument(editor.getValue());
         });
-       
+
         editor.focus();
         completion(editor);
     });
 }
-
-angular.module('plEditor')
-.component('editor', {
-    templateUrl: '/static/filebrowser/editor/editor.component.html',
-    controller: function(EditorService) {
-        const self = this;
-
-        this.selectTab = EditorService.selectDocument;
-        this.removeTab = EditorService.removeDocument;
-        this.isSelection = EditorService.isEditorSelection;
-        this.resize = function() {
-            self.editor.layout();
-        }
-        this.documents = function() { 
-            return EditorService.documents; 
-        }
-
-        loadMonacoEditor((e) => { 
-            self.editor = e;
-            self.editor.setModel(null);
-        });
-        
-        EditorService.onDocumentSelected = function(document) {
-            if (!document.language) {
-                self.editor.findLanguage(document);
-            }
-
-            EditorService.saveState(self.editor.saveViewState());
-            if (document.model) {
-                self.editor.setModel(document.model);
-                self.editor.restoreViewState(document.state);
-            } else {
-                document.model = monaco.editor.createModel(document.content, document.language);
-                self.editor.setModel(document.model);
-            }
-            self.editor.focus();
-        };
-
-        EditorService.onDocumentRemoved = function(document) {
-            document.model.dispose();
-            document.model = null;
-            self.editor.setModel(null);
-        };     
-    }
-});

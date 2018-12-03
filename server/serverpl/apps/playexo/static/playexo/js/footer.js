@@ -1,6 +1,6 @@
 function autoHeight() {
     var messages_height = 0;
-    $('#message').each(function(){
+    $('.message').each(function(){
         messages_height -= $( this ).height();
     });
     $('#content').css('min-height', 0);

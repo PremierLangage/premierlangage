@@ -1,9 +1,9 @@
 <ul class='tree'>
-    <li ng-repeat='item in $ctrl.items track by item.path'>  
+    <li ng-repeat='item in $ctrl.documents track by item.path'>  
         <div class='tree__item editing' ng-if='item.editing'>
             <span>
                 <i class="{{item.icon}}"></i>&nbsp;  
-                <input type='text' ng-model='item.name' ng-keydown='$ctrl.endEditing(item, $event)'/>
+                <input type='text' auto-focus='true' ng-model='item.name' ng-keydown='$ctrl.endEditing(item, $event)'/>
             </span>    
         </div>
         <md-menu md-offset="150 0" ng-if='!item.editing'>
@@ -38,6 +38,6 @@
                 <ng-container>
             </md-menu-content>  
         </md-menu>
-        <explorer ng-if='item.expanded' items="item.children"></explorer>
+        <explorer ng-if='item.expanded' documents="item.children"></explorer>
     </li>
 </ul>
