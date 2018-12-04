@@ -5,16 +5,16 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.http import Http404
-from django.test import TestCase, override_settings, Client
+from django.test import TestCase, override_settings
 from django.test.client import RequestFactory
-
 
 from classmanagement.models import Course
 from filebrowser.models import Directory
 from loader.loader import load_file
 from loader.models import PL, PLTP
-from playexo.models import Activity, SessionActivity, SessionExercise
-from playexo.exception import SandboxError, BuildScriptError
+from playexo.enums import State
+from playexo.exception import BuildScriptError, SandboxError
+from playexo.models import Activity, Answer, SessionActivity, SessionExercise
 from user_profile.enums import Role
 
 
@@ -45,10 +45,15 @@ class ModelTestCase(TestCase):
         cls.pl = load_file(cls.dir, "random_add.pl")[0]
         cls.pl.json['seed'] = 2
         cls.pl.save()
+        cls.pl2 = load_file(cls.dir, "random_add_eval_func.pl")[0]
+        cls.pl2.json['seed'] = 2
+        cls.pl2.save()
         cls.pltp = load_file(cls.dir, "random_all.pltp")[0]
         cls.pltp.save()
         cls.factory = RequestFactory()
     
+    
+    # Test Activity
     
     def test_create_activity(self):
         course = Course.objects.create(name="test", label="bidon", consumer="bidon",
@@ -87,6 +92,8 @@ class ModelTestCase(TestCase):
             SessionActivity.objects.get(pk=sessionactivity2.pk)
     
     
+    # Test SessionActivity
+    
     def test_sessionactivity_exercise(self):
         activity = Activity.objects.create(name="test", pltp=self.pltp)
         sessionactivity = SessionActivity.objects.create(user=self.user, activity=activity)
@@ -105,6 +112,8 @@ class ModelTestCase(TestCase):
         with self.assertRaises(KeyError):
             sessionexercise.add_to_context("a.", False)
     
+    
+    # Test SessionExercise
     
     def test_sessionexercise_reroll(self):
         activity = Activity.objects.create(name="test", pltp=self.pltp)
@@ -173,3 +182,59 @@ class ModelTestCase(TestCase):
         activity = Activity.objects.create(name="test", pltp=self.pltp)
         s_activity = SessionActivity.objects.create(user=self.user, activity=activity)
         s_exercice = SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
+        # TODO
+        s_exercice.get_pl(self.factory.get(""), {"test": "test"})
+    
+    
+    # Test Answer
+    
+    def test_highest_grade(self):
+        self.assertIs(Answer.highest_grade(self.pl, self.user), None)
+        Answer.objects.create(pl=self.pl, user=self.user, grade=10)
+        Answer.objects.create(pl=self.pl, user=self.user, grade=20)
+        self.assertEqual(Answer.highest_grade(self.pl, self.user).grade, 20)
+    
+    
+    def test_last(self):
+        self.assertIs(Answer.last(self.pl, self.user), None)
+        Answer.objects.create(pl=self.pl, user=self.user, grade=20)
+        Answer.objects.create(pl=self.pl, user=self.user, grade=10)
+        self.assertEqual(Answer.last(self.pl, self.user).grade, 10)
+    
+    
+    def test_pl_state(self):
+        self.assertIs(Answer.pl_state(self.pl, self.user), State.NOT_STARTED)
+        Answer.objects.create(pl=self.pl, user=self.user, grade=10)
+        self.assertEqual(Answer.pl_state(self.pl, self.user), State.PART_SUCC)
+    
+    
+    def test_pl_state(self):
+        self.assertEqual(Answer.pltp_state(self.pltp, self.user),
+                         [(self.pltp.pl.all()[0].id, State.NOT_STARTED),
+                          (self.pltp.pl.all()[1].id, State.NOT_STARTED)])
+        Answer.objects.create(pl=self.pltp.pl.all()[0], user=self.user, grade=10)
+        self.assertEqual(Answer.pltp_state(self.pltp, self.user),
+                         [(self.pltp.pl.all()[0].id, State.PART_SUCC),
+                          (self.pltp.pl.all()[1].id, State.NOT_STARTED)])
+    
+    
+    def test_pltp_summary(self):
+        self.assertEqual(Answer.pltp_summary(self.pltp, self.user)[State.NOT_STARTED],
+                         ['100.0', '2'])
+        Answer.objects.create(pl=self.pltp.pl.all()[0], user=self.user, grade=10)
+        self.assertEqual(Answer.pltp_summary(self.pltp, self.user)[State.PART_SUCC], ['50.0', '1'])
+    
+    
+    def test_course_state(self):
+        course = Course.objects.create(name="test", label="test")
+        course.student.add(self.user)
+        Activity.objects.create(name="test", pltp=self.pltp, course=course)
+        self.assertEqual(Answer.course_state(course)[0]['user_id'], self.user.id)
+    
+    
+    def test_user_course_summary(self):
+        course = Course.objects.create(name="test", label="test")
+        course.student.add(self.user)
+        Activity.objects.create(name="test", pltp=self.pltp, course=course)
+        self.assertEqual(Answer.user_course_summary(course, self.user)[State.NOT_STARTED],
+                         ['100.0', '2'])

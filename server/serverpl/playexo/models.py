@@ -50,7 +50,6 @@ class Activity(LTIModel):
         activity_id = lti_launch.get('resource_link_id')
         activity_name = lti_launch.get('resource_link_title')
         if not all([course_id, activity_id, activity_name, consumer]):
-            # TODO : Use BadRequest Exception
             raise Http404("Could not create Activity: on of these parameters are missing:"
                           + "[context_id, resource_link_id, resource_link_title, "
                             "oauth_consumer_key]")
@@ -571,17 +570,17 @@ class Answer(models.Model):
             Return every pltp state of every user of this course as a list of dicts:
             {
                 'user_id': id,
-                'pltp_sha1' sha1,
+                'pltp_sha1': sha1,
                 'pl': list(pl_id, state)
             }
             where 'state' follow pl_state() rules.
         """
         
         lst = list()
-        for user in course.user:
+        for user in (list(course.student.all()) + list(course.teacher.all())):
             dct = dict()
             dct['user_id'] = user.id
-            for activity in course:
+            for activity in course.activity_set.all():
                 dct['pltp_sha1'] = activity.pltp.sha1
                 dct['pl'] = Answer.pltp_state(activity.pltp, user)
             lst.append(dct)
