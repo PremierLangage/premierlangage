@@ -6,5 +6,5 @@ class SandboxUnavailable(Exception):
 class SandboxError(Exception):
     pass
 
-class BeforeScriptError(Exception):
+class BuildScriptError(Exception):
     pass

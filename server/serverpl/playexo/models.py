@@ -13,7 +13,7 @@ from django.template.loader import get_template
 from django.urls import resolve
 from django.utils import timezone
 from jsonfield import JSONField
-from playexo.exception import SandboxError, BeforeScriptError
+from playexo.exception import SandboxError, BuildScriptError
 
 from classmanagement.models import Course
 from loader.models import PL, PLTP
@@ -265,7 +265,7 @@ class SessionExerciseAbstract(models.Model):
                       % (response['status'], response['id'])))
             if request.user.profile.can_load() and response['stderr']:
                 msg += "<br><br>Reçu sur stderr:<br>" + htmlprint.code(response['stderr'])
-            raise BeforeScriptError(msg)
+            raise BuildScriptError(msg)
         
         context = dict(response['context'])
         keys = list(response.keys())

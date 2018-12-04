@@ -14,7 +14,7 @@ from filebrowser.models import Directory
 from loader.loader import load_file
 from loader.models import PL, PLTP
 from playexo.models import Activity, SessionActivity, SessionExercise
-from playexo.exception import SandboxError, BeforeScriptError
+from playexo.exception import SandboxError, BuildScriptError
 from user_profile.enums import Role
 
 
@@ -131,7 +131,7 @@ class ModelTestCase(TestCase):
         broken_pl = load_file(self.dir, "notworking.pl")[0]
         broken_pl.save()
         s_exercise = SessionExercise.objects.create(session_activity=s_activity, pl=broken_pl)
-        with self.assertRaises(BeforeScriptError):
+        with self.assertRaises(BuildScriptError):
             s_exercise.build(R(user=self.user))
         
         broken_pl = load_file(self.dir, "no_context.pl")[0]
