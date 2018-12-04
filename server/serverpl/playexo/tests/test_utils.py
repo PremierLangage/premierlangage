@@ -7,7 +7,7 @@ from playexo.utils import render_feedback, tar_from_dic
 
 
 
-class ModelTestCase(TestCase):
+class UtilsTestCase(TestCase):
     
     def test_tar_from_dic(self):
         file_dic = {
