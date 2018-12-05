@@ -38,6 +38,8 @@ Every module installed with pip while running a python environment will be insta
 
 ## Local/Dev
 - Move to `premierlangage/server/serverpl/` and run `install_local.sh`
+- Optionnel : Pour installer la base de données test anonymisées (pour faire des stats ou autre) deziper le fichier utils/db.sqlite3.zip et 
+  le mettre dans server/serverpl/
 - Create a super user for the server by entering informations when prompted
 - Run the server: `python3 manage.py runserver`
 
