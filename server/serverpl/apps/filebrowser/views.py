@@ -17,8 +17,8 @@ from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 import htmlprint
 from filebrowser.models import Directory
 from filebrowser.utils import *
-from loader.loader import load_file
-from playexo.models import SessionTest
+from loader.loader import load_file, reload_pltp
+from playexo.models import SessionTest, Activity
 from playexo.utils import render_feedback
 
 
@@ -175,7 +175,7 @@ def option_create_document(request):
         msg = "Impossible to create '{0}' : {1}".format(name, htmlprint.code(str(type(e)) + ' - ' + str(e)))
         messages.error(request, msg)
         if settings.DEBUG:
-            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
+            msg += ("DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
 
 def option_delete_document(request):
@@ -199,7 +199,7 @@ def option_delete_document(request):
     except Exception as e:  # pragma: no cover
         msg = "Impossible to delete '"+post['path']+"' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.DEBUG:
-            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
+            msg += ("DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
 
 def option_rename_document(request):
@@ -230,11 +230,9 @@ def option_rename_document(request):
         return JsonResponse({'icon': icon(new_path), 'path': new_path, 'status': 200})
     except Exception as e:  # pragma: no cover
         msg = "Impossible to rename '{0}' to '{1}': {2}".format(name, target, htmlprint.code(str(type(e)) + ' - ' + str(e)))
-        messages.error(request, msg)
         if settings.DEBUG:
-            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
+            msg += ("DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
-
 
 def option_move_document(request):
     """ Move POST['path'] to POST['destination']."""
@@ -351,6 +349,37 @@ def option_status(request):
     else:  # pragma: no cover
         return HttpResponseNotFound(htmlprint.code(out + err))
 
+def option_add(request):
+    """ Execute a git add on the targeted entry."""
+    if request.method != 'GET':
+        return HttpResponseNotAllowed(['GET'])
+    path = request.GET.get('path')
+    if not path:
+        return HttpResponseBadRequest("parameter 'path' is missing")    
+    ret, out, err = gitcmd.add(to_abs_path(path))
+    if not ret:
+       return HttpResponse("Entry successfully added to the index.")
+    else:  # pragma: no cover
+        return HttpResponseNotFound("Nothing to add." if not err else htmlprint.code(err + out))
+    
+def option_commit(request):
+    """ Execute an add and commit of the targeted entry with the informations of POST. """
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+    
+    post = json.loads(request.body.decode())
+    path = post.get('path')
+    if not path:
+        return HttpResponseBadRequest("parameter 'path' is missing")    
+    commit = post.get('commit') 
+    if not commit:
+        return HttpResponseBadRequest("Missing 'commit' parameter")
+    
+    ret, out, err = gitcmd.commit(to_abs_path(path), commit)
+    if not ret:
+        return HttpResponse(htmlprint.code(out + err))
+    else:  # pragma: no cover
+        return HttpResponseNotFound(htmlprint.code(err + out))
 
 @login_required
 @csrf_exempt
@@ -436,26 +465,62 @@ def option_load_pltp(request):
         if not pltp and not warnings:  # pragma: no cover
             return HttpResponseBadRequest("This PLTP is already loaded")
         elif not pltp:  # pragma: no cover
-            messages.error("Failed to load '"+path+"': \n"+warnings)
             return HttpResponseBadRequest("Failed to load '"+path+"': \n"+warnings)
         else:
+            msg = ''
             if warnings:  # pragma: no cover
                 for warning in warnings:
-                    messages.warning(request, warning)
+                    msg += str(warning)
             activity = Activity.objects.create(name=pltp.name, pltp=pltp)
             url_lti = request.build_absolute_uri(reverse("playexo:activity", args=[activity.pk]))
   
-            HttpResponse("L'activité <b>'"+pltp.name+"'</b> a bien été créée et a pour URL LTI: \
+            msg += "L'activité <b>'"+pltp.name+"'</b> a bien été créée et a pour URL LTI: \
                                       <br>&emsp;&emsp;&emsp; <input id=\"copy\" style=\"width: 700px;\" value=\""+url_lti+"\" readonly>  \
                                       <button class=\"btn\" data-clipboard-action=\"copy\" data-clipboard-target=\"#copy\"><i class=\"far fa-copy\"></i> Copier\
-                                      </button>")
+                                      </button>"
+                        
+            return HttpResponse(msg)
     except Exception as e:  # pragma: no cover
         msg = "Impossible to load '"+path+"' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
-        messages.error(msg)
         if settings.DEBUG:
-            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
+            msg += ("DEBUG set to True: " + htmlprint.html_exc())
+        return HttpResponseBadRequest(msg)
 
-    return HttpResponseBadRequest()
+def option_reload_pltp(request):
+    """Reload a given activity with the targeted PLTP."""
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    post = json.loads(request.body.decode())
+    path = post.get('path')
+    if not path:
+        return HttpResponseBadRequest("parameter 'path' is missing") 
+    activity_id = post.get('activity_id')
+    if not activity_id:
+        return HttpResponseBadRequest("Missing 'activity_id' parameter")
+    try:
+        activity = Activity.objects.get(id=activity_id)
+        path_components = path.split('/')
+        directory = Directory.objects.get(name=path_components[0])
+        file_path = join(*(path_components[1:]))
+        pltp, warnings = reload_pltp(directory, file_path, activity.pltp)
+
+        if not pltp and not warnings:  # pragma: no cover
+            return HttpResponse("This PLTP is already loaded")
+        elif not pltp:  # pragma: no cover
+            return HttpResponseNotFound("Failed to load '"+basename(path)+"': \n"+warnings)
+        else:
+            activity.reload()
+            msg = ''
+            if warnings:  # pragma: no cover
+                for warning in warnings:
+                    msg += str(warning)
+            return HttpResponse(msg + "L'activité <b>'"+pltp.name+"'</b> a bien été rechargé.")
+    except Exception as e:  # pragma: no cover
+        msg = "Impossible to load '"+basename(path)+"' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
+        if settings.DEBUG:
+            msg += ("DEBUG set to True: " + htmlprint.html_exc())
+        return HttpResponseNotFound(msg)
 
 @login_required
 def option_test_pl(request):
@@ -483,7 +548,7 @@ def option_test_pl(request):
             'preview': preview,
         })
     except Exception as e:  # pragma: no cover
-        msg = ("Impossible to test '" + target + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e)))
+        msg = ("Impossible to test '" + basename(path) + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e)))
         return HttpResponseBadRequest(msg.replace(settings.FILEBROWSER_ROOT, ""))
 
 @login_required
@@ -509,8 +574,11 @@ OPTIONS = {
     'git_pull':             option_pull,
     'git_push':             option_push,
     'git_status':           option_status,
+    'git_add':              option_add,
+    'git_commit':           option_commit,
     'test_pl':              option_test_pl,
     'load_pltp':            option_load_pltp,
+    'reload_pltp':          option_reload_pltp,
     'preview_pl':           option_preview_pl,
 }
 

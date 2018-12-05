@@ -71,12 +71,12 @@
             </div>
         </div>
         <div id='output__content'>  
-            <md-list>
-                <md-list-item ng-repeat="item in editor.logs() track by $index">
+            <ul>
+                <li ng-repeat="item in editor.logs() track by $index">
                     <div ng-bind-html='item | unsafe'> </div>
                     <md-divider></md-divider>
-                </md-list-item>
-            </md-list>
+                </li>
+            </ul>
         </div>
     </div>
 </div>
@@ -127,7 +127,7 @@
 <script type="text/ng-template" id="git-command.template.html">
 <md-dialog aria-label='Git Command Dialog'>
   <md-dialog-content style="padding: 1rem 3rem;display: flex;width: 400px;">
-    <h2>Git Command</h2>
+    <h2>Git Credentials</h2>
     <md-input-container>
         <label>Username (optional)</label>
         <input name="username" aria-label="username" ng-model="username">
@@ -141,6 +141,41 @@
   </md-dialog-content>
   <md-dialog-actions>
     <md-button ng-click="ok()" class="md-primary">OK</md-button>
+    <md-button ng-click="cancel()" class="md-primary">CANCEL</md-button>
+  </md-dialog-actions>
+</md-dialog>
+</script>
+
+
+
+<script type="text/ng-template" id="git-commit.template.html">
+<md-dialog aria-label='Git Commit Dialog'>
+  <md-dialog-content style="padding: 1rem 3rem;display: flex;width: 400px;">
+    <h2>Git Commit</h2>
+    <md-input-container>
+        <label>Commit</label>
+        <input required name="commit" aria-label="commit" ng-model="commit">
+    </md-input-container>
+  </md-dialog-content>
+  <md-dialog-actions>
+    <md-button ng-disabled='!commit' ng-click="ok()" class="md-primary">OK</md-button>
+    <md-button ng-click="cancel()" class="md-primary">CANCEL</md-button>
+  </md-dialog-actions>
+</md-dialog>
+</script>
+
+<script type="text/ng-template" id="pltp-reload.template.html">
+<md-dialog aria-label='Reload PLTP'>
+  <md-dialog-content style="padding: 1rem 3rem;display: flex;width: 400px;">
+    <h2>Git Commit</h2>
+    <md-input-container>
+        <label>Activity ID</label>
+        <input required type='number' name="activity_id" aria-label="activity_id" ng-model="activity_id">
+    </md-input-container>
+   <span class="helptext"><br>ID of the activity which should be reloaded with this PLTP. It should be the ID inside the URL used on your LTI consumer (Moodle, Blackboard, ...), and not the URL in your address bar after clicking on said URL.<br><br><strong>Caution: The order in which PL are included should stay the same, as well as the total number of PL. May not work if the PLTP used to reload activity is too different than the original one.</strong></span>
+  </md-dialog-content>
+  <md-dialog-actions>
+    <md-button ng-disabled='!activity_id' ng-click="ok()" class="md-primary">OK</md-button>
     <md-button ng-click="cancel()" class="md-primary">CANCEL</md-button>
   </md-dialog-actions>
 </md-dialog>

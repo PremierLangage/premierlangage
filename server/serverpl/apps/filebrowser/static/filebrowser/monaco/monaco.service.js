@@ -8,6 +8,7 @@ angular.module('editor')
     this.selection;
     this.documents = [];
     this.onSelectionChanged;
+    this.runningTask = false;
 
     monacoConfig.config((e) => { 
         e.onDidSaveCommand = function() {
@@ -44,13 +45,17 @@ angular.module('editor')
     }
     
     this.loadPLTP = function(document) {
+        instance.runningTask = true;
         $http({
             method: 'GET',
             url: 'option',
             params: { name: 'load_pltp', path: document.path }
         }).then(response => {
-            alert('success :');
+            EditorService.log(response.data);
+            instance.runningTask = false;
         }).catch(error => {
+            EditorService.log(error.data);
+            instance.runningTask = false;
         });
     }
 
@@ -92,6 +97,7 @@ angular.module('editor')
                 reject();
                 return;
             }
+            instance.runningTask = true;
             instance.emitOnSelectionChanged();
             $http({
                 url: "option",
@@ -104,11 +110,13 @@ angular.module('editor')
                 },
                 contentType: 'application/json;charset=UTF-8',
             }).then(response => {
+                instance.runningTask = false;
                 document.preview = response.data.preview;
                 resolve(document);
             }).catch(error => {
+                instance.runningTask = false;
                 document.preview = error.data;
-                reject(error.data || error);
+                reject(error.data);
             });
         });
     }
@@ -153,7 +161,24 @@ angular.module('editor')
     }
     
     this.reloadPLTP = function(document) {
-  
+        EditorService.openDialog('pltp-reload.template.html').then(function(scope) {
+            instance.runningTask = true;
+            $http({
+                method: 'POST',
+                url: 'option',
+                data: {
+                    name: "reload_pltp",
+                    path: document.path,
+                    activity_id: scope.activity_id,
+                }
+            }).then(response => {
+                EditorService.log(response.data);
+                instance.runningTask = false;
+            }).catch((error) => {
+                EditorService.log(error.data);
+                instance.runningTask = false;
+            });
+        });
     }
 
     this.testPL = function(document) {

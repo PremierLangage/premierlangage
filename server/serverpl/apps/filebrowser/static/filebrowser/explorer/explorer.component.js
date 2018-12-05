@@ -78,7 +78,6 @@ function ExplorerComponent(EditorService, MonacoService, $mdDialog, toastr) {
     this.reloadPLTP = function(document, event) {
         event.stopPropagation(); 
         MonacoService.reloadPLTP(document);
-        // TODO
     }
 
     /** starts renaming 'document' */

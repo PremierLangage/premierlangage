@@ -9,19 +9,20 @@ angular.module('editor')
     instance.gitClone = gitClone;
     instance.logs = [];
     instance.onLogAdded;
+    instance.dialog = Dialog;
 
     const options = [
         { label: 'Git Clone', icon: 'fas fa-cloud-download-alt', filters: [filters.canWrite, filters.isHome], action: gitClone},
         { label: 'Git Push', icon:'fas fa-cloud-upload-alt', filters: [filters.canWrite, filters.isInRepo], action: gitPush},
         { label: 'Git Pull', icon:'fas fa-cloud-download-alt', filters: [filters.canWrite, filters.isInRepo], action: gitPull},
         { label: 'Git Status', icon:'fas fa-info-circle', filters: [filters.canWrite, filters.isInRepo], action: gitStatus},
-        { label: 'Git List Branch', icon:'fas fa-list-ul', filters: [filters.canWrite, filters.isInRepo], action: gitListBranch},
-        { label: 'Git Change Branch', icon:'fas fa-code-branch', filters: [filters.canWrite, filters.isInRepo], action: gitChangeBranch},
+        //{ label: 'Git List Branch', icon:'fas fa-list-ul', filters: [filters.canWrite, filters.isInRepo], action: gitListBranch},
+        //{ label: 'Git Change Branch', icon:'fas fa-code-branch', filters: [filters.canWrite, filters.isInRepo], action: gitChangeBranch},
     
         { label: 'Git Add', icon:'fas fa-plus', filters: [filters.canWrite, filters.isInRepo], action: gitAdd},
         { label: 'Git Commit', icon:'fas fa-edit', filters: [filters.canWrite, filters.isInRepo], action: gitCommit},
-        { label: 'Git Reset', icon:'fas fa-undo', filters: [filters.canWrite, filters.isInRepo], action: gitReset},
-        { label: 'Git Checkout', icon:'fas fa-eraser', filters: [filters.canWrite, filters.isInRepo], action: gitCheckout},  
+        //{ label: 'Git Reset', icon:'fas fa-undo', filters: [filters.canWrite, filters.isInRepo], action: gitReset},
+        //{ label: 'Git Checkout', icon:'fas fa-eraser', filters: [filters.canWrite, filters.isInRepo], action: gitCheckout},  
     ];
 
     function Dialog($scope, $mdDialog) {
@@ -34,49 +35,40 @@ angular.module('editor')
         }
     }
     
-    function gitClone(doc) {
-        $mdDialog.show({
-            controller: Dialog,
-            templateUrl: 'git-clone.template.html',
-            parent: angular.element(document.body),
-            clickOutsideToClose:true
-            }).then(function(scope) {
-                if (scope.url) {
-                    instance.runningTask = true;
-                    $http({
-                        method: 'POST',
-                        url: 'option',
-                        data: {
-                            name: "git_clone",
-                            path: doc.path,
-                            url: scope.url,
-                            username: scope.username ? scope.username : '',
-                            password: scope.password ? scope.password : '',
-                            destination: scope.destination ? scope.destination : '',
-                        }
-                    }).then(response => {
-                        instance.documents = response.data;
-                        for (let item of instance.documents) {
-                            loadOption(item);
-                        }
-                        instance.documents[0].expanded = true;
-                        instance.makeToast(scope.url + ' cloned !');
-                        instance.runningTask = false;
-                    }).catch((error) => {
-                        instance.runningTask = false;
-                        instance.log('<span style="color: red;">Git clone failed: ' + error.data + '</span>');
-                    });
+    function gitClone(document) {
+        instance.openDialog('git-clone.template.html')
+        .then(function(scope) {
+            instance.runningTask = true;
+            $http({
+                method: 'POST',
+                url: 'option',
+                data: {
+                    name: "git_clone",
+                    path: document.path,
+                    url: scope.url,
+                    username: scope.username ? scope.username : '',
+                    password: scope.password ? scope.password : '',
+                    destination: scope.destination ? scope.destination : '',
                 }
+            }).then(response => {
+                instance.documents = response.data;
+                for (let item of instance.documents) {
+                    loadOption(item);
+                }
+                instance.documents[0].expanded = true;
+                instance.makeToast(scope.url + ' cloned !');
+                instance.runningTask = false;
+            }).catch((error) => {
+                instance.runningTask = false;
+                instance.log('<span style="color: red;">Git clone failed: ' + error.data + '</span>');
+            });
         });
     }
     
     function gitPush(doc) {
-        $mdDialog.show({
-            controller: Dialog,
-            templateUrl: 'git-command.template.html',
-            parent: angular.element(document.body),
-            clickOutsideToClose:true
-            }).then(function(scope) {
+        instance.openDialog('git-command.template.html')
+        .then(function(scope) {
+            instance.runningTask = true;
             $http({
                 method: 'POST',
                 url: 'option',
@@ -96,70 +88,98 @@ angular.module('editor')
         });
     }
     
-    function gitPull(doc) {
-        $mdDialog.show({
-            controller: Dialog,
-            templateUrl: 'git-command.template.html',
-            parent: angular.element(document.body),
-            clickOutsideToClose:true
-            }).then(function(scope) {
-                instance.runningTask = true;
-                $http({
-                    method: 'POST',
-                    url: 'option',
-                    data: {
-                        name: "git_pull",
-                        path: doc.path,
-                        username: scope.username ? scope.username : '',
-                        password: scope.password ? scope.password : '',
-                    }
-                }).then(response => {
-                    instance.documents = response.data;
-                    for (let item of instance.documents) {
-                        loadOption(item);
-                    }
-                    instance.documents[0].expanded = true;
-                    instance.makeToast('Git Pull OK !');
-                    instance.runningTask = false;
-                }).catch(error => {
-                    instance.runningTask = false;
-                    instance.log('<span style="color: red;">Git pull failed: ' + error.data + '</span>');
-                });
+    function gitPull(document) {
+        instance.openDialog('git-command.template.html')
+        .then(function(scope) {
+            instance.runningTask = true;
+            $http({
+                method: 'POST',
+                url: 'option',
+                data: {
+                    name: "git_pull",
+                    path: document.path,
+                    username: scope.username ? scope.username : '',
+                    password: scope.password ? scope.password : '',
+                }
+            }).then(response => {
+                instance.documents = response.data;
+                for (let item of instance.documents) {
+                    loadOption(item);
+                }
+                instance.documents[0].expanded = true;
+                instance.makeToast('Git Pull OK !');
+                instance.runningTask = false;
+            }).catch(error => {
+                instance.runningTask = false;
+                instance.log('<span style="color: red;">Git pull failed: ' + error.data + '</span>');
             });
+        });
     }
     
-    function gitStatus(doc) {
+    function gitStatus(document) {
         instance.runningTask = true;
         $http({
             method: 'GET',
             url: 'option',
             params: {
                 name: "git_status",
-                path: doc.path,
+                path: document.path,
             }
         }).then(response => {
             instance.log(response.data);
             instance.runningTask = false;
         }).catch(error => {
             instance.runningTask = false;
-            console.log(error)
             instance.log('<span style="color: red;">Git status failed: ' + error.data + '</span>');
         });
     }
     
+    function gitAdd(document) {
+        instance.runningTask = true;
+        $http({
+            method: 'GET',
+            url: 'option',
+            params: {
+                name: "git_add",
+                path: document.path,
+            }
+        }).then(response => {
+            instance.log(response.data);
+            instance.runningTask = false;
+        }).catch(error => {
+            instance.runningTask = false;
+            instance.log('<span style="color: red;">Git add failed: ' + error.data + '</span>');
+        });
+    }
+
+    function gitCommit(document) {
+        instance.openDialog('git-commit.template.html')
+        .then(function(scope) {
+            instance.runningTask = true;
+            $http({
+                method: 'POST',
+                url: 'option',
+                data: {
+                    name: "git_commit",
+                    path: document.path,
+                    commit: scope.commit,
+                }
+            }).then(response => {
+                instance.log(response.data);
+                instance.runningTask = false;
+            }).catch(error => {
+                instance.runningTask = false;
+                instance.log('<span style="color: red;">Git commit failed: ' + error.data + '</span>');
+            });
+        });
+    }
+    
+    /*
     function gitListBranch(doc) {
         instance.makeToast('TODO NOT IMPLEMENTED');
     }
     
     function gitChangeBranch(doc) {
-        instance.makeToast('TODO NOT IMPLEMENTED');
-    }
-    
-    function gitAdd(doc) {
-        instance.makeToast('TODO NOT IMPLEMENTED');
-    }
-
-    function gitCommit(doc) {
         instance.makeToast('TODO NOT IMPLEMENTED');
     }
     
@@ -170,6 +190,7 @@ angular.module('editor')
     function gitCheckout(doc) {
         instance.makeToast('TODO NOT IMPLEMENTED');
     }
+    */
 
     
     function loadOption(document) {
@@ -484,7 +505,6 @@ angular.module('editor')
             for (let item of instance.documents) {
                 loadOption(item);
             }
-            instance.makeReadOnly(instance.documents[1]);
             instance.runningTask = false;
             if (completion != null) {
                 completion(instance.documents);
@@ -589,5 +609,14 @@ angular.module('editor')
         .cancel('CANCEL')
         .targetEvent(event);
         return $mdDialog.show(confirm);
+    }
+
+    instance.openDialog = function(templateUrl) {
+        return $mdDialog.show({
+            controller: Dialog,
+            templateUrl: templateUrl,
+            parent: angular.element(document.body),
+            clickOutsideToClose:true
+        });
     }
 });

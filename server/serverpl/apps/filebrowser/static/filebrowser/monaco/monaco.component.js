@@ -11,7 +11,9 @@ angular.module('editor').component('monaco', {
 function MonacoComponent (MonacoService, EditorService) {
     const monaco = this;
 
-    monaco.runningTask = false;
+    monaco.runningTask = function() {
+        return MonacoService.runningTask;
+    }
 
     monaco.canPreviewSelection = function() {
         return filters.canBePreviewed(MonacoService.selection);
@@ -29,18 +31,15 @@ function MonacoComponent (MonacoService, EditorService) {
         return MonacoService.isSelection(document);
     };
 
-    monaco.previewSelection = function() {
-        monaco.runningTask = true;
-        MonacoService.previewPL(MonacoService.selection).then(() => {
-            monaco.runningTask = false;
-        }).catch(() => {
-            monaco.runningTask = false;
-        });
-    }
-
     monaco.preview = function() {
         return MonacoService.selection && MonacoService.selection.preview;
     } 
+
+    monaco.previewSelection = function() {
+        MonacoService.previewPL(MonacoService.selection).catch((error) => {
+            EditorService.log(error);
+        });
+    }
 
     monaco.removeDocument = function(document) {
         if (document.changed) {

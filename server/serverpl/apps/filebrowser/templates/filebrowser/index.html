@@ -38,6 +38,8 @@
     
 {% endblock header_script %}
 
+{% comment %} REMOVE ALERT BLOCK {% endcomment %}
+ {% block alert %}{% endblock %}
 {% block content %}
     {% csrf_token %}
     <div id="editor-container" ng-app="editor">
