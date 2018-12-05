@@ -1,4 +1,4 @@
-angular.module('app')
+angular.module('editor')
 .directive('draggable', function() {
   return function(scope, element) {
     // this gives us the native JS object

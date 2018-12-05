@@ -1,43 +1,35 @@
 <ul class='tree'>
-    <li ng-repeat='item in $ctrl.documents track by item.path'>  
-        <div class='tree__item editing' ng-if='item.editing'>
+    <li ng-repeat='document in explorer.documents track by document.path'>  
+        <div class='tree__item editing' ng-if='document.editing'>
             <span>
-                <i class="{{item.icon}}"></i>&nbsp;  
-                <input type='text' auto-focus='true' ng-model='item.name' ng-keydown='$ctrl.endEditing(item, $event)'/>
+                <i class="{{document.icon}}"></i>&nbsp;  
+                <input 
+                    type='text' 
+                    placeholder='Press enter to create esc to cancel...'
+                    auto-focus='true' ng-model='document.name' 
+                    ng-keydown='explorer.endEditing(document, $event)'/>
             </span>    
         </div>
-        <md-menu md-offset="150 0" ng-if='!item.editing'>
-            <div
-                id='{{item.path}}'
-                ng-class='{"tree__item": true, "selected": $ctrl.isSelection(item)}'
-                ng-on-contextmenu="$ctrl.showOptions(item, $mdMenu, $event)"
-                ng-click='$ctrl.selectItem(item)'
-                drop='$ctrl.dropItem'
-                droppable
-                draggable>        
-                <span><i class="{{item.icon}}"></i>&nbsp;<span>{{item.name}}</span></span>
-                <span class='tree__options'>
-                    <ng-container ng-repeat='option in $ctrl.options'>
-                        <span ng-if='option.enabled(item)' ng-click='option.action($ctrl, item, $event)'>
-                            <i class="{{option.icon}}"></i>&nbsp;
-                            <md-tooltip>{{option.label}}</md-tooltip>
-                        </span>
-                    </ng-container>
-                </span> 
-                <div class='overlay'></div>
-            </div>
-            <md-menu-content width="4">
-                <ng-container ng-repeat="option in item.options">
-                    <md-menu-item>
-                        <md-button ng-click='option.action(item)'>
-                            <span><i class="{{option.icon}}"></i>&emsp;</span>
-                            <span>{{option.label}}</span>
-                        </md-button>
-                    </md-menu-item>
-                    <md-divider></md-divider>
-                <ng-container>
-            </md-menu-content>  
-        </md-menu>
-        <explorer ng-if='item.expanded' documents="item.children"></explorer>
+        <div
+            ng-if='!document.editing'
+            id='{{document.path}}'
+            ng-class='{"tree__item": true, "selected": explorer.isSelection(document)}'
+            ng-on-contextmenu="explorer.showOptions(document, $mdMenu, $event)"
+            ng-click='explorer.selectDocument(document)'
+            drop='explorer.moveDocument'
+            droppable
+            draggable>        
+            <span><i class="{{document.icon}}"></i>&nbsp;<span>{{document.name}}</span></span>
+            <span class='tree__options'>
+                <ng-container ng-repeat='option in explorer.options'>
+                    <span ng-if='option.enabled(document)' ng-click='option.action(document, $event)'>
+                        <i class="{{option.icon}}"></i>&nbsp;
+                        <md-tooltip>{{option.label}}</md-tooltip>
+                    </span>
+                </ng-container>
+            </span> 
+            <div class='overlay'></div>
+        </div>
+        <explorer ng-if='document.expanded' documents="document.children"></explorer>
     </li>
 </ul>

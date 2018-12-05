@@ -3,53 +3,15 @@
     height: calc(100% - 60px);
 }
 
-#monaco-editor {
-    height: calc(100%);
+#editor-monaco {
+    height: 100%;
 }
 
 #editor-preview {
-    height: calc(100%);
+    height: calc(100% - 60px);
     width: 50%;
     overflow: auto;
     padding: 1rem;
     position: absolute;
-    right: 8px;
-    box-shadow: 0 4px 4px 4px rgba(0, 0, 0, 0.16);
-}
-
-
-.editor__tab-bar-item {
-    display: inline-flex;
-    height: 100%;
-    align-items: center;
-    cursor: pointer;
-    position: relative;
-    font-size: 14px;
-    color: #5a5a5a;
-    font-style: normal;
-    padding: 0px 5px;
-    background-color: #CCCCCC11;
-}
-
-.editor__tab-bar-item.active {
-    border-bottom: 1px solid #5a5a5a;
-    background-color: #CCCCCC66;
-}
-
-.editor__tab-bar-item .icon {
-    margin-right: 4px;
-}
-
-.editor__tab-bar-item .btn-close {
-    opacity: .5;
-}
-
-.editor__tab-bar-item .btn-close:hover {
-    opacity: 1;
-}
-.editor__tab-bar {
-    position: relative;
-    display: flex;
-    align-items: center;
-    height: 48px;
+    right: 0;
 }

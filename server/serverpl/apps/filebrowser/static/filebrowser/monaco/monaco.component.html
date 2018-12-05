@@ -1,20 +1,29 @@
-<div class='editor__tab-bar border-bottom'>
-    <div ng-repeat='document in $ctrl.openedDocuments() track by document.path' 
-         class='editor__tab-bar-item' 
-         ng-class="$ctrl.isSelection(document) ? 'active' : ''">
+<div class='editor__tab border-bottom'>
+    <!-- OPENED DOCUMENTS -->
+    <div class='editor__tab-item' ng-repeat='document in monaco.documents() track by document.path'  
+         ng-class="{'active': monaco.isSelection(document), 'changed': document.changed}">
         <md-tooltip>{{document.path}}</md-tooltip>
         <i class="{{document.icon}}"></i> 
-        &emsp;<span ng-click='$ctrl.selectTab(document)'>{{document.name}}</span>&emsp;
-        <span ng-click='$ctrl.removeTab(document)'>&times;</span>
+        &emsp;<span ng-click='monaco.selectDocument(document)'>{{document.name}}</span>&emsp;
+        <span class='btn-close' ng-click='monaco.removeDocument(document)'>&nbsp;&times;</span>
+    </div>
+    
+    <div class="mdl-layout-spacer"></div>
+    <!-- OPTIONS -->
+    <div class='editor__tab-item' ng-if='monaco.canPreviewSelection()' ng-click='monaco.previewSelection()'>
+        <md-tooltip>Preview</md-tooltip><i class="fas fa-play"></i>
     </div>
 </div>
 
 <div class='editor__content'>
-    <div id='monaco-editor' ng-style='$ctrl.editorWidth()'>
-        <!--<h4 class='center-x-y'>Aucun document sélectionné</h4>-->
+    <div id='editor-monaco' ng-style="{ width: monaco.preview() ? '50%' : '100%' }">
     </div>
+    <div id='editor-preview' ng-if='monaco.preview()' ng-bind-html='monaco.preview() | unsafe'>
+        <md-progress-circular  class='center' md-mode='indeterminate' md-diameter='50'></md-progress-circular>
+    </div>
+</div>
 
-    <div id='editor-preview' ng-if='$ctrl.preview' ng-bind-html='$ctrl.preview | unsafe'>
-    </div>
+<div ng-if="monaco.runningTask">
+    <md-progress-circular  class='center' md-mode='indeterminate' md-diameter='50'></md-progress-circular>
 </div>
 

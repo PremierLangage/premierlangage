@@ -1,0 +1,147 @@
+<div id="workspace">
+    <!-- EXPLORER -->
+    <div id="explorer">
+        <div>
+            <div id='explorer__tab' class='editor__tab border-bottom'>
+                <span>EXPLORER</span>       
+                <div class="mdl-layout-spacer"></div>
+                <!-- OPTIONS -->
+                <div class='editor__tab-item' ng-click='editor.search()'>
+                    <md-tooltip>Search File</md-tooltip><i class="fas fa-search"></i>
+                </div>
+                <md-menu ng-if='editor.selection()'>
+                    <div class='editor__tab-item' ng-click='editor.showGitContextMenu($mdMenu, $event)'>
+                        <md-tooltip>Git Options ({{editor.selection().name}})</md-tooltip><i class="fab fa-git-square"></i>
+                    </div>
+                    <md-menu-content width="4">
+                        <ng-container ng-repeat="option in editor.selection().options">
+                            <md-menu-item>
+                                <md-button ng-click='option.action(editor.selection())'>
+                                    <span><i class="{{option.icon}}"></i>&emsp;</span>
+                                    <span>{{option.label}}</span>
+                                </md-button>
+                            </md-menu-item>
+                            <md-divider></md-divider>
+                        <ng-container>
+                    </md-menu-content>  
+                </md-menu>
+            </div>
+            
+            <div id="explorer__tree" ng-if='!editor.searching'>
+                <explorer documents='editor.documents()'></explorer>
+            </div>
+
+            <div id="explorer__tree" ng-if='editor.searching'>
+                <input type='text' auto-focus='true' placeholder='Press enter to search esc to cancel...' ng-model='editor.searchQuery' ng-keydown='editor.updateSearch($event)'/>
+                <explorer documents='editor.searchResult'></explorer>
+            </div>
+        </div>
+        <md-progress-circular ng-if='editor.runningTask()' class='center' md-mode="indeterminate" md-diameter="50"></md-progress-circular>
+    </div>
+
+    <!-- Welcome  -->
+    <div id='welcome-container' class='border' ng-if='editor.shouldShowWelcome()'>
+        <h3>Pl Editor</h3>
+        <md-button class="md-primary" ng-click='editor.addFile()'>New File</md-button>
+        <md-button class="md-primary" ng-click='editor.addFolder()'>New Folder</md-button>
+        <md-button class="md-primary" ng-click='editor.gitClone()'>Clone Repository</md-button>
+    </div>
+
+    <!-- Code Editor -->
+    <div id="monaco-container" class='border'>
+        <monaco></monaco>
+    </div>
+    
+        <!-- Welcome  -->
+    <div id='output-container' class='border' ng-style="{ height: editor.outputHeight }">
+        <div id='output__tab' class="editor__tab border-bottom">
+            <h5 class='editor__tab-item'>Output</h5>
+            <div class="mdl-layout-spacer"></div>
+            
+            <div class='editor__tab-item' ng-click='editor.outputClear()'>
+                <md-tooltip>Clear</md-tooltip><i class="fas fa-trash-alt"></i>
+            </div>
+            
+            <div class='editor__tab-item' ng-click='editor.outputExpandShrink()'>
+                <md-tooltip>Expand/Shrink</md-tooltip><i class="fas fa-arrows-alt-v"></i>
+            </div>
+
+            <div class='editor__tab-item' ng-click='editor.outputToggle()'>
+                <md-tooltip>Toggle</md-tooltip><i class="fas fa-eye"></i>
+            </div>
+        </div>
+        <div id='output__content'>  
+            <md-list>
+                <md-list-item ng-repeat="item in editor.logs() track by $index">
+                    <div ng-bind-html='item | unsafe'> </div>
+                    <md-divider></md-divider>
+                </md-list-item>
+            </md-list>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER-->
+<div class='footer'>
+    <ng-container ng-if="editor.inRepository()">
+        &emsp; <i class="{{editor.repository().host}} fa-1x"></i>&emsp; 
+            <a href="{{editor.repository().url}} ">{{editor.repository().url}} </a>&nbsp;
+            -&nbsp;<i>{{editor.repository().branch}} 
+        </i>
+    </ng-container>
+</div>
+
+
+<script type="text/ng-template" id="git-clone.template.html">
+<md-dialog aria-label='Git Clone Dialog'>
+  <md-dialog-content style="padding: 1rem 3rem;display: flex;width: 400px;">
+    <h2>Git Clone</h2>
+    <md-input-container>
+        <label>Url</label>
+        <input required name="url" aria-label="url" ng-model="url">
+    </md-input-container>
+
+    <md-input-container>
+        <label>Destination (optional)</label>
+        <input name="destination" aria-label="destination" ng-model="destination">
+    </md-input-container>
+    
+    <md-input-container>
+        <label>Username (optional)</label>
+        <input name="username" aria-label="username" ng-model="username">
+    </md-input-container>
+
+    <md-input-container>
+        <label>Password (optional)</label>
+        <input type='password' aria-label="password" name="password" ng-model="password">
+    </md-input-container>
+
+  </md-dialog-content>
+  <md-dialog-actions> 
+    <md-button ng-disabled='!url' ng-click="ok()" class="md-primary">CLONE</md-button>
+    <md-button ng-click="cancel()" class="md-primary">CANCEL</md-button>
+  </md-dialog-actions>
+</md-dialog>
+</script>
+
+<script type="text/ng-template" id="git-command.template.html">
+<md-dialog aria-label='Git Command Dialog'>
+  <md-dialog-content style="padding: 1rem 3rem;display: flex;width: 400px;">
+    <h2>Git Command</h2>
+    <md-input-container>
+        <label>Username (optional)</label>
+        <input name="username" aria-label="username" ng-model="username">
+    </md-input-container>
+
+    <md-input-container>
+        <label>Password (optional)</label>
+        <input type='password' aria-label="password" name="password" ng-model="password">
+    </md-input-container>
+
+  </md-dialog-content>
+  <md-dialog-actions>
+    <md-button ng-click="ok()" class="md-primary">OK</md-button>
+    <md-button ng-click="cancel()" class="md-primary">CANCEL</md-button>
+  </md-dialog-actions>
+</md-dialog>
+</script>

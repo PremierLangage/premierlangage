@@ -1,5 +1,5 @@
 // https://microsoft.github.io/monaco-editor/playground.html#interacting-with-the-editor-adding-an-action-to-an-editor-instance
-export function config(editorService, completion) {
+export function config(completion) {
     
     require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.14.3/min/vs' }});
    
@@ -38,7 +38,7 @@ export function config(editorService, completion) {
             pltp: 'premierlangage'
         };
         
-        const LANGUAGE_ID = 'premierlangage';   
+        const PREMIER_LANGAGE = 'premierlangage';   
         const BUILT_IN_WORDS = {
             title: "Titre de l'exercice/feuille d'exercice",
             author: "Auteur de l'exercice",
@@ -57,7 +57,7 @@ export function config(editorService, completion) {
         const VARIABLE_PATTERN = /\s*\w+(\.\w)*(?=(=|(\+=)|=%))/;
         const REFERENCE_PATTERN = /\s*(@((?<path1>.+))|template\s*=\s*(?<path2>.+))/;
     
-        monaco.languages.register({ id: LANGUAGE_ID }); 
+        monaco.languages.register({ id: PREMIER_LANGAGE }); 
         
         monaco.languages.setMonarchTokensProvider('premierlangage', {
             tokenizer: {
@@ -69,7 +69,7 @@ export function config(editorService, completion) {
             }
         });
         
-        monaco.editor.defineTheme(LANGUAGE_ID, {
+        monaco.editor.defineTheme(PREMIER_LANGAGE, {
             base: 'vs',
             inherit: true,
             rules: [
@@ -79,7 +79,7 @@ export function config(editorService, completion) {
             ]
         });
     
-        const editor = monaco.editor.create($('#monaco-editor').get(0), {
+        const editor = monaco.editor.create($('#editor-monaco').get(0), {
             value: '',
             theme: 'premierlangage',
             language: '',
@@ -100,43 +100,25 @@ export function config(editorService, completion) {
         }
 
         // CODE LENS
-        monaco.languages.registerCodeLensProvider(LANGUAGE_ID, {
+        monaco.languages.registerCodeLensProvider(PREMIER_LANGAGE, {
             provideCodeLenses: function(model, token) {
-                let lens = [{
-                    range: {
-                        startLineNumber: 1,
-                        startColumn: 1,
-                        endLineNumber: 1,
-                        endColumn: 1
-                    },
-                    id: "Preview",
-                    command: {
-                        id: editor.addCommand(0, function() {
-                            editorService.previewPL(model.uri);
-                        }, ''),
-                        title: "Preview"
-                    }
-                }];
-
+                let lens = [];
                 const lines = model.getValue().split('\n');
                 let match;
                 for (let i = 0; i < lines.length; i++) {
                     match = REFERENCE_PATTERN.exec(lines[i]);
                     if (match) {
-                        let path = match.groups.path1 || match.groups.path2;
+                        const path = match.groups.path1 || match.groups.path2;
                         lens.push({
                             range: new monaco.Range(i + 1, match.index, i + 2, match.index + match.input.length),
                             id: match.input,
                             command: { 
                                 id: editor.addCommand(0, function() {
-                                    const document = editorService.findDocument(path);
-                                    if (document) {
-                                        editorService.openFile(document);
-                                    } else {
-                                        alert('Impossible to open ' + path);
+                                    if (editor.onDidFindPLReference) {
+                                        editor.onDidFindPLReference(path);
                                     }
                                 }, ''),
-                                title: 'Open'
+                                title: 'OPEN FILE'
                             }
                         });
                     }
@@ -149,7 +131,7 @@ export function config(editorService, completion) {
         });
     
         // FOLDINGS
-        monaco.languages.registerFoldingRangeProvider(LANGUAGE_ID, {
+        monaco.languages.registerFoldingRangeProvider(PREMIER_LANGAGE, {
             provideFoldingRanges: function(model) {
                 let ranges = [];
                 const lines = model.getValue().split('\n');
@@ -175,7 +157,7 @@ export function config(editorService, completion) {
         });
     
         // HOVERINGS
-        monaco.languages.registerHoverProvider(LANGUAGE_ID, {
+        monaco.languages.registerHoverProvider(PREMIER_LANGAGE, {
             provideHover: function(model, position) {
                 const token = model.getWordAtPosition(position);
                 if (token && token.word in BUILT_IN_WORDS) {
@@ -183,7 +165,7 @@ export function config(editorService, completion) {
                     return {
                         range: new monaco.Range(1, 1, 3, model.getLineMaxColumn(lineCount)),
                         contents: [
-                            { value: '**Special key**' },
+                            { value: '**PL BUILT-IN**' },
                             { value: BUILT_IN_WORDS[token.word] }
                         ]
                     }
@@ -193,17 +175,8 @@ export function config(editorService, completion) {
     
         // COMPLETION
         monaco.languages.registerCompletionItemProvider('premierlangage', {
-            // These characters should trigger our `provideCompletionItems` function
             triggerCharacters: ["@", '='],
-            // Function which returns a list of autocompletion ietems. If we return an empty array, there won't be any autocompletion.
             provideCompletionItems: (model, position) => {
-              // Get all the text content before the cursor
-              const textUntilPosition = model.getValueInRange({
-                startLineNumber: 1,
-                startColumn: 1,
-                endLineNumber: position.lineNumber,
-                endColumn: position.column,
-              });
               return Object.keys(BUILT_IN_WORDS).map(name => ({
                 label: name,
                 detail: BUILT_IN_WORDS[name],
@@ -213,13 +186,17 @@ export function config(editorService, completion) {
             },
         });
           
-          // COMMANDS
+        // COMMANDS
         editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function() {
-            editorService.saveDocument();
+            if (editor.onDidSaveCommand) {
+                editor.onDidSaveCommand();
+            }
         });
 
         editor.onDidChangeModelContent(function (e) {
-            editorService.updateDocument(editor.getValue());
+           if (editor.onDidContentChanged) {
+               editor.onDidContentChanged(editor.getValue())
+           }
         });
 
         editor.focus();

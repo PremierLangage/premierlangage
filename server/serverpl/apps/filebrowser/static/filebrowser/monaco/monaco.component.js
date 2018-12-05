@@ -1,54 +1,62 @@
-import * as monacoConfig from './config.js';
+'use strict';
 
-angular.module('app')
-.component('monaco', {
+import * as filters from '../filters.js';
+
+angular.module('editor').component('monaco', {
     templateUrl: '/static/filebrowser/monaco/monaco.component.html',
-    controller: function(AppService) {
-        const instance = this;
+    controllerAs: 'monaco',
+    controller: MonacoComponent
+});
 
-        this.selectTab = AppService.selectDocument;
-        this.removeTab = AppService.removeDocument;
-        this.isSelection = AppService.isEditorSelection;
-   
-        this.editorWidth = function() {
-            return { width: this.preview ? '50%' : '100%' };
-        }
+function MonacoComponent (MonacoService, EditorService) {
+    const monaco = this;
 
-        this.openedDocuments = function() { 
-            return AppService.openedDocuments; 
-        }
+    monaco.runningTask = false;
 
-        monacoConfig.config(AppService, (e) => { 
-            instance.editor = e;
-            instance.editor.setModel(null);       
+    monaco.canPreviewSelection = function() {
+        return filters.canBePreviewed(MonacoService.selection);
+    }
+
+    monaco.documents = function() {
+        return MonacoService.documents;
+    }
+
+    monaco.isEmpty = function() {
+        return MonacoService.isEmpty();
+    }
+
+    monaco.isSelection = function(document) {
+        return MonacoService.isSelection(document);
+    };
+
+    monaco.previewSelection = function() {
+        monaco.runningTask = true;
+        MonacoService.previewPL(MonacoService.selection).then(() => {
+            monaco.runningTask = false;
+        }).catch(() => {
+            monaco.runningTask = false;
         });
-        
-        AppService.onDocumentSelected = function(document) {
-            instance.preview = document.preview;
-            if (!document.language) {
-                instance.editor.findLanguage(document);
-            }
-            AppService.saveState(instance.editor.saveViewState());
-            if (document.model) {
-                instance.editor.setModel(document.model);
-                instance.editor.restoreViewState(document.state);
-            } else {
-                document.model = monaco.editor.createModel(document.content, document.language, document.path);
-                instance.editor.setModel(document.model);
-            }
-            instance.editor.focus();
-        };
+    }
 
-        AppService.onDocumentRemoved = function(document) {
-            document.model.dispose();
-            document.preview = undefined;
-            document.model = undefined;
-            instance.editor.setModel(undefined);
-            instance.preview = undefined;
-        }; 
-        
-        AppService.onPreviewEvent = function(document) {
-            instance.preview = document.preview;
+    monaco.preview = function() {
+        return MonacoService.selection && MonacoService.selection.preview;
+    } 
+
+    monaco.removeDocument = function(document) {
+        if (document.changed) {
+            EditorService.confirm('You will lose any unsaved changes !').then(() => {
+                MonacoService.removeDocument(document);
+            });
+        } else {
+            MonacoService.removeDocument(document);
         }
     }
-});
+
+    monaco.selectDocument = function(document) {
+        MonacoService.openAndSelect(document);
+    }
+
+    MonacoService.onSelectionChanged = function() {
+        monaco.changed = !monaco.changed;
+    }
+}

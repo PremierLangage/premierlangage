@@ -1,4 +1,4 @@
-angular.module('app', ['ngMaterial', 'ngCookies'])
+angular.module('editor', ['ngMaterial', 'toastr'])
 .filter('unsafe', function($sce) {
     return function(val) {
         return $sce.trustAsHtml(val);

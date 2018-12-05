@@ -97,5 +97,9 @@ def redirect_fb(path=''):
     response = redirect('/filebrowser/' + path)
     return response
 
+def isroot(path):
+    components = path.split('/')
+    return len(components) <= 1 or not components[1]
+
 def to_abs_path(path):
     return abspath(join(settings.FILEBROWSER_ROOT, path))

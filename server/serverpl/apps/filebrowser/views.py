@@ -53,7 +53,8 @@ def option_get_documents(request):
     repos = {}
     directories = {}
 
-    def find_directory(path_components):
+    def find_dir(path):
+        path_components = path.split('/')
         if path_components[0] in directories:
             return directories[path_components[0]]
         directories[path_components[0]] = Directory.objects.get(name=path_components[0])
@@ -65,7 +66,7 @@ def option_get_documents(request):
                 return repos[k]
         return None
     
-    def walk_path(path, parent='', deep=0):
+    def walkdir(path, parent='', deep=0):
         node = {
             'parent': parent,
             'type': 'folder' if isdir(path) else 'file',
@@ -74,8 +75,7 @@ def option_get_documents(request):
             'icon': icon(path),
         }
         if node['type'] == 'folder':
-            path_components = node['path'].split('/')
-            directory = find_directory(path_components)
+            directory = find_dir(node['path'])
 
             node['read'] = directory.can_read(request.user)
             node['write'] = directory.can_write(request.user)
@@ -91,7 +91,7 @@ def option_get_documents(request):
                 }
         try:
             node['children'] = [
-                walk_path(join(path, contents), node['path'], deep + 1) 
+                walkdir(join(path, contents), node['path'], deep + 1) 
                 for contents in os.listdir(path) 
                 if not hidden(join(path, contents))
             ]
@@ -107,8 +107,8 @@ def option_get_documents(request):
         return node
 
     try:
-        lib = walk_path(to_abs_path('lib'))
-        home = walk_path(to_abs_path(userId))
+        lib = walkdir(to_abs_path('lib'))
+        home = walkdir(to_abs_path(userId))
         home["name"] = 'home'
         return HttpResponse(json.dumps([home, lib]), content_type='application/json')
     except Exception as e:
@@ -139,7 +139,7 @@ def option_create_document(request):
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
     post = json.loads(request.body.decode())
-    path = post['path']
+    path = post.get('path')
     if not path:
         return HttpResponseBadRequest('"path" parameter is missing') 
     try:
@@ -148,28 +148,25 @@ def option_create_document(request):
         
         def create_file():
             f = open(path, "w")
-            content = post['content']
+            content = post.get('content')
             if content:
                 f.write(content)
             f.close()
-            return JsonResponse({ 'icon': icon(path), 'status': 200})
+            return JsonResponse({'icon': icon(path), 'path': path})
         
         def create_folder():
             if isdir(path) or isfile(path):
                 msg = "Can't create directory '{0}': this name is already used.".format(name)
-                messages.error(request, msg)
                 return HttpResponseBadRequest(msg)
             else:
                 os.mkdir(path)
-                return JsonResponse({ 'icon': icon(path), 'status': 200})
+                return JsonResponse({'icon': icon(path), 'path': path})
 
         if any(c in name for c in settings.FILEBROWSER_DISALLOWED_CHAR):
             msg = "Can't create file '{0}': name should not contain any of {1}.".format(name, settings.FILEBROWSER_DISALLOWED_CHAR)
-            messages.error(request, msg)
             return HttpResponseBadRequest(msg)
         elif isdir(path) or isfile(path):
             msg = "Can't create file '" + name + "': this name is already used."
-            messages.error(request, msg)
             return HttpResponseBadRequest(msg)
         elif post['type'] == 'file':
                 return create_file()
@@ -188,7 +185,10 @@ def option_delete_document(request):
     post = json.loads(request.body.decode())
     path = post['path']
     if not path:
-        return HttpResponseBadRequest('"path" parameter is missing') 
+        return HttpResponseBadRequest('"path" parameter is missing')
+    
+    if isroot(path):
+        return HttpResponseBadRequest('cannot delete a root folder')
     try:
         path = to_abs_path(path)
         if isdir(path):
@@ -198,7 +198,6 @@ def option_delete_document(request):
         return JsonResponse({ 'success': True })
     except Exception as e:  # pragma: no cover
         msg = "Impossible to delete '"+post['path']+"' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
-        messages.error(request, msg)
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
@@ -223,11 +222,9 @@ def option_rename_document(request):
         if any(c in target for c in settings.FILEBROWSER_DISALLOWED_CHAR):
             msg = "Can't rename '{0}' to {1}: name should not contain any of {2}."\
                   .format(name, target, settings.FILEBROWSER_DISALLOWED_CHAR)
-            messages.error(request, msg)
             return HttpResponseBadRequest(msg)
         elif isdir(new_path) or isfile(new_path):
             msg = "Can't rename '{0}' to '{1}': this name is already used.".format(name, target)
-            messages.error(request, msg)
             return HttpResponseBadRequest(msg)
         os.rename(path, new_path)
         return JsonResponse({'icon': icon(new_path), 'path': new_path, 'status': 200})
@@ -238,6 +235,43 @@ def option_rename_document(request):
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
 
+
+def option_move_document(request):
+    """ Move POST['path'] to POST['destination']."""
+
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    post = json.loads(request.body.decode())
+    src = post.get('path')
+    if not src:
+        return HttpResponseBadRequest('"path" parameter is missing')
+    
+    # TODO check write rights in dst
+    dst = post.get('dst')
+    if not dst:
+        return HttpResponseBadRequest('"dst" parameter is missing')
+    try:
+        src_path = to_abs_path(src)
+        dst_path = to_abs_path(dst)
+        
+        if src == dst:
+            return HttpResponseNotFound("Can't move a directory inside itself")
+        elif not isdir(dst_path):
+            return HttpResponseNotFound('"{0}" is not a directory'.format(dst)) 
+        elif dst_path.startswith(src_path):
+            return HttpResponseNotFound("Can't move {0} inside {1}".format(src, dst))
+        else:
+            destination = join(dst_path, basename(src))
+            if isdir(destination) or isfile(destination):
+                return HttpResponseNotFound("{0} already exists inside {1}".format(basename(src), dst))
+            else:
+                os.rename(src_path, destination)
+                return JsonResponse({'path': join(dst, basename(src))})
+    
+    except Exception as e:  # pragma: no cover
+        msg = "Impossible to copy '" + basename(src) + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
+        return HttpResponseNotFound(msg)
 
 def option_clone(request):
     """Execute a git clone on the targeted entry with the informations of POST."""
@@ -259,21 +293,17 @@ def option_clone(request):
         path = to_abs_path(path)
         ret, out, err = gitcmd.clone(path, url, destination, username, password)
         if ret:
-            msg = htmlprint.code(err + out)
-            messages.error(request, msg)
-            return HttpResponseNotFound(msg)
+            return HttpResponseNotFound(htmlprint.code(err + out))
         else:
-            msg = htmlprint.code(out + err)
             path = join(path, destination if destination else basename(splitext(url)[0]))
             ret, out, err = gitcmd.set_url(path, url)
             if not ret:
                 return option_get_documents(request)
             else:
-                messages.error(request, htmlprint.code(err + out))
                 shutil.rmtree(path, ignore_errors=True)
+                return HttpResponseNotFound(htmlprint.code(err + out))
 
     return HttpResponseNotFound()
-
 
 def option_pull(request):
     """ Execute a git pull on the targeted entry with the informations of POST."""
@@ -300,12 +330,27 @@ def option_push(request):
     username = post['username']
     password = post['password']
     path = post['path']
-
     ret, out, err = gitcmd.push(to_abs_path(path), username=username, password=password)
     if not ret:
         return HttpResponse(htmlprint.code(out + err))
     else:
         return HttpResponseNotFound(htmlprint.code(err + out))
+
+def option_status(request):
+    """ Execute a git status on the targeted entry."""
+    if request.method != 'GET':
+        return HttpResponseNotAllowed(['GET'])
+
+    path = request.GET.get('path')
+    if not path:
+        return HttpResponseBadRequest("parameter 'path' is missing")
+    ret, out, err = gitcmd.status(to_abs_path(path))
+    
+    if not ret:
+        return HttpResponse(htmlprint.code(out + err))
+    else:  # pragma: no cover
+        return HttpResponseNotFound(htmlprint.code(out + err))
+
 
 @login_required
 @csrf_exempt
@@ -459,9 +504,11 @@ OPTIONS = {
     'create_document':      option_create_document,
     'delete_document':      option_delete_document,
     'rename_document':      option_rename_document,
+    'move_document':        option_move_document,
     'git_clone':            option_clone,
     'git_pull':             option_pull,
     'git_push':             option_push,
+    'git_status':           option_status,
     'test_pl':              option_test_pl,
     'load_pltp':            option_load_pltp,
     'preview_pl':           option_preview_pl,
