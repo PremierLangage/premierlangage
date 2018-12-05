@@ -374,7 +374,7 @@ class SessionExercise(SessionExerciseAbstract):
                         dic[key] = Template(dic[key]).render(RequestContext(request, dic))
                 return get_template("playexo/pltp.html").render(dic, request)
         
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             error_msg = str(e)
             if request.user.profile.can_load():
                 error_msg += "<br><br>" + htmlprint.html_exc()

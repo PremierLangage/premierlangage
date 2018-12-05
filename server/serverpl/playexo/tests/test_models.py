@@ -182,9 +182,40 @@ class ModelTestCase(TestCase):
         activity = Activity.objects.create(name="test", pltp=self.pltp)
         s_activity = SessionActivity.objects.create(user=self.user, activity=activity)
         s_exercice = SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
-        # TODO
+        Answer.objects.create(pl=self.pl, user=self.user, grade=10)
+        
         s_exercice.get_pl(self.factory.get(""), {"test": "test"})
+        # TODO asserts
     
+    
+    def test_sessionexercice_get_exercise(self):
+        activity = Activity.objects.create(name="test", pltp=self.pltp)
+        s_activity = SessionActivity.objects.create(user=self.user, activity=activity)
+        s_exercice = SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
+        
+        s_exercice.get_exercise(self.factory.get(""))
+        # TODO asserts
+        
+        s_exercice = SessionExercise.objects.create(session_activity=s_activity)
+        
+        s_exercice.get_exercise(self.factory.get(""))
+        # TODO asserts
+    
+    def test_sessionexercice_get_navigation(self):
+        activity = Activity.objects.create(name="test", pltp=self.pltp)
+        s_activity = SessionActivity.objects.create(user=self.user, activity=activity)
+        s_exercice = SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
+        
+        s_exercice.get_navigation(self.factory.get(""))
+        # TODO asserts
+    
+    def test_sessionexercice_get_context(self):
+        activity = Activity.objects.create(name="test", pltp=self.pltp)
+        s_activity = SessionActivity.objects.create(user=self.user, activity=activity)
+        s_exercice = SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
+        
+        s_exercice.get_context(self.factory.get(""))
+        # TODO asserts
     
     # Test Answer
     
