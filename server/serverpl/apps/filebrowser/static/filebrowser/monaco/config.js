@@ -55,7 +55,7 @@ export function config(completion) {
         // DEFINE CUSTOM THEME
         const SPECIAL_PATTERN = /(title|author|introduction|introductionh|teacher|text|texth|build|before|form)(?=(=|(\+=)|=%))/;
         const VARIABLE_PATTERN = /\s*\w+(\.\w)*(?=(=|(\+=)|=%))/;
-        const REFERENCE_PATTERN = /\s*(@((?<path1>.+))|template\s*=\s*(?<path2>.+))/;
+        //const REFERENCE_PATTERN = /\s*(@((?<path1>.+))|template\s*=\s*(?<path2>.+))/;
     
         monaco.languages.register({ id: PREMIER_LANGAGE }); 
         
@@ -64,7 +64,7 @@ export function config(completion) {
                 root: [
                     [SPECIAL_PATTERN, 'special'],
                     [VARIABLE_PATTERN, 'variable'],
-                    [REFERENCE_PATTERN, 'reference']
+                    //[REFERENCE_PATTERN, 'reference']
                 ]
             }
         });
@@ -100,7 +100,7 @@ export function config(completion) {
         }
 
         // CODE LENS
-        monaco.languages.registerCodeLensProvider(PREMIER_LANGAGE, {
+        /*monaco.languages.registerCodeLensProvider(PREMIER_LANGAGE, {
             provideCodeLenses: function(model, token) {
                 let lens = [];
                 const lines = model.getValue().split('\n');
@@ -129,6 +129,7 @@ export function config(completion) {
                 return codeLens;
             }
         });
+        */
     
         // FOLDINGS
         monaco.languages.registerFoldingRangeProvider(PREMIER_LANGAGE, {
