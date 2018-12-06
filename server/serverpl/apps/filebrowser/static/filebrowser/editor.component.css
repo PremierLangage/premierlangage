@@ -22,7 +22,6 @@ body {
 
 #editor-container > editor {
     display: flex;
-    flex-direction: column;
     flex-flow: column;
     height: 100%;
     padding: 0px;
@@ -31,6 +30,7 @@ body {
 #workspace {
     display: flex;
     flex: 1;
+    overflow: hidden;
 }
 
 
@@ -78,9 +78,7 @@ body {
 #explorer {
     position: relative;
     width: 300px;
-    display: flex;
-    flex-direction: column;
-    resize: horizontal;
+    height: 100%;
 }
 
 #explorer__tab { 
