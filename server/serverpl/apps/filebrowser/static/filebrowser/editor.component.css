@@ -79,6 +79,7 @@ body {
     position: relative;
     width: 300px;
     height: 100%;
+    background-color: #F2F2F2;
 }
 
 #explorer__tab { 
@@ -147,18 +148,20 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    background-color: #F5F5F5;
 }
 
 #output-container {
     background: white;
-    left: 300px;
     position: absolute;
-    bottom: 30px;
+    left: 300px;
+    bottom: 32px;
     width: calc(100% - 300px);
     height: 36px;
     max-height: calc(100% - 66px);
-    z-index: 1;
     overflow: hidden;
+    background-color: #F5F5F5;
 }
 
 #output__tab {
@@ -170,24 +173,17 @@ body {
 #output__content {
     overflow: auto;
     padding: 0 1rem;
-    height: calc(100% - 36px);
     margin: 36px 0; 
+    height: 100%;
 }
-
 
 /* FOOTER */
 .footer {
     display: flex;    
     align-content: center;
     align-items: center;
-    min-height:32px;
-    background-color:#CCCCCC11;
-    font-size: 14px;
-}
-
-.center {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%,-50%);
+    height: 32px;
+    background-color:#343A40;
+    color: white;
+    font-size: 12px;
 }

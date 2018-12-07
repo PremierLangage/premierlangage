@@ -39,35 +39,34 @@
         <md-progress-circular ng-if='editor.runningTask()' class='center' md-mode="indeterminate" md-diameter="50"></md-progress-circular>
     </div>
 
-    <!-- Welcome  -->
+    <!-- Welcome  
     <div id='welcome-container' class='border' ng-if='editor.shouldShowWelcome()'>
         <h3>Pl Editor</h3>
         <md-button class="md-primary" ng-click='editor.addFile()'>New File</md-button>
         <md-button class="md-primary" ng-click='editor.addFolder()'>New Folder</md-button>
         <md-button class="md-primary" ng-click='editor.gitClone()'>Clone Repository</md-button>
     </div>
-
+-->
     <!-- Code Editor -->
-    <div id="monaco-container" class='border'>
+    <div id="monaco-container">
         <monaco></monaco>
     </div>
     
-        <!-- Welcome  -->
-    <div id='output-container' class='border' ng-style="{ height: editor.outputHeight }">
-        <div id='output__tab' class="editor__tab border-bottom">
-            <h5 class='editor__tab-item'>Output</h5>
+    <div id='output-container' class='border-top' ng-style="{ height: editor.outputHeight }">
+        <div id='output__tab' class="editor__tab">
+            <span class='editor__tab-item'>OUTPUT</span>
             <div class="mdl-layout-spacer"></div>
             
             <div class='editor__tab-item' ng-click='editor.outputClear()'>
-                <md-tooltip>Clear</md-tooltip><i class="fas fa-trash-alt"></i>
+                <md-tooltip md-direction="top">Clear</md-tooltip><i class="fas fa-trash-alt"></i>
             </div>
             
             <div class='editor__tab-item' ng-click='editor.outputExpandShrink()'>
-                <md-tooltip>Expand/Shrink</md-tooltip><i class="fas fa-arrows-alt-v"></i>
+                <md-tooltip md-direction="top">Expand/Shrink</md-tooltip><i class="fas fa-arrows-alt-v"></i>
             </div>
 
             <div class='editor__tab-item' ng-click='editor.outputToggle()'>
-                <md-tooltip>Toggle</md-tooltip><i class="fas fa-eye"></i>
+                <md-tooltip md-direction="top">Toggle</md-tooltip><i class="fas fa-eye"></i>
             </div>
         </div>
         <div id='output__content'>  
