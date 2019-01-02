@@ -13,17 +13,19 @@ nav:
 - Ecrire une Feuille d'Exercices: 'pltp.md'
 - Templates:
     - 'Index': 'template_index.md'
+    - 'Java': 'template_java.md'
 - Builders:
     - 'Index': 'builder_index.md'
-    - 'before': 'before.md'
-    - 'build': 'build.md'
+    - 'Before': 'before.md'
+    - 'Build': 'build.md'
 - Formulaires:
     - 'Index': 'form_index.md'
     - 'Éditeur de Texte': 'text_editor.md'
 - Graders:
     - 'Index': 'grader_index.md'
-    - 'evaluator': 'evaluator.md'
-    - 'evalfunc': 'evalfunc.md'
+    - 'Evaluator': 'evaluator.md'
+    - 'Evalfunc': 'evalfunc.md'
+    - 'Java': 'grader_java.md'
 
 theme:
     name: null
