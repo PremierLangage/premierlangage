@@ -3,7 +3,7 @@
 ## Résumé
 
 
-* **Inclusion:** `@ /lib/builder/build.py [builder.py]`
+* **Inclusion:** `@ /builder/build.py [builder.py]`
 
 * **Clés utilisées**: `builder/builder.py, build`
 ___
@@ -62,7 +62,7 @@ ___
 
 
 
-## Example
+## Exemple
 ```
 @ /builder/build.py [builder.py]
 

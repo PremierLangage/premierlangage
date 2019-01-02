@@ -14,7 +14,7 @@ ___
 
 * mots-clés : `evaluator, programmation, python3, script, programming`
 
-Example:
+Exemple:
 ```
 @ /utils/sandboxio.py
 @ /grader/evaluator.py [grader.py]
@@ -51,7 +51,7 @@ ___
 
 * mots-clés : `evalfunc, programmation, python3, script, fonction, function, programming`
 
-Example:
+Exemple:
 ```
 @ /utils/sandboxio.py
 @ /grader/evalfunc.py [grader.py]
@@ -77,3 +77,44 @@ def evalfunc(dic, answers):
         return(-1, "Merci de rentrer un entier")
 ==
 ```
+___
+
+
+
+## Java
+
+* [Documentation du grader](../grader_java/)
+
+* mots-clés : `programmation, java, junit, stdout, programming`
+
+
+Exemple:
+```java
+title = Stdout Tests
+
+text ==
+Write a main printing on stdout:
+
+* `Hello` if not argument was provided.
+* `Hello [arg1]` if one argument was provided.
+* `Hello [arg1] and [arg2] ... and [argn]` if n argument was provided.
+==
+
+classname = HelloWorld
+
+stdout_tests==
+"No argument" Hello
+James "Hello James" James
+"2 arguments" "Hello Jhon and James" Jhon James
+!"One argument with space" "Hello Jhon Doe" "Jhon Doe"
+==
+
+editor.language = java
+editor.id = answer
+
+form =@ /form/text_editor.html
+@ /grader/java.py [grader.py]
+@ /builder/none.py [builder.py]
+@ /utils/sandboxio.py
+```
+___

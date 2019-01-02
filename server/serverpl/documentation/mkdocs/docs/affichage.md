@@ -33,7 +33,7 @@ répondre de l'utilisateur (champs de saisie, boutons radios, éditeur de text..
 
 Divers formulaires existent déjà et peuvent être ajouté grâce à l'opérateur `@=`:
 ```
-form =@ /lib/form/text_editor.html
+form =@ /form/text_editor.html
 ```
 Vous pouvez trouver une liste de ces formulaires dans l'onglet ***Formulaires***
 de la documentation.
