@@ -29,13 +29,13 @@ REQUEST_LTI_1P1 = {
 }
 # REQUEST_LTI_1P1 optionnal parameters:
 #   - 'user_id'
-#   - 'roles' 
-#   - 'lis_person_name_given' 
-#   - 'lis_person_name_family' 
-#   - 'lis_person_contact_email_primary' 
-#   - 'context_id' 
-#   - 'context_title' 
-#   - 'context_label' 
+#   - 'roles'
+#   - 'lis_person_name_given'
+#   - 'lis_person_name_family'
+#   - 'lis_person_contact_email_primary'
+#   - 'context_id'
+#   - 'context_title'
+#   - 'context_label'
 
 
 FAKE_CREDENTIALS = {
@@ -76,7 +76,8 @@ class LTITestCase(TestCase):
     @patch('lti.backends.logger')
     def test_right_key(self, backends_logger, middleware_logger):
         params = {
-            **REQUEST_LTI_1P1, **{
+            **REQUEST_LTI_1P1,
+            **{
             'resource_link_id'     : str(uuid.uuid4()),
             'oauth_consumer_key'   : 'provider1',
             'oauth_consumer_secret': 'secret1',

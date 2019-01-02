@@ -21,7 +21,7 @@ class PL(models.Model):
     rel_path = models.CharField(max_length=360, null=False)
     
     
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return str(self.id) + " : " + str(self.name)
 
 
@@ -35,7 +35,7 @@ class PLTP(models.Model):
     rel_path = models.CharField(max_length=360, null=True)
     
     
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return str(self.sha1) + " : " + str(self.name)
     
     
@@ -63,7 +63,7 @@ class Index(models.Model):
         ordering = ['index']
         verbose_name_plural = "Indexes"
     
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return "PLTP - (" + str(self.pltp) + ") | PL - (" + str(self.pl) + ") | Pos - " + str(
                 self.index)
     
