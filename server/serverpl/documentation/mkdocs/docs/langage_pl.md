@@ -54,11 +54,11 @@ student % {"name": "Jake", "age": 20}
 ___
 
 
-* L'opérateur `=%` : Permet d'assigner un dictionnaire à une clé. Le contenu de la
+* L'opérateur `%=` : Permet d'assigner un dictionnaire à une clé. Le contenu de la
                     clé peut être écris sur plusieurs lignes et doit être au format
                     **json**, par exemple:
 ```
-student =%
+student %=
 {
     "name": "Jake",
     "age": 20
@@ -132,8 +132,8 @@ ___
   nous utilisons pour cela l'opérateur `@`. La syntaxe correcte est donc
   `@ chemin/vers/fichier.txt [alias]`, l'alias étant optionnel. Exemple:
 ```
-@ /lib/grader/grader.py
-@ /lib/utils/sandboxio.py [io.py]
+@ /grader/grader.py
+@ /utils/sandboxio.py [io.py]
 ```
 Le fichier `grader.py` sera donc ajouté sous le même nom, et le fichier `sandboxio.py`
 sera ajouté sous le nom de `io.py`.
@@ -155,9 +155,9 @@ Combien font:
 1 + 2 - 3
 ==
 
-form =@ /lib/form/digit_input.html
-grader =@ /lib/grader/math.py
-@ /lib/utils/sandboxio.py [io.py]
+form =@ /form/digit_input.html
+grader =@ /grader/math.py
+@ /utils/sandboxio.py [io.py]
 ```
 
 

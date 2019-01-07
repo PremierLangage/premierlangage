@@ -2,9 +2,13 @@
 
 ## Résumé
 
-* **Inclusion:** `@ /lib/builder/before.py [builder.py]`
+* **Inclusion:** `@ /builder/before.py [builder.py]`
 
 * **Clés utilisées**: `builder / builder.py, before, StopBeforeExec`
+
+* **Utilisé par les templates:**
+    * [Java](../template_java/)
+
 ___
 
 
@@ -65,7 +69,7 @@ ___
 
 
 
-## Example
+## Exemple
 ```
 @ /builder/before.py [builder.py]
 

@@ -28,7 +28,7 @@
             <button id="submit_button" class="btn btn-primary">
                 <i class="fas fa-check"></i> Valider
             </button>
-            <a id="download_env_button" type="button" class="btn btn-secondary" href="{{sandbox_url__}}env/{{id__}}/" download>
+            <a id="download_env_button" type="button" class="btn btn-secondary" href="{% url 'filebrowser:dlenv' id__ %}" download>
                 <i class="fas fa-download"></i> Télécharger l'Environnement
             </a>
         </center>
