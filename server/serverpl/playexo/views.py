@@ -34,9 +34,9 @@ def evaluate(request, activity_id, pl_id):
                     seed=exercise.context['seed']
             )
             return HttpResponse(json.dumps({
-                "exercise"  : None,
-                "navigation": None,
-                "feedback"  : "Réponse(s) sauvegardé.",
+                    "exercise"  : None,
+                    "navigation": None,
+                    "feedback"  : "Réponse(s) sauvegardé.",
             }), content_type='application/json')
         
         elif status['requested_action'] == 'submit':  # Validate
@@ -45,9 +45,9 @@ def evaluate(request, activity_id, pl_id):
             Answer.objects.create(**answer)
             return HttpResponse(
                     json.dumps({
-                        "navigation": exercise.get_navigation(request, context),
-                        "exercise"  : exercise.get_exercise(request),
-                        "feedback"  : render_feedback(feedback),
+                            "navigation": exercise.get_navigation(request, context),
+                            "exercise"  : exercise.get_exercise(request),
+                            "feedback"  : render_feedback(feedback),
                     }),
                     content_type='application/json'
             )
@@ -88,7 +88,6 @@ def activity_view(request, activity_id):
         
         elif session.current_pl and action == "next":
             pls = activity.pltp.pl.all()
-            print(session.current_pl)
             for previous, next in zip(pls, list(pls[1:]) + [None]):
                 if previous == session.current_pl:
                     session.current_pl = next
