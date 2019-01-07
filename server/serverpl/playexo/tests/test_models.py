@@ -14,7 +14,7 @@ from loader.loader import load_file
 from loader.models import PL, PLTP
 from playexo.enums import State
 from playexo.exception import BuildScriptError, SandboxError
-from playexo.models import Activity, Answer, SessionActivity, SessionExercise
+from playexo.models import Activity, Answer, SessionActivity, SessionExercise, SessionTest
 from user_profile.enums import Role
 
 
@@ -59,10 +59,10 @@ class ModelTestCase(TestCase):
         course = Course.objects.create(name="test", label="bidon", consumer="bidon",
                                        consumer_id="bidon")
         params = {
-            'resource_link_id'   : 1,
-            'resource_link_title': "An Activity",
-            'oauth_consumer_key' : course.consumer,
-            'context_id'         : course.consumer_id,
+                'resource_link_id': 1,
+                'resource_link_title': "An Activity",
+                'oauth_consumer_key': course.consumer,
+                'context_id': course.consumer_id,
         }
         with self.assertRaises(Http404):
             Activity.get_or_create_from_lti(R(), params)
@@ -183,39 +183,43 @@ class ModelTestCase(TestCase):
         s_activity = SessionActivity.objects.create(user=self.user, activity=activity)
         s_exercice = SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         Answer.objects.create(pl=self.pl, user=self.user, grade=10)
-        
-        s_exercice.get_pl(self.factory.get(""), {"test": "test"})
-        # TODO asserts
+
+        res = s_exercice.get_pl(self.factory.get(""), {"test": "test"})
+        self.assertIn("Quentin Coumes", res)
     
     
     def test_sessionexercice_get_exercise(self):
         activity = Activity.objects.create(name="test", pltp=self.pltp)
         s_activity = SessionActivity.objects.create(user=self.user, activity=activity)
         s_exercice = SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
-        
-        s_exercice.get_exercise(self.factory.get(""))
-        # TODO asserts
+
+        res = s_exercice.get_exercise(self.factory.get(""))
+        self.assertIn("Quentin Coumes", res)
         
         s_exercice = SessionExercise.objects.create(session_activity=s_activity)
-        
-        s_exercice.get_exercise(self.factory.get(""))
-        # TODO asserts
+
+        res = s_exercice.get_exercise(self.factory.get(""))
+        self.assertIn("Random add", res)
+    
     
     def test_sessionexercice_get_navigation(self):
         activity = Activity.objects.create(name="test", pltp=self.pltp)
         s_activity = SessionActivity.objects.create(user=self.user, activity=activity)
         s_exercice = SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         
-        s_exercice.get_navigation(self.factory.get(""))
-        # TODO asserts
+        res = s_exercice.get_navigation(self.factory.get(""))
+        self.assertIn("navigation", res)
+    
     
     def test_sessionexercice_get_context(self):
         activity = Activity.objects.create(name="test", pltp=self.pltp)
         s_activity = SessionActivity.objects.create(user=self.user, activity=activity)
         s_exercice = SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
-        
-        s_exercice.get_context(self.factory.get(""))
-        # TODO asserts
+
+        res = s_exercice.get_context(self.factory.get(""))
+        self.assertIn("exercise", res)
+        self.assertIs(type(res), dict)
+    
     
     # Test Answer
     
@@ -269,3 +273,24 @@ class ModelTestCase(TestCase):
         Activity.objects.create(name="test", pltp=self.pltp, course=course)
         self.assertEqual(Answer.user_course_summary(course, self.user)[State.NOT_STARTED],
                          ['100.0', '2'])
+    
+    # Test SessionTest
+    
+    def test_sessiontest_save(self):
+        s_test = SessionTest.objects.create(user=self.user, pl=self.pl)
+        for i in range(SessionTest.MAX_SESSION_PER_USER + 2):
+            SessionTest.objects.create(user=self.user, pl=self.pl)
+        self.assertEquals(len(SessionTest.objects.filter(user=self.user)),
+                          SessionTest.MAX_SESSION_PER_USER)
+        self.assertEquals(dict(self.pl.json), s_test.context)
+
+
+    def test_sessiontest_get_pl(self):
+        s_test = SessionTest.objects.create(user=self.user, pl=self.pl)
+        res = s_test.get_pl(self.factory.get(""), {"test": "test"}, answer={"grade": 50})
+        self.assertIn("Quentin Coumes", res)
+        
+    def test_sessiontest_get_exercise(self):
+        s_test = SessionTest.objects.create(user=self.user, pl=self.pl)
+        res = s_test.get_exercise(self.factory.get(""))
+        self.assertIn("Quentin Coumes", res)

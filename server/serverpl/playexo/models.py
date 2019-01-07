@@ -437,17 +437,9 @@ class SessionTest(SessionExerciseAbstract):
         
         q = SessionTest.objects.filter(user=self.user).order_by("-date")
         if len(q) >= self.MAX_SESSION_PER_USER:
-            for elem in q[self.MAX_SESSION_PER_USER:]:
-                elem.delete()
+            q[0].delete()
         
         super().save(*args, **kwargs)
-    
-    
-    def delete(self, *args, **kwargs):
-        """Delete the corresponding PL when the session is deleted."""
-        self.pl.delete()
-        super().delete(*args, **kwargs)
-    
     
     def get_pl(self, request, context, answer=None):
         """Return a template of the PL rendered with context.
@@ -488,7 +480,7 @@ class SessionTest(SessionExerciseAbstract):
         If answer is given, will determine if the seed must be reroll base on its grade."""
         try:
             return self.get_pl(request, context, answer)
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             error_msg = str(e)
             if request.user.profile.can_load():
                 error_msg += "<br><br>" + htmlprint.html_exc()
