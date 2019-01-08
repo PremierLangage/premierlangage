@@ -182,6 +182,7 @@ class ViewsTestCase(TestCase):
                 },
                 follow=True
         )
+        self.assertIn("UPEM - PL", response.content.decode())
         
     def test_activity_view_no_next(self):
         s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity)
@@ -195,6 +196,7 @@ class ViewsTestCase(TestCase):
                 },
                 follow=True
         )
+        self.assertIn("UPEM - PL", response.content.decode())
     
     
     def test_activity_400(self):
