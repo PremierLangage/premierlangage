@@ -12,20 +12,23 @@ ___
 
 ## Utilisation
 Ce builder permet de déclarer un script Python 3 dans la clé `build`.
-Ce script doit déclaré une fonction qui peut modifier, créer ou
-supprimer des clés du context de l'exercice.
+Ce script doit déclarer une fonction qui peut modifier, créer ou
+supprimer des clés du contexte de l'exercice.
 
-Le fonction build à pour prototype `def build(dic)` où dict est un dictionnaire
+Le fonction `build` a pour prototype `def build(dic)` où dic est un dictionnaire
 contenant l'ensemble des variables de l'exercice. La fonction doit retourner un
 dictionnaire, qui est le contexte modifié.
 
 
 * Avantages :
-    * Possibilité d'utilisé les modules built-in ainsi que d'importer tout fichier
+    * Possibilité d'utiliser les modules built-in ainsi que d'importer tout fichier
       ajouté à l'exercice grâce à la syntaxe `@ monscript.py`
     * Permet de déclarer des clés de type : 
       `int, float, string, list, dict and NoneType`. Tout autre type encodera
       `type.__dict__`.
+    * Permet d'écrire des tests pour le build en utilisant les bibliothèques
+      usuelles de test unitaire de Python (en mettant aussi la fonction `build`
+      dans un fichier inclu).
 * Inconvénients :
     * Nécessite l'écriture d'une fonction et d'accèder à un dictionnaire
       pour chaque modification de variable, ce qui peut devenir vite redondant.
@@ -35,7 +38,7 @@ ___
 
 ## Aléatoire
 Pour utiliser l'aléatoire, le module random doit tout d'abord être initialisé avec
-la seed du context de l'exercice:
+la graine (seed) du contexte de l'exercice:
 ```python
 import random
 
@@ -54,7 +57,7 @@ def build(dic):
     
 ```
 
-## Débugage
+## Débogage
 Il est possible de *print* dans *sys.stderr* à des fins de débugage. Ces prints
 ne seront affiché qu'en cas d'erreur, et seulement aux professeurs:
 ```python
