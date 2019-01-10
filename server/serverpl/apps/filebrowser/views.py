@@ -40,7 +40,6 @@ def option_get_document(request):
         return JsonResponse({'content': content })
     except Exception as e:  # pragma: no cover
         msg = "Impossible to open '" + path + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
-        messages.error(request, msg)
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
