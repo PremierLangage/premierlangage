@@ -67,6 +67,19 @@ student %=
 ___
 
 
+* L'opérateur `+` : Permet d'ajouter du contenu à une clé déjà existante. Le contenu
+                    de la clé doit etre écris sur une seule ligne, par exemple:
+```
+title = Addition
+title + soustraction
+```
+La clé **title** vaut maintenant:
+```
+Addition soustraction
+```
+___
+
+
 * L'opérateur `+=` : Permet d'ajouter du contenu à une clé déjà existante,
                      doit être écris sur plusieurs lignes, de la lignes suivant
                      `+=` à la ligne précédant le prochain `==`, par exemple:
@@ -87,13 +100,11 @@ et des divisions
 ```
 La clé **title** vaut maintenant:
 ```
-Addition
-et Soustraction
+Addition et Soustraction
 ```
 et la clé **text** vaut:
 ```
-Faisons des multiplications
-et des divisions
+Faisons des multiplications et des divisions
 ```
 Vous remarquerez que dans les deux cas, le nouveau contenu est ajouté sur une nouvelle ligne.
 ___

@@ -29,13 +29,11 @@ def get_location(directory, path, current=""):
         
     elif path.startswith('/'):  # Absolute path
         abs_curr = join(directory.root, current)
-        if gitcmd.in_repository(abs_curr):
+        if gitcmd.in_repository(abs_curr, False):
             top = gitcmd.top_level(abs_curr)[1]
             # Check if the repo is inside FILEBROWSER_ROOT
             if realpath(settings.FILEBROWSER_ROOT) in realpath(top):
                 path = join(basename(top), path[1:])
-            else:
-                path = path[1:]
         else:
             path = path[1:]
             
