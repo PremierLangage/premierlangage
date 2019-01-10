@@ -44,10 +44,18 @@ import random
 
 def build(dic):
     random.seed(dic['seed'])
+    [...]
 ```
-___
+Si Sympy est utilisé, il faut instancier Random :
+```python
+import random
 
-
+def build(dic):
+    rd = random.Random()
+    rd.seed(dic['seed'])
+    [...]
+    
+```
 
 ## Débogage
 Il est possible de *print* dans *sys.stderr* à des fins de débugage. Ces prints

@@ -5,14 +5,12 @@
 import hashlib
 import logging
 import time
-from os.path import abspath, basename, dirname, join, splitext
+from os.path import basename, splitext
 
 import htmlprint
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
 
 from filebrowser.models import Directory
-from loader.exceptions import DirectoryNotFound
 from loader.models import Index, PL, PLTP
 from loader.parser import get_type, parse_file
 
@@ -128,13 +126,16 @@ def reload_pltp(directory, rel_path, original):
         originals = list(original.pl.all())
         original.pl.clear()
         for pl in pl_list:
-            correspond = list(filter(lambda i: i.directory == pl.directory and i.rel_path == pl.rel_path,
-                                     originals))
+            correspond = list(
+                    filter(lambda i: i.directory == pl.directory and i.rel_path == pl.rel_path,
+                           originals))
             if correspond:
                 correspond = correspond[0]
                 correspond.json = pl.json
                 correspond.save()
-                logger.info("PL '" + str(correspond.id) + " (" + correspond.name + ")' has been updated.")
+                logger.info(
+                        "PL '" + str(
+                            correspond.id) + " (" + correspond.name + ")' has been updated.")
                 Index.objects.create(pltp=original, pl=correspond)
             else:
                 pl.save()

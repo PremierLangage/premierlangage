@@ -26,6 +26,7 @@ a %=
 "b" : 2}
 ==
 
+
 b%{"a" : 1, "b" : 2}
 
 settings.oneshot=yes
@@ -45,3 +46,4 @@ e.f.g +=
 e.f.h = 1
 e.f.i%{"a": 1, "b" : 2}
 
+a.a = 3
