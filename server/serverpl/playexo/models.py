@@ -26,6 +26,9 @@ logger = logging.getLogger(__name__)
 
 
 class Activity(LTIModel):
+    """
+    le modèle d'activité
+    """
     name = models.CharField(max_length=200, null=False)
     open = models.BooleanField(default=True)
     pltp = models.ForeignKey(PLTP, on_delete=models.CASCADE)
