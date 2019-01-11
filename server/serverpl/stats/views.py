@@ -20,9 +20,9 @@ def user(request):
     userdic={}
     datedic=Counter()
     for a in queryset :
-        if a.user not in  userdic:
+        if a.user not in userdic:
             userdic[a.user.id]=[]
-        if a.grade and a.grade > -1 :
+        if a.grade and a.grade > -1:
             sdate = datetime.datetime.strftime(a.date, "%Y/%m/%d")
             datedic[sdate] += 1
             userdic[a.user.id].append(sdate)
@@ -31,9 +31,25 @@ def user(request):
 
     plt.plot(list(datedic.values()))
     x = mpld3.fig_to_html(plt.gcf())
-    return render(request, "stats/stats.html", {
-        "show": x,
-    })
+    return render(request, "stats/stats.html", {  "show": x,})
+
+class DicListe(dict):
+    def __missing__(self, key):
+        return list()
+
+def plstats(request, plid):
+    queryset = Answer.objects.filter(pl=plid)
+    userpldic=DicListe()
+    for a in queryset:
+        userpldic[(a.pl.id,a.user.id)].append(a)
+
+    for plid, uid in userpldic.keys():
+        pass # TODO
+
+
+    return render(request, "stats/stats.html", { "show": "coucou"+str(queryset)+"kiki", })
+
+
 
 class TagCounter(dict):
     def __missing__(self, key):
