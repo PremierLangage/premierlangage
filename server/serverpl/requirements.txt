@@ -13,7 +13,7 @@ jinja2
 jsonfield
 markdown
 matplotlib
-mpl3d
+mpld3
 mkdocs
 mock
 oauth2
