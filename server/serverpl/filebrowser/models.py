@@ -1,12 +1,11 @@
 import os
 from os.path import isdir, join
 
-
-from django.db import models
-from django.contrib.auth.models import User
-from django.dispatch import receiver
-from django.db.models.signals import post_save
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 
@@ -18,6 +17,7 @@ class Directory(models.Model):
     remote = models.CharField(max_length=1024, blank=True, default='')
     root = models.CharField(max_length=1024, blank=True)
     public = models.BooleanField(default=False, blank=True)
+    
     
     def __str__(self):
         return self.name
@@ -70,13 +70,13 @@ class Directory(models.Model):
         return (self.owner == user
                 or self.public
                 or user.profile.is_admin()
-                or user in self.read_auth.all() 
+                or user in self.read_auth.all()
                 or user in self.write_auth.all())
     
     
     def can_write(self, user):
         """Return True if user have write right on this directory, False if not."""
-        return (self.owner == user 
+        return (self.owner == user
                 or user.profile.is_admin()
                 or user in self.write_auth.all())
     

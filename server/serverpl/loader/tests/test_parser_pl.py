@@ -8,8 +8,8 @@ from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
 
 from filebrowser.models import Directory
+from loader.exceptions import FileNotFound, SemanticError, SyntaxErrorPL
 from loader.parsers import pl
-from loader.exceptions import SyntaxErrorPL, FileNotFound, SemanticError, DirectoryNotFound
 
 
 FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'loader/tests/tmp')
@@ -23,22 +23,22 @@ class PlParserTestCase(TestCase):
     
     @classmethod
     def setUpTestData(cls):
+        os.makedirs(FAKE_FB_ROOT)
         cls.user = User.objects.create_user(username='user', password='12345')
-        
-        dir_name = os.path.join(FAKE_FB_ROOT, "dir1")
-        if os.path.isdir(dir_name):
-            shutil.rmtree(dir_name)
         cls.dir = Directory.objects.create(name='dir1', owner=cls.user)
-        shutil.copytree(os.path.join(FAKE_FB_ROOT, '../fake_pl'), cls.dir.root)
-        
-        dir_name = os.path.join(FAKE_FB_ROOT, "dir2")
-        if os.path.isdir(dir_name):
-            shutil.rmtree(dir_name)
         cls.dir2 = Directory.objects.create(name='dir2', owner=cls.user)
+        shutil.copytree(os.path.join(FAKE_FB_ROOT, '../fake_pl'), cls.dir.root)
         os.makedirs(cls.dir2.root)
         
         with open(os.path.join(FAKE_FB_ROOT, 'dir2', 'fake.pl'), "w") as f:
             f.write("a=a")
+    
+    
+    @classmethod
+    def tearDownClass(cls):
+        if os.path.isdir(FAKE_FB_ROOT):
+            shutil.rmtree(FAKE_FB_ROOT)
+        super().tearDownClass()
     
     
     def test_init_parser(self):
@@ -58,7 +58,7 @@ class PlParserTestCase(TestCase):
     def test_parse(self):
         dic, war = pl.Parser(self.dir, "full.pl").parse()
         # warning
-        self.assertIn("Key 'e.f.h' overwritten at line", war[0])
+        self.assertIn("Key 'e.f.h' overwritten at line", str(war))
         # = += +
         self.assertEqual(dic['title'], 'testtesttest')
         # ==

@@ -11,6 +11,7 @@ from django.test import TestCase, override_settings
 from filebrowser.models import Directory
 from loader import loader, models
 from serverpl.settings import BASE_DIR
+from .utils import copy_parser
 
 
 FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'loader/tests/tmp')
@@ -26,28 +27,38 @@ class LoaderTestCase(TestCase):
     
     @classmethod
     def setUpTestData(cls):
+        os.makedirs(FAKE_FB_ROOT)
+        copy_parser()
         cls.user = User.objects.create_user(username='user', password='12345')
-        dir_name = os.path.join(FAKE_FB_ROOT, "dir1")
-        if os.path.isdir(dir_name):
-            shutil.rmtree(dir_name)
         cls.dir = Directory.objects.create(name='dir1', owner=cls.user)
         shutil.copytree(os.path.join(FAKE_FB_ROOT, '../fake_pl'), cls.dir.root)
-
-
+    
+    
+    @classmethod
+    def tearDownClass(cls):
+        if os.path.isdir(FAKE_FB_ROOT):
+            shutil.rmtree(FAKE_FB_ROOT)
+        super().tearDownClass()
+    
+    
     def test_load_file(self):
-        res = loader.load_file(self.dir, "working.pl")
-        self.assertEqual(type(res[0]), models.PL)
-        self.assertEqual(res[1], [])
+        try:
+            res = loader.load_file(self.dir, "working.pl")
+            self.assertEqual(type(res[0]), models.PL)
+            self.assertEqual(res[1], [])
+            
+            res = loader.load_file(self.dir, "working.pltp")
+            self.assertEqual(type(res[0]), models.PLTP)
+            self.assertEqual(res[1], [])
+            
+            res = loader.load_file(self.dir, "missing_pl.pltp")
+            self.assertIs(res[0], None)
+            self.assertEqual(type(res[1]), str)
+        except AssertionError:
+            print(res[1])
+            raise
     
-        res = loader.load_file(self.dir, "working.pltp")
-        self.assertEqual(type(res[0]), models.PLTP)
-        self.assertEqual(res[1], [])
     
-        res = loader.load_file(self.dir, "missing_pl.pltp")
-        self.assertIs(res[0], None)
-        self.assertEqual(type(res[1]), str)
-
-
     @override_settings(DEBUG=True)
     @patch('loader.parser.logger')
     def test_load_file_debug(self, mock_logger):
