@@ -1,3 +1,5 @@
+
+
 export function canRead(item) {
     return item && item.read;
 }
@@ -6,7 +8,7 @@ export function canWrite(item) {
     return item &&  item.write;
 }
 
-export function readOnly(item) {
+export function readonly(item) {
     return !canWrite(item);
 }
 
@@ -27,12 +29,16 @@ export function isPl(item) {
     return item &&  item.name.endsWith('.pl');
 }
 
+export function isMarkdown(item) {
+    return item &&  item.name.endsWith('.md');
+}
+
 export function isPltp(item) {
     return item &&  item.name.endsWith('.pltp');
 }
 
 export function canBePreviewed(item) {
-    return item && isPl(item) || isPltp(item);
+    return item && isPl(item) || isPltp(item) || isMarkdown(item);
 }
 
 export function isHome(item) {

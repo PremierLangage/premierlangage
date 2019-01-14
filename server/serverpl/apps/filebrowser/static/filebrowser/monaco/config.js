@@ -79,7 +79,7 @@ export function config(completion) {
             ]
         });
     
-        const editor = monaco.editor.create($('#editor-monaco').get(0), {
+        const editor = monaco.editor.create($('.monaco__editor').get(0), {
             value: '',
             theme: 'premierlangage',
             language: '',

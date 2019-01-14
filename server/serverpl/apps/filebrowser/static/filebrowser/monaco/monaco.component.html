@@ -1,29 +1,47 @@
 <div class='editor__tab border-bottom'>
-    <!-- OPENED DOCUMENTS -->
-    <div class='editor__tab-item' ng-repeat='document in monaco.documents() track by document.path'  
-         ng-class="{'active': monaco.isSelection(document), 'changed': document.changed}">
-        <md-tooltip>{{document.path}}</md-tooltip>
-        <i class="{{document.icon}}"></i> 
-        &emsp;<span ng-click='monaco.selectDocument(document)'>{{document.name}}</span>&emsp;
-        <span class='btn-close' ng-click='monaco.removeDocument(document)'>&nbsp;&times;</span>
+    <!-- #region tabs -->
+    <div class='editor__tab-item' ng-repeat='resource in monaco.resources() track by resource.path'  
+         ng-class="{'active': monaco.isSelection(resource), 'changed': resource.changed}">
+        <md-tooltip>{{resource.path}}</md-tooltip>
+        <i class="{{resource.icon}}"></i>
+        &emsp;<span ng-click='monaco.openResource(resource)'>{{resource.name}}</span>&emsp;
+        <span class='btn-close' ng-click='monaco.closeResource(resource)'>
+            &nbsp;{{ resource.changed ? '&bull;' : '&times;' }}
+        </span>
     </div>
-    
     <div class="mdl-layout-spacer"></div>
-    <!-- OPTIONS -->
-    <div class='editor__tab-item' ng-if='monaco.canPreviewSelection()' ng-click='monaco.previewSelection()'>
+    <div class='editor__tab-item' ng-if='monaco.hasPreview()' ng-click='monaco.didTapOpenPreview()'>
         <md-tooltip>Preview</md-tooltip><i class="fas fa-play"></i>
     </div>
-</div>
-
-<div class='editor__content'>
-    <div id='editor-monaco' ng-style="{ width: monaco.preview() ? '50%' : '100%' }">
+    <div class='editor__tab-item' ng-if='monaco.previewHtml()' ng-click='monaco.didTapHidePreview()'>
+        <md-tooltip>Close Preview</md-tooltip><i class="fas fa-times"></i>
     </div>
-    <div id='editor-preview' ng-if='monaco.preview()' ng-bind-html='monaco.preview() | unsafe'>
-        <md-progress-circular  class='center' md-mode='indeterminate' md-diameter='50'></md-progress-circular>
+    <!-- #endregion -->
+</div>
+
+<div class='monaco__main'>
+    <div class='monaco__editor'></div>
+    <div class='monaco__preview border' ng-show='monaco.previewHtml()'>
+        <h5>{{monaco.selection().name}} preview</h5><hr/>
+        <div ng-bind-html='monaco.previewHtml() | unsafe'></div>
     </div>
 </div>
+<md-progress-circular class='center' md-mode='indeterminate' md-diameter='50' ng-if='monaco.runningTask()'></md-progress-circular>
 
-<div ng-if="monaco.runningTask()">
-    <md-progress-circular  class='center' md-mode='indeterminate' md-diameter='50'></md-progress-circular>
-</div>
 
+<script type="text/ng-template" id="pltp-reload.template.html">
+<md-dialog aria-label='Reload PLTP'>
+  <md-dialog-content style="padding: 1rem 3rem;display: flex;width: 400px;">
+    <h2>Reload PLTP</h2>
+    <md-input-container>
+        <label>Activity ID</label>
+        <input required type='number' name="activity_id" aria-label="activity_id" ng-model="activity_id">
+    </md-input-container>
+   <span class="helptext"><br>ID of the activity which should be reloaded with this PLTP. It should be the ID inside the URL used on your LTI consumer (Moodle, Blackboard, ...), and not the URL in your address bar after clicking on said URL.<br><br><strong>Caution: The order in which PL are included should stay the same, as well as the total number of PL. May not work if the PLTP used to reload activity is too different than the original one.</strong></span>
+  </md-dialog-content>
+  <md-dialog-actions>
+    <md-button ng-disabled='!activity_id' ng-click="ok()" class="md-primary">OK</md-button>
+    <md-button ng-click="cancel()" class="md-primary">CANCEL</md-button>
+  </md-dialog-actions>
+</md-dialog>
+</script>

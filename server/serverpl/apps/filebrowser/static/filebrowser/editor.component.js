@@ -5,22 +5,19 @@ angular.module('editor')
     controllerAs: 'editor'
 });
 
-function EditorComponent(EditorService, MonacoService) {        
+function EditorComponent($scope, EditorService, MonacoService) {        
     const editor = this;
-    
-    const OUTPUT_HIDDEN_HEIGHT = '36px';
-    const OUTPUT_NORMAL_HEIGHT = '300px';
-    const OUTPUT_FULL_HEIGHT = 'calc(100% - 66px)';
-
     editor.searchQuery = '';
     editor.searchResult = [];
     editor.searching = false;
-    editor.outputHeight = '36px';
+    const consoleNode = angular.element('#console');
 
     EditorService.onLogAdded = function() {
-        if (editor.outputHeight === OUTPUT_HIDDEN_HEIGHT) {
-            editor.outputHeight = OUTPUT_NORMAL_HEIGHT;
+        const height = consoleNode.height();
+        if (height < 300) {
+            consoleNode.height(400);
         }
+        $scope.$apply();
     }
 
     editor.logs = function() {
@@ -28,41 +25,23 @@ function EditorComponent(EditorService, MonacoService) {
     }
 
     editor.addFile = function() {
-        EditorService.addFile(EditorService.documents[0]);
+        EditorService.addFile(EditorService.resources[0]);
     }
 
     editor.addFolder = function() {
-        EditorService.addFolder(EditorService.documents[0]);
+        EditorService.addFolder(EditorService.resources[0]);
     }
 
-    editor.gitClone = function() {
-        EditorService.gitClone(EditorService.documents[0]);
-    }
-
-    editor.documents = function() {
-        return EditorService.documents;
+    editor.resources = function() {
+        return EditorService.resources;
     };
    
     editor.inRepository = function() {
         return editor.selection() && editor.selection().repo;
     }
     
-    editor.outputClear = function() {
+    editor.clearConsole = function() {
         EditorService.clearLogs();
-    }
-
-    editor.outputExpandShrink = function() {
-        if (editor.outputHeight === OUTPUT_HIDDEN_HEIGHT) {
-            editor.outputHeight = OUTPUT_NORMAL_HEIGHT;
-        } else if(editor.outputHeight === OUTPUT_NORMAL_HEIGHT) {
-            editor.outputHeight = OUTPUT_FULL_HEIGHT;
-        } else {
-            editor.outputHeight = OUTPUT_NORMAL_HEIGHT;
-        }
-    }
-
-    editor.outputToggle = function() {
-        editor.outputHeight = editor.outputHeight === OUTPUT_HIDDEN_HEIGHT ? OUTPUT_NORMAL_HEIGHT : OUTPUT_HIDDEN_HEIGHT;
     }
 
     editor.search = function() {
@@ -86,10 +65,6 @@ function EditorComponent(EditorService, MonacoService) {
         menu.open();
     }
 
-    editor.shouldShowWelcome = function() {
-        return MonacoService.isEmpty();
-    }
-
     editor.updateSearch = function(event) {
         if (event.keyCode ===  27) { // esc
             editor.searching = false;
@@ -108,5 +83,15 @@ function EditorComponent(EditorService, MonacoService) {
         return '';
     };
 
-    EditorService.loadDocuments();     
+    EditorService.loadResources();
+    
+    EditorService.setResizable('#explorer', function(node, e, startX, startY, startWidth, startHeight) {
+        node.style.width = (startWidth + e.clientX - startX) + 'px';
+        MonacoService.layout();
+    });
+
+    EditorService.setResizable('#console', function(node, e, startX, startY, startWidth, startHeight) {
+        node.style.height = (startHeight - e.clientY + startY) + 'px';
+        MonacoService.layout();
+    });
 }

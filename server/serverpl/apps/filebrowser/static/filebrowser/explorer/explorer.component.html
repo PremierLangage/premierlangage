@@ -1,28 +1,28 @@
 <ul class='tree'>
-    <li ng-repeat='document in explorer.documents track by document.path'>  
-        <div class='tree__item editing' ng-if='document.editing'>
+    <li ng-repeat='resource in explorer.resources track by resource.path'>  
+        <div class='tree__item editing' ng-if='resource.editing'>
             <span>
-                <i class="{{document.icon}}"></i>&nbsp;  
+                <i class="{{resource.icon}}"></i>&nbsp;  
                 <input 
                     type='text' 
                     placeholder='Press enter to create esc to cancel...'
-                    auto-focus='true' ng-model='document.name' 
-                    ng-keydown='explorer.endEditing(document, $event)'/>
+                    auto-focus='true' ng-model='resource.name' 
+                    ng-keydown='explorer.endEditing(resource, $event)'/>
             </span>    
         </div>
         <div
-            ng-if='!document.editing'
-            id='{{document.path}}'
-            ng-class='{"tree__item": true, "selected": explorer.isSelection(document)}'
-            ng-on-contextmenu="explorer.showOptions(document, $mdMenu, $event)"
-            ng-click='explorer.selectDocument(document)'
-            drop='explorer.moveDocument'
+            ng-if='!resource.editing'
+            id='{{resource.path}}'
+            ng-class='{"tree__item": true, "selected": explorer.isSelection(resource)}'
+            ng-on-contextmenu="explorer.showOptions(resource, $mdMenu, $event)"
+            ng-click='explorer.select(resource)'
+            drop='explorer.moveResource'
             droppable
             draggable>        
-            <span><i class="{{document.icon}}"></i>&nbsp;<span>{{document.name}}</span></span>
+            <span><i class="{{resource.icon}}"></i>&nbsp;<span>{{resource.name}}</span></span>
             <span class='tree__options'>
                 <ng-container ng-repeat='option in explorer.options'>
-                    <span ng-if='option.enabled(document)' ng-click='option.action(document, $event)'>
+                    <span ng-if='option.enabled(resource)' ng-click='option.action(resource, $event)'>
                         <i class="{{option.icon}}"></i>&nbsp;
                         <md-tooltip>{{option.label}}</md-tooltip>
                     </span>
@@ -30,6 +30,6 @@
             </span> 
             <div class='overlay'></div>
         </div>
-        <explorer ng-if='document.expanded' documents="document.children"></explorer>
+        <explorer ng-if='resource.expanded' resources="resource.children"></explorer>
     </li>
 </ul>

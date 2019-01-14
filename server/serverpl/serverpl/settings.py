@@ -33,7 +33,6 @@ if DEBUG:
 PREREQ_APPS = [
     'taggit',
     'hitcount',
-    'livereload',
     'django_http_method',
     'django_markdown',
     'django.contrib.admin',

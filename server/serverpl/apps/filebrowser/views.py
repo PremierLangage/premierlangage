@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
+from django.urls import reverse
 from django.http import (Http404, HttpResponse, HttpResponseBadRequest,
                          HttpResponseNotAllowed, HttpResponseNotFound,
                          JsonResponse)
@@ -27,7 +28,7 @@ def index(request):
     """ Used by the editor module to navigate """
     return render(request, 'filebrowser/index.html')
 
-def option_get_document(request):
+def option_get_resource(request):
     if request.method != 'GET':
         return HttpResponseNotAllowed(['GET'])
 
@@ -44,9 +45,8 @@ def option_get_document(request):
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
 
-def option_get_documents(request):
+def option_get_resources(request):
     userId = str(request.user.id)
-    root = abspath(join(settings.FILEBROWSER_ROOT, userId))
     root_path_length = len(settings.FILEBROWSER_ROOT)
 
     repos = {}
@@ -113,7 +113,7 @@ def option_get_documents(request):
     except Exception as e:
         return HttpResponseNotFound(str(e))
 
-def option_update_document(request):
+def option_update_resource(request):
     """ View used to update a document (file). """
     if not request.method == 'POST':
         return HttpResponseNotAllowed(['POST'])
@@ -133,7 +133,7 @@ def option_update_document(request):
     except Exception as e:
         return HttpResponseNotFound(str(e))
 
-def option_create_document(request):
+def option_create_resource(request):
     """Create a new file or folder """
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
@@ -177,7 +177,7 @@ def option_create_document(request):
             msg += ("DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
 
-def option_delete_document(request):
+def option_delete_resource(request):
     """Delete a file or folder """
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
@@ -201,7 +201,7 @@ def option_delete_document(request):
             msg += ("DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
 
-def option_rename_document(request):
+def option_rename_resource(request):
     """Rename a  file or folder """
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
@@ -233,7 +233,7 @@ def option_rename_document(request):
             msg += ("DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
 
-def option_move_document(request):
+def option_move_resource(request):
     """ Move POST['path'] to POST['destination']."""
 
     if request.method != 'POST':
@@ -295,7 +295,7 @@ def option_clone(request):
             path = join(path, destination if destination else basename(splitext(url)[0]))
             ret, out, err = gitcmd.set_url(path, url)
             if not ret:
-                return option_get_documents(request)
+                return option_get_resources(request)
             else:
                 shutil.rmtree(path, ignore_errors=True)
                 return HttpResponseNotFound(htmlprint.code(err + out))
@@ -314,7 +314,7 @@ def option_pull(request):
     ret, out, err = gitcmd.pull(to_abs_path(path), username=username, password=password)
     
     if not ret:
-        return option_get_documents(request)
+        return option_get_resources(request)
     else:
         return HttpResponseNotFound(htmlprint.code(err + out))
 
@@ -459,7 +459,7 @@ def option_load_pltp(request):
         path_components = path.split('/')
         directory = Directory.objects.get(name=path_components[0])
         file_path = join(*(path_components[1:]))
-        pltp, warnings = load_file(directory, file_path, True)
+        pltp, warnings = load_file(directory, file_path)
 
         if not pltp and not warnings:  # pragma: no cover
             return HttpResponseBadRequest("This PLTP is already loaded")
@@ -474,9 +474,9 @@ def option_load_pltp(request):
             url_lti = request.build_absolute_uri(reverse("playexo:activity", args=[activity.pk]))
   
             msg += "L'activité <b>'"+pltp.name+"'</b> a bien été créée et a pour URL LTI: \
-                                      <br>&emsp;&emsp;&emsp; <input id=\"copy\" style=\"width: 700px;\" value=\""+url_lti+"\" readonly>  \
-                                      <button class=\"btn\" data-clipboard-action=\"copy\" data-clipboard-target=\"#copy\"><i class=\"far fa-copy\"></i> Copier\
-                                      </button>"
+                    <br>&emsp;&emsp;&emsp; <input id=\"copy\" style=\"width: 700px;\" value=\""+url_lti+"\" readonly>  \
+                    <a target='_blank' rel='noopener noreferrer' class='btn btn-dark' href='"+ url_lti + "'><i class='far fa-eye'></i> OPEN\
+                    </a>"
                         
             return HttpResponse(msg)
     except Exception as e:  # pragma: no cover
@@ -562,13 +562,13 @@ def download_env(request, envid):
 
 
 OPTIONS = {
-    'get_document':         option_get_document,
-    'get_documents':        option_get_documents,
-    'update_document':      option_update_document,
-    'create_document':      option_create_document,
-    'delete_document':      option_delete_document,
-    'rename_document':      option_rename_document,
-    'move_document':        option_move_document,
+    'get_resource':         option_get_resource,
+    'get_resources':        option_get_resources,
+    'update_resource':      option_update_resource,
+    'create_resource':      option_create_resource,
+    'delete_resource':      option_delete_resource,
+    'rename_resource':      option_rename_resource,
+    'move_resource':        option_move_resource,
     'git_clone':            option_clone,
     'git_pull':             option_pull,
     'git_push':             option_push,
@@ -593,6 +593,6 @@ def option(request):
         return HttpResponseBadRequest("'name' parameter is missing")
     try:
         return OPTIONS[option](request)
-    except Exception as e:
+    except Exception:
         return HttpResponseBadRequest()
     return HttpResponseBadRequest()
