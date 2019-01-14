@@ -6,3 +6,4 @@ omit =
     serverpl/config_example.py
     serverpl/install/*
     */test*
+    manage.py

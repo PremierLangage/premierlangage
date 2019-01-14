@@ -75,8 +75,9 @@ class PlParserTestCase(TestCase):
         self.assertEqual('12', dic['e']['f']['g'])
         # % %=
         self.assertEqual({'a': 1, 'b': 2}, dic['e']['f']['i'])
-        self.assertEqual({'a': 1, 'b': 2}, dic['a'])
         self.assertEqual({'a': 1, 'b': 2}, dic['b'])
+        # Override % with a.a
+        self.assertEqual({'a': '3', 'b': 2}, dic['a'])
     
     
     def test_parse_errors(self):

@@ -235,7 +235,7 @@ class Parser:
         if match.group('operator') == '=':
             self.add_dic(self.dic, keys, value, line, op)
         elif match.group('operator') == '%':
-            pass  # TODO
+            pass
     
     
     def multi_line_match(self, match, line):

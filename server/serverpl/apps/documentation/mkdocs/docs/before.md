@@ -2,9 +2,13 @@
 
 ## Résumé
 
-* **Inclusion:** `@ /lib/builder/before.py [builder.py]`
+* **Inclusion:** `@ /builder/before.py [builder.py]`
 
 * **Clés utilisées**: `builder / builder.py, before, StopBeforeExec`
+
+* **Utilisé par les templates:**
+    * [Java](../template_java/)
+
 ___
 
 
@@ -50,8 +54,12 @@ la seed du context de l'exercice:
 import random
 random.seed(seed)
 ```
-___
-
+Si Sympy est utilisé, il faut instancier Random :
+```python
+import random
+rd = random.Random()
+rd.seed(seed)
+```
 
 
 ## Débugage
@@ -65,7 +73,7 @@ ___
 
 
 
-## Example
+## Exemple
 ```
 @ /builder/before.py [builder.py]
 

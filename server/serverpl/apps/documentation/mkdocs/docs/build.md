@@ -3,7 +3,7 @@
 ## Résumé
 
 
-* **Inclusion:** `@ /lib/builder/build.py [builder.py]`
+* **Inclusion:** `@ /builder/build.py [builder.py]`
 
 * **Clés utilisées**: `builder/builder.py, build`
 ___
@@ -44,10 +44,18 @@ import random
 
 def build(dic):
     random.seed(dic['seed'])
+    [...]
 ```
-___
+Si Sympy est utilisé, il faut instancier Random :
+```python
+import random
 
-
+def build(dic):
+    rd = random.Random()
+    rd.seed(dic['seed'])
+    [...]
+    
+```
 
 ## Débogage
 Il est possible de *print* dans *sys.stderr* à des fins de débugage. Ces prints
@@ -62,7 +70,7 @@ ___
 
 
 
-## Example
+## Exemple
 ```
 @ /builder/build.py [builder.py]
 
