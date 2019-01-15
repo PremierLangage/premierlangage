@@ -17,7 +17,7 @@ function EditorComponent($scope, EditorService, MonacoService) {
         if (height < 300) {
             consoleNode.height(400);
         }
-        $scope.$apply();
+       // $scope.$apply();
     }
 
     editor.logs = function() {
@@ -71,8 +71,8 @@ function EditorComponent($scope, EditorService, MonacoService) {
             editor.searchResult = [];
         } else if (event.keyCode === 13) { // enter
             editor.searchQuery = editor.searchQuery.toLowerCase();
-            editor.searchResult = EditorService.findDocuments(doc => {
-                return doc.type === 'file' && doc.name.toLowerCase().includes(editor.searchQuery);
+            editor.searchResult = EditorService.findResources(resource => {
+                return resource.type === 'file' && resource.name.toLowerCase().includes(editor.searchQuery);
             });
         }
     }

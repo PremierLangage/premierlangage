@@ -11,16 +11,16 @@ from django.test import TestCase, override_settings
 from filebrowser.models import Directory
 from loader import parser
 from loader.exceptions import UnknownExtension, MissingKey, DirectoryNotFound, FileNotFound
-from serverpl.settings import BASE_DIR
+from serverpl.settings import APPS_DIR
 
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'loader/tests/tmp')
+FAKE_FB_ROOT = os.path.join(APPS_DIR, 'loader/tests/tmp')
 
 
 
 @patch('loader.parser.logger')
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
-@override_settings(PARSERS_ROOT=os.path.join(BASE_DIR, 'loader/tests/fake_parsers/'))
+@override_settings(PARSERS_ROOT=os.path.join(APPS_DIR, 'loader/tests/fake_parsers/'))
 @override_settings(PARSERS_MODULE="loader.tests.fake_parsers")
 class ParserTestCase(TestCase):
     """ Test functions of loader.parser """

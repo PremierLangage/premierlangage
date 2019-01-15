@@ -114,7 +114,7 @@ def option_get_resources(request):
         return HttpResponseNotFound(str(e))
 
 def option_update_resource(request):
-    """ View used to update a document (file). """
+    """ View used to update a resource (file). """
     if not request.method == 'POST':
         return HttpResponseNotAllowed(['POST'])
         
@@ -234,7 +234,7 @@ def option_rename_resource(request):
         return HttpResponseNotFound(msg)
 
 def option_move_resource(request):
-    """ Move POST['path'] to POST['destination']."""
+    """ Move POST['path'] to POST['dst']."""
 
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
