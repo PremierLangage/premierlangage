@@ -120,4 +120,4 @@ tmp
 .idea/
 serverpl/config.py
 
-client/
+.vscode/
