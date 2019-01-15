@@ -8,7 +8,6 @@ title+test
 
 #comment
 extends=working.pl
-extends=fake.pl
 
 test=@working.pl
 test+=@working.pl
