@@ -4,21 +4,24 @@
 import sys, json, jsonpickle
 
 
+
 class StopBeforeExec(Exception):
     pass
+
 
 
 def add_try_clause(code, excpt):
     """Add a try/except clause, excepting 'excpt' around code."""
     code = code.replace('\t', '    ')
-    return ("try:\n    ...\n" + '\n'.join(["    " + line for line in code.split('\n')])
+    return ("try:\n" + '\n'.join(["    " + line for line in code.split('\n')])
             + "\nexcept " + excpt.__name__ + ":\n    pass")
+
 
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
         msg = ("Sandbox did not call builder properly:\n"
-               +"Usage: python3 builder.py [input_json] [output_json]")
+               + "Usage: python3 builder.py [input_json] [output_json]")
         print(msg, file=sys.stderr)
         sys.exit(1)
     input_json = sys.argv[1]
@@ -30,7 +33,6 @@ if __name__ == "__main__":
     if 'before' in dic:
         glob = {}
         dic['StopBeforeExec'] = StopBeforeExec
-        print(add_try_clause(dic['before'], StopBeforeExec), file=sys.stderr)
         exec(add_try_clause(dic['before'], StopBeforeExec), dic)
         exec("", glob)
         for key in glob:
@@ -39,14 +41,10 @@ if __name__ == "__main__":
     else:
         print(("Builder 'before' need a script declared in the key 'before'. "
                + "See documentation related to this builder."),
-              file = sys.stderr)
+              file=sys.stderr)
         sys.exit(1)
-            
+    
     with open(output_json, "w+") as f:
         f.write(jsonpickle.encode(dic, unpicklable=False))
     
     sys.exit(0)
-
-
-
-

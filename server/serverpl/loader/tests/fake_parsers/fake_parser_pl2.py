@@ -169,7 +169,6 @@ class Parser:
             Raise from loader.exceptions:
                 - SyntaxErrorPL if no group 'value', 'key' or 'operator' was found
                               if operator is '%' and value isn't a well formated json"""
-        
         value = match.group('value')
         key = match.group('key')
         op = match.group('operator')
@@ -185,8 +184,7 @@ class Parser:
                                     self.lineno,
                                     message="Invalid JSON syntax starting ")
         elif op == '+':
-            self.dic_add_key(key, value, append=True)
-    
+            self.dic_add_key(key, value, append=True)    
     
     def multi_line_match(self, match, line):
         """ Set self._multiline_key and self._multiline_opened_lineno.

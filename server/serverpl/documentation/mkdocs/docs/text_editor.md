@@ -2,13 +2,16 @@
 
 ## Résumé
 
-* **Inclusion:** `form =@ /lib/form/text_editor.html`
+* **Inclusion:** `form =@ /form/text_editor.html`
 
 * **ID:** L'ID par défaut est `form_answer`. Celle-ci peut être modifiée (voir [Personnalisation de l'éditeur](#personnalisation-de-lediteur))
   Il faut donc accéder a la clé `answer` du dictionnaire de réponses pour récupérer
   la réponse.
 
 * **Clés utilisées**: `form, editor`
+
+* **Utilisé par les templates:**
+    * [Java](../template_java/)
 ___
 
 
@@ -79,7 +82,7 @@ Il est possible de fournir une valeur par défaut a l'éditeur grâce
 `editor.tabsize` est différent.
 
 
-## Example
+## Exemple
 
 Avec le code PL ci-dessous:
 ```

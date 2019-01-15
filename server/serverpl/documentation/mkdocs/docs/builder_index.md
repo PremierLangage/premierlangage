@@ -1,6 +1,6 @@
 # Index des Builders
 
-Ici se trouve la liste de l'ensemble des builders de la librairie PL. Pour chacun, un example
+Ici se trouve la liste de l'ensemble des builders de la librairie PL. Pour chacun, un exemple
 est présent ainsi qu'une liste de mots-clés afin de plus facilement le retrouver.
 
 Pour apprendre à créer un builder, voir [Construction](../construction/)
@@ -14,7 +14,7 @@ ___
 
 * mots-clés : `before, programmation, python3, script, programming`
 
-Example:
+Exemple:
 ```
 @ /builder/before.py [builder.py]
 
@@ -47,7 +47,7 @@ ___
 
 * mots-clés : `build, programmation, python3, script, fonction, function, programming`
 
-Example:
+Exemple:
 ```
 @ /builder/build.py [builder.py]
 
