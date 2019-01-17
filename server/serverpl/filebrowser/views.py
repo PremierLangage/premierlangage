@@ -582,7 +582,7 @@ OPTIONS = {
 }
 
 @login_required
-#@csrf_exempt
+@csrf_exempt
 def option(request):
     option = request.GET.get('name')
     if request.method == 'POST':

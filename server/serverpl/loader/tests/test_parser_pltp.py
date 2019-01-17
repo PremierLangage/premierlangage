@@ -12,7 +12,7 @@ from loader.exceptions import FileNotFound, SyntaxErrorPL
 from loader.parsers import pltp
 
 
-FAKE_FB_ROOT = os.path.join(settings.APPS_DIR, 'loader/tests/tmp')
+FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'loader/tests/tmp')
 
 
 

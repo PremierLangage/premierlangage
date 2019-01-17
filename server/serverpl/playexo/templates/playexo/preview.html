@@ -45,10 +45,14 @@
                 session_id: "{{session__.id}}",
                 other: [],
             }
-            var status = {requested_action: 'submit', data: data};
+            var status = {
+                name: "preview_pl",
+                requested_action: 'submit', 
+                data: data, 
+            };
             $.ajax({
                 type : "POST",
-                url : "/filebrowser/preview_pl/",
+                url : "/filebrowser/option",
                 data: JSON.stringify(status, null, '\t'),
                 contentType: 'application/json;charset=UTF-8',
                 success: function(returned_status) {
