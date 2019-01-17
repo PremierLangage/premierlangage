@@ -1,6 +1,4 @@
 {% load django_markdown %}
-
-{% include "playexo/alert.html" %}
 <div class="card">
     <div class="card-header">
         <div class="text-center"><h1>{% if 'title'%}{{ title }}{% endif %}</h1></div>
@@ -34,22 +32,29 @@
         </center>
     </div>
 </div>
-
+<br/><br/>
+{% include "playexo/alert.html" %}
 {% block end_script %}
     <script>
-        $( "#submit_button" ).click(function() {
-            var inputs = getInputs();
-            var data = {
+        var submit_button = $( "#submit_button" );
+
+        submit_button.click(function() {
+            submit_button.prop('disabled', true);
+ 
+            const inputs = getInputs();
+            const data = {
                 answers: inputs,
                 id: "{{id__}}",
                 session_id: "{{session__.id}}",
                 other: [],
             }
-            var status = {
+
+            let status = {
                 name: "preview_pl",
                 requested_action: 'submit', 
                 data: data, 
             };
+
             $.ajax({
                 type : "POST",
                 url : "/filebrowser/option",
@@ -58,6 +63,10 @@
                 success: function(returned_status) {
                     status = returned_status;
                     onReturn(status.exercise, status.navigation, status.feedback);
+                    submit_button.prop('disabled', false);
+                },
+                error: function(error) {   
+                    submit_button.prop('disabled', false);
                 }
             });
         });

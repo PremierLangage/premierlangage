@@ -1,5 +1,5 @@
 // https://microsoft.github.io/monaco-editor/playground.html#interacting-with-the-editor-adding-an-action-to-an-editor-instance
-export function config(completion) {
+export function config(editorNode, diffEditorNode, completion) {
     
     require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.14.3/min/vs' }});
    
@@ -79,7 +79,7 @@ export function config(completion) {
             ]
         });
     
-        const editor = monaco.editor.create($('.monaco__editor').get(0), {
+        const editor = monaco.editor.create(editorNode, {
             value: '',
             theme: 'premierlangage',
             language: '',
@@ -199,8 +199,19 @@ export function config(completion) {
                editor.onDidContentChanged(editor.getValue())
            }
         });
-
+        let diffEditor;
+        if (diffEditorNode) {
+            diffEditor = monaco.editor.createDiffEditor(diffEditorNode, {
+                // You can optionally disable the resizing
+                enableSplitViewResizing: false,
+                readOnly: true,
+                // Render the diff inline
+                renderSideBySide: false
+            });
+        }
+        
+        diffEditor.setModel(undefined);
         editor.focus();
-        completion(editor);
+        completion(editor, diffEditor);
     });
 }

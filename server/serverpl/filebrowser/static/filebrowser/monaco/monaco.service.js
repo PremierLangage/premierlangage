@@ -6,36 +6,47 @@ function MonacoService(EditorService, $http) {
     
     const instance = this;
     this.editor;
+    this.diffEditor;
     this.selection;
     this.resources = [];
     this.runningTask = false;
     this.resourcesChanged;
+    this.editorNode;
+    this.diffEditorNode;
     
     this.previewFunctions = {
         'pl': previewPL,
         'pltp': previewPL,
         'md': previewMarkdown
     }
-    
-    monacoConfig.config((e) => { 
-        e.onDidSaveCommand = function() {
-            instance.saveSelection();
-        }
-        
-        e.onDidOpenPLReference = function(path) {
-        }
+ 
+    this.loadEditor = function() {
+        instance.editorNode = $('.monaco__editor');
+        instance.diffEditorNode = $('.monaco__editor--diff');
+        instance.diffEditorNode.hide();
 
-        e.onDidContentChanged = function(content) {
-            if (instance.selection) {
-                instance.selection.changed = true;
-                instance.selection.content = content;
-                instance.emitChanged();
+        monacoConfig.config(instance.editorNode.get(0), instance.diffEditorNode.get(0), (e, d) => { 
+            e.onDidSaveCommand = function() {
+                instance.saveSelection();
             }
-        }
-       
-        e.setModel(null);     
-        instance.editor = e;
-    });
+            
+            e.onDidOpenPLReference = function(path) {
+            }
+    
+            e.onDidContentChanged = function(content) {
+                if (instance.selection) {
+                    instance.selection.changed = true;
+                    instance.selection.content = content;
+                    instance.emitChanged();
+                }
+            }
+           
+            e.setModel(null);     
+            instance.editor = e;
+            instance.diffEditor = d;
+        });
+    };
+
 
     /** 
      * Removes the resource from the opened resources lists and 
@@ -44,16 +55,17 @@ function MonacoService(EditorService, $http) {
     */
     this.closeResource = function(resource) {
         instance.resources = instance.resources.filter(item => item.path !== resource.path);
+        instance.closeDiffEditor();
         instance.selection = undefined;
         instance.editor.setModel(undefined);
         if (!instance.isEmpty()) {
             instance.openResource(instance.resources[0]);
         }
-        
-        resource.model.dispose();
-        resource.model = undefined;
-        resource.state = undefined;
+        resource.editorModel.dispose();
+        resource.editorModel = undefined;
+        resource.editorState = undefined;
         resource.preview = undefined;
+        resource.diffMode = undefined;
     }
 
     /** Invokes MonacoService.resourcesChanged event */
@@ -133,21 +145,23 @@ function MonacoService(EditorService, $http) {
                 resolve(resource);
             } else {
                 EditorService.openResource(resource).then(() => {
+                    instance.closeDiffEditor();
+
                     if (!resource.language) {
                         instance.editor.findLanguage(resource);
                     }
             
                     if (instance.selection && instance.selection.type === 'file') {
-                        instance.selection.state = instance.editor.saveViewState();
+                        instance.selection.editorState = instance.editor.saveViewState();
                     }
                 
-                    if (resource.model) {
-                        instance.editor.restoreViewState(resource.state);
+                    if (resource.editorModel) {
+                        instance.editor.restoreViewState(resource.editorState);
                     } else {
-                        resource.model = monaco.editor.createModel(resource.content, resource.language);
+                        resource.editorModel = monaco.editor.createModel(resource.content, resource.language);
                     }
 
-                    instance.editor.setModel(resource.model);
+                    instance.editor.setModel(resource.editorModel);
                     instance.editor.focus();
                     instance.editor.updateOptions({ readOnly: !resource.write });
                     instance.selection = resource;
@@ -210,6 +224,25 @@ function MonacoService(EditorService, $http) {
             }).catch(error => {
                 EditorService.log(error);
             });
+        }
+    }
+    
+    this.showDiffEditor = function(content) {
+        instance.editorNode.hide();
+        instance.diffEditorNode.show();
+        instance.selection.diffMode = true;
+        instance.diffEditor.setModel({
+            original: monaco.editor.createModel(content, instance.selection.language), 
+            modified: instance.editor.model
+        });
+    }
+
+    this.closeDiffEditor = function() {
+        instance.editorNode.show();
+        instance.diffEditorNode.hide();
+        instance.diffEditor.setModel(undefined);
+        if (instance.selection) {
+            instance.selection.diffMode = undefined;
         }
     }
     

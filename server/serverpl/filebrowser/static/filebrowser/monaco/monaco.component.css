@@ -45,6 +45,11 @@ monaco .monaco__editor {
     width: 100%;
 }
 
+monaco .monaco__editor--diff {
+    height: 100%;
+    width: 100%;
+}
+
 monaco .monaco__preview {
     height: calc(100% - 72px);
     width: 10px;
@@ -55,11 +60,10 @@ monaco .monaco__preview {
     right: 0;
     background-color: white;
     padding: 0 12px;
-    transition: width .2s;
+    transition: width .1s;
 }
 
 monaco .monaco__preview .resizer {
-    z-index: 1000;
     background: #ecedf0;
     position: absolute;
     left: 0;

@@ -10,6 +10,7 @@ angular.module('editor')
 
 function ExplorerComponent(EditorService, MonacoService) {
     const explorer = this;
+
     /** adds new file in the folder 'resource' */
     this.addFile = function (resource, event) {
         event.stopPropagation();
@@ -22,7 +23,7 @@ function ExplorerComponent(EditorService, MonacoService) {
         EditorService.addFolder(resource);
     };
     
-    /** creates or cancels the edition of 'document' depending to 'event' */
+    /** creates or cancels the edition of 'resource' depending to 'event' */
     this.endEditing = function (resource, event) {
         if (event.keyCode === 13) { // enter
             EditorService.createResource(resource).then(() => {
@@ -34,15 +35,15 @@ function ExplorerComponent(EditorService, MonacoService) {
         }
     };
     
-    /** checks if 'document' is the selected document */
-    this.isSelection = function (document) {
-        return MonacoService.isSelection(document);
+    /** checks if 'resource' is the selected resource */
+    this.isSelection = function (resource) {
+        return MonacoService.isSelection(resource);
     };
     
-    /** shows the options of the document */
-    this.showOptions = function (document, menu, event) {
+    /** shows the options of the resource */
+    this.showOptions = function (resource, menu, event) {
         event.preventDefault();
-        if (document.hasOption) {
+        if (resource.hasOption) {
             menu.open();
         }
     };
@@ -73,7 +74,10 @@ function ExplorerComponent(EditorService, MonacoService) {
     this.delete = function (resource, event) {
         event.stopPropagation();
         EditorService.confirm('Would you like to delete "' + resource.name + '"?').then(function () {
-            EditorService.deleteResource(resource);
+            EditorService.deleteResource(resource).then(() => {
+                MonacoService.closeResource(resource);
+            });
+        }).catch(() => {
         });
     };
     
@@ -93,7 +97,7 @@ function ExplorerComponent(EditorService, MonacoService) {
         { icon: 'fas fa-sync', label: 'Reload', enabled: filters.canBeReloaded, action: this.reloadPLTP },
         { icon: 'far fa-file', label: 'New File', enabled: filters.canAddFile, action: this.addFile },
         { icon: 'far fa-folder', label: 'New Folder', enabled: filters.canAddFile, action: this.addFolder },
-        { icon: 'far fa-edit', label: 'Rename', enabled: filters.canBeRenamed, action: this.renameResource },
+        { icon: 'far fa-edit', label: 'Rename', enabled: filters.canBeRenamed, action: this.rename },
         { icon: 'far fa-trash-alt', label: 'Delete', enabled: filters.canBeDeleted, action: this.delete },
         { icon: 'fas fa-lock', label: 'Read Only', enabled: filters.readonly, action: function () { } },
     ];

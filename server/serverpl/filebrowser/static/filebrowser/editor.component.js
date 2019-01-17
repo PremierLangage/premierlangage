@@ -10,12 +10,12 @@ function EditorComponent($scope, EditorService, MonacoService) {
     editor.searchQuery = '';
     editor.searchResult = [];
     editor.searching = false;
-    const consoleNode = angular.element('#console');
+    editor.consoleNode = angular.element('#console');
 
     EditorService.onLogAdded = function() {
-        const height = consoleNode.height();
+        const height = editor.consoleNode.height();
         if (height < 300) {
-            consoleNode.height(400);
+            editor.consoleNode.height(400);
         }
        // $scope.$apply();
     }
@@ -40,6 +40,10 @@ function EditorComponent($scope, EditorService, MonacoService) {
         return editor.selection() && editor.selection().repo;
     }
     
+    editor.closeConsole = function() {
+        editor.consoleNode.height(32);
+    }
+
     editor.clearConsole = function() {
         EditorService.clearLogs();
     }

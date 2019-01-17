@@ -43,10 +43,16 @@
         <div id='console' class='mdl-shadow--1dp border-top'>
         {{editor.consoleHeight}}
             <div id='console__tab' class="editor__tab">
-                <span class='editor__tab-item border-bottom'>Console</span>
+                <span class='editor__tab-item border-bottom'>
+                    Console
+                     <md-tooltip md-direction="top">display informations, errors, warnings, click and drag to open</md-tooltip>
+                </span>
                 <div class="mdl-layout-spacer"></div>     
                 <div class='editor__tab-item' ng-click='editor.clearConsole()'>
                     <md-tooltip md-direction="top">Clear</md-tooltip><i class="fas fa-trash-alt"></i>
+                </div>
+                <div class='editor__tab-item' ng-click='editor.closeConsole()'>
+                    <md-tooltip md-direction="top">Close</md-tooltip><i class="fas fa-times"></i>
                 </div>
             </div>
             <div id='console__content'>

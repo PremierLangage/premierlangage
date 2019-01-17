@@ -146,11 +146,11 @@ editor {
     max-height: calc(100% - 66px);
     overflow: hidden;
     background-color: #F5F5F5;
-    transition: height .3s;
+    transition: height .1s;
 }
 
 #console .resizer {
-    background: #F5F5F5;
+    background: #ecedf0;
     position: absolute;
     right: 0;
     top: 0;

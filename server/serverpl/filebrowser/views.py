@@ -21,6 +21,9 @@ from filebrowser.filter import *
 from loader.loader import load_file, reload_pltp
 from playexo.models import SessionTest, Activity
 from playexo.utils import render_feedback
+from filebrowser.gitcmd_extensions import show_last_revision
+
+import os
 
 
 @login_required
@@ -348,6 +351,23 @@ def option_status(request):
     else:  # pragma: no cover
         return HttpResponseNotFound(htmlprint.code(out + err))
 
+def option_show(request):
+    """ Execute a git show on the targeted entry."""
+    if request.method != 'GET':
+        return HttpResponseNotAllowed(['GET'])
+    path = request.GET.get('path')
+    if not path:
+        return HttpResponseBadRequest("parameter 'path' is missing")
+    try:
+        ret, out, err = show_last_revision(to_abs_path(path))
+        if not ret:
+            return HttpResponse(out)
+        else:  # pragma: no cover
+            return HttpResponseNotFound(htmlprint.code(out + err))
+    except Exception as e:  # pragma: no cover
+        msg = htmlprint.code(str(type(e)) + ' - ' + str(e))
+        return HttpResponseNotFound(msg)
+
 def option_add(request):
     """ Execute a git add on the targeted entry."""
     if request.method != 'GET':
@@ -575,6 +595,7 @@ OPTIONS = {
     'git_status':           option_status,
     'git_add':              option_add,
     'git_commit':           option_commit,
+    'git_show':             option_show,
     'test_pl':              option_test_pl,
     'load_pltp':            option_load_pltp,
     'reload_pltp':          option_reload_pltp,

@@ -9,6 +9,7 @@ function EditorService($http, $mdDialog) {
     instance.logs = [];
     instance.resources = [];
     instance.onLogAdded;
+
     //#endregion
 
     //#region git
@@ -46,7 +47,7 @@ function EditorService($http, $mdDialog) {
                 instance.runningTask = false;
             }).catch((error) => {
                 instance.runningTask = false;
-                instance.log('<span style="color: red;">Git clone failed: ' + error.data || error + '</span>');
+                instance.logError(error.data || error);
             });
         });
     }
@@ -68,7 +69,7 @@ function EditorService($http, $mdDialog) {
                 instance.runningTask = false;
             }).catch(error => {
                 instance.runningTask = false;
-                instance.log('<span style="color: red;">Git push failed: ' + error.data + '</span>');
+                instance.logError(error.data || error);
             });
         });
     }
@@ -95,7 +96,7 @@ function EditorService($http, $mdDialog) {
                 instance.runningTask = false;
             }).catch(error => {
                 instance.runningTask = false;
-                instance.log('<span style="color: red;">Git pull failed: ' + error.data + '</span>');
+                instance.logError(error.data || error);
             });
         });
     }
@@ -114,7 +115,7 @@ function EditorService($http, $mdDialog) {
             instance.runningTask = false;
         }).catch(error => {
             instance.runningTask = false;
-            instance.log('<span style="color: red;">Git status failed: ' + error.data + '</span>');
+            instance.logError(error.data || error);
         });
     }
     
@@ -132,7 +133,7 @@ function EditorService($http, $mdDialog) {
             instance.runningTask = false;
         }).catch(error => {
             instance.runningTask = false;
-            instance.log('<span style="color: red;">Git add failed: ' + error.data + '</span>');
+            instance.logError(error.data || error);
         });
     }
 
@@ -153,11 +154,11 @@ function EditorService($http, $mdDialog) {
                 instance.runningTask = false;
             }).catch(error => {
                 instance.runningTask = false;
-                instance.log('<span style="color: red;">Git commit failed: ' + error.data + '</span>');
+                instance.logError(error.data || error);
             });
         });
     }
-
+    
     function loadOption(resource) {
         resource['options'] = options.filter(option => {
             for (const predicate of option.filters) {
@@ -230,7 +231,7 @@ function EditorService($http, $mdDialog) {
     }
 
     instance.renameResource = function(resource) {
-        resource.__name__ = document.name;
+        resource.__name__ = resource.name;
         resource.__parent__ = instance.findResource(resource.parent);
         resource.editing = true;
     }
@@ -327,8 +328,8 @@ function EditorService($http, $mdDialog) {
                 recursive_remove(instance.resources);
                 resolve();
             }).catch(error => {
-                instance.log(error.data);
-                reject(error.data);
+                instance.log(error.data || error);
+                reject(error.data || error);
             });
         });
         
@@ -518,6 +519,26 @@ function EditorService($http, $mdDialog) {
         const dotIndex = resource.name.lastIndexOf('.');
         return resource.name.substring(dotIndex + 1);
     }
+
+    instance.showDiff = function(resource) {
+        instance.runningTask = true;
+        return new Promise((resolve, reject) => {
+            $http({
+                method: 'GET',
+                url: 'option',
+                params: {
+                    name: "git_show",
+                    path: resource.path,
+                }
+            }).then(response => {
+                instance.runningTask = false;
+                resolve(response.data);
+            }).catch(error => {
+                instance.runningTask = false;
+                instance.logError(error.data || error);
+            });
+        });
+    }
     
     //#endregion
 
@@ -529,6 +550,12 @@ function EditorService($http, $mdDialog) {
         }
     }
 
+    instance.logError = function(message) {
+        if (typeof(message) == 'object') {
+            message = JSON.stringify(message);
+        }
+        instance.log('<span style="color: red;">' + message + '</span>');
+    }
     instance.clearLogs = function() {
         instance.logs = [];
     }

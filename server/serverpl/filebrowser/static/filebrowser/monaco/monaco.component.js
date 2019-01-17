@@ -17,7 +17,7 @@ function MonacoComponent ($scope, EditorService, MonacoService) {
     */
     monaco.closeResource = function(resource) {
         if (resource.changed) {
-            EditorService.confirm('You will lose any unsaved changes !').then(() => {
+            EditorService.confirm('You will lose any unsaved changes, press Ctrl|Cmd + S to save !').then(() => {
                 MonacoService.closeResource(resource);
             });
         } else {
@@ -37,7 +37,24 @@ function MonacoComponent ($scope, EditorService, MonacoService) {
             monaco.previewNode.css({ width: '50%' });
         });
     }
+    /** Handles show diff button click */
+    monaco.didTapShowDiffEditor = function() {
+        EditorService.showDiff(monaco.selection()).then(MonacoService.showDiffEditor);
+    }
 
+    /** Handles close diff button click */
+    monaco.didTapCloseDiffEditor = function() {
+        MonacoService.closeDiffEditor();
+    }
+
+    monaco.diffMode = function() {
+        return monaco.selection() && monaco.selection().diffMode;
+    }
+
+    monaco.diffEditorEnabled = function() {
+        const s = monaco.selection()
+        return s && s.type === 'file' && !s.diffMode;
+    }
     /** 
      * Gets a value indicating whether the selected resource can be previewed 
      * @returns {boolean} true if there is a selected resource and it can be previewed false otherwise 
@@ -68,7 +85,13 @@ function MonacoComponent ($scope, EditorService, MonacoService) {
      * @param {Object} resource - the resource to open.
      */
     monaco.openResource = function(resource) {
-        MonacoService.openResource(resource);
+        const current = monaco.selection();
+        current.previewModeWidth = monaco.previewNode.width();
+        MonacoService.openResource(resource).then(() => {
+            if (resource.previewModeWidth) {
+                monaco.previewNode.width(resource.previewModeWidth);
+            } 
+        });
     }
 
     /** 
@@ -108,6 +131,8 @@ function MonacoComponent ($scope, EditorService, MonacoService) {
         return MonacoService.selection;
     }
   
+    MonacoService.loadEditor();
+
     EditorService.setResizable('.monaco__preview', function(node, e, startX, startY, startWidth, startHeight) {
         node.style.width = (startWidth + startX - e.clientX) + 'px';
         MonacoService.layout();

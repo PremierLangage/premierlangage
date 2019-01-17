@@ -10,6 +10,12 @@
         </span>
     </div>
     <div class="mdl-layout-spacer"></div>
+    <div class='editor__tab-item' ng-if="monaco.diffEditorEnabled()" ng-click='monaco.didTapShowDiffEditor()'>
+        <md-tooltip>Show diff editor</md-tooltip><i class="fas fa-eye"></i>
+    </div>
+    <div class='editor__tab-item' ng-if="monaco.diffMode()" ng-click='monaco.didTapCloseDiffEditor()'>
+        <md-tooltip>Close diff editor</md-tooltip><i class="fas fa-eye-slash"></i>
+    </div>
     <div class='editor__tab-item' ng-if='monaco.hasPreview()' ng-click='monaco.didTapOpenPreview()'>
         <md-tooltip>Preview</md-tooltip><i class="fas fa-play"></i>
     </div>
@@ -21,6 +27,7 @@
 
 <div class='monaco__main'>
     <div class='monaco__editor'></div>
+    <div class='monaco__editor--diff'></div>
     <div class='monaco__preview border' ng-show='monaco.previewHtml()'>
         <h5>{{monaco.selection().name}} preview</h5><hr/>
         <div ng-bind-html='monaco.previewHtml() | unsafe'></div>

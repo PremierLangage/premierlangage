@@ -63,8 +63,18 @@
 
 
     $( document ).ready(function(){
-        $( "#submit_button" ).click(function() {
+        
+        var submit_button = $( "#submit_button" );
+        var save_button = $( "#save_button" );
 
+        function onActivity(activity) {
+            submit_button.prop('disabled', activity);
+            save_button.prop('disabled', activity);
+        }
+
+
+        submit_button.click(function() {
+            onActivity(true);
             window.onbeforeunload = function () {}
 
             var inputs = getInputs();
@@ -78,13 +88,17 @@
                 success: function(returned_status) {
                     status = returned_status;
                     onReturn(status.exercise, status.navigation, status.feedback);
+                    onActivity(false);
+                },
+                error: function(error) {
+                    onActivity(false);
                 }
             });
         });
 
-        $( "#save_button" ).click(function() {
+        save_button.click(function() {
             window.onbeforeunload = function () {}
-
+            onActivity(true);
             var inputs = getInputs();
 
             var status = {requested_action: 'save', inputs: inputs};
@@ -96,6 +110,10 @@
                 success: function(returned_status) {
                     status = returned_status;
                     onReturn(status.exercise, status.navigation, status.feedback);
+                    onActivity(false);
+                },
+                error: function(error) {
+                    onActivity(false);
                 }
             });
         });
