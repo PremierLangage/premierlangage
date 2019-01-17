@@ -18,7 +18,7 @@ from playexo.models import Activity, Answer, SessionActivity, SessionExercise, S
 from user_profile.enums import Role
 
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'playexo/tests/tmp')
+FAKE_FB_ROOT = os.path.join(settings.APPS_DIR, 'playexo/tests/tmp')
 
 
 

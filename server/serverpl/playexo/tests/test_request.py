@@ -12,7 +12,7 @@ from playexo.request import SandboxBuild, SandboxEval
 import uuid
 
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'playexo/tests/tmp')
+FAKE_FB_ROOT = os.path.join(settings.APPS_DIR, 'playexo/tests/tmp')
 
 
 

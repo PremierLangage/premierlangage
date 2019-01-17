@@ -14,12 +14,12 @@ from serverpl.settings import BASE_DIR
 from .utils import copy_parser
 
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'loader/tests/tmp')
+FAKE_FB_ROOT = os.path.join(APPS_DIR, 'loader/tests/tmp')
 
 
 
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
-@override_settings(PARSERS_ROOT=os.path.join(BASE_DIR, 'loader/tests/fake_parsers/'))
+@override_settings(PARSERS_ROOT=os.path.join(APPS_DIR, 'loader/tests/fake_parsers/'))
 @override_settings(PARSERS_MODULE="loader.tests.fake_parsers")
 class LoaderTestCase(TestCase):
     """ Test functions of loader.loader """
