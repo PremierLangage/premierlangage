@@ -1,1 +1,1 @@
-extends=/blabla
+extends=~/blabla

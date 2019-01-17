@@ -84,8 +84,8 @@ class UtilsTestCase(TestCase):
         current_repo = 'repo1/'
         current_dir = 'dir1/'
         
-        absolute = '/repo1/file1.pl'
-        rel_repo = '~/file2.pl'
+        absolute = '~/repo1/file1.pl'
+        rel_repo = '/file2.pl'
         relative = '../dir1/file3.pl'
         ref_lib = 'lib:/dir2/file4.pl'
         
@@ -121,7 +121,7 @@ class UtilsTestCase(TestCase):
             get_location(self.dir, "1234:lib/digit", "")
         
         with self.assertRaises(SyntaxError):
-            get_location(self.dir, "~/lib/digit", "")
+            get_location(self.dir, "/lib/digit", "")
         
         with self.assertRaises(FileNotFoundError):
             get_location(self.dir, "unknown:/file.pl", "")
@@ -130,10 +130,10 @@ class UtilsTestCase(TestCase):
             get_location(self.dir, "lib:/unknown.pl", "")
         
         with self.assertRaises(FileNotFoundError):
-            get_location(self.dir, "/unknown.pl", "")
+            get_location(self.dir, "~/unknown.pl", "")
         
         with self.assertRaises(FileNotFoundError):
-            get_location(self.dir, "~/unknown.pl", "repo1/")
+            get_location(self.dir, "/unknown.pl", "repo1/")
         
         with self.assertRaises(FileNotFoundError):
             get_location(self.dir, "unknown.pl", "dir1/")
