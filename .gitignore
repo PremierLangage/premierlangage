@@ -120,4 +120,6 @@ tmp
 .idea/
 serverpl/config.py
 
-client/
+.vscode
+#Mac OS
+.DS_Store

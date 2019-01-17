@@ -1,16 +1,16 @@
 # Should be use from directory containing manage.py 
-cd apps/documentation/mkdocs
+cd documentation/mkdocs
 mkdocs build
 cd -
 
-if [ -d apps/documentation/static/ ]; then
-    rm -Rf apps/documentation/static/
+if [ -d documentation/static/ ]; then
+    rm -Rf documentation/static/
 fi
 
-mkdir -p apps/documentation/static/documentation
+mkdir -p documentation/static/documentation
 
-cp -r apps/documentation/mkdocs/custom/css apps/documentation/static/documentation/css
-cp -r apps/documentation/mkdocs/custom/js apps/documentation/static/documentation/js
-cp -r apps/documentation/mkdocs/custom/fonts apps/documentation/static/documentation/fonts
-cp -r apps/documentation/mkdocs/custom/img apps/documentation/static/documentation/img
-cp -r apps/documentation/mkdocs/docs/images/* apps/documentation/static/documentation/img/
+cp -r documentation/mkdocs/custom/css documentation/static/documentation/css
+cp -r documentation/mkdocs/custom/js documentation/static/documentation/js
+cp -r documentation/mkdocs/custom/fonts documentation/static/documentation/fonts
+cp -r documentation/mkdocs/custom/img documentation/static/documentation/img
+cp -r documentation/mkdocs/docs/images/* documentation/static/documentation/img/

@@ -2,16 +2,17 @@
 
 import os
 import shutil
-from mock import patch
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
+from mock import patch
 
 from filebrowser.models import Directory
 from loader import parser
-from loader.exceptions import UnknownExtension, MissingKey, DirectoryNotFound, FileNotFound
+from loader.exceptions import DirectoryNotFound, FileNotFound, MissingKey, UnknownExtension
 from serverpl.settings import BASE_DIR
+from .utils import copy_parser
 
 
 FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'loader/tests/tmp')
@@ -27,13 +28,20 @@ class ParserTestCase(TestCase):
     
     
     @classmethod
+    @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
     def setUpTestData(cls):
+        os.makedirs(FAKE_FB_ROOT)
+        copy_parser()
         cls.user = User.objects.create_user(username='user', password='12345')
-        dir_name = os.path.join(FAKE_FB_ROOT, "dir1")
-        if os.path.isdir(dir_name):
-            shutil.rmtree(dir_name)
         cls.dir = Directory.objects.create(name='dir1', owner=cls.user)
         shutil.copytree(os.path.join(FAKE_FB_ROOT, '../fake_pl'), cls.dir.root)
+    
+    
+    @classmethod
+    def tearDownClass(cls):
+        if os.path.isdir(FAKE_FB_ROOT):
+            shutil.rmtree(FAKE_FB_ROOT)
+        super().tearDownClass()
     
     
     def test_get_parsers(self, mock_logger):

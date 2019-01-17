@@ -33,7 +33,6 @@ if DEBUG:
 PREREQ_APPS = [
     'taggit',
     'hitcount',
-    'livereload',
     'django_http_method',
     'django_markdown',
     'django.contrib.admin',
@@ -83,6 +82,7 @@ ROOT_URLCONF = 'serverpl.urls'
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
+
 # Templates engines
 TEMPLATES = [
     {
@@ -271,8 +271,7 @@ FILEBROWSER_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../home/'))
 FILEBROWSER_DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&']
 
 # Path to directory containing parsers
-PARSERS_ROOT = os.path.abspath(os.path.join(APPS_DIR, 'loader/parsers/'))
-
+PARSERS_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'loader/parsers/'))
 PARSERS_MODULE = 'loader.parsers'
 
 # Allow a file '[PL_ROOT]/server/serverpl/serverpl/config.py' to override any of the settings above.
