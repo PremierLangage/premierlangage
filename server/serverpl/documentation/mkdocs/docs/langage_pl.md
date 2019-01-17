@@ -202,10 +202,10 @@ Il y a quatre manière de référencer un fichier:
 
 * Avec un chemin relatif à l'exercice (ex: `../../fichier.ext`)
 
-* Avec un chemin relatif à *home*, commençant par `/`
-  (ex: `/chemin/vers/fichier.ext`)
+* Avec un chemin relatif à *home*, commençant par `~/`
+  (ex: `~/chemin/vers/fichier.ext`)
 
-* Avec un chemin relatif au repository courant, commançant par `~/` (ex: `~/chemin/vers/fichier.ext`)
+* Avec un chemin relatif au repository courant, commançant par `/` (ex: `/chemin/vers/fichier.ext`)
 
 * Avec une référence à une librairie (ex: `lib:/chemin/vers/fichier.ext`)
 
@@ -220,7 +220,6 @@ home/
 │  ├─ exo2.pl
 │  ├─ feuille.pltp
 
-
 lib/
 ├──dossier2/
 │  ├─ exo3.pl
@@ -230,15 +229,15 @@ Il est possible de référencer *exo1.pl* à l'intérieur de *feuille.pltp* de p
 
 ```
 @ ../exo1.pl
-@ /dossier1/exo1.pl
+@ ~/dossier1/exo1.pl
 ```
 
 De même, il est possible de référencer *exo2.pl* à l'intérieur de *feuille.pltp* de plusieurs manières:
 
 ```
 @ exo2.pl
-@ ~/exo2.pl
-@ /git1/exo2.pl
+@ /exo2.pl
+@ ~/git1/exo2.pl
 ```
 
 Pour référencer *exo3.pl* de lib à l'intérieur de *feuille.pltp*:

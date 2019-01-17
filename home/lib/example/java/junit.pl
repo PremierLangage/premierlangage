@@ -1,4 +1,4 @@
-extends = /template/java.pl
+extends = ~/template/java.pl
 
 title = Junit
 text = Create the methods 'getX()' and 'getY()' for the class Point.
@@ -39,3 +39,4 @@ class PointTest {
     }
 }
 ==
+
