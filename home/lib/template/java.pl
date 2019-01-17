@@ -1,7 +1,7 @@
-form =@ /form/text_editor.html
-@ /grader/java.py [grader.py]
-@ /builder/before.py [builder.py]
-@ /utils/sandboxio.py
+form =@ ~/form/text_editor.html
+@ ~/grader/java.py [grader.py]
+@ ~/builder/before.py [builder.py]
+@ ~/utils/sandboxio.py
 
 before==
 editor["code"] = (

@@ -1,1 +1,1 @@
-@ /unknown.pl
+@ ~/unknown.pl
