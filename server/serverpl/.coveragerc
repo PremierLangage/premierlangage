@@ -7,3 +7,4 @@ omit =
     serverpl/install/*
     */test*
     manage.py
+    src/*
