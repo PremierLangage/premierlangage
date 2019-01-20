@@ -12,19 +12,35 @@ function MonacoComponent ($scope, EditorService, MonacoService) {
     monaco.previewNode = angular.element(".monaco__preview");
     
     /** 
-     * Asks confirmation and closes the resource if confirmed 
+     * Hanldes resource close button click by asking confirmation and closes the resource if confirmed.
      * @param {Object} resource - the resource to close.
+     * @param {Object} e - the javascript event object of the click.
     */
-    monaco.closeResource = function(resource) {
+    monaco.didTapCloseResource = function(resource, e) {
         if (resource.changed) {
-            EditorService.confirm('You will lose any unsaved changes, press Ctrl|Cmd + S to save !').then(() => {
-                MonacoService.closeResource(resource);
+            EditorService.confirm({
+                title: 'You will lose any unsaved changes, press Ctrl | Cmd + S to save !',
+                targetEvent: e,
+                confirmed: () => MonacoService.closeResource(resource)
             });
         } else {
             MonacoService.closeResource(resource);
         }
     }
 
+    /**
+     * Handles click on resource inside the editor by displaying the content of the resource.
+     * @param {Object} resource - the resource to open.
+     */
+    monaco.didTapOpenResource = function(resource) {
+        const current = monaco.selection();
+        current.previewModeWidth = monaco.previewNode.width();
+        MonacoService.openResource(resource).then(() => {
+            if (resource.previewModeWidth) {
+                monaco.previewNode.width(resource.previewModeWidth);
+            } 
+        });
+    }
     /** Handles hide preview button click */
     monaco.didTapHidePreview = function() {
         monaco.selection().preview = undefined;
@@ -79,20 +95,6 @@ function MonacoComponent ($scope, EditorService, MonacoService) {
     monaco.isSelection = function(resource) {
         return MonacoService.isSelection(resource);
     };
-
-    /**
-     * Opens the content of the resource and display it inside the editor.
-     * @param {Object} resource - the resource to open.
-     */
-    monaco.openResource = function(resource) {
-        const current = monaco.selection();
-        current.previewModeWidth = monaco.previewNode.width();
-        MonacoService.openResource(resource).then(() => {
-            if (resource.previewModeWidth) {
-                monaco.previewNode.width(resource.previewModeWidth);
-            } 
-        });
-    }
 
     /** 
      * Gets the html string representing the preview of the selected resource 

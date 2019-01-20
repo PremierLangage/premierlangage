@@ -8,7 +8,7 @@ angular.module('editor')
     controllerAs: 'explorer',
 });
 
-function ExplorerComponent(EditorService, MonacoService) {
+function ExplorerComponent(EditorService, MonacoService, $scope) {
     const explorer = this;
 
     /** adds new file in the folder 'resource' */
@@ -28,10 +28,13 @@ function ExplorerComponent(EditorService, MonacoService) {
         if (event.keyCode === 13) { // enter
             EditorService.createResource(resource).then(() => {
                 explorer.select(resource);
+            }).catch(error => {
+                EditorService.log(error);
+                $scope.$apply();
             });
         }
         else if (event.keyCode === 27) { // esc
-            EditorService.cancelEdition(document);
+            EditorService.cancelEdition(resource);
         }
     };
     
@@ -40,15 +43,7 @@ function ExplorerComponent(EditorService, MonacoService) {
         return MonacoService.isSelection(resource);
     };
     
-    /** shows the options of the resource */
-    this.showOptions = function (resource, menu, event) {
-        event.preventDefault();
-        if (resource.hasOption) {
-            menu.open();
-        }
-    };
-    
-    /** moves the document 'src' to 'dst' */
+    /** moves the resource 'src' to 'dst' */
     this.moveResource = function(src, dst) {
         EditorService.moveResource(src, dst).catch(error => {
             EditorService.log(error);
@@ -62,22 +57,25 @@ function ExplorerComponent(EditorService, MonacoService) {
     
     /** sets 'resource' has the selected resource and displays it content if needed */
     this.select = function(resource) {
-        MonacoService.openResource(resource);
+        MonacoService.openResource(resource).catch(null);
     };
     
-    /** starts renaming 'document' */
+    /** starts renaming 'resource' */
     this.rename = function(resource, event) {
         event.stopPropagation();
         EditorService.renameResource(resource);
     };
         
-    this.delete = function (resource, event) {
+    this.delete = function(resource, e) {
         event.stopPropagation();
-        EditorService.confirm('Would you like to delete "' + resource.name + '"?').then(function () {
-            EditorService.deleteResource(resource).then(() => {
-                MonacoService.closeResource(resource);
-            });
-        }).catch(() => {
+        EditorService.confirm({
+            title: 'Would you like to delete "' + resource.name + '"?',
+            targetEvent: e,
+            confirmed: function () {
+                EditorService.deleteResource(resource).then(() => {
+                    MonacoService.closeResource(resource);
+                });
+            }
         });
     };
     

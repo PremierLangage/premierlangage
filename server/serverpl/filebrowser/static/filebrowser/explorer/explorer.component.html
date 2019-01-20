@@ -14,7 +14,6 @@
             ng-if='!resource.editing'
             id='{{resource.path}}'
             ng-class='{"tree__item": true, "selected": explorer.isSelection(resource)}'
-            ng-on-contextmenu="explorer.showOptions(resource, $mdMenu, $event)"
             ng-click='explorer.select(resource)'
             drop='explorer.moveResource'
             droppable
