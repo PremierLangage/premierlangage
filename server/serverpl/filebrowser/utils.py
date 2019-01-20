@@ -79,7 +79,7 @@ def fa_repository_host(path):
 
 
 
-def walkdir(path, user, parent='', write=None, read=None, repo=None):
+def walkdir(path, user, parent='', write=None, read=None, repo=None, sort=False):
     """Returns the directory tree from path."""
     node = {
         'parent': parent,
@@ -112,5 +112,8 @@ def walkdir(path, user, parent='', write=None, read=None, repo=None):
             for entry in os.listdir(path)
             if not filter.is_hidden(entry)
         ]
+        if sort:
+            node['children'] = sorted(node['children'], key=lambda i: i["name"])
+            
     
     return node

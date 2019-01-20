@@ -136,30 +136,6 @@ class UtilsTestCase(TestCase):
             'read'    : True,
             'repo'    : None,
             'children': [{
-                'parent': '100',
-                'type'  : 'file',
-                'name'  : 'text.txt',
-                'path'  : '100/text.txt',
-                'icon'  : 'fas '
-                          'fa-file-alt',
-                'write' : True,
-                'read'  : True,
-                'repo'  : None
-            }, {
-                'parent'  : '100',
-                'type'    : 'folder',
-                'name'    : 'repo',
-                'path'    : '100/repo',
-                'icon'    : 'fas fa-folder',
-                'write'   : True,
-                'read'    : True,
-                'repo'    : {
-                    'url'   : '',
-                    'branch': 'HEAD',
-                    'host'  : 'fab fa-git'
-                },
-                'children': []
-            }, {
                 'parent'  : '100',
                 'type'    : 'folder',
                 'name'    : 'directory',
@@ -177,11 +153,37 @@ class UtilsTestCase(TestCase):
                     'read'  : True,
                     'repo'  : None
                 }]
-            }]
+            }, {
+                'parent'  : '100',
+                'type'    : 'folder',
+                'name'    : 'repo',
+                'path'    : '100/repo',
+                'icon'    : 'fas fa-folder',
+                'write'   : True,
+                'read'    : True,
+                'repo'    : {
+                    'url'   : '',
+                    'branch': 'HEAD',
+                    'host'  : 'fab fa-git'
+                },
+                'children': []
+            },
+                {
+                    'parent': '100',
+                    'type'  : 'file',
+                    'name'  : 'text.txt',
+                    'path'  : '100/text.txt',
+                    'icon'  : 'fas fa-file-alt',
+                    'write' : True,
+                    'read'  : True,
+                    'repo'  : None
+                }
+            ]
         }
+        
         try:
-            self.assertEqual(utils.walkdir(d, user), expected)
+            self.assertEqual(utils.walkdir(d, user, sort=True), expected)
         except AssertionError:
-            print("Expected: \n", expected)
-            print("Got: \n", utils.walkdir(d, user))
+            print("\nExpected: \n", expected)
+            print("\nGot: \n", utils.walkdir(d, user, sort=True))
             raise
