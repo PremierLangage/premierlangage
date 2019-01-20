@@ -134,7 +134,6 @@ def is_hidden(path):
     return os.path.basename(path) in HIDDEN
 
 
-
 def is_root(path):
     """Returns True if path is an image, False otherwise."""
     components = path.split('/')

@@ -94,6 +94,7 @@ function EditorService($http, $mdDialog) {
                 }
                 instance.resources[0].expanded = true;
                 instance.runningTask = false;
+                instance.log('git pull operation succeed on ' + resource.path);
             }).catch(error => {
                 instance.runningTask = false;
                 instance.logError(error.data || error);
@@ -131,6 +132,7 @@ function EditorService($http, $mdDialog) {
         }).then(response => {
             instance.log(response.data);
             instance.runningTask = false;
+            instance.log('git add operation succeed on ' + resource.path);
         }).catch(error => {
             instance.runningTask = false;
             instance.logError(error.data || error);
@@ -152,6 +154,7 @@ function EditorService($http, $mdDialog) {
             }).then(response => {
                 instance.log(response.data);
                 instance.runningTask = false;
+                instance.log('git commit operation succeed on ' + resource.path);
             }).catch(error => {
                 instance.runningTask = false;
                 instance.logError(error.data || error);
@@ -239,15 +242,17 @@ function EditorService($http, $mdDialog) {
     instance.createResource = function(resource) {
         return new Promise((resolve, reject) => {
             if (resource.__submiting__) {
-                reject("loading for server response...")
+                reject("waiting for server response...")
                 return;
             }
             resource.__submiting__ = true;
             if (!resource.name) {
+                delete resource.__submiting__;
                 reject('resource name is required !');
                 return;
             }
             if (resource.__parent__.children.find(it => it.name === resource.name && !it.editing)) {
+                delete resource.__submiting__;
                 reject('resource name already exists !');
                 return;
             }
@@ -276,14 +281,13 @@ function EditorService($http, $mdDialog) {
                 resource.icon = response.data.icon;
                 loadOption(resource);
                 delete resource.editing;
+                sortResources(resource.__parent__.children);
                 delete resource.__parent__;
                 delete resource.__submiting__;
                 delete resource.__name__;
                 resolve(response.data);
             }).catch(error => {
                 delete resource.__submiting__;
-                error = error.data || error;
-                instance.log(error);
                 reject(error);
             });
         });
@@ -359,29 +363,33 @@ function EditorService($http, $mdDialog) {
                 return;
             }
 
-            instance.confirm('Are you sure you want to move this resource?').then(() => {
-                $http({
-                    method: 'POST',
-                    url: 'option',
-                    data: {
-                        name: 'move_resource',
-                        path: src,
-                        dst: dst
-                    }
-                }).then((response) => {
-                    const parent = instance.findResource(srcRes.parent);
-                    parent.children = parent.children.filter(item => item.path !== srcRes.path);
-                    srcRes.parent = dst;
-                    srcRes.path = response.data.path;
-                    dstRes.children.push(srcRes);
-                    sortResources(dstRes.children);
-                    dstRes.expanded = true;
+            instance.askConfirm({
+                title: 'Are you sure you want to move this resource?',
+                confirmed: () => {
+                    $http({
+                        method: 'POST',
+                        url: 'option',
+                        data: {
+                            name: 'move_resource',
+                            path: src,
+                            dst: dst
+                        }
+                    }).then((response) => {
+                        const parent = instance.findResource(srcRes.parent);
+                        parent.children = parent.children.filter(item => item.path !== srcRes.path);
+                        srcRes.parent = dst;
+                        srcRes.path = response.data.path;
+                        dstRes.children.push(srcRes);
+                        sortResources(dstRes.children);
+                        dstRes.expanded = true;
+                        resolve();
+                    }).catch(error => {
+                        reject(error.data);
+                    });
+                },
+                canceled: () => {
                     resolve();
-                }).catch(error => {
-                    reject(error.data);
-                });
-            }).catch(() => {
-                resolve();
+                }
             });
         });    
     }
@@ -410,7 +418,6 @@ function EditorService($http, $mdDialog) {
                 reject('the resource does not exists');
                 return;
             }
-            
             if (!resource.__loaded__) {
                 $http({
                     url: "option",
@@ -535,7 +542,8 @@ function EditorService($http, $mdDialog) {
                 resolve(response.data);
             }).catch(error => {
                 instance.runningTask = false;
-                instance.logError(error.data || error);
+                instance.logError(error.data);
+                reject(error.data)
             });
         });
     }
@@ -544,9 +552,11 @@ function EditorService($http, $mdDialog) {
 
     //#region logging
     instance.log = function(message) {
-        instance.logs.push(message);
-        if (instance.onLogAdded) {
-            instance.onLogAdded();
+        if (message) {
+            instance.logs.push(message);
+            if (instance.onLogAdded) {
+                instance.onLogAdded();
+            }
         }
     }
 
@@ -562,13 +572,27 @@ function EditorService($http, $mdDialog) {
     //#endregion
 
     //#region 
-    instance.confirm = function(title) {
-        const confirm = $mdDialog.confirm()
-        .title(title)
-        .ok('YES')
-        .cancel('CANCEL')
-        .targetEvent(event);
-        return $mdDialog.show(confirm);
+
+    /**
+     * Show a confirm dialog box
+     * @param {Object} options - options of the dialog box
+     * @param {string} options.title - the title of the dialog box
+     * @param {string} options.positiveTitle - the title of the confirm button
+     * @param {string} options.negativeTitle - the title of the cancel button
+     * @param {Event} options.targetEvent - a javascript event object
+     * @callback options.confirmed - called if confirmed
+     * @callback options.canceled - called if canceled
+     * 
+     */
+    instance.askConfirm = function(options) {
+        const dialog = $mdDialog.confirm()
+            .title(options.title)
+            .ok(options.positiveTitle || 'YES')
+            .cancel(options.negativeTitle || 'CANCEL')
+            .targetEvent(options.targetEvent);
+        $mdDialog.show(dialog)
+        .then(options.confirmed || function(){})
+        .catch(options.canceled || function(){});
     }
 
     instance.openDialog = function(templateUrl) {

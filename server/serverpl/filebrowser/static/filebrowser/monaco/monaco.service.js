@@ -61,7 +61,9 @@ function MonacoService(EditorService, $http) {
         if (!instance.isEmpty()) {
             instance.openResource(instance.resources[0]);
         }
-        resource.editorModel.dispose();
+        if (resource.editorModel) {
+            resource.editorModel.dispose();
+        }
         resource.editorModel = undefined;
         resource.editorState = undefined;
         resource.preview = undefined;
@@ -117,12 +119,12 @@ function MonacoService(EditorService, $http) {
      * Loads the given pltp resource by making a http request.
      * @param {Object} resource - the pltp resource.
      * */
-    this.loadPLTP = function(document) {
+    this.loadPLTP = function(resource) {
         instance.runningTask = true;
         $http({
             method: 'GET',
             url: 'option',
-            params: { name: 'load_pltp', path: document.path }
+            params: { name: 'load_pltp', path: resource.path }
         }).then(response => {
             EditorService.log(response.data);
             instance.runningTask = false;
@@ -270,8 +272,7 @@ function MonacoService(EditorService, $http) {
                 resolve(resource);
             }).catch(error => {
                 instance.runningTask = false;
-                resource.preview = error.data;
-                EditorService.log(resource.preview);
+                EditorService.log(error.data);
                 reject(error.data);
             });
         });

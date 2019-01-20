@@ -1,4 +1,5 @@
 {% load django_markdown %}
+{% load static %}
 <div class="card">
     <div class="card-header">
         <div class="text-center"><h1>{% if 'title'%}{{ title }}{% endif %}</h1></div>
@@ -35,89 +36,6 @@
 <br/><br/>
 {% include "playexo/alert.html" %}
 {% block end_script %}
-    <script>
-        var submit_button = $( "#submit_button" );
-
-        submit_button.click(function() {
-            submit_button.prop('disabled', true);
- 
-            const inputs = getInputs();
-            const data = {
-                answers: inputs,
-                id: "{{id__}}",
-                session_id: "{{session__.id}}",
-                other: [],
-            }
-
-            let status = {
-                name: "preview_pl",
-                requested_action: 'submit', 
-                data: data, 
-            };
-
-            $.ajax({
-                type : "POST",
-                url : "/filebrowser/option",
-                data: JSON.stringify(status, null, '\t'),
-                contentType: 'application/json;charset=UTF-8',
-                success: function(returned_status) {
-                    status = returned_status;
-                    onReturn(status.exercise, status.navigation, status.feedback);
-                    submit_button.prop('disabled', false);
-                },
-                error: function(error) {   
-                    submit_button.prop('disabled', false);
-                }
-            });
-        });
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-
-        if(window.top != window.self) {
-            $('#home-link').remove();
-        }
-
-        $( "#download_env_button" ).click(function() {
-            window.onbeforeunload = function () {}
-        });
-
-        function getInputs(){
-            var inputs = {};
-            $( "[id^='form_']" ).each(function() {
-                var id = this.id.slice(5); // name of the variable
-                var value = $(this).val();
-                if ($(this).is(':radio')) {
-                    if($(this).is(':checked')) {
-                        inputs[id]=value;
-                    }
-                }
-                else if ($(this).is(':checkbox')) {
-                    if($(this).is(':checked')) {
-                        if (id in inputs) {
-                            inputs[id].push(value);
-                        }
-                        else {
-                            inputs[id] = [value]
-                        }
-                    }
-                }
-                else {
-                    inputs[id]=value;
-                }
-            });
-            return inputs;
-        }
-
-        function onReturn(exercise, navigation, feedback) {
-            if (exercise) {
-                $( "#preview" ).html(exercise);
-            }
-            if (feedback) {
-                $( "#feedback" ).hide()
-                setTimeout(function () {
-                    $( "#feedback" ).html(feedback);
-                    $( "#feedback" ).show();
-                }, 100);
-            }
-        }
-    </script>
+    <script type='text/javascript' src="{% static '/playexo/js/preview.js' %}"></script>
+    <script>previewPL("{{id__}}", "{{session__.id}}");</script>
 {% endblock %}

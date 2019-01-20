@@ -1,6 +1,7 @@
 import os
 
 import gitcmd
+import magic
 from django.conf import settings
 
 from filebrowser import filter
@@ -12,6 +13,12 @@ def join_fb_root(path):
     """Returns an absolute path, joining <path> to FILEBROWSER_ROOT."""
     return os.path.abspath(os.path.join(settings.FILEBROWSER_ROOT, path))
 
+
+def rm_fb_root(path):
+    """Returns path stripped of settings.FILEBROWSER_ROOT."""
+    if path.startswith(settings.FILEBROWSER_ROOT):
+        return path[len(settings.FILEBROWSER_ROOT) + 1:]
+    return path
 
 
 def repository_url(path):
@@ -31,34 +38,28 @@ def fa_icon(path):
     if os.path.isdir(path):
         return "fas fa-folder"
     
-    if filter.is_code(path):
+    ext = os.path.splitext(path)[1]
+    if ext in filter.CODE_EXT:
         return "fas fa-file-code"
-    
-    if os.path.splitext(path)[1] == ".pdf":
+    if ext == ".pdf":
         return "fas fa-file-pdf"
-    
-    if filter.is_excel(path):
+    if ext in filter.EXCEL_EXT:
         return "fas fa-file-excel"
-    
-    if filter.is_powerpoint(path):
+    if ext in filter.POWERPOINT_EXT:
         return "fas fa-file-powerpoint"
-    
-    if filter.is_word(path):
+    if ext in filter.WORD_EXT:
         return "fas fa-file-word"
-    
-    if filter.is_archive(path):
+
+    mime = magic.from_file(path, True).split('/')[0]
+    if mime in ['zip', 'x-xz', 'gzip'] or ext in filter.ARCHIVE_EXT:
         return "fas fa-file-archive"
-    
-    if filter.is_audio(path):
+    if mime == "audio":
         return "fas fa-file-audio"
-    
-    if filter.is_video(path):
+    if mime == 'video':
         return "fas fa-file-video"
-    
-    if filter.is_image(path):
+    if mime == 'image':
         return "fas fa-file-image"
-    
-    if filter.is_text(path):
+    if mime == 'text':
         return "fas fa-file-alt"
     
     return "fas fa-file"
@@ -79,11 +80,12 @@ def fa_repository_host(path):
 
 
 def walkdir(path, user, parent='', write=None, read=None, repo=None):
+    """Returns the directory tree from path."""
     node = {
         'parent': parent,
         'type'  : 'folder' if os.path.isdir(path) else 'file',
         'name'  : os.path.basename(path),
-        'path'  : path[len(settings.FILEBROWSER_ROOT) + 1:],
+        'path'  : rm_fb_root(path),
         'icon'  : fa_icon(path),
         'write' : write,
         'read'  : read,
@@ -105,7 +107,6 @@ def walkdir(path, user, parent='', write=None, read=None, repo=None):
                 'branch': repository_branch(path),
                 'host'  : fa_repository_host(path),
             }
-        
         node['children'] = [
             walkdir(os.path.join(path, entry), user, node['path'], write, read, repo)
             for entry in os.listdir(path)

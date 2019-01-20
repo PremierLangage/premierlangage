@@ -90,12 +90,12 @@ export function config(editorNode, diffEditorNode, completion) {
             automaticLayout: true,
         });
         
-        editor.findLanguage = function(document) {
-            document.language = '';
-            const dotIndex = document.name.lastIndexOf('.');
-            const extension = document.name.substring(dotIndex + 1);
+        editor.findLanguage = function(resource) {
+            resource.language = '';
+            const dotIndex = resource.name.lastIndexOf('.');
+            const extension = resource.name.substring(dotIndex + 1);
             if (extension in LANGUAGES) {
-                document.language = LANGUAGES[extension];
+                resource.language = LANGUAGES[extension];
             }
         }
 

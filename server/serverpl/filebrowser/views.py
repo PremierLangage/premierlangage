@@ -17,7 +17,7 @@ from django.views.decorators.http import require_GET, require_POST
 from filebrowser.filter import is_root
 from filebrowser.gitcmd_extensions import show_last_revision
 from filebrowser.models import Directory
-from filebrowser.utils import fa_icon, join_fb_root, walkdir
+from filebrowser.utils import fa_icon, join_fb_root, rm_fb_root, walkdir
 from loader.loader import load_file, reload_pltp as rp
 from playexo.models import Activity, SessionTest
 
@@ -48,7 +48,7 @@ def get_resource(request):
         return HttpResponseNotFound(msg)
 
 
-
+@require_GET
 def get_resources(request):
     """Returns home + lib directory structure."""
     try:
@@ -86,7 +86,7 @@ def create_resource(request):
     path = post.get('path')
     if not path:
         return HttpResponseBadRequest('"path" parameter is missing')
-
+    
     path = join_fb_root(path)
     name = os.path.basename(path)
     
@@ -101,11 +101,11 @@ def create_resource(request):
         if post.get('type', '') == 'file':
             with open(path, "w") as f:
                 print(post.get('content', ''), file=f)
-            return JsonResponse({'icon': fa_icon(path), 'path': path})
+            return JsonResponse({'icon': fa_icon(path), 'path': rm_fb_root(path)})
         
         else:
             os.mkdir(path)
-            return JsonResponse({'icon': fa_icon(path), 'path': path})
+            return JsonResponse({'icon': fa_icon(path), 'path': rm_fb_root(path)})
     except Exception as e:  # pragma: no cover
         msg = "Impossible to create '{0}' : {1}".format(name, htmlprint.code(
                 str(type(e)) + ' - ' + str(e)))
@@ -152,7 +152,7 @@ def rename_resource(request):
         return HttpResponseBadRequest('"path" parameter is missing')
     if not target:
         return HttpResponseBadRequest('"target" parameter is missing')
-
+    
     path = join_fb_root(path)
     name = path.split('/')[-1]
     new_path = path[:-len(name)] + target
@@ -167,7 +167,8 @@ def rename_resource(request):
             return HttpResponseBadRequest(msg)
         
         os.rename(path, new_path)
-        return JsonResponse({'icon': fa_icon(new_path), 'path': new_path, 'status': 200})
+        return JsonResponse(
+                {'icon': fa_icon(new_path), 'path': rm_fb_root(new_path), 'status': 200})
     except Exception as e:  # pragma: no cover
         msg = "Impossible to rename '{0}' to '{1}': {2}".format(name, target, htmlprint.code(
                 str(type(e)) + ' - ' + str(e)))
@@ -355,10 +356,9 @@ def git_commit(request):
 
 @login_required
 @csrf_exempt
+@require_POST
 def preview_pl(request):
     """ Used by the PL editor to preview a PL and test the preview's answers"""
-    if request.method != 'POST':
-        return HttpResponse('405 Method Not Allowed', status=405)
     post = json.loads(request.body.decode())
     if post.get('requested_action', '') == 'preview':  # Asking for preview
         path = post.get('path')
@@ -387,12 +387,14 @@ def preview_pl(request):
                 preview = exercise.get_exercise(request)
         
         except Exception as e:  # pragma: no cover
+            print(e)
             preview = ('<div class="alert alert-danger" role="alert"> Failed to load \''
                        + os.path.basename(file_path) + "': \n\n"
                        + htmlprint.code(str(e)))
             if settings.DEBUG:
                 preview += "\n\nDEBUG set to True:\n" + htmlprint.html_exc()
             preview += "</div>"
+            print('EXCEPTIOn')
         finally:
             shutil.move(path + ".bk", path)
             return HttpResponse(
@@ -532,6 +534,7 @@ def test_pl(request):
 
 
 @login_required
+@require_GET
 def download_env(request, envid):
     r = requests.get(os.path.join(settings.SANDBOX, "env", envid, ""))
     response = HttpResponse(r)

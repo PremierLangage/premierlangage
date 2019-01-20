@@ -76,6 +76,13 @@ class UtilsTestCase(TestCase):
                          os.path.abspath(os.path.join(settings.FILEBROWSER_ROOT, "dir/file.txt")))
     
     
+    def test_rm_fb_root(self):
+        path1 = os.path.join(settings.FILEBROWSER_ROOT, "dir/file.txt")
+        path2 = "/path/to/file.txt"
+        self.assertEqual(utils.rm_fb_root(path1), "dir/file.txt")
+        self.assertEqual(utils.rm_fb_root(path2), path2)
+    
+    
     def test_repository_url(self):
         self.assertIn("premierlangage", utils.repository_url("."))
         self.assertIn("github", utils.repository_url("."))

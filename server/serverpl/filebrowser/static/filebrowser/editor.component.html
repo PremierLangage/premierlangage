@@ -9,7 +9,7 @@
             <div class='editor__tab-item' ng-click='editor.search()'>
                 <md-tooltip>Search File</md-tooltip><i class="fas fa-search"></i>
             </div>
-            <md-menu ng-if='editor.selection()'>
+            <md-menu ng-if='editor.inRepository()'>
                 <div class='editor__tab-item' ng-click='editor.showGitContextMenu($mdMenu, $event)'>
                     <md-tooltip>Git Options ({{editor.selection().name}})</md-tooltip><i class="fab fa-git-square"></i>
                 </div>
