@@ -124,6 +124,7 @@ class UtilsTestCase(TestCase):
         shutil.rmtree(d)
         shutil.copytree(WALK_DIR, d)
         command('git init ' + os.path.join(d, "repo"))
+        self.maxDiff = None
         self.assertEqual(utils.walkdir(d, user), {
             'parent'  : '',
             'type'    : 'folder',
