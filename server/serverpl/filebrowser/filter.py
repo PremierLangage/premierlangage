@@ -143,7 +143,14 @@ def is_not_directory_object(path):
     return not is_directory_object(path)
 
 def to_abs_path(path):
+    if path.startswith(settings.FILEBROWSER_ROOT):
+        return path
     return abspath(join(settings.FILEBROWSER_ROOT, path))
+
+def to_rel_path(path):
+    if path.startswith(settings.FILEBROWSER_ROOT):
+        return path[len(settings.FILEBROWSER_ROOT) + 1:]
+    return path
 
 
 def is_archive(path):

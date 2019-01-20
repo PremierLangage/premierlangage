@@ -281,6 +281,7 @@ function EditorService($http, $mdDialog) {
                 resource.icon = response.data.icon;
                 loadOption(resource);
                 delete resource.editing;
+                sortResources(resource.__parent__.children);
                 delete resource.__parent__;
                 delete resource.__submiting__;
                 delete resource.__name__;
@@ -362,7 +363,7 @@ function EditorService($http, $mdDialog) {
                 return;
             }
 
-            instance.confirm({
+            instance.askConfirm({
                 title: 'Are you sure you want to move this resource?',
                 confirmed: () => {
                     $http({
@@ -417,7 +418,6 @@ function EditorService($http, $mdDialog) {
                 reject('the resource does not exists');
                 return;
             }
-            
             if (!resource.__loaded__) {
                 $http({
                     url: "option",
@@ -552,9 +552,11 @@ function EditorService($http, $mdDialog) {
 
     //#region logging
     instance.log = function(message) {
-        instance.logs.push(message);
-        if (instance.onLogAdded) {
-            instance.onLogAdded();
+        if (message) {
+            instance.logs.push(message);
+            if (instance.onLogAdded) {
+                instance.onLogAdded();
+            }
         }
     }
 
@@ -582,7 +584,7 @@ function EditorService($http, $mdDialog) {
      * @callback options.canceled - called if canceled
      * 
      */
-    instance.confirm = function(options) {
+    instance.askConfirm = function(options) {
         const dialog = $mdDialog.confirm()
             .title(options.title)
             .ok(options.positiveTitle || 'YES')

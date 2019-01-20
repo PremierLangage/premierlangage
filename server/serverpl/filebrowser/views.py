@@ -50,8 +50,6 @@ def option_get_resource(request):
 
 def option_get_resources(request):
     userId = str(request.user.id)
-    root_path_length = len(settings.FILEBROWSER_ROOT)
-
     repos = {}
     directories = {}
 
@@ -73,7 +71,7 @@ def option_get_resources(request):
             'parent': parent,
             'type': 'folder' if isdir(path) else 'file',
             'name': basename(path),
-            'path': path[root_path_length + 1:],
+            'path': to_rel_path(path),
             'icon': icon(path),
         }
         if node['type'] == 'folder':
@@ -154,7 +152,7 @@ def option_create_resource(request):
             if content:
                 f.write(content)
             f.close()
-            return JsonResponse({'icon': icon(path), 'path': path})
+            return JsonResponse({'icon': icon(path), 'path': to_rel_path(path)})
         
         def create_folder():
             if isdir(path) or isfile(path):
@@ -162,7 +160,7 @@ def option_create_resource(request):
                 return HttpResponseBadRequest(msg)
             else:
                 os.mkdir(path)
-                return JsonResponse({'icon': icon(path), 'path': path})
+                return JsonResponse({'icon': icon(path), 'path': to_rel_path(path)})
 
         if any(c in name for c in settings.FILEBROWSER_DISALLOWED_CHAR):
             msg = "Can't create file '{0}': name should not contain any of {1}.".format(name, settings.FILEBROWSER_DISALLOWED_CHAR)
@@ -186,6 +184,7 @@ def option_delete_resource(request):
         return HttpResponseNotAllowed(['POST'])
     post = json.loads(request.body.decode())
     path = post['path']
+    print('DEL' + path)
     if not path:
         return HttpResponseBadRequest('"path" parameter is missing')
     
@@ -229,7 +228,7 @@ def option_rename_resource(request):
             msg = "Can't rename '{0}' to '{1}': this name is already used.".format(name, target)
             return HttpResponseBadRequest(msg)
         os.rename(path, new_path)
-        return JsonResponse({'icon': icon(new_path), 'path': new_path, 'status': 200})
+        return JsonResponse({'icon': icon(new_path), 'path': to_rel_path(new_path), 'status': 200})
     except Exception as e:  # pragma: no cover
         msg = "Impossible to rename '{0}' to '{1}': {2}".format(name, target, htmlprint.code(str(type(e)) + ' - ' + str(e)))
         if settings.DEBUG:
@@ -419,7 +418,7 @@ def option_preview_pl(request):
             shutil.copyfile(path, path + ".bk")
             with open(path, 'w+') as f:  # Writting editor content into the file
                 print(post['content'], file=f)
-            
+        
             directory = Directory.objects.get(name=directory)
             file_path = join(*(path_components[1:]))
             pl, warnings = load_file(directory, file_path)
@@ -434,12 +433,14 @@ def option_preview_pl(request):
                 preview = exercise.get_exercise(request)
         
         except Exception as e:  # pragma: no cover
+            print(e)
             preview = ('<div class="alert alert-danger" role="alert"> Failed to load \''
                        + basename(file_path) + "': \n\n"
                        + htmlprint.code(str(e)))
             if settings.DEBUG:
                 preview += "\n\nDEBUG set to True:\n" + htmlprint.html_exc()
             preview += "</div>"
+            print('EXCEPTIOn')
         finally:
             shutil.move(path + ".bk", path)
             return HttpResponse(

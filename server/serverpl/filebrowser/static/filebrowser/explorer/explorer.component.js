@@ -12,28 +12,27 @@ function ExplorerComponent(EditorService, MonacoService, $scope) {
     const explorer = this;
 
     /** adds new file in the folder 'resource' */
-    this.addFile = function (resource, event) {
-        event.stopPropagation();
+    this.addFile = function (resource, e) {
+        e.stopPropagation();
         EditorService.addFile(resource);
     };
     
     /** adds new folder in the folder 'resource' */
-    this.addFolder = function (resource, event) {
-        event.stopPropagation();
+    this.addFolder = function (resource, e) {
+        e.stopPropagation();
         EditorService.addFolder(resource);
     };
     
-    /** creates or cancels the edition of 'resource' depending to 'event' */
-    this.endEditing = function (resource, event) {
-        if (event.keyCode === 13) { // enter
+    /** creates or cancels the edition of 'resource' depending to 'e' */
+    this.endEditing = function (resource, e) {
+        if (e.keyCode === 13) { // enter
             EditorService.createResource(resource).then(() => {
                 explorer.select(resource);
             }).catch(error => {
-                EditorService.log(error);
-                $scope.$apply();
+                EditorService.logError(error);
             });
         }
-        else if (event.keyCode === 27) { // esc
+        else if (e.keyCode === 27) { // esc
             EditorService.cancelEdition(resource);
         }
     };
@@ -50,8 +49,8 @@ function ExplorerComponent(EditorService, MonacoService, $scope) {
         });
     };
     
-    this.reloadPLTP = function(resource, event) {
-        event.stopPropagation();
+    this.reloadPLTP = function(resource, e) {
+        e.stopPropagation();
         MonacoService.reloadPLTP(resource);
     };
     
@@ -61,14 +60,14 @@ function ExplorerComponent(EditorService, MonacoService, $scope) {
     };
     
     /** starts renaming 'resource' */
-    this.rename = function(resource, event) {
-        event.stopPropagation();
+    this.rename = function(resource, e) {
+        e.stopPropagation();
         EditorService.renameResource(resource);
     };
         
     this.delete = function(resource, e) {
-        event.stopPropagation();
-        EditorService.confirm({
+        e.stopPropagation();
+        EditorService.askConfirm({
             title: 'Would you like to delete "' + resource.name + '"?',
             targetEvent: e,
             confirmed: function () {
@@ -79,13 +78,13 @@ function ExplorerComponent(EditorService, MonacoService, $scope) {
         });
     };
     
-    this.testPL = function(resource, event) {
-        event.stopPropagation();
+    this.testPL = function(resource, e) {
+        e.stopPropagation();
         MonacoService.testPL(resource);
     };
     
-    this.loadPLTP = function(resource, event) {
-        event.stopPropagation();
+    this.loadPLTP = function(resource, e) {
+        e.stopPropagation();
         MonacoService.loadPLTP(resource);
     };
 

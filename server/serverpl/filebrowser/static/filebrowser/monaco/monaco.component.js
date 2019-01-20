@@ -18,7 +18,7 @@ function MonacoComponent ($scope, EditorService, MonacoService) {
     */
     monaco.didTapCloseResource = function(resource, e) {
         if (resource.changed) {
-            EditorService.confirm({
+            EditorService.askConfirm({
                 title: 'You will lose any unsaved changes, press Ctrl | Cmd + S to save !',
                 targetEvent: e,
                 confirmed: () => MonacoService.closeResource(resource)

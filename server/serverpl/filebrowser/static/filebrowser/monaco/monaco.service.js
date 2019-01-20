@@ -272,8 +272,7 @@ function MonacoService(EditorService, $http) {
                 resolve(resource);
             }).catch(error => {
                 instance.runningTask = false;
-                resource.preview = error.data;
-                EditorService.log(resource.preview);
+                EditorService.log(error.data);
                 reject(error.data);
             });
         });
