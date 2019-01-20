@@ -62,12 +62,13 @@ class UtilsTestCase(TestCase):
             command('git remote add origin www.unknown.com')
         finally:
             os.chdir(current)
-
-
+    
+    
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree(FAKE_FB_ROOT)
         super().tearDownClass()
+    
     
     def test_join_fb_root(self):
         self.assertEqual(utils.join_fb_root("file.txt"),
@@ -125,7 +126,7 @@ class UtilsTestCase(TestCase):
         shutil.copytree(WALK_DIR, d)
         command('git init ' + os.path.join(d, "repo"))
         self.maxDiff = None
-        self.assertEqual(utils.walkdir(d, user), {
+        expected = {
             'parent'  : '',
             'type'    : 'folder',
             'name'    : '100',
@@ -177,4 +178,10 @@ class UtilsTestCase(TestCase):
                     'repo'  : None
                 }]
             }]
-        })
+        }
+        try:
+            self.assertEqual(utils.walkdir(d, user), expected)
+        except AssertionError:
+            print("Expected: \n", expected)
+            print("Got: \n", utils.walkdir(d, user))
+            raise
