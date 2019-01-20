@@ -62,12 +62,12 @@ class UtilsTestCase(TestCase):
             command('git remote add origin www.unknown.com')
         finally:
             os.chdir(current)
-    
-    
+
+
     @classmethod
     def tearDownClass(cls):
         shutil.rmtree(FAKE_FB_ROOT)
-    
+        super().tearDownClass()
     
     def test_join_fb_root(self):
         self.assertEqual(utils.join_fb_root("file.txt"),

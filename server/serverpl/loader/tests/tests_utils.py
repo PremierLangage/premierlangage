@@ -44,7 +44,9 @@ class UtilsTestCase(TestCase):
     
     @classmethod
     def setUpTestData(cls):
-        os.makedirs(FAKE_FB_ROOT)
+        if os.path.isdir(FAKE_FB_ROOT):
+            shutil.rmtree(FAKE_FB_ROOT)
+        
         cls.user = User.objects.create_user(username='user', password='12345', id=100)
         cls.dir = Directory.objects.get(name='100')
         cls.lib = Directory.objects.create(name='lib', owner=cls.user)

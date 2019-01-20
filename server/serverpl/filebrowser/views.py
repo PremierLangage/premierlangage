@@ -154,12 +154,12 @@ def rename_resource(request):
         return HttpResponseBadRequest('"target" parameter is missing')
     
     path = join_fb_root(path)
-    name = path.split('/')[-1]
-    new_path = path[:-len(name)] + target
+    name = os.path.basename(path)
+    new_path = os.path.join(os.path.dirname(path), target)
     
     try:
         if any(c in target for c in settings.FILEBROWSER_DISALLOWED_CHAR):
-            msg = "Can't rename '{0}' to {1}: name should not contain any of {2}." \
+            msg = "Can't rename '{0}' to '{1}': name should not contain any of {2}." \
                 .format(name, target, settings.FILEBROWSER_DISALLOWED_CHAR)
             return HttpResponseBadRequest(msg)
         if os.path.exists(new_path):

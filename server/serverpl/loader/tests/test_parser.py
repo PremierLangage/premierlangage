@@ -30,7 +30,9 @@ class ParserTestCase(TestCase):
     @classmethod
     @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
     def setUpTestData(cls):
-        os.makedirs(FAKE_FB_ROOT)
+        if os.path.isdir(FAKE_FB_ROOT):
+            shutil.rmtree(FAKE_FB_ROOT)
+        
         copy_parser()
         cls.user = User.objects.create_user(username='user', password='12345')
         cls.dir = Directory.objects.create(name='dir1', owner=cls.user)

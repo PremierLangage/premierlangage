@@ -23,7 +23,8 @@ class PlParserTestCase(TestCase):
     
     @classmethod
     def setUpTestData(cls):
-        os.makedirs(FAKE_FB_ROOT)
+        if os.path.isdir(FAKE_FB_ROOT):
+            shutil.rmtree(FAKE_FB_ROOT)
         cls.user = User.objects.create_user(username='user', password='12345')
         cls.dir = Directory.objects.create(name='dir1', owner=cls.user)
         cls.dir2 = Directory.objects.create(name='dir2', owner=cls.user)

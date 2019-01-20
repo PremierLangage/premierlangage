@@ -8,7 +8,7 @@ from django.test import TestCase, override_settings
 from filebrowser.models import Directory
 
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'filebrowser/tests/ressources')
+FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'filebrowser/tests/tmp')
 
 
 
@@ -17,6 +17,9 @@ class ModelTestCase(TestCase):
     
     @classmethod
     def setUpTestData(cls):
+        if os.path.isdir(FAKE_FB_ROOT):
+            shutil.rmtree(FAKE_FB_ROOT)
+        
         cls.user = User.objects.create_user(username='user', password='12345', id=100)
         cls.user2 = User.objects.create_user(username='user2', password='12345', id=200)
         cls.user3 = User.objects.create_user(username='user3', password='12345', id=300)
@@ -30,6 +33,11 @@ class ModelTestCase(TestCase):
         cls.d.add_write_auth(cls.user2)
         cls.d.add_read_auth(cls.user3)
     
+    
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(FAKE_FB_ROOT)
+        super().tearDownClass()
     
     def test_add_remove_write(self):
         self.assertTrue(self.user5 not in self.d.write_auth.all())
