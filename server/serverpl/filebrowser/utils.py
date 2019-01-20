@@ -108,7 +108,7 @@ def walkdir(path, user, parent='', write=None, read=None, repo=None, sort=False)
                 'host'  : fa_repository_host(path),
             }
         node['children'] = [
-            walkdir(os.path.join(path, entry), user, node['path'], write, read, repo)
+            walkdir(os.path.join(path, entry), user, node['path'], write, read, repo, sort)
             for entry in os.listdir(path)
             if not filter.is_hidden(entry)
         ]
