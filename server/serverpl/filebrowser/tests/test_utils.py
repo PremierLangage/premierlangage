@@ -171,7 +171,7 @@ class UtilsTestCase(TestCase):
                     'type'  : 'file',
                     'name'  : 'file',
                     'path'  : '100/directory/file',
-                    'icon'  : 'fas fa-file',
+                    'icon'  : 'fas fa-file-alt',
                     'write' : True,
                     'read'  : True,
                     'repo'  : None
