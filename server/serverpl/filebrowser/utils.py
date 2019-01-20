@@ -14,19 +14,28 @@ def join_fb_root(path):
 
 
 
+def repository_url(path):
+    """Returns git origin's url of path."""
+    return gitcmd.remote_url(path)[1][:-1]
+
+
+
+def repository_branch(path):
+    """Returns current git's branch of path."""
+    return gitcmd.current_branch(path)[1][:-1]
+
+
+
 def fa_icon(path):
     """Returns the css class of the Font Awesome 5 icon corresponding the most to <path>."""
     if os.path.isdir(path):
         return "fas fa-folder"
     
-    if os.path.splitext(path)[1] == ".pdf":
-        return "fas fa-file-pdf"
-    
     if filter.is_code(path):
         return "fas fa-file-code"
     
-    if filter.is_text(path):
-        return "fas fa-file-alt"
+    if os.path.splitext(path)[1] == ".pdf":
+        return "fas fa-file-pdf"
     
     if filter.is_excel(path):
         return "fas fa-file-excel"
@@ -49,6 +58,9 @@ def fa_icon(path):
     if filter.is_image(path):
         return "fas fa-file-image"
     
+    if filter.is_text(path):
+        return "fas fa-file-alt"
+    
     return "fas fa-file"
 
 
@@ -66,18 +78,6 @@ def fa_repository_host(path):
 
 
 
-def repository_url(path):
-    """Returns git origin's url of path."""
-    return gitcmd.remote_url(path)[1][:-1]
-
-
-
-def repository_branch(path):
-    """Returns current git's branch of path."""
-    return gitcmd.current_branch(path)[1][:-1]
-
-
-
 def walkdir(path, user, parent='', write=None, read=None, repo=None):
     node = {
         'parent': parent,
@@ -92,7 +92,7 @@ def walkdir(path, user, parent='', write=None, read=None, repo=None):
     
     if node['type'] == 'folder':
         if write is None:
-            directory = Directory.objects.get(name=os.path.basename(path))
+            directory = Directory.objects.get(name=os.path.basename(path.strip("/")))
             read = directory.can_read(user)
             write = directory.can_write(user)
         

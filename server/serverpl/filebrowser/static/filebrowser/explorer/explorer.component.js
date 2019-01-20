@@ -16,13 +16,13 @@ function ExplorerComponent(EditorService, MonacoService) {
         event.stopPropagation();
         EditorService.addFile(resource);
     };
-    
+
     /** adds new folder in the folder 'resource' */
     this.addFolder = function (resource, event) {
         event.stopPropagation();
         EditorService.addFolder(resource);
     };
-    
+
     /** creates or cancels the edition of 'resource' depending to 'event' */
     this.endEditing = function (resource, event) {
         if (event.keyCode === 13) { // enter
@@ -34,43 +34,35 @@ function ExplorerComponent(EditorService, MonacoService) {
             EditorService.cancelEdition(document);
         }
     };
-    
+
     /** checks if 'resource' is the selected resource */
     this.isSelection = function (resource) {
         return MonacoService.isSelection(resource);
     };
-    
-    /** shows the options of the resource */
-    this.showOptions = function (resource, menu, event) {
-        event.preventDefault();
-        if (resource.hasOption) {
-            menu.open();
-        }
-    };
-    
+
     /** moves the document 'src' to 'dst' */
     this.moveResource = function(src, dst) {
         EditorService.moveResource(src, dst).catch(error => {
             EditorService.log(error);
         });
     };
-    
+
     this.reloadPLTP = function(resource, event) {
         event.stopPropagation();
         MonacoService.reloadPLTP(resource);
     };
-    
+
     /** sets 'resource' has the selected resource and displays it content if needed */
     this.select = function(resource) {
         MonacoService.openResource(resource);
     };
-    
+
     /** starts renaming 'document' */
     this.rename = function(resource, event) {
         event.stopPropagation();
         EditorService.renameResource(resource);
     };
-        
+
     this.delete = function (resource, event) {
         event.stopPropagation();
         EditorService.confirm('Would you like to delete "' + resource.name + '"?').then(function () {
@@ -80,12 +72,12 @@ function ExplorerComponent(EditorService, MonacoService) {
         }).catch(() => {
         });
     };
-    
+
     this.testPL = function(resource, event) {
         event.stopPropagation();
         MonacoService.testPL(resource);
     };
-    
+
     this.loadPLTP = function(resource, event) {
         event.stopPropagation();
         MonacoService.loadPLTP(resource);

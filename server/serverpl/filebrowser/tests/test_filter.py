@@ -1,15 +1,14 @@
-from os.path import join
+import os
 
-from django.test import TestCase
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.test import TestCase
 
 from filebrowser import filter
 from filebrowser.models import Directory
 
-from django.conf import settings
 
-
-RES_DIR = join(settings.BASE_DIR, "filebrowser/tests/ressources/filter/")
+RES_DIR = os.path.join(settings.BASE_DIR, "filebrowser/tests/ressources/filter/")
 
 
 
@@ -93,11 +92,13 @@ class FilterTestCase(TestCase):
         self.assertTrue(filter.is_root("/"))
         self.assertTrue(filter.is_root("root/"))
         self.assertFalse(filter.is_root(RES_DIR))
-        
+    
+    
     def test_is_hidden(self):
         self.assertTrue(filter.is_hidden(RES_DIR + ".git"))
         self.assertFalse(filter.is_hidden(RES_DIR))
-        
+    
+    
     def test_in_repository(self):
         self.assertTrue(filter.in_repository("."))
         self.assertFalse(filter.in_repository("/"))

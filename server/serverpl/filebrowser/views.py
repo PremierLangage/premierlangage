@@ -132,10 +132,11 @@ def delete_resource(request):
         shutil.rmtree(path, ignore_errors=True) if os.path.isdir(path) else os.remove(path)
         return JsonResponse({'success': True})
     except Exception as e:  # pragma: no cover
-        msg = "Impossible to delete '" + path + "' : " + htmlprint.code(
-                str(type(e)) + ' - ' + str(e))
+        path = path.replace(settings.FILEBROWSER_ROOT, '')
+        error = htmlprint.code(str(e).replace(settings.FILEBROWSER_ROOT, ''))
+        msg = "Impossible to delete '%s' : %s" % (path, error)
         if settings.DEBUG:
-            msg += ("DEBUG set to True: " + htmlprint.html_exc())
+            msg += ("DEBUG: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
 
 
