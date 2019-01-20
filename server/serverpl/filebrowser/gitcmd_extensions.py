@@ -1,10 +1,9 @@
 import os
-import re
 import subprocess
-import locale
-from gitcmd import *
-from urllib.parse import urlparse, urlunparse
-  
+import gitcmd
+
+from gitcmd.gitcmd import NotInRepositoryError, GIT_LANG
+
 def show_last_revision(path):
     """Show the last revision of the file at path.
     
@@ -13,7 +12,7 @@ def show_last_revision(path):
     
     Return:
         (return_code, stdout, stderr), both stderr and stdout are decoded in UTF-8"""
-    if not in_repository(path):
+    if not gitcmd.in_repository(path):
         raise NotInRepositoryError("'" + path + "' is not inside a repository")
     
     cwd = os.getcwd()
@@ -37,6 +36,6 @@ def show_last_revision(path):
             for i in range(len(content)):
                 content[i] = content[i][1:]
             content = '\n'.join(content[1:]).replace(' No newline at end of file', '')
-    except:
+    except Exception:
         content = ''
-    return (p.returncode, content, err.decode())
+    return p.returncode, content, err.decode()
