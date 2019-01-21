@@ -49,34 +49,62 @@ class MoveTestCase(TestCase):
         self.assertTrue(os.path.isfile(os.path.join(self.dir, 'TPE/Dir_test/function001.pl')))
     
     
-    def test_move_ressource_no_path(self):
+    def test_move_resource_no_path(self):
         response = self.c.post(reverse("filebrowser:option"), {
                 'name': 'move_resource',
                 'dst' : '100/TPE/Dir_test/',
         }, content_type='application/json')
         self.assertContains(response, '"path" parameter is missing', status_code=400)
-
-
-    def test_move_ressource_no_dst(self):
+    
+    
+    def test_move_resource_no_dst(self):
         response = self.c.post(reverse("filebrowser:option"), {
                 'name': 'move_resource',
                 'path': '100/TPE/function001.pl',
         }, content_type='application/json')
         self.assertContains(response, '"dst" parameter is missing', status_code=400)
     
-    def test_move_ressource_path_is_dst(self):
+    
+    def test_move_resource_path_is_dst(self):
         response = self.c.post(reverse("filebrowser:option"), {
                 'name': 'move_resource',
                 'path': '100/TPE/Dir_test/',
                 'dst' : '100/TPE/Dir_test/',
         }, content_type='application/json')
         self.assertContains(response, "Can't move a directory inside itself", status_code=404)
-
-
-    def test_move_ressource_dst_is_not_dir(self):
+    
+    
+    def test_move_resource_dst_is_not_dir(self):
         response = self.c.post(reverse("filebrowser:option"), {
                 'name': 'move_resource',
                 'path': '100/TPE/function001.pl',
                 'dst' : '100/TPE/Dir_test/fail',
         }, content_type='application/json')
         self.assertContains(response, 'is not a directory', status_code=404)
+    
+    
+    def test_move_resource_dst_startswith(self):
+        response = self.c.post(reverse("filebrowser:option"), {
+                'name': 'move_resource',
+                'path': '100/TPE/',
+                'dst' : '100/TPE/Dir_test/',
+        }, content_type='application/json')
+        self.assertContains(response, "Can't move", status_code=404)
+    
+    
+    def test_move_already_in(self):
+        content = {
+                'name': 'move_resource',
+                'path': '100/carre.pl',
+                'dst' : '100/TPE/Dir_test/',
+        }
+        response = self.c.post(reverse("filebrowser:option"), content,
+                               content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(os.path.isfile(os.path.join(self.dir, 'carre.pl')))
+        self.assertTrue(os.path.isfile(os.path.join(self.dir, 'TPE/Dir_test/carre.pl')))
+        
+        response = self.c.post(reverse("filebrowser:option"), content,
+                               content_type='application/json')
+        
+        self.assertContains(response, 'already exists inside', status_code=404)
