@@ -1,3 +1,5 @@
+import { isHome, isRepo }  from './filters.js'
+
 angular.module('editor')
 .component('editor', {
     templateUrl: '/static/filebrowser/editor.component.html',
@@ -5,7 +7,7 @@ angular.module('editor')
     controllerAs: 'editor'
 });
 
-function EditorComponent($scope, EditorService, MonacoService) {        
+function EditorComponent(EditorService, MonacoService) {        
     const editor = this;
     editor.searchQuery = '';
     editor.searchResult = [];
@@ -17,7 +19,6 @@ function EditorComponent($scope, EditorService, MonacoService) {
         if (height < 300) {
             editor.consoleNode.height(400);
         }
-       // $scope.$apply();
     }
 
     editor.logs = function() {
@@ -36,16 +37,30 @@ function EditorComponent($scope, EditorService, MonacoService) {
         return EditorService.resources;
     };
    
-    editor.inRepository = function() {
-        return editor.selection() && editor.selection().repo;
+    editor.inHome = function() {
+        return isHome(editor.selection());
     }
     
+    editor.inRepo = function() {
+        return isRepo(editor.selection());
+    }
+    
+    editor.hasOption = function() {
+        const s = editor.selection();
+        return s && s.hasOption;
+    }
+
     editor.closeConsole = function() {
         editor.consoleNode.height(32);
     }
 
     editor.clearConsole = function() {
         EditorService.clearLogs();
+    }
+
+    editor.options = function() {
+        const s = editor.selection();
+        return s ? s.options : [];
     }
 
     editor.search = function() {
@@ -64,7 +79,7 @@ function EditorComponent($scope, EditorService, MonacoService) {
         return EditorService.runningTask;
     }
 
-    editor.showGitContextMenu = function(menu, event) {
+    editor.didTapGitButton = function(menu, event) {
         event.preventDefault();
         menu.open();
     }

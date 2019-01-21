@@ -9,12 +9,13 @@
             <div class='editor__tab-item' ng-click='editor.search()'>
                 <md-tooltip>Search File</md-tooltip><i class="fas fa-search"></i>
             </div>
-            <md-menu ng-if='editor.inRepository()'>
-                <div class='editor__tab-item' ng-click='editor.showGitContextMenu($mdMenu, $event)'>
-                    <md-tooltip>Git Options ({{editor.selection().name}})</md-tooltip><i class="fab fa-git-square"></i>
+            <md-menu ng-if='editor.hasOption()'>
+                <div class='editor__tab-item' ng-click='editor.didTapGitButton($mdMenu, $event)'>
+                    <md-tooltip>Git Options</md-tooltip>
+                    <i class="fab fa-git-square"></i>
                 </div>
                 <md-menu-content width="4">
-                    <ng-container ng-repeat="option in editor.selection().options">
+                    <ng-container ng-repeat="option in editor.options()">
                         <md-menu-item>
                             <md-button ng-click='option.action(editor.selection())'>
                                 <span><i class="{{option.icon}}"></i>&emsp;</span>
@@ -69,7 +70,7 @@
 </div>
  <!-- #region footer -->
 <div class='footer'>
-    <ng-container ng-if="editor.inRepository()">
+    <ng-container ng-if="editor.inRepo()">
         &emsp; <i class="{{editor.repository().host}} fa-1x"></i>&emsp; 
             <a href="{{editor.repository().url}} ">{{editor.repository().url}} </a>&nbsp;
             -&nbsp;<i>{{editor.repository().branch}} 
