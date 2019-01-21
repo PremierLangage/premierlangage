@@ -65,10 +65,6 @@ pip3 install -r requirements.txt || { echo>&2 "ERROR: pip3 install -r requiremen
 echo "Done !"
 
 
-#Getting release settings.py
-cp -f serverpl/install/settings_local.py serverpl/settings.py
-
-
 #Creating documentation
 echo ""
 echo "Creating documentation..."
@@ -80,11 +76,9 @@ echo "Done !"
 echo ""
 echo "Creating needed directories..."
 if [ ! -d "../../tmp" ]; then
-    mkdir ../../tmp || { echo>&2 "ERROR: Can't create ../../tmp" ; exit 1; }
+    mkdir ../../home/Yggdrasil || { echo>&2 "ERROR: Can't create ../../home/Yggdrasil" ; exit 1; }
 fi
-if [ ! -f "../../tmp/README" ]; then
-    echo "Directory used by premier langage, do not remove." > ../../tmp/README
-fi
+
 
 #Building database
 echo ""

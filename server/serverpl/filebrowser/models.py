@@ -28,12 +28,12 @@ class Directory(models.Model):
         super(Directory, self).save(*args, **kwargs)
     
     
-    @receiver(post_save, sender=User)
-    def mkdir_on_new_user(sender, instance, created, **kwargs):
-        if created:
-            if not isdir(join(settings.FILEBROWSER_ROOT, str(instance.id))):
-                os.makedirs(join(settings.FILEBROWSER_ROOT, str(instance.id)))
-            Directory.objects.create(name=str(instance.id), owner=instance)
+    # @receiver(post_save, sender=User)
+    # def mkdir_on_new_user(sender, instance, created, **kwargs):
+    #     if created:
+    #         if not isdir(join(settings.FILEBROWSER_ROOT, str(instance.id))):
+    #             os.makedirs(join(settings.FILEBROWSER_ROOT, str(instance.id)))
+    #         Directory.objects.create(name=str(instance.id), owner=instance)
     
     
     def is_repository(self):
@@ -67,6 +67,7 @@ class Directory(models.Model):
     
     def can_read(self, user):
         """Return True if user have read right on this directory, False if not."""
+        
         return (self.owner == user
                 or self.public
                 or user.profile.is_admin()
@@ -78,7 +79,8 @@ class Directory(models.Model):
         """Return True if user have write right on this directory, False if not."""
         return (self.owner == user
                 or user.profile.is_admin()
-                or user in self.write_auth.all())
+                or user in self.write_auth.all()
+                or self.name == "Yggdrasil") # TODO Could be better
     
     
     def is_owner(self, user):

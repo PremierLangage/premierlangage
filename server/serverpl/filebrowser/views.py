@@ -53,7 +53,7 @@ def get_resources(request):
     """Returns home + lib directory structure."""
     try:
         lib = walkdir(join_fb_root('lib'), request.user)
-        home = walkdir(join_fb_root(str(request.user.id)), request.user)
+        home = walkdir(join_fb_root("Yggdrasil"), request.user)
         home["name"] = 'home'
         return HttpResponse(json.dumps([home, lib]), content_type='application/json')
     except Exception as e:
