@@ -14,7 +14,6 @@ RES_DIR = os.path.join(settings.BASE_DIR, "filebrowser/tests/ressources/fake_fil
 FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'filebrowser/tests/tmp')
 
 
-
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
 class RenameTestCase(TestCase):
     
@@ -26,7 +25,7 @@ class RenameTestCase(TestCase):
         cls.user = User.objects.create_user(username='user', password='12345', id=100)
         cls.c = Client()
         cls.c.force_login(cls.user, backend=settings.AUTHENTICATION_BACKENDS[0])
-        cls.dir = Directory.objects.get(name='100', owner=cls.user).root
+        cls.dir = Directory.objects.create(name='Yggdrasil', owner=cls.user).root
         
         shutil.rmtree(os.path.join(cls.dir))
         shutil.copytree(RES_DIR, cls.dir)
@@ -41,7 +40,7 @@ class RenameTestCase(TestCase):
     def test_rename_resource_file(self):
         response = self.c.post(reverse("filebrowser:option"), {
             'name'  : 'rename_resource',
-            'path'  : '100/TPE/function001.pl',
+            'path'  : 'Yggdrasil/TPE/function001.pl',
             'target': 'function.pl',
         }, content_type='application/json')
         
@@ -53,7 +52,7 @@ class RenameTestCase(TestCase):
     def test_rename_resource_dir(self):
         response = self.c.post(reverse("filebrowser:option"), {
             'name'  : 'rename_resource',
-            'path'  : '100/TPE/Dir_test',
+            'path'  : 'Yggdrasil/TPE/Dir_test',
             'target': 'directory',
         }, content_type='application/json')
         self.assertEqual(response.status_code, 200)
@@ -87,7 +86,7 @@ class RenameTestCase(TestCase):
     def test_rename_resource_existing(self):
         response = self.c.post(reverse("filebrowser:option"), {
             'name'  : 'rename_resource',
-            'path'  : '100/TPE/function001.pl',
+            'path'  : 'Yggdrasil/TPE/function001.pl',
             'target': 'operator001.pl',
         }, content_type='application/json')
         
@@ -99,7 +98,7 @@ class RenameTestCase(TestCase):
     def test_rename_resource_invalid_name(self):
         response = self.c.post(reverse("filebrowser:option"), {
             'name'  : 'rename_resource',
-            'path'  : '100/TPE/function001.pl',
+            'path'  : 'Yggdrasil/TPE/function001.pl',
             'target': 'function_with_a.pl',
         }, content_type='application/json')
         

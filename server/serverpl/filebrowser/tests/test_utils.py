@@ -121,7 +121,7 @@ class UtilsTestCase(TestCase):
     
     def test_walkdir(self):
         user = User.objects.create_user(username='user', password='12345', id=100)
-        d = Directory.objects.get(name="100").root
+        d = Directory.objects.create(name="Yggdrasil", owner=user).root
         shutil.rmtree(d)
         shutil.copytree(WALK_DIR, d)
         command('git init ' + os.path.join(d, "repo"))
@@ -129,35 +129,37 @@ class UtilsTestCase(TestCase):
         expected = {
             'parent'  : '',
             'type'    : 'folder',
-            'name'    : '100',
-            'path'    : '100',
+            'name'    : 'Yggdrasil',
+            'path'    : 'Yggdrasil',
             'icon'    : 'fas fa-folder',
             'write'   : True,
             'read'    : True,
             'repo'    : None,
             'children': [{
-                'parent'  : '100',
+                'parent'  : 'Yggdrasil',
                 'type'    : 'folder',
                 'name'    : 'directory',
-                'path'    : '100/directory',
+                'path'    : 'Yggdrasil/directory',
                 'icon'    : 'fas fa-folder',
                 'write'   : True,
-                'read'    : True, 'repo': None,
-                'children': [{
-                    'parent': '100/directory',
-                    'type'  : 'file',
-                    'name'  : 'file',
-                    'path'  : '100/directory/file',
-                    'icon'  : 'fas fa-file-alt',
-                    'write' : True,
-                    'read'  : True,
-                    'repo'  : None
-                }]
+                'read'    : True,
+                'repo'    : None,
+                'children': [
+                    {
+                        'parent': 'Yggdrasil/directory',
+                        'type'  : 'file',
+                        'name'  : 'file',
+                        'path'  : 'Yggdrasil/directory/file',
+                        'icon'  : 'fas fa-file-alt',
+                        'write' : True,
+                        'read'  : True,
+                        'repo'  : None
+                    }]
             }, {
-                'parent'  : '100',
+                'parent'  : 'Yggdrasil',
                 'type'    : 'folder',
                 'name'    : 'repo',
-                'path'    : '100/repo',
+                'path'    : 'Yggdrasil/repo',
                 'icon'    : 'fas fa-folder',
                 'write'   : True,
                 'read'    : True,
@@ -167,18 +169,16 @@ class UtilsTestCase(TestCase):
                     'host'  : 'fab fa-git'
                 },
                 'children': []
-            },
-                {
-                    'parent': '100',
-                    'type'  : 'file',
-                    'name'  : 'text.txt',
-                    'path'  : '100/text.txt',
-                    'icon'  : 'fas fa-file-alt',
-                    'write' : True,
-                    'read'  : True,
-                    'repo'  : None
-                }
-            ]
+            }, {
+                'parent': 'Yggdrasil',
+                'type'  : 'file',
+                'name'  : 'text.txt',
+                'path'  : 'Yggdrasil/text.txt',
+                'icon'  : 'fas fa-file-alt',
+                'write' : True,
+                'read'  : True,
+                'repo'  : None
+            }]
         }
         
         try:
