@@ -16,7 +16,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from filebrowser.filter import is_root
-from filebrowser.gitcmd_extensions import show_last_revision
 from filebrowser.models import Directory
 from filebrowser.utils import fa_icon, join_fb_root, rm_fb_root, walkdir
 from loader.loader import load_file, reload_pltp as rp
@@ -312,7 +311,7 @@ def git_show(request):
     if not path:
         return HttpResponseBadRequest("parameter 'path' is missing")
     try:
-        ret, out, err = show_last_revision(join_fb_root(path))
+        ret, out, err = gitcmd.show_last_revision(join_fb_root(path))
         if not ret:
             return HttpResponse(out)
         else:  # pragma: no cover
