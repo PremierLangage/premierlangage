@@ -2,9 +2,9 @@ import hashlib
 import re
 from os.path import dirname
 
-from loader.exceptions import SyntaxErrorPL
+from loader.exceptions import SyntaxErrorPL, FileNotFound
+from loader.parsers.pl import Parser as ParserPL
 from loader.utils import get_location
-from .fake_parser_pl import Parser as ParserPL
 
 
 
@@ -35,9 +35,12 @@ class Parser(ParserPL):
         
         try:
             directory, path = get_location(self.directory, match.group('file'),
-                                           current=dirname(self.path))
+                                           current=dirname(self.path), parser=self)
         except SyntaxError as e:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
+        except FileNotFoundError as e:
+            raise FileNotFound(self.path_parsed_file, line, match.group('file'), self.lineno,
+                               str(e))
         
         self.dic['__pl'].append({
             'path'          : path,
