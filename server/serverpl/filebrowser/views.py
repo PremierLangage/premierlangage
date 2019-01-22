@@ -48,6 +48,7 @@ def get_resource(request):
         return HttpResponseNotFound(msg)
 
 
+
 @require_GET
 def get_resources(request):
     """Returns home + lib directory structure."""
@@ -180,7 +181,7 @@ def rename_resource(request):
 
 @require_POST
 def move_resource(request):
-    """ Move POST['path'] to POST['dst']."""
+    """ Move post.get('path'] to POST['dst')."""
     post = json.loads(request.body.decode())
     src = post.get('path')
     if not src:
@@ -220,37 +221,37 @@ def move_resource(request):
 def git_clone(request):
     """Execute a git clone on the targeted entry with the informations of POST."""
     post = json.loads(request.body.decode())
-    username = post['username']
-    password = post['password']
-    destination = post['destination']
-    path = post['path']
-    url = post['url']
+    username = post.get('username')
+    password = post.get('password')
+    destination = post.get('destination')
+    path = post.get('path')
+    url = post.get('url')
     if not url:
         return HttpResponseBadRequest("Missing 'url' parameter")
     
     if '@' in url:
-        messages.error(request, "SSH link is not supported, please use HTTPS")
+        return HttpResponseNotFound("SSH link is not supported, please use HTTPS")
     
-    else:
-        path = join_fb_root(path)
-        try:
-            ret, out, err = gitcmd.clone(path, url, destination, username, password)
-            if ret:
-                return HttpResponseNotFound(htmlprint.code(err + out))
-            else:
-                path = (
+    path = join_fb_root(path)
+    try:
+        ret, out, err = gitcmd.clone(path, url, destination, username, password)
+        if ret:  # pragma: no cover
+            raise Exception(err + out)
+        else:
+            path = (
                     os.path.join(path, destination) if destination
-                    else os.path.basename(os.path.splitext(url)[0])
-                )
-                ret, out, err = gitcmd.set_url(path, url)
-                if not ret:
-                    return get_resources(request)
-                else:
-                    shutil.rmtree(path, ignore_errors=True)
-                    return HttpResponseNotFound(htmlprint.code(err + out))
-        except Exception as e:
-            traceback.print_exc()
-    return HttpResponseNotFound()
+                    else os.path.join(path, os.path.basename(os.path.splitext(url)[0]))
+            )
+            ret, out, err = gitcmd.set_url(path, url)
+            if not ret:
+                request.method = 'GET'
+                request.META['REQUEST_METHOD'] = "GET"
+                return get_resources(request)
+            else:  # pragma: no cover
+                shutil.rmtree(path, ignore_errors=True)
+                raise Exception(err + out)
+    except Exception as e:  # pragma: no cover
+        return HttpResponseNotFound(str(e))
 
 
 
@@ -258,14 +259,17 @@ def git_clone(request):
 def git_pull(request):
     """ Execute a git pull on the targeted entry with the informations of POST."""
     post = json.loads(request.body.decode())
-    username = post['username']
-    password = post['password']
-    path = post['path']
-    ret, out, err = gitcmd.pull(join_fb_root(path), username=username, password=password)
+    username = post.get('username')
+    password = post.get('password')
+    url = post.get('url')
+    path = post.get('path')
+    ret, out, err = gitcmd.pull(join_fb_root(path), username=username, password=password, url=url)
     
     if not ret:
+        request.method = 'GET'
+        request.META['REQUEST_METHOD'] = "GET"
         return get_resources(request)
-    else:
+    else:  # pragma: no cover
         return HttpResponseNotFound(htmlprint.code(err + out))
 
 
@@ -284,7 +288,7 @@ def git_push(request):
     ret, out, err = gitcmd.push(join_fb_root(path), username=username, password=password)
     if not ret:
         return HttpResponse(htmlprint.code(out + err))
-    else:
+    else:  # pragma: no cover
         return HttpResponseNotFound(htmlprint.code(err + out))
 
 
@@ -413,9 +417,9 @@ def preview_pl(request):
         
         return HttpResponse(
                 json.dumps({
-                    "navigation": None,
-                    "exercise"  : exercise.get_exercise(request, answer=answer),
-                    "feedback"  : feedback,
+                        "navigation": None,
+                        "exercise"  : exercise.get_exercise(request, answer=answer),
+                        "feedback"  : feedback,
                 }),
                 content_type='application/json'
         )
@@ -524,7 +528,7 @@ def test_pl(request):
         preview = exercise.get_exercise(request)
         
         return render(request, 'filebrowser/test_pl.html', {
-            'preview': preview,
+                'preview': preview,
         })
     except Exception as e:  # pragma: no cover
         msg = ("Impossible to test '" + os.path.basename(path) + "' : " + htmlprint.code(

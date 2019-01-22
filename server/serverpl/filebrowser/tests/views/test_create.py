@@ -35,7 +35,7 @@ class CreateTestCase(TestCase):
     
     @classmethod
     def tearDownClass(cls):
-        # shutil.rmtree(FAKE_FB_ROOT)
+        shutil.rmtree(FAKE_FB_ROOT)
         super().tearDownClass()
     
     
