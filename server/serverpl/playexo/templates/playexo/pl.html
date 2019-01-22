@@ -2,12 +2,12 @@
 
 <div class="card">
     <div class="card-header">
-        <div class="text-center"><h1>{% if 'title'%}{{ title }}{% endif %}</h1></div>
+        <div class="text-center"><h1>{% if 'title' %}{{ title }}{% endif %}</h1></div>
         <div class="float-left">{% if 'author' %}{{ author }}{% endif %}</div>
     </div>
 
     <div class="card-body">
-        {% if 'text'%}
+        {% if 'text' %}
             {% with texth__=text|markdown %}
                 {{ texth__|safe }}
             {% endwith %}
@@ -25,13 +25,16 @@
         <br>
         <center>
             <div id="default_button" class="btn-group">
-                <a type="button" class="btn btn-warning" href="{% url 'playexo:activity' activity_id__ %}?action=reset">
+                <a type="button" class="btn btn-warning"
+                   href="{% url 'playexo:activity' activity_id__ %}?action=reset">
                     <i class="fas fa-undo"></i> Réinitialiser
                 </a>
                 {% firstof settings.reroll_threshold 100 as reroll_limit__ %}
                 {% if settings.allow_reroll and grade__|add:"0" >= reroll_limit__|add:"0" %}
-                    <a title="Nouveau tirage aléatoire" type="button" class="btn btn-warning float-right" href="{% url 'playexo:activity' activity_id__ %}?action=reroll">
-                       <i class="fas fa-dice"></i> Nouveau tirage
+                    <a title="Nouveau tirage aléatoire" type="button"
+                       class="btn btn-warning float-right"
+                       href="{% url 'playexo:activity' activity_id__ %}?action=reroll">
+                        <i class="fas fa-dice"></i> Nouveau tirage
                     </a>
                 {% endif %}
                 <button id="save_button" class="btn btn-default btn-info">
@@ -42,12 +45,13 @@
                 </button>
             </div>
             {% if grade__|add:"0" > 0 %}
-            <div id="next_button">
-                <br>
-                <a type="button" class="btn btn-lg btn-success" href="{% url 'playexo:activity' activity_id__ %}?action=next">
-                    Suivant<span class="glyphicon glyphicon-arrow-right"></span>
-                </a>
-            </div>
+                <div id="next_button">
+                    <br>
+                    <a type="button" class="btn btn-lg btn-success"
+                       href="{% url 'playexo:activity' activity_id__ %}?action=next">
+                        Suivant<span class="glyphicon glyphicon-arrow-right"></span>
+                    </a>
+                </div>
             {% endif %}
         </center>
     </div>
@@ -55,113 +59,99 @@
 
 {% block end_script %}
     <script>
-    {% if request.user.profile.confirm %}
-        window.onbeforeunload = function () {
-		// return confirm();
-	}
-    {% endif %}
+        $(document).ready(function () {
+
+            var submit_button = $("#submit_button");
+            var save_button = $("#save_button");
+
+            function onActivity(activity) {
+                submit_button.prop('disabled', activity);
+                save_button.prop('disabled', activity);
+            }
 
 
-    $( document ).ready(function(){
-        
-        var submit_button = $( "#submit_button" );
-        var save_button = $( "#save_button" );
+            submit_button.click(function () {
+                onActivity(true);
 
-        function onActivity(activity) {
-            submit_button.prop('disabled', activity);
-            save_button.prop('disabled', activity);
-        }
+                var inputs = getInputs();
 
+                var status = {requested_action: 'submit', inputs: inputs};
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'playexo:evaluate' activity_id__ pl_id__%}",
+                    data: JSON.stringify(status, null, '\t'),
+                    contentType: 'application/json;charset=UTF-8',
+                    success: function (returned_status) {
+                        status = returned_status;
+                        onReturn(status.exercise, status.navigation, status.feedback);
+                        onActivity(false);
+                    },
+                    error: function (error) {
+                        onActivity(false);
+                    }
+                });
+            });
 
-        submit_button.click(function() {
-            onActivity(true);
-            window.onbeforeunload = function () {}
+            save_button.click(function () {
+                onActivity(true);
+                var inputs = getInputs();
 
-            var inputs = getInputs();
-
-            var status = {requested_action: 'submit', inputs: inputs};
-            $.ajax({
-                type : "POST",
-                url : "{% url 'playexo:evaluate' activity_id__ pl_id__%}",
-                data: JSON.stringify(status, null, '\t'),
-                contentType: 'application/json;charset=UTF-8',
-                success: function(returned_status) {
-                    status = returned_status;
-                    onReturn(status.exercise, status.navigation, status.feedback);
-                    onActivity(false);
-                },
-                error: function(error) {
-                    onActivity(false);
-                }
+                var status = {requested_action: 'save', inputs: inputs};
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'playexo:evaluate' activity_id__ pl_id__%}",
+                    data: JSON.stringify(status, null, '\t'),
+                    contentType: 'application/json;charset=UTF-8',
+                    success: function (returned_status) {
+                        status = returned_status;
+                        onReturn(status.exercise, status.navigation, status.feedback);
+                        onActivity(false);
+                    },
+                    error: function (error) {
+                        onActivity(false);
+                    }
+                });
             });
         });
 
-        save_button.click(function() {
-            window.onbeforeunload = function () {}
-            onActivity(true);
-            var inputs = getInputs();
 
-            var status = {requested_action: 'save', inputs: inputs};
-            $.ajax({
-                type : "POST",
-                url : "{% url 'playexo:evaluate' activity_id__ pl_id__%}",
-                data: JSON.stringify(status, null, '\t'),
-                contentType: 'application/json;charset=UTF-8',
-                success: function(returned_status) {
-                    status = returned_status;
-                    onReturn(status.exercise, status.navigation, status.feedback);
-                    onActivity(false);
-                },
-                error: function(error) {
-                    onActivity(false);
+        function getInputs() {
+            var inputs = {};
+            $("[id^='form_']").each(function () {
+                var id = this.id.slice(5); // name of the variable
+                var value = $(this).val();
+                if ($(this).is(':radio')) {
+                    if ($(this).is(':checked')) {
+                        inputs[id] = value;
+                    }
+                } else if ($(this).is(':checkbox')) {
+                    if ($(this).is(':checked')) {
+                        if (id in inputs) {
+                            inputs[id].push(value);
+                        } else {
+                            inputs[id] = [value]
+                        }
+                    }
+                } else {
+                    inputs[id] = value;
                 }
             });
-        });
-    });
-
-
-    function getInputs(){
-        var inputs = {};
-        $( "[id^='form_']" ).each(function() {
-            var id = this.id.slice(5); // name of the variable
-            var value = $(this).val();
-            if ($(this).is(':radio')) {
-                if($(this).is(':checked')) {
-                    inputs[id]=value;
-                }
-            }
-            else if ($(this).is(':checkbox')) {
-                if($(this).is(':checked')) {
-                    if (id in inputs) {
-                        inputs[id].push(value);
-                    }
-                    else {
-                        inputs[id] = [value]
-                    }
-                }
-            }
-            else {
-                inputs[id]=value;
-            }
-        });
-        return inputs;
-    }
-
-
-    function onReturn(exercise, navigation, feedback) {
-        if (exercise) {
-            $( "#exercise" ).html(exercise);
+            return inputs;
         }
-        if (navigation) {
-            $( "#navigation" ).html(navigation);
+
+
+        function onReturn(exercise, navigation, feedback) {
+            if (exercise) {
+                $("#exercise").html(exercise);
+            }
+            if (feedback) {
+                f = $("#feedback");
+                f.hide();
+                setTimeout(function () {
+                    f.html(feedback);
+                    f.show();
+                }, 100);
+            }
         }
-        if (feedback) {
-            $( "#feedback" ).hide()
-            setTimeout(function () {
-                $( "#feedback" ).html(feedback);
-                $( "#feedback" ).show();
-            }, 100);
-        }
-    }
     </script>
 {% endblock %}
