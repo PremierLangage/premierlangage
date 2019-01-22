@@ -16,7 +16,7 @@ function MonacoService(EditorService, $http, toastr) {
     
     this.previewFunctions = {
         'pl': previewPL,
-        'pltp': previewPL,
+        //'pltp': previewPL,
         'md': previewMarkdown
     }
  
