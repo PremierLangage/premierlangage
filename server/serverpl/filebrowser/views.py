@@ -58,7 +58,6 @@ def get_resources(request):
         home["name"] = 'home'
         return HttpResponse(json.dumps([home, lib]), content_type='application/json')
     except Exception as e:
-        print(e)
         return HttpResponseNotFound(str(e))
 
 
@@ -391,14 +390,12 @@ def preview_pl(request):
                 preview = exercise.get_exercise(request)
         
         except Exception as e:  # pragma: no cover
-            print(e)
             preview = ('<div class="alert alert-danger" role="alert"> Failed to load \''
                        + os.path.basename(file_path) + "': \n\n"
                        + htmlprint.code(str(e)))
             if settings.DEBUG:
                 preview += "\n\nDEBUG set to True:\n" + htmlprint.html_exc()
             preview += "</div>"
-            print('EXCEPTIOn')
         finally:
             shutil.move(path + ".bk", path)
             return HttpResponse(
