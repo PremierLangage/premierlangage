@@ -26,10 +26,9 @@ class ModelTestCase(TestCase):
         cls.user4 = User.objects.create_user(username='user4', password='12345', id=400)
         cls.user5 = User.objects.create_user(username='user5', password='12345', id=500)
         
-        dir_path = os.path.join(FAKE_FB_ROOT, '100/')
-        if os.path.isdir(dir_path):
-            shutil.rmtree(dir_path)
-        cls.d = Directory.objects.get(name='100', owner=cls.user)
+        cls.d = Directory.objects.create(name="Yggdrasil", owner=cls.user)
+        if os.path.isdir(cls.d.root):
+            shutil.rmtree(cls.d.root)
         cls.d.add_write_auth(cls.user2)
         cls.d.add_read_auth(cls.user3)
     
@@ -63,7 +62,7 @@ class ModelTestCase(TestCase):
     
     
     def test_str(self):
-        self.assertEqual(str(self.d), '100')
+        self.assertEqual(str(self.d), 'Yggdrasil')
     
     
     def test_can_read(self):

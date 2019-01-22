@@ -413,13 +413,13 @@ def preview_pl(request):
             HttpResponseBadRequest(content="Couldn't resolve ajax request")
         
         exercise = SessionTest.objects.get(pk=data['session_id'])
-        answer, feedback, context = exercise.evaluate(request, data['answers'], test=True)
+        answer, feedback = exercise.evaluate(request, data['answers'], test=True)
         
         return HttpResponse(
                 json.dumps({
                     "navigation": None,
-                    "exercise"  : exercise.get_exercise(request, answer=answer, context=context),
-                    "feedback"  : feedback,  # render_feedback(feedback),
+                    "exercise"  : exercise.get_exercise(request, answer=answer),
+                    "feedback"  : feedback,
                 }),
                 content_type='application/json'
         )

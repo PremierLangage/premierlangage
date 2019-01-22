@@ -41,6 +41,7 @@ class ModelTestCase(TestCase):
         if os.path.isdir(dir_name):
             shutil.rmtree(dir_name)
         cls.dir = Directory.objects.create(name='dir1', owner=cls.user)
+        shutil.rmtree(cls.dir.root)
         shutil.copytree(os.path.join(FAKE_FB_ROOT, '../fake_pl'), cls.dir.root)
         cls.pl = load_file(cls.dir, "random_add.pl")[0]
         cls.pl.json['seed'] = 2
@@ -287,7 +288,7 @@ class ModelTestCase(TestCase):
 
     def test_sessiontest_get_pl(self):
         s_test = SessionTest.objects.create(user=self.user, pl=self.pl)
-        res = s_test.get_pl(self.factory.get(""), {"test": "test"}, answer={"grade": 50})
+        res = s_test.get_pl(self.factory.get(""), answer={"grade": 50})
         self.assertIn("Quentin Coumes", res)
         
     def test_sessiontest_get_exercise(self):

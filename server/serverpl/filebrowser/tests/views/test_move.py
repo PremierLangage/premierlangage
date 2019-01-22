@@ -26,7 +26,7 @@ class MoveTestCase(TestCase):
         cls.user = User.objects.create_user(username='user', password='12345', id=100)
         cls.c = Client()
         cls.c.force_login(cls.user, backend=settings.AUTHENTICATION_BACKENDS[0])
-        cls.dir = Directory.objects.get(name='100', owner=cls.user).root
+        cls.dir = Directory.objects.create(name='Yggdrasil', owner=cls.user).root
         
         shutil.rmtree(os.path.join(cls.dir))
         shutil.copytree(RES_DIR, cls.dir)
@@ -41,8 +41,8 @@ class MoveTestCase(TestCase):
     def test_move_resource(self):
         response = self.c.post(reverse("filebrowser:option"), {
                 'name': 'move_resource',
-                'path': '100/TPE/function001.pl',
-                'dst' : '100/TPE/Dir_test/',
+                'path': 'Yggdrasil/TPE/function001.pl',
+                'dst' : 'Yggdrasil/TPE/Dir_test/',
         }, content_type='application/json')
         self.assertEqual(response.status_code, 200)
         self.assertFalse(os.path.isfile(os.path.join(self.dir, 'TPE/function001.pl')))
@@ -52,7 +52,7 @@ class MoveTestCase(TestCase):
     def test_move_resource_no_path(self):
         response = self.c.post(reverse("filebrowser:option"), {
                 'name': 'move_resource',
-                'dst' : '100/TPE/Dir_test/',
+                'dst' : 'Yggdrasil/TPE/Dir_test/',
         }, content_type='application/json')
         self.assertContains(response, '"path" parameter is missing', status_code=400)
     
@@ -60,7 +60,7 @@ class MoveTestCase(TestCase):
     def test_move_resource_no_dst(self):
         response = self.c.post(reverse("filebrowser:option"), {
                 'name': 'move_resource',
-                'path': '100/TPE/function001.pl',
+                'path': 'Yggdrasil/TPE/function001.pl',
         }, content_type='application/json')
         self.assertContains(response, '"dst" parameter is missing', status_code=400)
     
@@ -68,8 +68,8 @@ class MoveTestCase(TestCase):
     def test_move_resource_path_is_dst(self):
         response = self.c.post(reverse("filebrowser:option"), {
                 'name': 'move_resource',
-                'path': '100/TPE/Dir_test/',
-                'dst' : '100/TPE/Dir_test/',
+                'path': 'Yggdrasil/TPE/Dir_test/',
+                'dst' : 'Yggdrasil/TPE/Dir_test/',
         }, content_type='application/json')
         self.assertContains(response, "Can't move a directory inside itself", status_code=404)
     
@@ -77,8 +77,8 @@ class MoveTestCase(TestCase):
     def test_move_resource_dst_is_not_dir(self):
         response = self.c.post(reverse("filebrowser:option"), {
                 'name': 'move_resource',
-                'path': '100/TPE/function001.pl',
-                'dst' : '100/TPE/Dir_test/fail',
+                'path': 'Yggdrasil/TPE/function001.pl',
+                'dst' : 'Yggdrasil/TPE/Dir_test/fail',
         }, content_type='application/json')
         self.assertContains(response, 'is not a directory', status_code=404)
     
