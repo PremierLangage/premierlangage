@@ -57,7 +57,7 @@ def get_resources(request):
         home = walkdir(join_fb_root("Yggdrasil"), request.user)
         home["name"] = 'home'
         return HttpResponse(json.dumps([home, lib]), content_type='application/json')
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         return HttpResponseNotFound(str(e))
 
 
@@ -75,7 +75,7 @@ def update_resource(request):
         with open(join_fb_root(path), 'w') as f:
             print(post.get('content', ''), file=f)
         return JsonResponse({'success': True})
-    except Exception as e:
+    except Exception as e:  # pragma: no cover
         return HttpResponseNotFound(str(e))
 
 

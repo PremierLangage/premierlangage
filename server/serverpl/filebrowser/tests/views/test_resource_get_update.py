@@ -65,3 +65,17 @@ class GetUpdateResourceTestCase(TestCase):
                 'name': 'get_resources',
         }, content_type='application/json')
         self.assertContains(response, b'Yggdrasil', status_code=200)
+
+
+    def test_update(self):
+        response = self.c.post(reverse("filebrowser:option"), {
+                'name': 'update_resource',
+                'path': 'Yggdrasil/TPE/Dir_test/test.txt',
+        }, content_type='application/json')
+        self.assertContains(response, "success", status_code=200)
+    
+    def test_update_no_path(self):
+        response = self.c.post(reverse("filebrowser:option"), {
+                'name': 'update_resource',
+        }, content_type='application/json')
+        self.assertContains(response, '"path" parameter is missing', status_code=400)
