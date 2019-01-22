@@ -13,8 +13,8 @@ function previewPL(activityId, sessionId) {
 
         let status = {
             name: "preview_pl",
-            requested_action: 'submit', 
-            data: data, 
+            requested_action: 'submit',
+            data: data,
         };
 
         $.ajax({
@@ -27,7 +27,7 @@ function previewPL(activityId, sessionId) {
                 onReturn(status.exercise, status.navigation, status.feedback);
                 submit_button.prop('disabled', false);
             },
-            error: function(error) {   
+            error: function(error) {
                 submit_button.prop('disabled', false);
             }
         });
@@ -71,14 +71,15 @@ function previewPL(activityId, sessionId) {
 
     function onReturn(exercise, navigation, feedback) {
         if (exercise) {
-            $( "#preview" ).html(exercise);
+            $( "#exercise" ).html(exercise);
         }
         if (feedback) {
-            $( "#feedback" ).hide()
+            f = $( "#feedback" );
+            f.hide();
             setTimeout(function () {
-                $( "#feedback" ).html(feedback);
-                $( "#feedback" ).show();
-            }, 100);
+                f.html(feedback);
+                f.show();
+            },  100);
         }
     }
 }

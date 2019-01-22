@@ -459,6 +459,7 @@ class SessionTest(SessionExerciseAbstract):
         for key in dic:
             if type(dic[key]) is str:
                 dic[key] = Template(dic[key]).render(RequestContext(request, dic))
+        
         return get_template("playexo/preview.html").render(dic, request)
     
     
