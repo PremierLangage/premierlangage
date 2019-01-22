@@ -86,8 +86,8 @@ class MoveTestCase(TestCase):
     def test_move_resource_dst_startswith(self):
         response = self.c.post(reverse("filebrowser:option"), {
                 'name': 'move_resource',
-                'path': '100/TPE/',
-                'dst' : '100/TPE/Dir_test/',
+                'path': 'Yggdrasil/TPE/',
+                'dst' : 'Yggdrasil/TPE/Dir_test/',
         }, content_type='application/json')
         self.assertContains(response, "Can't move", status_code=404)
     
@@ -95,8 +95,8 @@ class MoveTestCase(TestCase):
     def test_move_already_in(self):
         content = {
                 'name': 'move_resource',
-                'path': '100/carre.pl',
-                'dst' : '100/TPE/Dir_test/',
+                'path': 'Yggdrasil/carre.pl',
+                'dst' : 'Yggdrasil/TPE/Dir_test/',
         }
         response = self.c.post(reverse("filebrowser:option"), content,
                                content_type='application/json')

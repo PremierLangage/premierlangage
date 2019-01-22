@@ -16,7 +16,7 @@ RES_DIR = os.path.join(settings.BASE_DIR, "filebrowser/tests/ressources/fake_fil
 
 
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
-class MoveTestCase(TestCase):
+class CreateTestCase(TestCase):
     
     @classmethod
     def setUpTestData(cls):
@@ -26,7 +26,8 @@ class MoveTestCase(TestCase):
         cls.user = User.objects.create_user(username='user', password='12345', id=100)
         cls.c = Client()
         cls.c.force_login(cls.user, backend=settings.AUTHENTICATION_BACKENDS[0])
-        cls.dir = Directory.objects.get(name='100', owner=cls.user).root
+        cls.dir = Directory.objects.create(name='Yggdrasil', owner=cls.user).root
+        cls.lib = Directory.objects.create(name='lib', owner=cls.user).root
         
         shutil.rmtree(os.path.join(cls.dir))
         shutil.copytree(RES_DIR, cls.dir)
@@ -34,25 +35,27 @@ class MoveTestCase(TestCase):
     
     @classmethod
     def tearDownClass(cls):
-        shutil.rmtree(FAKE_FB_ROOT)
+        # shutil.rmtree(FAKE_FB_ROOT)
         super().tearDownClass()
     
     
     def test_create_file(self):
         response = self.c.post(reverse("filebrowser:option"), {
                 'name'   : 'create_resource',
-                'path'   : '100/TPE/Dir_test/test.pl',
+                'path'   : 'Yggdrasil/TPE/Dir_test/test.pl',
                 'type'   : 'file',
                 'content': 'test',
         }, content_type='application/json')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(os.path.isfile(os.path.join(self.dir, 'TPE/Dir_test/test.pl')))
+        with open(os.path.join(self.dir, 'TPE/Dir_test/test.pl'), "r") as f:
+            self.assertEqual(f.read(), "test\n")
     
     
     def test_create_dir(self):
         response = self.c.post(reverse("filebrowser:option"), {
                 'name': 'create_resource',
-                'path': '100/TPE/Dir_test/test/',
+                'path': 'Yggdrasil/TPE/Dir_test/test/',
         }, content_type='application/json')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(os.path.isdir(os.path.join(self.dir, 'TPE/Dir_test/test/')))
@@ -68,7 +71,7 @@ class MoveTestCase(TestCase):
     def test_create_disallowed_char(self):
         response = self.c.post(reverse("filebrowser:option"), {
                 'name': 'create_resource',
-                'path': '100/TPE/Dir_test/+/',
+                'path': 'Yggdrasil/TPE/Dir_test/+/',
         }, content_type='application/json')
         self.assertContains(response, 'contain', status_code=400)
     
@@ -76,12 +79,12 @@ class MoveTestCase(TestCase):
     def test_create_already_exists(self):
         response = self.c.post(reverse("filebrowser:option"), {
                 'name': 'create_resource',
-                'path': '100/TPE/Dir_test/already/',
+                'path': 'Yggdrasil/TPE/Dir_test/already/',
         }, content_type='application/json')
         self.assertEqual(response.status_code, 200)
         
         response = self.c.post(reverse("filebrowser:option"), {
                 'name': 'create_resource',
-                'path': '100/TPE/Dir_test/already/',
+                'path': 'Yggdrasil/TPE/Dir_test/already/',
         }, content_type='application/json')
         self.assertContains(response, 'this name is already used.', status_code=400)
