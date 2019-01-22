@@ -49,7 +49,7 @@ export function isNotRoot(item) {
     return !isRoot(item);
 }
 
-export function isInRepo(item) {
+export function isRepo(item) {
     return item && item.repo;
 }
 
