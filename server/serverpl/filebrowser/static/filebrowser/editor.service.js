@@ -2,7 +2,7 @@ import * as filters from './filters.js';
 
 angular.module('editor').service('EditorService', EditorService);
 
-function EditorService($http, $mdDialog) {
+function EditorService($http, $mdDialog, $mdToast) {
     //#region properties
     const instance = this;
     instance.runningTask = false;
@@ -15,11 +15,11 @@ function EditorService($http, $mdDialog) {
     //#region git
     const options = [
         { label: 'Git Clone', icon: 'fas fa-cloud-download-alt', filters: [filters.canWrite, filters.isHome], action: gitClone},
-        { label: 'Git Push', icon:'fas fa-cloud-upload-alt', filters: [filters.canWrite, filters.isInRepo], action: gitPush},
-        { label: 'Git Pull', icon:'fas fa-cloud-download-alt', filters: [filters.canWrite, filters.isInRepo], action: gitPull},
-        { label: 'Git Status', icon:'fas fa-info-circle', filters: [filters.canWrite, filters.isInRepo], action: gitStatus},
-        { label: 'Git Add', icon:'fas fa-plus', filters: [filters.canWrite, filters.isInRepo], action: gitAdd},
-        { label: 'Git Commit', icon:'fas fa-edit', filters: [filters.canWrite, filters.isInRepo], action: gitCommit},
+        { label: 'Git Push', icon:'fas fa-cloud-upload-alt', filters: [filters.canWrite, filters.isRepo], action: gitPush},
+        { label: 'Git Pull', icon:'fas fa-cloud-download-alt', filters: [filters.canWrite, filters.isRepo], action: gitPull},
+        { label: 'Git Status', icon:'fas fa-info-circle', filters: [filters.canWrite, filters.isRepo], action: gitStatus},
+        { label: 'Git Add', icon:'fas fa-plus', filters: [filters.canWrite, filters.isRepo], action: gitAdd},
+        { label: 'Git Commit', icon:'fas fa-edit', filters: [filters.canWrite, filters.isRepo], action: gitCommit},
     ];
 
     function gitClone(resource) {
@@ -99,7 +99,7 @@ function EditorService($http, $mdDialog) {
                 instance.runningTask = false;
                 instance.logError(error.data || error);
             });
-        });
+        }).catch(()=>{});
     }
     
     function gitStatus(resource) {
@@ -566,6 +566,7 @@ function EditorService($http, $mdDialog) {
         }
         instance.log('<span style="color: red;">' + message + '</span>');
     }
+    
     instance.clearLogs = function() {
         instance.logs = [];
     }
@@ -593,6 +594,18 @@ function EditorService($http, $mdDialog) {
         $mdDialog.show(dialog)
         .then(options.confirmed || function(){})
         .catch(options.canceled || function(){});
+    }
+
+    instance.makeToast = function(options) {
+        const toast = $mdToast.simple()
+                .textContent(options.message)
+                .position(options.position || {
+                    top: true,
+                    right: true
+                })
+                .hideDelay(options.duration || 3000);
+            
+        $mdToast.show(toast);
     }
 
     instance.openDialog = function(templateUrl) {

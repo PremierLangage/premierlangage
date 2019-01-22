@@ -2,7 +2,7 @@ import * as monacoConfig from './config.js';
 
 angular.module('editor').service('MonacoService', MonacoService);
 
-function MonacoService(EditorService, $http) {
+function MonacoService(EditorService, $http, toastr) {
     
     const instance = this;
     this.editor;
@@ -108,10 +108,22 @@ function MonacoService(EditorService, $http) {
     /** Refresh the layout of monaco editor */
     this.layout = function() {
         if (instance.editor) {
-            const model = instance.editor.model;
+            const m1 = instance.editor.model;  
             instance.editor.setModel(undefined);
             instance.editor.layout();
-            instance.editor.setModel(model);
+            instance.editor.setModel(m1);
+        }
+        if (instance.diffEditor) {
+            const m2 = instance.diffEditor.originalEditor.model;
+            const m3 = instance.diffEditor.modifiedEditor.model;
+            instance.diffEditor.setModel(undefined);
+            instance.diffEditor.layout();
+            if (m2 && m3) {
+                instance.diffEditor.setModel({
+                    original: m2,
+                    modified: m3,
+                });
+            }
         }
     }  
 
@@ -220,9 +232,11 @@ function MonacoService(EditorService, $http) {
      * Saves the content of the selected resource.
      */
     this.saveSelection = function() {
-        if (instance.selection) {
-            EditorService.saveResource(instance.selection).then(() => {
-                instance.selection.changed = false;
+        const s = instance.selection;
+        if (s && s.write) {
+            EditorService.saveResource(s).then((resource) => {
+                toastr.success('saved !');
+                resource.changed = false;
             }).catch(error => {
                 EditorService.log(error);
             });

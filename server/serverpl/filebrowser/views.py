@@ -1,6 +1,7 @@
 import json
 import os
 import shutil
+import traceback
 
 import gitcmd
 import htmlprint
@@ -53,10 +54,11 @@ def get_resources(request):
     """Returns home + lib directory structure."""
     try:
         lib = walkdir(join_fb_root('lib'), request.user)
-        home = walkdir(join_fb_root(str(request.user.id)), request.user)
+        home = walkdir(join_fb_root("Yggdrasil"), request.user)
         home["name"] = 'home'
         return HttpResponse(json.dumps([home, lib]), content_type='application/json')
     except Exception as e:
+        print(e)
         return HttpResponseNotFound(str(e))
 
 
@@ -233,21 +235,23 @@ def git_clone(request):
     
     else:
         path = join_fb_root(path)
-        ret, out, err = gitcmd.clone(path, url, destination, username, password)
-        if ret:
-            return HttpResponseNotFound(htmlprint.code(err + out))
-        else:
-            path = (
-                os.path.join(path, destination) if destination
-                else os.path.basename(os.path.splitext(url)[0])
-            )
-            ret, out, err = gitcmd.set_url(path, url)
-            if not ret:
-                return get_resources(request)
-            else:
-                shutil.rmtree(path, ignore_errors=True)
+        try:
+            ret, out, err = gitcmd.clone(path, url, destination, username, password)
+            if ret:
                 return HttpResponseNotFound(htmlprint.code(err + out))
-    
+            else:
+                path = (
+                    os.path.join(path, destination) if destination
+                    else os.path.basename(os.path.splitext(url)[0])
+                )
+                ret, out, err = gitcmd.set_url(path, url)
+                if not ret:
+                    return get_resources(request)
+                else:
+                    shutil.rmtree(path, ignore_errors=True)
+                    return HttpResponseNotFound(htmlprint.code(err + out))
+        except Exception as e:
+            traceback.print_exc()
     return HttpResponseNotFound()
 
 

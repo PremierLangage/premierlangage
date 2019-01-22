@@ -21,8 +21,13 @@ except django.db.utils.IntegrityError:
     user = User.objects.get(username='admin')
 
 
-# Add plbank
+# Add lib and Yggdrasil
 try:
     Directory.objects.create(name="lib", owner=user, public=True)
 except django.db.utils.IntegrityError:
     print("Directory 'lib' already created")
+
+try:
+    Directory.objects.create(name="Yggdrasil", owner=user, public=True)
+except django.db.utils.IntegrityError:
+    print("Directory 'Yggdrasil' already created")
