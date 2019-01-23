@@ -486,8 +486,12 @@ function EditorService($http, $mdDialog, $mdToast) {
 
     instance.findResource = function(path) {
         path = path.trim();
+        return instance.findResourceWithPredicate(r => r.path === path);
+    }
+
+    instance.findResourceWithPredicate = function(predicate) {
         function recursive(resource) {
-            if (resource.path === path) {
+            if (predicate(resource)) {
                 return resource;
             }
             if (resource.children) {
