@@ -1,5 +1,5 @@
 {% load django_markdown %}
-
+{% load static %}
 <div class="card">
     <div class="card-header">
         <div class="text-center"><h1>{% if 'title' %}{{ title }}{% endif %}</h1></div>
@@ -54,104 +54,14 @@
                 </div>
             {% endif %}
         </center>
+        <br/>
+        <center>
+            <div id="loading-indicator" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+        </center>
     </div>
 </div>
 
 {% block end_script %}
-    <script>
-        $(document).ready(function () {
-
-            var submit_button = $("#submit_button");
-            var save_button = $("#save_button");
-
-            function onActivity(activity) {
-                submit_button.prop('disabled', activity);
-                save_button.prop('disabled', activity);
-            }
-
-
-            submit_button.click(function () {
-                onActivity(true);
-
-                var inputs = getInputs();
-
-                var status = {requested_action: 'submit', inputs: inputs};
-                $.ajax({
-                    type: "POST",
-                    url: "{% url 'playexo:evaluate' activity_id__ pl_id__%}",
-                    data: JSON.stringify(status, null, '\t'),
-                    contentType: 'application/json;charset=UTF-8',
-                    success: function (returned_status) {
-                        status = returned_status;
-                        onReturn(status.exercise, status.navigation, status.feedback);
-                        onActivity(false);
-                    },
-                    error: function (error) {
-                        onActivity(false);
-                    }
-                });
-            });
-
-            save_button.click(function () {
-                onActivity(true);
-                var inputs = getInputs();
-
-                var status = {requested_action: 'save', inputs: inputs};
-                $.ajax({
-                    type: "POST",
-                    url: "{% url 'playexo:evaluate' activity_id__ pl_id__%}",
-                    data: JSON.stringify(status, null, '\t'),
-                    contentType: 'application/json;charset=UTF-8',
-                    success: function (returned_status) {
-                        status = returned_status;
-                        onReturn(status.exercise, status.navigation, status.feedback);
-                        onActivity(false);
-                    },
-                    error: function (error) {
-                        onActivity(false);
-                    }
-                });
-            });
-        });
-
-
-        function getInputs() {
-            var inputs = {};
-            $("[id^='form_']").each(function () {
-                var id = this.id.slice(5); // name of the variable
-                var value = $(this).val();
-                if ($(this).is(':radio')) {
-                    if ($(this).is(':checked')) {
-                        inputs[id] = value;
-                    }
-                } else if ($(this).is(':checkbox')) {
-                    if ($(this).is(':checked')) {
-                        if (id in inputs) {
-                            inputs[id].push(value);
-                        } else {
-                            inputs[id] = [value]
-                        }
-                    }
-                } else {
-                    inputs[id] = value;
-                }
-            });
-            return inputs;
-        }
-
-
-        function onReturn(exercise, navigation, feedback) {
-            if (exercise) {
-                $("#exercise").html(exercise);
-            }
-            if (feedback) {
-                f = $("#feedback");
-                f.hide();
-                setTimeout(function () {
-                    f.html(feedback);
-                    f.show();
-                }, 100);
-            }
-        }
-    </script>
+<script type='text/javascript' src="{% static '/playexo/js/playexo.js' %}"></script>
+<script type='text/javascript'>evaluatePL("{% url 'playexo:evaluate' activity_id__ pl_id__%}");</script>
 {% endblock %}

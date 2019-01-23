@@ -31,11 +31,15 @@
                 <i class="fas fa-download"></i> Télécharger l'Environnement
             </a>
         </center>
+        <br/>
+        <center>
+            <div id="loading-indicator" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+        </center>
     </div>
 </div>
 <br/><br/>
 {% include "playexo/alert.html" %}
 {% block end_script %}
-    <script type='text/javascript' src="{% static '/playexo/js/preview.js' %}"></script>
-    <script>previewPL("{{id__}}", "{{session__.id}}");</script>
+<script type='text/javascript' src="{% static '/playexo/js/playexo.js' %}"></script>
+<script type='text/javascript'>previewPL("{{id__}}", "{{session__.id}}");</script>
 {% endblock %}
