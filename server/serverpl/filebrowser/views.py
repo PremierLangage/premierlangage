@@ -324,7 +324,19 @@ def git_show(request):
         msg = htmlprint.code(str(type(e)) + ' - ' + str(e))
         return HttpResponseNotFound(msg)
 
+@require_GET
+def git_checkout(request):
+    """ Execute a checkout of the targeted entry with the informations of POST. """
+    path = request.GET.get('path')
+    if not path:
+        return HttpResponseBadRequest("parameter 'path' is missing")
 
+    ret, out, err = gitcmd.checkout(join_fb_root(path))
+    
+    if not ret:
+        return HttpResponse("Entry successfully checked out.")
+    else:  # pragma: no cover
+        return HttpResponseNotFound("Nothing to checked out." if not err else htmlprint.code(err + out))
 
 @require_GET
 def git_add(request):
