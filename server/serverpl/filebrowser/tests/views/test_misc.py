@@ -5,6 +5,9 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import Client, override_settings, TestCase
 from django.urls import reverse
+from playexo.request import SandboxBuild
+from loader.loader import load_file
+from tarfile import is_tarfile
 
 from filebrowser.models import Directory
 
@@ -26,11 +29,11 @@ class MiscViewTestCase(TestCase):
         cls.user = User.objects.create_user(username='user', password='12345', id=100)
         cls.c = Client()
         cls.c.force_login(cls.user, backend=settings.AUTHENTICATION_BACKENDS[0])
-        cls.dir = Directory.objects.create(name='Yggdrasil', owner=cls.user).root
-        cls.lib = Directory.objects.create(name='lib', owner=cls.user).root
+        cls.dir = Directory.objects.create(name='Yggdrasil', owner=cls.user)
+        cls.lib = Directory.objects.create(name='lib', owner=cls.user)
         
-        shutil.rmtree(os.path.join(cls.dir))
-        shutil.copytree(RES_DIR, cls.dir)
+        shutil.rmtree(os.path.join(cls.dir.root))
+        shutil.copytree(RES_DIR, cls.dir.root)
     
     
     @classmethod
@@ -45,9 +48,15 @@ class MiscViewTestCase(TestCase):
     
     
     def test_download_env(self):
-        response = self.c.get(reverse("filebrowser:dlenv", args=["1"]), {},
-                               content_type='application/json')
-        print(response.content, response.status_code)
+        pl = load_file(self.dir, "working.pl")[0]
+        SandboxBuild(pl.json).call()
+        response = self.c.get(reverse("filebrowser:dlenv", args=["59e04566-062f-4be4-9f17-466e20877ff4"]), {},
+                              content_type='application/json')
+        tar_name = os.path.join(self.dir.root, "tar_test.tgz")
+        with open(tar_name, "wb") as f:
+            f.write(response.content)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(is_tarfile(tar_name))
     
     
     def test_option_no_name(self):
