@@ -49,8 +49,8 @@ class MiscViewTestCase(TestCase):
     
     def test_download_env(self):
         pl = load_file(self.dir, "working.pl")[0]
-        SandboxBuild(pl.json).call()
-        response = self.c.get(reverse("filebrowser:dlenv", args=["59e04566-062f-4be4-9f17-466e20877ff4"]), {},
+        resp = SandboxBuild(pl.json).call()
+        response = self.c.get(reverse("filebrowser:dlenv", args=[resp['id']]), {},
                               content_type='application/json')
         tar_name = os.path.join(self.dir.root, "tar_test.tgz")
         with open(tar_name, "wb") as f:
