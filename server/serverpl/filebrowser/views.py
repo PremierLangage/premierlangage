@@ -410,7 +410,7 @@ def preview_pl(request):
     elif post.get('requested_action', '') == 'submit':  # Answer from the preview
         data = post.get('data', {})
         if 'session_id' not in data or not data['session_id']:
-            HttpResponseBadRequest(content="Couldn't resolve ajax request")
+            return HttpResponseBadRequest(content="Couldn't resolve ajax request")
         
         exercise = SessionTest.objects.get(pk=data['session_id'])
         answer, feedback = exercise.evaluate(request, data['answers'], test=True)
