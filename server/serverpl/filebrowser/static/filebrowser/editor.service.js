@@ -20,6 +20,7 @@ function EditorService($http, $mdDialog, $mdToast) {
         { label: 'Git Status', icon:'fas fa-info-circle', filters: [filters.canWrite, filters.isRepo], action: gitStatus},
         { label: 'Git Add', icon:'fas fa-plus', filters: [filters.canWrite, filters.isRepo], action: gitAdd},
         { label: 'Git Commit', icon:'fas fa-edit', filters: [filters.canWrite, filters.isRepo], action: gitCommit},
+        { label: 'Git Checkout', icon:'fas fa-eraser', filters: [filters.canWrite, filters.isRepo], action: gitCheckout},
     ];
 
     function gitClone(resource) {
@@ -71,7 +72,7 @@ function EditorService($http, $mdDialog, $mdToast) {
                 instance.runningTask = false;
                 instance.logError(error.data || error);
             });
-        });
+        }).catch(() => {});
     }
     
     function gitPull(resource) {
@@ -159,9 +160,33 @@ function EditorService($http, $mdDialog, $mdToast) {
                 instance.runningTask = false;
                 instance.logError(error.data || error);
             });
-        });
+        }).catch(() => {});
     }
     
+    function gitCheckout(resource) {
+        instance.askConfirm({
+            title: 'Will reset all your local changes up to your last commit.',
+            confirmed: function() {
+                instance.runningTask = true;
+                $http({
+                    method: 'GET',
+                    url: 'option',
+                    params: {
+                        name: "git_checkout",
+                        path: resource.path
+                    }
+                }).then(response => {
+                    instance.log(response.data);
+                    instance.runningTask = false;
+                    instance.log('git checkout operation succeed on ' + resource.path);
+                }).catch(error => {
+                    instance.runningTask = false;
+                    instance.logError(error.data || error);
+                });
+            }
+        });
+    }
+
     function loadOption(resource) {
         resource['options'] = options.filter(option => {
             for (const predicate of option.filters) {
@@ -461,8 +486,12 @@ function EditorService($http, $mdDialog, $mdToast) {
 
     instance.findResource = function(path) {
         path = path.trim();
+        return instance.findResourceWithPredicate(r => r.path === path);
+    }
+
+    instance.findResourceWithPredicate = function(predicate) {
         function recursive(resource) {
-            if (resource.path === path) {
+            if (predicate(resource)) {
                 return resource;
             }
             if (resource.children) {

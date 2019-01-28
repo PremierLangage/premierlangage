@@ -17,7 +17,7 @@ from playexo.exception import SandboxError, BuildScriptError
 
 from classmanagement.models import Course
 from loader.models import PL, PLTP
-from lti.models import LTIModel
+from lti_app.models import LTIModel
 from playexo.enums import State
 from playexo.request import SandboxBuild, SandboxEval
 

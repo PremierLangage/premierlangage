@@ -55,8 +55,8 @@ export function config(editorNode, diffEditorNode, completion) {
         // DEFINE CUSTOM THEME
         const SPECIAL_PATTERN = /(title|author|introduction|introductionh|teacher|text|texth|build|before|form)(?=(=|(\+=)|=%))/;
         const VARIABLE_PATTERN = /\s*\w+(\.\w)*(?=(=|(\+=)|=%))/;
-        //const REFERENCE_PATTERN = /\s*(@((?<path1>.+))|template\s*=\s*(?<path2>.+))/;
-    
+        const REFERENCE_PATTERN = /(@|template|grader|builder=)(?<path>\/[a-zA-Z0-9_\./]+)/; // TODO fix the regex
+  
         monaco.languages.register({ id: PREMIER_LANGAGE }); 
         
         monaco.languages.setMonarchTokensProvider('premierlangage', {
@@ -64,7 +64,7 @@ export function config(editorNode, diffEditorNode, completion) {
                 root: [
                     [SPECIAL_PATTERN, 'special'],
                     [VARIABLE_PATTERN, 'variable'],
-                    //[REFERENCE_PATTERN, 'reference']
+                    [REFERENCE_PATTERN, 'reference']
                 ]
             }
         });
@@ -100,7 +100,7 @@ export function config(editorNode, diffEditorNode, completion) {
         }
 
         // CODE LENS
-        /*monaco.languages.registerCodeLensProvider(PREMIER_LANGAGE, {
+        monaco.languages.registerCodeLensProvider(PREMIER_LANGAGE, {
             provideCodeLenses: function(model, token) {
                 let lens = [];
                 const lines = model.getValue().split('\n');
@@ -108,17 +108,17 @@ export function config(editorNode, diffEditorNode, completion) {
                 for (let i = 0; i < lines.length; i++) {
                     match = REFERENCE_PATTERN.exec(lines[i]);
                     if (match) {
-                        const path = match.groups.path1 || match.groups.path2;
+                        const path = match.groups.path;
                         lens.push({
                             range: new monaco.Range(i + 1, match.index, i + 2, match.index + match.input.length),
                             id: match.input,
                             command: { 
                                 id: editor.addCommand(0, function() {
-                                    if (editor.onDidFindPLReference) {
-                                        editor.onDidFindPLReference(path);
+                                    if (editor.onRequestOpenFile) {
+                                        editor.onRequestOpenFile(path);
                                     }
                                 }, ''),
-                                title: 'OPEN FILE'
+                                title: 'OPEN'
                             }
                         });
                     }
@@ -129,7 +129,7 @@ export function config(editorNode, diffEditorNode, completion) {
                 return codeLens;
             }
         });
-        */
+
     
         // FOLDINGS
         monaco.languages.registerFoldingRangeProvider(PREMIER_LANGAGE, {
@@ -189,8 +189,8 @@ export function config(editorNode, diffEditorNode, completion) {
           
         // COMMANDS
         editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function() {
-            if (editor.onDidSaveCommand) {
-                editor.onDidSaveCommand();
+            if (editor.onRequestSave) {
+                editor.onRequestSave();
             }
         });
 

@@ -26,11 +26,17 @@ function MonacoService(EditorService, $http, toastr) {
         instance.diffEditorNode.hide();
 
         monacoConfig.config(instance.editorNode.get(0), instance.diffEditorNode.get(0), (e, d) => { 
-            e.onDidSaveCommand = function() {
+            e.onRequestSave = function() {
                 instance.saveSelection();
             }
             
-            e.onDidOpenPLReference = function(path) {
+            e.onRequestOpenFile = function(path) {
+                const r = EditorService.findResourceWithPredicate(res => res.path.endsWith(path));
+                if (r) {
+                    instance.openResource(r);
+                } else {
+                    toastr.error('resource not found at ' + path);
+                }
             }
     
             e.onDidContentChanged = function(content) {
