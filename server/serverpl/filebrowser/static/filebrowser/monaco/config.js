@@ -55,7 +55,7 @@ export function config(editorNode, diffEditorNode, completion) {
         // DEFINE CUSTOM THEME
         const SPECIAL_PATTERN = /(title|author|introduction|introductionh|teacher|text|texth|build|before|form)(?=(=|(\+=)|=%))/;
         const VARIABLE_PATTERN = /\s*\w+(\.\w)*(?=(=|(\+=)|=%))/;
-        const REFERENCE_PATTERN = /(@|template|grader|builder=)(?<path>\/[a-zA-Z0-9_\./]+)/; // TODO fix the regex
+        const REFERENCE_PATTERN = /(@|template|grader|builder=)[~\s\/]*(\w+:\/)?([a-zA-Z0-9_\./]+)/;
   
         monaco.languages.register({ id: PREMIER_LANGAGE }); 
         
@@ -108,7 +108,7 @@ export function config(editorNode, diffEditorNode, completion) {
                 for (let i = 0; i < lines.length; i++) {
                     match = REFERENCE_PATTERN.exec(lines[i]);
                     if (match) {
-                        const path = match.groups.path;
+                        const path = match[match.length - 1];
                         lens.push({
                             range: new monaco.Range(i + 1, match.index, i + 2, match.index + match.input.length),
                             id: match.input,
