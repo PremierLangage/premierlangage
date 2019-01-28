@@ -39,20 +39,14 @@ class GetUpdateResourceTestCase(TestCase):
         super().tearDownClass()
     
     
-    def test_index(self):
-        # TODO move this test
-        response = self.c.post(reverse("filebrowser:index"), {}, content_type='application/json')
-        self.assertContains(response, 'UPEM - PL', status_code=200)
-    
-
     def test_get_resource(self):
         response = self.c.get(reverse("filebrowser:option"), {
                 'name': 'get_resource',
                 'path': 'Yggdrasil/TPE/Dir_test/test.txt',
         }, content_type='application/json')
         self.assertContains(response, 'test', status_code=200)
-        
-        
+    
+    
     def test_get_resource_no_path(self):
         response = self.c.get(reverse("filebrowser:option"), {
                 'name': 'get_resource',
@@ -65,14 +59,15 @@ class GetUpdateResourceTestCase(TestCase):
                 'name': 'get_resources',
         }, content_type='application/json')
         self.assertContains(response, b'Yggdrasil', status_code=200)
-
-
+    
+    
     def test_update(self):
         response = self.c.post(reverse("filebrowser:option"), {
                 'name': 'update_resource',
                 'path': 'Yggdrasil/TPE/Dir_test/test.txt',
         }, content_type='application/json')
         self.assertContains(response, "success", status_code=200)
+    
     
     def test_update_no_path(self):
         response = self.c.post(reverse("filebrowser:option"), {
