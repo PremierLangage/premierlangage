@@ -50,7 +50,7 @@ PROJECT_APPS = [
     'loader',
     'classmanagement',
     'documentation',
-    'lti',
+    'lti_app',
     'qa'
 ]
 
@@ -63,7 +63,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'lti.middleware.LTIAuthMiddleware',
+    'lti_app.middleware.LTIAuthMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -136,7 +136,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'lti.backends.LTIAuthBackend',
+    'lti_app.backends.LTIAuthBackend',
 )
 
 LTI_OAUTH_CREDENTIALS = {

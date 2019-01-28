@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 
 from classmanagement.models import Course
 from loader.models import PLTP
-from lti.models import ActivityOutcome
+from lti_app.models import ActivityOutcome
 from playexo.models import Activity
 from user_profile.enums import Role
 
@@ -48,8 +48,8 @@ FAKE_CREDENTIALS = {
 @override_settings(LTI_OAUTH_CREDENTIALS=FAKE_CREDENTIALS)
 class LTITestCase(TestCase):
     
-    @patch('lti.middleware.logger')
-    @patch('lti.backends.logger')
+    @patch('lti_app.middleware.logger')
+    @patch('lti_app.backends.logger')
     def test_wrong_key(self, backends_logger, middleware_logger):
         params = {
             **REQUEST_LTI_1P1, **{
@@ -72,8 +72,8 @@ class LTITestCase(TestCase):
         self.assertFalse(User.objects.all())
     
     
-    @patch('lti.middleware.logger')
-    @patch('lti.backends.logger')
+    @patch('lti_app.middleware.logger')
+    @patch('lti_app.backends.logger')
     def test_right_key(self, backends_logger, middleware_logger):
         params = {
             **REQUEST_LTI_1P1,

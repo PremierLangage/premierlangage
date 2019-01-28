@@ -7,7 +7,7 @@ from django.contrib.auth import logout
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.db import IntegrityError
 
-from lti.request_validator import is_valid_request
+from lti_app.request_validator import is_valid_request
 from user_profile.models import Profile
 
 logger = logging.getLogger(__name__)

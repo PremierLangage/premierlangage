@@ -3,7 +3,7 @@ import logging
 from django.db import models
 from django.contrib.auth.models import User
 
-from lti.models import LTIModel
+from lti_app.models import LTIModel
 from user_profile.enums import Role
 
 

@@ -3,7 +3,7 @@ from xml.etree import ElementTree
 
 import requests
 
-from lti.models import ActivityOutcome
+from lti_app.models import ActivityOutcome
 
 
 logger = logging.getLogger(__name__)

@@ -15,7 +15,7 @@ from django.utils.deprecation import MiddlewareMixin
 from django.contrib import auth
 from django.core.exceptions import ImproperlyConfigured
 
-from lti.models import ActivityOutcome
+from lti_app.models import ActivityOutcome
 from classmanagement.models import Course
 from playexo.models import Activity
 
