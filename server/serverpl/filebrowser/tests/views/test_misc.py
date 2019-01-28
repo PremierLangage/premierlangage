@@ -1,15 +1,15 @@
 import os
 import shutil
+from tarfile import is_tarfile
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import Client, override_settings, TestCase
 from django.urls import reverse
-from playexo.request import SandboxBuild
-from loader.loader import load_file
-from tarfile import is_tarfile
 
 from filebrowser.models import Directory
+from loader.loader import load_file
+from playexo.request import SandboxBuild
 
 
 FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'filebrowser/tests/tmp')
