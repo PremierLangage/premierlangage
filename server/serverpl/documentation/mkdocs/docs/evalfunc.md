@@ -2,7 +2,7 @@
 
 ## Résumé
 
-* **Inclusion:** `@ /lib/grader/evalfunc.py [builder.py]`
+* **Inclusion:** `@ /grader/evalfunc.py [builder.py]`
 
 
 * **Dépendance:**
@@ -50,7 +50,7 @@ ___
 
 
 
-## Example
+## Exemple
 ```
 @ /utils/sandboxio.py
 @ /grader/evaluator.py [grader.py]

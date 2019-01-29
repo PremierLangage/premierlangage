@@ -15,7 +15,7 @@ from django.urls import reverse
 from classmanagement.models import Course
 from playexo.models import Answer, Activity
 from playexo.enums import State
-
+import sys
 
 logger = logging.getLogger(__name__)
 
@@ -36,20 +36,19 @@ def index(request):
             'id': item.id,
             'name': item.name,
             'completion': completion,
+            'label': item.label,
             'nb_square': sum([int(summary[key][1]) for key in summary])
         })
-        
     return render(request, 'classmanagement/index.html', {'course': course})
-
-
 
 @csrf_exempt
 @login_required
-def course_view(request, pk):
+def course(request, pk):
     try:
         course = Course.objects.get(id=pk)
     except Course.DoesNotExist:
         raise Http404("Course (id: " + str(pk) + ") not found.")
+    
     if not course.is_member(request.user) and not request.user.profile.is_admin():
         logger.warning("User '"+request.user.username+"' denied to access course'"+course.name+"'.")
         raise PermissionDenied("Vous n'êtes pas membre de cette classe.")
@@ -59,8 +58,7 @@ def course_view(request, pk):
             if request.user not in course.teacher.all():
                 logger.warning("User '" + request.user.username
                                + "' denied to toggle course state'"+course.name+"'.")
-                raise PermissionDenied("Vous n'avez pas les droits nécessaires pour fermer/ouvrir"
-                                       + "cette activité.")
+                raise PermissionDenied("Vous n'avez pas les droits nécessaires pour fermer/ouvrir cette activité.")
             try:
                 act = Activity.objects.get(id=request.GET.get("id", None))
                 act.open = not act.open
@@ -80,8 +78,6 @@ def course_view(request, pk):
             for elem in item.pltp.pl.all()
         ]
         
-        
-        len_pl = len(pl) if len(pl) else 1
         activity.append({
             'name': item.name,
             'pltp_sha1': item.pltp.sha1,
@@ -89,7 +85,6 @@ def course_view(request, pk):
             'pl': pl,
             'id': item.id,
             'open': item.open,
-            'width': str(100/len_pl),
         })
         
     return render(request, 'classmanagement/course.html', {
@@ -99,8 +94,6 @@ def course_view(request, pk):
         'instructor': course.is_teacher(request.user),
         'course_id': pk,
     })
-
-
 
 @csrf_exempt
 @login_required
@@ -150,8 +143,6 @@ def course_summary(request, pk):
         'course_id': pk,
     })
 
-
-
 @csrf_exempt
 @login_required
 def activity_summary(request, pk, activity_pk):
@@ -191,8 +182,6 @@ def activity_summary(request, pk, activity_pk):
         'range_tp': range(len(activity.pltp.pl.all())),
         'course_id': pk,
     })
-
-
 
 @csrf_exempt
 @login_required
@@ -235,15 +224,12 @@ def student_summary(request, course_id, student_id):
         'course_id': course_id,
     })
 
-
 @login_required
 def redirect_activity(request, activity_id):
     request.session['current_activity'] = activity_id
     request.session['current_pl'] = None
     request.session['testing'] = False
     return HttpResponseRedirect(reverse("playexo:activity"))
-
-
 
 def disconnect(request):
     logout(request)

@@ -1,29 +1,30 @@
-{% extends "classmanagement/base.html" %}
+{% extends "base.html" %}
 
 {% load static %}
 
 {% block css %}
-    <link rel="stylesheet" href="{% static 'css/block_chart.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/classmanagement.css' %}" />
-{% endblock %}
-
-{% block js %}
-    <script src="{% static 'js/block_chart.js' %}"></script> 
-    <script src="{% static 'js/classmanagement.js' %}"></script> 
+    <link rel="stylesheet" href="{% static 'classmanagement/css/courses.css' %}" />
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        {% for item in course %}
-            <div class="course-card-wrapper">
-                <div class="card course-card">
-                    <h1 class="card-title"><a href="/courses/course/{{ item.id }}"> {{ item.name }} </a></h1>
-                    <center>
-                        <div class="block-chart index-chart" data-numbers='[[{{item.nb_square}}, 200, "{{request.user.profile.color_blindness}}"]{% for elem in item.completion %}, ["{{elem.name}}", {{elem.count}}, "{{elem.class}}"]{% endfor %}]'></div>
-                        <a class="btn btn-primary btn-large" href="/courses/course/{{ item.id }}">Continuer</a>
-                    </center>
-                </div>
+    <h4>Cours</h4><hr/>
+    {% for item in course %}
+    
+        <a class='course-item' href='courses/course/{{item.id}}'>
+            <div class='course-figure'>
+                <figure style='background-image: url("{% static "classmanagement/images/course.png" %}");'></figure>
             </div>
-        {% endfor %}
-    </div>
+            <div class='course-content'>
+                
+                <span class='course-name'>{{item.name}}</span>
+                <p class='course-label'>
+                    {% if not item.label %}
+                    Aucune description disponible pour ce cours.
+                    {% else %}
+                    {{item.label}}
+                    {% endif %}
+                </p>
+            </div>
+        </a>
+    {% endfor %}
 {% endblock %}
