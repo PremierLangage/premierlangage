@@ -277,11 +277,8 @@ class GitTestCase(TestCase):
                         'path': 'Yggdrasil/folder1/TPE/function001.pl',
                 }, content_type='application/json'
         )
-        self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Entry successfully added to the index.")
         self.assertIn(b"TPE/function001.pl",
-                      command("git status", dir=os.path.join(self.folder.root, "folder1"))[0])
-        self.assertIn(b"valid",
                       command("git status", dir=os.path.join(self.folder.root, "folder1"))[0])
     
     
