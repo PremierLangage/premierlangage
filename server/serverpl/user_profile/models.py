@@ -8,7 +8,7 @@ from django.dispatch import receiver
 
 from user_profile.utils import avatar_path, generate_identicon
 from user_profile.enums import Role, EditorTheme, ColorBlindness
-from lti.models import LTIModel
+from lti_app.models import LTIModel
 from filebrowser.models import Directory
 from playexo.models import Activity
 

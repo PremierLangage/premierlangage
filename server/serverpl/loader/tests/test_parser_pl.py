@@ -13,6 +13,7 @@ from loader.parsers import pl
 
 
 FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'loader/tests/tmp')
+FAKE_PL = os.path.join(settings.BASE_DIR, 'loader/tests/fake_pl')
 
 
 
@@ -23,12 +24,14 @@ class PlParserTestCase(TestCase):
     
     @classmethod
     def setUpTestData(cls):
-        os.makedirs(FAKE_FB_ROOT)
+        if os.path.isdir(FAKE_FB_ROOT):
+            shutil.rmtree(FAKE_FB_ROOT)
+        
         cls.user = User.objects.create_user(username='user', password='12345')
         cls.dir = Directory.objects.create(name='dir1', owner=cls.user)
         cls.dir2 = Directory.objects.create(name='dir2', owner=cls.user)
-        shutil.copytree(os.path.join(FAKE_FB_ROOT, '../fake_pl'), cls.dir.root)
-        os.makedirs(cls.dir2.root)
+        shutil.rmtree(cls.dir.root)
+        shutil.copytree(FAKE_PL, cls.dir.root)
         
         with open(os.path.join(FAKE_FB_ROOT, 'dir2', 'fake.pl'), "w") as f:
             f.write("a=a")

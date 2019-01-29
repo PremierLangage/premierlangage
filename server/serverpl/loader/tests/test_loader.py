@@ -14,7 +14,7 @@ from serverpl.settings import BASE_DIR
 from .utils import copy_parser
 
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'loader/tests/tmp')
+FAKE_FB_ROOT = os.path.join(BASE_DIR, 'loader/tests/tmp')
 
 
 
@@ -27,10 +27,14 @@ class LoaderTestCase(TestCase):
     
     @classmethod
     def setUpTestData(cls):
+        if os.path.isdir(FAKE_FB_ROOT):
+            shutil.rmtree(FAKE_FB_ROOT)
+        
         os.makedirs(FAKE_FB_ROOT)
         copy_parser()
         cls.user = User.objects.create_user(username='user', password='12345')
         cls.dir = Directory.objects.create(name='dir1', owner=cls.user)
+        shutil.rmtree(cls.dir.root)
         shutil.copytree(os.path.join(FAKE_FB_ROOT, '../fake_pl'), cls.dir.root)
     
     

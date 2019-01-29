@@ -14,7 +14,7 @@ from playexo.models import Activity, SessionActivity, SessionExercise
 
 
 FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'playexo/tests/tmp')
-
+FAKE_PL = os.path.join(settings.BASE_DIR, 'playexo/tests/fake_pl')
 
 
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
@@ -22,21 +22,27 @@ class ViewsTestCase(TestCase):
     
     @classmethod
     def setUpTestData(cls):
+        if os.path.isdir(FAKE_FB_ROOT):
+            shutil.rmtree(FAKE_FB_ROOT)
+        
         cls.user = User.objects.create_user(username='user', password='12345')
         cls.c = Client()
         cls.c.force_login(cls.user, backend=settings.AUTHENTICATION_BACKENDS[0])
-        dir_name = os.path.join(FAKE_FB_ROOT, "dir1")
-        if os.path.isdir(dir_name):
-            shutil.rmtree(dir_name)
         cls.dir = Directory.objects.create(name='dir1', owner=cls.user)
-        shutil.copytree(os.path.join(FAKE_FB_ROOT, '../fake_pl'), cls.dir.root)
+        shutil.rmtree(cls.dir.root)
+        shutil.copytree(FAKE_PL, cls.dir.root)
         cls.pl = load_file(cls.dir, "random_add.pl")[0]
         cls.pl.json['seed'] = 2
         cls.pl.save()
         cls.pltp = load_file(cls.dir, "random_all.pltp")[0]
         cls.pltp.save()
         cls.activity = Activity.objects.create(name="test", pltp=cls.pltp, id=1)
-    
+
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(FAKE_FB_ROOT)
+        super().tearDownClass()
     
     def test_evaluate_missing_action(self):
         s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity)

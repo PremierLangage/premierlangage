@@ -4,8 +4,8 @@
 {% if answers__.answer and answers__.answer != "" %}{{ answers__.answer }}{% else %}{{ code }}{% endif %}</div>
 <input id="form_answer" type="hidden" name="form_answer" style="display: none;" value="{% if answers__.answer and answers__.answer != "" %}{{ answers__.answer }}{% else %}{{ code }}{% endif %}">
 <br>
-<script src="{% static 'ace/ace.js' %}" type="text/javascript" charset="utf-8"></script>
-<script src="{% static 'ace/ext-modelist.js' %}"></script>
+<script src="{% static 'js/ace/ace.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'js/ace/ext-modelist.js' %}"></script>
 <script>
     var editor = ace.edit('editor');
     editor.setTheme("{{ user_settings__.editor_theme.template }}");

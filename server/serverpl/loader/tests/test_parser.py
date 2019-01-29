@@ -11,17 +11,18 @@ from mock import patch
 from filebrowser.models import Directory
 from loader import parser
 from loader.exceptions import DirectoryNotFound, FileNotFound, MissingKey, UnknownExtension
-from serverpl.settings import BASE_DIR
 from .utils import copy_parser
 
 
 FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'loader/tests/tmp')
+FAKE_PL = os.path.join(settings.BASE_DIR, 'loader/tests/fake_pl')
+FAKE_PARSER = os.path.join(settings.BASE_DIR, 'loader/tests/fake_parsers/')
 
 
 
 @patch('loader.parser.logger')
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
-@override_settings(PARSERS_ROOT=os.path.join(BASE_DIR, 'loader/tests/fake_parsers/'))
+@override_settings(PARSERS_ROOT=FAKE_PARSER)
 @override_settings(PARSERS_MODULE="loader.tests.fake_parsers")
 class ParserTestCase(TestCase):
     """ Test functions of loader.parser """
@@ -30,11 +31,14 @@ class ParserTestCase(TestCase):
     @classmethod
     @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
     def setUpTestData(cls):
-        os.makedirs(FAKE_FB_ROOT)
+        if os.path.isdir(FAKE_FB_ROOT):
+            shutil.rmtree(FAKE_FB_ROOT)
+        
         copy_parser()
         cls.user = User.objects.create_user(username='user', password='12345')
         cls.dir = Directory.objects.create(name='dir1', owner=cls.user)
-        shutil.copytree(os.path.join(FAKE_FB_ROOT, '../fake_pl'), cls.dir.root)
+        shutil.rmtree(cls.dir.root)
+        shutil.copytree(FAKE_PL, cls.dir.root)
     
     
     @classmethod
@@ -116,7 +120,8 @@ class ParserTestCase(TestCase):
         if os.path.isdir(dir_name):
             shutil.rmtree(dir_name)
         dir2 = Directory.objects.create(name='dir2', owner=self.user)
-        shutil.copytree(os.path.join(FAKE_FB_ROOT, '../fake_pl'), dir2.root)
+        shutil.rmtree(dir2.root)
+        shutil.copytree(FAKE_PL, dir2.root)
         dir2.delete()
         
         with self.assertRaises(DirectoryNotFound):

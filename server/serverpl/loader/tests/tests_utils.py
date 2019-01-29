@@ -44,9 +44,11 @@ class UtilsTestCase(TestCase):
     
     @classmethod
     def setUpTestData(cls):
-        os.makedirs(FAKE_FB_ROOT)
-        cls.user = User.objects.create_user(username='user', password='12345', id=100)
-        cls.dir = Directory.objects.get(name='100')
+        if os.path.isdir(FAKE_FB_ROOT):
+            shutil.rmtree(FAKE_FB_ROOT)
+        
+        cls.user = User.objects.create_user(username='user', password='12345')
+        cls.dir = Directory.objects.create(name='Yggdrasil', owner=cls.user)
         cls.lib = Directory.objects.create(name='lib', owner=cls.user)
         command('git init ' + os.path.join(cls.dir.root, 'repo1'))
         

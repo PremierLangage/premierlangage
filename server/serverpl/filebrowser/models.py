@@ -1,11 +1,9 @@
 import os
-from os.path import isdir, join
+from os.path import isdir
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 
 
@@ -17,6 +15,7 @@ class Directory(models.Model):
     remote = models.CharField(max_length=1024, blank=True, default='')
     root = models.CharField(max_length=1024, blank=True)
     public = models.BooleanField(default=False, blank=True)
+    read_only = models.BooleanField(default=False, blank=True)
     
     
     def __str__(self):
@@ -25,15 +24,11 @@ class Directory(models.Model):
     
     def save(self, *args, **kwargs):
         self.root = os.path.join(settings.FILEBROWSER_ROOT, self.name)
+
+        if not isdir(self.root):
+            os.makedirs(self.root)
+        
         super(Directory, self).save(*args, **kwargs)
-    
-    
-    @receiver(post_save, sender=User)
-    def mkdir_on_new_user(sender, instance, created, **kwargs):
-        if created:
-            if not isdir(join(settings.FILEBROWSER_ROOT, str(instance.id))):
-                os.makedirs(join(settings.FILEBROWSER_ROOT, str(instance.id)))
-            Directory.objects.create(name=str(instance.id), owner=instance)
     
     
     def is_repository(self):
@@ -67,8 +62,10 @@ class Directory(models.Model):
     
     def can_read(self, user):
         """Return True if user have read right on this directory, False if not."""
+        
         return (self.owner == user
                 or self.public
+                or self.read_only
                 or user.profile.is_admin()
                 or user in self.read_auth.all()
                 or user in self.write_auth.all())
@@ -77,6 +74,7 @@ class Directory(models.Model):
     def can_write(self, user):
         """Return True if user have write right on this directory, False if not."""
         return (self.owner == user
+                or self.public
                 or user.profile.is_admin()
                 or user in self.write_auth.all())
     

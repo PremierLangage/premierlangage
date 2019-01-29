@@ -17,7 +17,7 @@ from playexo.exception import SandboxError, BuildScriptError
 
 from classmanagement.models import Course
 from loader.models import PL, PLTP
-from lti.models import LTIModel
+from lti_app.models import LTIModel
 from playexo.enums import State
 from playexo.request import SandboxBuild, SandboxEval
 
@@ -219,24 +219,15 @@ class SessionExerciseAbstract(models.Model):
                 feedback += "<br><hr>Received on stderr:<br>" + htmlprint.code(response['stderr'])
         
         else:  # Success
-            context = dict(response['context'])
             feedback = response['feedback']
             if request.user.profile.can_load() and response['stderr']:
                 feedback += "<br><br>Received on stderr:<br>" + htmlprint.code(response['stderr'])
+
+        self.context.update(response['context'])
+        self.context['answers__'] = answers
+        self.save()
         
-        keys = list(response.keys())
-        for key in keys:
-            response[key + "__"] = response[key]
-        for key in keys:
-            del response[key]
-        del response['context__']
-        context.update(response)
-        
-        dic = dict(self.context)
-        dic.update(context)
-        dic['answers__'] = answers
-        
-        return answer, feedback, dic
+        return answer, feedback
     
     
     def build(self, request, test=False):
@@ -381,7 +372,7 @@ class SessionExercise(SessionExerciseAbstract):
             return get_template("playexo/error.html").render({"error_msg": error_msg})
     
     
-    def get_navigation(self, request, context=None):
+    def get_navigation(self, request):
         pl_list = [{
             'id'   : None,
             'state': None,
@@ -393,7 +384,7 @@ class SessionExercise(SessionExerciseAbstract):
                 'state': Answer.pl_state(pl, self.session_activity.user),
                 'title': pl.json['title'],
             })
-        context = dict(self.context if not context else context)
+        context = dict(self.context)
         context.update({
             "pl_list__": pl_list,
             'pl_id__'  : self.pl.id if self.pl else None
@@ -401,10 +392,10 @@ class SessionExercise(SessionExerciseAbstract):
         return get_template("playexo/navigation.html").render(context, request)
     
     
-    def get_context(self, request, context=None):
+    def get_context(self, request):
         return {
-            "navigation": self.get_navigation(request, context),
-            "exercise"  : self.get_exercise(request, context),
+            "navigation": self.get_navigation(request),
+            "exercise"  : self.get_exercise(request),
         }
 
 
@@ -441,7 +432,7 @@ class SessionTest(SessionExerciseAbstract):
         
         super().save(*args, **kwargs)
     
-    def get_pl(self, request, context, answer=None):
+    def get_pl(self, request, answer=None):
         """Return a template of the PL rendered with context.
         
         If answer is given, will determine if the seed must be reroll base on its grade."""
@@ -464,22 +455,21 @@ class SessionTest(SessionExerciseAbstract):
                 'pl_id__'        : pl.id,
             },
         }
-        if context:
-            dic = {**context, **dic}
         
         for key in dic:
             if type(dic[key]) is str:
                 dic[key] = Template(dic[key]).render(RequestContext(request, dic))
+        
         return get_template("playexo/preview.html").render(dic, request)
     
     
-    def get_exercise(self, request, context=None, answer=None):
+    def get_exercise(self, request, answer=None):
         """Return a template of the PL or the PLTP rendered with self.context.
         
         If given, will use context instead.
         If answer is given, will determine if the seed must be reroll base on its grade."""
         try:
-            return self.get_pl(request, context, answer)
+            return self.get_pl(request, answer)
         except Exception as e:  # pragma: no cover
             error_msg = str(e)
             if request.user.profile.can_load():

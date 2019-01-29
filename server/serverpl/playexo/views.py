@@ -40,12 +40,12 @@ def evaluate(request, activity_id, pl_id):
             }), content_type='application/json')
         
         elif status['requested_action'] == 'submit':  # Validate
-            answer, feedback, context = exercise.evaluate(request, status['inputs'])
+            answer, feedback = exercise.evaluate(request, status['inputs'])
             answer['activity'] = session.activity
             Answer.objects.create(**answer)
             return HttpResponse(
                     json.dumps({
-                            "navigation": exercise.get_navigation(request, context),
+                            "navigation": exercise.get_navigation(request),
                             "exercise"  : exercise.get_exercise(request),
                             "feedback"  : render_feedback(feedback),
                     }),

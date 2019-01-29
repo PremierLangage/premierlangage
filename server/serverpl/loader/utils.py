@@ -48,7 +48,7 @@ def get_location(directory, path, current="", parser=None):
                 
                 # /!\ DEPRECATED (del in 0.7.0): defaulting to lib when file not found (use ':'
                 # instead)
-                for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if not l.isdigit()]:
+                for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if not l.isdigit()]:  # pragma: no cover 
                     absolute = os.path.join(settings.FILEBROWSER_ROOT, lib, path)
                     if os.path.isfile(absolute):
                         if parser:
