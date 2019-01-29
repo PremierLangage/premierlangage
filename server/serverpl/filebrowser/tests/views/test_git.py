@@ -3,12 +3,14 @@ import shutil
 import subprocess
 from os.path import join
 
+import mock
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import Client, override_settings, TestCase
 from django.urls import reverse
 
 from filebrowser.models import Directory
+import gitcmd
 
 
 FAKE_FB_ROOT = join(settings.BASE_DIR, 'filebrowser/tests/tmp')
@@ -239,6 +241,7 @@ class GitTestCase(TestCase):
     
     
     def test_status(self):
+        gitcmd.GIT_LANG = "en-US.UTF-8"
         with open(join(FAKE_FB_ROOT, 'Yggdrasil/folder1/TPE/function001.pl'), 'w+') as f:
             print("abcdefghijklmnopqrstuvwxyz", file=f)
         response = self.c.get(
@@ -248,7 +251,7 @@ class GitTestCase(TestCase):
                         'path': 'Yggdrasil/folder1/',
                 }, content_type='application/json'
         )
-        self.assertContains(response, "Modifications", status_code=200)
+        self.assertContains(response, "modif", status_code=200)
     
     
     def test_status_no_path(self):
@@ -263,6 +266,7 @@ class GitTestCase(TestCase):
         self.assertContains(response, "parameter 'path' is missing", status_code=400)
     
     
+    @mock.patch("gitcmd.GIT_LANG", "en-US.UTF-8")
     def test_add(self):
         with open(join(FAKE_FB_ROOT, 'Yggdrasil/folder1/TPE/function001.pl'), 'w+') as f:
             print("abcdefghijklmnopqrstuvwxyz", file=f)
@@ -275,7 +279,9 @@ class GitTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Entry successfully added to the index.")
-        self.assertIn(b"Modifications qui seront valid",
+        self.assertIn(b"TPE/function001.pl",
+                      command("git status", dir=os.path.join(self.folder.root, "folder1"))[0])
+        self.assertIn(b"valid",
                       command("git status", dir=os.path.join(self.folder.root, "folder1"))[0])
     
     
