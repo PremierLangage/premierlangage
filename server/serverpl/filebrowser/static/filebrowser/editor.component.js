@@ -86,14 +86,18 @@ function EditorComponent(EditorService, MonacoService) {
 
     editor.updateSearch = function(event) {
         if (event.keyCode ===  27 || event.type === 'blur') { // esc
-            editor.searching = false;
-            editor.searchResult = [];
+           editor.endSearch();
         } else if (event.keyCode === 13) { // enter
             editor.searchQuery = editor.searchQuery.toLowerCase();
             editor.searchResult = EditorService.findResources(resource => {
                 return resource.type === 'file' && resource.name.toLowerCase().includes(editor.searchQuery);
             });
         }
+    }
+
+    editor.endSearch = function() {
+        editor.searching = false;
+        editor.searchResult = [];
     }
 
     window.onbeforeunload = function(e) {

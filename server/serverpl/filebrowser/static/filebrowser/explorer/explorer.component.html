@@ -20,9 +20,11 @@
             droppable
             draggable>
             <span>
+                <ng-template ng-if="resource.type === 'folder'">
                 <i class="{{resource.expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-right'}}"
                    style="font-size: .6em;">
                 </i>&nbsp;
+                </ng-template>
                 <i class="{{resource.icon}}"></i>&nbsp;
                 <span>{{resource.name}}</span>
             </span>

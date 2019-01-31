@@ -27,15 +27,15 @@
                 </md-menu-content>  
             </md-menu>
         </div>
-        <div id="explorer__tree" ng-if='!editor.searching'>
+        <div id="explorer-tree" ng-if='!editor.searching'>
             <explorer resources='editor.resources()'></explorer>
         </div>
-        <div id="explorer__tree" ng-if='editor.searching'>
+        <div id="explorer-tree" ng-if='editor.searching'>
             <input type='text' auto-focus='true' 
-                   placeholder='Press enter to search esc to cancel...' 
+                   placeholder='Press Enter to search ESC to cancel' 
                    ng-model='editor.searchQuery' 
-                   ng-keydown='editor.updateSearch($event)'
-                   ng-blur='editor.updateSearch($event)'/>
+                   ng-keydown='editor.updateSearch($event)'/>
+            <span class='btn-end-search' ng-click='editor.endSearch()'>&times;</span>
             <explorer resources='editor.searchResult'></explorer>
         </div>
         </div>

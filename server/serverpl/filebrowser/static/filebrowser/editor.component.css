@@ -78,11 +78,15 @@ editor {
     padding: 0 0 0 16px;
 }
 
-#explorer__tree {
+#explorer-tree {
     margin-top: 8px;
     overflow-y: auto;
     margin: 0;
     height: 100%;
+}
+
+#explorer-tree .btn-end-search {
+    cursor: pointer;
 }
 
 #explorer > * {

@@ -72,3 +72,10 @@ monaco .monaco__preview .resizer {
     height: 100%;
     cursor: col-resize;
 }
+
+.pl-theme-ref-token {
+    cursor: pointer;
+    color: #2b4153;
+    font-weight: bold;
+    text-decoration: underline;
+}

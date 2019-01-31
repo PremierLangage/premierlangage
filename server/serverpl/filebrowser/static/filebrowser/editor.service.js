@@ -66,8 +66,9 @@ function EditorService($http, $mdDialog, $mdToast) {
                     username: scope.username ? scope.username : '',
                     password: scope.password ? scope.password : '',
                 }
-            }).then(() => {
+            }).then((response) => {
                 instance.runningTask = false;
+                instance.log(response.data);
             }).catch(error => {
                 instance.runningTask = false;
                 instance.logError(error.data || error);
@@ -95,7 +96,7 @@ function EditorService($http, $mdDialog, $mdToast) {
                 }
                 instance.resources[0].expanded = true;
                 instance.runningTask = false;
-                instance.log('git pull operation succeed on ' + resource.path);
+                instance.log(response.data);
             }).catch(error => {
                 instance.runningTask = false;
                 instance.logError(error.data || error);
@@ -131,9 +132,8 @@ function EditorService($http, $mdDialog, $mdToast) {
                 path: resource.path,
             }
         }).then(response => {
-            instance.log(response.data);
             instance.runningTask = false;
-            instance.log('git add operation succeed on ' + resource.path);
+            instance.log(response.data);
         }).catch(error => {
             instance.runningTask = false;
             instance.logError(error.data || error);
@@ -153,9 +153,8 @@ function EditorService($http, $mdDialog, $mdToast) {
                     commit: scope.commit,
                 }
             }).then(response => {
-                instance.log(response.data);
                 instance.runningTask = false;
-                instance.log('git commit operation succeed on ' + resource.path);
+                instance.log(response.data);
             }).catch(error => {
                 instance.runningTask = false;
                 instance.logError(error.data || error);
@@ -178,7 +177,7 @@ function EditorService($http, $mdDialog, $mdToast) {
                 }).then(response => {
                     instance.log(response.data);
                     instance.runningTask = false;
-                    instance.log('git checkout operation succeed on ' + resource.path);
+                    instance.log(response.data);
                 }).catch(error => {
                     instance.runningTask = false;
                     instance.logError(error.data || error);

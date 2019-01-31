@@ -39,6 +39,7 @@ export function config(editorNode, diffEditorNode, completion) {
         };
         
         const PREMIER_LANGAGE = 'premierlangage';   
+      
         const BUILT_IN_WORDS = {
             title: "Titre de l'exercice/feuille d'exercice",
             author: "Auteur de l'exercice",
@@ -50,13 +51,15 @@ export function config(editorNode, diffEditorNode, completion) {
             build: "Clé contenant une fonction build (ancienne syntaxe: utiliser de préférence before), à utiliser avec le builder /builder/build.py",
             before: "Code python permettant de modifier l'exercice avant sont exécution sur le navigateur",
             form: "Formulaire HTML permettant à l'élève de répondre",
+            extends: "Inclure un fichier",
+            template: "",
         };
         
         // DEFINE CUSTOM THEME
         const SPECIAL_PATTERN = /(title|author|introduction|introductionh|teacher|text|texth|build|before|form)(?=(=|(\+=)|=%))/;
         const VARIABLE_PATTERN = /\s*\w+(\.\w)*(?=(=|(\+=)|=%))/;
-        const REFERENCE_PATTERN = /(@|template|grader|builder=)[~\s\/]*(\w+:\/)?([a-zA-Z0-9_\./]+)/;
-  
+        const REFERENCE_PATTERN = /(@|(template|grader|builder|extends)\s*=)[~\s\/]*(\w+:\/)?([a-zA-Z0-9_\./]+)/;
+
         monaco.languages.register({ id: PREMIER_LANGAGE }); 
         
         monaco.languages.setMonarchTokensProvider('premierlangage', {
@@ -75,7 +78,7 @@ export function config(editorNode, diffEditorNode, completion) {
             rules: [
                 { token: 'special', foreground: 'ff4f00' },
                 { token: 'variable', foreground: '445b75' },
-                { token: 'reference', foreground: '2b4153', fontStyle: 'bold underline' },
+                //{ token: 'reference', foreground: '2b4153', fontStyle: 'bold underline' },
             ]
         });
     
@@ -106,11 +109,28 @@ export function config(editorNode, diffEditorNode, completion) {
                 const lines = model.getValue().split('\n');
                 let match;
                 for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].trim().endsWith('==')) {
+                        i++;
+                        while (i < lines.length) {
+                            if (lines[i].trim().endsWith('==')) {
+                                break;
+                            }
+                            i++;
+                        }
+                    }
                     match = REFERENCE_PATTERN.exec(lines[i]);
                     if (match) {
                         const path = match[match.length - 1];
+                        const startCol =  match.index + match.input.length - path.length;
+                        const range = new monaco.Range(i + 1, startCol, i + 1, startCol + path.length + 1);
+                        /*
+                        // startLineNumber: 6, startColumn: 19, endLineNumber: 6, endColumn: 20
+                        editor.deltaDecorations([], [
+                            { range: range, options: { inlineClassName: 'pl-theme-ref-token' }},
+                        ]);
+                        */
                         lens.push({
-                            range: new monaco.Range(i + 1, match.index, i + 2, match.index + match.input.length),
+                            range: range,
                             id: match.input,
                             command: { 
                                 id: editor.addCommand(0, function() {
@@ -121,6 +141,7 @@ export function config(editorNode, diffEditorNode, completion) {
                                 title: 'OPEN'
                             }
                         });
+                        
                     }
                 }
                 return lens;
@@ -129,15 +150,14 @@ export function config(editorNode, diffEditorNode, completion) {
                 return codeLens;
             }
         });
-
-    
+  
         // FOLDINGS
         monaco.languages.registerFoldingRangeProvider(PREMIER_LANGAGE, {
             provideFoldingRanges: function(model) {
                 let ranges = [];
                 const lines = model.getValue().split('\n');
                 const length = lines.length;
-                let i = 0, start = -1, opened = 0;
+                let i = 0, start = -1;
                 while (i < length) {
                     if (lines[i].trim().endsWith('==')) {
                         if (start != -1) {
@@ -199,6 +219,7 @@ export function config(editorNode, diffEditorNode, completion) {
                editor.onDidContentChanged(editor.getValue())
            }
         });
+       
         let diffEditor;
         if (diffEditorNode) {
             diffEditor = monaco.editor.createDiffEditor(diffEditorNode, {
