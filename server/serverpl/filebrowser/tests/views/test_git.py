@@ -353,7 +353,7 @@ class GitTestCase(TestCase):
                         'path': 'Yggdrasil/folder1/TPE/function001.pl',
                 }, content_type='application/json'
         )
-        self.assertContains(response, "test\ntest2\n", status_code=200)
+        self.assertContains(response, "test\ntest2", status_code=200)
     
     
     def test_show_no_path(self):
