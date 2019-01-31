@@ -32,7 +32,7 @@ function ExplorerComponent(EditorService, MonacoService, $scope) {
                 EditorService.logError(error);
             });
         }
-        else if (e.keyCode === 27) { // esc
+        else if (e.keyCode === 27 || e.type === 'blur') { // esc
             EditorService.cancelEdition(resource);
         }
     };
