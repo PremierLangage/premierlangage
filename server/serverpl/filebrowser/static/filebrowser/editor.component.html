@@ -31,7 +31,11 @@
             <explorer resources='editor.resources()'></explorer>
         </div>
         <div id="explorer__tree" ng-if='editor.searching'>
-            <input type='text' auto-focus='true' placeholder='Press enter to search esc to cancel...' ng-model='editor.searchQuery' ng-keydown='editor.updateSearch($event)'/>
+            <input type='text' auto-focus='true' 
+                   placeholder='Press enter to search esc to cancel...' 
+                   ng-model='editor.searchQuery' 
+                   ng-keydown='editor.updateSearch($event)'
+                   ng-blur='editor.updateSearch($event)'/>
             <explorer resources='editor.searchResult'></explorer>
         </div>
         </div>

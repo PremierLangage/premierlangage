@@ -85,7 +85,7 @@ function EditorComponent(EditorService, MonacoService) {
     }
 
     editor.updateSearch = function(event) {
-        if (event.keyCode ===  27) { // esc
+        if (event.keyCode ===  27 || event.type === 'blur') { // esc
             editor.searching = false;
             editor.searchResult = [];
         } else if (event.keyCode === 13) { // enter
