@@ -29,10 +29,10 @@
     <div class='monaco__editor'></div>
     <div class='monaco__editor--diff'></div>
     <div class='monaco__preview border' ng-show='monaco.previewHtml()'>
-        <h5>{{monaco.selection().name}} preview</h5><hr/>
-        <div ng-bind-html='monaco.previewHtml() | unsafe'></div>
+        <div class='monaco__preview-content' ng-bind-html='monaco.previewHtml() | unsafe'></div>
     </div>
 </div>
+
 <md-progress-circular class='center' md-mode='indeterminate' md-diameter='50' ng-if='monaco.runningTask()'></md-progress-circular>
 <script type="text/ng-template" id="pltp-reload.template.html">
 <md-dialog aria-label='Reload PLTP'>
