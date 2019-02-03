@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('editor', ['ngMaterial', "toastr"])
 .filter('unsafe', function($sce) {
     return function(val) {

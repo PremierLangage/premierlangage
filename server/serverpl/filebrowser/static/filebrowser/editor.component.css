@@ -71,6 +71,7 @@ editor {
     min-width: 20px;
     max-width: 50%;
     background-color: #ecedf0;
+    overflow: hidden;
 }
 
 #explorer .editor__tab { 
@@ -82,17 +83,13 @@ editor {
     margin-top: 8px;
     overflow-y: auto;
     margin: 0;
-    height: 100%;
+    height: calc(100% - 36px);
 }
 
 #explorer-tree .btn-end-search {
     cursor: pointer;
 }
 
-#explorer > * {
-    height: 100%;    
-    overflow: hidden;
-}
 
 #explorer input {
     width: 90%;
@@ -122,6 +119,7 @@ editor {
     right: 0;
     top: 0;
     width: 6px;
+    height: 100%;
     cursor: col-resize;
 }
 /* #endregion */
@@ -200,3 +198,11 @@ editor {
 /* #endregion */
 
 
+.upload .browse input[type='file']{
+    position: absolute;
+    margin-top: 3px;
+    margin-left: 3px;
+    height: 1px;
+    width: 1px;
+    z-index: -5;
+}

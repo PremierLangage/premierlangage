@@ -117,3 +117,9 @@ def walkdir(path, user, parent='', write=None, read=None, repo=None, sort=False)
             
     
     return node
+
+def walkalldirs(request):
+    lib = walkdir(join_fb_root('lib'), request.user)
+    home = walkdir(join_fb_root("Yggdrasil"), request.user)
+    home["name"] = 'home'
+    return [home, lib]

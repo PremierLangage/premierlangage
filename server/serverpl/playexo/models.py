@@ -455,7 +455,7 @@ class SessionTest(SessionExerciseAbstract):
                 'pl_id__'        : pl.id,
             },
         }
-        
+
         for key in dic:
             if type(dic[key]) is str:
                 dic[key] = Template(dic[key]).render(RequestContext(request, dic))

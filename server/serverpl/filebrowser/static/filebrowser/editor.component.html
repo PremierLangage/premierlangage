@@ -1,11 +1,13 @@
 <div id="workspace">
     <!-- #region explorer -->
-    <div id="explorer">
-        <div class='mdl-shadow--2dp'>
+    <div id="explorer" class='mdl-shadow--2dp'>
         <div class='editor__tab border-bottom'>
             <span>EXPLORER</span>       
             <div class="mdl-layout-spacer"></div>
             <!-- OPTIONS -->
+            <div class='editor__tab-item' ng-click='editor.refresh()'>
+                <md-tooltip>Refresh</md-tooltip><i class="fas fa-sync"></i>
+            </div>
             <div class='editor__tab-item' ng-click='editor.search()'>
                 <md-tooltip>Search File</md-tooltip><i class="fas fa-search"></i>
             </div>
@@ -32,12 +34,11 @@
         </div>
         <div id="explorer-tree" ng-if='editor.searching'>
             <input type='text' auto-focus='true' 
-                   placeholder='Press Enter to search ESC to cancel' 
-                   ng-model='editor.searchQuery' 
-                   ng-keydown='editor.updateSearch($event)'/>
+                placeholder='Press Enter to search ESC to cancel' 
+                ng-model='editor.searchQuery' 
+                ng-keydown='editor.updateSearch($event)'/>
             <span class='btn-end-search' ng-click='editor.endSearch()'>&times;</span>
             <explorer resources='editor.searchResult'></explorer>
-        </div>
         </div>
         <md-progress-circular ng-if='editor.runningTask()' class='center' md-mode="indeterminate" md-diameter="50"></md-progress-circular>
     </div>
@@ -72,6 +73,8 @@
     </div>
      <!-- #endregion -->
 </div>
+
+
  <!-- #region footer -->
 <div class='footer'>
     <ng-container ng-if="editor.inRepo()">
@@ -82,6 +85,8 @@
     </ng-container>
 </div>
  <!-- #endregion -->
+
+
  <!-- #region dialog templates -->
 <script type="text/ng-template" id="git-clone.template.html">
 <md-dialog aria-label='Git Clone Dialog'>
@@ -152,5 +157,4 @@
   </md-dialog-actions>
 </md-dialog>
 </script>
-
 <!-- #endregion -->

@@ -1,4 +1,6 @@
-import * as monacoConfig from './config.js';
+'use strict';
+
+import * as configuration from './config.js';
 
 angular.module('editor').service('MonacoService', MonacoService);
 
@@ -10,9 +12,11 @@ function MonacoService(EditorService, $http, toastr) {
     this.selection;
     this.resources = [];
     this.runningTask = false;
-    this.resourcesChanged;
-    this.editorNode;
+    this.editorChanged;
+
+    this.codeEditorNode;
     this.diffEditorNode;
+    this.imageEditorNode;
     
     this.previewFunctions = {
         'pl': previewPL,
@@ -20,17 +24,22 @@ function MonacoService(EditorService, $http, toastr) {
         'md': previewMarkdown
     }
  
-    this.loadEditor = function() {
-        instance.editorNode = $('.monaco__editor');
-        instance.diffEditorNode = $('.monaco__editor--diff');
-        instance.diffEditorNode.hide();
 
-        monacoConfig.config(instance.editorNode.get(0), instance.diffEditorNode.get(0), (e, d) => { 
+    this.loadEditor = function() {
+        instance.codeEditorNode = $('.monaco__editor');
+        instance.diffEditorNode = $('.monaco__editor--diff');
+        instance.imageEditorNode = $('.monaco__editor--image');
+        instance.previewNode = angular.element(".monaco__preview");
+
+        instance.diffEditorNode.hide();
+        instance.imageEditorNode.hide();
+       
+        configuration.config(instance.codeEditorNode.get(0), instance.diffEditorNode.get(0), (e, d) => { 
             e.onRequestSave = function() {
                 instance.saveSelection();
             }
             
-            e.onRequestOpenFile = function(path) {
+            e.onResolveLink = function(path) {
                 const r = EditorService.findResourceWithPredicate(res => res.path.endsWith(path));
                 if (r) {
                     instance.openResource(r);
@@ -61,25 +70,25 @@ function MonacoService(EditorService, $http, toastr) {
     */
     this.closeResource = function(resource) {
         instance.resources = instance.resources.filter(item => item.path !== resource.path);
-        instance.closeDiffEditor();
+        instance.defaultEditor();
         instance.selection = undefined;
         instance.editor.setModel(undefined);
         if (!instance.isEmpty()) {
             instance.openResource(instance.resources[0]);
         }
-        if (resource.editorModel) {
-            resource.editorModel.dispose();
+        if (resource.__monaco_model__) {
+            resource.__monaco_model__.dispose();
         }
-        resource.editorModel = undefined;
-        resource.editorState = undefined;
+        resource.__monaco_model__ = undefined;
+        resource.__monaco_state__ = undefined;
         resource.preview = undefined;
         resource.diffMode = undefined;
     }
 
-    /** Invokes MonacoService.resourcesChanged event */
+    /** Invokes MonacoService.editorChanged event */
     this.emitChanged = function() {
-        if (instance.resourcesChanged) {
-            instance.resourcesChanged();
+        if (instance.editorChanged) {
+            instance.editorChanged();
         }
     }
 
@@ -134,103 +143,174 @@ function MonacoService(EditorService, $http, toastr) {
     }  
 
     /** 
-     * Loads the given pltp resource by making a http request.
+     * Loads the given pltp resource with a request to the server.
      * @param {Object} resource - the pltp resource.
+     * @returns {Promise} Promise resolved with the response of the server or false if cancelled and rejected with an error message
      * */
     this.loadPLTP = function(resource) {
-        instance.runningTask = true;
-        $http({
-            method: 'GET',
-            url: 'option',
-            params: { name: 'load_pltp', path: resource.path }
-        }).then(response => {
-            EditorService.log(response.data);
-            instance.runningTask = false;
-        }).catch(error => {
-            EditorService.log(error.data);
-            instance.runningTask = false;
+        return new Promise((resolve, reject) => {
+            try {
+                instance.runningTask = true;
+                $http({
+                    method: 'GET',
+                    url: 'option',
+                    params: { name: 'load_pltp', path: resource.path }
+                }).then(response => {
+                    instance.runningTask = false;
+                    resolve(response.data);
+                }).catch(error => {
+                    instance.runningTask = false;
+                    reject(error.data);
+                });
+            } catch(error) {
+                instance.runningTask = false;
+                console.error(error);
+                reject(error.message);
+            }
         });
     }
 
+    this.openEditor = function(resource) {
+        instance.defaultEditor();
+        if (instance.selection) {
+            instance.selection.previewWidth = instance.previewNode.width();
+        }
+        
+        function presentCodeEditor() {
+            instance.editor.findLanguage(resource);
+            if (instance.selection) {
+                instance.selection.__monaco_state__ = instance.editor.saveViewState();
+            }
+        
+            if (resource.__monaco_model__) {
+                instance.editor.restoreViewState(resource.__monaco_state__);
+            } else {
+                resource.__monaco_model__ = monaco.editor.createModel(resource.content, resource.language);
+            }
+    
+            instance.editor.setModel(resource.__monaco_model__);
+            instance.editor.focus();
+            instance.editor.updateOptions({ readOnly: !resource.write });
+    
+        }
+
+        function presentImageEditor() {
+            instance.codeEditorNode.hide();
+            instance.imageEditorNode.show();
+        }
+        
+        if (resource.content) {
+            presentCodeEditor();
+        }
+        else if (resource.image) {
+            presentImageEditor();
+        }
+
+        if (!instance.resources.find(item => item.path === resource.path)) {
+            instance.resources.push(resource);
+        }
+
+        if (resource.previewWidth) {
+            instance.previewNode.width(resource.previewWidth);
+        }
+    }
+    
     /** 
-     * Loads the content of the resource by making a http request if needed and display the resource
-     * inside monaco editor.
-     * @param {Object} resource - the resource.
+     * Loads the content of the resource inside the editor if needed.
+     * - If the resource is a folder the function will expand the folder.
+     * - If the resource is a file the function will open the right editor depending to type of the file.
+     * At the end of the function, the resource will be the selected one inside explorer area.
+     * @param {Object} resource - the resource to open.
+     * @returns {Promise} Promise object resolved with true or rejected with a string error message.
     */
     this.openResource = function(resource) {
         return new Promise((resolve, reject) => {
-            resource.expanded = !resource.expanded;
-            if (resource.type !== 'file') {
+            try {
                 instance.selection = resource;
-                resolve(resource);
-            } else {
-                EditorService.openResource(resource).then(() => {
-                    instance.closeDiffEditor();
-
-                    if (!resource.language) {
-                        instance.editor.findLanguage(resource);
-                    }
-            
-                    if (instance.selection && instance.selection.type === 'file') {
-                        instance.selection.editorState = instance.editor.saveViewState();
-                    }
-                
-                    if (resource.editorModel) {
-                        instance.editor.restoreViewState(resource.editorState);
-                    } else {
-                        resource.editorModel = monaco.editor.createModel(resource.content, resource.language);
-                    }
-
-                    instance.editor.setModel(resource.editorModel);
-                    instance.editor.focus();
-                    instance.editor.updateOptions({ readOnly: !resource.write });
-                    instance.selection = resource;
-                    if (!instance.resources.find(item => item.path === resource.path)) {
-                        instance.resources.push(resource);
-                    }
-                    resolve(resource);
-                    this.emitChanged();
-                }).catch(error => {
-                    EditorService.log(error);
-                    reject(error);
-                });
+                if (resource.type === 'folder') {
+                    resource.expanded = !resource.expanded;
+                    resolve(true);
+                } else if (!resource.loaded) {
+                    $http({
+                        url: "option",
+                        method: 'GET',
+                        params: { name: 'get_resource', path: resource.path }
+                    }).then(response => {
+                        resource.loaded = true;
+                        const data = response.data;
+                        resource.content = data.content
+                        resource.image = data.image
+                        instance.openEditor(resource);
+                        resolve(true);
+                    }).catch(error => {
+                        reject(error.data);
+                    });
+                } else {
+                    instance.openEditor(resource);
+                    resolve(true);
+                }
+            } catch(error) {
+                instance.runningTask = false;
+                console.error(error);
+                reject(error.message);
             }
         });
     }
 
     /** 
      * Loads the html preview of the selected resource.
-     * @returns {Promise} Promise object that returns resource object if resolved
-     * and string representing the error if rejected.
-     * */
+     */
     this.preview = function() {
-        const extension = EditorService.extensionOf(instance.selection);
-        const action = instance.previewFunctions[extension];
-        return action(instance.selection);
+        return new Promise((resolve, reject) => {
+            const extension = EditorService.extensionOf(instance.selection);
+            const action = instance.previewFunctions[extension];
+            action(instance.selection).then(() => {
+                instance.previewNode.css({ width: '50%' });
+                resolve(true);
+            }).catch(error => {
+                reject(error.data || error);
+            });
+        });
     }
    
+    this.hidePreview = function() {
+        instance.selection.preview = undefined;
+        instance.previewNode.width(10);
+    }
+    
     /** 
-     * Reloads the given pltp resource by making a http request.
+     * Reloads the pltp resource.
      * @param {Object} resource - the pltp resource.
+     * @returns {Promise} Promise resolved with the response of the server or false if cancelled and rejected with an error message
      * */
     this.reloadPLTP = function(resource) {
-        EditorService.openDialog('pltp-reload.template.html').then(function(scope) {
-            instance.runningTask = true;
-            $http({
-                method: 'POST',
-                url: 'option',
-                data: {
-                    name: "reload_pltp",
-                    path: resource.path,
-                    activity_id: scope.activity_id,
-                }
-            }).then(response => {
-                EditorService.log(response.data);
+        return new Promise((resolve, reject) => {
+            try {
+                EditorService.openDialog('pltp-reload.template.html').then(function(scope) {
+                    instance.runningTask = true;
+                    $http({
+                        method: 'POST',
+                        url: 'option',
+                        data: {
+                            name: "reload_pltp",
+                            path: resource.path,
+                            activity_id: scope.activity_id,
+                        }
+                    }).then(response => {
+                        instance.runningTask = false;
+                        resolve(response.data);
+                    }).catch((error) => {
+                        instance.runningTask = false;
+                        reject(error.data);
+                    });
+                }).catch(() => {
+                    resolve(false)
+                });
+            } catch(error) {
                 instance.runningTask = false;
-            }).catch((error) => {
-                EditorService.log(error.data);
-                instance.runningTask = false;
-            });
+                console.error(error);
+                reject(error.message);
+            }
         });
     }
 
@@ -239,7 +319,7 @@ function MonacoService(EditorService, $http, toastr) {
      */
     this.saveSelection = function() {
         const s = instance.selection;
-        if (s && s.write) {
+        if (s && s.write && s.type === 'file') {
             EditorService.saveResource(s).then((resource) => {
                 toastr.success('saved !');
                 resource.changed = false;
@@ -250,7 +330,7 @@ function MonacoService(EditorService, $http, toastr) {
     }
     
     this.showDiffEditor = function(content) {
-        instance.editorNode.hide();
+        instance.codeEditorNode.hide();
         instance.diffEditorNode.show();
         instance.selection.diffMode = true;
         instance.diffEditor.setModel({
@@ -259,16 +339,21 @@ function MonacoService(EditorService, $http, toastr) {
         });
     }
 
-    this.closeDiffEditor = function() {
-        instance.editorNode.show();
+    this.defaultEditor = function() {
+        instance.codeEditorNode.show();
         instance.diffEditorNode.hide();
-        instance.diffEditor.setModel(undefined);
+        instance.imageEditorNode.hide();
+
+        if (instance.diffEditor) {
+            instance.diffEditor.setModel(undefined);
+        }
+        
         if (instance.selection) {
             instance.selection.diffMode = undefined;
         }
     }
     
-    /** Test the pl resource in new tab. */
+    /** Tests the pl resource in new tab. */
     this.testPL = function(resource) {
         window.open('option?name=test_pl&path=' +  resource.path, "_blank");
     }
@@ -292,7 +377,6 @@ function MonacoService(EditorService, $http, toastr) {
                 resolve(resource);
             }).catch(error => {
                 instance.runningTask = false;
-                EditorService.log(error.data);
                 reject(error.data);
             });
         });

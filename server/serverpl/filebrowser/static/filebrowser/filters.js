@@ -1,4 +1,4 @@
-
+'use strict';
 
 export function canRead(item) {
     return item && item.read;

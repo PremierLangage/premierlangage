@@ -1,29 +1,33 @@
+'use strict';
+
 import * as filters from './filters.js';
 
 angular.module('editor').service('EditorService', EditorService);
 
-function EditorService($http, $mdDialog, $mdToast) {
-    //#region properties
+export function EditorService($http, $mdDialog, $mdToast) {
+    window.onbeforeunload = function(e) {
+        e.preventDefault();
+        e.returnValue = '';
+        return '';
+    };
+    
     const instance = this;
     instance.runningTask = false;
     instance.logs = [];
     instance.resources = [];
     instance.onLogAdded;
 
-    //#endregion
-
-    //#region git
     const options = [
-        { label: 'Git Clone', icon: 'fas fa-cloud-download-alt', filters: [filters.canWrite, filters.isHome], action: gitClone},
-        { label: 'Git Push', icon:'fas fa-cloud-upload-alt', filters: [filters.canWrite, filters.isRepo], action: gitPush},
-        { label: 'Git Pull', icon:'fas fa-cloud-download-alt', filters: [filters.canWrite, filters.isRepo], action: gitPull},
-        { label: 'Git Status', icon:'fas fa-info-circle', filters: [filters.canWrite, filters.isRepo], action: gitStatus},
-        { label: 'Git Add', icon:'fas fa-plus', filters: [filters.canWrite, filters.isRepo], action: gitAdd},
-        { label: 'Git Commit', icon:'fas fa-edit', filters: [filters.canWrite, filters.isRepo], action: gitCommit},
-        { label: 'Git Checkout', icon:'fas fa-eraser', filters: [filters.canWrite, filters.isRepo], action: gitCheckout},
+        { label: 'Git Clone', icon: 'fas fa-cloud-download-alt', filters: [filters.canWrite, filters.isHome], action: optionClone},
+        { label: 'Git Push', icon:'fas fa-cloud-upload-alt', filters: [filters.canWrite, filters.isRepo], action: optionPush},
+        { label: 'Git Pull', icon:'fas fa-cloud-download-alt', filters: [filters.canWrite, filters.isRepo], action: optionPull},
+        { label: 'Git Status', icon:'fas fa-info-circle', filters: [filters.canWrite, filters.isRepo], action: optionStatus},
+        { label: 'Git Add', icon:'fas fa-plus', filters: [filters.canWrite, filters.isRepo], action: optionAdd},
+        { label: 'Git Commit', icon:'fas fa-edit', filters: [filters.canWrite, filters.isRepo], action: optionCommit},
+        { label: 'Git Checkout', icon:'fas fa-eraser', filters: [filters.canWrite, filters.isRepo], action: optionCheckout},
     ];
 
-    function gitClone(resource) {
+    function optionClone(resource) {
         instance.openDialog('git-clone.template.html')
         .then(function(scope) {
             instance.runningTask = true;
@@ -39,21 +43,21 @@ function EditorService($http, $mdDialog, $mdToast) {
                     destination: scope.destination ? scope.destination : '',
                 }
             }).then(response => {
-                instance.resources = response.data;
+                instance.resources = response.data.resources;
                 for (let item of instance.resources) {
-                    loadOption(item);
+                    instance.loadOptions(item);
                 }
                 instance.resources[0].expanded = true;
-                instance.log(scope.url + ' cloned !');
                 instance.runningTask = false;
+                instance.log(response.data.message);
             }).catch((error) => {
                 instance.runningTask = false;
-                instance.logError(error.data || error);
+                instance.error(error.data || error);
             });
         });
     }
     
-    function gitPush(resource) {
+    function optionPush(resource) {
         instance.openDialog('git-command.template.html')
         .then(function(scope) {
             instance.runningTask = true;
@@ -71,12 +75,12 @@ function EditorService($http, $mdDialog, $mdToast) {
                 instance.log(response.data);
             }).catch(error => {
                 instance.runningTask = false;
-                instance.logError(error.data || error);
+                instance.error(error.data || error);
             });
         }).catch(() => {});
     }
     
-    function gitPull(resource) {
+    function optionPull(resource) {
         instance.openDialog('git-command.template.html')
         .then(function(scope) {
             instance.runningTask = true;
@@ -90,21 +94,21 @@ function EditorService($http, $mdDialog, $mdToast) {
                     password: scope.password ? scope.password : '',
                 }
             }).then(response => {
-                instance.resources = response.data;
+                instance.resources = response.data.resources;
                 for (let item of instance.resources) {
-                    loadOption(item);
+                    instance.loadOptions(item);
                 }
                 instance.resources[0].expanded = true;
                 instance.runningTask = false;
-                instance.log(response.data);
+                instance.log(response.data.message);
             }).catch(error => {
                 instance.runningTask = false;
-                instance.logError(error.data || error);
+                instance.error(error.data || error);
             });
         }).catch(()=>{});
     }
     
-    function gitStatus(resource) {
+    function optionStatus(resource) {
         instance.runningTask = true;
         $http({
             method: 'GET',
@@ -118,11 +122,11 @@ function EditorService($http, $mdDialog, $mdToast) {
             instance.runningTask = false;
         }).catch(error => {
             instance.runningTask = false;
-            instance.logError(error.data || error);
+            instance.error(error.data || error);
         });
     }
     
-    function gitAdd(resource) {
+    function optionAdd(resource) {
         instance.runningTask = true;
         $http({
             method: 'GET',
@@ -136,11 +140,11 @@ function EditorService($http, $mdDialog, $mdToast) {
             instance.log(response.data);
         }).catch(error => {
             instance.runningTask = false;
-            instance.logError(error.data || error);
+            instance.error(error.data || error);
         });
     }
 
-    function gitCommit(resource) {
+    function optionCommit(resource) {
         instance.openDialog('git-commit.template.html')
         .then(function(scope) {
             instance.runningTask = true;
@@ -157,12 +161,12 @@ function EditorService($http, $mdDialog, $mdToast) {
                 instance.log(response.data);
             }).catch(error => {
                 instance.runningTask = false;
-                instance.logError(error.data || error);
+                instance.error(error.data || error);
             });
         }).catch(() => {});
     }
     
-    function gitCheckout(resource) {
+    function optionCheckout(resource) {
         instance.askConfirm({
             title: 'Will reset all your local changes up to your last commit.',
             confirmed: function() {
@@ -180,13 +184,13 @@ function EditorService($http, $mdDialog, $mdToast) {
                     instance.log(response.data);
                 }).catch(error => {
                     instance.runningTask = false;
-                    instance.logError(error.data || error);
+                    instance.error(error.data || error);
                 });
             }
         });
     }
 
-    function loadOption(resource) {
+    instance.loadOptions = function(resource) {
         resource['options'] = options.filter(option => {
             for (const predicate of option.filters) {
                 if (!predicate(resource)) {
@@ -197,16 +201,16 @@ function EditorService($http, $mdDialog, $mdToast) {
         });
         resource['hasOption'] = resource['options'].length > 0;
         if (resource.children) {
-            sortResources(resource.children);
+            instance.sortResources(resource.children);
             for (let child of resource.children) {
-                loadOption(child);
+                instance.loadOptions(child);
             }
         }
     }
-    //#endregion
 
-    //#region resources
-    function sortResources(resources) {
+
+
+    instance.sortResources = function (resources) {
         resources.sort((a, b) => {
             if (a.type === b.type) { 
               return a.name < b.name ? -1 : 1;
@@ -215,13 +219,13 @@ function EditorService($http, $mdDialog, $mdToast) {
         });
     }
 
-    function addResource(resource, type) {
+    instance.addResource = function(resource, type) {
         if (!resource || (resource.children && resource.children.find(item => item.editing))) {
             return false;
         }
         resource.expanded = true;
         resource.children = resource.children || [];
-        resource.children.push({
+        const newResource = {
             ...resource,
             editing: true,
             name: '',
@@ -230,16 +234,63 @@ function EditorService($http, $mdDialog, $mdToast) {
             children: [],            
             parent: resource.path,
             __parent__: resource,
+        };
+        resource.children.push(newResource);
+        return newResource;
+    }
+
+    instance.uploadFile = function(resource, e) {
+        return new Promise((resolve, reject) => {
+            angular.element('#upload-path').val(resource.path);
+            
+            const form = angular.element('#form-upload');
+            form.find('button:not([class])').hide();    
+            form.submit(function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                const formData = new FormData($(this)[0]);
+                instance.askConfirm({
+                    title: 'You will lose any unsaved changes, Are you sure ?',
+                    confirmed: function() {
+                        instance.runningTask = true;
+                        $http({
+                            url: '/filebrowser/upload_resource',
+                            method: 'POST',
+                            data: formData,
+                            transformRequest: angular.identity,
+                            headers: {'Content-Type': undefined},
+                        }).then(() => {
+                            instance.runningTask = false;
+                            resolve(true);
+                            instance.refresh();
+                        }).catch(error => {
+                            instance.runningTask = false;
+                            reject(error.data);
+                        });
+                    },
+                    canceled: function() {
+                        resolve(false);
+                    }
+                })
+            });
+
+            $mdDialog.show({
+                contentElement: '#dialog-upload-file',
+                parent: angular.element(document.body),
+                targetEvent: e,
+                clickOutsideToClose: true
+            }).catch(() => {
+                resolve(false);
+            });
         });
-        return true;
     }
 
     instance.addFile = function(resource) {
-        return addResource(resource, 'file');
+        return instance.addResource(resource, 'file');
     }
 
     instance.addFolder = function(resource) {
-        return addResource(resource, 'folder');
+        return instance.addResource(resource, 'folder');
     }
 
     instance.cancelEdition = function(resource) {
@@ -301,18 +352,21 @@ function EditorService($http, $mdDialog, $mdToast) {
                 url: 'option',
                 data: data
             }).then(response => {
-                resource.path = response.data.path;
-                resource.icon = response.data.icon;
-                loadOption(resource);
+                const data = response.data;
+                resource.path = data.path;
+                resource.icon = data.icon;
+                instance.loadOptions(resource);
+                instance.sortResources(resource.__parent__.children);
+
                 delete resource.editing;
-                sortResources(resource.__parent__.children);
                 delete resource.__parent__;
                 delete resource.__submiting__;
                 delete resource.__name__;
-                resolve(response.data);
+
+                resolve(true);   
             }).catch(error => {
                 delete resource.__submiting__;
-                reject(error);
+                reject(error.data);
             });
         });
     }
@@ -365,6 +419,7 @@ function EditorService($http, $mdDialog, $mdToast) {
 
     instance.moveResource = function(src, dst) {
         return new Promise((resolve, reject) => {
+  
             if (src === dst) {
                 reject('cannot move the resource to the same path');
                 return;
@@ -404,7 +459,7 @@ function EditorService($http, $mdDialog, $mdToast) {
                         srcRes.parent = dst;
                         srcRes.path = response.data.path;
                         dstRes.children.push(srcRes);
-                        sortResources(dstRes.children);
+                        instance.sortResources(dstRes.children);
                         dstRes.expanded = true;
                         resolve();
                     }).catch(error => {
@@ -436,50 +491,27 @@ function EditorService($http, $mdDialog, $mdToast) {
         });
     }
 
-    instance.openResource = function(resource) {
+    instance.refresh = function() {
         return new Promise((resolve, reject) => {
-            if (!resource) {
-                reject('the resource does not exists');
-                return;
-            }
-            if (!resource.__loaded__) {
-                $http({
-                    url: "option",
-                    method: 'GET',
-                    params: { name: 'get_resource', path: resource.path }
-                }).then(response => {
-                    resource.content = response.data.content;
-                    resource.__loaded__ = true;
-                    resolve(resource);
-                }).catch(error => {
-                    reject(error.data);
-                });
-            } else {
-                resolve(resource);
-            }
-        });  
-    }
-
-    instance.loadResources = function(completion) {
-        instance.runningTask = true;
-        $http({
-            url: "option",
-            method: 'GET',
-            params: { name: 'get_resources' }
-        }).then(response => {
-            instance.resources = response.data;
-            for (let item of instance.resources) {
-                loadOption(item);
-            }
-            instance.runningTask = false;
-            if (completion != null) {
-                completion(instance.resources);
-            }
-        }).catch(error => {
-            instance.runningTask = false;
-            if (completion != null) {
-                completion(error);
-            }
+            instance.runningTask = true;
+            $http({
+                url: "option",
+                method: 'GET',
+                params: { name: 'get_resources' }
+            }).then(response => {
+                instance.resources = response.data;
+                for (let item of instance.resources) {
+                    instance.loadOptions(item);
+                }
+                instance.runningTask = false;
+                if (instance.resources.length > 0) {
+                    instance.resources[0].expanded = true;
+                }
+                resolve(true);
+            }).catch(error => {
+                instance.runningTask = false;
+                reject(error.data);
+            });
         });
     }
 
@@ -570,17 +602,16 @@ function EditorService($http, $mdDialog, $mdToast) {
                 resolve(response.data);
             }).catch(error => {
                 instance.runningTask = false;
-                instance.logError(error.data);
+                instance.error(error.data);
                 reject(error.data)
             });
         });
     }
-    
-    //#endregion
-
+ 
     //#region logging
     instance.log = function(message) {
-        if (message) {
+        if (message && message !== true) {
+            console.trace(message)
             instance.logs.push(message);
             if (instance.onLogAdded) {
                 instance.onLogAdded();
@@ -588,7 +619,7 @@ function EditorService($http, $mdDialog, $mdToast) {
         }
     }
 
-    instance.logError = function(message) {
+    instance.error = function(message) {
         if (typeof(message) == 'object') {
             message = JSON.stringify(message);
         }
@@ -597,6 +628,16 @@ function EditorService($http, $mdDialog, $mdToast) {
     
     instance.clearLogs = function() {
         instance.logs = [];
+    }
+
+    instance.promise = function(promise) {
+        promise.then(data => {
+            if (data) {
+                instance.log(data);
+            }
+        }).catch(error => {
+            instance.error(error);
+        })
     }
     //#endregion
 
@@ -636,18 +677,17 @@ function EditorService($http, $mdDialog, $mdToast) {
         $mdToast.show(toast);
     }
 
-    instance.openDialog = function(templateUrl) {
-        function Dialog($scope, $mdDialog) {
-            $scope.cancel = function() {
-                $mdDialog.cancel();
-            };
-        
-            $scope.ok = function() {
-                $mdDialog.hide($scope);
-            }
-        }
+    instance.openDialog = function(templateUrl) {    
         return $mdDialog.show({
-            controller: Dialog,
+            controller: function($scope, $mdDialog) {
+                $scope.cancel = function() {
+                    $mdDialog.cancel();
+                };
+            
+                $scope.ok = function() {
+                    $mdDialog.hide($scope);
+                }
+            },
             templateUrl: templateUrl,
             parent: angular.element(document.body),
             clickOutsideToClose:true
@@ -672,7 +712,7 @@ function EditorService($http, $mdDialog, $mdToast) {
         }
         function doDrag(e) {
             e.preventDefault();
-            onResized(node, e, startX, startY, startWidth, startHeight);
+            onResized({node: node, e: e, startX: startX, startY: startY, startWidth: startWidth, startHeight: startHeight});
         }
         function stopDrag(e) {
             e.preventDefault();

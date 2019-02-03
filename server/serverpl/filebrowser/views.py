@@ -15,9 +15,9 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from filebrowser.filter import is_root
+from filebrowser.filter import is_root, is_image
 from filebrowser.models import Directory
-from filebrowser.utils import fa_icon, join_fb_root, rm_fb_root, walkdir
+from filebrowser.utils import fa_icon, join_fb_root, rm_fb_root, walkdir, walkalldirs
 from loader.loader import load_file, reload_pltp as rp
 from playexo.models import Activity, SessionTest
 
@@ -28,6 +28,36 @@ def index(request):
     """ Used by the editor module to navigate """
     return render(request, 'filebrowser/index.html')
 
+@login_required
+@require_POST
+@csrf_exempt
+def upload_resource(request):
+    """ Allow the user to upload a file in the filebrowser """
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+    f = request.FILES.get('upload-file')
+    if not f:
+        return HttpResponseBadRequest("File is missing")
+    
+    path = request.POST.get('upload-path')
+    if not path:
+        return HttpResponseBadRequest('"path" parameter is missing')
+    name = f.name
+    try:
+        path = os.path.join(join_fb_root(path), name)
+        if os.path.exists(path):
+            return HttpResponseBadRequest("This file's name is already used : " + name)
+        else:
+            with open(path, 'wb+') as dest:
+                for chunk in f.chunks():
+                    dest.write(chunk)
+            return HttpResponse()
+
+    except Exception as e:  # pragma: no cover
+        msg = "Impossible to upload '" + path + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
+        if settings.DEBUG:
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
+        return HttpResponseNotFound(msg)
 
 
 @require_GET
@@ -38,6 +68,8 @@ def get_resource(request):
         return HttpResponseBadRequest('"path" parameter is missing')
     
     try:
+        if (is_image(join_fb_root(path))):
+            return JsonResponse({'image': '/filebrowser/option?name=download_resource&path='+path})
         with open(join_fb_root(path)) as f:
             content = f.read()
         return JsonResponse({'content': content})
@@ -48,15 +80,11 @@ def get_resource(request):
         return HttpResponseNotFound(msg)
 
 
-
 @require_GET
 def get_resources(request):
     """Returns home + lib directory structure."""
     try:
-        lib = walkdir(join_fb_root('lib'), request.user)
-        home = walkdir(join_fb_root("Yggdrasil"), request.user)
-        home["name"] = 'home'
-        return HttpResponse(json.dumps([home, lib]), content_type='application/json')
+        return HttpResponse(json.dumps(walkalldirs(request)), content_type='application/json')
     except Exception as e:  # pragma: no cover
         return HttpResponseNotFound(str(e))
 
@@ -98,10 +126,10 @@ def create_resource(request):
         
         if os.path.exists(path):
             return HttpResponseBadRequest("Can't create '%s': this name is already used." % name)
-        
         if post.get('type', '') == 'file':
             with open(path, "w") as f:
                 print(post.get('content', ''), file=f)
+            
             return JsonResponse({'icon': fa_icon(path), 'path': rm_fb_root(path)})
         
         else:
@@ -216,6 +244,20 @@ def move_resource(request):
         return HttpResponseNotFound(msg)
 
 
+@require_GET
+def download_resource(request):
+    path = request.GET.get('path')
+    if not path:
+        return HttpResponseBadRequest('"path" parameter is missing')
+    
+    with open(join_fb_root(path), 'rb') as fp:
+        data = fp.read()
+    filename = os.path.basename(path)
+    response = HttpResponse(content_type="application/ms-excel")
+    response['Content-Disposition'] = 'attachment; filename=%s' % filename # force browser to download file
+    response.write(data)
+    return response
+
 
 @require_POST
 def git_clone(request):
@@ -242,11 +284,17 @@ def git_clone(request):
                     os.path.join(path, destination) if destination
                     else os.path.join(path, os.path.basename(os.path.splitext(url)[0]))
             )
+            message = htmlprint.code(out + err)
             ret, out, err = gitcmd.set_url(path, url)
             if not ret:
                 request.method = 'GET'
                 request.META['REQUEST_METHOD'] = "GET"
-                return get_resources(request)
+                message = message + htmlprint.code(out + err)
+                response = {
+                    'resources': walkalldirs(request),
+                    'message': message
+                }
+                return HttpResponse(json.dumps(response), content_type='application/json')
             else:  # pragma: no cover
                 shutil.rmtree(path, ignore_errors=True)
                 raise Exception(err + out)
@@ -268,7 +316,11 @@ def git_pull(request):
     if not ret:
         request.method = 'GET'
         request.META['REQUEST_METHOD'] = "GET"
-        return get_resources(request)
+        response = {
+            'resources': walkalldirs(request),
+            'message': htmlprint.code(out + err)
+        }
+        return HttpResponse(json.dumps(response), content_type='application/json')
     else:  # pragma: no cover
         return HttpResponseNotFound(htmlprint.code(err + out))
 

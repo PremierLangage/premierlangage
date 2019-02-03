@@ -1,3 +1,5 @@
+'use strict';
+
 import { isHome, isRepo }  from './filters.js'
 
 angular.module('editor')
@@ -7,7 +9,7 @@ angular.module('editor')
     controllerAs: 'editor'
 });
 
-function EditorComponent(EditorService, MonacoService) {        
+function EditorComponent($scope, EditorService, MonacoService) {        
     const editor = this;
     editor.searchQuery = '';
     editor.searchResult = [];
@@ -19,6 +21,7 @@ function EditorComponent(EditorService, MonacoService) {
         if (height < 300) {
             editor.consoleNode.height(400);
         }
+        $scope.$apply();
     }
 
     editor.logs = function() {
@@ -36,7 +39,18 @@ function EditorComponent(EditorService, MonacoService) {
     editor.resources = function() {
         return EditorService.resources;
     };
-   
+
+    editor.refresh = function() {
+        EditorService.askConfirm({
+            title: "You will lose any unsaved changes, Are you sure ?",
+            confirmed: function() {
+                EditorService.refresh().catch(error => {
+                    console.log(error);
+                });
+            }
+        });
+    }
+
     editor.inHome = function() {
         return isHome(editor.selection());
     }
@@ -100,21 +114,15 @@ function EditorComponent(EditorService, MonacoService) {
         editor.searchResult = [];
     }
 
-    window.onbeforeunload = function(e) {
-        e.preventDefault();
-        e.returnValue = '';
-        return '';
-    };
+    EditorService.refresh();
 
-    EditorService.loadResources();
-    
-    EditorService.setResizable('#explorer', function(node, e, startX, startY, startWidth, startHeight) {
-        node.style.width = (startWidth + e.clientX - startX) + 'px';
+    EditorService.setResizable('#explorer', function(arg) {
+        arg.node.style.width = (arg.startWidth + arg.e.clientX - arg.startX) + 'px';
         MonacoService.layout();
     });
 
-    EditorService.setResizable('#console', function(node, e, startX, startY, startWidth, startHeight) {
-        node.style.height = (startHeight - e.clientY + startY) + 'px';
+    EditorService.setResizable('#console', function(arg) {
+        arg.node.style.height = (arg.startHeight - arg.e.clientY + arg.startY) + 'px';
         MonacoService.layout();
     });
 }

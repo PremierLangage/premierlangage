@@ -1,3 +1,4 @@
+'use strict';
 angular.module('editor')
 .directive('draggable', function() {
   return function(scope, element) {
@@ -69,22 +70,42 @@ angular.module('editor')
       el.addEventListener(
         'drop',
         function(e) {
+          e.preventDefault();
+          let file;
+
+          if (e.dataTransfer.items) {
+            for (let item of e.dataTransfer.items) {
+              if (item.kind === 'file') {
+                  file = item.getAsFile();
+              }
+            }
+          } else if (e.dataTransfer.files.length > 0) {
+            file = e.dataTransfer.files[0];
+          }
           // Stops some browsers from redirecting.
           if (e.stopPropagation) e.stopPropagation();
           
           this.classList.remove('over');
-          
+         
           const binId = this.id;
-          const item = document.getElementById(e.dataTransfer.getData('Text'));
-          // this.appendChild(item);
-          // call the passed drop function
-          scope.$apply(function(scope) {
-            const fn = scope.drop();
-            if ('undefined' !== typeof fn) {            
-              fn(item.id, binId);
-            }
-          });
-          
+          const data = e.dataTransfer.getData('Text');
+          if (data || file) {
+            // this.appendChild(item);
+            // call the passed drop function
+            scope.$apply(function(scope) {
+              const fn = scope.drop();
+              if ('undefined' !== typeof fn) {  
+                if (file) {
+                  fn(file, binId)
+                } else {
+                  const node = document.getElementById(data);
+                  if (node) {
+                    fn(node.id, binId);
+                  }
+                }         
+              }
+            });
+          }
           return false;
         },
         false

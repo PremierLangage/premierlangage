@@ -11,11 +11,48 @@
 .tree__item { 
     position: relative; 
     height: 32px;
-    padding-right: 8px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     cursor: pointer;
+    overflow: auto;
+}
+
+.tree__item .overlay { 
+    display: none;
+    pointer-events: none;
+    position: absolute; 
+    left: auto !important;
+    right: 0;
+    top: 0; 
+    width: 100vw; 
+    height: 100%;
+}
+
+.tree__item:hover .overlay, .tree__item.selected .overlay { 
+    display: block; 
+    background: rgba(66,66,66,0.1);
+}
+
+.tree__item .tree__item-label {
+    display: inline-flex;
+    align-items: center;
+    min-width: 100px;
+}
+
+.tree__item-chevron {
+    font-size: .6em;
+    padding-bottom: 10px;
+}
+
+.tree__item .tree__item-options {
+    visibility: hidden;  
+    font-size: 14px;
+    margin-right: 4px;
+}
+
+.tree__item:hover .tree__item-options {
+    visibility: visible;
 }
 
 .tree__item.editing span  {
@@ -47,30 +84,6 @@
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
-.tree__item .overlay { 
-    display: none;
-    pointer-events: none;
-    position: absolute; 
-    left: auto !important;
-    right: 0;
-    top: 0; 
-    width: 100vw; 
-    height: 100%;
-}
-
-.tree__item:hover .overlay, .tree__item.selected .overlay { 
-    display: block; 
-    background: rgba(66,66,66,0.1);
-}
-
-.tree__item .tree__options {
-    visibility: hidden;  
-    font-size: 14px;
-}
-
-.tree__item:hover .tree__options {
-    visibility: visible;
-}
 
 .drag {
     opacity: 0.5;

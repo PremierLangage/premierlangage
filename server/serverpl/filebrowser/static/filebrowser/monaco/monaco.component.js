@@ -10,7 +10,8 @@ function MonacoComponent ($scope, EditorService, MonacoService) {
     const monaco = this;
 
     monaco.previewNode = angular.element(".monaco__preview");
-    
+    monaco.imagezoom = .5;
+
     /** 
      * Hanldes resource close button click by asking confirmation and closes the resource if confirmed.
      * @param {Object} resource - the resource to close.
@@ -33,24 +34,19 @@ function MonacoComponent ($scope, EditorService, MonacoService) {
      * @param {Object} resource - the resource to open.
      */
     monaco.didTapOpenResource = function(resource) {
-        const current = monaco.selection();
-        current.previewModeWidth = monaco.previewNode.width();
-        MonacoService.openResource(resource).then(() => {
-            if (resource.previewModeWidth) {
-                monaco.previewNode.width(resource.previewModeWidth);
-            } 
+        MonacoService.openResource(resource).catch(error => {
+            EditorService.error(error);
         });
     }
     /** Handles hide preview button click */
     monaco.didTapHidePreview = function() {
-        monaco.selection().preview = undefined;
-        monaco.previewNode.width(10);
+        MonacoService.hidePreview();
     }
 
     /** Handles open preview button click */
     monaco.didTapOpenPreview = function() {
-        MonacoService.preview().then(() => {
-            monaco.previewNode.css({ width: '50%' });
+        MonacoService.preview().catch(error => {
+            EditorService.error(error);
         });
     }
     /** Handles show diff button click */
@@ -60,7 +56,7 @@ function MonacoComponent ($scope, EditorService, MonacoService) {
 
     /** Handles close diff button click */
     monaco.didTapCloseDiffEditor = function() {
-        MonacoService.closeDiffEditor();
+        MonacoService.hideDiffEditor();
     }
 
     monaco.diffMode = function() {
@@ -71,6 +67,19 @@ function MonacoComponent ($scope, EditorService, MonacoService) {
         const s = monaco.selection()
         return s && s.type === 'file' && !s.diffMode;
     }
+
+    monaco.didTapZoomOutImage = function() {
+        if (monaco.imagezoom > .3) {
+            monaco.imagezoom -= .05;
+        }
+    }
+
+    monaco.didTapZoomInImage = function() {
+        if (monaco.imagezoom < 2) {
+            monaco.imagezoom += .05;
+        }
+    }
+
     /** 
      * Gets a value indicating whether the selected resource can be previewed 
      * @returns {boolean} true if there is a selected resource and it can be previewed false otherwise 
@@ -119,11 +128,6 @@ function MonacoComponent ($scope, EditorService, MonacoService) {
     monaco.runningTask = function() {
         return MonacoService.runningTask;
     }
-
-    /** Refreshs the component everytime a resource is opened|closed|changed... */
-    MonacoService.resourcesChanged = function() {
-        $scope.$apply();
-    };
     
     /** 
      * Gets the selected resource inside the editor 
@@ -133,10 +137,18 @@ function MonacoComponent ($scope, EditorService, MonacoService) {
         return MonacoService.selection;
     }
   
+    monaco.showImageEditor = function() {
+        return monaco.selection() && monaco.selection().image;
+    }
+
     MonacoService.loadEditor();
 
-    EditorService.setResizable('.monaco__preview', function(node, e, startX, startY, startWidth, startHeight) {
-        node.style.width = (startWidth + startX - e.clientX) + 'px';
+    MonacoService.editorChanged = function() {
+        $scope.$apply();
+    };
+
+    EditorService.setResizable('.monaco__preview', function(arg) {
+        arg.node.style.width = (arg.startWidth + arg.startX - arg.e.clientX) + 'px';
         MonacoService.layout();
     });
 }

@@ -1,3 +1,5 @@
+'use strict';
+
 // https://microsoft.github.io/monaco-editor/playground.html#interacting-with-the-editor-adding-an-action-to-an-editor-instance
 export function config(editorNode, diffEditorNode, completion) {
     
@@ -56,13 +58,15 @@ export function config(editorNode, diffEditorNode, completion) {
         };
         
         // DEFINE CUSTOM THEME
-        const SPECIAL_PATTERN = /(title|author|introduction|introductionh|teacher|text|texth|build|before|form)(?=(=|(\+=)|=%))/;
-        const VARIABLE_PATTERN = /\s*\w+(\.\w)*(?=(=|(\+=)|=%))/;
-        const REFERENCE_PATTERN = /(@|(template|grader|builder|extends)\s*=)[~\s\/]*(\w+:\/)?([a-zA-Z0-9_\./]+)/;
+        const SPECIAL_PATTERN = /(title|author|introduction|introductionh|teacher|text|texth|build|before|form|template|extends|builder|grader)(?=(=|(\+=)|=%))/;
+        //const VARIABLE_PATTERN = /(?<![^\n])\w+(\.\w+)*(?=(=|\+=|=%|==))/;
+        const VARIABLE_PATTERN = /\w+(\.\w+)*(?=(=|\+=|=%|==))/;
+
+        const REFERENCE_PATTERN = /(@|(template|grader|builder|extends|builder|grader)\s*=)[~\s\/]*(\w+:\/)?([a-zA-Z0-9_\./]+)/;
 
         monaco.languages.register({ id: PREMIER_LANGAGE }); 
         
-        monaco.languages.setMonarchTokensProvider('premierlangage', {
+        monaco.languages.setMonarchTokensProvider(PREMIER_LANGAGE, {
             tokenizer: {
                 root: [
                     [SPECIAL_PATTERN, 'special'],
@@ -76,9 +80,8 @@ export function config(editorNode, diffEditorNode, completion) {
             base: 'vs',
             inherit: true,
             rules: [
-                { token: 'special', foreground: 'ff4f00' },
-                { token: 'variable', foreground: '445b75' },
-                //{ token: 'reference', foreground: '2b4153', fontStyle: 'bold underline' },
+                { token: 'special', foreground: '1382dd', fontStyle: 'bold' },
+                { token: 'variable', foreground: '1382dd' },
             ]
         });
     
@@ -87,10 +90,17 @@ export function config(editorNode, diffEditorNode, completion) {
             theme: 'premierlangage',
             language: '',
             renderWhitespace: 'all',
-            renderControlCharacters: true,
-            renderLineHighlight: true,
-            renderIndentGuides: true,
-            automaticLayout: true,
+            renderControlCharacters: true, // Enable rendering of control characters. Defaults to false.
+            renderLineHighlight: true, // Enable rendering of current line highlight. Defaults to all. "none" | "gutter" | "line" | "all"
+            renderIndentGuides: true, // Enable rendering of indent guides. Defaults to true.
+            automaticLayout: false,
+            lineNumbers: "on", // on | off | relative | interval | (line: number) -> string
+            roundedSelection: true, // Render the editor selection with rounded borders. Defaults to true.
+            scrollBeyondLastLine: true, // Enable that scrolling can go one screen size after the last line. Defaults to true.
+            scrollbar: {
+                verticalScrollbarSize: 7,
+                horizontalScrollbarSize: 7,
+            }
         });
         
         editor.findLanguage = function(resource) {
@@ -102,7 +112,49 @@ export function config(editorNode, diffEditorNode, completion) {
             }
         }
 
+        monaco.languages.registerLinkProvider(PREMIER_LANGAGE, {
+            provideLinks: function(model, token) {
+                let links = [];
+                const lines = model.getValue().split('\n');
+                let match;
+                for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].trim().endsWith('==')) {
+                        i++;
+                        while (i < lines.length) {
+                            if (lines[i].trim().endsWith('==')) {
+                                break;
+                            }
+                            i++;
+                        }
+                    }
+                    match = REFERENCE_PATTERN.exec(lines[i]);
+                    if (match) {
+                        const url = match[match.length - 1];
+                        const index =  match.index + match.input.length - url.length;
+                        const range = new monaco.Range(i + 1, index, i + 1, index + url.length + 1);
+                        
+                        editor.deltaDecorations([], [
+                            { range: range, options: { inlineClassName: 'pl-theme-ref-token' }},
+                        ]);
+                        
+                        links.push({
+                            range: range,
+                            url: url,
+                        }); 
+                    }
+                }
+                return links;
+            }, 
+            resolveLink: function(link, token) {
+                if (editor.onResolveLink) {
+                    editor.onResolveLink(link.url);
+                }
+                return link;
+            }
+        });
+      
         // CODE LENS
+        /*
         monaco.languages.registerCodeLensProvider(PREMIER_LANGAGE, {
             provideCodeLenses: function(model, token) {
                 let lens = [];
@@ -123,19 +175,19 @@ export function config(editorNode, diffEditorNode, completion) {
                         const path = match[match.length - 1];
                         const startCol =  match.index + match.input.length - path.length;
                         const range = new monaco.Range(i + 1, startCol, i + 1, startCol + path.length + 1);
-                        /*
+                        
                         // startLineNumber: 6, startColumn: 19, endLineNumber: 6, endColumn: 20
-                        editor.deltaDecorations([], [
-                            { range: range, options: { inlineClassName: 'pl-theme-ref-token' }},
-                        ]);
-                        */
+                        //editor.deltaDecorations([], [
+                        //    { range: range, options: { inlineClassName: 'pl-theme-ref-token' }},
+                        //]);
+                        
                         lens.push({
                             range: range,
                             id: match.input,
                             command: { 
                                 id: editor.addCommand(0, function() {
-                                    if (editor.onRequestOpenFile) {
-                                        editor.onRequestOpenFile(path);
+                                    if (editor.onResolveLink) {
+                                        editor.onResolveLink(path);
                                     }
                                 }, ''),
                                 title: 'OPEN'
@@ -145,11 +197,9 @@ export function config(editorNode, diffEditorNode, completion) {
                     }
                 }
                 return lens;
-            },
-            resolveCodeLens: function(model, codeLens, token) {
-                return codeLens;
             }
         });
+        */
   
         // FOLDINGS
         monaco.languages.registerFoldingRangeProvider(PREMIER_LANGAGE, {
@@ -196,17 +246,18 @@ export function config(editorNode, diffEditorNode, completion) {
     
         // COMPLETION
         monaco.languages.registerCompletionItemProvider('premierlangage', {
-            triggerCharacters: ["@", '='],
+            //triggerCharacters: ["@", '='],
             provideCompletionItems: (model, position) => {
-              return Object.keys(BUILT_IN_WORDS).map(name => ({
+                //const textUntilPosition = model.getValueInRange({startLineNumber: 1, startColumn: 1, endLineNumber: position.lineNumber, endColumn: position.column});
+                return Object.keys(BUILT_IN_WORDS).map(name => ({
                 label: name,
                 detail: BUILT_IN_WORDS[name],
                 insertText: name + '==\n\n==',
                 kind: monaco.languages.CompletionItemKind.Snippet,
-              }));
+                }));
             },
         });
-          
+
         // COMMANDS
         editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function() {
             if (editor.onRequestSave) {

@@ -26,10 +26,24 @@
 </div>
 
 <div class='monaco__main'>
-    <div class='monaco__editor'></div>
+    <div class='monaco__editor'>
+        <div class='monaco__preview border' ng-show='monaco.previewHtml()'>
+            <div class='monaco__preview-content' ng-bind-html='monaco.previewHtml() | unsafe'></div>
+        </div>
+    </div>
     <div class='monaco__editor--diff'></div>
-    <div class='monaco__preview border' ng-show='monaco.previewHtml()'>
-        <div class='monaco__preview-content' ng-bind-html='monaco.previewHtml() | unsafe'></div>
+    <div class='monaco__editor--image' ng-if='monaco.showImageEditor()'>
+        
+        <img src='{{monaco.selection().image}}'  ng-style='{zoom: monaco.imagezoom}' />
+
+        <div class='monaco__editor--image-btn-group'>
+            <div class='monaco__editor--image-btn' ng-click='monaco.didTapZoomInImage($event)'>
+                <md-tooltip>Zoom In</md-tooltip><i class="fas fa-plus"></i>
+            </div>
+            <div class='monaco__editor--image-btn' ng-click='monaco.didTapZoomOutImage($event)'>
+                <md-tooltip>Zoom Out</md-tooltip><i class="fas fa-minus"></i>
+            </div>
+        </div>
     </div>
 </div>
 
