@@ -45,10 +45,18 @@ class GitTestCase(TestCase):
     
     @classmethod
     def setUpTestData(cls):
-        cls.user = User.objects.create_user(username='user', password='12345', id=100)
+        cls.user = User.objects.create_user(username='user', password='12345', id=100,
+                                            email="test@test.com")
         cls.user2 = User.objects.create_user(username='user2', password='12345', id=200)
+        cls.user3 = User.objects.create_user(username='user3', password='12345', id=300,
+                                             first_name="First", last_name="Last",
+                                             email="test@test.com")
         cls.c = Client()
         cls.c.force_login(cls.user, backend=settings.AUTHENTICATION_BACKENDS[0])
+        cls.c2 = Client()
+        cls.c2.force_login(cls.user2, backend=settings.AUTHENTICATION_BACKENDS[0])
+        cls.c3 = Client()
+        cls.c3.force_login(cls.user3, backend=settings.AUTHENTICATION_BACKENDS[0])
         
         cls.folder = Directory.objects.create(name='Yggdrasil', owner=cls.user)
         cls.lib = Directory.objects.create(name='lib', owner=cls.user)
@@ -168,6 +176,38 @@ class GitTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"mycommit",
+                      command("git log", dir=os.path.join(self.folder.root, "folder1"))[0])
+        self.assertIn(b"user <test@test.com>",
+                      command("git log", dir=os.path.join(self.folder.root, "folder1"))[0])
+    
+    
+    def test_commit_no_mail(self):
+        response = self.c2.post(
+                reverse("filebrowser:option"),
+                {
+                        'name'  : 'git_commit',
+                        'commit': 'mycommit',
+                        'path'  : 'Yggdrasil/folder1/TPE/function001.pl',
+                }, content_type='application/json'
+        )
+        self.assertContains(response, "User must have an email", status_code=400)
+    
+    
+    def test_commit_name(self):
+        with open(join(FAKE_FB_ROOT, 'Yggdrasil/folder1/TPE/function001.pl'), 'w') as f:
+            print("test", file=f)
+        response = self.c3.post(
+                reverse("filebrowser:option"),
+                {
+                        'name'  : 'git_commit',
+                        'commit': 'mycommit',
+                        'path'  : 'Yggdrasil/folder1/TPE/function001.pl',
+                }, content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"mycommit",
+                      command("git log", dir=os.path.join(self.folder.root, "folder1"))[0])
+        self.assertIn(b"First Last <test@test.com>",
                       command("git log", dir=os.path.join(self.folder.root, "folder1"))[0])
     
     
@@ -353,7 +393,7 @@ class GitTestCase(TestCase):
                         'path': 'Yggdrasil/folder1/TPE/function001.pl',
                 }, content_type='application/json'
         )
-        self.assertContains(response, "test\ntest2", status_code=200)
+        self.assertContains(response, "test2\ntest", status_code=200)
     
     
     def test_show_no_path(self):
