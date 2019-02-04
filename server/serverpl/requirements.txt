@@ -15,7 +15,7 @@ markdown
 mkdocs
 mock
 oauth2
-psycopg2-binary
+psycopg2
 pydenticon
 pytest
 pytest-django
