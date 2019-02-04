@@ -83,7 +83,7 @@ class ModelTestCase(TestCase):
     def test_reload_activity(self):
         activity1 = Activity.objects.create(name="test", pltp=self.pltp)
         activity2 = Activity.objects.create(name="test", parent=activity1,
-                                            pltp=PLTP(sha1="", name="pltp test"))
+                                            pltp=PLTP.objects.create(sha1="", name="pltp test"))
         sessionactivity1 = SessionActivity.objects.create(user=self.user, activity=activity1)
         sessionactivity2 = SessionActivity.objects.create(user=self.user, activity=activity2)
         activity1.reload()

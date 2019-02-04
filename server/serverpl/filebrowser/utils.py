@@ -23,13 +23,13 @@ def rm_fb_root(path):
 
 def repository_url(path):
     """Returns git origin's url of path."""
-    return gitcmd.remote_url(path)[1][:-1]
+    return gitcmd.remote_url(path)[1]
 
 
 
 def repository_branch(path):
     """Returns current git's branch of path."""
-    return gitcmd.current_branch(path)[1][:-1]
+    return gitcmd.current_branch(path)[1]
 
 
 
