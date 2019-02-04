@@ -50,6 +50,10 @@ class PLTP(models.Model):
                             + ")' has been deleted since it wasn't link to any PLTPs")
                 pl.delete()
         super(PLTP, self).delete(*args, **kwargs)
+    
+    
+    def indexed_pl(self):
+        return [i.pl for i in sorted(self.index_set.all(), key=lambda i: i.index)]
 
 
 
