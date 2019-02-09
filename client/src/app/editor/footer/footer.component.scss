@@ -1,0 +1,22 @@
+:host {
+    display: flex;    
+    align-content: center;
+    align-items: center;
+    height: 32px;
+    background-color:#343A40;
+    color: white;
+    font-size: 12px;
+    padding: 0 8px;
+}
+
+.repo-icon {
+    margin: 0 8px;
+}
+
+.repo-url {
+    margin-right: 8px;
+}
+
+.task-name {
+    margin: 0 4px;
+}

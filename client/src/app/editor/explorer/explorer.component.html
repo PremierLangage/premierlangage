@@ -1,0 +1,46 @@
+ <div class="sidebar-panel" *ngIf='isRoot; else tree'>
+    <div class='tab-bar border-bottom'>
+        <span>EXPLORER</span>       
+        <div class="spacer"></div>
+        <div class='tab-item' (click)='didTapRefresh()' matTooltip='Refresh'>
+            <i class="fas fa-sync"></i>
+        </div>
+        <mat-progress-spinner mode='indeterminate' color='warn' strokeWidth='2' diameter='24' *ngIf='runningTask()'></mat-progress-spinner>
+    </div>
+    <div class="sidebar-panel__content">
+        <app-explorer [resources]='resources' [isRoot]='false'></app-explorer>
+    </div>
+</div>
+
+<ng-template #tree>
+<ul class='tree'>
+    <li *ngFor='let resource of resources; trackBy:trackByFn' id='resource.path'>
+        <div *ngIf='resource.editing; else notEditing' class='tree__item editing'>
+            <span>
+                <i class="{{resource.icon}}"></i>&nbsp;
+                <input appAutofocus type='text' placeholder='Press Enter to create ESC to cancel...' 
+                    [(ngModel)]='resource.name' (keydown)='didEditingChanged(resource, $event)' (blur)='didEditingChanged(resource, $event)'/>
+            </span>
+        </div>    
+        <ng-template #notEditing>
+            <div id='{{resource.path}}' [ngClass]='{tree__item: true, selected: isSelection(resource)}' 
+                 appDraggable appDroppable [dragCondition]='draggable(resource)' [dropCondition]='droppable(resource)'
+                 (handleDrop)='didDropData($event)' (click)='didTapOnResource(resource, $event)'>
+                <span class='tree__item-label'>
+                    <i class="{{icon(resource)}}"></i>&nbsp;
+                    <span>{{resource.name}}</span>
+                </span>
+                <span class='tree__item-option-group'>
+                    <ng-container *ngFor='let option of options'>
+                        <span class='tree__item-option' *ngIf='option.enabled(resource)' matTooltip='{{option.label}}' (click)='option.action(resource, $event)'>
+                            <i class="{{option.icon}}"></i>&nbsp;
+                        </span>
+                    </ng-container>
+                </span>
+                <div class='overlay'></div>
+            </div>
+        </ng-template>
+        <app-explorer *ngIf='resource.expanded' [resources]="resource.children" [isRoot]='false'></app-explorer>
+    </li>
+</ul>        
+</ng-template>

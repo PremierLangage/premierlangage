@@ -20,54 +20,54 @@
 <script src="{% static 'js/ace/ace.js' %}" type="text/javascript" charset="utf-8"></script>
 <script src="{% static 'js/ace/ext-modelist.js' %}"></script>
 <script>
-    window.define = window.define || ace.define;
-    var editor = ace.edit('editor');
+    setTimeout(function() {
+        window.define = window.define || ace.define;
+        var editor = ace.edit('editor');
 
-    // Set the theme according to user's preferences.
-    editor.setTheme(
-        "{{ user_settings__.editor_theme.template }}"
-    );
+        // Set the theme according to user's preferences.
+        editor.setTheme(
+            "{{ user_settings__.editor_theme.template }}"
+        );
 
-    // Set syntax highlight language to 'editor.language', default to python.
-    editor.session.setMode(
-        "ace/mode/{% if editor.language %}{{editor.language}}{% else %}python{% endif %}"
-    );
+        // Set syntax highlight language to 'editor.language', default to python.
+        editor.session.setMode(
+            "ace/mode/{% if editor.language %}{{editor.language}}{% else %}python{% endif %}"
+        );
 
-    // Set tabulation size to 'editor.tabsize', default to 4.
-    editor.session.setTabSize(
-        {% if editor.tabsize %}{{ editor.tabsize }}{% else %}4{% endif %}
-    );
+        // Set tabulation size to 'editor.tabsize', default to 4.
+        editor.session.setTabSize(
+            {% if editor.tabsize %}{{ editor.tabsize }}{% else %}4{% endif %}
+        );
 
-    // Set the font size to 'editor.fontsize', default to 12
-    editor.setFontSize(
-        {% if editor.fontsize %}{{ editor.fontsize }}{% else %}12{% endif %}
-    );
+        // Set the font size to 'editor.fontsize', default to 12
+        editor.setFontSize(
+            {% if editor.fontsize %}{{ editor.fontsize }}{% else %}12{% endif %}
+        );
 
-    // Will display indent guide if 'editor.indentguide' is different
-    // than 'false' (not case sensitive), default to true
-    editor.setDisplayIndentGuides(
-        {% if editor.indentguide|lower == "false" %}false{% else %}true{% endif %}
-    );
+        // Will display indent guide if 'editor.indentguide' is different
+        // than 'false' (not case sensitive), default to true
+        editor.setDisplayIndentGuides(
+            {% if editor.indentguide|lower == "false" %}false{% else %}true{% endif %}
+        );
 
-    // Will display invisible characters (like spaces or new lines) if 'editor.showinvisible'
-    // is different than 'false' (not case sensitive), default to true
-    editor.setShowInvisibles(
-        {% if editor.showinvisible|lower == "false" %}false{% else %}true{% endif %}
-    );
+        // Will display invisible characters (like spaces or new lines) if 'editor.showinvisible'
+        // is different than 'false' (not case sensitive), default to true
+        editor.setShowInvisibles(
+            {% if editor.showinvisible|lower == "false" %}false{% else %}true{% endif %}
+        );
 
-    // Will use use space instead of tabulation if 'editor.spacetab'
-    // is different than 'false' (not case sensitive), default to true
-    editor.session.setUseSoftTabs(
-        {% if editor.spacetab|lower == "false" %}false{% else %}true{% endif %}
-    );
+        // Will use use space instead of tabulation if 'editor.spacetab'
+        // is different than 'false' (not case sensitive), default to true
+        editor.session.setUseSoftTabs(
+            {% if editor.spacetab|lower == "false" %}false{% else %}true{% endif %}
+        );
 
 
-    var input = $( "#{% if editor.id %}form_{{ editor.id }}{% else %}form_answer{% endif %}" );
-    editor.session.on("change", function() {
-        console.log("ON CHAGE");
-        console.log(input)
-        input.val(editor.getSession().getValue());
-    });
+        var input = $( "#{% if editor.id %}form_{{ editor.id }}{% else %}form_answer{% endif %}" );
+        editor.session.on("change", function() {
+            input.val(editor.getSession().getValue());
+        });
+    }, 300);
 </script>
 
 

@@ -2,68 +2,24 @@
 
 {% load static %}
 
-{% block header_script %}
-    <!-- MarkdownJS https://github.com/evilstreak/markdown-js -->
-    <script type="text/javascript" src="{% static '/js/markdown.js' %}" ></script>
-    <script type="text/javascript" src="{% static '/js/jquery.panzoom.js' %}"></script>
-    <script type="text/javascript" src="{% static '/js/pinch-zoom.umd.js' %}"></script>
-
-    <!-- AngularJS -->
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular-cookies.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular-animate.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular-aria.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.5/angular-messages.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.8/angular-material.min.js"></script>
-    
-    <!-- Toastr https://github.com/Foxandxss/angular-toastr -->
-    <link rel="stylesheet" type="text/css" href="{% static '/toastr/angular-toastr.min.css' %}" />
-    <script type="text/javascript" src="{% static '/toastr/angular-toastr.tpls.min.js' %}"></script>
-
-    <!-- Monaco Editor -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.14.3/min/vs/loader.js"></script>
-
-  
-     <!-- App -->
-    <link rel="stylesheet" href="{% static '/filebrowser/editor.component.css' %}" />
-    <link rel="stylesheet" href="{% static '/filebrowser/monaco/monaco.component.css' %}" />
-    <link rel="stylesheet" href="{% static '/filebrowser/explorer/explorer.component.css' %}" />
-    
-    <script type='module' src="{% static '/filebrowser/editor.module.js' %}"></script>
-    <script type='module' src="{% static '/filebrowser/editor.directives.js' %}"></script>
-    <script type='module' src="{% static '/filebrowser/editor.service.js' %}"></script>
-    <script type='module' src="{% static '/filebrowser/editor.component.js' %}"></script>
-
-    <script type='module' src="{% static '/filebrowser/explorer/explorer.component.js' %}"></script>
-    <script type='module' src="{% static '/filebrowser/monaco/monaco.service.js' %}"></script>
-    <script type='module' src="{% static '/filebrowser/monaco/monaco.component.js' %}"></script>
-{% endblock header_script %}
-
 {% block alert %}{% endblock %}
 
 {% block content %}
-    {% csrf_token %}
-    <div id="editor-container" ng-app="editor">
-        <editor></editor>
-    </div>
-    <!-- #region dialog file uploader -->
-    <div style="visibility: hidden">
-        <div class="md-dialog-container" id="dialog-upload-file">
-        <md-dialog layout-padding>
-            <form id="form-upload" method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                <md-dialog-content style="padding: 1rem 3rem; display: flex; width: 400px;">
-                    <h5>File uploader :</h5>
-                    <p><strong>Important :</strong> * Only .tar.gz, .tar.xz and .zip archive can be extracted directly on the plateform</p>
-                    <input required id='upload-path' type='hidden' name='upload-path'/>
-                    <input required id='upload-file' type="file" name="upload-file" /><br/>
-                    <button type="submit" class="btn btn-light">UPLOAD<button>
-                </md-dialog-content>
-            </form>
-        </md-dialog>
-        </div>
-    </div>
-    <!--#endregion-->
+{% csrf_token %}
+<app-root-><app-root>
 {% endblock %}
 
+{% block end_script %}
+<!-- if prod 
+<link rel="stylesheet" href="{% static "/filebrowser/app/styles.css" %}"/>
+<script type="text/javascript" src="{% static "/filebrowser/app/runtime.js" %}"></script>
+<script type="text/javascript" src="{% static "/filebrowser/app/polyfills.js" %}"></script>
+<script type="text/javascript" src="{% static "/filebrowser/app/main.js" %}"></script>
+-->
+
+<script type="text/javascript" src="{% static "/filebrowser/app/runtime.js" %}"></script>
+<script type="text/javascript" src="{% static "/filebrowser/app/polyfills.js" %}"></script>
+<script type="text/javascript" src="{% static "/filebrowser/app/styles.js" %}"></script>
+<script type="text/javascript" src="{% static "/filebrowser/app/vendor.js" %}"></script>
+<script type="text/javascript" src="{% static "/filebrowser/app/main.js" %}"></script>
+{% endblock %}

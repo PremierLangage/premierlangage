@@ -1,0 +1,12 @@
+<img class='sidebar-icon' src='static/filebrowser/app/assets/icons/explorer.svg' matTooltip="Explorer" (click)='didTapButton(0)'/>
+<img class='sidebar-icon' src='static/filebrowser/app/assets/icons/search.svg' matTooltip="Search" (click)='didTapButton(1)'/>
+<div [matBadge]="gitBadge()" matTooltip="Git">
+    <img class='sidebar-icon' src='static/filebrowser/app/assets/icons/git.svg' (click)='didTapButton(2)'/>
+</div>
+<div [matBadge]="consoleBadge()" matTooltip="Console">
+    <div class='sidebar-icon'(click)='didTapButton(3)'>
+        <i class='fas fa-info'></i>
+    </div>
+</div>
+<div class='spacer'></div>
+<img class='sidebar-icon' src='static/filebrowser/app/assets/icons/settings.svg'  matTooltip="Settings" (click)='didTapButton(4)'/>

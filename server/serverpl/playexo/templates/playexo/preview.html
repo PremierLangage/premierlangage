@@ -38,8 +38,12 @@
     </div>
 </div>
 <br/><br/>
-{% include "playexo/alert.html" %}
+<!--{% include "playexo/alert.html" %} -->
 {% block end_script %}
 <script type='text/javascript' src="{% static '/playexo/js/playexo.js' %}"></script>
-<script type='text/javascript'>previewPL("{{id__}}", "{{session__.id}}");</script>
+<script type='text/javascript'> 
+setTimeout(function() {
+    previewPL("{{id__}}", "{{session__.id}}");
+}, 300)
+</script>
 {% endblock %}

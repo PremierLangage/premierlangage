@@ -2,7 +2,7 @@ import json
 import os
 import shutil
 import traceback
-
+import subprocess
 import gitcmd
 import htmlprint
 import requests
@@ -15,9 +15,9 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from filebrowser.filter import is_root, is_image
+from filebrowser.filter import is_root, is_image, in_repository
 from filebrowser.models import Directory
-from filebrowser.utils import fa_icon, join_fb_root, rm_fb_root, walkdir, walkalldirs
+from filebrowser.utils import fa_icon, join_fb_root, rm_fb_root, walkdir, walkalldirs, repository_url, repository_branch
 from loader.loader import load_file, reload_pltp as rp
 from playexo.models import Activity, SessionTest
 
@@ -35,13 +35,13 @@ def upload_resource(request):
     """ Allow the user to upload a file in the filebrowser """
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-    f = request.FILES.get('upload-file')
+    f = request.FILES.get('file')
     if not f:
         return HttpResponseBadRequest("File is missing")
     
-    path = request.POST.get('upload-path')
+    path = request.POST.get('path')
     if not path:
-        return HttpResponseBadRequest('"path" parameter is missing')
+        return HttpResponseBadRequest('"upload-path" parameter is missing')
     name = f.name
     try:
         path = os.path.join(join_fb_root(path), name)
@@ -185,7 +185,7 @@ def rename_resource(request):
     path = join_fb_root(path)
     name = os.path.basename(path)
     new_path = os.path.join(os.path.dirname(path), target)
-    
+   
     try:
         if any(c in target for c in settings.FILEBROWSER_DISALLOWED_CHAR):
             msg = "Can't rename '{0}' to '{1}': name should not contain any of {2}." \
@@ -259,6 +259,64 @@ def download_resource(request):
     return response
 
 
+@require_GET
+def git_changes(request):
+    def command(path):
+        if not gitcmd.in_repository(path):
+            raise gitcmd.NotInRepositoryError("'" + path + "' is not inside a repository")
+        cwd = os.getcwd()   
+        try:
+            if os.path.isdir(path):
+                os.chdir(path)
+            else:
+                os.chdir(os.path.dirname(path))
+            cmd = "LANGUAGE=" + gitcmd.GIT_LANG + " git status --short"
+            p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            out, err = p.communicate()
+        finally:
+            os.chdir(cwd)
+        return p.returncode, out.decode().strip("\n"), err.decode()
+
+    response = {}
+    msg = ''
+    def extract_changes(path):
+        roots = os.listdir(join_fb_root(path))
+        directory = Directory.objects.get(name=path)
+        if not directory.can_write(request.user):
+            return True          
+        for root in roots:    
+            full_path = join_fb_root(os.path.join(path, root))
+            if not in_repository(full_path):
+                continue
+            def parse_change(change):
+                tmp = change.strip().split(' ')
+                ftype = tmp[0]
+                fpath =  os.path.join(path, root, tmp[-1]) # Yggdrasil + Repo + File
+                isdir = fpath.endswith('/')
+                name = fpath.split('/')[-2] if isdir else os.path.basename(fpath)
+                return { 'name': name, 'type': ftype, 'path': fpath, 'isdir': isdir }
+            ret, out, err = command(full_path)
+            if not ret:
+                changes = out.split("\n")
+                changes = [parse_change(x) for x in changes if x and not '..' in x] # only result in home/
+                changes = [x for x in changes if x['type'] != 'A'] # remove added entries
+                key = repository_url(full_path)
+                value = response.get(key)
+                if value:
+                    value['changes'] = value['changes'] + changes if value.get('changes') else changes
+                else:
+                    value = { 'path': os.path.join(path, root), 'branch': repository_branch(full_path), 'changes': changes }
+                response[key] = value
+            else:  # pragma: no cover
+                msg = htmlprint.code(out + err)
+                return False
+        return True
+    for e in ['Yggdrasil', 'lib']:
+        if not extract_changes(e):
+            return HttpResponseNotFound(msg)
+    return HttpResponse(json.dumps(response), content_type='application/json')
+
+
 @require_POST
 def git_clone(request):
     """Execute a git clone on the targeted entry with the informations of POST."""
@@ -287,14 +345,7 @@ def git_clone(request):
             message = htmlprint.code(out + err)
             ret, out, err = gitcmd.set_url(path, url)
             if not ret:
-                request.method = 'GET'
-                request.META['REQUEST_METHOD'] = "GET"
-                message = message + htmlprint.code(out + err)
-                response = {
-                    'resources': walkalldirs(request),
-                    'message': message
-                }
-                return HttpResponse(json.dumps(response), content_type='application/json')
+                return HttpResponse(htmlprint.code(out + err))
             else:  # pragma: no cover
                 shutil.rmtree(path, ignore_errors=True)
                 raise Exception(err + out)
@@ -314,16 +365,9 @@ def git_pull(request):
     ret, out, err = gitcmd.pull(join_fb_root(path), username=username, password=password, url=url)
     
     if not ret:
-        request.method = 'GET'
-        request.META['REQUEST_METHOD'] = "GET"
-        response = {
-            'resources': walkalldirs(request),
-            'message': htmlprint.code(out + err)
-        }
-        return HttpResponse(json.dumps(response), content_type='application/json')
+        return HttpResponse(htmlprint.code(out + err))
     else:  # pragma: no cover
         return HttpResponseNotFound(htmlprint.code(err + out))
-
 
 
 @require_POST

@@ -1,0 +1,27 @@
+.accordion {
+    overflow: hidden;
+}
+
+.line {
+    display: flex;
+    height: 32px;
+    align-items: center;
+    overflow: visible;
+}
+
+.line-title {
+    font-size: 1em;
+    margin-right: 8px;
+    .mat-badge-content {
+        right: -24px;
+        top: 0;
+    }
+}
+
+.line-subtitle {
+    margin-right: 8px;
+}
+
+.commit, .clone {
+    width: 100%;
+}

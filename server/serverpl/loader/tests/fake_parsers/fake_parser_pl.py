@@ -7,6 +7,7 @@
 
 import json
 import re
+import os
 from os.path import basename, dirname, join
 
 from django.conf import settings
@@ -23,6 +24,7 @@ class Parser:
     """Parser used to parse pl files with .pl extension"""
     
     KEY = r'^(?P<key>[a-zA-Z_][a-zA-Z0-9_\.]*)\s*'
+    SRC = r'(img.+?(?=src)src\s*=(?:\"|\')(?!\/filebrowser)(?P<src>[^\"|\']+)(?:\"|\'))'
     COMMENT = r'(?P<comment>#.*)'
     VALUE = r'(?P<value>[^=@%#][^#]*?)\s*'
     FILE = r'(?P<file>([a-zA-Z0-9_]*:)?((\/)?[^' + BAD_CHAR + r']+)(\/[^' + BAD_CHAR + r']+)*)\s*'
@@ -65,6 +67,13 @@ class Parser:
         """Add the value to the key in the dictionnary, parse the key to create sub dictionnaries.
          Append the value if append is set to True.
          Does not generate a warning when the key already exists if replace is set to True """
+
+        matches = re.findall(self.SRC, value)
+        for match in matches:
+            directory, path = get_location(self.directory, match[-1], current=dirname(self.path), parser=self)
+            src = os.path.join(directory, path)
+            value = value.replace(match[-1], '/filebrowser/option?name=download_resource&path=' + src)
+
         current_dic = self.dic
         sub_keys = key.split(".")
         for k in sub_keys:
