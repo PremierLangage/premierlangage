@@ -342,6 +342,26 @@ export class EditorService {
 			throw error;
 		}
 	}
+
+	public async compilePL(resource: Resource) {
+		let response: Object;
+		try {
+			this.emitTaskEvent(true, 'compilation');
+			utils.requireNonNull(resource, 'resource');
+			utils.assert(utils.isPl(resource), 'pl resource is expected');
+			const data = {
+				'name': 'compile_pl',
+				'path': resource.path,
+			};
+			const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
+			response = await this.http.post('filebrowser/option', data, { headers: headers }).toPromise();
+		} catch(error) {
+			this.emitTaskEvent(false, 'compilation');
+			throw error;
+		}
+		this.emitTaskEvent(false, 'compilation');
+		return response;
+	} 
 	
 	/**
 	 * Opens the content of the resource on the server (if not already opened)

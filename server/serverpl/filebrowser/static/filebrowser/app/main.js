@@ -424,7 +424,7 @@ var ConsoleComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class='editor-host'>\n  <div class='editor__container'>\n    <app-sidebar #sidebar></app-sidebar>\n    <as-split direction=\"horizontal\" gutterSize='5' useTransition='true'>\n        <as-split-area [size]=\"sidebar.size\">\n          <app-explorer *ngIf='sidebar.index === 0' [resources]='resources()' [isRoot]='true'></app-explorer>\n          <app-search *ngIf='sidebar.index === 1' [resources]='resources()'></app-search>\n          <app-git *ngIf='sidebar.index === 2'></app-git>\n        </as-split-area>   \n        <as-split-area [size]=\"100 - sidebar.size\" class='editor__workspace-container'>\n            <as-split (dragEnd)='console.dragEnd($event)' direction='vertical' gutterSize='5' useTransition='true' class='editor__workspace'>\n                <as-split-area [size]='100 - console.size'>\n                    <as-split direction='horizontal' gutterSize='5' useTransition='true' cdkDropListGroup>\n                        <as-split-area *ngFor='let editor of editors' style='position: relative; overflow: hidden;'>\n                            <div class='tab-bar border-bottom'>\n                                <div class='item-group' cdkDropList [cdkDropListData]=\"editor.resources\" (cdkDropListDropped)=\"editor.drop($event)\">\n                                    <div *ngFor='let resource of editor.resources;trackBy: editor.track'\n                                        [ngClass]=\"{'tab-item': true, active: editor.isSelected(resource), changed: resource.changed}\"\n                                        (click)='didTapOpenResource(resource, editor)' cdkDragAxis='x'cdkDrag>\n                                        <i class=\"tab-icon {{resource.icon}}\"></i>\n                                        <span>{{editor.title(resource)}}</span>\n                                        <span class='tab-close' (click)='didTapCloseResource(resource, editor, $event)'>\n                                            &nbsp;{{ resource.changed ? '&bull;' : '&times;' }}\n                                        </span>\n                                    </div>\n                                </div>\n                                <div class=\"spacer\"></div>    \n                                <ng-container *ngFor='let option of editor.options'>\n                                    <div class='tab-item' matTooltip='{{option.tooltip}}' *ngIf='option.enabled(editor.selection)' (click)='option.action(editor.selection)' >\n                                        <i class=\"{{option.icon}}\"></i>\n                                    </div>\n                                </ng-container>\n                                <div *ngIf='editor.type===\"code\"' class='tab-item' matTooltip='More Options' [matMenuTriggerFor]=\"editorMenu\">\n                                    <i class=\"fas fa-ellipsis-h\"></i>\n                                </div>\n                                <mat-menu #editorMenu=\"matMenu\">\n                                    <button mat-menu-item (click)='editor.didSave()'>Save (Ctrl+S)</button>\n                                    <button mat-menu-item (click)='editor.didClose()'>Close (Ctrl+W)</button>\n                                    <button mat-menu-item (click)='editor.didSaveAll()'>Save All (Ctrl+Alt+W)</button>\n                                    <button mat-menu-item (click)='editor.didCloseAll()'>Close All (Ctrl+Alt+W)</button>\n                                    <button mat-menu-item (click)='editor.didCloseSaved()'>Close Saved</button>\n                                </mat-menu>\n                            </div>  \n                            <ng-container [ngSwitch]=\"editor.type\">\n                                <!-- code editor -->\n                                <ng-container *ngSwitchCase=\"'code'\">\n                                    <ngx-monaco-diff-editor [hidden]='!editor.diffMode' class='code-editor' [options]=\"{}\" [originalModel]='{}' [modifiedModel]='{}' (onInit)=\"editor.onInitDiff($event)\"></ngx-monaco-diff-editor>\n                                    <ngx-monaco-editor [hidden]='editor.diffMode' class='code-editor' [options]=\"{}\" [model]='{}' (onInit)=\"editor.onInit($event)\"></ngx-monaco-editor>\n                                </ng-container>\n                                <!-- preview editor -->\n                                <div *ngSwitchCase=\"'preview'\" class='preview-editor'>\n                                    <div class='preview-editor__content' [innerHTML]='editor.content() | sanitizeHtml' runScripts></div>\n                                </div>\n                                <!-- image editor -->\n                                <div *ngSwitchCase=\"'image'\" class='image-editor'>\n                                    <img src='{{editor.selection.image}}'  [ngStyle]='{zoom: editor.zoom}' />\n                                    <div class='code-editor__btn-group'>\n                                        <div class='code-editor__btn' matTooltip='Zoom In' (click)='editor.zoomIn()'>\n                                            <i class=\"fas fa-plus\"></i>\n                                        </div>\n                                        <div class='code-editor__btn' matTooltip='Zoom Out' (click)='editor.zoomOut()'>\n                                            <i class=\"fas fa-minus\"></i>\n                                        </div>\n                                    </div>\n                                </div>  \n                            </ng-container>\n                        </as-split-area>\n                    </as-split>\n                </as-split-area>\n                <as-split-area [(size)]='console.size' style='overflow: hidden;'>\n                    <app-console #console></app-console>\n                </as-split-area>\n            </as-split>\n        </as-split-area>\n    </as-split>\n  </div>\n  <app-footer></app-footer>\n</div>"
+module.exports = "<div class='editor-host'>\n  <div class='editor__container'>\n    <app-sidebar #sidebar></app-sidebar>\n    <as-split direction=\"horizontal\" gutterSize='5' useTransition='true'>\n        <as-split-area [size]=\"sidebar.size\">\n          <app-explorer *ngIf='sidebar.index === 0' [resources]='resources()' [isRoot]='true'></app-explorer>\n          <app-search *ngIf='sidebar.index === 1' [resources]='resources()'></app-search>\n          <app-git *ngIf='sidebar.index === 2'></app-git>\n        </as-split-area>   \n        <as-split-area [size]=\"100 - sidebar.size\" class='editor__workspace-container'>\n            <as-split (dragEnd)='console.dragEnd($event)' direction='vertical' gutterSize='5' useTransition='true' class='editor__workspace'>\n                <as-split-area [size]='100 - console.size'>\n                    <as-split direction='horizontal' gutterSize='5' useTransition='true' cdkDropListGroup>\n                        <as-split-area *ngFor='let editor of editors' style='position: relative; overflow: hidden;'>\n                            <div class='tab-bar border-bottom'>\n                                <div class='item-group' cdkDropList [cdkDropListData]=\"editor.resources\" (cdkDropListDropped)=\"editor.drop($event)\">\n                                    <div *ngFor='let resource of editor.resources;trackBy: editor.track'\n                                        [ngClass]=\"{'tab-item': true, active: editor.isSelected(resource), changed: resource.changed}\"\n                                        (click)='didTapOpenResource(resource, editor)' cdkDragAxis='x'cdkDrag>\n                                        <i class=\"tab-icon {{resource.icon}}\"></i>\n                                        <span>{{editor.title(resource)}}</span>\n                                        <span class='tab-close' (click)='didTapCloseResource(resource, editor, $event)'>\n                                            &nbsp;{{ resource.changed ? '&bull;' : '&times;' }}\n                                        </span>\n                                    </div>\n                                </div>\n                                <div class=\"spacer\"></div>    \n                                <ng-container *ngFor='let option of editor.options'>\n                                    <div class='tab-item' matTooltip='{{option.tooltip}}' *ngIf='option.enabled(editor.selection)' (click)='option.action(editor.selection)' >\n                                        <i class=\"{{option.icon}}\"></i>\n                                    </div>\n                                </ng-container>\n                                <div *ngIf='editor.type===\"code\"' class='tab-item' matTooltip='More Options' [matMenuTriggerFor]=\"editorMenu\">\n                                    <i class=\"fas fa-ellipsis-h\"></i>\n                                </div>\n                                <mat-menu #editorMenu=\"matMenu\">\n                                    <button mat-menu-item (click)='editor.save(editor.selection)'>Save (Ctrl+S)</button>\n                                    <button mat-menu-item (click)='editor.saveAll()'>Save All (Ctrl+Alt+S)</button>\n                                    <button mat-menu-item (click)='editor.closeConfirm(editor.selection)'>Close (Ctrl+W)</button>\n                                    <button mat-menu-item (click)='editor.closeAllConfirm()'>Close All (Ctrl+Alt+W)</button>\n                                    <button mat-menu-item (click)='editor.closeSaved()'>Close Saved</button>\n                                </mat-menu>\n                            </div>  \n                            <ng-container [ngSwitch]=\"editor.type\">\n                                <!-- code editor -->\n                                <ng-container *ngSwitchCase=\"'code'\">\n                                    <ngx-monaco-diff-editor [hidden]='!editor.diffMode' class='code-editor' [options]=\"{}\" [originalModel]='{}' [modifiedModel]='{}' (onInit)=\"editor.onInitDiff($event)\"></ngx-monaco-diff-editor>\n                                    <ngx-monaco-editor [hidden]='editor.diffMode' class='code-editor' [options]=\"{}\" [model]='{}' (onInit)=\"editor.onInit($event)\"></ngx-monaco-editor>\n                                </ng-container>\n                                <!-- preview editor -->\n                                <div *ngSwitchCase=\"'preview'\" class='preview-editor'>\n                                    <div class='preview-editor__content' [innerHTML]='editor.content() | sanitizeHtml' runScripts></div>\n                                </div>\n                                <!-- image editor -->\n                                <div *ngSwitchCase=\"'image'\" class='image-editor'>\n                                    <img src='{{editor.selection.image}}'  [ngStyle]='{zoom: editor.zoom}' />\n                                    <div class='code-editor__btn-group'>\n                                        <div class='code-editor__btn' matTooltip='Zoom In' (click)='editor.zoomIn()'>\n                                            <i class=\"fas fa-plus\"></i>\n                                        </div>\n                                        <div class='code-editor__btn' matTooltip='Zoom Out' (click)='editor.zoomOut()'>\n                                            <i class=\"fas fa-minus\"></i>\n                                        </div>\n                                    </div>\n                                </div>  \n                            </ng-container>\n                        </as-split-area>\n                    </as-split>\n                </as-split-area>\n                <as-split-area [(size)]='console.size' style='overflow: hidden;'>\n                    <app-console #console></app-console>\n                </as-split-area>\n            </as-split>\n        </as-split-area>\n    </as-split>\n  </div>\n  <app-footer></app-footer>\n</div>"
 
 /***/ }),
 
@@ -491,12 +491,15 @@ var EditorComponent = /** @class */ (function () {
             _this.closeResource(resource);
         });
     };
+    EditorComponent.prototype.detectChanges = function () {
+        this.changeDetector.detectChanges();
+    };
     EditorComponent.prototype.didTapOpenResource = function (resource, editor) {
         editor.open(resource);
     };
     EditorComponent.prototype.didTapCloseResource = function (resource, editor, event) {
         event.stopPropagation();
-        this.confirmThenClose(resource, editor);
+        editor.closeConfirm(resource);
     };
     EditorComponent.prototype.didTapPreviewResource = function (resource) {
         var _this = this;
@@ -508,6 +511,12 @@ var EditorComponent = /** @class */ (function () {
         }).catch(function (error) {
             _this.logging.error(error);
         });
+    };
+    EditorComponent.prototype.diff = function (resource) {
+        return this.git.show(resource);
+    };
+    EditorComponent.prototype.confirm = function (options) {
+        return this.notification.confirmAsync(options);
     };
     EditorComponent.prototype.openResource = function (resource) {
         var _this = this;
@@ -530,39 +539,6 @@ var EditorComponent = /** @class */ (function () {
             _this.logging.error(error);
         });
     };
-    EditorComponent.prototype.confirmThenClose = function (resource, editor) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var options, _a;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        if (!(editor.type === 'code')) return [3 /*break*/, 3];
-                        options = {
-                            title: "Do you want to close'" + resource.name + "'?",
-                            message: "Your changes will be lost if you don't save them.",
-                        };
-                        _a = !resource.changed;
-                        if (_a) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.notification.confirmAsync(options)];
-                    case 1:
-                        _a = (_b.sent());
-                        _b.label = 2;
-                    case 2:
-                        if (_a) {
-                            editor.close(resource, this.editors);
-                        }
-                        return [3 /*break*/, 4];
-                    case 3:
-                        editor.close(resource, this.editors);
-                        _b.label = 4;
-                    case 4: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    EditorComponent.prototype.confirm = function (options) {
-        return this.notification.confirmAsync(options);
-    };
     EditorComponent.prototype.closeResource = function (resource) {
         var i = 0;
         var contains = false;
@@ -572,7 +548,7 @@ var EditorComponent = /** @class */ (function () {
             while (i < this.editors.length) {
                 if (this.editors[i].contains(resource)) {
                     contains = true;
-                    this.editors[i].close(resource, this.editors);
+                    this.editors[i].close(resource);
                 }
                 i++;
             }
@@ -581,31 +557,33 @@ var EditorComponent = /** @class */ (function () {
             }
         }
     };
-    EditorComponent.prototype.detectChanges = function () {
-        this.changeDetector.detectChanges();
+    EditorComponent.prototype.save = function (resource) {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var error_1;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.editorService.save(resource)];
+                    case 1:
+                        _a.sent();
+                        this.notification.success('resource saved on the server !');
+                        this.detectChanges();
+                        return [2 /*return*/, true];
+                    case 2:
+                        error_1 = _a.sent();
+                        this.notification.error(error_1);
+                        return [2 /*return*/, false];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     EditorComponent.prototype.resources = function () {
         return this.editorService.resources;
     };
     EditorComponent.prototype.runningTask = function () {
         return this.editorService.runningTask;
-    };
-    EditorComponent.prototype.lastRevision = function (resource) {
-        return this.git.show(resource);
-    };
-    EditorComponent.prototype.save = function (resource) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var _this = this;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                this.editorService.save(resource).then(function () {
-                    _this.notification.success('resource saved on the server !');
-                    _this.detectChanges();
-                }).catch(function (error) {
-                    console.log(error);
-                });
-                return [2 /*return*/];
-            });
-        });
     };
     EditorComponent.prototype.beforeunload = function ($event) {
         if (this.editorService.findPredicate(function (e) { return e.changed; })) {
@@ -1111,6 +1089,36 @@ var EditorService = /** @class */ (function () {
                         this.emitTaskEvent(false, 'save');
                         throw error_5;
                     case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    EditorService.prototype.compilePL = function (resource) {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var response, data, headers, error_6;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        this.emitTaskEvent(true, 'compilation');
+                        _editor_utils__WEBPACK_IMPORTED_MODULE_5__["requireNonNull"](resource, 'resource');
+                        _editor_utils__WEBPACK_IMPORTED_MODULE_5__["assert"](_editor_utils__WEBPACK_IMPORTED_MODULE_5__["isPl"](resource), 'pl resource is expected');
+                        data = {
+                            'name': 'compile_pl',
+                            'path': resource.path,
+                        };
+                        headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
+                        return [4 /*yield*/, this.http.post('filebrowser/option', data, { headers: headers }).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        return [3 /*break*/, 3];
+                    case 2:
+                        error_6 = _a.sent();
+                        this.emitTaskEvent(false, 'compilation');
+                        throw error_6;
+                    case 3:
+                        this.emitTaskEvent(false, 'compilation');
+                        return [2 /*return*/, response];
                 }
             });
         });
@@ -2682,39 +2690,41 @@ var CodeEditor = /** @class */ (function (_super) {
         this.editor.setModel(resource.state.model);
         this.editor.updateOptions({ readOnly: !resource.write });
         if (this.diffMode) {
-            this.component.lastRevision(resource).then(function (value) {
-                if (value) {
-                    var originalModel = monaco.editor.createModel(value, Object(_editor_editor_utils__WEBPACK_IMPORTED_MODULE_1__["language"])(resource));
-                    _this.diffEditor.setModel({
-                        original: originalModel,
-                        modified: _this.editor.model
-                    });
-                    _this.diffEditor.modifiedEditor.updateOptions({ readOnly: !resource.write });
-                    _this.diffEditor.modifiedEditor.focus();
-                }
+            this.component.diff(resource).then(function (value) {
+                var originalModel = monaco.editor.createModel(value || '', Object(_editor_editor_utils__WEBPACK_IMPORTED_MODULE_1__["language"])(resource));
+                _this.diffEditor.setModel({
+                    original: originalModel,
+                    modified: _this.editor.model
+                });
+                _this.diffEditor.modifiedEditor.updateOptions({ readOnly: !resource.write });
+                _this.diffEditor.modifiedEditor.focus();
             });
         }
         else {
             this.editor.focus();
         }
+        if (!resource.changed) {
+            this.changes[resource.path] = resource.content;
+        }
         _super.prototype.open.call(this, resource);
     };
     CodeEditor.prototype.addCommands = function (editor) {
+        var _this = this;
         var self = this;
         editor.onDidChangeModelContent(function () {
             self.didChange();
         });
         editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyCode.KEY_S, function () {
-            self.didSave();
+            self.save(_this.selection);
         });
         editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyMod.Alt | monaco.KeyCode.KEY_S, function () {
-            self.didSaveAll();
+            self.saveAll();
         });
         editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyCode.KEY_W, function () {
-            self.didClose();
+            self.closeConfirm(_this.selection);
         });
         editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyMod.Alt | monaco.KeyCode.KEY_W, function () {
-            self.didCloseAll();
+            self.closeAllConfirm();
         });
     };
     CodeEditor.prototype.onInit = function (editor) {
@@ -2733,57 +2743,25 @@ var CodeEditor = /** @class */ (function (_super) {
         else {
             this.selection.content = this.editor.getValue();
         }
-        this.selection.changed = true;
-    };
-    /** save the focued resource */
-    CodeEditor.prototype.didSave = function () {
-        this.selection.changed = false;
-        this.component.save(this.selection);
-    };
-    /** saves the resources */
-    CodeEditor.prototype.didSaveAll = function () {
-        for (var _i = 0, _a = this.resources; _i < _a.length; _i++) {
-            var e = _a[_i];
-            this.component.save(e);
-        }
-    };
-    /** close the focused resource after asking a confirmation */
-    CodeEditor.prototype.didClose = function () {
-        this.component.confirmThenClose(this.selection, this);
-    };
-    /** closes all resources and ask confirmation if any of them is changed */
-    CodeEditor.prototype.didCloseAll = function () {
-        var _this = this;
-        if (this.resources.some(function (e) { return e.changed; })) {
-            var options = {
-                title: "Do you want to close the files ?",
-                message: "Your changes will be lost if you don't save them.",
-            };
-            this.component.confirm(options).then(function (confirmed) {
-                if (confirmed) {
-                    _this.closeAll();
-                }
-            });
-        }
-        else {
-            this.closeAll();
-        }
-    };
-    /** closes saved resources without asking confirmation */
-    CodeEditor.prototype.didCloseSaved = function () {
-        while (this.resources.some(function (e) { return !e.changed; })) {
-            for (var i = 0; i < this.resources.length; i++) {
-                if (!this.resources[i].changed) {
-                    this.close(this.resources[i], this.component.editors);
-                }
-            }
-        }
+        this.selection.changed = this.changes[this.selection.path] !== this.selection.content;
     };
     CodeEditor.prototype.canOpen = function (resource) {
         return !resource.image;
     };
     CodeEditor.prototype.canDiff = function (resource) {
         return Object(_editor_editor_utils__WEBPACK_IMPORTED_MODULE_1__["isRepo"])(resource) && !this.diffMode;
+    };
+    CodeEditor.prototype.onSaved = function (resource) {
+        if (Object(_editor_editor_utils__WEBPACK_IMPORTED_MODULE_1__["isPl"])(resource)) {
+            this.component.editorService.compilePL(resource).then((function (response) {
+                console.log(response);
+            }));
+        }
+    };
+    CodeEditor.prototype.onClosed = function (resource) {
+        resource.changed = false;
+        resource.content = this.changes[resource.path];
+        delete this.changes[resource.path];
     };
     return CodeEditor;
 }(_editor__WEBPACK_IMPORTED_MODULE_2__["Editor"]));
@@ -2808,12 +2786,13 @@ __webpack_require__.r(__webpack_exports__);
 
 var Editor = /** @class */ (function () {
     function Editor(component, resource) {
+        this.changes = {};
         this.resources = [];
         this.options = [];
         this.selection = resource;
         this.component = component;
     }
-    Editor.prototype.close = function (resource, editors) {
+    Editor.prototype.close = function (resource) {
         var _this = this;
         var index = this.resources.findIndex(function (e) { return e.path === resource.path; });
         if (index == -1) {
@@ -2828,17 +2807,79 @@ var Editor = /** @class */ (function () {
         if (this.selection) {
             this.open(this.selection);
         }
-        if (editors.findIndex(function (e) { return e.contains(resource); }) == -1) {
+        if (this.component.editors.findIndex(function (e) { return e.contains(resource); }) == -1) {
             Object(_resource__WEBPACK_IMPORTED_MODULE_0__["resourceInit"])(resource);
         }
         if (this.isEmpty()) {
-            editors.splice(editors.findIndex(function (e) { return e === _this; }), 1);
+            this.component.editors.splice(this.component.editors.findIndex(function (e) { return e === _this; }), 1);
         }
         this.component.detectChanges();
+        this.onClosed(resource);
+    };
+    Editor.prototype.closeConfirm = function (resource) {
+        var _this = this;
+        if (resource.changed) {
+            var options = {
+                title: "Do you want to close'" + resource.name + "'?",
+                message: "Your changes will be lost if you don't save them.",
+            };
+            this.component.confirm(options).then(function (confirmed) {
+                if (confirmed) {
+                    _this.close(_this.selection);
+                }
+            });
+        }
+        else {
+            this.close(this.selection);
+        }
     };
     Editor.prototype.closeAll = function () {
         while (this.resources.length > 0) {
-            this.close(this.resources[0], this.component.editors);
+            this.close(this.resources[0]);
+        }
+    };
+    Editor.prototype.closeAllConfirm = function () {
+        var _this = this;
+        if (this.resources.some(function (e) { return e.changed; })) {
+            var options = {
+                title: "Do you want to close the files ?",
+                message: "Your changes will be lost if you don't save them.",
+            };
+            this.component.confirm(options).then(function (confirmed) {
+                if (confirmed) {
+                    _this.closeAll();
+                }
+            });
+        }
+        else {
+            this.closeAll();
+        }
+    };
+    Editor.prototype.closeSaved = function () {
+        while (this.resources.some(function (e) { return !e.changed; })) {
+            for (var i = 0; i < this.resources.length; i++) {
+                if (!this.resources[i].changed) {
+                    this.close(this.resources[i]);
+                }
+            }
+        }
+    };
+    Editor.prototype.save = function (resource) {
+        var _this = this;
+        if (resource.changed) {
+            resource.changed = false;
+            this.component.save(resource).then((function (success) {
+                _this.changes[resource.path] = resource.content;
+                if (success) {
+                    _this.onSaved(resource);
+                }
+            }));
+        }
+    };
+    Editor.prototype.saveAll = function () {
+        for (var _i = 0, _a = this.resources; _i < _a.length; _i++) {
+            var resource = _a[_i];
+            this.save(resource);
         }
     };
     Editor.prototype.contains = function (resource) {
@@ -2868,12 +2909,14 @@ var Editor = /** @class */ (function () {
     Editor.prototype.title = function (resource) {
         return resource.name;
     };
-    Editor.prototype.track = function (_index, item) {
-        return item.path;
-    };
     Editor.prototype.length = function () {
         return this.resources.length;
     };
+    Editor.prototype.track = function (_index, item) {
+        return item.path;
+    };
+    Editor.prototype.onSaved = function (resource) { };
+    Editor.prototype.onClosed = function (resource) { };
     return Editor;
 }());
 

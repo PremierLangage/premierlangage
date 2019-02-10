@@ -539,6 +539,52 @@ def preview_pl(request):
     
     return HttpResponseBadRequest(content="Couldn't resolve ajax request")
 
+@csrf_exempt
+@require_POST
+def compile_pl(request):
+    """ Used by the PL editor to complie a PL"""
+    post = json.loads(request.body.decode())
+    path = post.get('path')
+    if not path:
+        return HttpResponseBadRequest(missing_parameter('path'))
+    
+    path_components = path.split('/')
+    directory = path_components[0]
+    try:
+        path = join_fb_root(path)
+        with open(path, 'r') as f:
+            content = f.read()
+        shutil.copyfile(path, path + ".bk")
+        with open(path, 'w+') as f:  # Writting editor content into the file
+            print(content, file=f)
+        
+        directory = Directory.objects.get(name=directory)
+        file_path = os.path.join(*(path_components[1:]))
+        pl, warnings = load_file(directory, file_path)
+        response = {}
+        if not pl:
+            response['error'] = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
+                        + os.path.basename(file_path) + "': \n" \
+                        + warnings + "</div>"
+        else:
+            response['json'] = pl.json
+            response['warnings'] = warnings
+    except Exception as e:  # pragma: no cover
+        response['error'] = ('<div class="alert alert-danger" role="alert"> Failed to load \''
+                    + os.path.basename(file_path) + "': \n\n"
+                    + htmlprint.code(str(e)))
+        if settings.DEBUG:
+            response['error'] += "\n\nDEBUG set to True:\n" + htmlprint.html_exc()
+        response['error'] += "</div>"
+    finally:
+        shutil.move(path + ".bk", path)
+        return HttpResponse(
+                json.dumps(response),
+                content_type='application/json',
+                status=200
+        )
+    
+    return HttpResponseBadRequest(content="Couldn't resolve ajax request")
 
 
 @login_required

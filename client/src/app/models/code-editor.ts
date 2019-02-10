@@ -1,10 +1,11 @@
 import { Resource } from './resource';
-import { canBePreviewed, language as languageOf, isRepo } from '../editor/editor.utils';
+import { canBePreviewed, language as languageOf, isRepo, isPl } from '../editor/editor.utils';
 import { Editor } from './editor';
 import { EditorComponent } from '../editor/editor.component';
 
 export class CodeEditor extends Editor {
 	
+
 	readonly type = 'code';
 	private editor: any;
 	private diffEditor: any;
@@ -60,19 +61,20 @@ export class CodeEditor extends Editor {
 		this.editor.setModel(resource.state.model);
 		this.editor.updateOptions({ readOnly: !resource.write });
 		if(this.diffMode) {
-			this.component.lastRevision(resource).then(value => {
-				if (value) {
-					var originalModel = monaco.editor.createModel(value, languageOf(resource));
-					this.diffEditor.setModel({
-						original: originalModel,
-						modified: this.editor.model
-					});
-					this.diffEditor.modifiedEditor.updateOptions({ readOnly: !resource.write });
-					this.diffEditor.modifiedEditor.focus();
-				}
+			this.component.diff(resource).then(value => {
+				const originalModel = monaco.editor.createModel(value || '', languageOf(resource));
+				this.diffEditor.setModel({
+					original: originalModel,
+					modified: this.editor.model
+				});
+				this.diffEditor.modifiedEditor.updateOptions({ readOnly: !resource.write });
+				this.diffEditor.modifiedEditor.focus();
 			});
 		} else {
 			this.editor.focus();
+		}
+		if (!resource.changed) {
+			this.changes[resource.path] = resource.content;
 		}
 		super.open(resource);
 	}
@@ -83,16 +85,19 @@ export class CodeEditor extends Editor {
 			self.didChange();
 		});
 		editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyCode.KEY_S, () => {
-			self.didSave();
+			self.save(this.selection);
 		});
+
 		editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyMod.Alt | monaco.KeyCode.KEY_S, () => {
-			self.didSaveAll();
+			self.saveAll();
 		});
+
 		editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyCode.KEY_W, () => {
-			self.didClose();
+			self.closeConfirm(this.selection);
 		});
+
 		editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyMod.Alt | monaco.KeyCode.KEY_W, () => {
-			self.didCloseAll();
+			self.closeAllConfirm();
 		});
 	}
 
@@ -113,61 +118,28 @@ export class CodeEditor extends Editor {
 		} else {
 			this.selection.content = this.editor.getValue();
 		}
-		this.selection.changed = true;
+		this.selection.changed = this.changes[this.selection.path] !== this.selection.content;
 	}
 	
-	/** save the focued resource */
-	didSave() {
-		this.selection.changed = false;
-		this.component.save(this.selection);
-	}
-	
-	/** saves the resources */
-	didSaveAll() {
-		for (const e of this.resources) {
-			this.component.save(e);
-		}
-	}
-
-	/** close the focused resource after asking a confirmation */
-	didClose() {
-		this.component.confirmThenClose(this.selection, this);
-	}
-
-	/** closes all resources and ask confirmation if any of them is changed */
-	didCloseAll() {
-		if (this.resources.some(e => e.changed)) {
-			const options = {
-				title: "Do you want to close the files ?",
-				message: "Your changes will be lost if you don't save them.",
-			}
-			this.component.confirm(options).then(confirmed => {
-				if (confirmed) {
-					this.closeAll();
-				}
-			});
-		} else {
-			this.closeAll();
-		}
-	}
-
-	/** closes saved resources without asking confirmation */
-	didCloseSaved() {
-		while (this.resources.some(e => !e.changed)) {
-			for (let i = 0; i < this.resources.length; i++) {
-				if (!this.resources[i].changed) {
-					this.close(this.resources[i], this.component.editors);
-				}
-			}
-		}
-	}
-
 	canOpen(resource: Resource) {
 		return !resource.image;
 	}
 
-
 	canDiff(resource: Resource) {
 		return isRepo(resource) && !this.diffMode;
+	}
+
+	onSaved(resource: Resource) {
+		if (isPl(resource)) {
+			this.component.editorService.compilePL(resource).then((response => {
+				console.log(response);
+			}));
+		}
+	}
+
+	onClosed(resource: Resource) {
+		resource.changed = false;
+		resource.content = this.changes[resource.path];
+		delete this.changes[resource.path];
 	}
 }

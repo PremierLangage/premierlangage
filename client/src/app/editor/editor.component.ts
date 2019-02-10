@@ -21,9 +21,9 @@ export class EditorComponent implements OnInit {
 	editors: Editor[] = [];
 
 	constructor(
-		private editorService: EditorService, private changeDetector: ChangeDetectorRef, 
-		private notification: NotificationService, private logging: LoggingService,
-		private git: GitService
+		readonly editorService: EditorService, readonly changeDetector: ChangeDetectorRef, 
+		readonly notification: NotificationService, readonly logging: LoggingService,
+		readonly git: GitService
 	) { }
 
 	ngOnInit() {
@@ -41,13 +41,17 @@ export class EditorComponent implements OnInit {
 		});
 	}
 
+	detectChanges() {
+		this.changeDetector.detectChanges();
+	}
+	
 	didTapOpenResource(resource: Resource, editor: Editor) {
 		editor.open(resource);
 	}
 
-	didTapCloseResource(resource: Resource, editor: Editor, event: any) {
+	didTapCloseResource(resource: Resource, editor: Editor, event: MouseEvent) {
 		event.stopPropagation(); 
-		this.confirmThenClose(resource, editor);
+		editor.closeConfirm(resource);
 	}
 
 	didTapPreviewResource(resource: Resource) {
@@ -61,6 +65,14 @@ export class EditorComponent implements OnInit {
 		});
 	}
 	
+	diff(resource: Resource) {
+		return this.git.show(resource);
+	}
+
+	confirm(options: ConfirmOptions) {
+		return this.notification.confirmAsync(options);
+	}
+
 	openResource(resource: Resource) {
 		this.editorService.open(resource).then((opened) => {
 			if (opened) {
@@ -79,24 +91,6 @@ export class EditorComponent implements OnInit {
 			this.logging.error(error);
 		});
 	}
-	
-	async confirmThenClose(resource: Resource, editor: Editor) {
-		if (editor.type === 'code') {
-			const options = {
-				title: "Do you want to close'" + resource.name + "'?",
-				message: "Your changes will be lost if you don't save them.",
-			}
-			if (!resource.changed || await this.notification.confirmAsync(options)) {
-				editor.close(resource, this.editors);
-			}
-		} else {
-			editor.close(resource, this.editors);
-		}
-	}
-
-	confirm(options: ConfirmOptions) {
-		return this.notification.confirmAsync(options);
-	}
 
 	closeResource(resource: Resource) {
 		let i = 0;
@@ -107,7 +101,7 @@ export class EditorComponent implements OnInit {
 			while (i < this.editors.length) {
 				if (this.editors[i].contains(resource)) {
 					contains = true;
-					this.editors[i].close(resource, this.editors);
+					this.editors[i].close(resource);
 				}
 				i++;
 			}
@@ -117,8 +111,16 @@ export class EditorComponent implements OnInit {
 		}
 	}
 	
-	detectChanges() {
-		this.changeDetector.detectChanges();
+	async save(resource: Resource) {
+		try {
+			await this.editorService.save(resource);
+			this.notification.success('resource saved on the server !');
+			this.detectChanges();
+			return true;
+		} catch(error) {
+			this.notification.error(error);
+			return false;
+		}
 	}
 
 	resources() {
@@ -129,23 +131,11 @@ export class EditorComponent implements OnInit {
 		return this.editorService.runningTask;
 	}
 
-	lastRevision(resource: Resource) {
-		return this.git.show(resource);
-	}
-
-	async save(resource: Resource) {
-		this.editorService.save(resource).then(() => {
-			this.notification.success('resource saved on the server !');
-			this.detectChanges();
-		}).catch(error => {
-			console.log(error);
-		})
-	}
 
 	@HostListener('window:beforeunload', ['$event'])
-    beforeunload($event: any) {
-		if (this.editorService.findPredicate(e => e.changed)) {
-			$event.returnValue =true;
-		}
-    }
+	beforeunload($event: any) {
+			if (this.editorService.findPredicate(e => e.changed)) {
+				$event.returnValue =true;
+			}
+	}
 }

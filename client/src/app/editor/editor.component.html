@@ -34,11 +34,11 @@
                                     <i class="fas fa-ellipsis-h"></i>
                                 </div>
                                 <mat-menu #editorMenu="matMenu">
-                                    <button mat-menu-item (click)='editor.didSave()'>Save (Ctrl+S)</button>
-                                    <button mat-menu-item (click)='editor.didClose()'>Close (Ctrl+W)</button>
-                                    <button mat-menu-item (click)='editor.didSaveAll()'>Save All (Ctrl+Alt+W)</button>
-                                    <button mat-menu-item (click)='editor.didCloseAll()'>Close All (Ctrl+Alt+W)</button>
-                                    <button mat-menu-item (click)='editor.didCloseSaved()'>Close Saved</button>
+                                    <button mat-menu-item (click)='editor.save(editor.selection)'>Save (Ctrl+S)</button>
+                                    <button mat-menu-item (click)='editor.saveAll()'>Save All (Ctrl+Alt+S)</button>
+                                    <button mat-menu-item (click)='editor.closeConfirm(editor.selection)'>Close (Ctrl+W)</button>
+                                    <button mat-menu-item (click)='editor.closeAllConfirm()'>Close All (Ctrl+Alt+W)</button>
+                                    <button mat-menu-item (click)='editor.closeSaved()'>Close Saved</button>
                                 </mat-menu>
                             </div>  
                             <ng-container [ngSwitch]="editor.type">
