@@ -82,7 +82,10 @@ class PlParserTestCase(TestCase):
         # Override % with a.a
         self.assertEqual({'a': '3', 'b': 2}, dic['a'])
     
-    
+    def test_parse_image(self):
+        dic, war = pl.Parser(self.dir, "image.pl").parse()
+        self.assertEqual("<img src='/filebrowser/option?name=download_resource&path=dir1/image.png'/>", dic['text'])
+      
     def test_parse_errors(self):
         with self.assertRaises(SyntaxErrorPL):
             pl.Parser(self.dir, "no_string_in_sub_key.pl").parse()
@@ -108,3 +111,7 @@ class PlParserTestCase(TestCase):
             pl.Parser(self.dir, "no_file_sandbox.pl").parse()
         with self.assertRaises(SyntaxErrorPL):
             pl.Parser(self.dir, "syntax_sandbox.pl").parse()
+        with self.assertRaises(SyntaxErrorPL):
+            pl.Parser(self.dir, "reference_binary.pl").parse()
+        with self.assertRaises(FileNotFound):
+            pl.Parser(self.dir, "no_image.pl").parse()

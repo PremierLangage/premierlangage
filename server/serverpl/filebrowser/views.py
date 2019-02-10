@@ -17,7 +17,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 from filebrowser.filter import is_root, is_image, in_repository
 from filebrowser.models import Directory
-from filebrowser.utils import fa_icon, join_fb_root, rm_fb_root, walkdir, walkalldirs, repository_url, repository_branch
+from filebrowser.utils import fa_icon, join_fb_root, rm_fb_root, walkdir, walkalldirs, repository_url, repository_branch, to_download_url
 from loader.loader import load_file, reload_pltp as rp
 from playexo.models import Activity, SessionTest
 
@@ -41,7 +41,7 @@ def upload_resource(request):
     
     path = request.POST.get('path')
     if not path:
-        return HttpResponseBadRequest('"upload-path" parameter is missing')
+        return HttpResponseBadRequest('"path" parameter is missing')
     name = f.name
     try:
         path = os.path.join(join_fb_root(path), name)
@@ -69,7 +69,7 @@ def get_resource(request):
     
     try:
         if (is_image(join_fb_root(path))):
-            return JsonResponse({'image': '/filebrowser/option?name=download_resource&path='+path})
+            return JsonResponse({'image': to_download_url(path)})
         with open(join_fb_root(path)) as f:
             content = f.read()
         return JsonResponse({'content': content})
@@ -490,6 +490,7 @@ def preview_pl(request):
             directory = Directory.objects.get(name=directory)
             file_path = os.path.join(*(path_components[1:]))
             pl, warnings = load_file(directory, file_path)
+            #print(pl.json)
             if not pl:
                 preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
                           + os.path.basename(file_path) + "': \n" + warnings + "</div>"

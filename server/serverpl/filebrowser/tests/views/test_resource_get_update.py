@@ -7,7 +7,7 @@ from django.test import Client, override_settings, TestCase
 from django.urls import reverse
 
 from filebrowser.models import Directory
-
+from filebrowser.utils import to_download_url
 
 FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'filebrowser/tests/tmp')
 
@@ -46,6 +46,12 @@ class GetUpdateResourceTestCase(TestCase):
         }, content_type='application/json')
         self.assertContains(response, 'test', status_code=200)
     
+    def test_get_resource_image(self):
+        response = self.c.get(reverse("filebrowser:option"), {
+                'name': 'get_resource',
+                'path': 'Yggdrasil/image.png',
+        }, content_type='application/json')
+        self.assertContains(response, to_download_url('Yggdrasil/image.png'), status_code=200)
     
     def test_get_resource_no_path(self):
         response = self.c.get(reverse("filebrowser:option"), {

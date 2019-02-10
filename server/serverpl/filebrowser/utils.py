@@ -8,6 +8,9 @@ from filebrowser import filter
 from filebrowser.models import Directory
 
 
+def to_download_url(path):
+    """Returns an to filebrowser views.py download function """
+    return '/filebrowser/option?name=download_resource&path=' + path
 
 def join_fb_root(path):
     """Returns an absolute path, joining <path> to FILEBROWSER_ROOT."""

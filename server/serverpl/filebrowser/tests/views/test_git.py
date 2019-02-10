@@ -386,3 +386,11 @@ class GitTestCase(TestCase):
                 }, content_type='application/json'
         )
         self.assertContains(response, "parameter 'path' is missing", status_code=400)
+
+    def test_changes(self):
+        response = self.c.get(
+                reverse('filebrowser:option'), {
+                        'name': 'git_changes'
+                }, content_type='application/json'
+        )
+        self.assertContains(response, b"changes", status_code=200)
