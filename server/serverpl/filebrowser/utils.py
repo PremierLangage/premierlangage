@@ -8,6 +8,9 @@ from filebrowser import filter
 from filebrowser.models import Directory
 
 
+def missing_parameter(name):
+    return "parameter '" + name + "' is missing"
+
 def to_download_url(path):
     """Returns an to filebrowser views.py download function """
     return '/filebrowser/option?name=download_resource&path=' + path

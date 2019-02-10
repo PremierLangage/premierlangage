@@ -7,6 +7,7 @@ from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from filebrowser.models import Directory
+from filebrowser.utils import missing_parameter
 
 
 RES_DIR = os.path.join(settings.BASE_DIR, "filebrowser/tests/ressources/fake_filebrowser_data/")
@@ -72,7 +73,7 @@ class RenameTestCase(TestCase):
             'name'  : 'rename_resource',
             'target': 'function.pl',
         }, content_type='application/json')
-        self.assertContains(response, '"path" parameter is missing', status_code=400)
+        self.assertContains(response, missing_parameter('path'), status_code=400)
     
     
     def test_rename_resource_missing_target(self):
@@ -80,7 +81,7 @@ class RenameTestCase(TestCase):
             'name': 'rename_resource',
             'path': '100/TPE/function001.pl',
         }, content_type='application/json')
-        self.assertContains(response, '"target" parameter is missing', status_code=400)
+        self.assertContains(response, missing_parameter('target'), status_code=400)
     
     
     def test_rename_resource_existing(self):

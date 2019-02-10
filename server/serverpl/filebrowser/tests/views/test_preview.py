@@ -8,6 +8,8 @@ from django.test import Client, override_settings, TestCase
 from django.urls import reverse
 
 from filebrowser.models import Directory
+from filebrowser.utils import missing_parameter
+
 from loader.loader import load_file
 from playexo.models import SessionTest
 
@@ -83,7 +85,7 @@ class PreviewTestCase(TestCase):
                 'name'            : 'preview_pl',
                 'requested_action': 'preview',
         }, content_type='application/json')
-        self.assertContains(response, "Missing", status_code=400)
+        self.assertContains(response, missing_parameter('path'), status_code=400)
     
     
     def test_preview_submit(self):

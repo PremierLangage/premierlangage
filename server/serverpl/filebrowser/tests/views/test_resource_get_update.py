@@ -8,6 +8,7 @@ from django.urls import reverse
 
 from filebrowser.models import Directory
 from filebrowser.utils import to_download_url
+from filebrowser.utils import missing_parameter
 
 FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'filebrowser/tests/tmp')
 
@@ -57,7 +58,7 @@ class GetUpdateResourceTestCase(TestCase):
         response = self.c.get(reverse("filebrowser:option"), {
                 'name': 'get_resource',
         }, content_type='application/json')
-        self.assertContains(response, '"path" parameter is missing', status_code=400)
+        self.assertContains(response, missing_parameter('path'), status_code=400)
     
     
     def test_get_resources(self):
@@ -79,4 +80,4 @@ class GetUpdateResourceTestCase(TestCase):
         response = self.c.post(reverse("filebrowser:option"), {
                 'name': 'update_resource',
         }, content_type='application/json')
-        self.assertContains(response, '"path" parameter is missing', status_code=400)
+        self.assertContains(response, missing_parameter('path'), status_code=400)

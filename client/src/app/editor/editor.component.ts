@@ -81,11 +81,15 @@ export class EditorComponent implements OnInit {
 	}
 	
 	async confirmThenClose(resource: Resource, editor: Editor) {
-		const options = {
-			title: "Do you want to close the'" + resource.name + "'?",
-			message: "Your changes will be lost if you don't save them.",
-		}
-		if (!resource.changed || await this.notification.confirmAsync(options)) {
+		if (editor.type === 'code') {
+			const options = {
+				title: "Do you want to close'" + resource.name + "'?",
+				message: "Your changes will be lost if you don't save them.",
+			}
+			if (!resource.changed || await this.notification.confirmAsync(options)) {
+				editor.close(resource, this.editors);
+			}
+		} else {
 			editor.close(resource, this.editors);
 		}
 	}

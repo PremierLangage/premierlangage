@@ -17,7 +17,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 from filebrowser.filter import is_root, is_image, in_repository
 from filebrowser.models import Directory
-from filebrowser.utils import fa_icon, join_fb_root, rm_fb_root, walkdir, walkalldirs, repository_url, repository_branch, to_download_url
+from filebrowser.utils import fa_icon, join_fb_root, rm_fb_root, walkdir, walkalldirs, repository_url, repository_branch, to_download_url, missing_parameter
 from loader.loader import load_file, reload_pltp as rp
 from playexo.models import Activity, SessionTest
 
@@ -37,11 +37,11 @@ def upload_resource(request):
         return HttpResponseNotAllowed(['POST'])
     f = request.FILES.get('file')
     if not f:
-        return HttpResponseBadRequest("File is missing")
+        return HttpResponseBadRequest(missing_parameter('file'))
     
     path = request.POST.get('path')
     if not path:
-        return HttpResponseBadRequest('"path" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('path'))
     name = f.name
     try:
         path = os.path.join(join_fb_root(path), name)
@@ -65,7 +65,7 @@ def get_resource(request):
     """Return the content of <path>."""
     path = request.GET.get('path')
     if not path:
-        return HttpResponseBadRequest('"path" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('path'))
     
     try:
         if (is_image(join_fb_root(path))):
@@ -97,7 +97,7 @@ def update_resource(request):
     
     path = post.get("path")
     if path is None:
-        return HttpResponseBadRequest('"path" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('path'))
     
     try:
         with open(join_fb_root(path), 'w') as f:
@@ -114,7 +114,7 @@ def create_resource(request):
     post = json.loads(request.body.decode())
     path = post.get('path')
     if not path:
-        return HttpResponseBadRequest('"path" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('path'))
     
     path = join_fb_root(path)
     name = os.path.basename(path)
@@ -152,7 +152,8 @@ def delete_resource(request):
     
     path = post.get('path')
     if not path:
-        return HttpResponseBadRequest('"path" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('path'))
+
     if is_root(path):
         return HttpResponseBadRequest('cannot delete a root folder')
     
@@ -178,9 +179,9 @@ def rename_resource(request):
     path = post.get('path')
     target = post.get('target')
     if not path:
-        return HttpResponseBadRequest('"path" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('path'))
     if not target:
-        return HttpResponseBadRequest('"target" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('target'))
     
     path = join_fb_root(path)
     name = os.path.basename(path)
@@ -213,12 +214,12 @@ def move_resource(request):
     post = json.loads(request.body.decode())
     src = post.get('path')
     if not src:
-        return HttpResponseBadRequest('"path" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('path'))
     
     # TODO check write rights in dst
     dst = post.get('dst')
     if not dst:
-        return HttpResponseBadRequest('"dst" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('dst'))
     try:
         src_path = join_fb_root(src)
         dst_path = join_fb_root(dst)
@@ -232,8 +233,7 @@ def move_resource(request):
         else:
             destination = os.path.join(dst_path, os.path.basename(src))
             if os.path.exists(destination):
-                return HttpResponseNotFound(
-                        "{0} already exists inside {1}".format(os.path.basename(src), dst))
+                return HttpResponseNotFound("{0} already exists inside {1}".format(os.path.basename(src), dst))
             else:
                 os.rename(src_path, destination)
                 return JsonResponse({'path': os.path.join(dst, os.path.basename(src))})
@@ -248,7 +248,7 @@ def move_resource(request):
 def download_resource(request):
     path = request.GET.get('path')
     if not path:
-        return HttpResponseBadRequest('"path" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('path'))
     
     with open(join_fb_root(path), 'rb') as fp:
         data = fp.read()
@@ -325,9 +325,12 @@ def git_clone(request):
     password = post.get('password')
     destination = post.get('destination')
     path = post.get('path')
+    if not path:
+        return HttpResponseBadRequest(missing_parameter('path'))
+
     url = post.get('url')
     if not url:
-        return HttpResponseBadRequest("Missing 'url' parameter")
+        return HttpResponseBadRequest(missing_parameter('url'))
     
     if '@' in url:
         return HttpResponseNotFound("SSH link is not supported, please use HTTPS")
@@ -362,6 +365,9 @@ def git_pull(request):
     password = post.get('password')
     url = post.get('url')
     path = post.get('path')
+    if not path:
+        return HttpResponseBadRequest(missing_parameter('path'))
+
     ret, out, err = gitcmd.pull(join_fb_root(path), username=username, password=password, url=url)
     
     if not ret:
@@ -379,7 +385,7 @@ def git_push(request):
     password = post.get('password', None)
     path = post.get('path', None)
     if not path:
-        return HttpResponseBadRequest("parameter 'path' is missing")
+        return HttpResponseBadRequest(missing_parameter('path'))
     
     ret, out, err = gitcmd.push(join_fb_root(path), username=username, password=password)
     if not ret:
@@ -394,7 +400,7 @@ def git_status(request):
     """ Execute a git status on the targeted entry."""
     path = request.GET.get('path')
     if not path:
-        return HttpResponseBadRequest("parameter 'path' is missing")
+        return HttpResponseBadRequest(missing_parameter('path'))
     ret, out, err = gitcmd.status(join_fb_root(path))
     
     if not ret:
@@ -409,7 +415,7 @@ def git_show(request):
     """ Execute a git show on the targeted entry."""
     path = request.GET.get('path')
     if not path:
-        return HttpResponseBadRequest("parameter 'path' is missing")
+        return HttpResponseBadRequest(missing_parameter('path'))
     try:
         ret, out, err = gitcmd.show_last_revision(join_fb_root(path))
         if not ret:
@@ -425,7 +431,7 @@ def git_checkout(request):
     """ Execute a checkout of the targeted entry with the informations of POST. """
     path = request.GET.get('path')
     if not path:
-        return HttpResponseBadRequest("parameter 'path' is missing")
+        return HttpResponseBadRequest(missing_parameter('path'))
 
     ret, out, err = gitcmd.checkout(join_fb_root(path))
     
@@ -439,13 +445,12 @@ def git_add(request):
     """ Execute a git add on the targeted entry."""
     path = request.GET.get('path')
     if not path:
-        return HttpResponseBadRequest("parameter 'path' is missing")
+        return HttpResponseBadRequest(missing_parameter('path'))
     ret, out, err = gitcmd.add(join_fb_root(path))
     if not ret:
         return HttpResponse("Entry successfully added to the index.")
     else:  # pragma: no cover
         return HttpResponseNotFound("Nothing to add." if not err else htmlprint.code(err + out))
-
 
 
 @require_POST
@@ -455,10 +460,10 @@ def git_commit(request):
     post = json.loads(request.body.decode())
     path = post.get('path')
     if not path:
-        return HttpResponseBadRequest("parameter 'path' is missing")
+        return HttpResponseBadRequest(missing_parameter('path'))
     commit = post.get('commit')
     if not commit:
-        return HttpResponseBadRequest("Missing 'commit' parameter")
+        return HttpResponseBadRequest(missing_parameter('commit'))
     
     ret, out, err = gitcmd.commit(join_fb_root(path), commit)
     if not ret:
@@ -477,7 +482,7 @@ def preview_pl(request):
     if post.get('requested_action', '') == 'preview':  # Asking for preview
         path = post.get('path')
         if not path:
-            return HttpResponseBadRequest("Missing parameter 'path'")
+            return HttpResponseBadRequest(missing_parameter('path'))
         
         path_components = path.split('/')
         directory = path_components[0]
@@ -490,7 +495,6 @@ def preview_pl(request):
             directory = Directory.objects.get(name=directory)
             file_path = os.path.join(*(path_components[1:]))
             pl, warnings = load_file(directory, file_path)
-            #print(pl.json)
             if not pl:
                 preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
                           + os.path.basename(file_path) + "': \n" + warnings + "</div>"
@@ -542,7 +546,7 @@ def preview_pl(request):
 def load_pltp(request):
     path = request.GET.get('path')
     if not path:
-        return HttpResponseBadRequest('"path" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('path'))
     
     try:
         path_components = path.split('/')
@@ -584,10 +588,10 @@ def reload_pltp(request):
     post = json.loads(request.body.decode())
     path = post.get('path')
     if not path:
-        return HttpResponseBadRequest("parameter 'path' is missing")
+        return HttpResponseBadRequest(missing_parameter('path'))
     activity_id = post.get('activity_id')
     if not activity_id:
-        return HttpResponseBadRequest("Missing 'activity_id' parameter")
+        return HttpResponseBadRequest(missing_parameter('activity_id'))
     try:
         activity = Activity.objects.get(id=activity_id)
         path_components = path.split('/')
@@ -621,7 +625,7 @@ def reload_pltp(request):
 def test_pl(request):
     path = request.GET.get('path')
     if not path:
-        return HttpResponseBadRequest('"path" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('path'))
     
     try:
         path_components = path.split('/')
@@ -666,7 +670,7 @@ def option(request):
         opt = post.get('name')
     
     if not opt:
-        return HttpResponseBadRequest("'name' parameter is missing")
+        return HttpResponseBadRequest(missing_parameter('name'))
     
     try:
         return globals()[opt](request)

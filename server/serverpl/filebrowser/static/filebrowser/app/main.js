@@ -536,8 +536,9 @@ var EditorComponent = /** @class */ (function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
                 switch (_b.label) {
                     case 0:
+                        if (!(editor.type === 'code')) return [3 /*break*/, 3];
                         options = {
-                            title: "Do you want to close the'" + resource.name + "'?",
+                            title: "Do you want to close'" + resource.name + "'?",
                             message: "Your changes will be lost if you don't save them.",
                         };
                         _a = !resource.changed;
@@ -550,7 +551,11 @@ var EditorComponent = /** @class */ (function () {
                         if (_a) {
                             editor.close(resource, this.editors);
                         }
-                        return [2 /*return*/];
+                        return [3 /*break*/, 4];
+                    case 3:
+                        editor.close(resource, this.editors);
+                        _b.label = 4;
+                    case 4: return [2 /*return*/];
                 }
             });
         });
