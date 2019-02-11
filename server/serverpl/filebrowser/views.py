@@ -19,6 +19,8 @@ from filebrowser.filter import is_root, is_image, in_repository
 from filebrowser.models import Directory
 from filebrowser.utils import fa_icon, join_fb_root, rm_fb_root, walkdir, walkalldirs, repository_url, repository_branch, to_download_url, missing_parameter
 from loader.loader import load_file, reload_pltp as rp
+from loader.utils import get_location
+
 from playexo.models import Activity, SessionTest
 
 
@@ -561,21 +563,14 @@ def compile_pl(request):
         directory = Directory.objects.get(name=directory)
         file_path = os.path.join(*(path_components[1:]))
         pl, warnings = load_file(directory, file_path)
-        response = {}
+        response = { 'compiled' : True}
         if not pl:
-            response['error'] = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
-                        + os.path.basename(file_path) + "': \n" \
-                        + warnings + "</div>"
+            response['compiled'] = False
         else:
             response['json'] = pl.json
             response['warnings'] = warnings
     except Exception as e:  # pragma: no cover
-        response['error'] = ('<div class="alert alert-danger" role="alert"> Failed to load \''
-                    + os.path.basename(file_path) + "': \n\n"
-                    + htmlprint.code(str(e)))
-        if settings.DEBUG:
-            response['error'] += "\n\nDEBUG set to True:\n" + htmlprint.html_exc()
-        response['error'] += "</div>"
+        response['compiled'] = False
     finally:
         shutil.move(path + ".bk", path)
         return HttpResponse(
@@ -705,7 +700,27 @@ def download_env(request, envid):
     response['Content-Disposition'] = r.headers['Content-Disposition']
     return response
 
+@login_required
+@require_GET
+def resolve_path(request):
+    path = request.GET.get('path')
+    if not path:
+        return HttpResponseBadRequest(missing_parameter('path'))
+    target = request.GET.get('target')
+    if not target:
+        return HttpResponseBadRequest(missing_parameter('target'))
 
+    try:
+        path_components = path.split('/')
+        directory = Directory.objects.get(name=path_components[0])
+        directory, path = get_location(directory, target, current=path_components[1])
+        return HttpResponse(os.path.join(directory, path))
+
+    except Exception as e:
+        msg = "Impossible to resolve the path '" + request.GET.get('target') + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
+        if settings.DEBUG:
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
+        return HttpResponseNotFound(msg)
 
 @login_required
 @csrf_exempt

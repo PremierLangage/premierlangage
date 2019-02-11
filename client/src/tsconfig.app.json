@@ -2,7 +2,8 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/app",
-    "types": []
+    "types": [],
+    "typeRoots": ["../../node_modules/monaco-editor/monaco.d.ts"]
   },
   "exclude": [
     "test.ts",

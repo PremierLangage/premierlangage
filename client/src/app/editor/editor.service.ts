@@ -343,6 +343,22 @@ export class EditorService {
 		}
 	}
 
+	public async findReference(resource: Resource, path: string) {
+		try {
+			this.emitTaskEvent(true, 'resolve path');
+			const params = new HttpParams()
+							.set('name', 'resolve_path')
+							.set('path', resource.path)
+							.set('target', path);
+			const response = await this.http.get('filebrowser/option',{ params: params, responseType: 'text' }).toPromise();
+			this.emitTaskEvent(false, 'resolve path');
+			return this.find(response);
+		} catch(error) {
+			this.emitTaskEvent(false, 'resolve path');
+			throw error;
+		}
+	} 
+
 	public async compilePL(resource: Resource) {
 		let response: Object;
 		try {

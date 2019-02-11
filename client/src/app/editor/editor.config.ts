@@ -1,6 +1,7 @@
 import { NgxMonacoEditorConfig } from 'ngx-monaco-editor';
 
 export const PREMIER_LANGAGE = 'premierlangage';
+
 export const LANGUAGES = {
     css: 'css',
     cs: 'csharp',
@@ -23,6 +24,9 @@ export const LANGUAGES = {
     pl: 'premierlangage',
     pltp: 'premierlangage'
 };
+
+export const CODE_LENS_PROVIDER = [];
+
 export const MONACO_CONFIG: NgxMonacoEditorConfig = {
     baseUrl: '/static/filebrowser/app/assets', // configure base path for monaco editor
     defaultOptions: { 
@@ -43,32 +47,87 @@ export const MONACO_CONFIG: NgxMonacoEditorConfig = {
       },
     },
     onMonacoLoad: onMonacoLoad
-  };
+};
   
 export function onMonacoLoad() {
-    const monaco = (<any>window).monaco;
-    const editor = monaco.editor;
-
-    const SPECIAL_PATTERN = /(title|author|introduction|introductionh|teacher|text|texth|build|before|form|template|extends|builder|grader)(?=(=|(\+=)|=%))/;
-    const VARIABLE_PATTERN = /\w+(\.\w+)*(?=(=|\+=|=%|==))/;
     const REFERENCE_PATTERN = /(@|(template|grader|builder|extends|builder|grader)\s*=)[~\s\/]*(\w+:\/)?([a-zA-Z0-9_\./]+)/;
-
+    const OPEN_PATTERN = /^[a-zA-Z_](\.?\w+)*(==)|(%=)/;
+    const CLOSE_PATTERN = /^==\s*$/;
+    const BUILT_IN_WORDS = {
+      title: "Titre de l'exercice/feuille d'exercice",
+      author: "Auteur de l'exercice",
+      introduction: "Présentation de la feuille d'exercice, le contenu de cette clé est interprété comme du markdown.",
+      teacher: "Sur un PLTP, affiche un note visible par les enseignant seulement",
+      text: "Énoncé de l'exercice, le contenu de cette clé est interprété comme du markdown.",
+      build: "Clé contenant une fonction build (ancienne syntaxe: utiliser de préférence before), à utiliser avec le builder /builder/build.py",
+      before: "Code python permettant de modifier l'exercice avant sont exécution sur le navigateur",
+      form: "Formulaire HTML permettant à l'élève de répondre",
+      template: "Définie template comme étant la base de ce fichier",
+    };
+  
+    const monaco = (<any>window).monaco;
     monaco.languages.register({ id: PREMIER_LANGAGE }); 
+      
+    // Register a tokens provider for the language
     monaco.languages.setMonarchTokensProvider(PREMIER_LANGAGE, {
+        // Set defaultToken to invalid to see what you do not tokenize yet
+        //defaultToken: 'invalid',
+    
+        keywords: [
+        'title', 'author', 'introduction', 'teacher', 'text','build', 'before', 'form','template'
+        ],
+
+        operators: [
+            '=', '+', '@', '%', '==', '+=', '=@', '+=@',
+        ],
+
         tokenizer: {
             root: [
-                [SPECIAL_PATTERN, 'special'],
-                [VARIABLE_PATTERN, 'variable'],
-                [REFERENCE_PATTERN, 'reference']
-            ]
-        }
+                [
+                    // (?=\s*(=|\+|\@|\%|(==)|(\+=)|(=\@)|(\+=\@)))
+                    /^[a-zA-Z_](\.?\w+)*/, { 
+                        cases: {
+                            '@default': 'key'
+                        } 
+                    }
+                ],
+                
+                [/#.+/, 'comment'],
+                [/==/, { token: 'open', next: '@embedded' }],
+                [/%=/, { token: 'open', next: '@predefined', nextEmbedded: 'javascript'}],
+                [/\{\{[a-zA-Z_](\.?\w+)\}\}/, 'key'],
+                // numbers
+                [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
+                [/0[xX][0-9a-fA-F]+/, 'number.hex'],
+                [/\d+/, 'number'],
+
+                // whitespace
+                { include: '@whitespace' },
+            ],
+
+            embedded: [
+                [/#\|(\w+)\|/, { token: 'string', next: '@predefined', nextEmbedded: '$1' }],
+                [/\{\{[a-zA-Z_](\.?\w+)\}\}/, 'key'],
+                [/^==\s*$/, { token: 'close', next: '@pop' }],
+            ],
+
+            predefined: [
+                ['(?=\w+)==', 'string'],
+                [/\{\{[a-zA-Z_](\.?\w+)\}\}/, 'key'],
+                [/^==\s*$/, { token: 'close', next: '@root', nextEmbedded: '@pop' }],
+            ],
+
+            whitespace: [  
+            [/[ \t\r\n]+/, 'white'],
+            ],
+        },
     });
-    editor.defineTheme(PREMIER_LANGAGE, {
-      base: 'vs',
-      inherit: true,
-      rules: [
-          { token: 'special', foreground: '1382dd', fontStyle: 'bold' },
-          { token: 'variable', foreground: '1382dd' },
+
+    monaco.editor.defineTheme(PREMIER_LANGAGE, {
+        base: 'vs',
+        inherit: true,
+        rules: [
+          { token: 'key', foreground: '1382dd', fontStyle: 'bold' },
       ]
     });
 }

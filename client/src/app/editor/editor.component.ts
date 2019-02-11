@@ -34,10 +34,10 @@ export class EditorComponent implements OnInit {
 			}
 		});
 		this.editorService.subscribeSelectEvent((resource: Resource) => {
-			this.openResource(resource);
+			this.open(resource);
 		});
 		this.editorService.subscribeDeleteEvent((resource: Resource) => {
-			this.closeResource(resource);
+			this.close(resource);
 		});
 	}
 
@@ -73,7 +73,7 @@ export class EditorComponent implements OnInit {
 		return this.notification.confirmAsync(options);
 	}
 
-	openResource(resource: Resource) {
+	open(resource: Resource) {
 		this.editorService.open(resource).then((opened) => {
 			if (opened) {
 				const editor = this.editors.find(e => e.canOpen(resource));
@@ -92,7 +92,22 @@ export class EditorComponent implements OnInit {
 		});
 	}
 
-	closeResource(resource: Resource) {
+	openAsPath(path: string) {
+		this.open(this.editorService.find(path));
+	}
+
+	async findReference(resource: Resource, path: string) {
+		try {
+			return await this.editorService.findReference(resource, path);
+		}
+		catch (error) {
+			this.logging.error('cannot resolve reference ' + path);
+			return undefined;
+		}
+
+	}
+
+	close(resource: Resource) {
 		let i = 0;
 		let contains = false;
 		while (true) {

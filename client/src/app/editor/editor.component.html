@@ -10,62 +10,83 @@
         <as-split-area [size]="100 - sidebar.size" class='editor__workspace-container'>
             <as-split (dragEnd)='console.dragEnd($event)' direction='vertical' gutterSize='5' useTransition='true' class='editor__workspace'>
                 <as-split-area [size]='100 - console.size'>
-                    <as-split direction='horizontal' gutterSize='5' useTransition='true' cdkDropListGroup>
+                    <as-split *ngIf='editors.length > 0; else notEditor' direction='horizontal' gutterSize='5' useTransition='true' cdkDropListGroup>
                         <as-split-area *ngFor='let editor of editors' style='position: relative; overflow: hidden;'>
-                            <div class='tab-bar border-bottom'>
-                                <div class='item-group' cdkDropList [cdkDropListData]="editor.resources" (cdkDropListDropped)="editor.drop($event)">
-                                    <div *ngFor='let resource of editor.resources;trackBy: editor.track'
-                                        [ngClass]="{'tab-item': true, active: editor.isSelected(resource), changed: resource.changed}"
-                                        (click)='didTapOpenResource(resource, editor)' cdkDragAxis='x'cdkDrag>
-                                        <i class="tab-icon {{resource.icon}}"></i>
-                                        <span>{{editor.title(resource)}}</span>
-                                        <span class='tab-close' (click)='didTapCloseResource(resource, editor, $event)'>
-                                            &nbsp;{{ resource.changed ? '&bull;' : '&times;' }}
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="spacer"></div>    
-                                <ng-container *ngFor='let option of editor.options'>
-                                    <div class='tab-item' matTooltip='{{option.tooltip}}' *ngIf='option.enabled(editor.selection)' (click)='option.action(editor.selection)' >
-                                        <i class="{{option.icon}}"></i>
-                                    </div>
-                                </ng-container>
-                                <div *ngIf='editor.type==="code"' class='tab-item' matTooltip='More Options' [matMenuTriggerFor]="editorMenu">
-                                    <i class="fas fa-ellipsis-h"></i>
-                                </div>
-                                <mat-menu #editorMenu="matMenu">
-                                    <button mat-menu-item (click)='editor.save(editor.selection)'>Save (Ctrl+S)</button>
-                                    <button mat-menu-item (click)='editor.saveAll()'>Save All (Ctrl+Alt+S)</button>
-                                    <button mat-menu-item (click)='editor.closeConfirm(editor.selection)'>Close (Ctrl+W)</button>
-                                    <button mat-menu-item (click)='editor.closeAllConfirm()'>Close All (Ctrl+Alt+W)</button>
-                                    <button mat-menu-item (click)='editor.closeSaved()'>Close Saved</button>
-                                </mat-menu>
-                            </div>  
-                            <ng-container [ngSwitch]="editor.type">
-                                <!-- code editor -->
-                                <ng-container *ngSwitchCase="'code'">
-                                    <ngx-monaco-diff-editor [hidden]='!editor.diffMode' class='code-editor' [options]="{}" [originalModel]='{}' [modifiedModel]='{}' (onInit)="editor.onInitDiff($event)"></ngx-monaco-diff-editor>
-                                    <ngx-monaco-editor [hidden]='editor.diffMode' class='code-editor' [options]="{}" [model]='{}' (onInit)="editor.onInit($event)"></ngx-monaco-editor>
-                                </ng-container>
-                                <!-- preview editor -->
-                                <div *ngSwitchCase="'preview'" class='preview-editor'>
-                                    <div class='preview-editor__content' [innerHTML]='editor.content() | sanitizeHtml' runScripts></div>
-                                </div>
-                                <!-- image editor -->
-                                <div *ngSwitchCase="'image'" class='image-editor'>
-                                    <img src='{{editor.selection.image}}'  [ngStyle]='{zoom: editor.zoom}' />
-                                    <div class='code-editor__btn-group'>
-                                        <div class='code-editor__btn' matTooltip='Zoom In' (click)='editor.zoomIn()'>
-                                            <i class="fas fa-plus"></i>
-                                        </div>
-                                        <div class='code-editor__btn' matTooltip='Zoom Out' (click)='editor.zoomOut()'>
-                                            <i class="fas fa-minus"></i>
+                                <div class='tab-bar border-bottom'>
+                                    <div class='item-group' cdkDropList [cdkDropListData]="editor.resources" (cdkDropListDropped)="editor.drop($event)">
+                                        <div *ngFor='let resource of editor.resources;trackBy: editor.track'
+                                            [ngClass]="{'tab-item': true, active: editor.isSelected(resource), changed: resource.changed}"
+                                            (click)='didTapOpenResource(resource, editor)' cdkDragAxis='x'cdkDrag>
+                                            <i class="tab-icon {{resource.icon}}"></i>
+                                            <span>{{editor.title(resource)}}</span>
+                                            <span class='tab-close' (click)='didTapCloseResource(resource, editor, $event)'>
+                                                &nbsp;{{ resource.changed ? '&bull;' : '&times;' }}
+                                            </span>
                                         </div>
                                     </div>
+                                    <div class="spacer"></div>    
+                                    <ng-container *ngFor='let option of editor.options'>
+                                        <div class='tab-item' matTooltip='{{option.tooltip}}' *ngIf='option.enabled(editor.selection)' (click)='option.action(editor.selection)' >
+                                            <i class="{{option.icon}}"></i>
+                                        </div>
+                                    </ng-container>
+                                    <div *ngIf='editor.type==="code"' class='tab-item' matTooltip='More Options' [matMenuTriggerFor]="editorMenu">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </div>
+                                    <mat-menu #editorMenu="matMenu">
+                                        <button mat-menu-item (click)='editor.save(editor.selection)'>Save (Ctrl+S)</button>
+                                        <button mat-menu-item (click)='editor.saveAll()'>Save All (Ctrl+Alt+S)</button>
+                                        <button mat-menu-item (click)='editor.closeConfirm(editor.selection)'>Close (Ctrl+W)</button>
+                                        <button mat-menu-item (click)='editor.closeAllConfirm()'>Close All (Ctrl+Alt+W)</button>
+                                        <button mat-menu-item (click)='editor.closeSaved()'>Close Saved</button>
+                                    </mat-menu>
                                 </div>  
-                            </ng-container>
+                                <ng-container [ngSwitch]="editor.type">
+                                    <!-- code editor -->
+                                    <ng-container *ngSwitchCase="'code'">
+                                        <ngx-monaco-diff-editor [hidden]='!editor.diffMode' class='code-editor' [options]="{}" [originalModel]='{}' [modifiedModel]='{}' (onInit)="editor.onInitDiff($event)"></ngx-monaco-diff-editor>
+                                        <ngx-monaco-editor [hidden]='editor.diffMode' class='code-editor' [options]="{}" [model]='{}' (onInit)="editor.onInit($event)"></ngx-monaco-editor>
+                                    </ng-container>
+                                    <!-- preview editor -->
+                                    <div *ngSwitchCase="'preview'" class='preview-editor'>
+                                        <div class='preview-editor__content' [innerHTML]='editor.content() | sanitizeHtml' runScripts></div>
+                                    </div>
+                                    <!-- image editor -->
+                                    <div *ngSwitchCase="'image'" class='image-editor'>
+                                        <img src='{{editor.selection.image}}'  [ngStyle]='{zoom: editor.zoom}' />
+                                        <div class='code-editor__btn-group'>
+                                            <div class='code-editor__btn' matTooltip='Zoom In' (click)='editor.zoomIn()'>
+                                                <i class="fas fa-plus"></i>
+                                            </div>
+                                            <div class='code-editor__btn' matTooltip='Zoom Out' (click)='editor.zoomOut()'>
+                                                <i class="fas fa-minus"></i>
+                                            </div>
+                                        </div>
+                                    </div>  
+                                </ng-container>
                         </as-split-area>
                     </as-split>
+                    <ng-template #notEditor>
+                        <div class='editor-home'>
+                            <h3> PL Editor </h3>
+                            <br/>
+                            <mat-list>
+                                <h3 matSubheader><i class="fas fa-plus fa-2x"></i> &nbsp;&nbsp;Shorcuts</h3>
+                                <mat-list-item>
+                                    <p matLine> Save: Ctrl+S </p>
+                                    <p matLine> Save: All Ctrl+Alt+S </p>
+                                    <p matLine> Close: Ctrl+W </p>
+                                    <p matLine> Close: All Ctrl+Alt+W </p>
+                                    <p matLine> Show All Commands: F1 </p>
+                                </mat-list-item>
+                                <mat-divider></mat-divider>
+                                <h3 matSubheader><i class="far fa-lightbulb fa-2x"></i> &nbsp;&nbsp; Intellisense</h3>
+                                <mat-list-item>
+                                    <p matLine> Auto Completion: Ctrl+Space</p>
+                                </mat-list-item>
+                            </mat-list>
+                        </div>
+                    </ng-template>
                 </as-split-area>
                 <as-split-area [(size)]='console.size' style='overflow: hidden;'>
                     <app-console #console></app-console>

@@ -424,7 +424,7 @@ var ConsoleComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class='editor-host'>\n  <div class='editor__container'>\n    <app-sidebar #sidebar></app-sidebar>\n    <as-split direction=\"horizontal\" gutterSize='5' useTransition='true'>\n        <as-split-area [size]=\"sidebar.size\">\n          <app-explorer *ngIf='sidebar.index === 0' [resources]='resources()' [isRoot]='true'></app-explorer>\n          <app-search *ngIf='sidebar.index === 1' [resources]='resources()'></app-search>\n          <app-git *ngIf='sidebar.index === 2'></app-git>\n        </as-split-area>   \n        <as-split-area [size]=\"100 - sidebar.size\" class='editor__workspace-container'>\n            <as-split (dragEnd)='console.dragEnd($event)' direction='vertical' gutterSize='5' useTransition='true' class='editor__workspace'>\n                <as-split-area [size]='100 - console.size'>\n                    <as-split direction='horizontal' gutterSize='5' useTransition='true' cdkDropListGroup>\n                        <as-split-area *ngFor='let editor of editors' style='position: relative; overflow: hidden;'>\n                            <div class='tab-bar border-bottom'>\n                                <div class='item-group' cdkDropList [cdkDropListData]=\"editor.resources\" (cdkDropListDropped)=\"editor.drop($event)\">\n                                    <div *ngFor='let resource of editor.resources;trackBy: editor.track'\n                                        [ngClass]=\"{'tab-item': true, active: editor.isSelected(resource), changed: resource.changed}\"\n                                        (click)='didTapOpenResource(resource, editor)' cdkDragAxis='x'cdkDrag>\n                                        <i class=\"tab-icon {{resource.icon}}\"></i>\n                                        <span>{{editor.title(resource)}}</span>\n                                        <span class='tab-close' (click)='didTapCloseResource(resource, editor, $event)'>\n                                            &nbsp;{{ resource.changed ? '&bull;' : '&times;' }}\n                                        </span>\n                                    </div>\n                                </div>\n                                <div class=\"spacer\"></div>    \n                                <ng-container *ngFor='let option of editor.options'>\n                                    <div class='tab-item' matTooltip='{{option.tooltip}}' *ngIf='option.enabled(editor.selection)' (click)='option.action(editor.selection)' >\n                                        <i class=\"{{option.icon}}\"></i>\n                                    </div>\n                                </ng-container>\n                                <div *ngIf='editor.type===\"code\"' class='tab-item' matTooltip='More Options' [matMenuTriggerFor]=\"editorMenu\">\n                                    <i class=\"fas fa-ellipsis-h\"></i>\n                                </div>\n                                <mat-menu #editorMenu=\"matMenu\">\n                                    <button mat-menu-item (click)='editor.save(editor.selection)'>Save (Ctrl+S)</button>\n                                    <button mat-menu-item (click)='editor.saveAll()'>Save All (Ctrl+Alt+S)</button>\n                                    <button mat-menu-item (click)='editor.closeConfirm(editor.selection)'>Close (Ctrl+W)</button>\n                                    <button mat-menu-item (click)='editor.closeAllConfirm()'>Close All (Ctrl+Alt+W)</button>\n                                    <button mat-menu-item (click)='editor.closeSaved()'>Close Saved</button>\n                                </mat-menu>\n                            </div>  \n                            <ng-container [ngSwitch]=\"editor.type\">\n                                <!-- code editor -->\n                                <ng-container *ngSwitchCase=\"'code'\">\n                                    <ngx-monaco-diff-editor [hidden]='!editor.diffMode' class='code-editor' [options]=\"{}\" [originalModel]='{}' [modifiedModel]='{}' (onInit)=\"editor.onInitDiff($event)\"></ngx-monaco-diff-editor>\n                                    <ngx-monaco-editor [hidden]='editor.diffMode' class='code-editor' [options]=\"{}\" [model]='{}' (onInit)=\"editor.onInit($event)\"></ngx-monaco-editor>\n                                </ng-container>\n                                <!-- preview editor -->\n                                <div *ngSwitchCase=\"'preview'\" class='preview-editor'>\n                                    <div class='preview-editor__content' [innerHTML]='editor.content() | sanitizeHtml' runScripts></div>\n                                </div>\n                                <!-- image editor -->\n                                <div *ngSwitchCase=\"'image'\" class='image-editor'>\n                                    <img src='{{editor.selection.image}}'  [ngStyle]='{zoom: editor.zoom}' />\n                                    <div class='code-editor__btn-group'>\n                                        <div class='code-editor__btn' matTooltip='Zoom In' (click)='editor.zoomIn()'>\n                                            <i class=\"fas fa-plus\"></i>\n                                        </div>\n                                        <div class='code-editor__btn' matTooltip='Zoom Out' (click)='editor.zoomOut()'>\n                                            <i class=\"fas fa-minus\"></i>\n                                        </div>\n                                    </div>\n                                </div>  \n                            </ng-container>\n                        </as-split-area>\n                    </as-split>\n                </as-split-area>\n                <as-split-area [(size)]='console.size' style='overflow: hidden;'>\n                    <app-console #console></app-console>\n                </as-split-area>\n            </as-split>\n        </as-split-area>\n    </as-split>\n  </div>\n  <app-footer></app-footer>\n</div>"
+module.exports = "<div class='editor-host'>\n  <div class='editor__container'>\n    <app-sidebar #sidebar></app-sidebar>\n    <as-split direction=\"horizontal\" gutterSize='5' useTransition='true'>\n        <as-split-area [size]=\"sidebar.size\">\n          <app-explorer *ngIf='sidebar.index === 0' [resources]='resources()' [isRoot]='true'></app-explorer>\n          <app-search *ngIf='sidebar.index === 1' [resources]='resources()'></app-search>\n          <app-git *ngIf='sidebar.index === 2'></app-git>\n        </as-split-area>   \n        <as-split-area [size]=\"100 - sidebar.size\" class='editor__workspace-container'>\n            <as-split (dragEnd)='console.dragEnd($event)' direction='vertical' gutterSize='5' useTransition='true' class='editor__workspace'>\n                <as-split-area [size]='100 - console.size'>\n                    <as-split *ngIf='editors.length > 0; else notEditor' direction='horizontal' gutterSize='5' useTransition='true' cdkDropListGroup>\n                        <as-split-area *ngFor='let editor of editors' style='position: relative; overflow: hidden;'>\n                                <div class='tab-bar border-bottom'>\n                                    <div class='item-group' cdkDropList [cdkDropListData]=\"editor.resources\" (cdkDropListDropped)=\"editor.drop($event)\">\n                                        <div *ngFor='let resource of editor.resources;trackBy: editor.track'\n                                            [ngClass]=\"{'tab-item': true, active: editor.isSelected(resource), changed: resource.changed}\"\n                                            (click)='didTapOpenResource(resource, editor)' cdkDragAxis='x'cdkDrag>\n                                            <i class=\"tab-icon {{resource.icon}}\"></i>\n                                            <span>{{editor.title(resource)}}</span>\n                                            <span class='tab-close' (click)='didTapCloseResource(resource, editor, $event)'>\n                                                &nbsp;{{ resource.changed ? '&bull;' : '&times;' }}\n                                            </span>\n                                        </div>\n                                    </div>\n                                    <div class=\"spacer\"></div>    \n                                    <ng-container *ngFor='let option of editor.options'>\n                                        <div class='tab-item' matTooltip='{{option.tooltip}}' *ngIf='option.enabled(editor.selection)' (click)='option.action(editor.selection)' >\n                                            <i class=\"{{option.icon}}\"></i>\n                                        </div>\n                                    </ng-container>\n                                    <div *ngIf='editor.type===\"code\"' class='tab-item' matTooltip='More Options' [matMenuTriggerFor]=\"editorMenu\">\n                                        <i class=\"fas fa-ellipsis-h\"></i>\n                                    </div>\n                                    <mat-menu #editorMenu=\"matMenu\">\n                                        <button mat-menu-item (click)='editor.save(editor.selection)'>Save (Ctrl+S)</button>\n                                        <button mat-menu-item (click)='editor.saveAll()'>Save All (Ctrl+Alt+S)</button>\n                                        <button mat-menu-item (click)='editor.closeConfirm(editor.selection)'>Close (Ctrl+W)</button>\n                                        <button mat-menu-item (click)='editor.closeAllConfirm()'>Close All (Ctrl+Alt+W)</button>\n                                        <button mat-menu-item (click)='editor.closeSaved()'>Close Saved</button>\n                                    </mat-menu>\n                                </div>  \n                                <ng-container [ngSwitch]=\"editor.type\">\n                                    <!-- code editor -->\n                                    <ng-container *ngSwitchCase=\"'code'\">\n                                        <ngx-monaco-diff-editor [hidden]='!editor.diffMode' class='code-editor' [options]=\"{}\" [originalModel]='{}' [modifiedModel]='{}' (onInit)=\"editor.onInitDiff($event)\"></ngx-monaco-diff-editor>\n                                        <ngx-monaco-editor [hidden]='editor.diffMode' class='code-editor' [options]=\"{}\" [model]='{}' (onInit)=\"editor.onInit($event)\"></ngx-monaco-editor>\n                                    </ng-container>\n                                    <!-- preview editor -->\n                                    <div *ngSwitchCase=\"'preview'\" class='preview-editor'>\n                                        <div class='preview-editor__content' [innerHTML]='editor.content() | sanitizeHtml' runScripts></div>\n                                    </div>\n                                    <!-- image editor -->\n                                    <div *ngSwitchCase=\"'image'\" class='image-editor'>\n                                        <img src='{{editor.selection.image}}'  [ngStyle]='{zoom: editor.zoom}' />\n                                        <div class='code-editor__btn-group'>\n                                            <div class='code-editor__btn' matTooltip='Zoom In' (click)='editor.zoomIn()'>\n                                                <i class=\"fas fa-plus\"></i>\n                                            </div>\n                                            <div class='code-editor__btn' matTooltip='Zoom Out' (click)='editor.zoomOut()'>\n                                                <i class=\"fas fa-minus\"></i>\n                                            </div>\n                                        </div>\n                                    </div>  \n                                </ng-container>\n                        </as-split-area>\n                    </as-split>\n                    <ng-template #notEditor>\n                        <div class='editor-home'>\n                            <h3> PL Editor </h3>\n                            <br/>\n                            <mat-list>\n                                <h3 matSubheader><i class=\"fas fa-plus fa-2x\"></i> &nbsp;&nbsp;Shorcuts</h3>\n                                <mat-list-item>\n                                    <p matLine> Save: Ctrl+S </p>\n                                    <p matLine> Save: All Ctrl+Alt+S </p>\n                                    <p matLine> Close: Ctrl+W </p>\n                                    <p matLine> Close: All Ctrl+Alt+W </p>\n                                    <p matLine> Show All Commands: F1 </p>\n                                </mat-list-item>\n                                <mat-divider></mat-divider>\n                                <h3 matSubheader><i class=\"far fa-lightbulb fa-2x\"></i> &nbsp;&nbsp; Intellisense</h3>\n                                <mat-list-item>\n                                    <p matLine> Auto Completion: Ctrl+Space</p>\n                                </mat-list-item>\n                            </mat-list>\n                        </div>\n                    </ng-template>\n                </as-split-area>\n                <as-split-area [(size)]='console.size' style='overflow: hidden;'>\n                    <app-console #console></app-console>\n                </as-split-area>\n            </as-split>\n        </as-split-area>\n    </as-split>\n  </div>\n  <app-footer></app-footer>\n</div>"
 
 /***/ }),
 
@@ -435,7 +435,7 @@ module.exports = "<div class='editor-host'>\n  <div class='editor__container'>\n
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".editor-host {\n  position: relative;\n  padding: 0;\n  margin: 0;\n  display: flex;\n  flex-flow: column;\n  height: calc(100vh - 64px);\n  color: #5a5a5a; }\n\n.editor__container {\n  position: relative;\n  display: flex;\n  flex: 1;\n  overflow: hidden; }\n\n.tab-bar {\n  z-index: 1;\n  display: flex;\n  position: relative;\n  height: 36px;\n  align-items: center;\n  overflow-x: auto;\n  overflow-y: hidden;\n  background-color: #F5F5F5; }\n\n.tab-item {\n  display: inline-flex;\n  height: 100%;\n  align-items: center;\n  position: relative;\n  font-size: 14px;\n  color: #5a5a5a;\n  font-style: normal;\n  padding: 0px 12px;\n  cursor: pointer; }\n\n.editor__workspace-container {\n  position: relative; }\n\n.editor__workspace-container .editor__workspace {\n    height: 100%; }\n\n.editor__workspace-container .tab-bar .item-group {\n    display: flex;\n    align-items: center;\n    height: 100%;\n    width: 100%; }\n\n.editor__workspace-container .tab-item {\n    background-color: #ecedf0; }\n\n.editor__workspace-container .tab-item.active {\n      background-color: #FFF; }\n\n.editor__workspace-container .tab-item .tab-icon {\n      margin-right: 4px; }\n\n.editor__workspace-container .tab-item .tab-close {\n      font-size: 18px; }\n\n.editor__workspace-container .tab-item .tab-close:hover {\n        opacity: 1; }\n\n.editor__workspace-container .tab-item.changed .tab-close {\n      color: red;\n      font-size: 36px; }\n\n.editor__workspace-container .code-editor, .editor__workspace-container .preview-editor, .editor__workspace-container .image-editor {\n    height: calc(100%); }\n\n.editor__workspace-container .image-editor {\n    background-color: #fff;\n    background-size: 100% 1.2em;\n    background-image: linear-gradient(0deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px), linear-gradient(#eee 0.05em, transparent 0.05em); }\n\n.editor__workspace-container .image-editor img {\n      margin: auto;\n      position: absolute;\n      top: 0;\n      left: 0;\n      bottom: 0;\n      right: 0; }\n\n.editor__workspace-container .image-editor .code-editor__btn-group {\n      position: absolute;\n      top: 48px;\n      right: 12px;\n      width: 32px; }\n\n.editor__workspace-container .image-editor .code-editor__btn {\n      background-color: #ecedf0;\n      width: 32px;\n      height: 32px;\n      border-radius: 2px 4px;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      cursor: zoom-in;\n      margin-bottom: 8px; }\n\n.editor__workspace-container .preview-editor {\n    overflow: auto; }\n\n.editor__workspace-container .preview-editor .preview-editor__content {\n      width: 100%;\n      height: 100%;\n      overflow: auto;\n      padding: 0 12px; }\n\n.sidebar-panel {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  background-color: #ecedf0;\n  overflow: hidden; }\n\n.sidebar-panel .tab-bar {\n    font-size: 1rem;\n    padding: 0 0 0 16px; }\n\n.sidebar-panel .sidebar-panel__content {\n    position: relative;\n    margin-top: 8px;\n    overflow-y: auto;\n    margin: 0;\n    height: calc(100% - 36px); }\n\n.spacer {\n  flex-grow: 1; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL2VkaXRvci5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFHQTtFQUNJLG1CQUFrQjtFQUNsQixXQUFVO0VBQ1YsVUFBUztFQUNULGNBQWE7RUFDYixrQkFBaUI7RUFDakIsMkJBQXVDO0VBQ3ZDLGVBQWMsRUFDakI7O0FBRUQ7RUFDSSxtQkFBa0I7RUFDbEIsY0FBYTtFQUNiLFFBQU87RUFDUCxpQkFBZ0IsRUFDbkI7O0FBRUQ7RUFDSSxXQUFVO0VBQ1YsY0FBYTtFQUNiLG1CQUFrQjtFQUNsQixhQXZCYTtFQXdCYixvQkFBbUI7RUFDbkIsaUJBQWdCO0VBQ2hCLG1CQUFrQjtFQUNsQiwwQkFBeUIsRUFDNUI7O0FBRUQ7RUFDSSxxQkFBb0I7RUFDcEIsYUFBWTtFQUNaLG9CQUFtQjtFQUNuQixtQkFBa0I7RUFDbEIsZ0JBQWU7RUFDZixlQUFjO0VBQ2QsbUJBQWtCO0VBQ2xCLGtCQUFpQjtFQUNqQixnQkFBZSxFQUNsQjs7QUFFRDtFQUNJLG1CQUFrQixFQXlGckI7O0FBMUZEO0lBR1EsYUFBWSxFQUNmOztBQUpMO0lBT1EsY0FBYTtJQUNiLG9CQUFtQjtJQUNuQixhQUFZO0lBQ1osWUFBVyxFQUNkOztBQVhMO0lBY1EsMEJBQXlCLEVBcUI1Qjs7QUFuQ0w7TUFpQlksdUJBQXNCLEVBQ3pCOztBQWxCVDtNQXFCWSxrQkFBaUIsRUFDcEI7O0FBdEJUO01BeUJZLGdCQUFlLEVBSWxCOztBQTdCVDtRQTJCZ0IsV0FBVSxFQUNiOztBQTVCYjtNQWdDWSxXQUFTO01BQ1QsZ0JBQWUsRUFDbEI7O0FBbENUO0lBc0NRLG1CQUFrQixFQUNyQjs7QUF2Q0w7SUEwQ1EsdUJBQXNCO0lBQ3RCLDRCQUEyQjtJQVMzQiwwSkFDOEQsRUEwQmpFOztBQS9FTDtNQXdEWSxhQUFZO01BQ1osbUJBQWtCO01BQ2xCLE9BQU07TUFBRSxRQUFPO01BQUUsVUFBUztNQUFFLFNBQVEsRUFDdkM7O0FBM0RUO01BOERZLG1CQUFrQjtNQUNsQixVQUFTO01BQ1QsWUFBVztNQUNYLFlBQVcsRUFDZDs7QUFsRVQ7TUFxRVksMEJBQXlCO01BQ3pCLFlBQVc7TUFDWCxhQUFZO01BQ1osdUJBQXNCO01BQ3RCLGNBQWE7TUFDYixvQkFBbUI7TUFDbkIsd0JBQXVCO01BQ3ZCLGdCQUFlO01BQ2YsbUJBQWtCLEVBQ3JCOztBQTlFVDtJQWtGUSxlQUFjLEVBT2pCOztBQXpGTDtNQW9GWSxZQUFXO01BQ1gsYUFBWTtNQUNaLGVBQWM7TUFDZCxnQkFBZSxFQUNsQjs7QUFLVDtFQUNJLG1CQUFrQjtFQUNsQixZQUFXO0VBQ1gsYUFBWTtFQUNaLDBCQUF5QjtFQUN6QixpQkFBZ0IsRUFjbkI7O0FBbkJEO0lBUVEsZ0JBQWU7SUFDZixvQkFBbUIsRUFDdEI7O0FBVkw7SUFhUSxtQkFBa0I7SUFDbEIsZ0JBQWU7SUFDZixpQkFBZ0I7SUFDaEIsVUFBUztJQUNULDBCQUF5QixFQUM1Qjs7QUFHTDtFQUNJLGFBQVksRUFDZiIsImZpbGUiOiJzcmMvYXBwL2VkaXRvci9lZGl0b3IuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIkaGVhZGVyLWhlaWdodDogNjRweDtcbiR0YWItaGVpZ2h0OiAzNnB4O1xuXG4uZWRpdG9yLWhvc3Qge1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBwYWRkaW5nOiAwO1xuICAgIG1hcmdpbjogMDtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGZsZXgtZmxvdzogY29sdW1uO1xuICAgIGhlaWdodDogY2FsYygxMDB2aCAtICN7JGhlYWRlci1oZWlnaHR9KTtcbiAgICBjb2xvcjogIzVhNWE1YTtcbn1cblxuLmVkaXRvcl9fY29udGFpbmVyIHtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBmbGV4OiAxO1xuICAgIG92ZXJmbG93OiBoaWRkZW47XG59XG5cbi50YWItYmFyIHtcbiAgICB6LWluZGV4OiAxO1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgIGhlaWdodDogJHRhYi1oZWlnaHQ7XG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICBvdmVyZmxvdy14OiBhdXRvO1xuICAgIG92ZXJmbG93LXk6IGhpZGRlbjtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjRjVGNUY1O1xufVxuXG4udGFiLWl0ZW0ge1xuICAgIGRpc3BsYXk6IGlubGluZS1mbGV4O1xuICAgIGhlaWdodDogMTAwJTtcbiAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBmb250LXNpemU6IDE0cHg7XG4gICAgY29sb3I6ICM1YTVhNWE7XG4gICAgZm9udC1zdHlsZTogbm9ybWFsO1xuICAgIHBhZGRpbmc6IDBweCAxMnB4O1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbn1cblxuLmVkaXRvcl9fd29ya3NwYWNlLWNvbnRhaW5lciAge1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAuZWRpdG9yX193b3Jrc3BhY2Uge1xuICAgICAgICBoZWlnaHQ6IDEwMCU7XG4gICAgfVxuICAgIFxuICAgIC50YWItYmFyICAuaXRlbS1ncm91cCB7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGhlaWdodDogMTAwJTtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgfVxuICAgIFxuICAgIC50YWItaXRlbSB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6ICNlY2VkZjA7XG5cbiAgICAgICAgJi5hY3RpdmUge1xuICAgICAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogI0ZGRjtcbiAgICAgICAgfVxuXG4gICAgICAgIC50YWItaWNvbiB7XG4gICAgICAgICAgICBtYXJnaW4tcmlnaHQ6IDRweDtcbiAgICAgICAgfVxuXG4gICAgICAgIC50YWItY2xvc2Uge1xuICAgICAgICAgICAgZm9udC1zaXplOiAxOHB4O1xuICAgICAgICAgICAgJjpob3ZlciB7XG4gICAgICAgICAgICAgICAgb3BhY2l0eTogMTtcbiAgICAgICAgICAgIH1cbiAgICAgICAgfVxuXG4gICAgICAgICYuY2hhbmdlZCAudGFiLWNsb3NlIHtcbiAgICAgICAgICAgIGNvbG9yOnJlZDtcbiAgICAgICAgICAgIGZvbnQtc2l6ZTogMzZweDtcbiAgICAgICAgfVxuICAgIH1cblxuICAgIC5jb2RlLWVkaXRvciwgLnByZXZpZXctZWRpdG9yLCAuaW1hZ2UtZWRpdG9yIHtcbiAgICAgICAgaGVpZ2h0OiBjYWxjKDEwMCUpO1xuICAgIH1cblxuICAgIC5pbWFnZS1lZGl0b3Ige1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjZmZmO1xuICAgICAgICBiYWNrZ3JvdW5kLXNpemU6IDEwMCUgMS4yZW07XG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6IC13ZWJraXQtbGluZWFyLWdyYWRpZW50KDBkZWcsIHRyYW5zcGFyZW50IDc5cHgsICNhYmNlZDQgNzlweCwgI2FiY2VkNCA4MXB4LCB0cmFuc3BhcmVudCA4MXB4KSxcbiAgICAgICAgICAgICAgICAgICAgICAgIC13ZWJraXQtbGluZWFyLWdyYWRpZW50KCNlZWUgLjA1ZW0sIHRyYW5zcGFyZW50IC4wNWVtKTtcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTogLW1vei1saW5lYXItZ3JhZGllbnQoMGRlZywgdHJhbnNwYXJlbnQgNzlweCwgI2FiY2VkNCA3OXB4LCAjYWJjZWQ0IDgxcHgsIHRyYW5zcGFyZW50IDgxcHgpLFxuICAgICAgICAgICAgICAgICAgICAgICAgLW1vei1saW5lYXItZ3JhZGllbnQoI2VlZSAuMDVlbSwgdHJhbnNwYXJlbnQgLjA1ZW0pO1xuICAgICAgICBiYWNrZ3JvdW5kLWltYWdlOiAtbXMtbGluZWFyLWdyYWRpZW50KDBkZWcsIHRyYW5zcGFyZW50IDc5cHgsICNhYmNlZDQgNzlweCwgI2FiY2VkNCA4MXB4LCB0cmFuc3BhcmVudCA4MXB4KSxcbiAgICAgICAgICAgICAgICAgICAgICAgIC1tcy1saW5lYXItZ3JhZGllbnQoI2VlZSAuMDVlbSwgdHJhbnNwYXJlbnQgLjA1ZW0pO1xuICAgICAgICBiYWNrZ3JvdW5kLWltYWdlOiAtby1saW5lYXItZ3JhZGllbnQoMGRlZywgdHJhbnNwYXJlbnQgNzlweCwgI2FiY2VkNCA3OXB4LCAjYWJjZWQ0IDgxcHgsIHRyYW5zcGFyZW50IDgxcHgpLFxuICAgICAgICAgICAgICAgICAgICAgICAgLW8tbGluZWFyLWdyYWRpZW50KCNlZWUgLjA1ZW0sIHRyYW5zcGFyZW50IC4wNWVtKTtcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTogbGluZWFyLWdyYWRpZW50KDBkZWcsIHRyYW5zcGFyZW50IDc5cHgsICNhYmNlZDQgNzlweCwgI2FiY2VkNCA4MXB4LCB0cmFuc3BhcmVudCA4MXB4KSxcbiAgICAgICAgICAgICAgICAgICAgICAgIGxpbmVhci1ncmFkaWVudCgjZWVlIC4wNWVtLCB0cmFuc3BhcmVudCAuMDVlbSk7XG4gICAgXG4gICAgICAgIGltZyB7XG4gICAgICAgICAgICBtYXJnaW46IGF1dG87XG4gICAgICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgICAgICB0b3A6IDA7IGxlZnQ6IDA7IGJvdHRvbTogMDsgcmlnaHQ6IDA7XG4gICAgICAgIH1cbiAgICBcbiAgICAgICAgLmNvZGUtZWRpdG9yX19idG4tZ3JvdXAge1xuICAgICAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICAgICAgdG9wOiA0OHB4O1xuICAgICAgICAgICAgcmlnaHQ6IDEycHg7XG4gICAgICAgICAgICB3aWR0aDogMzJweDtcbiAgICAgICAgfVxuXG4gICAgICAgIC5jb2RlLWVkaXRvcl9fYnRuIHtcbiAgICAgICAgICAgIGJhY2tncm91bmQtY29sb3I6ICNlY2VkZjA7XG4gICAgICAgICAgICB3aWR0aDogMzJweDtcbiAgICAgICAgICAgIGhlaWdodDogMzJweDtcbiAgICAgICAgICAgIGJvcmRlci1yYWRpdXM6IDJweCA0cHg7XG4gICAgICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICAgICAgY3Vyc29yOiB6b29tLWluO1xuICAgICAgICAgICAgbWFyZ2luLWJvdHRvbTogOHB4O1xuICAgICAgICB9XG4gICAgfVxuXG4gICAgLnByZXZpZXctZWRpdG9yIHtcbiAgICAgICAgb3ZlcmZsb3c6IGF1dG87XG4gICAgICAgIC5wcmV2aWV3LWVkaXRvcl9fY29udGVudCB7XG4gICAgICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgICAgIGhlaWdodDogMTAwJTtcbiAgICAgICAgICAgIG92ZXJmbG93OiBhdXRvO1xuICAgICAgICAgICAgcGFkZGluZzogMCAxMnB4O1xuICAgICAgICB9XG4gICAgfVxufVxuXG5cbi5zaWRlYmFyLXBhbmVsIHtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgaGVpZ2h0OiAxMDAlO1xuICAgIGJhY2tncm91bmQtY29sb3I6ICNlY2VkZjA7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICBcbiAgICAudGFiLWJhciB7IFxuICAgICAgICBmb250LXNpemU6IDFyZW07XG4gICAgICAgIHBhZGRpbmc6IDAgMCAwIDE2cHg7XG4gICAgfVxuICAgIFxuICAgIC5zaWRlYmFyLXBhbmVsX19jb250ZW50IHtcbiAgICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgICAgICBtYXJnaW4tdG9wOiA4cHg7XG4gICAgICAgIG92ZXJmbG93LXk6IGF1dG87XG4gICAgICAgIG1hcmdpbjogMDtcbiAgICAgICAgaGVpZ2h0OiBjYWxjKDEwMCUgLSAzNnB4KTtcbiAgICB9XG59XG5cbi5zcGFjZXIge1xuICAgIGZsZXgtZ3JvdzogMTtcbn1cbiJdfQ== */"
+module.exports = ".editor-host {\n  position: relative;\n  padding: 0;\n  margin: 0;\n  display: flex;\n  flex-flow: column;\n  height: calc(100vh - 64px);\n  color: #5a5a5a; }\n\n.editor__container {\n  position: relative;\n  display: flex;\n  flex: 1;\n  overflow: hidden; }\n\n.tab-bar {\n  z-index: 1;\n  display: flex;\n  position: relative;\n  height: 36px;\n  align-items: center;\n  overflow-x: auto;\n  overflow-y: hidden;\n  background-color: #F5F5F5; }\n\n.tab-item {\n  display: inline-flex;\n  height: 100%;\n  align-items: center;\n  position: relative;\n  font-size: 14px;\n  color: #5a5a5a;\n  font-style: normal;\n  padding: 0px 12px;\n  cursor: pointer; }\n\n.editor__workspace-container {\n  position: relative; }\n\n.editor__workspace-container .editor__workspace {\n    height: 100%; }\n\n.editor__workspace-container .tab-bar .item-group {\n    display: flex;\n    align-items: center;\n    height: 100%;\n    width: 100%; }\n\n.editor__workspace-container .tab-item {\n    background-color: #ecedf0; }\n\n.editor__workspace-container .tab-item.active {\n      background-color: #FFF; }\n\n.editor__workspace-container .tab-item .tab-icon {\n      margin-right: 4px; }\n\n.editor__workspace-container .tab-item .tab-close {\n      font-size: 18px; }\n\n.editor__workspace-container .tab-item .tab-close:hover {\n        opacity: 1; }\n\n.editor__workspace-container .tab-item.changed .tab-close {\n      color: red;\n      font-size: 36px; }\n\n.editor__workspace-container .code-editor, .editor__workspace-container .preview-editor, .editor__workspace-container .image-editor {\n    height: calc(100%); }\n\n.editor__workspace-container .image-editor {\n    background-color: #fff;\n    background-size: 100% 1.2em;\n    background-image: linear-gradient(0deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px), linear-gradient(#eee 0.05em, transparent 0.05em); }\n\n.editor__workspace-container .image-editor img {\n      margin: auto;\n      position: absolute;\n      top: 0;\n      left: 0;\n      bottom: 0;\n      right: 0; }\n\n.editor__workspace-container .image-editor .code-editor__btn-group {\n      position: absolute;\n      top: 48px;\n      right: 12px;\n      width: 32px; }\n\n.editor__workspace-container .image-editor .code-editor__btn {\n      background-color: #ecedf0;\n      width: 32px;\n      height: 32px;\n      border-radius: 2px 4px;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      cursor: zoom-in;\n      margin-bottom: 8px; }\n\n.editor__workspace-container .preview-editor {\n    overflow: auto; }\n\n.editor__workspace-container .preview-editor .preview-editor__content {\n      width: 100%;\n      height: 100%;\n      overflow: auto;\n      padding: 0 12px; }\n\n.sidebar-panel {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  background-color: #ecedf0;\n  overflow: hidden; }\n\n.sidebar-panel .tab-bar {\n    font-size: 1rem;\n    padding: 0 0 0 16px; }\n\n.sidebar-panel .sidebar-panel__content {\n    position: relative;\n    margin-top: 8px;\n    overflow-y: auto;\n    margin: 0;\n    height: calc(100% - 36px); }\n\n.spacer {\n  flex-grow: 1; }\n\n.editor-home {\n  text-align: center;\n  padding: 5rem 3rem; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL2VkaXRvci5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFHQTtFQUNJLG1CQUFrQjtFQUNsQixXQUFVO0VBQ1YsVUFBUztFQUNULGNBQWE7RUFDYixrQkFBaUI7RUFDakIsMkJBQXVDO0VBQ3ZDLGVBQWMsRUFDakI7O0FBRUQ7RUFDSSxtQkFBa0I7RUFDbEIsY0FBYTtFQUNiLFFBQU87RUFDUCxpQkFBZ0IsRUFDbkI7O0FBRUQ7RUFDSSxXQUFVO0VBQ1YsY0FBYTtFQUNiLG1CQUFrQjtFQUNsQixhQXZCYTtFQXdCYixvQkFBbUI7RUFDbkIsaUJBQWdCO0VBQ2hCLG1CQUFrQjtFQUNsQiwwQkFBeUIsRUFDNUI7O0FBRUQ7RUFDSSxxQkFBb0I7RUFDcEIsYUFBWTtFQUNaLG9CQUFtQjtFQUNuQixtQkFBa0I7RUFDbEIsZ0JBQWU7RUFDZixlQUFjO0VBQ2QsbUJBQWtCO0VBQ2xCLGtCQUFpQjtFQUNqQixnQkFBZSxFQUNsQjs7QUFFRDtFQUNJLG1CQUFrQixFQXlGckI7O0FBMUZEO0lBR1EsYUFBWSxFQUNmOztBQUpMO0lBT1EsY0FBYTtJQUNiLG9CQUFtQjtJQUNuQixhQUFZO0lBQ1osWUFBVyxFQUNkOztBQVhMO0lBY1EsMEJBQXlCLEVBcUI1Qjs7QUFuQ0w7TUFpQlksdUJBQXNCLEVBQ3pCOztBQWxCVDtNQXFCWSxrQkFBaUIsRUFDcEI7O0FBdEJUO01BeUJZLGdCQUFlLEVBSWxCOztBQTdCVDtRQTJCZ0IsV0FBVSxFQUNiOztBQTVCYjtNQWdDWSxXQUFTO01BQ1QsZ0JBQWUsRUFDbEI7O0FBbENUO0lBc0NRLG1CQUFrQixFQUNyQjs7QUF2Q0w7SUEwQ1EsdUJBQXNCO0lBQ3RCLDRCQUEyQjtJQVMzQiwwSkFDOEQsRUEwQmpFOztBQS9FTDtNQXdEWSxhQUFZO01BQ1osbUJBQWtCO01BQ2xCLE9BQU07TUFBRSxRQUFPO01BQUUsVUFBUztNQUFFLFNBQVEsRUFDdkM7O0FBM0RUO01BOERZLG1CQUFrQjtNQUNsQixVQUFTO01BQ1QsWUFBVztNQUNYLFlBQVcsRUFDZDs7QUFsRVQ7TUFxRVksMEJBQXlCO01BQ3pCLFlBQVc7TUFDWCxhQUFZO01BQ1osdUJBQXNCO01BQ3RCLGNBQWE7TUFDYixvQkFBbUI7TUFDbkIsd0JBQXVCO01BQ3ZCLGdCQUFlO01BQ2YsbUJBQWtCLEVBQ3JCOztBQTlFVDtJQWtGUSxlQUFjLEVBT2pCOztBQXpGTDtNQW9GWSxZQUFXO01BQ1gsYUFBWTtNQUNaLGVBQWM7TUFDZCxnQkFBZSxFQUNsQjs7QUFLVDtFQUNJLG1CQUFrQjtFQUNsQixZQUFXO0VBQ1gsYUFBWTtFQUNaLDBCQUF5QjtFQUN6QixpQkFBZ0IsRUFjbkI7O0FBbkJEO0lBUVEsZ0JBQWU7SUFDZixvQkFBbUIsRUFDdEI7O0FBVkw7SUFhUSxtQkFBa0I7SUFDbEIsZ0JBQWU7SUFDZixpQkFBZ0I7SUFDaEIsVUFBUztJQUNULDBCQUF5QixFQUM1Qjs7QUFHTDtFQUNJLGFBQVksRUFDZjs7QUFFRDtFQUNJLG1CQUFrQjtFQUNsQixtQkFBa0IsRUFDckIiLCJmaWxlIjoic3JjL2FwcC9lZGl0b3IvZWRpdG9yLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiJGhlYWRlci1oZWlnaHQ6IDY0cHg7XG4kdGFiLWhlaWdodDogMzZweDtcblxuLmVkaXRvci1ob3N0IHtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgcGFkZGluZzogMDtcbiAgICBtYXJnaW46IDA7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBmbGV4LWZsb3c6IGNvbHVtbjtcbiAgICBoZWlnaHQ6IGNhbGMoMTAwdmggLSAjeyRoZWFkZXItaGVpZ2h0fSk7XG4gICAgY29sb3I6ICM1YTVhNWE7XG59XG5cbi5lZGl0b3JfX2NvbnRhaW5lciB7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgZmxleDogMTtcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xufVxuXG4udGFiLWJhciB7XG4gICAgei1pbmRleDogMTtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBoZWlnaHQ6ICR0YWItaGVpZ2h0O1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgb3ZlcmZsb3cteDogYXV0bztcbiAgICBvdmVyZmxvdy15OiBoaWRkZW47XG4gICAgYmFja2dyb3VuZC1jb2xvcjogI0Y1RjVGNTtcbn1cblxuLnRhYi1pdGVtIHtcbiAgICBkaXNwbGF5OiBpbmxpbmUtZmxleDtcbiAgICBoZWlnaHQ6IDEwMCU7XG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgZm9udC1zaXplOiAxNHB4O1xuICAgIGNvbG9yOiAjNWE1YTVhO1xuICAgIGZvbnQtc3R5bGU6IG5vcm1hbDtcbiAgICBwYWRkaW5nOiAwcHggMTJweDtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi5lZGl0b3JfX3dvcmtzcGFjZS1jb250YWluZXIgIHtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgLmVkaXRvcl9fd29ya3NwYWNlIHtcbiAgICAgICAgaGVpZ2h0OiAxMDAlO1xuICAgIH1cbiAgICBcbiAgICAudGFiLWJhciAgLml0ZW0tZ3JvdXAge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBoZWlnaHQ6IDEwMCU7XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgIH1cbiAgICBcbiAgICAudGFiLWl0ZW0ge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjZWNlZGYwO1xuXG4gICAgICAgICYuYWN0aXZlIHtcbiAgICAgICAgICAgIGJhY2tncm91bmQtY29sb3I6ICNGRkY7XG4gICAgICAgIH1cblxuICAgICAgICAudGFiLWljb24ge1xuICAgICAgICAgICAgbWFyZ2luLXJpZ2h0OiA0cHg7XG4gICAgICAgIH1cblxuICAgICAgICAudGFiLWNsb3NlIHtcbiAgICAgICAgICAgIGZvbnQtc2l6ZTogMThweDtcbiAgICAgICAgICAgICY6aG92ZXIge1xuICAgICAgICAgICAgICAgIG9wYWNpdHk6IDE7XG4gICAgICAgICAgICB9XG4gICAgICAgIH1cblxuICAgICAgICAmLmNoYW5nZWQgLnRhYi1jbG9zZSB7XG4gICAgICAgICAgICBjb2xvcjpyZWQ7XG4gICAgICAgICAgICBmb250LXNpemU6IDM2cHg7XG4gICAgICAgIH1cbiAgICB9XG5cbiAgICAuY29kZS1lZGl0b3IsIC5wcmV2aWV3LWVkaXRvciwgLmltYWdlLWVkaXRvciB7XG4gICAgICAgIGhlaWdodDogY2FsYygxMDAlKTtcbiAgICB9XG5cbiAgICAuaW1hZ2UtZWRpdG9yIHtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogI2ZmZjtcbiAgICAgICAgYmFja2dyb3VuZC1zaXplOiAxMDAlIDEuMmVtO1xuICAgICAgICBiYWNrZ3JvdW5kLWltYWdlOiAtd2Via2l0LWxpbmVhci1ncmFkaWVudCgwZGVnLCB0cmFuc3BhcmVudCA3OXB4LCAjYWJjZWQ0IDc5cHgsICNhYmNlZDQgODFweCwgdHJhbnNwYXJlbnQgODFweCksXG4gICAgICAgICAgICAgICAgICAgICAgICAtd2Via2l0LWxpbmVhci1ncmFkaWVudCgjZWVlIC4wNWVtLCB0cmFuc3BhcmVudCAuMDVlbSk7XG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6IC1tb3otbGluZWFyLWdyYWRpZW50KDBkZWcsIHRyYW5zcGFyZW50IDc5cHgsICNhYmNlZDQgNzlweCwgI2FiY2VkNCA4MXB4LCB0cmFuc3BhcmVudCA4MXB4KSxcbiAgICAgICAgICAgICAgICAgICAgICAgIC1tb3otbGluZWFyLWdyYWRpZW50KCNlZWUgLjA1ZW0sIHRyYW5zcGFyZW50IC4wNWVtKTtcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTogLW1zLWxpbmVhci1ncmFkaWVudCgwZGVnLCB0cmFuc3BhcmVudCA3OXB4LCAjYWJjZWQ0IDc5cHgsICNhYmNlZDQgODFweCwgdHJhbnNwYXJlbnQgODFweCksXG4gICAgICAgICAgICAgICAgICAgICAgICAtbXMtbGluZWFyLWdyYWRpZW50KCNlZWUgLjA1ZW0sIHRyYW5zcGFyZW50IC4wNWVtKTtcbiAgICAgICAgYmFja2dyb3VuZC1pbWFnZTogLW8tbGluZWFyLWdyYWRpZW50KDBkZWcsIHRyYW5zcGFyZW50IDc5cHgsICNhYmNlZDQgNzlweCwgI2FiY2VkNCA4MXB4LCB0cmFuc3BhcmVudCA4MXB4KSxcbiAgICAgICAgICAgICAgICAgICAgICAgIC1vLWxpbmVhci1ncmFkaWVudCgjZWVlIC4wNWVtLCB0cmFuc3BhcmVudCAuMDVlbSk7XG4gICAgICAgIGJhY2tncm91bmQtaW1hZ2U6IGxpbmVhci1ncmFkaWVudCgwZGVnLCB0cmFuc3BhcmVudCA3OXB4LCAjYWJjZWQ0IDc5cHgsICNhYmNlZDQgODFweCwgdHJhbnNwYXJlbnQgODFweCksXG4gICAgICAgICAgICAgICAgICAgICAgICBsaW5lYXItZ3JhZGllbnQoI2VlZSAuMDVlbSwgdHJhbnNwYXJlbnQgLjA1ZW0pO1xuICAgIFxuICAgICAgICBpbWcge1xuICAgICAgICAgICAgbWFyZ2luOiBhdXRvO1xuICAgICAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICAgICAgdG9wOiAwOyBsZWZ0OiAwOyBib3R0b206IDA7IHJpZ2h0OiAwO1xuICAgICAgICB9XG4gICAgXG4gICAgICAgIC5jb2RlLWVkaXRvcl9fYnRuLWdyb3VwIHtcbiAgICAgICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgICAgICAgIHRvcDogNDhweDtcbiAgICAgICAgICAgIHJpZ2h0OiAxMnB4O1xuICAgICAgICAgICAgd2lkdGg6IDMycHg7XG4gICAgICAgIH1cblxuICAgICAgICAuY29kZS1lZGl0b3JfX2J0biB7XG4gICAgICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjZWNlZGYwO1xuICAgICAgICAgICAgd2lkdGg6IDMycHg7XG4gICAgICAgICAgICBoZWlnaHQ6IDMycHg7XG4gICAgICAgICAgICBib3JkZXItcmFkaXVzOiAycHggNHB4O1xuICAgICAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgICAgIGN1cnNvcjogem9vbS1pbjtcbiAgICAgICAgICAgIG1hcmdpbi1ib3R0b206IDhweDtcbiAgICAgICAgfVxuICAgIH1cblxuICAgIC5wcmV2aWV3LWVkaXRvciB7XG4gICAgICAgIG92ZXJmbG93OiBhdXRvO1xuICAgICAgICAucHJldmlldy1lZGl0b3JfX2NvbnRlbnQge1xuICAgICAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgICAgICBoZWlnaHQ6IDEwMCU7XG4gICAgICAgICAgICBvdmVyZmxvdzogYXV0bztcbiAgICAgICAgICAgIHBhZGRpbmc6IDAgMTJweDtcbiAgICAgICAgfVxuICAgIH1cbn1cblxuXG4uc2lkZWJhci1wYW5lbCB7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgIHdpZHRoOiAxMDAlO1xuICAgIGhlaWdodDogMTAwJTtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjZWNlZGYwO1xuICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgXG4gICAgLnRhYi1iYXIgeyBcbiAgICAgICAgZm9udC1zaXplOiAxcmVtO1xuICAgICAgICBwYWRkaW5nOiAwIDAgMCAxNnB4O1xuICAgIH1cbiAgICBcbiAgICAuc2lkZWJhci1wYW5lbF9fY29udGVudCB7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgbWFyZ2luLXRvcDogOHB4O1xuICAgICAgICBvdmVyZmxvdy15OiBhdXRvO1xuICAgICAgICBtYXJnaW46IDA7XG4gICAgICAgIGhlaWdodDogY2FsYygxMDAlIC0gMzZweCk7XG4gICAgfVxufVxuXG4uc3BhY2VyIHtcbiAgICBmbGV4LWdyb3c6IDE7XG59XG5cbi5lZGl0b3ItaG9tZSB7XG4gICAgdGV4dC1hbGlnbjogY2VudGVyO1xuICAgIHBhZGRpbmc6IDVyZW0gM3JlbTtcbn0iXX0= */"
 
 /***/ }),
 
@@ -485,10 +485,10 @@ var EditorComponent = /** @class */ (function () {
             }
         });
         this.editorService.subscribeSelectEvent(function (resource) {
-            _this.openResource(resource);
+            _this.open(resource);
         });
         this.editorService.subscribeDeleteEvent(function (resource) {
-            _this.closeResource(resource);
+            _this.close(resource);
         });
     };
     EditorComponent.prototype.detectChanges = function () {
@@ -518,7 +518,7 @@ var EditorComponent = /** @class */ (function () {
     EditorComponent.prototype.confirm = function (options) {
         return this.notification.confirmAsync(options);
     };
-    EditorComponent.prototype.openResource = function (resource) {
+    EditorComponent.prototype.open = function (resource) {
         var _this = this;
         this.editorService.open(resource).then(function (opened) {
             if (opened) {
@@ -539,7 +539,28 @@ var EditorComponent = /** @class */ (function () {
             _this.logging.error(error);
         });
     };
-    EditorComponent.prototype.closeResource = function (resource) {
+    EditorComponent.prototype.openAsPath = function (path) {
+        this.open(this.editorService.find(path));
+    };
+    EditorComponent.prototype.findReference = function (resource, path) {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var error_1;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, this.editorService.findReference(resource, path)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                    case 2:
+                        error_1 = _a.sent();
+                        this.logging.error('cannot resolve reference ' + path);
+                        return [2 /*return*/, undefined];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    EditorComponent.prototype.close = function (resource) {
         var i = 0;
         var contains = false;
         while (true) {
@@ -559,7 +580,7 @@ var EditorComponent = /** @class */ (function () {
     };
     EditorComponent.prototype.save = function (resource) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var error_1;
+            var error_2;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -571,8 +592,8 @@ var EditorComponent = /** @class */ (function () {
                         this.detectChanges();
                         return [2 /*return*/, true];
                     case 2:
-                        error_1 = _a.sent();
-                        this.notification.error(error_1);
+                        error_2 = _a.sent();
+                        this.notification.error(error_2);
                         return [2 /*return*/, false];
                     case 3: return [2 /*return*/];
                 }
@@ -618,13 +639,14 @@ var EditorComponent = /** @class */ (function () {
 /*!*****************************************!*\
   !*** ./src/app/editor/editor.config.ts ***!
   \*****************************************/
-/*! exports provided: PREMIER_LANGAGE, LANGUAGES, MONACO_CONFIG, onMonacoLoad */
+/*! exports provided: PREMIER_LANGAGE, LANGUAGES, CODE_LENS_PROVIDER, MONACO_CONFIG, onMonacoLoad */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PREMIER_LANGAGE", function() { return PREMIER_LANGAGE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LANGUAGES", function() { return LANGUAGES; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CODE_LENS_PROVIDER", function() { return CODE_LENS_PROVIDER; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MONACO_CONFIG", function() { return MONACO_CONFIG; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "onMonacoLoad", function() { return onMonacoLoad; });
 var PREMIER_LANGAGE = 'premierlangage';
@@ -650,6 +672,7 @@ var LANGUAGES = {
     pl: 'premierlangage',
     pltp: 'premierlangage'
 };
+var CODE_LENS_PROVIDER = [];
 var MONACO_CONFIG = {
     baseUrl: '/static/filebrowser/app/assets',
     defaultOptions: {
@@ -672,27 +695,73 @@ var MONACO_CONFIG = {
     onMonacoLoad: onMonacoLoad
 };
 function onMonacoLoad() {
-    var monaco = window.monaco;
-    var editor = monaco.editor;
-    var SPECIAL_PATTERN = /(title|author|introduction|introductionh|teacher|text|texth|build|before|form|template|extends|builder|grader)(?=(=|(\+=)|=%))/;
-    var VARIABLE_PATTERN = /\w+(\.\w+)*(?=(=|\+=|=%|==))/;
     var REFERENCE_PATTERN = /(@|(template|grader|builder|extends|builder|grader)\s*=)[~\s\/]*(\w+:\/)?([a-zA-Z0-9_\./]+)/;
+    var OPEN_PATTERN = /^[a-zA-Z_](\.?\w+)*(==)|(%=)/;
+    var CLOSE_PATTERN = /^==\s*$/;
+    var BUILT_IN_WORDS = {
+        title: "Titre de l'exercice/feuille d'exercice",
+        author: "Auteur de l'exercice",
+        introduction: "Présentation de la feuille d'exercice, le contenu de cette clé est interprété comme du markdown.",
+        teacher: "Sur un PLTP, affiche un note visible par les enseignant seulement",
+        text: "Énoncé de l'exercice, le contenu de cette clé est interprété comme du markdown.",
+        build: "Clé contenant une fonction build (ancienne syntaxe: utiliser de préférence before), à utiliser avec le builder /builder/build.py",
+        before: "Code python permettant de modifier l'exercice avant sont exécution sur le navigateur",
+        form: "Formulaire HTML permettant à l'élève de répondre",
+        template: "Définie template comme étant la base de ce fichier",
+    };
+    var monaco = window.monaco;
     monaco.languages.register({ id: PREMIER_LANGAGE });
+    // Register a tokens provider for the language
     monaco.languages.setMonarchTokensProvider(PREMIER_LANGAGE, {
+        // Set defaultToken to invalid to see what you do not tokenize yet
+        //defaultToken: 'invalid',
+        keywords: [
+            'title', 'author', 'introduction', 'teacher', 'text', 'build', 'before', 'form', 'template'
+        ],
+        operators: [
+            '=', '+', '@', '%', '==', '+=', '=@', '+=@',
+        ],
         tokenizer: {
             root: [
-                [SPECIAL_PATTERN, 'special'],
-                [VARIABLE_PATTERN, 'variable'],
-                [REFERENCE_PATTERN, 'reference']
-            ]
-        }
+                [
+                    // (?=\s*(=|\+|\@|\%|(==)|(\+=)|(=\@)|(\+=\@)))
+                    /^[a-zA-Z_](\.?\w+)*/, {
+                        cases: {
+                            '@default': 'key'
+                        }
+                    }
+                ],
+                [/#.+/, 'comment'],
+                [/==/, { token: 'open', next: '@embedded' }],
+                [/%=/, { token: 'open', next: '@predefined', nextEmbedded: 'javascript' }],
+                [/\{\{[a-zA-Z_](\.?\w+)\}\}/, 'key'],
+                // numbers
+                [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
+                [/0[xX][0-9a-fA-F]+/, 'number.hex'],
+                [/\d+/, 'number'],
+                // whitespace
+                { include: '@whitespace' },
+            ],
+            embedded: [
+                [/#\|(\w+)\|/, { token: 'string', next: '@predefined', nextEmbedded: '$1' }],
+                [/\{\{[a-zA-Z_](\.?\w+)\}\}/, 'key'],
+                [/^==\s*$/, { token: 'close', next: '@pop' }],
+            ],
+            predefined: [
+                ['(?=\w+)==', 'string'],
+                [/\{\{[a-zA-Z_](\.?\w+)\}\}/, 'key'],
+                [/^==\s*$/, { token: 'close', next: '@root', nextEmbedded: '@pop' }],
+            ],
+            whitespace: [
+                [/[ \t\r\n]+/, 'white'],
+            ],
+        },
     });
-    editor.defineTheme(PREMIER_LANGAGE, {
+    monaco.editor.defineTheme(PREMIER_LANGAGE, {
         base: 'vs',
         inherit: true,
         rules: [
-            { token: 'special', foreground: '1382dd', fontStyle: 'bold' },
-            { token: 'variable', foreground: '1382dd' },
+            { token: 'key', foreground: '1382dd', fontStyle: 'bold' },
         ]
     });
 }
@@ -1093,9 +1162,35 @@ var EditorService = /** @class */ (function () {
             });
         });
     };
+    EditorService.prototype.findReference = function (resource, path) {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var params, response, error_6;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        this.emitTaskEvent(true, 'resolve path');
+                        params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]()
+                            .set('name', 'resolve_path')
+                            .set('path', resource.path)
+                            .set('target', path);
+                        return [4 /*yield*/, this.http.get('filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        this.emitTaskEvent(false, 'resolve path');
+                        return [2 /*return*/, this.find(response)];
+                    case 2:
+                        error_6 = _a.sent();
+                        this.emitTaskEvent(false, 'resolve path');
+                        throw error_6;
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     EditorService.prototype.compilePL = function (resource) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var response, data, headers, error_6;
+            var response, data, headers, error_7;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -1113,9 +1208,9 @@ var EditorService = /** @class */ (function () {
                         response = _a.sent();
                         return [3 /*break*/, 3];
                     case 2:
-                        error_6 = _a.sent();
+                        error_7 = _a.sent();
                         this.emitTaskEvent(false, 'compilation');
-                        throw error_6;
+                        throw error_7;
                     case 3:
                         this.emitTaskEvent(false, 'compilation');
                         return [2 /*return*/, response];
@@ -2467,7 +2562,7 @@ var GitComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"sidebar-panel\">\n    <div class='tab-bar border-bottom'>\n        <span>SEARCH</span>       \n        <div class=\"spacer\"></div>\n        <div class='tab-item' (click)='changeMode(\"F\")' matTooltip='Search File'>\n            <i class=\"fas fa-file\"></i>\n        </div>\n        <div class='tab-item' (click)='changeMode(\"T\")' matTooltip='Search Text'>\n            <i class=\"fas fa-font\"></i>\n        </div>\n    </div>\n    <div class=\"sidebar-panel__content\">\n        <mat-form-field class='search'>\n            <input appAutoFocus matInput placeholder=\"Press enter to search\" (keydown)='search($event)' [(ngModel)]='searchValue'>\n        </mat-form-field>\n        <app-explorer [resources]='result'></app-explorer>\n    </div>\n</div>"
+module.exports = "<div class=\"sidebar-panel\">\n    <div class='tab-bar border-bottom'>\n        <span>SEARCH</span>       \n        <div class=\"spacer\"></div>\n<!--         <div class='tab-item' (click)='changeMode(\"F\")' matTooltip='Search File'>\n            <i class=\"fas fa-file\"></i>\n        </div>\n        <div class='tab-item' (click)='changeMode(\"T\")' matTooltip='Search Text'>\n            <i class=\"fas fa-font\"></i>\n        </div> -->\n    </div>\n    <div class=\"sidebar-panel__content\">\n        <mat-form-field class='search'>\n            <input appAutoFocus matInput placeholder=\"Press enter to search\" (keydown)='search($event)' [(ngModel)]='searchValue'>\n        </mat-form-field>\n        <app-explorer [resources]='result'></app-explorer>\n    </div>\n</div>"
 
 /***/ }),
 
@@ -2547,7 +2642,7 @@ var SearchComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<img class='sidebar-icon' src='static/filebrowser/app/assets/icons/explorer.svg' matTooltip=\"Explorer\" (click)='didTapButton(0)'/>\n<img class='sidebar-icon' src='static/filebrowser/app/assets/icons/search.svg' matTooltip=\"Search\" (click)='didTapButton(1)'/>\n<div [matBadge]=\"gitBadge()\" matTooltip=\"Git\">\n    <img class='sidebar-icon' src='static/filebrowser/app/assets/icons/git.svg' (click)='didTapButton(2)'/>\n</div>\n<div [matBadge]=\"consoleBadge()\" matTooltip=\"Console\">\n    <div class='sidebar-icon'(click)='didTapButton(3)'>\n        <i class='fas fa-info'></i>\n    </div>\n</div>\n<div class='spacer'></div>\n<img class='sidebar-icon' src='static/filebrowser/app/assets/icons/settings.svg'  matTooltip=\"Settings\" (click)='didTapButton(4)'/>"
+module.exports = "<img class='sidebar-icon' src='static/filebrowser/app/assets/icons/explorer.svg' matTooltip=\"Explorer\" (click)='didTapButton(0)'/>\n<img class='sidebar-icon' src='static/filebrowser/app/assets/icons/search.svg' matTooltip=\"Search\" (click)='didTapButton(1)'/>\n<div [matBadge]=\"gitBadge()\" matTooltip=\"Git\">\n    <img class='sidebar-icon' src='static/filebrowser/app/assets/icons/git.svg' (click)='didTapButton(2)'/>\n</div>\n<div [matBadge]=\"consoleBadge()\" matTooltip=\"Console\">\n    <div class='sidebar-icon'(click)='didTapButton(3)'>\n        <i class='fas fa-info'></i>\n    </div>\n</div>\n<div class='spacer'></div>\n<!-- <img class='sidebar-icon' src='static/filebrowser/app/assets/icons/settings.svg'  matTooltip=\"Settings\" (click)='didTapButton(4)'/> -->"
 
 /***/ }),
 
@@ -2635,6 +2730,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _editor_editor_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../editor/editor.utils */ "./src/app/editor/editor.utils.ts");
 /* harmony import */ var _editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./editor */ "./src/app/models/editor.ts");
+/* harmony import */ var _editor_editor_config__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../editor/editor.config */ "./src/app/editor/editor.config.ts");
+
 
 
 
@@ -2642,6 +2739,7 @@ var CodeEditor = /** @class */ (function (_super) {
     tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](CodeEditor, _super);
     function CodeEditor(component, resource) {
         var _this = _super.call(this, component, resource) || this;
+        _this.compiled = [];
         _this.type = 'code';
         _this.loadOptions();
         return _this;
@@ -2694,10 +2792,10 @@ var CodeEditor = /** @class */ (function (_super) {
                 var originalModel = monaco.editor.createModel(value || '', Object(_editor_editor_utils__WEBPACK_IMPORTED_MODULE_1__["language"])(resource));
                 _this.diffEditor.setModel({
                     original: originalModel,
-                    modified: _this.editor.model
+                    modified: _this.editor.getModel()
                 });
-                _this.diffEditor.modifiedEditor.updateOptions({ readOnly: !resource.write });
-                _this.diffEditor.modifiedEditor.focus();
+                _this.diffEditor.getModifiedEditor().updateOptions({ readOnly: !resource.write });
+                _this.diffEditor.getModifiedEditor().focus();
             });
         }
         else {
@@ -2706,39 +2804,22 @@ var CodeEditor = /** @class */ (function (_super) {
         if (!resource.changed) {
             this.changes[resource.path] = resource.content;
         }
+        this.compile(resource);
         _super.prototype.open.call(this, resource);
-    };
-    CodeEditor.prototype.addCommands = function (editor) {
-        var _this = this;
-        var self = this;
-        editor.onDidChangeModelContent(function () {
-            self.didChange();
-        });
-        editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyCode.KEY_S, function () {
-            self.save(_this.selection);
-        });
-        editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyMod.Alt | monaco.KeyCode.KEY_S, function () {
-            self.saveAll();
-        });
-        editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyCode.KEY_W, function () {
-            self.closeConfirm(_this.selection);
-        });
-        editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyMod.Alt | monaco.KeyCode.KEY_W, function () {
-            self.closeAllConfirm();
-        });
     };
     CodeEditor.prototype.onInit = function (editor) {
         this.editor = editor;
         this.addCommands(this.editor);
         this.open(this.selection);
+        this.configEditor(editor);
     };
     CodeEditor.prototype.onInitDiff = function (editor) {
         this.diffEditor = editor;
-        this.addCommands(this.diffEditor.modifiedEditor);
+        this.addCommands(this.diffEditor.getModifiedEditor());
     };
     CodeEditor.prototype.didChange = function () {
         if (this.diffMode) {
-            this.selection.content = this.diffEditor.modifiedEditor.getValue();
+            this.selection.content = this.diffEditor.getModifiedEditor().getValue();
         }
         else {
             this.selection.content = this.editor.getValue();
@@ -2752,9 +2833,15 @@ var CodeEditor = /** @class */ (function (_super) {
         return Object(_editor_editor_utils__WEBPACK_IMPORTED_MODULE_1__["isRepo"])(resource) && !this.diffMode;
     };
     CodeEditor.prototype.onSaved = function (resource) {
+        this.compile(resource);
+    };
+    CodeEditor.prototype.compile = function (resource) {
+        var _this = this;
         if (Object(_editor_editor_utils__WEBPACK_IMPORTED_MODULE_1__["isPl"])(resource)) {
             this.component.editorService.compilePL(resource).then((function (response) {
-                console.log(response);
+                if (response['compiled']) {
+                    _this.compiled[resource.path] = response['json'];
+                }
             }));
         }
     };
@@ -2762,6 +2849,239 @@ var CodeEditor = /** @class */ (function (_super) {
         resource.changed = false;
         resource.content = this.changes[resource.path];
         delete this.changes[resource.path];
+        delete this.compiled[resource.path];
+    };
+    CodeEditor.prototype.addCommands = function (editor) {
+        var _this = this;
+        var self = this;
+        editor.onDidChangeModelContent(function () {
+            self.didChange();
+        });
+        editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyCode.KEY_S, function () {
+            self.save(_this.selection);
+        }, '');
+        editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyMod.Alt | monaco.KeyCode.KEY_S, function () {
+            self.saveAll();
+        }, '');
+        editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyCode.KEY_W, function () {
+            self.closeConfirm(_this.selection);
+        }, '');
+        editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyMod.Alt | monaco.KeyCode.KEY_W, function () {
+            self.closeAllConfirm();
+        }, '');
+    };
+    CodeEditor.prototype.configEditor = function (editor) {
+        var self = this;
+        var REFERENCE_PATTERN = /(@|(template|grader|builder|extends|builder|grader)\s*=)\s*(\w+:\/)?([~a-zA-Z0-9_\.\/]+)/;
+        var OPEN_PATTERN = /^[a-zA-Z_](\.?\w+)*(==)|(%=)/;
+        var CLOSE_PATTERN = /^==\s*$/;
+        var BUILT_IN_WORDS = {
+            title: "Titre de l'exercice/feuille d'exercice",
+            author: "Auteur de l'exercice",
+            introduction: "Présentation de la feuille d'exercice, le contenu de cette clé est interprété comme du markdown.",
+            teacher: "Sur un PLTP, affiche un note visible par les enseignant seulement",
+            text: "Énoncé de l'exercice, le contenu de cette clé est interprété comme du markdown.",
+            build: "Clé contenant une fonction build (ancienne syntaxe: utiliser de préférence before), à utiliser avec le builder /builder/build.py",
+            before: "Code python permettant de modifier l'exercice avant sont exécution sur le navigateur",
+            form: "Formulaire HTML permettant à l'élève de répondre",
+            template: "Définie template comme étant la base de ce fichier",
+        };
+        /*monaco.languages.registerLinkProvider(PREMIER_LANGAGE, {
+            provideLinks: function(model, _token) {
+                let links = [];
+                const lines = model.getValue().split('\n');
+                let match;
+                for (let i = 0; i < lines.length; i++) {
+                    if (lines[i].trim().endsWith('==')) {
+                        i++;
+                        while (i < lines.length) {
+                            if (lines[i].trim().endsWith('==')) {
+                                break;
+                            }
+                            i++;
+                        }
+                    }
+                    match = REFERENCE_PATTERN.exec(lines[i]);
+                    if (match) {
+                        const url = match[match.length - 1];
+                        const index =  match.index + match.input.length - url.length;
+                        const range = new monaco.Range(i + 1, index, i + 1, index + url.length + 1);
+                        
+                        links.push({
+                            range: range,
+                            url: url,
+                        });
+                    }
+                }
+                return links;
+            },
+            resolveLink: function(link, _token) {
+                console.log(link)
+                return link;
+            }
+        });
+        */
+        monaco.languages.registerCodeLensProvider(_editor_editor_config__WEBPACK_IMPORTED_MODULE_3__["PREMIER_LANGAGE"], {
+            provideCodeLenses: function (model, _token) {
+                var links = [];
+                var lines = model.getValue().split('\n');
+                var match;
+                var _loop_1 = function (i) {
+                    if (lines[i].match(OPEN_PATTERN)) {
+                        i++;
+                        while (i < lines.length) {
+                            if (lines[i].match(CLOSE_PATTERN)) {
+                                break;
+                            }
+                            i++;
+                        }
+                    }
+                    match = REFERENCE_PATTERN.exec(lines[i]);
+                    if (match) {
+                        var url_1 = match[match.length - 1];
+                        var index = match.index + match.input.length - url_1.length;
+                        var range = new monaco.Range(i + 1, index, i + 1, index + url_1.length + 1);
+                        var comment = false;
+                        while (index >= 0) {
+                            if (lines[i][index] == "#") {
+                                comment = true;
+                                break;
+                            }
+                            index--;
+                        }
+                        if (!comment) {
+                            links.push({
+                                range: range,
+                                id: 'Open',
+                                command: {
+                                    id: editor.addCommand(0, function () {
+                                        self.component.findReference(self.selection, url_1).then((function (reference) {
+                                            if (reference) {
+                                                self.component.open(reference);
+                                            }
+                                        }));
+                                    }, ''),
+                                    title: 'Open',
+                                }
+                            });
+                        }
+                    }
+                    out_i_1 = i;
+                };
+                var out_i_1;
+                for (var i = 0; i < lines.length; i++) {
+                    _loop_1(i);
+                    i = out_i_1;
+                }
+                return links;
+            }
+        });
+        monaco.languages.registerFoldingRangeProvider(_editor_editor_config__WEBPACK_IMPORTED_MODULE_3__["PREMIER_LANGAGE"], {
+            provideFoldingRanges: function (model) {
+                var ranges = [];
+                var lines = model.getValue().split('\n');
+                var length = lines.length;
+                var i = 0, start = -1;
+                while (i < length) {
+                    if (lines[i].match(OPEN_PATTERN)) {
+                        start = i;
+                    }
+                    else if (lines[i].match(CLOSE_PATTERN)) {
+                        ranges.push({
+                            start: start + 1,
+                            end: i + 1,
+                            kind: monaco.languages.FoldingRangeKind.Region
+                        });
+                        start = -1;
+                    }
+                    i++;
+                }
+                return ranges;
+            }
+        });
+        monaco.languages.registerHoverProvider(_editor_editor_config__WEBPACK_IMPORTED_MODULE_3__["PREMIER_LANGAGE"], {
+            provideHover: function (model, position) {
+                var lineContent = model.getLineContent(position.lineNumber);
+                var token = model.getWordAtPosition(position);
+                if (token) {
+                    var keys = self.getKeys();
+                    var k = keys.find(function (e) { return e === token.word; });
+                    if (k) {
+                        var i = token.startColumn - 2;
+                        if (i > 0 && lineContent[i] == '{' && i - 1 >= 0 && lineContent[i - 1] == '{') {
+                            return {
+                                range: new monaco.Range(1, 1, 3, 10),
+                                contents: [
+                                    { value: k },
+                                    { value: self.getValue(k) }
+                                ]
+                            };
+                        }
+                    }
+                    if (token.word in BUILT_IN_WORDS) {
+                        var lineCount = model.getLineCount();
+                        return {
+                            range: new monaco.Range(1, 1, 3, model.getLineMaxColumn(lineCount)),
+                            contents: [
+                                { value: '**PL BUILT-IN**' },
+                                { value: BUILT_IN_WORDS[token.word] }
+                            ]
+                        };
+                    }
+                }
+            }
+        });
+        monaco.languages.registerCompletionItemProvider(_editor_editor_config__WEBPACK_IMPORTED_MODULE_3__["PREMIER_LANGAGE"], {
+            provideCompletionItems: function (model, position) {
+                var line = model.getLineContent(position.lineNumber);
+                if (line.includes('{{')) {
+                    return [];
+                }
+                return Object.keys(BUILT_IN_WORDS).map(function (name) { return ({
+                    label: name,
+                    detail: BUILT_IN_WORDS[name],
+                    insertText: name + '== #|python| \n\n==',
+                    kind: monaco.languages.CompletionItemKind.Snippet,
+                }); });
+            },
+        });
+        monaco.languages.registerCompletionItemProvider(_editor_editor_config__WEBPACK_IMPORTED_MODULE_3__["PREMIER_LANGAGE"], {
+            triggerCharacters: ['{{'],
+            provideCompletionItems: function (model, position) {
+                var line = model.getLineContent(position.lineNumber);
+                if (!line.includes('{{')) {
+                    return [];
+                }
+                var items = [];
+                var keys = self.getKeys();
+                if (keys.length > 0) {
+                    keys.forEach(function (k) {
+                        items.push({
+                            label: k,
+                            detail: '{{' + k + '}}',
+                            insertText: k + '}}',
+                            kind: monaco.languages.CompletionItemKind.Reference
+                        });
+                    });
+                }
+                return items;
+            }
+        });
+        editor.createContextKey('', {});
+    };
+    CodeEditor.prototype.getValue = function (k) {
+        var object = this.compiled[this.selection.path];
+        if (object) {
+            return object[k];
+        }
+        return '';
+    };
+    CodeEditor.prototype.getKeys = function () {
+        var object = this.compiled[this.selection.path];
+        if (object) {
+            return Object.keys(object).filter(function (k) { return !k.startsWith('__'); });
+        }
+        return [];
     };
     return CodeEditor;
 }(_editor__WEBPACK_IMPORTED_MODULE_2__["Editor"]));
