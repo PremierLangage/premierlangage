@@ -123,7 +123,7 @@ def reload_pltp(directory, rel_path, original):
             warnings += pl_warnings
             pl_list.append(pl)
         
-        originals = list(original.pl.all())
+        originals = list(original.indexed_pl())
         original.pl.clear()
         for pl in pl_list:
             correspond = list(

@@ -42,7 +42,7 @@ class PLTP(models.Model):
     def delete(self, *args, **kwargs):
         """ Overriding delete() to also delete his PL if they're not in
         relation with any other PLTP """
-        pl_list = self.pl.all()
+        pl_list = self.indexed_pl()
         logger.info("PLTP '" + self.sha1 + " (" + self.name + ")' has been deleted")
         for pl in pl_list:
             if len(pl.pltp_set.all()) <= 1:
