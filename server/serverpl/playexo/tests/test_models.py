@@ -83,7 +83,7 @@ class ModelTestCase(TestCase):
     def test_reload_activity(self):
         activity1 = Activity.objects.create(name="test", pltp=self.pltp)
         activity2 = Activity.objects.create(name="test", parent=activity1,
-                                            pltp=PLTP(sha1="", name="pltp test"))
+                                            pltp=PLTP.objects.create(sha1="", name="pltp test"))
         sessionactivity1 = SessionActivity.objects.create(user=self.user, activity=activity1)
         sessionactivity2 = SessionActivity.objects.create(user=self.user, activity=activity2)
         activity1.reload()
@@ -246,18 +246,18 @@ class ModelTestCase(TestCase):
     
     def test_pl_state(self):
         self.assertEqual(Answer.pltp_state(self.pltp, self.user),
-                         [(self.pltp.pl.all()[0].id, State.NOT_STARTED),
-                          (self.pltp.pl.all()[1].id, State.NOT_STARTED)])
-        Answer.objects.create(pl=self.pltp.pl.all()[0], user=self.user, grade=10)
+                         [(self.pltp.indexed_pl()[0].id, State.NOT_STARTED),
+                          (self.pltp.indexed_pl()[1].id, State.NOT_STARTED)])
+        Answer.objects.create(pl=self.pltp.indexed_pl()[0], user=self.user, grade=10)
         self.assertEqual(Answer.pltp_state(self.pltp, self.user),
-                         [(self.pltp.pl.all()[0].id, State.PART_SUCC),
-                          (self.pltp.pl.all()[1].id, State.NOT_STARTED)])
+                         [(self.pltp.indexed_pl()[0].id, State.PART_SUCC),
+                          (self.pltp.indexed_pl()[1].id, State.NOT_STARTED)])
     
     
     def test_pltp_summary(self):
         self.assertEqual(Answer.pltp_summary(self.pltp, self.user)[State.NOT_STARTED],
                          ['100.0', '2'])
-        Answer.objects.create(pl=self.pltp.pl.all()[0], user=self.user, grade=10)
+        Answer.objects.create(pl=self.pltp.indexed_pl()[0], user=self.user, grade=10)
         self.assertEqual(Answer.pltp_summary(self.pltp, self.user)[State.PART_SUCC], ['50.0', '1'])
     
     

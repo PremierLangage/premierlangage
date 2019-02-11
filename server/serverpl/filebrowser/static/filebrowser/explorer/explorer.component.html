@@ -7,6 +7,7 @@
                     type='text'
                     placeholder='Press enter to create esc to cancel...'
                     auto-focus='true' ng-model='resource.name'
+                    ng-blur='explorer.endEditing(resource, $event)'
                     ng-keydown='explorer.endEditing(resource, $event)'/>
             </span>
         </div>

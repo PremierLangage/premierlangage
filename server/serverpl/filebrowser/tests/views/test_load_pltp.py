@@ -3,10 +3,12 @@ import shutil
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.test import Client, override_settings, TestCase
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from filebrowser.models import Directory
+from loader.loader import load_file
+from playexo.models import Activity
 
 
 FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'filebrowser/tests/tmp')
@@ -41,67 +43,64 @@ class LoadPLTPTestCase(TestCase):
     
     def test_load_pltp(self):
         response = self.c.get(reverse("filebrowser:option"), {
-                'name': 'load_pltp',
-                'path': 'Yggdrasil/working.pltp',
+            'name': 'load_pltp',
+            'path': 'Yggdrasil/working.pltp',
         }, content_type='application/json')
         self.assertContains(response, "http://testserver/playexo/activity/1/", status_code=200)
     
     
     def test_load_pltp_no_path(self):
         response = self.c.get(reverse("filebrowser:option"), {
-                'name': 'load_pltp',
+            'name': 'load_pltp',
         }, content_type='application/json')
         self.assertContains(response, '"path" parameter is missing', status_code=400)
     
     
     def test_reload_pltp(self):
-        response = self.c.get(reverse("filebrowser:option"), {
-                'name': 'load_pltp',
-                'path': 'Yggdrasil/working.pltp',
-        }, content_type='application/json')
-        self.assertContains(response, "http://testserver/playexo/activity/1/", status_code=200)
+        pltp = load_file(self.dir, "working.pltp")[0]
+        a = Activity.objects.create(name=pltp.name, pltp=pltp)
         response = self.c.post(reverse("filebrowser:option"), {
-                'name'       : 'reload_pltp',
-                'path'       : 'Yggdrasil/working.pltp',
-                'activity_id': 1,
+            'name'       : 'reload_pltp',
+            'path'       : 'Yggdrasil/working.pltp',
+            'activity_id': a.pk,
         }, content_type='application/json')
         self.assertContains(response, "recharg", status_code=200)
     
     
     def test_reload_no_path(self):
         response = self.c.post(reverse("filebrowser:option"), {
-                'name'       : 'reload_pltp',
-                'activity_id': 1,
+            'name'       : 'reload_pltp',
+            'activity_id': 1,
         }, content_type='application/json')
         self.assertContains(response, "parameter 'path' is missing", status_code=400)
     
     
     def test_reload_no_activity_id(self):
         response = self.c.post(reverse("filebrowser:option"), {
-                'name': 'reload_pltp',
-                'path': 'Yggdrasil/working.pltp',
+            'name': 'reload_pltp',
+            'path': 'Yggdrasil/working.pltp',
         }, content_type='application/json')
         self.assertContains(response, "Missing 'activity_id' parameter", status_code=400)
     
     
     def test_test_pl(self):
         response = self.c.get(reverse("filebrowser:option"), {
-                'name': 'test_pl',
-                'path': 'Yggdrasil/working.pl',
+            'name': 'test_pl',
+            'path': 'Yggdrasil/working.pl',
         }, content_type='application/json')
         self.assertContains(response, "UPEM - PL", status_code=200)
     
-
+    
     def test_test_pl_no_path(self):
         response = self.c.get(reverse("filebrowser:option"), {
-                'name': 'test_pl',
+            'name': 'test_pl',
         }, content_type='application/json')
         self.assertContains(response, '"path" parameter is missing', status_code=400)
-        
-        
+    
+    
     def test_test_pl_unknown_path(self):
         response = self.c.get(reverse("filebrowser:option"), {
-                'name': 'test_pl',
-                'path': 'Yggdrasil/unknown.pl',
+            'name': 'test_pl',
+            'path': 'Yggdrasil/unknown.pl',
         }, content_type='application/json')
         self.assertContains(response, 'No such file or directory:', status_code=400)

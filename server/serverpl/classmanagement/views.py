@@ -75,7 +75,7 @@ def course(request, pk):
                 'name': elem.json['title'],
                 'state': Answer.pl_state(elem, request.user)
             }
-            for elem in item.pltp.pl.all()
+            for elem in item.pltp.indexed_pl()
         ]
         
         activity.append({
@@ -103,7 +103,7 @@ def course_summary(request, pk):
     except Course.DoesNotExist:
         raise Http404("Impossible d'accéder à la page, cette classe n'existe pas.")
     if request.user not in course.teacher.all():
-        logger.info("User '" + request.user.username 
+        logger.info("User '" + request.user.username
                     + "' denied to access summary of course'" + course.name + "'.")
         raise PermissionDenied("Vous n'êtes pas professeur de cette classe.")
     
@@ -159,7 +159,7 @@ def activity_summary(request, pk, activity_pk):
     student = list()
     for user in course.student.all():
         tp = list()
-        for pl in activity.pltp.pl.all():
+        for pl in activity.pltp.indexed_pl():
             tp.append({
                 'name': pl.json['title'],
                 'state': Answer.pl_state(pl, user)
@@ -179,7 +179,7 @@ def activity_summary(request, pk, activity_pk):
         'course_name': course.name,
         'activity_name': activity.name,
         'student': student,
-        'range_tp': range(len(activity.pltp.pl.all())),
+        'range_tp': range(len(activity.pltp.indexed_pl())),
         'course_id': pk,
     })
 
@@ -201,7 +201,7 @@ def student_summary(request, course_id, student_id):
     tp = list()
     for activity in activities:
         question = list()
-        for pl in activity.pltp.pl.all():
+        for pl in activity.pltp.indexed_pl():
             state = Answer.pl_state(pl, student)
             question.append({
                 'state': state,

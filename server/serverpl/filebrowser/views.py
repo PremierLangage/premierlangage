@@ -363,8 +363,14 @@ def git_commit(request):
     commit = post.get('commit')
     if not commit:
         return HttpResponseBadRequest("Missing 'commit' parameter")
-    
-    ret, out, err = gitcmd.commit(join_fb_root(path), commit)
+    user = request.user
+    if not user.email:
+        return HttpResponseBadRequest("User must have an email")
+    if user.first_name and user.last_name:
+        name = user.get_full_name()
+    else:
+        name = user.get_username()
+    ret, out, err = gitcmd.commit(join_fb_root(path), commit, name=name, mail=request.user.email)
     if not ret:
         return HttpResponse(htmlprint.code(out + err))
     else:  # pragma: no cover
