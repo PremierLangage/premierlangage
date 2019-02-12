@@ -87,7 +87,7 @@ def activity_view(request, activity_id):
             exercise.save()
         
         elif session.current_pl and action == "next":
-            pls = activity.pltp.pl.all()
+            pls = activity.pltp.indexed_pl()
             for previous, next in zip(pls, list(pls[1:]) + [None]):
                 if previous == session.current_pl:
                     session.current_pl = next

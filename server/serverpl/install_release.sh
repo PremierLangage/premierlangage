@@ -86,7 +86,7 @@ echo "Done !"
 #Creating needed directories
 echo ""
 echo "Creating needed directories..."
-if [ ! -d " ../../home/Yggdrasil" ]; then
+if [ ! -d ../../home/Yggdrasil ]; then
     mkdir ../../home/Yggdrasil || { echo>&2 "ERROR: Can't create ../../home/Yggdrasil" ; exit 1; }
 fi
 

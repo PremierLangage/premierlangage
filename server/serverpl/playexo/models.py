@@ -292,7 +292,7 @@ class SessionExercise(SessionExerciseAbstract):
         """When an ActivitySession is created, automatically create a SessionExercise for the PLTP
         and every PL."""
         if created:
-            for pl in instance.activity.pltp.pl.all():
+            for pl in instance.activity.pltp.indexed_pl():
                 SessionExercise.objects.create(session_activity=instance, pl=pl)
             SessionExercise.objects.create(session_activity=instance)  # For the pltp
     
@@ -359,7 +359,7 @@ class SessionExercise(SessionExerciseAbstract):
                 dic = dict(self.context if not context else context)
                 dic['user_settings__'] = self.session_activity.user.profile
                 dic['user__'] = self.session_activity.user
-                dic['first_pl__'] = self.session_activity.activity.pltp.pl.all()[0].id
+                dic['first_pl__'] = self.session_activity.activity.pltp.indexed_pl()[0].id
                 for key in dic:
                     if type(dic[key]) is str:
                         dic[key] = Template(dic[key]).render(RequestContext(request, dic))
@@ -378,7 +378,7 @@ class SessionExercise(SessionExerciseAbstract):
             'state': None,
             'title': self.session_activity.activity.pltp.json['title'],
         }]
-        for pl in self.session_activity.activity.pltp.pl.all():
+        for pl in self.session_activity.activity.pltp.indexed_pl():
             pl_list.append({
                 'id'   : pl.id,
                 'state': Answer.pl_state(pl, self.session_activity.user),
@@ -510,7 +510,7 @@ class Answer(models.Model):
     @staticmethod
     def pltp_state(pltp, user):
         """Return a list of tuples (pl_id, state) where state follow pl_state() rules."""
-        return [(pl.id, Answer.pl_state(pl, user)) for pl in pltp.pl.all()]
+        return [(pl.id, Answer.pl_state(pl, user)) for pl in pltp.indexed_pl()]
     
     
     @staticmethod
@@ -536,7 +536,7 @@ class Answer(models.Model):
             State.ERROR      : [0.0, 0],
         }
         
-        for pl in pltp.pl.all():
+        for pl in pltp.indexed_pl():
             state[Answer.pl_state(pl, user)][1] += 1
         
         nb_pl = max(sum([state[k][1] for k in state]), 1)

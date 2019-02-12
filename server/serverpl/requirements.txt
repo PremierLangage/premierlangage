@@ -30,5 +30,3 @@ yattag
 -e git://github.com/qcoumes/htmlprint.git#egg=htmlprint
 -e git://github.com/qcoumes/gitcmd.git#egg=gitcmd
 -e git://github.com/qcoumes/django-markdown.git#egg=django-markdown
-
-
