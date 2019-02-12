@@ -1,6 +1,7 @@
+{% raw %}{% load static %}{% endraw %}
 <!DOCTYPE html>
 <html lang="en">
-    <head>
+    <head> 
       {% block site_meta %}
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -13,26 +14,10 @@
       {% block htmltitle %}
         <title>{% if page and page.title and not page.is_homepage %}{{ page.title }} - {% endif %}{{ config.site_name }}</title>
       {% endblock %}
-      
-      {% block styles %}
-      
-        {% raw %}
-            <!-- Load the tag library -->
-            {% load static %}
 
-            <!-- favicon -->
-            <link rel="shortcut icon" href="{% static 'playexo/favicon.ico' %}" />  
-            
-            <!-- Loading CSS and JS -->
-            <script src="{% static 'js/jquery_3.1.1.js' %}" ></script>
-            <script src="{% static 'js/tether.min.js' %}" ></script>
-            <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
-            <script src="{% static 'js/bootstrap.js' %}" ></script>
-            <script src="{% static 'js/fontawesome-all.js' %}" ></script> 
-            <link rel="stylesheet" href="{% static 'css/nav.css' %}" />
-            <link rel="stylesheet" href="{% static 'css/pl.css' %}" />
-        {% endraw %}
-        
+      {% raw %}{% include "head.html" %}{% endraw %}
+       
+      {% block styles %}
         <link href="{% raw %}{% static 'documentation/css/base.css' %}{% endraw %}" rel="stylesheet">
         <link href="{% raw %}{% static 'documentation/css/navbar-fixed-side.css' %}{% endraw %}" rel="stylesheet" />
         <link rel="stylesheet" href="{% raw %}{% static 'documentation/css/highlight.css' %}{% endraw %}">
@@ -47,7 +32,6 @@
             <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
             <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
-
         <script src="{% raw %}{% static 'documentation/js/highlight.pack.js' %}{% endraw %}"></script>
       {% endblock %}
 
@@ -69,34 +53,35 @@
     </head>
 
     <body>
-        <div id="header">
-            {% raw %}{% include 'classmanagement/top_bar.html' %}{% endraw %}
-        </div>
-        
-        <div id="content">
-            {% block content %}
-                <div class="row">
-                    <div class="col-md-3">{% include "toc.html" %}</div>
-                    <div class="col-md-6" role="main">{% include "content.html" %}</div>
-                    <div class="col-sm-3">{% include "nav.html" %}</div>
+        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+            {% raw %}{% include "header.html" %}{% endraw %}
+            <main class="mdl-layout__content">
+                <div class="page-content">
+                    {% block content %}
+                        <div class="row">
+                            <div class="col-md-3">{% include "toc.html" %}</div>
+                            <div class="col-md-6" role="main">{% include "content.html" %}</div>
+                            <div class="col-sm-3">{% include "nav.html" %}</div>
+                        </div>
+                    {% endblock %}
                 </div>
-            {% endblock %}
-        </div>
-        
-        <div id="footer">
-            <footer class="footer">
-                {% raw %}{% block footer %}{% endblock %}{% endraw %}
-            </footer>
-        </div>
-        {% block scripts %}
-            <script>var base_url = '{{ base_url }}';</script>
-            <script src="{% raw %}{% static 'documentation/js/base.js' %}{% endraw %}"></script>
-            <script src="{% raw %}{% static 'playexo/js/footer.js' %}{% endraw %}"></script>
-        {% endblock %}
+            </main>
 
-        {% if 'search' in config['plugins'] %}{% include "search-modal.html" %}{% endif %}
-        {% include "keyboard-modal.html" %}
-    {% raw %}<script src="{% static 'js/pl.js' %}" ></script>{% endraw %}
+            <div id="footer">
+                <footer class="footer">
+                    {% raw %}{% block footer %}{% endblock %}{% endraw %}
+                </footer>
+            </div>
+
+            {% block scripts %}
+                <script>var base_url = '{{ base_url }}';</script>
+                <script src="{% raw %}{% static 'documentation/js/base.js' %}{% endraw %}"></script>
+                <script src="{% raw %}{% static 'playexo/js/footer.js' %}{% endraw %}"></script>
+            {% endblock %}
+
+            {% if 'search' in config['plugins'] %}{% include "search-modal.html" %}{% endif %}
+            {% include "keyboard-modal.html" %}
+        </div>
     </body>
 </html>
 {% if page and page.is_homepage %}

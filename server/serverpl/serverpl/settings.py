@@ -1,11 +1,14 @@
 import os, hashlib, logging
-
+import sys
 from django.contrib.messages import constants as messages
 import dj_database_url
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT_DIR = os.path.dirname(BASE_DIR)
+APPS_DIR = os.path.realpath(os.path.join(BASE_DIR, 'apps'))
+sys.path.append(APPS_DIR)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "o!m$n&s4=kcftm1de1m+7!36a=8x38wrr)m9)i@ru7j-*c7vgm"
@@ -27,17 +30,9 @@ if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Application definition
-INSTALLED_APPS = [
-    'filebrowser',
-    'playexo',
-    'user_profile',
-    'loader',
-    'classmanagement',
-    'documentation',
-    'qa',
+PREREQ_APPS = [
     'taggit',
     'hitcount',
-    'lti',
     'django_http_method',
     'django_markdown',
     'django.contrib.admin',
@@ -48,6 +43,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+PROJECT_APPS = [
+    'filebrowser',
+    'playexo',
+    'user_profile',
+    'loader',
+    'classmanagement',
+    'documentation',
+    'lti_app',
+    'qa'
+]
+
+INSTALLED_APPS = PROJECT_APPS + PREREQ_APPS
+
 # Middleware definition
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -55,7 +63,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'lti.middleware.LTIAuthMiddleware',
+    'lti_app.middleware.LTIAuthMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -79,7 +87,9 @@ MESSAGE_TAGS = {
 TEMPLATES = [
     {
         'BACKEND' : 'django.template.backends.django.DjangoTemplates',
-        'DIRS'    : [],
+        'DIRS'    : [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS' : {
             'context_processors': [
@@ -126,7 +136,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'lti.backends.LTIAuthBackend',
+    'lti_app.backends.LTIAuthBackend',
 )
 
 LTI_OAUTH_CREDENTIALS = {
@@ -247,6 +257,9 @@ SANDBOX = 'http://127.0.0.1:7000/sandbox'
 # Static files (CSS, JavaScript, Images)
 STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'serverpl/static'))
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'media'))
 MEDIA_URL = '/media/'

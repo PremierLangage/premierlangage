@@ -21,7 +21,7 @@ class PL(models.Model):
     rel_path = models.CharField(max_length=360, null=False)
     
     
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return str(self.id) + " : " + str(self.name)
 
 
@@ -35,14 +35,14 @@ class PLTP(models.Model):
     rel_path = models.CharField(max_length=360, null=True)
     
     
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return str(self.sha1) + " : " + str(self.name)
     
     
     def delete(self, *args, **kwargs):
         """ Overriding delete() to also delete his PL if they're not in
         relation with any other PLTP """
-        pl_list = self.pl.all()
+        pl_list = self.indexed_pl()
         logger.info("PLTP '" + self.sha1 + " (" + self.name + ")' has been deleted")
         for pl in pl_list:
             if len(pl.pltp_set.all()) <= 1:
@@ -50,6 +50,10 @@ class PLTP(models.Model):
                             + ")' has been deleted since it wasn't link to any PLTPs")
                 pl.delete()
         super(PLTP, self).delete(*args, **kwargs)
+    
+    
+    def indexed_pl(self):
+        return [i.pl for i in sorted(self.index_set.all(), key=lambda i: i.index)]
 
 
 
@@ -63,7 +67,7 @@ class Index(models.Model):
         ordering = ['index']
         verbose_name_plural = "Indexes"
     
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         return "PLTP - (" + str(self.pltp) + ") | PL - (" + str(self.pl) + ") | Pos - " + str(
                 self.index)
     

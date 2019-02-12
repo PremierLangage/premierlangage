@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 #
 #  enums.py
-#  
+#
 #  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
-#  
+#
 
 from enum import unique
 from enumfields import Enum
@@ -56,12 +56,12 @@ class Role(Enum):
     def __lt__(self, other):
         if self.__class__ is other.__class__:
             return self.value < other.value
-        return NotImplemented
+        return NotImplemented  # pragma: no cover
     
     def __eq__(self, other):
         if self.__class__ is other.__class__:
             return self.value == other.value
-        return NotImplemented
+        return NotImplemented  # pragma: no cover
 
 
 

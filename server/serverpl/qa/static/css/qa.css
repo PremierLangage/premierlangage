@@ -60,3 +60,7 @@ body {
     background-color:transparent;
     padding: 0;
 }
+
+.modal-backdrop {
+    z-index: -1;
+  }

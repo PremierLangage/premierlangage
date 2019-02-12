@@ -15,7 +15,7 @@ from django.urls import reverse
 from classmanagement.models import Course
 from playexo.models import Answer, Activity
 from playexo.enums import State
-
+import sys
 
 logger = logging.getLogger(__name__)
 
@@ -36,20 +36,19 @@ def index(request):
             'id': item.id,
             'name': item.name,
             'completion': completion,
+            'label': item.label,
             'nb_square': sum([int(summary[key][1]) for key in summary])
         })
-        
     return render(request, 'classmanagement/index.html', {'course': course})
-
-
 
 @csrf_exempt
 @login_required
-def course_view(request, pk):
+def course(request, pk):
     try:
         course = Course.objects.get(id=pk)
     except Course.DoesNotExist:
         raise Http404("Course (id: " + str(pk) + ") not found.")
+    
     if not course.is_member(request.user) and not request.user.profile.is_admin():
         logger.warning("User '"+request.user.username+"' denied to access course'"+course.name+"'.")
         raise PermissionDenied("Vous n'êtes pas membre de cette classe.")
@@ -59,8 +58,7 @@ def course_view(request, pk):
             if request.user not in course.teacher.all():
                 logger.warning("User '" + request.user.username
                                + "' denied to toggle course state'"+course.name+"'.")
-                raise PermissionDenied("Vous n'avez pas les droits nécessaires pour fermer/ouvrir"
-                                       + "cette activité.")
+                raise PermissionDenied("Vous n'avez pas les droits nécessaires pour fermer/ouvrir cette activité.")
             try:
                 act = Activity.objects.get(id=request.GET.get("id", None))
                 act.open = not act.open
@@ -77,11 +75,9 @@ def course_view(request, pk):
                 'name': elem.json['title'],
                 'state': Answer.pl_state(elem, request.user)
             }
-            for elem in item.pltp.pl.all()
+            for elem in item.pltp.indexed_pl()
         ]
         
-        
-        len_pl = len(pl) if len(pl) else 1
         activity.append({
             'name': item.name,
             'pltp_sha1': item.pltp.sha1,
@@ -89,7 +85,6 @@ def course_view(request, pk):
             'pl': pl,
             'id': item.id,
             'open': item.open,
-            'width': str(100/len_pl),
         })
         
     return render(request, 'classmanagement/course.html', {
@@ -100,8 +95,6 @@ def course_view(request, pk):
         'course_id': pk,
     })
 
-
-
 @csrf_exempt
 @login_required
 def course_summary(request, pk):
@@ -110,7 +103,7 @@ def course_summary(request, pk):
     except Course.DoesNotExist:
         raise Http404("Impossible d'accéder à la page, cette classe n'existe pas.")
     if request.user not in course.teacher.all():
-        logger.info("User '" + request.user.username 
+        logger.info("User '" + request.user.username
                     + "' denied to access summary of course'" + course.name + "'.")
         raise PermissionDenied("Vous n'êtes pas professeur de cette classe.")
     
@@ -150,8 +143,6 @@ def course_summary(request, pk):
         'course_id': pk,
     })
 
-
-
 @csrf_exempt
 @login_required
 def activity_summary(request, pk, activity_pk):
@@ -168,7 +159,7 @@ def activity_summary(request, pk, activity_pk):
     student = list()
     for user in course.student.all():
         tp = list()
-        for pl in activity.pltp.pl.all():
+        for pl in activity.pltp.indexed_pl():
             tp.append({
                 'name': pl.json['title'],
                 'state': Answer.pl_state(pl, user)
@@ -188,11 +179,9 @@ def activity_summary(request, pk, activity_pk):
         'course_name': course.name,
         'activity_name': activity.name,
         'student': student,
-        'range_tp': range(len(activity.pltp.pl.all())),
+        'range_tp': range(len(activity.pltp.indexed_pl())),
         'course_id': pk,
     })
-
-
 
 @csrf_exempt
 @login_required
@@ -212,7 +201,7 @@ def student_summary(request, course_id, student_id):
     tp = list()
     for activity in activities:
         question = list()
-        for pl in activity.pltp.pl.all():
+        for pl in activity.pltp.indexed_pl():
             state = Answer.pl_state(pl, student)
             question.append({
                 'state': state,
@@ -235,15 +224,12 @@ def student_summary(request, course_id, student_id):
         'course_id': course_id,
     })
 
-
 @login_required
 def redirect_activity(request, activity_id):
     request.session['current_activity'] = activity_id
     request.session['current_pl'] = None
     request.session['testing'] = False
     return HttpResponseRedirect(reverse("playexo:activity"))
-
-
 
 def disconnect(request):
     logout(request)
