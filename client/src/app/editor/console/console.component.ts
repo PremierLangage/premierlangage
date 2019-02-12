@@ -27,7 +27,11 @@ export class ConsoleComponent implements OnInit {
 			this.scrollBottom();
 		});
 		this.logging.openEvent.subscribe(() => {
-			this.open();
+			if (this.size < this.openedSize) {
+				this.open();
+			} else {
+				this.close();
+			}
 		})
 	}
 
@@ -63,6 +67,10 @@ export class ConsoleComponent implements OnInit {
 		if (this.size < this.openedSize) {
 			this.size = this.openedSize;
 		}
+	}
+
+	private close() {
+		this.size = 0;
 	}
 
 	private scrollBottom() {

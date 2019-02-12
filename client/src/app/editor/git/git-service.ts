@@ -172,12 +172,11 @@ export class GitService {
 			assert(isHome(parent), 'clone operation is applicable to home only');
 			const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8'); 
 			const data = {'name': 'git_clone', 'path': parent.path, url: url, username: username, password: password, destination: destination};
-			const response = await this.http.post('/filebrowser/option', data, { headers: headers , responseType: 'text'}).toPromise();
-			this.logging.info(response);
+			await this.http.post('/filebrowser/option', data, { headers: headers , responseType: 'text'}).toPromise();
+			this.logging.info(url + ' cloned at ' + basename(url));
 			success = true;
 		} catch(error) {
 			this.logging.error(error);
-			return false;
 		}
 		this.runningTask = false;
 		return success;

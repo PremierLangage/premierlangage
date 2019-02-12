@@ -314,7 +314,7 @@ var AppModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class='host'>\n    <div class='tab-bar' (click)='didTapOpen($event)'>\n        <h3 class='tab-item'>CONSOLE</h3>\n        <div class='spacer'></div>\n        <div class='tab-item' matTooltip='Clear' (click)='didTapClear($event)'>\n            <i class=\"fas fa-trash-alt\"></i>\n        </div>\n        <div class='tab-item' matTooltip='Clear' (click)='didTapClose($event)'>\n                <i class=\"fas fa-times\"></i>\n        </div>\n    </div>\n    <mat-divider></mat-divider>\n    <app-empty-state *ngIf='empty; else notEmpty' icon='error_outline' title='Nothing to display' subtitle='Informations, Warnings and Errors will be displayed here.'></app-empty-state>\n    <ng-template #notEmpty>\n        <ul class='container-log' #container>\n            <ng-container *ngFor=\"let item of items; let last = last; trackBy track\">\n                <li class='log__item log__item--{{item.type}}'>\n                <ng-container [ngSwitch]=\"item.type\">\n                    <mat-icon *ngSwitchCase=\"'info'\" mat-list-icon class='log__item-icon'>info</mat-icon>\n                    <mat-icon *ngSwitchCase=\"'warning'\" mat-list-icon class='log__item-icon'>warning</mat-icon>\n                    <mat-icon *ngSwitchDefault mat-list-icon class='log__item-icon'>error</mat-icon>\n                </ng-container>\n                <p class='log__item-content' [innerHTML]='item.message | sanitizeHtml'></p>\n                </li>\n                <mat-divider *ngIf='!last'></mat-divider>\n            </ng-container>\n        </ul>\n    </ng-template>        \n</div>"
+module.exports = "<div class='host mat-elevation-z4'>\n    <div class='tab-bar' (click)='didTapOpen($event)'>\n        <h3 class='tab-item'>CONSOLE</h3>\n        <div class='spacer'></div>\n        <div class='tab-item' matTooltip='Clear' (click)='didTapClear($event)'>\n            <i class=\"fas fa-trash-alt\"></i>\n        </div>\n        <div class='tab-item' matTooltip='Clear' (click)='didTapClose($event)'>\n                <i class=\"fas fa-times\"></i>\n        </div>\n    </div>\n    <mat-divider></mat-divider>\n    <app-empty-state *ngIf='empty; else notEmpty' icon='error_outline' title='Nothing to display' subtitle='Informations, Warnings and Errors will be displayed here.'></app-empty-state>\n    <ng-template #notEmpty>\n        <ul class='container-log' #container>\n            <ng-container *ngFor=\"let item of items; let last = last; trackBy track\">\n                <li class='log__item log__item--{{item.type}}'>\n                <ng-container [ngSwitch]=\"item.type\">\n                    <mat-icon *ngSwitchCase=\"'info'\" mat-list-icon class='log__item-icon'>info</mat-icon>\n                    <mat-icon *ngSwitchCase=\"'warning'\" mat-list-icon class='log__item-icon'>warning</mat-icon>\n                    <mat-icon *ngSwitchDefault mat-list-icon class='log__item-icon'>error</mat-icon>\n                </ng-container>\n                <p class='log__item-content' [innerHTML]='item.message | sanitizeHtml'></p>\n                </li>\n                <mat-divider *ngIf='!last'></mat-divider>\n            </ng-container>\n        </ul>\n    </ng-template>        \n</div>"
 
 /***/ }),
 
@@ -325,7 +325,7 @@ module.exports = "<div class='host'>\n    <div class='tab-bar' (click)='didTapOp
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".host {\n  position: relative;\n  overflow: hidden;\n  height: 100%; }\n\n.tab-item {\n  background: transparent; }\n\n.container-log {\n  overflow: auto;\n  height: calc(100% - 36px);\n  padding: 0; }\n\n.log__item {\n  position: relative;\n  list-style-type: none;\n  list-style-type: none;\n  display: flex;\n  align-items: baseline;\n  padding: 8px; }\n\n.log__item .log__item-icon {\n    position: absolute; }\n\n.log__item--info .log__item-icon {\n  color: #009688; }\n\n.log__item--warning .log__item-icon {\n  color: #FFEB3B; }\n\n.log__item--error .log__item-icon {\n  color: #F44336; }\n\n.log__item-content {\n  padding: 0 32px; }\n\n.empty {\n  width: 200px;\n  height: 200px; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL2NvbnNvbGUvY29uc29sZS5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLG1CQUFrQjtFQUNsQixpQkFBZ0I7RUFDaEIsYUFBWSxFQUNmOztBQUVEO0VBQ0ksd0JBQXVCLEVBQzFCOztBQUVEO0VBQ0ksZUFBYztFQUNkLDBCQUF5QjtFQUN6QixXQUFVLEVBQ2I7O0FBRUQ7RUFDSSxtQkFBa0I7RUFDbEIsc0JBQXFCO0VBQ3JCLHNCQUFxQjtFQUNyQixjQUFhO0VBQ2Isc0JBQXFCO0VBQ3JCLGFBQVksRUFJZjs7QUFWRDtJQVFRLG1CQUFrQixFQUNyQjs7QUFHTDtFQUVRLGVBQWMsRUFDakI7O0FBR0w7RUFFUSxlQUFjLEVBQ2pCOztBQUdMO0VBRVEsZUFBYSxFQUNoQjs7QUFHTDtFQUNJLGdCQUFlLEVBQ2xCOztBQUVEO0VBQ0ksYUFBWTtFQUNaLGNBQWEsRUFDaEIiLCJmaWxlIjoic3JjL2FwcC9lZGl0b3IvY29uc29sZS9jb25zb2xlLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmhvc3Qge1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgIGhlaWdodDogMTAwJTtcbn1cblxuLnRhYi1pdGVtIHtcbiAgICBiYWNrZ3JvdW5kOiB0cmFuc3BhcmVudDtcbn1cblxuLmNvbnRhaW5lci1sb2cge1xuICAgIG92ZXJmbG93OiBhdXRvO1xuICAgIGhlaWdodDogY2FsYygxMDAlIC0gMzZweCk7XG4gICAgcGFkZGluZzogMDtcbn1cblxuLmxvZ19faXRlbSB7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgIGxpc3Qtc3R5bGUtdHlwZTogbm9uZTtcbiAgICBsaXN0LXN0eWxlLXR5cGU6IG5vbmU7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBhbGlnbi1pdGVtczogYmFzZWxpbmU7XG4gICAgcGFkZGluZzogOHB4O1xuICAgIC5sb2dfX2l0ZW0taWNvbiB7XG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICB9XG59XG5cbi5sb2dfX2l0ZW0tLWluZm8ge1xuICAgIC5sb2dfX2l0ZW0taWNvbiB7XG4gICAgICAgIGNvbG9yOiAjMDA5Njg4O1xuICAgIH1cbn1cblxuLmxvZ19faXRlbS0td2FybmluZyB7XG4gICAgLmxvZ19faXRlbS1pY29uIHtcbiAgICAgICAgY29sb3I6ICNGRkVCM0I7XG4gICAgfVxufVxuXG4ubG9nX19pdGVtLS1lcnJvciB7XG4gICAgICAubG9nX19pdGVtLWljb24ge1xuICAgICAgICBjb2xvcjojRjQ0MzM2O1xuICAgIH1cbn1cblxuLmxvZ19faXRlbS1jb250ZW50IHtcbiAgICBwYWRkaW5nOiAwIDMycHg7XG59XG5cbi5lbXB0eSB7XG4gICAgd2lkdGg6IDIwMHB4O1xuICAgIGhlaWdodDogMjAwcHg7O1xufSJdfQ== */"
+module.exports = ".host {\n  position: relative;\n  overflow: hidden;\n  height: 100%;\n  background-color: #ecedf0; }\n\n.tab-item {\n  background: transparent; }\n\n.container-log {\n  overflow: auto;\n  height: calc(100% - 36px);\n  padding: 0; }\n\n.log__item {\n  position: relative;\n  list-style-type: none;\n  list-style-type: none;\n  display: flex;\n  align-items: baseline;\n  padding: 8px; }\n\n.log__item .log__item-icon {\n    position: absolute; }\n\n.log__item--info .log__item-icon {\n  color: #009688; }\n\n.log__item--warning .log__item-icon {\n  color: #FFEB3B; }\n\n.log__item--error .log__item-icon {\n  color: #F44336; }\n\n.log__item-content {\n  padding: 0 32px; }\n\n.empty {\n  width: 200px;\n  height: 200px; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL2NvbnNvbGUvY29uc29sZS5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLG1CQUFrQjtFQUNsQixpQkFBZ0I7RUFDaEIsYUFBWTtFQUNaLDBCQUF5QixFQUM1Qjs7QUFFRDtFQUNJLHdCQUF1QixFQUMxQjs7QUFFRDtFQUNJLGVBQWM7RUFDZCwwQkFBeUI7RUFDekIsV0FBVSxFQUNiOztBQUVEO0VBQ0ksbUJBQWtCO0VBQ2xCLHNCQUFxQjtFQUNyQixzQkFBcUI7RUFDckIsY0FBYTtFQUNiLHNCQUFxQjtFQUNyQixhQUFZLEVBSWY7O0FBVkQ7SUFRUSxtQkFBa0IsRUFDckI7O0FBR0w7RUFFUSxlQUFjLEVBQ2pCOztBQUdMO0VBRVEsZUFBYyxFQUNqQjs7QUFHTDtFQUVRLGVBQWEsRUFDaEI7O0FBR0w7RUFDSSxnQkFBZSxFQUNsQjs7QUFFRDtFQUNJLGFBQVk7RUFDWixjQUFhLEVBQ2hCIiwiZmlsZSI6InNyYy9hcHAvZWRpdG9yL2NvbnNvbGUvY29uc29sZS5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5ob3N0IHtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICBoZWlnaHQ6IDEwMCU7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogI2VjZWRmMDtcbn1cblxuLnRhYi1pdGVtIHtcbiAgICBiYWNrZ3JvdW5kOiB0cmFuc3BhcmVudDtcbn1cblxuLmNvbnRhaW5lci1sb2cge1xuICAgIG92ZXJmbG93OiBhdXRvO1xuICAgIGhlaWdodDogY2FsYygxMDAlIC0gMzZweCk7XG4gICAgcGFkZGluZzogMDtcbn1cblxuLmxvZ19faXRlbSB7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgIGxpc3Qtc3R5bGUtdHlwZTogbm9uZTtcbiAgICBsaXN0LXN0eWxlLXR5cGU6IG5vbmU7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBhbGlnbi1pdGVtczogYmFzZWxpbmU7XG4gICAgcGFkZGluZzogOHB4O1xuICAgIC5sb2dfX2l0ZW0taWNvbiB7XG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICB9XG59XG5cbi5sb2dfX2l0ZW0tLWluZm8ge1xuICAgIC5sb2dfX2l0ZW0taWNvbiB7XG4gICAgICAgIGNvbG9yOiAjMDA5Njg4O1xuICAgIH1cbn1cblxuLmxvZ19faXRlbS0td2FybmluZyB7XG4gICAgLmxvZ19faXRlbS1pY29uIHtcbiAgICAgICAgY29sb3I6ICNGRkVCM0I7XG4gICAgfVxufVxuXG4ubG9nX19pdGVtLS1lcnJvciB7XG4gICAgICAubG9nX19pdGVtLWljb24ge1xuICAgICAgICBjb2xvcjojRjQ0MzM2O1xuICAgIH1cbn1cblxuLmxvZ19faXRlbS1jb250ZW50IHtcbiAgICBwYWRkaW5nOiAwIDMycHg7XG59XG5cbi5lbXB0eSB7XG4gICAgd2lkdGg6IDIwMHB4O1xuICAgIGhlaWdodDogMjAwcHg7O1xufSJdfQ== */"
 
 /***/ }),
 
@@ -362,7 +362,12 @@ var ConsoleComponent = /** @class */ (function () {
             _this.scrollBottom();
         });
         this.logging.openEvent.subscribe(function () {
-            _this.open();
+            if (_this.size < _this.openedSize) {
+                _this.open();
+            }
+            else {
+                _this.close();
+            }
         });
     };
     ConsoleComponent.prototype.didTapClear = function (event) {
@@ -392,6 +397,9 @@ var ConsoleComponent = /** @class */ (function () {
         if (this.size < this.openedSize) {
             this.size = this.openedSize;
         }
+    };
+    ConsoleComponent.prototype.close = function () {
+        this.size = 0;
     };
     ConsoleComponent.prototype.scrollBottom = function () {
         if (this.container) {
@@ -1612,7 +1620,7 @@ function basename(path) {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = " <div class=\"sidebar-panel\" *ngIf='isRoot; else tree'>\n    <div class='tab-bar border-bottom'>\n        <span>EXPLORER</span>       \n        <div class=\"spacer\"></div>\n        <div class='tab-item' (click)='didTapRefresh()' matTooltip='Refresh'>\n            <i class=\"fas fa-sync\"></i>\n        </div>\n        <mat-progress-spinner mode='indeterminate' color='warn' strokeWidth='2' diameter='24' *ngIf='runningTask()'></mat-progress-spinner>\n    </div>\n    <div class=\"sidebar-panel__content\">\n        <app-explorer [resources]='resources' [isRoot]='false'></app-explorer>\n    </div>\n</div>\n\n<ng-template #tree>\n<ul class='tree'>\n    <li *ngFor='let resource of resources; trackBy:trackByFn' id='resource.path'>\n        <div *ngIf='resource.editing; else notEditing' class='tree__item editing'>\n            <span>\n                <i class=\"{{resource.icon}}\"></i>&nbsp;\n                <input appAutofocus type='text' placeholder='Press Enter to create ESC to cancel...' \n                    [(ngModel)]='resource.name' (keydown)='didEditingChanged(resource, $event)' (blur)='didEditingChanged(resource, $event)'/>\n            </span>\n        </div>    \n        <ng-template #notEditing>\n            <div id='{{resource.path}}' [ngClass]='{tree__item: true, selected: isSelection(resource)}' \n                 appDraggable appDroppable [dragCondition]='draggable(resource)' [dropCondition]='droppable(resource)'\n                 (handleDrop)='didDropData($event)' (click)='didTapOnResource(resource, $event)'>\n                <span class='tree__item-label'>\n                    <i class=\"{{icon(resource)}}\"></i>&nbsp;\n                    <span>{{resource.name}}</span>\n                </span>\n                <span class='tree__item-option-group'>\n                    <ng-container *ngFor='let option of options'>\n                        <span class='tree__item-option' *ngIf='option.enabled(resource)' matTooltip='{{option.label}}' (click)='option.action(resource, $event)'>\n                            <i class=\"{{option.icon}}\"></i>&nbsp;\n                        </span>\n                    </ng-container>\n                </span>\n                <div class='overlay'></div>\n            </div>\n        </ng-template>\n        <app-explorer *ngIf='resource.expanded' [resources]=\"resource.children\" [isRoot]='false'></app-explorer>\n    </li>\n</ul>        \n</ng-template>\n"
+module.exports = " <div class=\"sidebar-panel mat-elevation-z4\" *ngIf='isRoot; else tree'>\n    <div class='tab-bar border-bottom'>\n        <span>EXPLORER</span>       \n        <div class=\"spacer\"></div>\n        <div class='tab-item' (click)='didTapRefresh()' matTooltip='Refresh'>\n            <i class=\"fas fa-sync\"></i>\n        </div>\n        <mat-progress-spinner mode='indeterminate' color='warn' strokeWidth='2' diameter='24' *ngIf='runningTask()'></mat-progress-spinner>\n    </div>\n    <div class=\"sidebar-panel__content\">\n        <app-explorer [resources]='resources' [isRoot]='false'></app-explorer>\n    </div>\n</div>\n\n<ng-template #tree>\n<ul class='tree'>\n    <li *ngFor='let resource of resources; trackBy:trackByFn' id='resource.path'>\n        <div *ngIf='resource.editing; else notEditing' class='tree__item editing'>\n            <span>\n                <i class=\"{{resource.icon}}\"></i>&nbsp;\n                <input appAutofocus type='text' placeholder='Press Enter to create ESC to cancel...' \n                    [(ngModel)]='resource.name' (keydown)='didEditingChanged(resource, $event)' (blur)='didEditingChanged(resource, $event)'/>\n            </span>\n        </div>    \n        <ng-template #notEditing>\n            <div id='{{resource.path}}' [ngClass]='{tree__item: true, selected: isSelection(resource)}' \n                 appDraggable appDroppable [dragCondition]='draggable(resource)' [dropCondition]='droppable(resource)'\n                 (handleDrop)='didDropData($event)' (click)='didTapOnResource(resource, $event)'>\n                <span class='tree__item-label'>\n                    <i class=\"{{icon(resource)}}\"></i>&nbsp;\n                    <span>{{resource.name}}</span>\n                </span>\n                <span class='tree__item-option-group'>\n                    <ng-container *ngFor='let option of options'>\n                        <span class='tree__item-option' *ngIf='option.enabled(resource)' matTooltip='{{option.label}}' (click)='option.action(resource, $event)'>\n                            <i class=\"{{option.icon}}\"></i>&nbsp;\n                        </span>\n                    </ng-container>\n                </span>\n                <div class='overlay'></div>\n            </div>\n        </ng-template>\n        <app-explorer *ngIf='resource.expanded' [resources]=\"resource.children\" [isRoot]='false'></app-explorer>\n    </li>\n</ul>        \n</ng-template>\n"
 
 /***/ }),
 
@@ -2256,7 +2264,7 @@ var GitService = /** @class */ (function () {
         if (password === void 0) { password = ''; }
         if (destination === void 0) { destination = ''; }
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var success, headers, data, response, error_9;
+            var success, headers, data, error_9;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -2272,14 +2280,14 @@ var GitService = /** @class */ (function () {
                         data = { 'name': 'git_clone', 'path': parent.path, url: url, username: username, password: password, destination: destination };
                         return [4 /*yield*/, this.http.post('/filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise()];
                     case 2:
-                        response = _b.sent();
-                        this.logging.info(response);
+                        _b.sent();
+                        this.logging.info(url + ' cloned at ' + Object(_editor_utils__WEBPACK_IMPORTED_MODULE_3__["basename"])(url));
                         success = true;
                         return [3 /*break*/, 4];
                     case 3:
                         error_9 = _b.sent();
                         this.logging.error(error_9);
-                        return [2 /*return*/, false];
+                        return [3 /*break*/, 4];
                     case 4:
                         this.runningTask = false;
                         return [2 /*return*/, success];
@@ -2413,11 +2421,11 @@ var GitComponent = /** @class */ (function () {
         this.editor.emitSelectEvent(this.editor.find(item.path));
     };
     /**
-     * gets a value indicating whether a git add command is possible in the given item
-     *	@param _item the repository item.
+     * executes git add command on the given repository item.
+     *	@param item the repository item.
      */
-    GitComponent.prototype.add = function (_item) {
-        return true;
+    GitComponent.prototype.add = function (item) {
+        this.git.add(item);
     };
     /**
      * executes git push command on the given repository item
@@ -3485,7 +3493,7 @@ var EmptyStateComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<h4 mat-dialog-title>{{data?.title}}</h4>\n<div mat-dialog-content>\n\t<p [innerHTML]='data?.message'></p>\n\t<form>\n\t\t<mat-form-field class='full-width' *ngFor='let field of data.fields'>\n\t\t\t<input matInput name='field.value' autocomplete=\"off\" [type]='field.type' [placeholder]=\"field?.placeholder\" [(ngModel)]='field.value' >\n\t\t</mat-form-field>\n\t</form>\n</div>\n\n<div mat-dialog-actions>\n    <button mat-button [mat-dialog-close]=\"data\">{{data.okTitle}}</button>\n    <button mat-button [mat-dialog-close]=\"false\">{{data.noTitle}}</button>\n</div>"
+module.exports = "<h4 mat-dialog-title>{{data?.title}}</h4>\n<div mat-dialog-content>\n\t<p [innerHTML]='data?.message'></p>\n\t<form>\n\t\t<mat-form-field class='full-width' *ngFor='let field of data.fields'>\n\t\t\t<input matInput name='field.value' autocomplete=\"on\" [type]='field.type' [placeholder]=\"field?.placeholder\" [(ngModel)]='field.value' >\n\t\t</mat-form-field>\n\t</form>\n</div>\n\n<div mat-dialog-actions>\n    <button mat-button [mat-dialog-close]=\"data\">{{data.okTitle}}</button>\n    <button mat-button [mat-dialog-close]=\"false\">{{data.noTitle}}</button>\n</div>"
 
 /***/ }),
 

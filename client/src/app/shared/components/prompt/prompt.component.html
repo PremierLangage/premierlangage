@@ -3,7 +3,7 @@
 	<p [innerHTML]='data?.message'></p>
 	<form>
 		<mat-form-field class='full-width' *ngFor='let field of data.fields'>
-			<input matInput name='field.value' autocomplete="off" [type]='field.type' [placeholder]="field?.placeholder" [(ngModel)]='field.value' >
+			<input matInput name='field.value' autocomplete="on" [type]='field.type' [placeholder]="field?.placeholder" [(ngModel)]='field.value' >
 		</mat-form-field>
 	</form>
 </div>

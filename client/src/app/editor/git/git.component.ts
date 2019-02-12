@@ -89,11 +89,11 @@ export class GitComponent implements OnInit, OnDestroy {
 	}
 
 	/** 
-	 * gets a value indicating whether a git add command is possible in the given item
-	 *	@param _item the repository item.
+	 * executes git add command on the given repository item.
+	 *	@param item the repository item.
 	 */
-	add(_item: Repo | Change) {
-		return true;
+	add(item: Repo | Change) {
+		this.git.add(item);
 	}
 	
 	/** 
