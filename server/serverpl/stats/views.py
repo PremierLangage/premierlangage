@@ -31,23 +31,71 @@ def user(request):
 
     plt.plot(list(datedic.values()))
     x = mpld3.fig_to_html(plt.gcf())
-    return render(request, "stats/stats.html", {  "show": x,})
+    return render(request, "stats/stats.html", {  "show": "The show<br/>"+x,})
 
-class DicListe(dict):
-    def __missing__(self, key):
-        return list()
+
+
+from django.contrib.auth.models import User
+from playexo.enums import State
+import functools
+import operator
+from loader.models import PL
 
 def plstats(request, plid):
-    queryset = Answer.objects.filter(pl=plid)
-    userpldic=DicListe()
+
+    qscount= 0
+    while not qscount > 0:
+        plid += 1
+        queryset = Answer.objects.filter(pl=plid)
+        qscount = len(queryset)
+    userpldic = {}
+
+    pl = PL.objects.filter(pk=plid)
+
+    x=""
+    y=""
+    deltas=[]
+    timedelta=[]
     for a in queryset:
-        userpldic[(a.pl.id,a.user.id)].append(a)
+        name = User.objects.get(pk=a.user.id).get_username()+" "
+        if State.by_grade(a.grade) == State.STARTED: # and a.user.id not in userpldic:
+            userpldic[a.user.id]= list()
+            userpldic[a.user.id].append((name, str(State.by_grade(a.grade)), a.date))
+        else:
+            if State.by_grade(a.grade) == State.SUCCEEDED:
+                titi=a.date - userpldic[a.user.id][0][2]
+                timedelta.append(titi)
+                deltas.append(titi.seconds)
+                userpldic[a.user.id].append((name, str(State.by_grade(a.grade)), titi))
+                y+= str(titi)+"\n "
+    qscount = len(queryset)
+    for uid in userpldic.keys():
+        x += "-"+str(uid)
+    mean = functools.reduce(operator.add, deltas) / len(deltas)
+    text= "name: %s max: %s qscount : %d" % (str(pl[0].name),str(max(deltas)), qscount)
+    text += str(deltas)
+    plt.hist(deltas)
+    plt.hist(timedelta)
+    x = mpld3.fig_to_html(plt.gcf())
+    return render(request, "stats/stats.html", { "show": text + x, })
 
-    for plid, uid in userpldic.keys():
-        pass # TODO
+"""
+import random
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
+# generate some random data (approximately over 5 years)
+data = [float(random.randint(1271517521, 1429197513)) for _ in range(1000)]
 
-    return render(request, "stats/stats.html", { "show": "coucou"+str(queryset)+"kiki", })
+# convert the epoch format to matplotlib date format 
+mpl_data = mdates.epoch2num(data)
+
+# plot it
+fig, ax = plt.subplots(1,1)
+ax.hist(mpl_data, bins=50, color='lightblue')
+ax.xaxis.set_major_locator(mdates.YearLocator())
+ax.xaxis.set_major_formatter(mdates.DateFormatter('%d.%m.%y'))
+plt.show()"""
 
 
 
@@ -71,7 +119,6 @@ def tags(request):
         for t in lt:
             x,y = 0,0
             if a.grade and a.grade == 100:
-
                 tdic[t]= [tdic[t][0]+1,tdic[t][1]]
             else:
                 tdic[t] = [tdic[t][0], tdic[t][1]+ 1]
