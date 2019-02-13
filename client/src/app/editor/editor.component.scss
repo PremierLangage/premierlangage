@@ -42,11 +42,15 @@ $tab-height: 36px;
     cursor: pointer;
 }
 
-.editor__workspace-container  {
+.editor__workspace-area  {
     position: relative;
     height: 100%;
-    .editor__workspace {
+    
+    .workspace {
         height: 100%;
+        .workspace__editor {
+            height: calc(100% - 36px);
+        }
     }
     
     .tab-bar  .item-group {

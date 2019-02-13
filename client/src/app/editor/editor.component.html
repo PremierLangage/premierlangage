@@ -2,14 +2,14 @@
   <div class='editor__container'>
     <app-sidebar #sidebar></app-sidebar>
     <as-split direction="horizontal" gutterSize='5' useTransition='true'>
-        <as-split-area [size]="sidebar.size">
+        <as-split-area class='editor__sidebar-area' [size]="sidebar.size">
           <app-explorer *ngIf='sidebar.index === 0' [resources]='resources()' [isRoot]='true'></app-explorer>
           <app-search *ngIf='sidebar.index === 1' [resources]='resources()'></app-search>
           <app-git *ngIf='sidebar.index === 2'></app-git>
-        </as-split-area>   
-        <as-split-area [size]="100 - sidebar.size" class='editor__workspace-container'>
-            <as-split (dragEnd)='console.dragEnd($event)' direction='vertical' gutterSize='5' useTransition='true' class='editor__workspace'>
-                <as-split-area [size]='100 - console.size' style='height: 100%'>
+        </as-split-area>
+        <as-split-area class='editor__workspace-area' [size]="100 - sidebar.size">
+            <as-split class='workspace' (dragEnd)='console.dragEnd($event)' direction='vertical' gutterSize='5' useTransition='true'>
+                <as-split-area class='workspace__editor' [size]='100 - console.size'>
                     <as-split *ngIf='editors.length > 0; else notEditor' direction='horizontal' gutterSize='5' useTransition='true' cdkDropListGroup>
                         <as-split-area *ngFor='let editor of editors' style='position: relative; overflow: hidden;'>
                                 <div class='tab-bar border-bottom'>
@@ -89,7 +89,7 @@
                         </div>
                     </ng-template>
                 </as-split-area>
-                <as-split-area [(size)]='console.size' style='overflow: hidden;'>
+                <as-split-area class='workspace__console' [(size)]='console.size' style='overflow: hidden;'>
                     <app-console #console></app-console>
                 </as-split-area>
             </as-split>
