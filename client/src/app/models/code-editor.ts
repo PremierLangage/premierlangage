@@ -112,18 +112,11 @@ export class CodeEditor extends Editor {
 		return isRepo(resource) && !this.diffMode;
 	}
 
+	shouldAskConfirm() {
+		return true;
+	}
 	onSaved(resource: Resource) {
 		this.compile(resource);
-	}
-
-	private compile(resource: Resource) {
-		if (isPl(resource)) {
-			this.component.editorService.compilePL(resource).then((response => {
-				if (response['compiled']) {
-					this.compiled[resource.path] = response['json'];
-				}
-			}));
-		}
 	}
 
 	onClosed(resource: Resource) {
@@ -353,6 +346,17 @@ export class CodeEditor extends Editor {
 			}
 		});
 		editor.createContextKey('', {})
+	}
+
+
+	private compile(resource: Resource) {
+		if (isPl(resource)) {
+			this.component.editorService.compilePL(resource).then((response => {
+				if (response['compiled']) {
+					this.compiled[resource.path] = response['json'];
+				}
+			}));
+		}
 	}
 
 	private getValue(k: string) {

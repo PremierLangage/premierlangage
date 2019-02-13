@@ -1,6 +1,7 @@
 import { Resource, resourceInit as resourceDefaultState } from './resource';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { EditorComponent } from '../editor/editor.component';
+
 export abstract class Editor {
 	readonly changes = {};
 	readonly type: string;
@@ -41,7 +42,7 @@ export abstract class Editor {
 	}
 
 	closeConfirm(resource: Resource) {
-		if (resource.changed) {
+		if (this.shouldAskConfirm() && resource.changed) {
 			const options = {
 				title: "Do you want to close'" + resource.name + "'?",
 				message: "Your changes will be lost if you don't save them.",
@@ -64,7 +65,7 @@ export abstract class Editor {
 	}
 	
 	closeAllConfirm() {
-		if (this.resources.some(e => e.changed)) {
+		if (this.shouldAskConfirm() &&  this.resources.some(e => e.changed)) {
 			const options = {
 				title: "Do you want to close the files ?",
 				message: "Your changes will be lost if you don't save them.",
@@ -148,6 +149,13 @@ export abstract class Editor {
 		return item.path;
 	}
 
+	shouldAskConfirm() {
+		return false;
+	}
+
+	isChanged(resource: Resource) {
+		return this.shouldAskConfirm() && resource.changed;
+	}
 	onSaved(resource: Resource) {}
 	onClosed(resource: Resource) {}
 }

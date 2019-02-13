@@ -12,10 +12,11 @@ $tab-height: 36px;
 }
 
 .editor__container {
-    position: relative;
     display: flex;
-    flex: 1;
+    position: relative;
     overflow: hidden;
+    height: 100%;
+    flex: 1;
 }
 
 .tab-bar {
@@ -43,6 +44,7 @@ $tab-height: 36px;
 
 .editor__workspace-container  {
     position: relative;
+    height: 100%;
     .editor__workspace {
         height: 100%;
     }
@@ -71,11 +73,10 @@ $tab-height: 36px;
                 opacity: 1;
             }
         }
-
-        &.changed .tab-close {
-            color:red;
-            font-size: 36px;
+        &.changed {
+            border-bottom: 1px solid salmon;
         }
+    
     }
 
     .code-editor, .preview-editor, .image-editor {

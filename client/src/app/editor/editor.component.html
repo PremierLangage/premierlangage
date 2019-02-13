@@ -9,18 +9,18 @@
         </as-split-area>   
         <as-split-area [size]="100 - sidebar.size" class='editor__workspace-container'>
             <as-split (dragEnd)='console.dragEnd($event)' direction='vertical' gutterSize='5' useTransition='true' class='editor__workspace'>
-                <as-split-area [size]='100 - console.size'>
+                <as-split-area [size]='100 - console.size' style='height: 100%'>
                     <as-split *ngIf='editors.length > 0; else notEditor' direction='horizontal' gutterSize='5' useTransition='true' cdkDropListGroup>
                         <as-split-area *ngFor='let editor of editors' style='position: relative; overflow: hidden;'>
                                 <div class='tab-bar border-bottom'>
                                     <div class='item-group' cdkDropList [cdkDropListData]="editor.resources" (cdkDropListDropped)="editor.drop($event)">
-                                        <div *ngFor='let resource of editor.resources;trackBy: editor.track'
-                                            [ngClass]="{'tab-item': true, active: editor.isSelected(resource), changed: resource.changed}"
+                                        <div *ngFor='let resource of editor.resources;trackBy: editor.track' [matTooltip]="resource.path"
+                                            [ngClass]="{'tab-item': true, active: editor.isSelected(resource), changed: editor.isChanged(resource)}"
                                             (click)='didTapOpenResource(resource, editor)' cdkDragAxis='x'cdkDrag>
                                             <i class="tab-icon {{resource.icon}}"></i>
                                             <span>{{editor.title(resource)}}</span>
                                             <span class='tab-close' (click)='didTapCloseResource(resource, editor, $event)'>
-                                                &nbsp;{{ resource.changed ? '&bull;' : '&times;' }}
+                                                &nbsp;&times;
                                             </span>
                                         </div>
                                     </div>
@@ -68,7 +68,8 @@
                     </as-split>
                     <ng-template #notEditor>
                         <div class='editor-home'>
-                            <h3> PL Editor </h3>
+                            <h3> PL EDITOR </h3>
+                            <mat-divider></mat-divider>
                             <br/>
                             <mat-list>
                                 <h3 matSubheader><i class="fas fa-plus fa-2x"></i> &nbsp;&nbsp;Shorcuts</h3>

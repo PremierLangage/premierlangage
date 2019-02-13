@@ -1,11 +1,11 @@
- <div class="sidebar-panel mat-elevation-z4" *ngIf='isRoot; else tree'>
+ <div class="sidebar-panel mat-elevation-z1" *ngIf='isRoot; else tree'>
     <div class='tab-bar border-bottom'>
         <span>EXPLORER</span>       
         <div class="spacer"></div>
         <div class='tab-item' (click)='didTapRefresh()' matTooltip='Refresh'>
             <i class="fas fa-sync"></i>
         </div>
-        <mat-progress-spinner mode='indeterminate' color='warn' strokeWidth='2' diameter='24' *ngIf='runningTask()'></mat-progress-spinner>
+        <mat-progress-spinner mode='indeterminate' color='warn' strokeWidth='2' diameter='18' *ngIf='runningTask()'></mat-progress-spinner>
     </div>
     <div class="sidebar-panel__content">
         <app-explorer [resources]='resources' [isRoot]='false'></app-explorer>
