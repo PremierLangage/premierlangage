@@ -1,0 +1,33 @@
+.editor-group {
+    position: relative; 
+    overflow: hidden;
+}
+
+.tab-bar .tab-group {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    overflow-x: auto;
+}
+
+.tab-item {
+    &.active {
+        background-color: #FFF;
+    }
+
+    .tab-icon {
+        margin-right: 4px;
+    }
+
+    .tab-close {
+        font-size: 18px;
+        &:hover {
+            opacity: 1;
+        }
+    }
+    &.changed {
+        border-bottom: 1px solid salmon;
+    }
+
+}

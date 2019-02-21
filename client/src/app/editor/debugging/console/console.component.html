@@ -1,0 +1,26 @@
+<div class='host'>
+    <div class='tab-bar' (click)='didTapOpen($event)'>
+        <h3 class='tab-item'>CONSOLE</h3>
+        <div class='spacer'></div>
+        <div class='tab-item' matTooltip='Clear' (click)='didTapClear($event)'>
+            <i class="fas fa-trash-alt"></i>
+        </div>
+        <div class='tab-item' matTooltip='Hide' (click)='didTapClose($event)'>
+            <i class="fas fa-times"></i>
+        </div>
+    </div>
+    <mat-divider></mat-divider>
+    <ul class='container-log' #container>
+        <ng-container *ngFor="let item of items; let last = last; trackBy track">
+            <li class='log__item log__item--{{item.type}}'>
+            <ng-container [ngSwitch]="item.type">
+                <mat-icon *ngSwitchCase="'info'" mat-list-icon class='log__item-icon'>info</mat-icon>
+                <mat-icon *ngSwitchCase="'warning'" mat-list-icon class='log__item-icon'>warning</mat-icon>
+                <mat-icon *ngSwitchDefault mat-list-icon class='log__item-icon'>error</mat-icon>
+            </ng-container>
+            <p class='log__item-content' [innerHTML]='item.message | sanitizeHtml'></p>
+            </li>
+            <mat-divider *ngIf='!last'></mat-divider>
+        </ng-container>
+    </ul>    
+</div>

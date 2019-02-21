@@ -1,12 +1,13 @@
 import { AfterContentInit, Directive, ElementRef, Input } from '@angular/core';
 
 @Directive({
-    selector: '[appDraggable]'
+// tslint:disable-next-line: directive-selector
+    selector: '[draggable]'
 })
 export class DraggableDirective implements AfterContentInit {
-    @Input('dragCondition')
-    dragCondition: boolean = true;
-    
+    @Input()
+    dragCondition = true;
+
     public constructor(private el: ElementRef) {
     }
 
@@ -14,14 +15,14 @@ export class DraggableDirective implements AfterContentInit {
         const self = this;
         const el = this.el.nativeElement;
         el.draggable = true;
-          
+
         el.addEventListener(
           'dragstart',
           function(e) {
             if (!self.dragCondition) {
               e.preventDefault();
               return;
-            } 
+            }
             e.dataTransfer.effectAllowed = 'move';
             e.dataTransfer.setData('Text', this.id);
             this.classList.add('dnd-drag');
@@ -29,7 +30,7 @@ export class DraggableDirective implements AfterContentInit {
           },
           false
         );
-        
+
         el.addEventListener(
           'dragend',
           function(e) {

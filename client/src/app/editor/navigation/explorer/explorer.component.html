@@ -1,0 +1,49 @@
+ <ng-container *ngIf='showHeader; else tree'>
+    <div class='tab-bar'>
+        <span>EXPLORER</span>       
+        <div class="spacer"></div>
+        <div class='tab-item' (click)='didTapRefresh()' matTooltip='Refresh'>
+            <i class="fas fa-sync"></i>
+        </div>
+    </div>
+    <mat-progress-bar mode='indeterminate' color='warn' *ngIf='runningTask()'></mat-progress-bar>
+    <div class='navigation_content'>
+        <explorer [resources]='resources' [showHeader]='false'></explorer>
+    </div>
+</ng-container>
+<ng-template #tree>
+    <ul class='tree'>
+        <li *ngFor='let resource of resources; trackBy:trackByFn'>
+            <div *ngIf='resource.editing; else notEditing' class='tree__item editing'>
+                <span>
+                    <i class="{{resource.icon}}"></i>&nbsp;
+                    <input autofocus
+                           type='text' 
+                           placeholder='Press Enter to create ESC to cancel...' 
+                           [(ngModel)]='resource.name' 
+                           (keydown)='didEditingChanged(resource, $event)' 
+                           (blur)='didEditingChanged(resource, $event)'/>
+                </span>
+            </div>    
+            <ng-template #notEditing>
+                <div id='{{resource.path}}' class='tree__item' [ngClass]='{selected: isSelection(resource)}' 
+                    draggable droppable [dragCondition]='draggable(resource)' [dropCondition]='droppable(resource)' (handleDrop)='didDropData($event)'
+                    (click)='didTapOnResource(resource, $event)'>
+                    <span class='tree__item-label'>
+                        <i class="{{icon(resource)}}"></i>&nbsp;
+                        <span>{{resource.name}}</span>
+                    </span>
+                    <span class='tree__item-option-group'>
+                        <ng-container *ngFor='let option of options'>
+                            <span class='tree__item-option' *ngIf='option.enabled(resource)' matTooltip='{{option.label}}' (click)='option.action(resource, $event)'>
+                                <i class="{{option.icon}}"></i>&nbsp;
+                            </span>
+                        </ng-container>
+                    </span>
+                    <div class='overlay'></div>
+                </div>
+            </ng-template>
+            <explorer *ngIf='resource.expanded' [resources]="resource.children" [showHeader]='false'></explorer>
+        </li>
+    </ul>        
+</ng-template>

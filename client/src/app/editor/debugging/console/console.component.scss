@@ -1,0 +1,50 @@
+.host {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    background-color: white;
+}
+
+.tab-item {
+    background: transparent;
+}
+
+.container-log {
+    overflow: auto;
+    height: calc(100% - 36px);
+    padding: 0;
+}
+
+.log__item {
+    position: relative;
+    list-style-type: none;
+    list-style-type: none;
+    display: flex;
+    align-items: baseline;
+    padding: 8px;
+    .log__item-icon {
+        position: absolute;
+    }
+}
+
+.log__item--info {
+    .log__item-icon {
+        color: #009688;
+    }
+}
+
+.log__item--warning {
+    .log__item-icon {
+        color: #FFEB3B;
+    }
+}
+
+.log__item--error {
+      .log__item-icon {
+        color:#F44336;
+    }
+}
+
+.log__item-content {
+    padding: 0 32px;
+}

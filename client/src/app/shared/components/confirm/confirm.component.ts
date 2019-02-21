@@ -1,5 +1,5 @@
-import { Component, Inject, ChangeDetectorRef } from "@angular/core";
-import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
+import { Component, Inject, ChangeDetectorRef } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
     selector: 'app-confirm',
@@ -7,7 +7,11 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
     styleUrls: ['./confirm.component.scss']
 })
 export class ConfirmComponent {
-    constructor(public dialog: MatDialogRef<ConfirmComponent>, @Inject(MAT_DIALOG_DATA) public data: ConfirmOptions, changes: ChangeDetectorRef) {     
+    constructor(
+        public readonly dialog: MatDialogRef<ConfirmComponent>,
+        @Inject(MAT_DIALOG_DATA)
+        public readonly data: ConfirmOptions, changes: ChangeDetectorRef
+    ) {
         data.okTitle = data.okTitle || 'OK';
         data.noTitle = data.noTitle || 'CANCEL';
         setTimeout(function() {

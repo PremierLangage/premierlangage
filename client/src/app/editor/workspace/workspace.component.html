@@ -1,0 +1,35 @@
+<as-split class='h100' *ngIf='editors.length > 0; else noGroup' direction='horizontal' gutterSize='5' useTransition='true' cdkDropListGroup>
+    <as-split-area class='editor-group h100' style='overflow: hidden;' *ngFor='let editor of editors'>
+        <div class='tab-bar'>
+            <div class='tab-group' cdkDropList [cdkDropListData]="editor.resources" (cdkDropListDropped)="editor.drop($event)">
+                <div *ngFor='let resource of editor.resources;trackBy: editor.track' [matTooltip]="resource.path"
+                    [ngClass]="{'tab-item': true, active: editor.isSelected(resource), changed: editor.isChanged(resource)}"
+                    (click)='editor.open(resource)' cdkDragAxis='x' cdkDrag>
+                    <i class="tab-icon {{resource.icon}}"></i>
+                    <span>{{editor.title(resource)}}</span>
+                    <span class='tab-close' (click)='editor.closeConfirm(resource)'>&nbsp;&times;</span>
+                </div>
+            </div>
+            <div class="spacer"></div>    
+            <ng-container *ngFor='let option of editor.options'>
+                <div class='tab-item' [matTooltip]='option.tooltip' *ngIf='option.enabled(editor.selection)' (click)='option.action(editor.selection)'>
+                    <i class="{{option.icon}}"></i>
+                </div>
+            </ng-container>
+            <div *ngIf='editor.type==="code"' class='tab-item' matTooltip='More Options' [matMenuTriggerFor]="editorMenu">
+                <i class="fas fa-ellipsis-h"></i>
+            </div>
+            <mat-menu #editorMenu="matMenu">
+                <button mat-menu-item (click)='editor.save(editor.selection)'>Save (Ctrl+S)</button>
+                <button mat-menu-item (click)='editor.saveAll()'>Save All (Ctrl+Alt+S)</button>
+                <button mat-menu-item (click)='editor.closeConfirm(editor.selection)'>Close (Ctrl+W)</button>
+                <button mat-menu-item (click)='editor.closeAllConfirm()'>Close All (Ctrl+Alt+W)</button>
+                <button mat-menu-item (click)='editor.closeSaved()'>Close Saved</button>
+            </mat-menu>
+        </div>
+        <ng-container [ngSwitch]="editor.type">
+            <code-editor *ngSwitchCase="'code'"></code-editor>
+            <ng-container *ngSwitchDefault></ng-container>
+        </ng-container>
+    </as-split-area>
+</as-split>

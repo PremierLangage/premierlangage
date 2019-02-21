@@ -1,0 +1,9 @@
+<img src='{{editor.selection.image}}'  [ngStyle]='{zoom: editor.zoom}' />
+<div class='code-editor__btn-group'>
+    <div class='code-editor__btn' matTooltip='Zoom In' (click)='editor.zoomIn()'>
+        <i class="fas fa-plus"></i>
+    </div>
+    <div class='code-editor__btn' matTooltip='Zoom Out' (click)='editor.zoomOut()'>
+        <i class="fas fa-minus"></i>
+    </div>
+</div>
