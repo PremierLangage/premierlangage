@@ -8,7 +8,7 @@ from django.dispatch import receiver
 
 from user_profile.utils import avatar_path, generate_identicon
 from user_profile.enums import Role, EditorTheme, ColorBlindness
-from lti.models import LTIModel
+from lti_app.models import LTIModel
 from filebrowser.models import Directory
 from playexo.models import Activity
 
@@ -53,12 +53,12 @@ class Profile(LTIModel):
     
     
     def is_admin(self):
-        """Return True if the user is an administrator (Role or django super user), False if not."""
-        return self.role == Role.ADMINISTRATOR or self.user.is_superuser
+        """Returns whether the user is an administrator (Role or django su / staff)."""
+        return self.role == Role.ADMINISTRATOR or self.user.is_superuser or self.user.is_staff
     
     
     def can_load(self):
-        """Return True if the user is at least an Instructor, False if not."""
+        """Returns True if the user is at least an Instructor, False if not."""
         return self.role <= Role.INSTRUCTOR or self.is_admin()
 
      
@@ -75,8 +75,6 @@ class Profile(LTIModel):
     def save_user_profile(sender, instance, **kwargs):
         """Save the profile when its corresponding user is saved."""
         instance.profile.save()
-        if instance.is_staff or instance.is_superuser:
-            instance.profile.role = Role.ADMINISTRATOR
 
 
     def save(self, *args, **kwargs):

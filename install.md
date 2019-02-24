@@ -2,12 +2,14 @@
 
 If any problem occurs during the installation, see the section ***Troubleshooting***.
 
-## Requirements:
+## Requirements
+
 - python >= 3.5
 - pip3
 - zip
 
 ### Python
+
 We recommend you to use a [python virtual environment](https://docs.python.org/3/tutorial/venv.html) to make a clean install and to be 
 sure that PL's packages will not conflict with your already installed packages.
 
@@ -22,7 +24,7 @@ Then simply use:
 to create your environment. You can now run your environment with:
 
     source [env_name]/bin/activate
-    
+
 To stop it, use:
 
     deactivate
@@ -33,10 +35,8 @@ You can see that your environment is running if its name appear at the start of 
 
 Every module installed with pip while running a python environment will be installed on said environment.
 
-
-
-
 ## Local/Dev
+
 - Move to `premierlangage/server/serverpl/` and run `install_local.sh`
 - Optionnel : Pour installer la base de données test anonymisées (pour faire des stats ou autre) deziper le fichier utils/db.sqlite3.zip et 
   le mettre dans server/serverpl/
@@ -44,18 +44,19 @@ Every module installed with pip while running a python environment will be insta
 - Run the server: `python3 manage.py runserver`
 
 ## Deployment
+
 - Move to `premierlangage/server/serverpl/` and run `install_release.sh`
 - Create a super user for the server by entering informations when prompted
 - You can override settings (like SECRET_KEY, SANDBOX or ALLOWED_HOSTS), by creating a file `premierlangage/server/serverpl/serverpl/config.py` and declaring such settings.
 - From `premierlangage/server/serverpl/`, run `python3 manage.py collectstatic`
 
-
 ## Sandbox
+
 To execute exercises, you will also need to set up a sandbox, you can find one [here](https://github.com/plgitlogin/sandbox),
 and set the settings `SANDBOX` to the corresponding url (I.E. `http://127.0.0.1:7000/sandbox`).
 
-
 ### Logging
+
 Default facility used for syslog is local7.
 To enable logging on a custom log file, you should created a new file ending by .conf in '/etc/rsyslog.d/' containing:
 
@@ -69,10 +70,10 @@ And restart syslog and rsyslog services
 
 Configure mails option in `premierlangage/server/serverpl/serverpl/config.py` to enable the logger to send mail.
 
-
 ## Troubleshooting
 
 ### Python environnement
+
 When using
 
     python3 -m venv **env_name**
@@ -92,6 +93,4 @@ You may need to restart the env to ensure pip is working properly:
     deactivate
     source env/bin/activate
 
-
-### If you still have any problem, do not hesitate to contact one of the project member.
-
+### If you still have any problem, do not hesitate to contact one of the project member

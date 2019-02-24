@@ -1,0 +1,41 @@
+<ul class='tree'>
+    <li ng-repeat='resource in explorer.resources track by resource.path'>
+        <div class='tree__item editing' ng-if='resource.editing'>
+            <span>
+                <i class="{{resource.icon}}"></i>&nbsp;
+                <input
+                    type='text'
+                    placeholder='Press enter to create esc to cancel...'
+                    auto-focus='true' ng-model='resource.name'
+                    ng-blur='explorer.endEditing(resource, $event)'
+                    ng-keydown='explorer.endEditing(resource, $event)'/>
+            </span>
+        </div>
+        <div
+            ng-if='!resource.editing'
+            id='{{resource.path}}'
+            ng-class='{"tree__item": true, "selected": explorer.isSelection(resource)}'
+            ng-click='explorer.select(resource)'
+            drop='explorer.moveResource'
+            droppable
+            draggable>
+            <span>
+                <i class="{{resource.expanded ? 'fas fa-chevron-down' : 'fas fa-chevron-right'}}"
+                   style="font-size: .6em;">
+                </i>&nbsp;
+                <i class="{{resource.icon}}"></i>&nbsp;
+                <span>{{resource.name}}</span>
+            </span>
+            <span class='tree__options'>
+                <ng-container ng-repeat='option in explorer.options'>
+                    <span ng-if='option.enabled(resource)' ng-click='option.action(resource, $event)'>
+                        <i class="{{option.icon}}"></i>&nbsp;
+                        <md-tooltip>{{option.label}}</md-tooltip>
+                    </span>
+                </ng-container>
+            </span>
+            <div class='overlay'></div>
+        </div>
+        <explorer ng-if='resource.expanded' resources="resource.children"></explorer>
+    </li>
+</ul>

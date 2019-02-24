@@ -1,7 +1,6 @@
 {% load django_markdown %}
-
-{% include "playexo/alert.html" %}
-<div class="card">
+{% load static %}
+<div id=exercise class="card">
     <div class="card-header">
         <div class="text-center"><h1>{% if 'title'%}{{ title }}{% endif %}</h1></div>
         <div class="text-left">{% if 'author' %}{{ author }}{% endif %}</div>
@@ -28,83 +27,19 @@
             <button id="submit_button" class="btn btn-primary">
                 <i class="fas fa-check"></i> Valider
             </button>
-            <a id="download_env_button" type="button" class="btn btn-secondary" href="{{sandbox_url__}}env/{{id__}}/" download>
+            <a id="download_env_button" type="button" class="btn btn-secondary" href="{% url 'filebrowser:dlenv' id__ %}" download>
                 <i class="fas fa-download"></i> Télécharger l'Environnement
             </a>
         </center>
+        <br/>
+        <center>
+            <div id="loading-indicator" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+        </center>
     </div>
 </div>
-
+<br/><br/>
+{% include "playexo/alert.html" %}
 {% block end_script %}
-    <script>
-        $( "#submit_button" ).click(function() {
-            var inputs = getInputs();
-            var data = {
-                answers: inputs,
-                id: "{{id__}}",
-                session_id: "{{session__.id}}",
-                other: [],
-            }
-            var status = {requested_action: 'submit', data: data};
-            $.ajax({
-                type : "POST",
-                url : "/filebrowser/preview_pl/",
-                data: JSON.stringify(status, null, '\t'),
-                contentType: 'application/json;charset=UTF-8',
-                success: function(returned_status) {
-                    status = returned_status;
-                    onReturn(status.exercise, status.navigation, status.feedback);
-                }
-            });
-        });
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-
-        if(window.top != window.self) {
-            $('#home-link').remove();
-        }
-
-        $( "#download_env_button" ).click(function() {
-            window.onbeforeunload = function () {}
-        });
-
-        function getInputs(){
-            var inputs = {};
-            $( "[id^='form_']" ).each(function() {
-                var id = this.id.slice(5); // name of the variable
-                var value = $(this).val();
-                if ($(this).is(':radio')) {
-                    if($(this).is(':checked')) {
-                        inputs[id]=value;
-                    }
-                }
-                else if ($(this).is(':checkbox')) {
-                    if($(this).is(':checked')) {
-                        if (id in inputs) {
-                            inputs[id].push(value);
-                        }
-                        else {
-                            inputs[id] = [value]
-                        }
-                    }
-                }
-                else {
-                    inputs[id]=value;
-                }
-            });
-            return inputs;
-        }
-
-        function onReturn(exercise, navigation, feedback) {
-            if (exercise) {
-                $( "#preview" ).html(exercise);
-            }
-            if (feedback) {
-                $( "#feedback" ).hide()
-                setTimeout(function () {
-                    $( "#feedback" ).html(feedback);
-                    $( "#feedback" ).show();
-                }, 100);
-            }
-        }
-    </script>
+<script type='text/javascript' src="{% static '/playexo/js/playexo.js' %}"></script>
+<script type='text/javascript'>previewPL("{{id__}}", "{{session__.id}}");</script>
 {% endblock %}

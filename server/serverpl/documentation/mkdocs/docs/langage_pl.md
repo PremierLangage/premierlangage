@@ -63,6 +63,20 @@ student %=
     "name": "Jake",
     "age": 20
 }
+==
+```
+___
+
+
+* L'opérateur `+` : Permet d'ajouter du contenu à une clé déjà existante. Le contenu
+                    de la clé doit etre écris sur une seule ligne, par exemple:
+```
+title = Addition
+title + soustraction
+```
+La clé **title** vaut maintenant:
+```
+Addition soustraction
 ```
 ___
 
@@ -87,13 +101,11 @@ et des divisions
 ```
 La clé **title** vaut maintenant:
 ```
-Addition
-et Soustraction
+Addition et Soustraction
 ```
 et la clé **text** vaut:
 ```
-Faisons des multiplications
-et des divisions
+Faisons des multiplications et des divisions
 ```
 Vous remarquerez que dans les deux cas, le nouveau contenu est ajouté sur une nouvelle ligne.
 ___
@@ -121,8 +133,8 @@ ___
   nous utilisons pour cela l'opérateur `@`. La syntaxe correcte est donc
   `@ chemin/vers/fichier.txt [alias]`, l'alias étant optionnel. Exemple:
 ```
-@ /lib/grader/grader.py
-@ /lib/utils/sandboxio.py [io.py]
+@ lib:/grader/grader.py
+@ lib:/utils/sandboxio.py [io.py]
 ```
 Le fichier `grader.py` sera donc ajouté sous le même nom, et le fichier `sandboxio.py`
 sera ajouté sous le nom de `io.py`.
@@ -144,9 +156,9 @@ Combien font:
 1 + 2 - 3
 ==
 
-form =@ /lib/form/digit_input.html
-grader =@ /lib/grader/math.py
-@ /lib/utils/sandboxio.py [io.py]
+form =@ /form/digit_input.html
+grader =@ /grader/math.py
+@ /utils/sandboxio.py [io.py]
 ```
 
 
@@ -186,21 +198,19 @@ e.f.g.h.i.j.k.l = 5
 Comme vue précédemment, certains opérateurs se servent de fichiers, il est donc important
 de savoir comment référencer ces fichiers dans les exercices.
 
-Il y a trois manière de référencer un fichier:
+Il y a quatre manière de référencer un fichier:
 
 * Avec un chemin relatif à l'exercice (ex: `../../fichier.ext`)
 
-* Avec un chemin absolu (ex: `/chemin/vers/fichier.ext`):
-    * Si le fichier contenant la référence est dans un dépôt git (repository), le chemin partira de la racine de celui-ci.
-    * Sinon, le chemin partira de la racine du dossier *home* de l'utilisateur.
-    * Enfin, si le fichier n'est pas trouvé, celui-ci sera recherché dans les librairies standards de Premier Langage.
-	
-* Avec une référence de dossier (ex: `dossier:/chemin/vers/fichier.ext`):
-    * Si la référence est exactement **'home'**, le chemin partira de la racine du dossier *home* de l'utilisateur (cette syntaxe est déconseillée).
-    * Sinon, le chemin partira de `home/[dossier]`, ce qui permet de faire référence a un fichier dans un autre dépôt git (repository).
+* Avec un chemin relatif à *home*, commençant par `~/`
+  (ex: `~/chemin/vers/fichier.ext`)
+
+* Avec un chemin relatif au repository courant, commançant par `/` (ex: `/chemin/vers/fichier.ext`)
+
+* Avec une référence à une librairie (ex: `lib:/chemin/vers/fichier.ext`)
 
 
-Ainsi, avec une arbre de répertoire comme celui-ci:
+Ainsi, avec une arbre de répertoires comme celui-ci:
 
 ```
 home/
@@ -209,7 +219,6 @@ home/
 ├──git1/
 │  ├─ exo2.pl
 │  ├─ feuille.pltp
-
 
 lib/
 ├──dossier2/
@@ -220,8 +229,7 @@ Il est possible de référencer *exo1.pl* à l'intérieur de *feuille.pltp* de p
 
 ```
 @ ../exo1.pl
-@ home:/dossier1/exo1.pl
-@ dossier1:/exo1.pl
+@ ~/dossier1/exo1.pl
 ```
 
 De même, il est possible de référencer *exo2.pl* à l'intérieur de *feuille.pltp* de plusieurs manières:
@@ -229,17 +237,13 @@ De même, il est possible de référencer *exo2.pl* à l'intérieur de *feuille.
 ```
 @ exo2.pl
 @ /exo2.pl
-@ home:/git1/exo2.pl
+@ ~/git1/exo2.pl
 ```
 
 Pour référencer *exo3.pl* de lib à l'intérieur de *feuille.pltp*:
 ```
-@ /dossier2/exo3.pl
+@ lib:/dossier2/exo3.pl
 ```
-
-Bien entendu, cela impose plusieurs limitations:
-* Ne pas créer de dossier/cloner de dépôt s'appelant `home`
-* Ne pas avoir de chemin de fichier identique à ceux d'une librairie
 
 
 ## Repository

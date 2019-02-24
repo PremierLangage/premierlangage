@@ -37,7 +37,7 @@ ___
 L'ajout d'exercice se fait grâce à l'opérateur `@` (voir [Syntaxe de PL](../langage_pl/#les-references-de-fichiers))
 
 
-## Example
+## Exemple
 
 ```
 title = Additions Aléatoires
