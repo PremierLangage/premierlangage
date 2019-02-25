@@ -1,5 +1,5 @@
 import { ViewEncapsulation, Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { ImageEditor } from '../../shared/models/editor.model';
+import { ImageEditor, PreviewEditor } from '../../shared/models/editor.model';
 import { IEditorTab } from '../../shared/services/core/opener.service';
 import { Subscription } from 'rxjs';
 import { RunScriptsDirective } from 'src/app/shared/directives/run-scripts.directive';
@@ -12,11 +12,10 @@ import { RunScriptsDirective } from 'src/app/shared/directives/run-scripts.direc
 })
 export class PreviewEditorComponent implements OnInit, OnDestroy {
     @Input()
-    editor: ImageEditor;
+    editor: PreviewEditor;
     @ViewChild(RunScriptsDirective)
     scripts: RunScriptsDirective;
-
-    private html: string;
+    html: string;
     private openSubscription: Subscription;
 
     constructor() { }

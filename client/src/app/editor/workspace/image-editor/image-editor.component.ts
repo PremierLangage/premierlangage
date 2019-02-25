@@ -13,9 +13,9 @@ import { Subscription } from 'rxjs';
 export class ImageEditorComponent implements OnInit, OnDestroy {
     @Input()
     editor: ImageEditor;
-    private imageURL: string;
-    private isSVG: boolean;
-    private content: string;
+    imageURL: string;
+    isSVG: boolean;
+    svgContent: string;
 
     private openSubscription: Subscription;
 
@@ -33,7 +33,7 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
     }
 
     private open(data: IEditorTab) {
-        this.content = data.resource.content;
+        this.svgContent = data.resource.content;
         this.imageURL = data.resource.meta.download_url;
         this.isSVG = isSVG(data.resource);
     }

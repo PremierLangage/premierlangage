@@ -4334,7 +4334,7 @@ var CodeEditorComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class='image-editor'>\n    <div *ngIf='isSVG; else notSVG' [innerHTML]='content | sanitizeHtml' [ngStyle]='{zoom: editor.zoom}'></div> \n    <ng-template #notSVG>\n        <img src='{{imageURL}}'  [ngStyle]='{zoom: editor.zoom}' />\n    </ng-template>\n    <div class='image-editor__btn-group'>\n        <div class='image-editor__btn'>{{editor.zoom | number:'1.1-1'}}</div>\n        <div class='image-editor__btn' matTooltip='Zoom In' (click)='editor.zoomIn()'>\n            <i class=\"fas fa-plus\"></i>\n        </div>\n        <div class='image-editor__btn' matTooltip='Zoom Out' (click)='editor.zoomOut()'>\n            <i class=\"fas fa-minus\"></i>\n        </div>\n    </div>\n</div>"
+module.exports = "<div class='image-editor'>\n    <div *ngIf='isSVG; else notSVG' [innerHTML]='svgContent | sanitizeHtml' [ngStyle]='{zoom: editor.zoom}'></div> \n    <ng-template #notSVG>\n        <img src='{{imageURL}}'  [ngStyle]='{zoom: editor.zoom}' />\n    </ng-template>\n    <div class='image-editor__btn-group'>\n        <div class='image-editor__btn'>{{editor.zoom | number:'1.1-1'}}</div>\n        <div class='image-editor__btn' matTooltip='Zoom In' (click)='editor.zoomIn()'>\n            <i class=\"fas fa-plus\"></i>\n        </div>\n        <div class='image-editor__btn' matTooltip='Zoom Out' (click)='editor.zoomOut()'>\n            <i class=\"fas fa-minus\"></i>\n        </div>\n    </div>\n</div>"
 
 /***/ }),
 
@@ -4381,7 +4381,7 @@ var ImageEditorComponent = /** @class */ (function () {
         this.openSubscription.unsubscribe();
     };
     ImageEditorComponent.prototype.open = function (data) {
-        this.content = data.resource.content;
+        this.svgContent = data.resource.content;
         this.imageURL = data.resource.meta.download_url;
         this.isSVG = Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["isSVG"])(data.resource);
     };
@@ -4412,7 +4412,7 @@ var ImageEditorComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf='!hidden' class='preview-editor' [innerHTML]='html | sanitizeHtml' runScripts></div>"
+module.exports = "<div class='preview-editor' [innerHTML]='html | sanitizeHtml' runScripts></div>"
 
 /***/ }),
 
@@ -4466,7 +4466,7 @@ var PreviewEditorComponent = /** @class */ (function () {
     };
     tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", _shared_models_editor_model__WEBPACK_IMPORTED_MODULE_2__["ImageEditor"])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", _shared_models_editor_model__WEBPACK_IMPORTED_MODULE_2__["PreviewEditor"])
     ], PreviewEditorComponent.prototype, "editor", void 0);
     tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ViewChild"])(src_app_shared_directives_run_scripts_directive__WEBPACK_IMPORTED_MODULE_3__["RunScriptsDirective"]),

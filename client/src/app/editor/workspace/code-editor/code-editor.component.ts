@@ -62,14 +62,14 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         this.monacoService.disposeEditor(this.editor.codeEditor);
     }
 
-    private codeEditorLoaded(codeEditor: IStandaloneCodeEditor) {
+    codeEditorLoaded(codeEditor: IStandaloneCodeEditor) {
         this.monacoService.registerEditor(codeEditor);
         this.editor.codeEditor = codeEditor;
         this.addCommands(codeEditor);
         this.open(this.editor.data());
     }
 
-    private diffEditorLoaded(diffEditor: IStandaloneDiffEditor) {
+    diffEditorLoaded(diffEditor: IStandaloneDiffEditor) {
         this.monacoService.registerEditor(diffEditor.getModifiedEditor());
         this.editor.diffEditor = diffEditor;
         this.addCommands(this.editor.diffEditor.getModifiedEditor());

@@ -139,7 +139,7 @@ export class CodeEditor extends AbstractEditor {
 
 export class ImageEditor extends AbstractEditor {
 
-    private zoom = 0.7;
+    zoom = 0.7;
 
     constructor(group: IEditorGroup, data: IEditorTab) {
         super(group, data);

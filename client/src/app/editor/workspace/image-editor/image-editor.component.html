@@ -1,5 +1,5 @@
 <div class='image-editor'>
-    <div *ngIf='isSVG; else notSVG' [innerHTML]='content | sanitizeHtml' [ngStyle]='{zoom: editor.zoom}'></div> 
+    <div *ngIf='isSVG; else notSVG' [innerHTML]='svgContent | sanitizeHtml' [ngStyle]='{zoom: editor.zoom}'></div> 
     <ng-template #notSVG>
         <img src='{{imageURL}}'  [ngStyle]='{zoom: editor.zoom}' />
     </ng-template>
