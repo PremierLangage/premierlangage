@@ -23,9 +23,12 @@ export interface Resource {
     content: string;
     lastContent: string;
     meta: ResourceMeta;
+    /** opened in any editor */
+    opened: boolean;
     renaming: boolean;
     creating: boolean;
     changed: boolean;
+    /** changed on the server */
     dirty: boolean;
 
     nameBefore: string;

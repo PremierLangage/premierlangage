@@ -127,7 +127,7 @@ export class EditorGroup implements IEditorGroup {
         if (!editor) {
             throw new Error('The is no registered editor that can open \'' + tab.resource.path + '\'');
         }
-
+        tab.resource.opened = true;
         this._activeTab = tab;
         this._activeEditor = editor;
         this._activeEditor.open(tab);
@@ -222,6 +222,7 @@ export class EditorGroup implements IEditorGroup {
 
         this._activeTab = null;
         this.tabs.splice(index, 1);
+        tab.resource.opened = this._editorService.findGroups(tab).length > 0;
 
         index = Math.max(0, index - 1);
         if (index < this.tabs.length) {

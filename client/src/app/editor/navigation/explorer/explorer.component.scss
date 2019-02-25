@@ -21,32 +21,14 @@
         justify-content: space-between;
         cursor: pointer;
         overflow: hidden;
-        .overlay { 
-            display: none;
-            pointer-events: none;
-            position: absolute; 
-            left: auto !important;
-            right: 0;
-            top: 0; 
-            width: 100vw; 
-            height: 100%;
-        }
-    
-        .tree__item-option-group {
-            visibility: hidden;  
-            font-size: 14px;
-            margin-right: 4px;
-            .tree__item-option {
-                cursor: pointer;
+        
+        &.opened {
+            border-right: 4px dashed black;
+            &.changed {
+                border-right: 4px dashed red;
             }
         }
-    
-        .tree__item-label {
-            display: inline-flex;
-            align-items: center;
-            min-width: 100px;
-        }
-    
+
         &:hover, &.selected {
             .overlay {
                 display: block; 
@@ -68,6 +50,32 @@
                 width: 100%;
                 margin-right: 4px; 
             }
+        }
+
+        .tree__item-option-group {
+            visibility: hidden;  
+            font-size: 14px;
+            margin-right: 4px;
+            .tree__item-option {
+                cursor: pointer;
+            }
+        }
+    
+        .tree__item-label {
+            display: inline-flex;
+            align-items: center;
+            min-width: 100px;
+        }
+    
+        .overlay { 
+            display: none;
+            pointer-events: none;
+            position: absolute; 
+            left: auto !important;
+            right: 0;
+            top: 0; 
+            width: 100vw; 
+            height: 100%;
         }
 
     }

@@ -22,10 +22,11 @@
                            [(ngModel)]='resource.name' 
                            (keydown)='didEditingChanged(resource, $event)' 
                            (blur)='didEditingChanged(resource, $event)'/>
+                           <!-- TODO replace resource.name -->
                 </span>
             </div>    
             <ng-template #notEditing>
-                <div id='{{resource.path}}' class='tree__item' [ngClass]='{selected: isSelection(resource)}' 
+                <div id='{{resource.path}}' class='tree__item' [ngClass]='{selected: isSelection(resource), changed: resource.changed, opened: resource.opened}' 
                     draggable droppable [dragCondition]='draggable(resource)' [dropCondition]='droppable(resource)' (handleDrop)='didDropData($event)'
                     (click)='didTapOnResource(resource, $event)'>
                     <span class='tree__item-label'>
