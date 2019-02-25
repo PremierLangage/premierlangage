@@ -274,6 +274,9 @@ FILEBROWSER_DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&']
 PARSERS_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'loader/parsers/'))
 PARSERS_MODULE = 'loader.parsers'
 
+# Default home directory name for pl users
+HOME = "Yggdrasil"
+
 # Allow a file '[PL_ROOT]/server/serverpl/serverpl/config.py' to override any of the settings above.
 try:
     from serverpl.config import *
