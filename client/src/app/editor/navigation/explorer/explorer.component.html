@@ -6,7 +6,6 @@
             <i class="fas fa-sync"></i>
         </div>
     </div>
-    <mat-progress-bar mode='indeterminate' color='warn' *ngIf='runningTask()'></mat-progress-bar>
     <div class='navigation_content'>
         <explorer [resources]='resources' [showHeader]='false'></explorer>
     </div>
@@ -14,7 +13,7 @@
 <ng-template #tree>
     <ul class='tree'>
         <li *ngFor='let resource of resources; trackBy:trackByFn'>
-            <div *ngIf='resource.editing; else notEditing' class='tree__item editing'>
+            <div *ngIf='isEditing(resource); else notEditing' class='tree__item editing'>
                 <span>
                     <i class="{{resource.icon}}"></i>&nbsp;
                     <input autofocus

@@ -1,24 +1,24 @@
 import { Component, ViewEncapsulation, Input, OnInit } from '@angular/core';
 
-import { Resource } from '../../models/resource.model';
-import { TaskService } from '../../services/task.service';
-import { LoggingService } from '../../services/logging.service';
-import { ResourceService } from '../../services/resource.service';
-import { NotificationService } from 'src/app/shared/services/notification.service';
 import { PrompOptions } from 'src/app/shared/components/prompt/prompt.component';
 import { DropData } from 'src/app/shared/directives/droppable.directive';
-import * as utils from '../../editor.utils';
+
+import { TaskService } from '../../shared/services/core/task.service';
+import { OpenerService } from '../../shared/services/core/opener.service';
+import { ResourceService } from '../../shared/services/core/resource.service';
+import { NotificationService } from 'src/app/shared/services/notification.service';
+
+import { Resource } from '../../shared/models/resource.model';
+import * as filters from '../../shared/models/filters.model';
 
 @Component({
-  // tslint:disable-next-line: component-selector
-  selector: 'explorer',
+    // tslint:disable-next-line: component-selector
+    selector: 'explorer',
   templateUrl: './explorer.component.html',
   styleUrls: ['./explorer.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class ExplorerComponent {
-
-    private skipNextBlurEvent: boolean;
 
     /** the tree resources */
     @Input()
@@ -33,35 +33,35 @@ export class ExplorerComponent {
 
     constructor(
         private readonly task: TaskService,
-        private readonly logging: LoggingService,
-        private readonly resource: ResourceService,
+        private readonly opener: OpenerService,
         private readonly notification: NotificationService,
+        private readonly resourceService: ResourceService,
     ) {
         const that = this;
-        this.resources = this.resource.resources;
+        this.resources = this.resourceService.resources;
         this.options = [
-            { icon: 'fas fa-check', label: 'Test', enabled: utils.canBeTested, action: (r: Resource, e: MouseEvent) => {
+            { icon: 'fas fa-check', label: 'Test', enabled: filters.canBeTested, action: (r: Resource, e: MouseEvent) => {
                 that.optionTest(r, e);
             }},
-            { icon: 'fas fa-play', label: 'Load', enabled: utils.canBeLoaded, action: (r: Resource, e: MouseEvent) => {
+            { icon: 'fas fa-play', label: 'Load', enabled: filters.canBeLoaded, action: (r: Resource, e: MouseEvent) => {
                 that.optionLoad(r, e );
             }},
-            { icon: 'fas fa-sync', label: 'Reload', enabled: utils.canBeReloaded, action: (r: Resource, e: MouseEvent) => {
+            { icon: 'fas fa-sync', label: 'Reload', enabled: filters.canBeReloaded, action: (r: Resource, e: MouseEvent) => {
                 that.optionReload(r, e );
             }},
-            { icon: 'far fa-file', label: 'New File', enabled: utils.canAddFile, action: (r: Resource, e: MouseEvent) => {
+            { icon: 'far fa-file', label: 'New File', enabled: filters.canAddFile, action: (r: Resource, e: MouseEvent) => {
                 that.optionAddFile(r, e);
             }},
-            { icon: 'far fa-folder', label: 'New Folder', enabled: utils.canAddFile, action: (r: Resource, e: MouseEvent) => {
+            { icon: 'far fa-folder', label: 'New Folder', enabled: filters.canAddFile, action: (r: Resource, e: MouseEvent) => {
                 that.optionFolder(r, e );
             }},
-            { icon: 'far fa-edit', label: 'Rename', enabled: utils.canBeRenamed, action: (r: Resource, e: MouseEvent) => {
+            { icon: 'far fa-edit', label: 'Rename', enabled: filters.canBeRenamed, action: (r: Resource, e: MouseEvent) => {
                 that.optionRename(r, e );
             }},
-            { icon: 'far fa-trash-alt', label: 'Delete', enabled: utils.canBeDeleted, action: (r: Resource, e: MouseEvent) => {
+            { icon: 'far fa-trash-alt', label: 'Delete', enabled: filters.canBeDeleted, action: (r: Resource, e: MouseEvent) => {
                 that.optionDelete(r, e );
             }},
-            { icon: 'fas fa-lock', label: 'Read Only', enabled: utils.readonly, action: function () { } },
+            { icon: 'fas fa-lock', label: 'Read Only', enabled: filters.readonly, action: function () { } },
         ];
     }
 
@@ -69,8 +69,8 @@ export class ExplorerComponent {
     didTapRefresh() {
         this.notification.confirmAsync({ title: 'You will lose any unsaved changes after this. Are you sure ?'}).then(confirmed => {
             if (confirmed) {
-                this.resource.refresh().catch(error => {
-                    this.logging.error(error);
+                this.resourceService.refresh().catch(error => {
+                    this.notification.logError(error);
                 });
             }
         });
@@ -82,7 +82,7 @@ export class ExplorerComponent {
      * 	@returns true only if the resource is not a root folder.
      */
     draggable(resource: Resource) {
-        return !utils.isRoot(resource) && resource.write;
+        return !filters.isRoot(resource) && resource.write;
     }
 
     /**
@@ -91,7 +91,7 @@ export class ExplorerComponent {
      * 	@returns true only if the resource is folder.
      */
     droppable(resource: Resource) {
-        return utils.isFolder(resource) && resource.write;
+        return filters.isFolder(resource) && resource.write;
     }
 
     /**
@@ -103,9 +103,9 @@ export class ExplorerComponent {
     didDropData(data: DropData) {
         const srcPath = data.src || data.file.name;
         const dstPath = data.dst;
-        const srcName = utils.basename(srcPath);
-        const src = this.resource.find(srcPath);
-        const dst = this.resource.find(dstPath);
+        const srcName = filters.basename(srcPath);
+        const src = this.resourceService.find(srcPath);
+        const dst = this.resourceService.find(dstPath);
         if (src && src.parent === data.dst) {
             return;
         }
@@ -114,8 +114,8 @@ export class ExplorerComponent {
         };
         this.notification.confirmAsync(options).then(confirmed => {
             if (confirmed) {
-                this.resource.move(src || data.file , dst).catch(error => {
-                    this.logging.error(error);
+                this.resourceService.move(src || data.file , dst).catch(error => {
+                    this.notification.logError(error);
                 });
             }
         });
@@ -129,25 +129,24 @@ export class ExplorerComponent {
      * @param event KeyboardEvent or Focus event.
      */
     didEditingChanged(resource: Resource, event: any) {
-        if (event.type === 'blur' && this.skipNextBlurEvent) {
-            this.skipNextBlurEvent = false;
-            return;
-        }
-        if (event.keyCode === 27) { // escape key
-            this.skipNextBlurEvent = true;
-            if (resource.editing) {
-                this.resource.cancelOrRemove(resource);
-            } else {
-                this.optionDelete(resource, event);
+        if (resource.renaming || resource.creating) {
+            if (event.keyCode === 27) { // escape key
+                if (resource.renaming) {
+                    this.resourceService.cancel(resource);
+                } else {
+                    this.optionDelete(resource, event);
+                }
+            } else if (event.type === 'blur' || event.keyCode === 13) { // focus losed or enter key
+                let promise: Promise<boolean>;
+                if (resource.renaming) {
+                    promise = this.resourceService.rename(resource);
+                } else {
+                    promise = this.resourceService.create(resource);
+                }
+                promise.catch(error => {
+                    this.notification.logError(error);
+                });
             }
-        } else if (event.type === 'blur' || event.keyCode === 13) { // focus losed or enter key
-            this.skipNextBlurEvent = true;
-            // TODO not make server call if name is not modified
-            this.resource.createOrRename(resource).then(() => {
-                this.didTapOnResource(resource, event);
-            }).catch(error => {
-                this.logging.error(error);
-            });
         }
     }
 
@@ -159,7 +158,11 @@ export class ExplorerComponent {
     didTapOnResource(resource: Resource, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        this.task.emitSelectEvent(resource);
+        if (filters.isFolder(resource)) {
+            resource.expanded = !resource.expanded;
+        } else {
+            this.opener.openURI(filters.asURI(resource));
+        }
     }
 
     /**
@@ -170,7 +173,7 @@ export class ExplorerComponent {
      * - resource.icon otherwise.
      */
     icon(resource: Resource) {
-        if (utils.isFolder(resource)) {
+        if (filters.isFolder(resource)) {
             return resource.expanded ? 'fas fa-folder-open' : 'fas fa-folder';
         }
         return resource.icon;
@@ -181,14 +184,11 @@ export class ExplorerComponent {
      * @param resource the resource object.
      */
     isSelection(resource: Resource) {
-        return this.resource.isSelection(resource);
+        return this.resourceService.isSelection(resource);
     }
 
-    /**
-     * Gets a value indicating whether a task is running in the editor.
-     */
-    runningTask() {
-        return this.task.running;
+    isEditing(resource: Resource) {
+        return resource.renaming || resource.creating;
     }
 
     /** Used in the html template with *ngFor to keep track of the resource */
@@ -200,13 +200,13 @@ export class ExplorerComponent {
     private optionAddFile(resource: Resource, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        this.resource.addFile(resource);
+        this.resourceService.addFile(resource);
     }
 
     private optionFolder(resource: Resource, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        this.resource.addFolder(resource);
+        this.resourceService.addFolder(resource);
     }
 
     private optionDelete(resource: Resource, event: MouseEvent) {
@@ -216,8 +216,8 @@ export class ExplorerComponent {
             title: 'Are you sure you want to delete \'' + resource.name + '\'?',
         }).then(confirmed => {
             if (confirmed) {
-                this.resource.delete(resource).catch(error => {
-                    this.logging.error(error);
+                this.resourceService.delete(resource).catch(error => {
+                    this.notification.logError(error);
                 });
             }
         });
@@ -226,10 +226,10 @@ export class ExplorerComponent {
     private optionLoad(resource: Resource, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        this.resource.loadPLTP(resource).then(response => {
-            this.logging.info(response);
+        this.resourceService.loadPLTP(resource).then(response => {
+            this.notification.logInfo(response);
         }).catch(error => {
-            this.logging.error(error);
+            this.notification.logError(error);
         });
     }
 
@@ -250,10 +250,10 @@ export class ExplorerComponent {
         };
         this.notification.promptAsync(options).then((data) => {
             if (data.fields) {
-                this.resource.reloadPLTP(resource, data.fields[0].value).then((response => {
-                    this.logging.info(response);
+                this.resourceService.reloadPLTP(resource, data.fields[0].value).then((response => {
+                    this.notification.logInfo(response);
                 })).catch(error => {
-                    this.logging.error(error);
+                    this.notification.logError(error);
                 });
             }
         });
@@ -262,15 +262,15 @@ export class ExplorerComponent {
     private optionRename(resource: Resource, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        resource.editing = true;
-        resource.nameBeforeEdition = resource.name;
-        resource.parentRef = this.resource.find(resource.parent);
+        resource.renaming = true;
+        resource.parentRef = this.resourceService.find(resource.parent);
+        resource.nameBefore = resource.name;
     }
 
     private optionTest(resource: Resource, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        window.open('/filebrowser/option?name=test_pl&path=' + resource.path, '_blank');
+        this.opener.openURL('/filebrowser/option?name=test_pl&path=' + resource.path);
     }
 
 }

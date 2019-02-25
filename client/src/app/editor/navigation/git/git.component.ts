@@ -1,10 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { NotificationService } from 'src/app/shared/services/notification.service';
+
 import { PrompField, PrompOptions } from 'src/app/shared/components/prompt/prompt.component';
-import { Change, Repo } from '../../models/repo.model';
-import { ResourceService } from '../../services/resource.service';
-import { GitService } from '../../services/git.service';
-import { TaskService } from '../../services/task.service';
+
+import { Change, Repo } from '../../shared/models/resource.model';
+
+import { GitService } from '../../shared/services/core/git.service';
+import { TaskService } from '../../shared/services/core/task.service';
+import { ResourceService } from '../../shared/services/core/resource.service';
+import { NotificationService } from 'src/app/shared/services/notification.service';
 
 @Component({
   // tslint:disable-next-line: component-selector

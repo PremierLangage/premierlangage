@@ -6,7 +6,6 @@
     <mat-form-field class='search'>
         <input autoFocus matInput placeholder="Press enter to search" (keydown)='search($event)' [(ngModel)]='searchValue'>
     </mat-form-field>
-    <mat-progress-bar mode='indeterminate' color='warn' *ngIf='runningTask'></mat-progress-bar>
     <div class="navigation_content">
         <explorer [resources]='result'></explorer>
     </div>

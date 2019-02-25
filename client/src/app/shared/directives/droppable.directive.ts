@@ -8,7 +8,7 @@ export class DroppableDirective implements AfterContentInit {
     @Input()
     dropCondition = true;
     @Output()
-    handDrop: EventEmitter<DropData> = new EventEmitter();
+    handleDrop: EventEmitter<DropData> = new EventEmitter();
 
     public constructor(private el: ElementRef) {
     }
@@ -60,7 +60,7 @@ export class DroppableDirective implements AfterContentInit {
             const destination = this.id;
             const source = e.dataTransfer.getData('Text');
             if (source || file) {
-                self.handDrop.emit({src: source, file: file, dst: destination});
+                self.handleDrop.emit({src: source, file: file, dst: destination});
             }
             return false;
         }, false);

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Resource } from '../../shared/models/resource.model';
+import { ResourceService } from '../../shared/services/core/resource.service';
 
-import { Resource } from 'src/app/editor/models/resource.model';
-import { ResourceService } from 'src/app/editor/services/resource.service';
 
 @Component({
   // tslint:disable-next-line: component-selector

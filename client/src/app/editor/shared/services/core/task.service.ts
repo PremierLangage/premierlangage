@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { Resource } from 'src/app/editor/models/resource.model';
+import { Resource } from '../../models/resource.model';
 
 @Injectable({
     providedIn: 'root'
@@ -47,7 +47,7 @@ export class TaskService {
         this.onDeleted.next(resource);
     }
 
-    emitTaskEvent(running: boolean, taskName: string) {
+    emitTaskEvent(running: boolean, taskName: string = null) {
         this._running = running;
         this._taskName = taskName;
         this.onRunningTask.next(running);

@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Resource, resourceInit } from '../models/resource.model';
+import { Resource } from '../../models/resource.model';
 import { Subscription, Subject } from 'rxjs';
-import * as utils from '../editor.utils';
 import { GitService } from './git.service';
 import { TaskService } from './task.service';
+import * as filters from '../../models/filters.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ import { TaskService } from './task.service';
 export class ResourceService {
 
     private subscription: Subscription;
-    private readonly previewFunctions = {};
+    private readonly previewProviders = {};
     resources: Resource[] = [];
     selection: Resource;
 
@@ -21,8 +21,9 @@ export class ResourceService {
         private readonly task: TaskService,
         private readonly git: GitService,
     ) {
-        this.previewFunctions = {
+        this.previewProviders = {
             'pl': this.previewPL,
+            'svg': this.previewSVG,
         };
     }
 
@@ -45,19 +46,16 @@ export class ResourceService {
     }
 
     /**
-     * Cancels the editition or the creation of the resource depending to it's state.
+     * Cancels the edition or the creation of the resource depending to it's state.
      * - If the resource exists, the function will reset it's name to the name before the edition
      * - Else the function will cancel the creation of the resource by removing it to the local cache.
      * @param resource the resource (resource.editing must be == true)
      */
-    cancelOrRemove(resource: Resource) {
-        utils.assert(resource.editing, 'resource should be in editing state');
-        utils.assert(utils.canWrite(resource), 'permission denied');
-        utils.assert(!utils.isRoot(resource), 'permission denied');
+    async cancel(resource: Resource): Promise<boolean> {
         const path = resource.path;
         let success = false;
-        if (resource.nameBeforeEdition) {
-            resource.name = resource.nameBeforeEdition;
+        if (resource.nameBefore) {
+            resource.name = resource.nameBefore;
             success = true;
         } else {
             resource.path += '/' + resource.name;
@@ -67,65 +65,65 @@ export class ResourceService {
             }
         }
         if (success) {
-            delete resource.editing;
+            delete resource.renaming;
             delete resource.parentRef;
-            delete resource.nameBeforeEdition;
+            delete resource.nameBefore;
         }
         return success;
     }
 
-
     /**
-     * Creates or renames the resource if needed.
-     * @param resource the resource object to creates.
+     * Renames the resource on the server.
+     * @param resource the resource object to rename.
      * @returns Promise<boolean> rejected with an error or resolved with true.
      */
-    async createOrRename(resource: Resource) {
-        return new Promise((resolve, reject) => {
-            utils.checkName(resource.name);
-            utils.assert(utils.canWrite(resource.parentRef), 'permission denied');
-            if (resource.nameBeforeEdition && resource.name === resource.nameBeforeEdition) {
-                delete resource.editing;
-                delete resource.parentRef;
-                delete resource.nameBeforeEdition;
-                resolve(true);
-                return;
+    async rename(resource: Resource) {
+        filters.assert(resource.renaming, 'resource should be in renaming state');
+        filters.assert(filters.canWrite(resource.parentRef), 'permission denied');
+        filters.checkName(resource.name);
+        let success = false;
+        try {
+            this.task.emitTaskEvent(true, 'rename resource');
+            if (resource.name === resource.nameBefore) {
+                success = await this.cancel(resource);
+            } else {
+                const data = {
+                    name: 'rename_resource',
+                    path: resource.path,
+                    target: resource.name,
+                };
+                success = await this.endEdition(data, resource);
             }
-            utils.assert(!resource.parentRef.children.find(it => {
-                return it.name === resource.name && it.path !== resource.path;
-            }), 'resource name already exists !');
+        } catch (error) {
+            this.task.emitTaskEvent(false);
+            throw error;
+        }
+        this.task.emitTaskEvent(false);
+        return success;
+    }
+
+    /**
+     * creates the resource on the server.
+     * @param resource the resource object to create.
+     * @returns Promise<boolean> rejected with an error or resolved with true.
+     */
+    async create(resource: Resource) {
+        this.task.emitTaskEvent(true, 'create resource');
+        try {
+            filters.checkName(resource.name);
+            filters.assert(filters.canWrite(resource.parentRef), 'permission denied');
             const data = {
                 name: 'create_resource',
                 path: resource.path + '/' + resource.name,
                 content: resource.content,
                 type: resource.type
             };
-
-            if (resource.nameBeforeEdition) {
-                data.name = 'rename_resource';
-                data.path = resource.path;
-                data['target'] = resource.name;
-                delete data.content;
-                delete data.type;
-            }
-
-            this.task.emitTaskEvent(true, 'create');
-            const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
-            this.http.post('filebrowser/option', data, { headers: headers }).toPromise().then(response => {
-                resource.path = response['path'];
-                resource.icon = response['icon'];
-                this.sort(resource.parentRef.children);
-                delete resource.editing;
-                delete resource.parentRef;
-                delete resource.nameBeforeEdition;
-                this.git.refresh();
-                this.task.emitTaskEvent(false, 'create');
-                resolve(true);
-            }).catch(error => {
-                this.task.emitTaskEvent(false, 'create');
-                reject(error);
-            });
-        });
+            await this.endEdition(data, resource);
+            return true;
+        } catch (error) {
+            this.task.emitTaskEvent(false, 'create resource');
+            throw error;
+        }
     }
 
     /**
@@ -135,9 +133,9 @@ export class ResourceService {
      */
     async delete(resource: Resource) {
         try {
-            utils.requireNonNull(resource, 'resource');
-            utils.assert(utils.canWrite(resource), 'permission denied');
-            utils.assert(!utils.isRoot(resource), 'permission denied');
+            filters.requireNonNull(resource, 'resource');
+            filters.assert(filters.canWrite(resource), 'permission denied');
+            filters.assert(!filters.isRoot(resource), 'permission denied');
             this.task.emitTaskEvent(true, 'delete');
             const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
             await this.http.post('filebrowser/option', {
@@ -164,7 +162,10 @@ export class ResourceService {
      */
     find(path: string): Resource {
         path = path.trim();
-        return this.findPredicate(item => item.path === path);
+        if (!path.startsWith('/')) {
+            path = '/' + path;
+        }
+        return this.findPredicate(item => '/' + item.path === path);
     }
 
     /**
@@ -277,10 +278,10 @@ export class ResourceService {
     async move(src: Resource | File, dst: Resource) {
         try {
             this.task.emitTaskEvent(true, 'move');
-            utils.requireNonNull(src, 'src');
-            utils.requireNonNull(dst, 'dst');
-            utils.assert(utils.canWrite(dst), 'permission denied');
-            utils.assert(utils.isFolder(dst), 'destination must be a directory');
+            filters.requireNonNull(src, 'src');
+            filters.requireNonNull(dst, 'dst');
+            filters.assert(filters.canWrite(dst), 'permission denied');
+            filters.assert(filters.isFolder(dst), 'destination must be a directory');
 
             let resource: Resource;
             if ('size' in src) { // File type contains size property
@@ -306,13 +307,21 @@ export class ResourceService {
      * @returns Promise<boolean> resolved with true and rejected with an error
      */
     async save(resource: Resource) {
+        if (!filters.fromServer(resource)) {
+            return true;
+        }
+        if (!resource.changed) {
+            return true;
+        }
         try {
             this.task.emitTaskEvent(true, 'save');
-            utils.requireNonNull(resource, 'resource');
+            filters.requireNonNull(resource, 'resource');
             const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
             await this.http.post('filebrowser/option',   {
                 name: 'update_resource', path: resource.path, content: resource.content
             }, {headers: headers}).toPromise();
+            resource.changed = false;
+            resource.lastContent = resource.content;
             this.task.emitTaskEvent(false, 'save');
             this.git.refresh();
             return true;
@@ -342,8 +351,8 @@ export class ResourceService {
         let response: Object;
         try {
             this.task.emitTaskEvent(true, 'compilation');
-            utils.requireNonNull(resource, 'resource');
-            utils.assert(utils.isPl(resource), 'pl resource is expected');
+            filters.requireNonNull(resource, 'resource');
+            filters.assert(filters.isPl(resource), 'pl resource is expected');
             const data = {
                 'name': 'compile_pl',
                 'path': resource.path,
@@ -364,38 +373,34 @@ export class ResourceService {
      * @returns Promise<boolean> resolved with true or false and rejected with an error
      */
     async open(resource: Resource) {
-        return new Promise<boolean>((resolve, reject) => {
-            this.selection = resource;
-            if (resource.type === 'folder') {
-                resource.expanded = !resource.expanded;
-                resolve(false);
-            } else {
-                this.task.emitTaskEvent(true, 'open');
-                if ((resource.content || resource.image) && !resource.dirty) {
-                    this.task.emitTaskEvent(false, 'open');
-                    resolve(true);
-                } else {
-                    const params = new HttpParams().set('name', 'get_resource').set('path', resource.path);
-                    this.http.get('filebrowser/option', { params: params }).toPromise().then(response => {
-                        this.task.emitTaskEvent(false, 'open');
-                        resource.content = response['content'];
-                        resource.image = response['image'];
-                        resource.changed = false;
-                        resource.dirty = false;
-                        resourceInit(resource);
-                        resolve(true);
-                    }).catch((error: HttpErrorResponse) => {
-                        this.task.emitTaskEvent(false, 'open');
-                        if (error.error && error.error.includes('codec can\'t decode')) {
-                            const msg = ' is not displayed in the editor because it is either binary or uses an unsupported text encoding.';
-                            reject(resource.name + msg);
-                        } else {
-                            reject(error);
-                        }
-                    });
-                }
-            }
-        });
+        if (!filters.fromServer(resource)) {
+            return true;
+        }
+
+        this.selection = resource;
+        if (resource.type === 'folder') {
+            resource.expanded = !resource.expanded;
+            return false;
+        }
+
+        if (resource.content && !resource.dirty) {
+            return true;
+        }
+
+        try {
+            this.task.emitTaskEvent(true, 'open');
+            const params = new HttpParams().set('name', 'get_resource').set('path', resource.path);
+            const response = await this.http.get('filebrowser/option', { params: params }).toPromise();
+            resource.content = resource.lastContent = response['content'];
+            resource.meta = response['meta'];
+            resource.changed = false;
+            resource.dirty = false;
+            this.task.emitTaskEvent(false, 'open');
+            return true;
+        } catch (error) {
+            this.task.emitTaskEvent(false, 'open');
+            throw error;
+        }
     }
 
     /**
@@ -410,17 +415,17 @@ export class ResourceService {
     /**
      * Loads the preview content of the resource.
      * @param resource the resource to preview.
-     * @returns Promise<boolean> resolved with true or false and rejected with an error
+     * @returns Promise<Resource> resolved with the resource
      */
-    preview(resource:  Resource) {
+    preview(resource:  Resource): Promise<Resource> {
         return new Promise((resolve, reject) => {
             this.task.emitTaskEvent(true, 'preview');
-            const ext = utils.extensionOf(resource);
-            const action = this.previewFunctions[ext];
+            const ext = filters.extension(resource);
+            const action = this.previewProviders[ext];
             action(resource, this).then(response => {
                 this.task.emitTaskEvent(false, 'preview');
-                resource.state.preview = response.preview;
-                resolve(true);
+                resource.meta.html = response.preview;
+                resolve(resource);
             }).catch((error: any) => {
                 this.task.emitTaskEvent(false, 'preview');
                 reject(error);
@@ -458,15 +463,29 @@ export class ResourceService {
         });
     }
 
+    private async endEdition(data: any, resource: Resource) {
+        const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
+        const response = await this.http.post('filebrowser/option', data, { headers: headers }).toPromise();
+        resource.path = response['path'];
+        resource.icon = response['icon'];
+        this.sort(resource.parentRef.children);
+        resource.renaming = false;
+        resource.creating = false;
+        resource.parentRef = undefined;
+        resource.nameBefore = undefined;
+        this.git.refresh();
+        this.task.emitTaskEvent(false, 'create resource');
+        return true;
+    }
 
     private add(resource: Resource, type: string) {
-        utils.assert(resource.type === 'folder', 'resource.type must be folder');
+        filters.assert(resource.type === 'folder', 'resource.type must be folder');
         resource.children = resource.children || [];
-        utils.assert(resource.children.every(e => !e.editing), 'cannot edit multiple resources');
+        filters.assert(resource.children.every(e => !e.renaming), 'cannot edit multiple resources');
         resource.expanded = true;
         const newResource: Resource = {
             ...resource,
-            editing: true,
+            creating: true,
             name: '',
             type: type,
             icon: 'fas fa-' + type,
@@ -479,10 +498,10 @@ export class ResourceService {
     }
 
     private async moveResource(src: Resource, dst: Resource) {
-        utils.requireNonNull(src.path, 'src.path');
-        utils.requireNonNull(dst.path, 'dst.path');
-        utils.assert(src.path !== dst.path, 'cannot move the resource to the same path');
-        utils.assert(!utils.isRoot(src), 'cannot move a root resource');
+        filters.requireNonNull(src.path, 'src.path');
+        filters.requireNonNull(dst.path, 'dst.path');
+        filters.assert(src.path !== dst.path, 'cannot move the resource to the same path');
+        filters.assert(!filters.isRoot(src), 'cannot move a root resource');
 
         const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
         const response = await this.http.post('filebrowser/option',  {
@@ -500,9 +519,9 @@ export class ResourceService {
     }
 
     private async moveFile(src: File, dst: Resource) {
-        utils.requireNonNull(src.name, 'src.name');
-        utils.requireNonNull(dst.path, 'dst.path');
-        utils.checkName(src.name);
+        filters.requireNonNull(src.name, 'src.name');
+        filters.requireNonNull(dst.path, 'dst.path');
+        filters.checkName(src.name);
         const formData = new FormData();
         formData.append('file', src, src.name);
         formData.append('path', dst.path);
@@ -513,19 +532,8 @@ export class ResourceService {
         const newRes = this.addFile(dst);
         newRes.path += '/' + src.name;
         newRes.name = src.name;
-        delete newRes.editing;
+        delete newRes.renaming;
         return newRes;
-    }
-
-    private previewPL(resource: Resource, service: ResourceService) {
-        const data = {
-            'name': 'preview_pl',
-            'path': resource.path,
-            'content': resource.content,
-            'requested_action': 'preview'
-        };
-        const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
-        return service.http.post('filebrowser/option', data, { headers: headers }).toPromise();
     }
 
     private remove(path: string) {
@@ -560,4 +568,21 @@ export class ResourceService {
             }
         }
     }
+
+
+    private previewPL(resource: Resource, service: ResourceService) {
+        const data = {
+            'name': 'preview_pl',
+            'path': resource.path,
+            'content': resource.content,
+            'requested_action': 'preview'
+        };
+        const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
+        return service.http.post('filebrowser/option', data, { headers: headers }).toPromise();
+    }
+
+    private previewSVG(resource: Resource) {
+        return Promise.resolve({ preview: resource.content });
+    }
+
 }

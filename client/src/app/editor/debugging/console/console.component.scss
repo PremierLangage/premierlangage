@@ -1,50 +1,37 @@
-.host {
-    position: relative;
-    overflow: hidden;
+.console__content {
     height: 100%;
-    background-color: white;
 }
 
-.tab-item {
-    background: transparent;
-}
-
-.container-log {
-    overflow: auto;
-    height: calc(100% - 36px);
-    padding: 0;
-}
-
-.log__item {
+.log {
     position: relative;
     list-style-type: none;
     list-style-type: none;
     display: flex;
     align-items: baseline;
     padding: 8px;
-    .log__item-icon {
+    .log-icon {
         position: absolute;
     }
 }
 
-.log__item--info {
-    .log__item-icon {
+.log--info {
+    .log-icon {
         color: #009688;
     }
 }
 
-.log__item--warning {
-    .log__item-icon {
+.log--warning {
+    .log-icon {
         color: #FFEB3B;
     }
 }
 
-.log__item--error {
-      .log__item-icon {
+.log--error {
+      .log-icon {
         color:#F44336;
     }
 }
 
-.log__item-content {
+.log-content {
     padding: 0 32px;
 }

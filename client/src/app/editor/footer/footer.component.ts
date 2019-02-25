@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ResourceService } from '../services/resource.service';
-import { TaskService } from '../services/task.service';
-import * as utils from '../editor.utils';
+
+import { TaskService } from '../shared/services/core/task.service';
+import { ResourceService } from '../shared/services/core/resource.service';
+
+import * as filters from '../shared/models/filters.model';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -28,7 +30,7 @@ export class FooterComponent implements OnInit {
     }
 
     inRepo() {
-        return utils.isRepo(this.resources.selection);
+        return filters.isRepo(this.resources.selection);
     }
 
     repoHost() {

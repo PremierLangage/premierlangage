@@ -190,7 +190,7 @@ var AppModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class='host'>\n    <div class='tab-bar' (click)='didTapOpen($event)'>\n        <h3 class='tab-item'>CONSOLE</h3>\n        <div class='spacer'></div>\n        <div class='tab-item' matTooltip='Clear' (click)='didTapClear($event)'>\n            <i class=\"fas fa-trash-alt\"></i>\n        </div>\n        <div class='tab-item' matTooltip='Hide' (click)='didTapClose($event)'>\n            <i class=\"fas fa-times\"></i>\n        </div>\n    </div>\n    <mat-divider></mat-divider>\n    <ul class='container-log' #container>\n        <ng-container *ngFor=\"let item of items; let last = last; trackBy track\">\n            <li class='log__item log__item--{{item.type}}'>\n            <ng-container [ngSwitch]=\"item.type\">\n                <mat-icon *ngSwitchCase=\"'info'\" mat-list-icon class='log__item-icon'>info</mat-icon>\n                <mat-icon *ngSwitchCase=\"'warning'\" mat-list-icon class='log__item-icon'>warning</mat-icon>\n                <mat-icon *ngSwitchDefault mat-list-icon class='log__item-icon'>error</mat-icon>\n            </ng-container>\n            <p class='log__item-content' [innerHTML]='item.message | sanitizeHtml'></p>\n            </li>\n            <mat-divider *ngIf='!last'></mat-divider>\n        </ng-container>\n    </ul>    \n</div>"
+module.exports = "<ul class='console__content' #container>\n    <ng-container *ngFor=\"let item of items; let last = last; trackBy track\">\n        <li class='log log--{{item.type}}'>\n        <ng-container [ngSwitch]=\"item.type\">\n            <mat-icon *ngSwitchCase=\"'info'\" mat-list-icon class='log-icon'>info</mat-icon>\n            <mat-icon *ngSwitchCase=\"'warning'\" mat-list-icon class='log-icon'>warning</mat-icon>\n            <mat-icon *ngSwitchDefault mat-list-icon class='log-icon'>error</mat-icon>\n        </ng-container>\n        <p class='log-content' [innerHTML]='item.message | sanitizeHtml'></p>\n        </li>\n        <mat-divider *ngIf='!last'></mat-divider>\n    </ng-container>\n</ul>"
 
 /***/ }),
 
@@ -201,7 +201,7 @@ module.exports = "<div class='host'>\n    <div class='tab-bar' (click)='didTapOp
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".host {\n  position: relative;\n  overflow: hidden;\n  height: 100%;\n  background-color: white; }\n\n.tab-item {\n  background: transparent; }\n\n.container-log {\n  overflow: auto;\n  height: calc(100% - 36px);\n  padding: 0; }\n\n.log__item {\n  position: relative;\n  list-style-type: none;\n  list-style-type: none;\n  display: flex;\n  align-items: baseline;\n  padding: 8px; }\n\n.log__item .log__item-icon {\n    position: absolute; }\n\n.log__item--info .log__item-icon {\n  color: #009688; }\n\n.log__item--warning .log__item-icon {\n  color: #FFEB3B; }\n\n.log__item--error .log__item-icon {\n  color: #F44336; }\n\n.log__item-content {\n  padding: 0 32px; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL2RlYnVnZ2luZy9jb25zb2xlL2NvbnNvbGUuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxtQkFBa0I7RUFDbEIsaUJBQWdCO0VBQ2hCLGFBQVk7RUFDWix3QkFBdUIsRUFDMUI7O0FBRUQ7RUFDSSx3QkFBdUIsRUFDMUI7O0FBRUQ7RUFDSSxlQUFjO0VBQ2QsMEJBQXlCO0VBQ3pCLFdBQVUsRUFDYjs7QUFFRDtFQUNJLG1CQUFrQjtFQUNsQixzQkFBcUI7RUFDckIsc0JBQXFCO0VBQ3JCLGNBQWE7RUFDYixzQkFBcUI7RUFDckIsYUFBWSxFQUlmOztBQVZEO0lBUVEsbUJBQWtCLEVBQ3JCOztBQUdMO0VBRVEsZUFBYyxFQUNqQjs7QUFHTDtFQUVRLGVBQWMsRUFDakI7O0FBR0w7RUFFUSxlQUFhLEVBQ2hCOztBQUdMO0VBQ0ksZ0JBQWUsRUFDbEIiLCJmaWxlIjoic3JjL2FwcC9lZGl0b3IvZGVidWdnaW5nL2NvbnNvbGUvY29uc29sZS5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5ob3N0IHtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICBoZWlnaHQ6IDEwMCU7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogd2hpdGU7XG59XG5cbi50YWItaXRlbSB7XG4gICAgYmFja2dyb3VuZDogdHJhbnNwYXJlbnQ7XG59XG5cbi5jb250YWluZXItbG9nIHtcbiAgICBvdmVyZmxvdzogYXV0bztcbiAgICBoZWlnaHQ6IGNhbGMoMTAwJSAtIDM2cHgpO1xuICAgIHBhZGRpbmc6IDA7XG59XG5cbi5sb2dfX2l0ZW0ge1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBsaXN0LXN0eWxlLXR5cGU6IG5vbmU7XG4gICAgbGlzdC1zdHlsZS10eXBlOiBub25lO1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgYWxpZ24taXRlbXM6IGJhc2VsaW5lO1xuICAgIHBhZGRpbmc6IDhweDtcbiAgICAubG9nX19pdGVtLWljb24ge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgfVxufVxuXG4ubG9nX19pdGVtLS1pbmZvIHtcbiAgICAubG9nX19pdGVtLWljb24ge1xuICAgICAgICBjb2xvcjogIzAwOTY4ODtcbiAgICB9XG59XG5cbi5sb2dfX2l0ZW0tLXdhcm5pbmcge1xuICAgIC5sb2dfX2l0ZW0taWNvbiB7XG4gICAgICAgIGNvbG9yOiAjRkZFQjNCO1xuICAgIH1cbn1cblxuLmxvZ19faXRlbS0tZXJyb3Ige1xuICAgICAgLmxvZ19faXRlbS1pY29uIHtcbiAgICAgICAgY29sb3I6I0Y0NDMzNjtcbiAgICB9XG59XG5cbi5sb2dfX2l0ZW0tY29udGVudCB7XG4gICAgcGFkZGluZzogMCAzMnB4O1xufVxuIl19 */"
+module.exports = ".console__content {\n  height: 100%; }\n\n.log {\n  position: relative;\n  list-style-type: none;\n  list-style-type: none;\n  display: flex;\n  align-items: baseline;\n  padding: 8px; }\n\n.log .log-icon {\n    position: absolute; }\n\n.log--info .log-icon {\n  color: #009688; }\n\n.log--warning .log-icon {\n  color: #FFEB3B; }\n\n.log--error .log-icon {\n  color: #F44336; }\n\n.log-content {\n  padding: 0 32px; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL2RlYnVnZ2luZy9jb25zb2xlL2NvbnNvbGUuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxhQUFZLEVBQ2Y7O0FBRUQ7RUFDSSxtQkFBa0I7RUFDbEIsc0JBQXFCO0VBQ3JCLHNCQUFxQjtFQUNyQixjQUFhO0VBQ2Isc0JBQXFCO0VBQ3JCLGFBQVksRUFJZjs7QUFWRDtJQVFRLG1CQUFrQixFQUNyQjs7QUFHTDtFQUVRLGVBQWMsRUFDakI7O0FBR0w7RUFFUSxlQUFjLEVBQ2pCOztBQUdMO0VBRVEsZUFBYSxFQUNoQjs7QUFHTDtFQUNJLGdCQUFlLEVBQ2xCIiwiZmlsZSI6InNyYy9hcHAvZWRpdG9yL2RlYnVnZ2luZy9jb25zb2xlL2NvbnNvbGUuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuY29uc29sZV9fY29udGVudCB7XG4gICAgaGVpZ2h0OiAxMDAlO1xufVxuXG4ubG9nIHtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgbGlzdC1zdHlsZS10eXBlOiBub25lO1xuICAgIGxpc3Qtc3R5bGUtdHlwZTogbm9uZTtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGFsaWduLWl0ZW1zOiBiYXNlbGluZTtcbiAgICBwYWRkaW5nOiA4cHg7XG4gICAgLmxvZy1pY29uIHtcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgIH1cbn1cblxuLmxvZy0taW5mbyB7XG4gICAgLmxvZy1pY29uIHtcbiAgICAgICAgY29sb3I6ICMwMDk2ODg7XG4gICAgfVxufVxuXG4ubG9nLS13YXJuaW5nIHtcbiAgICAubG9nLWljb24ge1xuICAgICAgICBjb2xvcjogI0ZGRUIzQjtcbiAgICB9XG59XG5cbi5sb2ctLWVycm9yIHtcbiAgICAgIC5sb2ctaWNvbiB7XG4gICAgICAgIGNvbG9yOiNGNDQzMzY7XG4gICAgfVxufVxuXG4ubG9nLWNvbnRlbnQge1xuICAgIHBhZGRpbmc6IDAgMzJweDtcbn1cbiJdfQ== */"
 
 /***/ }),
 
@@ -217,65 +217,32 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ConsoleComponent", function() { return ConsoleComponent; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _services_logging_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../services/logging.service */ "./src/app/editor/services/logging.service.ts");
+/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
 
 
 
 var ConsoleComponent = /** @class */ (function () {
-    function ConsoleComponent(logging) {
-        this.logging = logging;
-        this.openedSize = 60;
-        this.size = 0;
+    function ConsoleComponent(notification) {
+        this.notification = notification;
         this.items = [];
     }
     ConsoleComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.empty = true;
-        this.logging.addEvent.subscribe(function (message) {
+        this.notification.onLogAdded.subscribe(function (message) {
             _this.empty = false;
             _this.items.push(message);
-            _this.open();
             _this.scrollBottom();
-        });
-        this.logging.openEvent.subscribe(function () {
-            if (_this.size < _this.openedSize) {
-                _this.open();
-            }
-            else {
-                _this.close();
-            }
         });
     };
     ConsoleComponent.prototype.didTapClear = function (event) {
         event.stopPropagation();
         this.items = [];
         this.empty = true;
-        this.logging.clear();
-    };
-    ConsoleComponent.prototype.didTapOpen = function (event) {
-        event.stopPropagation();
-        this.open();
-    };
-    ConsoleComponent.prototype.didTapClose = function (event) {
-        event.stopPropagation();
-        this.size = 5;
+        this.notification.clear();
     };
     ConsoleComponent.prototype.track = function (index, _item) {
         return index;
-    };
-    ConsoleComponent.prototype.dragEnd = function (data) {
-        this.size = data.sizes[1];
-        if (this.size < 5) {
-            this.size = 5;
-        }
-    };
-    ConsoleComponent.prototype.open = function () {
-        if (this.size < this.openedSize) {
-            this.size = this.openedSize;
-        }
-    };
-    ConsoleComponent.prototype.close = function () {
-        this.size = 0;
     };
     ConsoleComponent.prototype.scrollBottom = function () {
         if (this.container) {
@@ -293,9 +260,105 @@ var ConsoleComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./console.component.html */ "./src/app/editor/debugging/console/console.component.html"),
             styles: [__webpack_require__(/*! ./console.component.scss */ "./src/app/editor/debugging/console/console.component.scss")]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_services_logging_service__WEBPACK_IMPORTED_MODULE_2__["LoggingService"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_2__["NotificationService"]])
     ], ConsoleComponent);
     return ConsoleComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/editor/debugging/debugging.component.html":
+/*!***********************************************************!*\
+  !*** ./src/app/editor/debugging/debugging.component.html ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<div class='host'>\n    <div class='tab-bar' (click)='didTapOpen($event)'>\n        <h3 class='tab-item'>CONSOLE</h3>\n        <div class='spacer'></div>\n<!--         <div class='tab-item' matTooltip='Clear' (click)='didTapClear($event)'>\n            <i class=\"fas fa-trash-alt\"></i>\n        </div> -->\n        <div class='tab-item' matTooltip='Hide' (click)='didTapClose($event)'>\n            <i class=\"fas fa-times\"></i>\n        </div>\n    </div>\n    <div class='debugging__content'>\n        <console></console>\n    </div>\n</div>"
+
+/***/ }),
+
+/***/ "./src/app/editor/debugging/debugging.component.scss":
+/*!***********************************************************!*\
+  !*** ./src/app/editor/debugging/debugging.component.scss ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ".host {\n  position: relative;\n  overflow: hidden;\n  height: 100%;\n  background-color: white; }\n\n.tab-item {\n  background: transparent; }\n\n.debugging__content {\n  overflow: auto;\n  height: calc(100% - 36px);\n  padding: 0; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL2RlYnVnZ2luZy9kZWJ1Z2dpbmcuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxtQkFBa0I7RUFDbEIsaUJBQWdCO0VBQ2hCLGFBQVk7RUFDWix3QkFBdUIsRUFDMUI7O0FBRUQ7RUFDSSx3QkFBdUIsRUFDMUI7O0FBRUQ7RUFDSSxlQUFjO0VBQ2QsMEJBQXlCO0VBQ3pCLFdBQVUsRUFDYiIsImZpbGUiOiJzcmMvYXBwL2VkaXRvci9kZWJ1Z2dpbmcvZGVidWdnaW5nLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmhvc3Qge1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgIGhlaWdodDogMTAwJTtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiB3aGl0ZTtcbn1cblxuLnRhYi1pdGVtIHtcbiAgICBiYWNrZ3JvdW5kOiB0cmFuc3BhcmVudDtcbn1cblxuLmRlYnVnZ2luZ19fY29udGVudCB7XG4gICAgb3ZlcmZsb3c6IGF1dG87XG4gICAgaGVpZ2h0OiBjYWxjKDEwMCUgLSAzNnB4KTtcbiAgICBwYWRkaW5nOiAwO1xufSJdfQ== */"
+
+/***/ }),
+
+/***/ "./src/app/editor/debugging/debugging.component.ts":
+/*!*********************************************************!*\
+  !*** ./src/app/editor/debugging/debugging.component.ts ***!
+  \*********************************************************/
+/*! exports provided: DebuggingComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DebuggingComponent", function() { return DebuggingComponent; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
+
+
+
+var DebuggingComponent = /** @class */ (function () {
+    function DebuggingComponent(notification) {
+        this.notification = notification;
+        this.openedSize = 60;
+        this.size = 0;
+    }
+    DebuggingComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.notification.onToggleDebuggingArea.subscribe(function () {
+            if (_this.size < _this.openedSize) {
+                _this.open();
+            }
+            else {
+                _this.close();
+            }
+        });
+        this.notification.onLogAdded.subscribe(function () {
+            _this.open();
+        });
+    };
+    DebuggingComponent.prototype.didTapOpen = function (event) {
+        event.stopPropagation();
+        this.open();
+    };
+    DebuggingComponent.prototype.didTapClose = function (event) {
+        event.stopPropagation();
+        this.size = 5;
+    };
+    DebuggingComponent.prototype.dragEnd = function (data) {
+        this.size = data.sizes[1];
+        if (this.size < 5) {
+            this.size = 5;
+        }
+    };
+    DebuggingComponent.prototype.open = function () {
+        if (this.size < this.openedSize) {
+            this.size = this.openedSize;
+        }
+    };
+    DebuggingComponent.prototype.close = function () {
+        this.size = 0;
+    };
+    DebuggingComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
+            // tslint:disable-next-line: component-selector
+            selector: 'debugging',
+            template: __webpack_require__(/*! ./debugging.component.html */ "./src/app/editor/debugging/debugging.component.html"),
+            styles: [__webpack_require__(/*! ./debugging.component.scss */ "./src/app/editor/debugging/debugging.component.scss")]
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_2__["NotificationService"]])
+    ], DebuggingComponent);
+    return DebuggingComponent;
 }());
 
 
@@ -350,7 +413,7 @@ var EditorRoutingModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class='host'>\n  <div class='editor-container'>\n    <navigation #navigation></navigation>\n    <as-split direction=\"horizontal\" gutterSize='5' useTransition='true'>\n        <as-split-area class='navigation' style='overflow: hidden;' [size]=\"navigation.size\" [ngSwitch]=\"navigation.index\">\n            <explorer *ngSwitchCase=\"0\" [resources]='navigation.resources()' [showHeader]='true'></explorer>\n            <search *ngSwitchCase=\"1\" [resources]='navigation.resources()'></search>\n            <git *ngSwitchCase=\"2\"></git>\n            <settings *ngSwitchCase=\"3\"></settings>\n        </as-split-area>\n        <as-split-area class='h100' style='overflow: hidden;' [size]=\"100 - navigation.size\">\n            <as-split class='workspace' direction='vertical' gutterSize='5' useTransition='true' (dragEnd)='debugging.dragEnd($event)'>\n                <as-split-area class='h100' [size]='100 - debugging.size'>\n                    <workspace></workspace>\n                </as-split-area>\n                <as-split-area class='debugging' style='overflow: hidden;' [size]='debugging.size'>\n                    <console #debugging></console>\n                </as-split-area>\n            </as-split>\n        </as-split-area>\n    </as-split>\n  </div>\n  <footer></footer>\n</div>"
+module.exports = "<div class='host'>\n  <div class='editor-container'>\n    <navigation #navigation></navigation>\n    <as-split direction=\"horizontal\" gutterSize='5' useTransition='true'>\n        \n        <as-split-area class='navigation' style='overflow: hidden;' [size]=\"navigation.size\" [ngSwitch]=\"navigation.index\">\n            <explorer *ngSwitchCase=\"0\" [resources]='navigation.resources()' [showHeader]='true'></explorer>\n            <search *ngSwitchCase=\"1\" [resources]='navigation.resources()'></search>\n            <git *ngSwitchCase=\"2\"></git>\n            <settings *ngSwitchCase=\"3\"></settings>\n        </as-split-area>\n\n        <as-split-area class='h100' style='overflow: hidden;' [size]=\"100 - navigation.size\">\n            <as-split class='workspace' direction='vertical' gutterSize='5' useTransition='true' (dragEnd)='debugging.dragEnd($event)'>\n                <as-split-area class='h100' [size]='100 - debugging.size'>\n                    <workspace></workspace>\n                </as-split-area>\n                <as-split-area class='debugging' style='overflow: hidden;' [size]='debugging.size'>\n                    <debugging #debugging></debugging>\n                </as-split-area>\n            </as-split>\n        </as-split-area>\n    </as-split>\n  </div>\n  <mat-progress-bar mode='indeterminate' color='primary' *ngIf='runningTask()'></mat-progress-bar>\n  <footer></footer>\n</div>"
 
 /***/ }),
 
@@ -377,16 +440,34 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EditorComponent", function() { return EditorComponent; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var src_app_editor_services_resource_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! src/app/editor/services/resource.service */ "./src/app/editor/services/resource.service.ts");
+/* harmony import */ var _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./shared/services/core/resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
+/* harmony import */ var _shared_services_monaco_monaco_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./shared/services/monaco/monaco.service */ "./src/app/editor/shared/services/monaco/monaco.service.ts");
+/* harmony import */ var _shared_models_monaco_model__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./shared/models/monaco.model */ "./src/app/editor/shared/models/monaco.model.ts");
+/* harmony import */ var _shared_services_core_task_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./shared/services/core/task.service */ "./src/app/editor/shared/services/core/task.service.ts");
+
+
+
 
 
 
 var EditorComponent = /** @class */ (function () {
-    function EditorComponent(resources) {
-        this.resources = resources;
+    function EditorComponent(taskService, monacoService, resourceService) {
+        this.taskService = taskService;
+        this.monacoService = monacoService;
+        this.resourceService = resourceService;
     }
+    EditorComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        _shared_models_monaco_model__WEBPACK_IMPORTED_MODULE_4__["MONACO_LOADED"].subscribe(function (monaco) { return _this.monacoService.register(monaco); });
+    };
+    /**
+ * Gets a value indicating whether a task is running in the editor.
+ */
+    EditorComponent.prototype.runningTask = function () {
+        return this.taskService.running;
+    };
     EditorComponent.prototype.beforeunload = function ($event) {
-        if (this.resources.findPredicate(function (e) { return e.changed; })) {
+        if (this.resourceService.findPredicate(function (e) { return e.changed; })) {
             $event.returnValue = true;
         }
     };
@@ -403,7 +484,9 @@ var EditorComponent = /** @class */ (function () {
             encapsulation: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ViewEncapsulation"].None,
             styles: [__webpack_require__(/*! ./editor.component.scss */ "./src/app/editor/editor.component.scss")]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [src_app_editor_services_resource_service__WEBPACK_IMPORTED_MODULE_2__["ResourceService"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_core_task_service__WEBPACK_IMPORTED_MODULE_5__["TaskService"],
+            _shared_services_monaco_monaco_service__WEBPACK_IMPORTED_MODULE_3__["MonacoService"],
+            _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_2__["ResourceService"]])
     ], EditorComponent);
     return EditorComponent;
 }());
@@ -429,16 +512,19 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _shared_modules_shared_module__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../shared/modules/shared.module */ "./src/app/shared/modules/shared.module.ts");
 /* harmony import */ var _editor_routing_module__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./editor-routing.module */ "./src/app/editor/editor-routing.module.ts");
 /* harmony import */ var _editor_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./editor.component */ "./src/app/editor/editor.component.ts");
-/* harmony import */ var _debugging_console_console_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./debugging/console/console.component */ "./src/app/editor/debugging/console/console.component.ts");
-/* harmony import */ var _workspace_workspace_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./workspace/workspace.component */ "./src/app/editor/workspace/workspace.component.ts");
+/* harmony import */ var _debugging_debugging_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./debugging/debugging.component */ "./src/app/editor/debugging/debugging.component.ts");
+/* harmony import */ var _debugging_console_console_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./debugging/console/console.component */ "./src/app/editor/debugging/console/console.component.ts");
 /* harmony import */ var _footer_footer_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./footer/footer.component */ "./src/app/editor/footer/footer.component.ts");
 /* harmony import */ var _navigation_navigation_component__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./navigation/navigation.component */ "./src/app/editor/navigation/navigation.component.ts");
 /* harmony import */ var _navigation_explorer_explorer_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./navigation/explorer/explorer.component */ "./src/app/editor/navigation/explorer/explorer.component.ts");
 /* harmony import */ var _navigation_search_search_component__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./navigation/search/search.component */ "./src/app/editor/navigation/search/search.component.ts");
 /* harmony import */ var _navigation_git_git_component__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./navigation/git/git.component */ "./src/app/editor/navigation/git/git.component.ts");
 /* harmony import */ var _navigation_settings_settings_component__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./navigation/settings/settings.component */ "./src/app/editor/navigation/settings/settings.component.ts");
-/* harmony import */ var _models_editor_config__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./models/editor.config */ "./src/app/editor/models/editor.config.ts");
-/* harmony import */ var _workspace_code_editor_code_editor_component__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./workspace/code-editor/code-editor.component */ "./src/app/editor/workspace/code-editor/code-editor.component.ts");
+/* harmony import */ var _workspace_workspace_component__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./workspace/workspace.component */ "./src/app/editor/workspace/workspace.component.ts");
+/* harmony import */ var _shared_models_monaco_model__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./shared/models/monaco.model */ "./src/app/editor/shared/models/monaco.model.ts");
+/* harmony import */ var _workspace_code_editor_code_editor_component__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./workspace/code-editor/code-editor.component */ "./src/app/editor/workspace/code-editor/code-editor.component.ts");
+/* harmony import */ var _workspace_image_editor_image_editor_component__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./workspace/image-editor/image-editor.component */ "./src/app/editor/workspace/image-editor/image-editor.component.ts");
+/* harmony import */ var _workspace_preview_editor_preview_editor_component__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./workspace/preview-editor/preview-editor.component */ "./src/app/editor/workspace/preview-editor/preview-editor.component.ts");
 
 
 
@@ -448,12 +534,15 @@ __webpack_require__.r(__webpack_exports__);
 
 /* DEBUGGING COMPONENTS */
 
-/* WORKSPACE COMPONENTS */
 
 
 /* NAVIGATION COMPONENTS */
 
 
+
+
+
+/* WORKSPACE COMPONENTS */
 
 
 
@@ -466,175 +555,36 @@ var EditorModule = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"])({
             declarations: [
                 _editor_component__WEBPACK_IMPORTED_MODULE_6__["EditorComponent"],
-                _navigation_explorer_explorer_component__WEBPACK_IMPORTED_MODULE_11__["ExplorerComponent"],
-                _debugging_console_console_component__WEBPACK_IMPORTED_MODULE_7__["ConsoleComponent"],
-                _footer_footer_component__WEBPACK_IMPORTED_MODULE_9__["FooterComponent"],
                 _navigation_navigation_component__WEBPACK_IMPORTED_MODULE_10__["NavigationComponent"],
+                _navigation_explorer_explorer_component__WEBPACK_IMPORTED_MODULE_11__["ExplorerComponent"],
                 _navigation_search_search_component__WEBPACK_IMPORTED_MODULE_12__["SearchComponent"],
                 _navigation_git_git_component__WEBPACK_IMPORTED_MODULE_13__["GitComponent"],
                 _navigation_settings_settings_component__WEBPACK_IMPORTED_MODULE_14__["SettingsComponent"],
-                _workspace_workspace_component__WEBPACK_IMPORTED_MODULE_8__["WorkspaceComponent"],
-                _workspace_code_editor_code_editor_component__WEBPACK_IMPORTED_MODULE_16__["CodeEditorComponent"],
+                _footer_footer_component__WEBPACK_IMPORTED_MODULE_9__["FooterComponent"],
+                _debugging_debugging_component__WEBPACK_IMPORTED_MODULE_7__["DebuggingComponent"],
+                _debugging_console_console_component__WEBPACK_IMPORTED_MODULE_8__["ConsoleComponent"],
+                _workspace_workspace_component__WEBPACK_IMPORTED_MODULE_15__["WorkspaceComponent"],
+                _workspace_code_editor_code_editor_component__WEBPACK_IMPORTED_MODULE_17__["CodeEditorComponent"],
+                _workspace_image_editor_image_editor_component__WEBPACK_IMPORTED_MODULE_18__["ImageEditorComponent"],
+                _workspace_preview_editor_preview_editor_component__WEBPACK_IMPORTED_MODULE_19__["PreviewEditorComponent"]
             ],
             imports: [
                 _editor_routing_module__WEBPACK_IMPORTED_MODULE_5__["EditorRoutingModule"],
                 _shared_modules_shared_module__WEBPACK_IMPORTED_MODULE_4__["SharedModule"],
                 angular_split__WEBPACK_IMPORTED_MODULE_2__["AngularSplitModule"].forRoot(),
-                ngx_monaco_editor__WEBPACK_IMPORTED_MODULE_3__["MonacoEditorModule"].forRoot(_models_editor_config__WEBPACK_IMPORTED_MODULE_15__["MONACO_CONFIG"]),
+                ngx_monaco_editor__WEBPACK_IMPORTED_MODULE_3__["MonacoEditorModule"].forRoot(_shared_models_monaco_model__WEBPACK_IMPORTED_MODULE_16__["MONACO_CONFIG"]),
             ],
             exports: [
                 _editor_component__WEBPACK_IMPORTED_MODULE_6__["EditorComponent"],
             ],
+            providers: []
         })
     ], EditorModule);
     return EditorModule;
 }());
 
-
-
-/***/ }),
-
-/***/ "./src/app/editor/editor.utils.ts":
-/*!****************************************!*\
-  !*** ./src/app/editor/editor.utils.ts ***!
-  \****************************************/
-/*! exports provided: DISALLOWED_CHAR, canRead, canWrite, readonly, isFolder, isFile, isRoot, isPl, isMarkdown, isPltp, canBePreviewed, isHome, isNotRoot, isRepo, canAddFile, canCopy, canAddFolder, canBeRenamed, canBeDeleted, canBeTested, canBeLoaded, canBeReloaded, extensionOf, language, canBeUsedAsFileName, checkName, requireNonNull, assert, basename */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DISALLOWED_CHAR", function() { return DISALLOWED_CHAR; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canRead", function() { return canRead; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canWrite", function() { return canWrite; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "readonly", function() { return readonly; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isFolder", function() { return isFolder; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isFile", function() { return isFile; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isRoot", function() { return isRoot; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPl", function() { return isPl; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isMarkdown", function() { return isMarkdown; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPltp", function() { return isPltp; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBePreviewed", function() { return canBePreviewed; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isHome", function() { return isHome; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isNotRoot", function() { return isNotRoot; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isRepo", function() { return isRepo; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canAddFile", function() { return canAddFile; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canCopy", function() { return canCopy; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canAddFolder", function() { return canAddFolder; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBeRenamed", function() { return canBeRenamed; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBeDeleted", function() { return canBeDeleted; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBeTested", function() { return canBeTested; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBeLoaded", function() { return canBeLoaded; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBeReloaded", function() { return canBeReloaded; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "extensionOf", function() { return extensionOf; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "language", function() { return language; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBeUsedAsFileName", function() { return canBeUsedAsFileName; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "checkName", function() { return checkName; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "requireNonNull", function() { return requireNonNull; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "assert", function() { return assert; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "basename", function() { return basename; });
-/* harmony import */ var _models_editor_config__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./models/editor.config */ "./src/app/editor/models/editor.config.ts");
-
-var DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&'];
-function canRead(item) {
-    return item && item.read;
-}
-function canWrite(item) {
-    return item && item.write;
-}
-function readonly(item) {
-    return !canWrite(item);
-}
-function isFolder(item) {
-    return item && item.type === 'folder';
-}
-function isFile(item) {
-    return item && item.type === 'file';
-}
-function isRoot(item) {
-    return item && item.name === 'home' || item.name === 'home/'
-        || item.name === 'lib' || item.name === 'lib/';
-}
-function isPl(item) {
-    return item && item.name.endsWith('.pl');
-}
-function isMarkdown(item) {
-    return item && item.name.endsWith('.md');
-}
-function isPltp(item) {
-    return item && item.name.endsWith('.pltp');
-}
-function canBePreviewed(item) {
-    return item && isPl(item);
-}
-function isHome(item) {
-    return item && item.name === 'home';
-}
-function isNotRoot(item) {
-    return !isRoot(item);
-}
-function isRepo(item) {
-    return item && item.repo;
-}
-function canAddFile(item) {
-    return canWrite(item) && isFolder(item);
-}
-function canCopy(item) {
-    return canRead(item) && isNotRoot(item);
-}
-function canAddFolder(item) {
-    return canWrite(item) && isFolder(item);
-}
-function canBeRenamed(item) {
-    return canWrite(item) && !isRoot(item);
-}
-function canBeDeleted(item) {
-    return canWrite(item) && isNotRoot(item);
-}
-function canBeTested(item) {
-    return canRead(item) && isPl(item);
-}
-function canBeLoaded(item) {
-    return canWrite(item) && isPltp(item);
-}
-function canBeReloaded(item) {
-    return canWrite(item) && isPltp(item);
-}
-function extensionOf(resource) {
-    var dotIndex = resource.name.lastIndexOf('.');
-    return resource.name.substring(dotIndex + 1);
-}
-function language(resource) {
-    var extension = extensionOf(resource);
-    if (extension in _models_editor_config__WEBPACK_IMPORTED_MODULE_0__["LANGUAGES"]) {
-        return _models_editor_config__WEBPACK_IMPORTED_MODULE_0__["LANGUAGES"][extension];
-    }
-    return '';
-}
-function canBeUsedAsFileName(name) {
-    return name && DISALLOWED_CHAR.every(function (e) { return !name.includes(e); });
-}
-function checkName(name) {
-    if (!canBeUsedAsFileName(name)) {
-        throw new Error(name + ' cannot sould not contains any of ' + DISALLOWED_CHAR);
-    }
-}
-function requireNonNull(param, name) {
-    if (!param && typeof (param) !== 'boolean') {
-        throw new TypeError(name + ' param is required !');
-    }
-}
-function assert(condition, message) {
-    if (!condition) {
-        throw new Error(message);
-    }
-}
-function basename(path) {
-    if (!path) {
-        return path;
-    }
-    var array = path.split('/');
-    return array[array.length - 1];
-}
+// https://blog.expo.io/building-a-code-editor-with-monaco-f84b3a06deaf
+// http://devarea.com/angular-and-django-websockets-communication/
 
 
 /***/ }),
@@ -646,7 +596,7 @@ function basename(path) {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<ng-container *ngIf=\"inRepo()\">\n    <i class='repo-icon {{repoHost()}} fa-1x'></i> \n    <a class='repo-url' href=\"{{repoUrl()}} \">{{repoUrl()}}</a> <i class='repo-branch'> - {{repoBranch()}} </i>\n</ng-container>\n<div class=\"spacer\"></div>\n<ng-container *ngIf='runningTask()'>\n    <mat-progress-spinner mode='indeterminate' color='warn' strokeWidth='2' diameter='16'></mat-progress-spinner> \n    <span class='task-name'>{{taskName()}} task in progress...</span>\n</ng-container>"
+module.exports = "<ng-container *ngIf=\"inRepo()\">\n    <i class='repo-icon {{repoHost()}} fa-1x'></i> \n    <a class='repo-url' href=\"{{repoUrl()}} \">{{repoUrl()}}</a> <i class='repo-branch'> - {{repoBranch()}} </i>\n</ng-container>\n<div class=\"spacer\"></div>\n<ng-container *ngIf='runningTask()'>\n    <mat-progress-spinner mode='indeterminate' color='primary' strokeWidth='2' diameter='16'></mat-progress-spinner> \n    <span class='task-name'>{{taskName()}} task in progress...</span>\n</ng-container>"
 
 /***/ }),
 
@@ -673,9 +623,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FooterComponent", function() { return FooterComponent; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _services_resource_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../services/resource.service */ "./src/app/editor/services/resource.service.ts");
-/* harmony import */ var _services_task_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../services/task.service */ "./src/app/editor/services/task.service.ts");
-/* harmony import */ var _editor_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../editor.utils */ "./src/app/editor/editor.utils.ts");
+/* harmony import */ var _shared_services_core_task_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/services/core/task.service */ "./src/app/editor/shared/services/core/task.service.ts");
+/* harmony import */ var _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../shared/services/core/resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
+/* harmony import */ var _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../shared/models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
 
 
 
@@ -695,7 +645,7 @@ var FooterComponent = /** @class */ (function () {
         return this.task.taskName;
     };
     FooterComponent.prototype.inRepo = function () {
-        return _editor_utils__WEBPACK_IMPORTED_MODULE_4__["isRepo"](this.resources.selection);
+        return _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_4__["isRepo"](this.resources.selection);
     };
     FooterComponent.prototype.repoHost = function () {
         return this.resources.selection.repo.host;
@@ -713,730 +663,12 @@ var FooterComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./footer.component.html */ "./src/app/editor/footer/footer.component.html"),
             styles: [__webpack_require__(/*! ./footer.component.scss */ "./src/app/editor/footer/footer.component.scss")]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_services_task_service__WEBPACK_IMPORTED_MODULE_3__["TaskService"],
-            _services_resource_service__WEBPACK_IMPORTED_MODULE_2__["ResourceService"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_core_task_service__WEBPACK_IMPORTED_MODULE_2__["TaskService"],
+            _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_3__["ResourceService"]])
     ], FooterComponent);
     return FooterComponent;
 }());
 
-
-
-/***/ }),
-
-/***/ "./src/app/editor/models/editor.config.ts":
-/*!************************************************!*\
-  !*** ./src/app/editor/models/editor.config.ts ***!
-  \************************************************/
-/*! exports provided: PREMIER_LANGAGE, LANGUAGES, CODE_LENS_PROVIDER, MONACO_CONFIG, onMonacoLoad */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PREMIER_LANGAGE", function() { return PREMIER_LANGAGE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LANGUAGES", function() { return LANGUAGES; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CODE_LENS_PROVIDER", function() { return CODE_LENS_PROVIDER; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MONACO_CONFIG", function() { return MONACO_CONFIG; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "onMonacoLoad", function() { return onMonacoLoad; });
-var PREMIER_LANGAGE = 'premierlangage';
-var LANGUAGES = {
-    css: 'css',
-    cs: 'csharp',
-    js: 'javascript',
-    ts: 'typescript',
-    html: 'html',
-    md: 'markdown',
-    py: 'python',
-    r: 'r',
-    sql: 'sql',
-    mysql: 'mysql',
-    java: 'java',
-    c: 'cpp',
-    cpp: 'cpp',
-    h: 'cpp',
-    xml: 'xml',
-    bat: 'bat',
-    ini: 'ini',
-    php: 'php',
-    pl: 'premierlangage',
-    pltp: 'premierlangage'
-};
-var CODE_LENS_PROVIDER = [];
-var MONACO_CONFIG = {
-    baseUrl: '/static/filebrowser/app/assets',
-    defaultOptions: {
-        value: '',
-        theme: PREMIER_LANGAGE,
-        language: '',
-        renderWhitespace: 'all',
-        renderControlCharacters: true,
-        renderLineHighlight: true,
-        renderIndentGuides: true,
-        automaticLayout: true,
-        lineNumbers: 'on',
-        roundedSelection: true,
-        scrollBeyondLastLine: false,
-        scrollbar: {
-            verticalScrollbarSize: 7,
-            horizontalScrollbarSize: 7,
-        },
-    },
-    onMonacoLoad: onMonacoLoad
-};
-function onMonacoLoad() {
-    var monaco = window.monaco;
-    monaco.languages.register({ id: PREMIER_LANGAGE });
-    // Register a tokens provider for the language
-    monaco.languages.setMonarchTokensProvider(PREMIER_LANGAGE, {
-        // Set defaultToken to invalid to see what you do not tokenize yet
-        // defaultToken: 'invalid',
-        keywords: [
-            'title', 'author', 'introduction', 'teacher', 'text', 'build', 'before', 'form', 'template'
-        ],
-        operators: [
-            '=', '+', '@', '%', '==', '+=', '=@', '+=@',
-        ],
-        tokenizer: {
-            root: [
-                [
-                    // (?=\s*(=|\+|\@|\%|(==)|(\+=)|(=\@)|(\+=\@)))
-                    /^[a-zA-Z_](\.?\w+)*/, {
-                        cases: {
-                            '@default': 'key'
-                        }
-                    }
-                ],
-                [/#.+/, 'comment'],
-                [/==/, { token: 'open', next: '@embedded' }],
-                [/%=/, { token: 'open', next: '@predefined', nextEmbedded: 'javascript' }],
-                [/\{\{[a-zA-Z_](\.?\w+)\}\}/, 'key'],
-                // numbers
-                [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
-                [/0[xX][0-9a-fA-F]+/, 'number.hex'],
-                [/\d+/, 'number'],
-                // whitespace
-                { include: '@whitespace' },
-            ],
-            embedded: [
-                [/#\|(\w+)\|/, { token: 'string', next: '@predefined', nextEmbedded: '$1' }],
-                [/\{\{[a-zA-Z_](\.?\w+)\}\}/, 'key'],
-                [/^==\s*$/, { token: 'close', next: '@pop' }],
-            ],
-            predefined: [
-                ['(?=\w+)==', 'string'],
-                [/\{\{[a-zA-Z_](\.?\w+)\}\}/, 'key'],
-                [/^==\s*$/, { token: 'close', next: '@root', nextEmbedded: '@pop' }],
-            ],
-            whitespace: [
-                [/[ \t\r\n]+/, 'white'],
-            ],
-        },
-    });
-    monaco.editor.defineTheme(PREMIER_LANGAGE, {
-        base: 'vs-dark',
-        inherit: true,
-        rules: [
-            { token: 'key', foreground: '1382dd', fontStyle: 'bold' },
-        ]
-    });
-}
-
-
-/***/ }),
-
-/***/ "./src/app/editor/models/editor.ts":
-/*!*****************************************!*\
-  !*** ./src/app/editor/models/editor.ts ***!
-  \*****************************************/
-/*! exports provided: Editor, CodeEditor, ImageEditor, PreviewEditor */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Editor", function() { return Editor; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CodeEditor", function() { return CodeEditor; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImageEditor", function() { return ImageEditor; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PreviewEditor", function() { return PreviewEditor; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/cdk/drag-drop */ "./node_modules/@angular/cdk/esm5/drag-drop.es5.js");
-/* harmony import */ var _resource_model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./resource.model */ "./src/app/editor/models/resource.model.ts");
-/* harmony import */ var _editor_editor_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../editor/editor.utils */ "./src/app/editor/editor.utils.ts");
-/* harmony import */ var _models_editor_config__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../models/editor.config */ "./src/app/editor/models/editor.config.ts");
-
-
-
-
-
-var Editor = /** @class */ (function () {
-    function Editor(component, resource) {
-        this.changes = {};
-        this.resources = [];
-        this.options = [];
-        this.selection = resource;
-        this.component = component;
-    }
-    Editor.prototype.close = function (resource) {
-        var _this = this;
-        var index = this.resources.findIndex(function (e) { return e.path === resource.path; });
-        if (index === -1) {
-            throw new Error('undefined resource in the editor');
-        }
-        this.selection = undefined;
-        this.resources.splice(index, 1);
-        index = Math.max(0, index - 1);
-        if (index < this.resources.length) {
-            this.selection = this.resources[index];
-        }
-        if (this.selection) {
-            this.open(this.selection);
-        }
-        if (this.component.editors.findIndex(function (e) { return e.contains(resource); }) === -1) {
-            Object(_resource_model__WEBPACK_IMPORTED_MODULE_2__["resourceInit"])(resource);
-        }
-        if (this.isEmpty()) {
-            this.component.editors.splice(this.component.editors.findIndex(function (e) { return e === _this; }), 1);
-        }
-        this.component.detectChanges();
-        this.onClosed(resource);
-    };
-    Editor.prototype.closeConfirm = function (resource) {
-        var _this = this;
-        if (this.shouldAskConfirm() && resource.changed) {
-            var options = {
-                title: 'Do you want to close \'' + resource.name + '\'?',
-                message: 'Your changes will be lost if you don\'t save them.',
-            };
-            this.component.confirm(options).then(function (confirmed) {
-                if (confirmed) {
-                    _this.close(_this.selection);
-                }
-            });
-        }
-        else {
-            this.close(this.selection);
-        }
-    };
-    Editor.prototype.closeAll = function () {
-        while (this.resources.length > 0) {
-            this.close(this.resources[0]);
-        }
-    };
-    Editor.prototype.closeAllConfirm = function () {
-        var _this = this;
-        if (this.shouldAskConfirm() && this.resources.some(function (e) { return e.changed; })) {
-            var options = {
-                title: 'Do you want to close the files ?',
-                message: 'Your changes will be lost if you don\'t save them.',
-            };
-            this.component.confirm(options).then(function (confirmed) {
-                if (confirmed) {
-                    _this.closeAll();
-                }
-            });
-        }
-        else {
-            this.closeAll();
-        }
-    };
-    Editor.prototype.closeSaved = function () {
-        while (this.resources.some(function (e) { return !e.changed; })) {
-            for (var i = 0; i < this.resources.length; i++) {
-                if (!this.resources[i].changed) {
-                    this.close(this.resources[i]);
-                }
-            }
-        }
-    };
-    Editor.prototype.save = function (resource) {
-        var _this = this;
-        if (resource.changed) {
-            resource.changed = false;
-            this.component.save(resource).then((function (success) {
-                _this.changes[resource.path] = resource.content;
-                if (success) {
-                    _this.onSaved(resource);
-                }
-            }));
-        }
-    };
-    Editor.prototype.saveAll = function () {
-        for (var _i = 0, _a = this.resources; _i < _a.length; _i++) {
-            var resource = _a[_i];
-            this.save(resource);
-        }
-    };
-    Editor.prototype.contains = function (resource) {
-        return this.resources.findIndex(function (item) { return item.path === resource.path; }) !== -1;
-    };
-    Editor.prototype.drop = function (event) {
-        if (event.previousContainer === event.container) {
-            Object(_angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_1__["moveItemInArray"])(event.container.data, event.previousIndex, event.currentIndex);
-        }
-        else {
-            Object(_angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_1__["transferArrayItem"])(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
-        }
-    };
-    Editor.prototype.isEmpty = function () {
-        return this.resources.length === 0;
-    };
-    Editor.prototype.isSelected = function (resource) {
-        return resource.path === this.selection.path;
-    };
-    Editor.prototype.open = function (resource) {
-        if (!this.contains(resource)) {
-            this.resources.push(resource);
-        }
-        this.selection = resource;
-        this.component.detectChanges();
-    };
-    Editor.prototype.title = function (resource) {
-        return resource.name;
-    };
-    Editor.prototype.length = function () {
-        return this.resources.length;
-    };
-    Editor.prototype.track = function (_index, item) {
-        return item.path;
-    };
-    Editor.prototype.shouldAskConfirm = function () {
-        return false;
-    };
-    Editor.prototype.isChanged = function (resource) {
-        return this.shouldAskConfirm() && resource.changed;
-    };
-    Editor.prototype.onSaved = function (resource) { };
-    Editor.prototype.onClosed = function (resource) { };
-    return Editor;
-}());
-
-var CodeEditor = /** @class */ (function (_super) {
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](CodeEditor, _super);
-    function CodeEditor(component, resource) {
-        var _this = _super.call(this, component, resource) || this;
-        _this.type = 'code';
-        _this.compiled = [];
-        _this.loadOptions();
-        return _this;
-    }
-    CodeEditor.prototype.open = function (resource) {
-        var _this = this;
-        var monaco = window.monaco;
-        this.selection.state.state = this.editor.saveViewState();
-        if (resource.state.model) {
-            this.editor.restoreViewState(resource.state.state);
-        }
-        else {
-            resource.state.model = monaco.editor.createModel(resource.content, Object(_editor_editor_utils__WEBPACK_IMPORTED_MODULE_3__["language"])(resource), resource.path);
-        }
-        this.editor.setModel(resource.state.model);
-        this.editor.updateOptions({ readOnly: !resource.write });
-        if (this.diffMode) {
-            this.component.diff(resource).then(function (value) {
-                var originalModel = monaco.editor.createModel(value || '', Object(_editor_editor_utils__WEBPACK_IMPORTED_MODULE_3__["language"])(resource));
-                _this.diffEditor.setModel({
-                    original: originalModel,
-                    modified: _this.editor.getModel()
-                });
-                _this.diffEditor.getModifiedEditor().updateOptions({ readOnly: !resource.write });
-                _this.diffEditor.getModifiedEditor().focus();
-            });
-        }
-        else {
-            this.editor.focus();
-        }
-        if (!resource.changed) {
-            this.changes[resource.path] = resource.content;
-        }
-        this.compile(resource);
-        _super.prototype.open.call(this, resource);
-    };
-    CodeEditor.prototype.onInit = function (editor) {
-        this.editor = editor;
-        this.addCommands(this.editor);
-        this.open(this.selection);
-        this.configEditor(editor);
-    };
-    CodeEditor.prototype.onInitDiff = function (editor) {
-        this.diffEditor = editor;
-        this.addCommands(this.diffEditor.getModifiedEditor());
-    };
-    CodeEditor.prototype.didChange = function () {
-        if (this.diffMode) {
-            this.selection.content = this.diffEditor.getModifiedEditor().getValue();
-        }
-        else {
-            this.selection.content = this.editor.getValue();
-        }
-        this.selection.changed = this.changes[this.selection.path] !== this.selection.content;
-    };
-    CodeEditor.prototype.canOpen = function (resource) {
-        return !resource.image;
-    };
-    CodeEditor.prototype.canDiff = function (resource) {
-        return Object(_editor_editor_utils__WEBPACK_IMPORTED_MODULE_3__["isRepo"])(resource) && !this.diffMode;
-    };
-    CodeEditor.prototype.shouldAskConfirm = function () {
-        return true;
-    };
-    CodeEditor.prototype.onSaved = function (resource) {
-        this.compile(resource);
-    };
-    CodeEditor.prototype.onClosed = function (resource) {
-        resource.changed = false;
-        resource.content = this.changes[resource.path];
-        delete this.changes[resource.path];
-        delete this.compiled[resource.path];
-    };
-    CodeEditor.prototype.addCommands = function (editor) {
-        var _this = this;
-        var self = this;
-        editor.onDidChangeModelContent(function () {
-            self.didChange();
-        });
-        // tslint:disable: no-bitwise
-        editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyCode.KEY_S, function () {
-            self.save(_this.selection);
-        }, '');
-        editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyMod.Alt | monaco.KeyCode.KEY_S, function () {
-            self.saveAll();
-        }, '');
-        editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyCode.KEY_W, function () {
-            self.closeConfirm(_this.selection);
-        }, '');
-        editor.addCommand(monaco.KeyMod.WinCtrl | monaco.KeyMod.Alt | monaco.KeyCode.KEY_W, function () {
-            self.closeAllConfirm();
-        }, '');
-        // tslint:enable: no-bitwise
-    };
-    CodeEditor.prototype.configEditor = function (editor) {
-        var self = this;
-        var REFERENCE_PATTERN = /(@|(template|grader|builder|extends|builder|grader)\s*=)\s*(\w+:\/)?([~a-zA-Z0-9_\.\/]+)/;
-        var OPEN_PATTERN = /^[a-zA-Z_](\.?\w+)*(==)|(%=)/;
-        var CLOSE_PATTERN = /^==\s*$/;
-        var BUILT_IN_WORDS = {
-            title: 'Titre de l\'exercice/feuille d\'exercice',
-            author: 'Auteur de l\'exercice',
-            introduction: 'Présentation de la feuille d\'exercice, le contenu de cette clé est interprété comme du markdown.',
-            teacher: 'Sur un PLTP, affiche un note visible par les enseignant seulement',
-            text: 'Énoncé de l\'exercice, le contenu de cette clé est interprété comme du markdown.',
-            build: 'Clé contenant une fonction build (ancienne syntaxe: utiliser de préférence before), '
-                + 'à utiliser avec le builder /builder/build.py',
-            before: 'Code python permettant de modifier l\'exercice avant sont exécution sur le navigateur',
-            form: 'Formulaire HTML permettant à l\'élève de répondre',
-            template: 'Définie template comme étant la base de ce fichier',
-        };
-        /*
-        monaco.languages.registerLinkProvider(PREMIER_LANGAGE, {
-            provideLinks: function(model, _token) {
-                let links = [];
-                const lines = model.getValue().split('\n');
-                let match;
-                for (let i = 0; i < lines.length; i++) {
-                    if (lines[i].trim().endsWith('==')) {
-                        i++;
-                        while (i < lines.length) {
-                            if (lines[i].trim().endsWith('==')) {
-                                break;
-                            }
-                            i++;
-                        }
-                    }
-                    match = REFERENCE_PATTERN.exec(lines[i]);
-                    if (match) {
-                        const url = match[match.length - 1];
-                        const index =  match.index + match.input.length - url.length;
-                        const range = new monaco.Range(i + 1, index, i + 1, index + url.length + 1);
-
-                        links.push({
-                            range: range,
-                            url: url,
-                        });
-                    }
-                }
-                return links;
-            },
-            resolveLink: function(link, _token) {
-                console.log(link)
-                return link;
-            }
-        });
-        */
-        monaco.languages.registerCodeLensProvider(_models_editor_config__WEBPACK_IMPORTED_MODULE_4__["PREMIER_LANGAGE"], {
-            provideCodeLenses: function (model, _token) {
-                var links = [];
-                var lines = model.getValue().split('\n');
-                var match;
-                var _loop_1 = function (i) {
-                    if (lines[i].match(OPEN_PATTERN)) {
-                        i++;
-                        while (i < lines.length) {
-                            if (lines[i].match(CLOSE_PATTERN)) {
-                                break;
-                            }
-                            i++;
-                        }
-                    }
-                    match = REFERENCE_PATTERN.exec(lines[i]);
-                    if (match) {
-                        var url_1 = match[match.length - 1];
-                        var index = match.index + match.input.length - url_1.length;
-                        var range = new monaco.Range(i + 1, index, i + 1, index + url_1.length + 1);
-                        var comment = false;
-                        while (index >= 0) {
-                            if (lines[i][index] === '#') {
-                                comment = true;
-                                break;
-                            }
-                            index--;
-                        }
-                        if (!comment) {
-                            links.push({
-                                range: range,
-                                id: 'Open',
-                                command: {
-                                    id: editor.addCommand(0, function () {
-                                        self.component.findReference(self.selection, url_1).then((function (reference) {
-                                            if (reference) {
-                                                self.component.open(reference);
-                                            }
-                                        }));
-                                    }, ''),
-                                    title: 'Open',
-                                }
-                            });
-                        }
-                    }
-                    out_i_1 = i;
-                };
-                var out_i_1;
-                for (var i = 0; i < lines.length; i++) {
-                    _loop_1(i);
-                    i = out_i_1;
-                }
-                return links;
-            }
-        });
-        monaco.languages.registerFoldingRangeProvider(_models_editor_config__WEBPACK_IMPORTED_MODULE_4__["PREMIER_LANGAGE"], {
-            provideFoldingRanges: function (model) {
-                var ranges = [];
-                var lines = model.getValue().split('\n');
-                var length = lines.length;
-                var i = 0, start = -1;
-                while (i < length) {
-                    if (lines[i].match(OPEN_PATTERN)) {
-                        start = i;
-                    }
-                    else if (lines[i].match(CLOSE_PATTERN)) {
-                        ranges.push({
-                            start: start + 1,
-                            end: i + 1,
-                            kind: monaco.languages.FoldingRangeKind.Region
-                        });
-                        start = -1;
-                    }
-                    i++;
-                }
-                return ranges;
-            }
-        });
-        monaco.languages.registerHoverProvider(_models_editor_config__WEBPACK_IMPORTED_MODULE_4__["PREMIER_LANGAGE"], {
-            provideHover: function (model, position) {
-                var lineContent = model.getLineContent(position.lineNumber);
-                var token = model.getWordAtPosition(position);
-                if (token) {
-                    var keys = self.getKeys();
-                    var k = keys.find(function (e) { return e === token.word; });
-                    if (k) {
-                        var i = token.startColumn - 2;
-                        if (i > 0 && lineContent[i] === '{' && i - 1 >= 0 && lineContent[i - 1] === '{') {
-                            return {
-                                range: new monaco.Range(1, 1, 3, 10),
-                                contents: [
-                                    { value: k },
-                                    { value: self.getValue(k) }
-                                ]
-                            };
-                        }
-                    }
-                    if (token.word in BUILT_IN_WORDS) {
-                        var lineCount = model.getLineCount();
-                        return {
-                            range: new monaco.Range(1, 1, 3, model.getLineMaxColumn(lineCount)),
-                            contents: [
-                                { value: '**PL BUILT-IN**' },
-                                { value: BUILT_IN_WORDS[token.word] }
-                            ]
-                        };
-                    }
-                }
-            }
-        });
-        monaco.languages.registerCompletionItemProvider(_models_editor_config__WEBPACK_IMPORTED_MODULE_4__["PREMIER_LANGAGE"], {
-            provideCompletionItems: function (model, position) {
-                var line = model.getLineContent(position.lineNumber);
-                if (line.includes('{{')) {
-                    return [];
-                }
-                return Object.keys(BUILT_IN_WORDS).map(function (name) { return ({
-                    label: name,
-                    detail: BUILT_IN_WORDS[name],
-                    insertText: name + '== #|python| \n\n==',
-                    kind: monaco.languages.CompletionItemKind.Snippet,
-                }); });
-            },
-        });
-        monaco.languages.registerCompletionItemProvider(_models_editor_config__WEBPACK_IMPORTED_MODULE_4__["PREMIER_LANGAGE"], {
-            triggerCharacters: ['{{'],
-            provideCompletionItems: function (model, position) {
-                var line = model.getLineContent(position.lineNumber);
-                if (!line.includes('{{')) {
-                    return [];
-                }
-                var items = [];
-                var keys = self.getKeys();
-                if (keys.length > 0) {
-                    keys.forEach(function (k) {
-                        items.push({
-                            label: k,
-                            detail: '{{' + k + '}}',
-                            insertText: k + '}}',
-                            kind: monaco.languages.CompletionItemKind.Reference
-                        });
-                    });
-                }
-                return items;
-            }
-        });
-        editor.createContextKey('', {});
-    };
-    CodeEditor.prototype.loadOptions = function () {
-        var _this = this;
-        this.options.push({
-            icon: 'fas fa-play', tooltip: 'Preview', enabled: _editor_editor_utils__WEBPACK_IMPORTED_MODULE_3__["canBePreviewed"], action: function (item) {
-                _this.component.didTapPreviewResource(item);
-            }
-        });
-        this.options.push({
-            icon: 'fas fa-eye', tooltip: 'Open Changes', enabled: function (item) { return _this.canDiff(item); }, action: function (item) {
-                _this.openDiffEditor();
-            }
-        });
-        this.options.push({
-            icon: 'fas fa-eye-slash', tooltip: 'Close Changes', enabled: function (item) { return _this.diffMode; }, action: function (item) {
-                _this.closeDiffEditor();
-            }
-        });
-        this.options.push({
-            icon: 'fas fa-columns', tooltip: 'Split Editor Right', enabled: function () { return true; }, action: function () {
-                _this.component.editors.push(new CodeEditor(_this.component, _this.selection));
-            }
-        });
-    };
-    CodeEditor.prototype.closeDiffEditor = function () {
-        this.diffMode = false;
-        this.editor.setValue(this.selection.content);
-    };
-    CodeEditor.prototype.openDiffEditor = function () {
-        this.diffMode = true;
-        this.open(this.selection);
-    };
-    CodeEditor.prototype.compile = function (resource) {
-        var _this = this;
-        if (Object(_editor_editor_utils__WEBPACK_IMPORTED_MODULE_3__["isPl"])(resource)) {
-            this.component.resources.compilePL(resource).then((function (response) {
-                if (response['compiled']) {
-                    _this.compiled[resource.path] = response['json'];
-                }
-            }));
-        }
-    };
-    CodeEditor.prototype.getValue = function (k) {
-        var object = this.compiled[this.selection.path];
-        if (object) {
-            return object[k];
-        }
-        return '';
-    };
-    CodeEditor.prototype.getKeys = function () {
-        var object = this.compiled[this.selection.path];
-        if (object) {
-            return Object.keys(object).filter(function (k) { return !k.startsWith('__'); });
-        }
-        return [];
-    };
-    return CodeEditor;
-}(Editor));
-
-var ImageEditor = /** @class */ (function (_super) {
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](ImageEditor, _super);
-    function ImageEditor(component, resource) {
-        var _this = _super.call(this, component, resource) || this;
-        _this.type = 'image';
-        _this.zoom = 0.5;
-        _this.open(resource);
-        return _this;
-    }
-    ImageEditor.prototype.zoomIn = function () {
-        this.zoom = Math.min(this.zoom + .05, 1);
-    };
-    ImageEditor.prototype.zoomOut = function () {
-        this.zoom = Math.max(this.zoom - .05, 0.3);
-    };
-    ImageEditor.prototype.canOpen = function (resource) {
-        return resource.image !== undefined;
-    };
-    return ImageEditor;
-}(Editor));
-
-var PreviewEditor = /** @class */ (function (_super) {
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](PreviewEditor, _super);
-    function PreviewEditor() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.type = 'preview';
-        return _this;
-    }
-    PreviewEditor.prototype.canOpen = function (resource) {
-        return resource.state.preview !== undefined;
-    };
-    PreviewEditor.prototype.content = function () {
-        return this.selection.state.preview;
-    };
-    PreviewEditor.prototype.title = function (resource) {
-        return 'Preview ' + resource.name;
-    };
-    PreviewEditor.prototype.open = function (resource) {
-        if (this.resources.length === 0) {
-            this.resources.push(resource);
-        }
-        this.resources[0] = resource;
-        this.selection = resource;
-    };
-    return PreviewEditor;
-}(Editor));
-
-
-
-/***/ }),
-
-/***/ "./src/app/editor/models/resource.model.ts":
-/*!*************************************************!*\
-  !*** ./src/app/editor/models/resource.model.ts ***!
-  \*************************************************/
-/*! exports provided: resourceInit */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resourceInit", function() { return resourceInit; });
-function resourceInit(resource) {
-    if (resource.state && resource.state.model) {
-        resource.state.model.dispose();
-    }
-    resource.state = {
-        model: undefined,
-        state: undefined,
-        preview: undefined,
-    };
-}
 
 
 /***/ }),
@@ -1448,7 +680,7 @@ function resourceInit(resource) {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = " <ng-container *ngIf='showHeader; else tree'>\n    <div class='tab-bar'>\n        <span>EXPLORER</span>       \n        <div class=\"spacer\"></div>\n        <div class='tab-item' (click)='didTapRefresh()' matTooltip='Refresh'>\n            <i class=\"fas fa-sync\"></i>\n        </div>\n    </div>\n    <mat-progress-bar mode='indeterminate' color='warn' *ngIf='runningTask()'></mat-progress-bar>\n    <div class='navigation_content'>\n        <explorer [resources]='resources' [showHeader]='false'></explorer>\n    </div>\n</ng-container>\n<ng-template #tree>\n    <ul class='tree'>\n        <li *ngFor='let resource of resources; trackBy:trackByFn'>\n            <div *ngIf='resource.editing; else notEditing' class='tree__item editing'>\n                <span>\n                    <i class=\"{{resource.icon}}\"></i>&nbsp;\n                    <input autofocus\n                           type='text' \n                           placeholder='Press Enter to create ESC to cancel...' \n                           [(ngModel)]='resource.name' \n                           (keydown)='didEditingChanged(resource, $event)' \n                           (blur)='didEditingChanged(resource, $event)'/>\n                </span>\n            </div>    \n            <ng-template #notEditing>\n                <div id='{{resource.path}}' class='tree__item' [ngClass]='{selected: isSelection(resource)}' \n                    draggable droppable [dragCondition]='draggable(resource)' [dropCondition]='droppable(resource)' (handleDrop)='didDropData($event)'\n                    (click)='didTapOnResource(resource, $event)'>\n                    <span class='tree__item-label'>\n                        <i class=\"{{icon(resource)}}\"></i>&nbsp;\n                        <span>{{resource.name}}</span>\n                    </span>\n                    <span class='tree__item-option-group'>\n                        <ng-container *ngFor='let option of options'>\n                            <span class='tree__item-option' *ngIf='option.enabled(resource)' matTooltip='{{option.label}}' (click)='option.action(resource, $event)'>\n                                <i class=\"{{option.icon}}\"></i>&nbsp;\n                            </span>\n                        </ng-container>\n                    </span>\n                    <div class='overlay'></div>\n                </div>\n            </ng-template>\n            <explorer *ngIf='resource.expanded' [resources]=\"resource.children\" [showHeader]='false'></explorer>\n        </li>\n    </ul>        \n</ng-template>\n"
+module.exports = " <ng-container *ngIf='showHeader; else tree'>\n    <div class='tab-bar'>\n        <span>EXPLORER</span>       \n        <div class=\"spacer\"></div>\n        <div class='tab-item' (click)='didTapRefresh()' matTooltip='Refresh'>\n            <i class=\"fas fa-sync\"></i>\n        </div>\n    </div>\n    <div class='navigation_content'>\n        <explorer [resources]='resources' [showHeader]='false'></explorer>\n    </div>\n</ng-container>\n<ng-template #tree>\n    <ul class='tree'>\n        <li *ngFor='let resource of resources; trackBy:trackByFn'>\n            <div *ngIf='isEditing(resource); else notEditing' class='tree__item editing'>\n                <span>\n                    <i class=\"{{resource.icon}}\"></i>&nbsp;\n                    <input autofocus\n                           type='text' \n                           placeholder='Press Enter to create ESC to cancel...' \n                           [(ngModel)]='resource.name' \n                           (keydown)='didEditingChanged(resource, $event)' \n                           (blur)='didEditingChanged(resource, $event)'/>\n                </span>\n            </div>    \n            <ng-template #notEditing>\n                <div id='{{resource.path}}' class='tree__item' [ngClass]='{selected: isSelection(resource)}' \n                    draggable droppable [dragCondition]='draggable(resource)' [dropCondition]='droppable(resource)' (handleDrop)='didDropData($event)'\n                    (click)='didTapOnResource(resource, $event)'>\n                    <span class='tree__item-label'>\n                        <i class=\"{{icon(resource)}}\"></i>&nbsp;\n                        <span>{{resource.name}}</span>\n                    </span>\n                    <span class='tree__item-option-group'>\n                        <ng-container *ngFor='let option of options'>\n                            <span class='tree__item-option' *ngIf='option.enabled(resource)' matTooltip='{{option.label}}' (click)='option.action(resource, $event)'>\n                                <i class=\"{{option.icon}}\"></i>&nbsp;\n                            </span>\n                        </ng-container>\n                    </span>\n                    <div class='overlay'></div>\n                </div>\n            </ng-template>\n            <explorer *ngIf='resource.expanded' [resources]=\"resource.children\" [showHeader]='false'></explorer>\n        </li>\n    </ul>        \n</ng-template>\n"
 
 /***/ }),
 
@@ -1475,11 +707,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ExplorerComponent", function() { return ExplorerComponent; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _services_task_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../services/task.service */ "./src/app/editor/services/task.service.ts");
-/* harmony import */ var _services_logging_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../services/logging.service */ "./src/app/editor/services/logging.service.ts");
-/* harmony import */ var _services_resource_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../services/resource.service */ "./src/app/editor/services/resource.service.ts");
+/* harmony import */ var _shared_services_core_task_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../shared/services/core/task.service */ "./src/app/editor/shared/services/core/task.service.ts");
+/* harmony import */ var _shared_services_core_opener_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../shared/services/core/opener.service */ "./src/app/editor/shared/services/core/opener.service.ts");
+/* harmony import */ var _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../shared/services/core/resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
 /* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
-/* harmony import */ var _editor_utils__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../editor.utils */ "./src/app/editor/editor.utils.ts");
+/* harmony import */ var _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../shared/models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
 
 
 
@@ -1488,38 +720,38 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var ExplorerComponent = /** @class */ (function () {
-    function ExplorerComponent(task, logging, resource, notification) {
+    function ExplorerComponent(task, opener, notification, resourceService) {
         this.task = task;
-        this.logging = logging;
-        this.resource = resource;
+        this.opener = opener;
         this.notification = notification;
+        this.resourceService = resourceService;
         /** the dynamic options of the resources */
         this.options = [];
         var that = this;
-        this.resources = this.resource.resources;
+        this.resources = this.resourceService.resources;
         this.options = [
-            { icon: 'fas fa-check', label: 'Test', enabled: _editor_utils__WEBPACK_IMPORTED_MODULE_6__["canBeTested"], action: function (r, e) {
+            { icon: 'fas fa-check', label: 'Test', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canBeTested"], action: function (r, e) {
                     that.optionTest(r, e);
                 } },
-            { icon: 'fas fa-play', label: 'Load', enabled: _editor_utils__WEBPACK_IMPORTED_MODULE_6__["canBeLoaded"], action: function (r, e) {
+            { icon: 'fas fa-play', label: 'Load', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canBeLoaded"], action: function (r, e) {
                     that.optionLoad(r, e);
                 } },
-            { icon: 'fas fa-sync', label: 'Reload', enabled: _editor_utils__WEBPACK_IMPORTED_MODULE_6__["canBeReloaded"], action: function (r, e) {
+            { icon: 'fas fa-sync', label: 'Reload', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canBeReloaded"], action: function (r, e) {
                     that.optionReload(r, e);
                 } },
-            { icon: 'far fa-file', label: 'New File', enabled: _editor_utils__WEBPACK_IMPORTED_MODULE_6__["canAddFile"], action: function (r, e) {
+            { icon: 'far fa-file', label: 'New File', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canAddFile"], action: function (r, e) {
                     that.optionAddFile(r, e);
                 } },
-            { icon: 'far fa-folder', label: 'New Folder', enabled: _editor_utils__WEBPACK_IMPORTED_MODULE_6__["canAddFile"], action: function (r, e) {
+            { icon: 'far fa-folder', label: 'New Folder', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canAddFile"], action: function (r, e) {
                     that.optionFolder(r, e);
                 } },
-            { icon: 'far fa-edit', label: 'Rename', enabled: _editor_utils__WEBPACK_IMPORTED_MODULE_6__["canBeRenamed"], action: function (r, e) {
+            { icon: 'far fa-edit', label: 'Rename', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canBeRenamed"], action: function (r, e) {
                     that.optionRename(r, e);
                 } },
-            { icon: 'far fa-trash-alt', label: 'Delete', enabled: _editor_utils__WEBPACK_IMPORTED_MODULE_6__["canBeDeleted"], action: function (r, e) {
+            { icon: 'far fa-trash-alt', label: 'Delete', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canBeDeleted"], action: function (r, e) {
                     that.optionDelete(r, e);
                 } },
-            { icon: 'fas fa-lock', label: 'Read Only', enabled: _editor_utils__WEBPACK_IMPORTED_MODULE_6__["readonly"], action: function () { } },
+            { icon: 'fas fa-lock', label: 'Read Only', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["readonly"], action: function () { } },
         ];
     }
     /** Handles refresh button click by retrieving resources from the server. */
@@ -1527,8 +759,8 @@ var ExplorerComponent = /** @class */ (function () {
         var _this = this;
         this.notification.confirmAsync({ title: 'You will lose any unsaved changes after this. Are you sure ?' }).then(function (confirmed) {
             if (confirmed) {
-                _this.resource.refresh().catch(function (error) {
-                    _this.logging.error(error);
+                _this.resourceService.refresh().catch(function (error) {
+                    _this.notification.logError(error);
                 });
             }
         });
@@ -1539,7 +771,7 @@ var ExplorerComponent = /** @class */ (function () {
      * 	@returns true only if the resource is not a root folder.
      */
     ExplorerComponent.prototype.draggable = function (resource) {
-        return !_editor_utils__WEBPACK_IMPORTED_MODULE_6__["isRoot"](resource) && resource.write;
+        return !_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["isRoot"](resource) && resource.write;
     };
     /**
      * Gets a value indicating a resource is droppable into the given 'resource'
@@ -1547,7 +779,7 @@ var ExplorerComponent = /** @class */ (function () {
      * 	@returns true only if the resource is folder.
      */
     ExplorerComponent.prototype.droppable = function (resource) {
-        return _editor_utils__WEBPACK_IMPORTED_MODULE_6__["isFolder"](resource) && resource.write;
+        return _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["isFolder"](resource) && resource.write;
     };
     /**
      * Handles drag and drop event by asking a confirmation to the user then :
@@ -1559,9 +791,9 @@ var ExplorerComponent = /** @class */ (function () {
         var _this = this;
         var srcPath = data.src || data.file.name;
         var dstPath = data.dst;
-        var srcName = _editor_utils__WEBPACK_IMPORTED_MODULE_6__["basename"](srcPath);
-        var src = this.resource.find(srcPath);
-        var dst = this.resource.find(dstPath);
+        var srcName = _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["basename"](srcPath);
+        var src = this.resourceService.find(srcPath);
+        var dst = this.resourceService.find(dstPath);
         if (src && src.parent === data.dst) {
             return;
         }
@@ -1570,8 +802,8 @@ var ExplorerComponent = /** @class */ (function () {
         };
         this.notification.confirmAsync(options).then(function (confirmed) {
             if (confirmed) {
-                _this.resource.move(src || data.file, dst).catch(function (error) {
-                    _this.logging.error(error);
+                _this.resourceService.move(src || data.file, dst).catch(function (error) {
+                    _this.notification.logError(error);
                 });
             }
         });
@@ -1585,27 +817,27 @@ var ExplorerComponent = /** @class */ (function () {
      */
     ExplorerComponent.prototype.didEditingChanged = function (resource, event) {
         var _this = this;
-        if (event.type === 'blur' && this.skipNextBlurEvent) {
-            this.skipNextBlurEvent = false;
-            return;
-        }
-        if (event.keyCode === 27) { // escape key
-            this.skipNextBlurEvent = true;
-            if (resource.editing) {
-                this.resource.cancelOrRemove(resource);
+        if (resource.renaming || resource.creating) {
+            if (event.keyCode === 27) { // escape key
+                if (resource.renaming) {
+                    this.resourceService.cancel(resource);
+                }
+                else {
+                    this.optionDelete(resource, event);
+                }
             }
-            else {
-                this.optionDelete(resource, event);
+            else if (event.type === 'blur' || event.keyCode === 13) { // focus losed or enter key
+                var promise = void 0;
+                if (resource.renaming) {
+                    promise = this.resourceService.rename(resource);
+                }
+                else {
+                    promise = this.resourceService.create(resource);
+                }
+                promise.catch(function (error) {
+                    _this.notification.logError(error);
+                });
             }
-        }
-        else if (event.type === 'blur' || event.keyCode === 13) { // focus losed or enter key
-            this.skipNextBlurEvent = true;
-            // TODO not make server call if name is not modified
-            this.resource.createOrRename(resource).then(function () {
-                _this.didTapOnResource(resource, event);
-            }).catch(function (error) {
-                _this.logging.error(error);
-            });
         }
     };
     /**
@@ -1616,7 +848,12 @@ var ExplorerComponent = /** @class */ (function () {
     ExplorerComponent.prototype.didTapOnResource = function (resource, event) {
         event.preventDefault();
         event.stopPropagation();
-        this.task.emitSelectEvent(resource);
+        if (_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["isFolder"](resource)) {
+            resource.expanded = !resource.expanded;
+        }
+        else {
+            this.opener.openURI(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["asURI"](resource));
+        }
     };
     /**
      * Gets the font awesome class representing the resource
@@ -1626,7 +863,7 @@ var ExplorerComponent = /** @class */ (function () {
      * - resource.icon otherwise.
      */
     ExplorerComponent.prototype.icon = function (resource) {
-        if (_editor_utils__WEBPACK_IMPORTED_MODULE_6__["isFolder"](resource)) {
+        if (_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["isFolder"](resource)) {
             return resource.expanded ? 'fas fa-folder-open' : 'fas fa-folder';
         }
         return resource.icon;
@@ -1636,13 +873,10 @@ var ExplorerComponent = /** @class */ (function () {
      * @param resource the resource object.
      */
     ExplorerComponent.prototype.isSelection = function (resource) {
-        return this.resource.isSelection(resource);
+        return this.resourceService.isSelection(resource);
     };
-    /**
-     * Gets a value indicating whether a task is running in the editor.
-     */
-    ExplorerComponent.prototype.runningTask = function () {
-        return this.task.running;
+    ExplorerComponent.prototype.isEditing = function (resource) {
+        return resource.renaming || resource.creating;
     };
     /** Used in the html template with *ngFor to keep track of the resource */
     ExplorerComponent.prototype.trackByFn = function (_index, item) {
@@ -1651,12 +885,12 @@ var ExplorerComponent = /** @class */ (function () {
     ExplorerComponent.prototype.optionAddFile = function (resource, event) {
         event.preventDefault();
         event.stopPropagation();
-        this.resource.addFile(resource);
+        this.resourceService.addFile(resource);
     };
     ExplorerComponent.prototype.optionFolder = function (resource, event) {
         event.preventDefault();
         event.stopPropagation();
-        this.resource.addFolder(resource);
+        this.resourceService.addFolder(resource);
     };
     ExplorerComponent.prototype.optionDelete = function (resource, event) {
         var _this = this;
@@ -1666,8 +900,8 @@ var ExplorerComponent = /** @class */ (function () {
             title: 'Are you sure you want to delete \'' + resource.name + '\'?',
         }).then(function (confirmed) {
             if (confirmed) {
-                _this.resource.delete(resource).catch(function (error) {
-                    _this.logging.error(error);
+                _this.resourceService.delete(resource).catch(function (error) {
+                    _this.notification.logError(error);
                 });
             }
         });
@@ -1676,10 +910,10 @@ var ExplorerComponent = /** @class */ (function () {
         var _this = this;
         event.preventDefault();
         event.stopPropagation();
-        this.resource.loadPLTP(resource).then(function (response) {
-            _this.logging.info(response);
+        this.resourceService.loadPLTP(resource).then(function (response) {
+            _this.notification.logInfo(response);
         }).catch(function (error) {
-            _this.logging.error(error);
+            _this.notification.logError(error);
         });
     };
     ExplorerComponent.prototype.optionReload = function (resource, event) {
@@ -1700,10 +934,10 @@ var ExplorerComponent = /** @class */ (function () {
         };
         this.notification.promptAsync(options).then(function (data) {
             if (data.fields) {
-                _this.resource.reloadPLTP(resource, data.fields[0].value).then((function (response) {
-                    _this.logging.info(response);
+                _this.resourceService.reloadPLTP(resource, data.fields[0].value).then((function (response) {
+                    _this.notification.logInfo(response);
                 })).catch(function (error) {
-                    _this.logging.error(error);
+                    _this.notification.logError(error);
                 });
             }
         });
@@ -1711,14 +945,14 @@ var ExplorerComponent = /** @class */ (function () {
     ExplorerComponent.prototype.optionRename = function (resource, event) {
         event.preventDefault();
         event.stopPropagation();
-        resource.editing = true;
-        resource.nameBeforeEdition = resource.name;
-        resource.parentRef = this.resource.find(resource.parent);
+        resource.renaming = true;
+        resource.parentRef = this.resourceService.find(resource.parent);
+        resource.nameBefore = resource.name;
     };
     ExplorerComponent.prototype.optionTest = function (resource, event) {
         event.preventDefault();
         event.stopPropagation();
-        window.open('/filebrowser/option?name=test_pl&path=' + resource.path, '_blank');
+        this.opener.openURL('/filebrowser/option?name=test_pl&path=' + resource.path);
     };
     tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
@@ -1736,10 +970,10 @@ var ExplorerComponent = /** @class */ (function () {
             encapsulation: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ViewEncapsulation"].None,
             styles: [__webpack_require__(/*! ./explorer.component.scss */ "./src/app/editor/navigation/explorer/explorer.component.scss")]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_services_task_service__WEBPACK_IMPORTED_MODULE_2__["TaskService"],
-            _services_logging_service__WEBPACK_IMPORTED_MODULE_3__["LoggingService"],
-            _services_resource_service__WEBPACK_IMPORTED_MODULE_4__["ResourceService"],
-            src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_5__["NotificationService"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_core_task_service__WEBPACK_IMPORTED_MODULE_2__["TaskService"],
+            _shared_services_core_opener_service__WEBPACK_IMPORTED_MODULE_3__["OpenerService"],
+            src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_5__["NotificationService"],
+            _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_4__["ResourceService"]])
     ], ExplorerComponent);
     return ExplorerComponent;
 }());
@@ -1755,7 +989,7 @@ var ExplorerComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-progress-bar mode=\"query\" *ngIf='runningTask()'></mat-progress-bar>\n<mat-accordion class='accordion' multi='true'>\n    <mat-expansion-panel class='repositories mat-elevation-z0' expanded='true'>\n      <mat-expansion-panel-header collapsedHeight='48px' expandedHeight='48px'>\n        <mat-panel-title>\n          REPOSITORIES\n        </mat-panel-title>\n      </mat-expansion-panel-header>\n      <ng-container *ngFor=\"let repo of repositories(); trackBy trackRepo\">\n          <div class='line pointer' (click)='changeSelection(repo)' [matTooltip]='repo.url'> \n              <span class='line-title' [matBadgeHidden]='repo.count === 0' [matBadge]=\"repo.count\" matBadgePosition=\"after\">{{repo.name}}</span>\n              <div class='spacer'></div>\n              <span class='line-subtitle'>{{repo.branch}}</span>\n              <span [matMenuTriggerFor]=\"options\">\n                  <i class='fas fa-ellipsis-h'></i>\n              </span>\n          </div>\n          <mat-menu #options=\"matMenu\">\n              <button mat-menu-item (click)='add(repo)'>Git add</button>\n              <button mat-menu-item (click)='push(repo)'>Git push</button>\n              <button mat-menu-item (click)='pull(repo)'>Git pull</button>\n              <button mat-menu-item (click)='status(repo)'>Git status</button>\n              <button mat-menu-item (click)='checkout(repo)'>Git checkout</button>\n          </mat-menu>\n      </ng-container>\n      <br/>\n      <button class='clone' mat-stroked-button matTooltip='Clone' (click)='clone()'>+</button>\n    </mat-expansion-panel>\n    <mat-divider></mat-divider>\n    <mat-expansion-panel class='changes mat-elevation-z0' *ngIf='selection' expanded='true'>\n        <mat-expansion-panel-header collapsedHeight='48px' expandedHeight='48px'>\n          <mat-panel-title>\n            CHANGES IN {{selection.name | uppercase}}\n          </mat-panel-title>\n        </mat-expansion-panel-header>\n        <mat-form-field class='commit' *ngIf='selection.count > 0; else uptodate'>\n            <input matInput placeholder=\"Press enter to commit\" (keydown)='commit($event)' [(ngModel)]='commitMessage'>\n        </mat-form-field>\n        <ng-template #uptodate> <span>nothing to commit, working tree clean</span> </ng-template>\n        <ng-container *ngFor=\"let change of selection.changes; trackBy trackChange\">\n            <div class='line' [matTooltip]=\"change.path\"> \n                <span class='line-title' [matBadge]=\"change.type\" matBadgePosition=\"after\">{{change.name}}</span>\n                <div class='spacer'></div>\n                <span class='pointer' [matMenuTriggerFor]=\"menu\">\n                  <i class='fas fa-ellipsis-h'></i>\n                </span>\n            </div>\n            <mat-menu #menu=\"matMenu\">\n              <ng-container *ngFor='let option of options'>\n                  <button *ngIf='option.enabled(change)' (click)='option.action(change)' mat-menu-item>\n                    {{option.label}}\n                  </button>\n              </ng-container>\n            </mat-menu>\n        </ng-container>\n    </mat-expansion-panel>\n</mat-accordion>"
+module.exports = "<mat-progress-bar mode=\"query\" *ngIf='runningTask()'></mat-progress-bar>\n<div class='navigation__content'>\n  <mat-accordion class='accordion' multi='true'>\n    <mat-expansion-panel class='repositories mat-elevation-z0' expanded='true'>\n      <mat-expansion-panel-header collapsedHeight='48px' expandedHeight='48px'>\n        <mat-panel-title>\n          REPOSITORIES\n        </mat-panel-title>\n      </mat-expansion-panel-header>\n      <ng-container *ngFor=\"let repo of repositories(); trackBy trackRepo\">\n          <div class='line pointer' (click)='changeSelection(repo)' [matTooltip]='repo.url'> \n              <span class='line-title' [matBadgeHidden]='repo.count === 0' [matBadge]=\"repo.count\" matBadgePosition=\"after\">{{repo.name}}</span>\n              <div class='spacer'></div>\n              <span class='line-subtitle'>{{repo.branch}}</span>\n              <span [matMenuTriggerFor]=\"options\">\n                  <i class='fas fa-ellipsis-h'></i>\n              </span>\n          </div>\n          <mat-menu #options=\"matMenu\">\n              <button mat-menu-item (click)='add(repo)'>Git add</button>\n              <button mat-menu-item (click)='push(repo)'>Git push</button>\n              <button mat-menu-item (click)='pull(repo)'>Git pull</button>\n              <button mat-menu-item (click)='status(repo)'>Git status</button>\n              <button mat-menu-item (click)='checkout(repo)'>Git checkout</button>\n          </mat-menu>\n      </ng-container>\n      <br/>\n      <button class='clone' mat-stroked-button matTooltip='Clone' (click)='clone()'>+</button>\n    </mat-expansion-panel>\n    <mat-divider></mat-divider>\n    <mat-expansion-panel class='changes mat-elevation-z0' *ngIf='selection' expanded='true'>\n      <mat-expansion-panel-header collapsedHeight='48px' expandedHeight='48px'>\n        <mat-panel-title>\n          CHANGES IN {{selection.name | uppercase}}\n        </mat-panel-title>\n      </mat-expansion-panel-header>\n      <mat-form-field class='commit' *ngIf='selection.count > 0; else uptodate'>\n          <input matInput placeholder=\"Press enter to commit\" (keydown)='commit($event)' [(ngModel)]='commitMessage'>\n      </mat-form-field>\n        <ng-template #uptodate> <span>nothing to commit, working tree clean</span> </ng-template>\n        <ng-container *ngFor=\"let change of selection.changes; trackBy trackChange\">\n            <div class='line' [matTooltip]=\"change.path\"> \n                <span class='line-title' [matBadge]=\"change.type\" matBadgePosition=\"after\">{{change.name}}</span>\n                <div class='spacer'></div>\n                <span class='pointer' [matMenuTriggerFor]=\"menu\">\n                  <i class='fas fa-ellipsis-h'></i>\n                </span>\n            </div>\n            <mat-menu #menu=\"matMenu\">\n              <ng-container *ngFor='let option of options'>\n                  <button *ngIf='option.enabled(change)' (click)='option.action(change)' mat-menu-item>\n                    {{option.label}}\n                  </button>\n              </ng-container>\n            </mat-menu>\n        </ng-container>\n        <ng-container *ngFor=\"let change of selection.changes; trackBy trackChange\">\n          <div class='line' [matTooltip]=\"change.path\"> \n              <span class='line-title' [matBadge]=\"change.type\" matBadgePosition=\"after\">{{change.name}}</span>\n              <div class='spacer'></div>\n              <span class='pointer' [matMenuTriggerFor]=\"menu\">\n                <i class='fas fa-ellipsis-h'></i>\n              </span>\n          </div>\n          <mat-menu #menu=\"matMenu\">\n            <ng-container *ngFor='let option of options'>\n                <button *ngIf='option.enabled(change)' (click)='option.action(change)' mat-menu-item>\n                  {{option.label}}\n                </button>\n            </ng-container>\n          </mat-menu>\n      </ng-container>\n    </mat-expansion-panel>    \n  </mat-accordion>\n</div>\n"
 
 /***/ }),
 
@@ -1766,7 +1000,7 @@ module.exports = "<mat-progress-bar mode=\"query\" *ngIf='runningTask()'></mat-p
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".accordion {\n  overflow: hidden; }\n\n.line {\n  display: flex;\n  height: 32px;\n  align-items: center;\n  overflow: visible; }\n\n.line-title {\n  font-size: 1em;\n  margin-right: 8px; }\n\n.line-title .mat-badge-content {\n    right: -24px;\n    top: 0; }\n\n.line-subtitle {\n  margin-right: 8px; }\n\n.commit, .clone {\n  width: 100%; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL25hdmlnYXRpb24vZ2l0L2dpdC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGlCQUFnQixFQUNuQjs7QUFFRDtFQUNJLGNBQWE7RUFDYixhQUFZO0VBQ1osb0JBQW1CO0VBQ25CLGtCQUFpQixFQUNwQjs7QUFFRDtFQUNJLGVBQWM7RUFDZCxrQkFBaUIsRUFLcEI7O0FBUEQ7SUFJUSxhQUFZO0lBQ1osT0FBTSxFQUNUOztBQUdMO0VBQ0ksa0JBQWlCLEVBQ3BCOztBQUVEO0VBQ0ksWUFBVyxFQUNkIiwiZmlsZSI6InNyYy9hcHAvZWRpdG9yL25hdmlnYXRpb24vZ2l0L2dpdC5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5hY2NvcmRpb24ge1xuICAgIG92ZXJmbG93OiBoaWRkZW47XG59XG5cbi5saW5lIHtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGhlaWdodDogMzJweDtcbiAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgIG92ZXJmbG93OiB2aXNpYmxlO1xufVxuXG4ubGluZS10aXRsZSB7XG4gICAgZm9udC1zaXplOiAxZW07XG4gICAgbWFyZ2luLXJpZ2h0OiA4cHg7XG4gICAgLm1hdC1iYWRnZS1jb250ZW50IHtcbiAgICAgICAgcmlnaHQ6IC0yNHB4O1xuICAgICAgICB0b3A6IDA7XG4gICAgfVxufVxuXG4ubGluZS1zdWJ0aXRsZSB7XG4gICAgbWFyZ2luLXJpZ2h0OiA4cHg7XG59XG5cbi5jb21taXQsIC5jbG9uZSB7XG4gICAgd2lkdGg6IDEwMCU7XG59Il19 */"
+module.exports = ".navigation__content {\n  height: 100%;\n  overflow: auto; }\n\n.line {\n  display: flex;\n  height: 32px;\n  align-items: center;\n  overflow: visible; }\n\n.line-title {\n  font-size: 1em;\n  margin-right: 8px; }\n\n.line-title .mat-badge-content {\n    right: -24px;\n    top: 0; }\n\n.line-subtitle {\n  margin-right: 8px; }\n\n.commit, .clone {\n  width: 100%; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL25hdmlnYXRpb24vZ2l0L2dpdC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGFBQVk7RUFDWixlQUFjLEVBQ2pCOztBQUVEO0VBQ0ksY0FBYTtFQUNiLGFBQVk7RUFDWixvQkFBbUI7RUFDbkIsa0JBQWlCLEVBQ3BCOztBQUVEO0VBQ0ksZUFBYztFQUNkLGtCQUFpQixFQUtwQjs7QUFQRDtJQUlRLGFBQVk7SUFDWixPQUFNLEVBQ1Q7O0FBR0w7RUFDSSxrQkFBaUIsRUFDcEI7O0FBRUQ7RUFDSSxZQUFXLEVBQ2QiLCJmaWxlIjoic3JjL2FwcC9lZGl0b3IvbmF2aWdhdGlvbi9naXQvZ2l0LmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLm5hdmlnYXRpb25fX2NvbnRlbnQge1xuICAgIGhlaWdodDogMTAwJTtcbiAgICBvdmVyZmxvdzogYXV0bztcbn1cblxuLmxpbmUge1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgaGVpZ2h0OiAzMnB4O1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgb3ZlcmZsb3c6IHZpc2libGU7XG59XG5cbi5saW5lLXRpdGxlIHtcbiAgICBmb250LXNpemU6IDFlbTtcbiAgICBtYXJnaW4tcmlnaHQ6IDhweDtcbiAgICAubWF0LWJhZGdlLWNvbnRlbnQge1xuICAgICAgICByaWdodDogLTI0cHg7XG4gICAgICAgIHRvcDogMDtcbiAgICB9XG59XG5cbi5saW5lLXN1YnRpdGxlIHtcbiAgICBtYXJnaW4tcmlnaHQ6IDhweDtcbn1cblxuLmNvbW1pdCwgLmNsb25lIHtcbiAgICB3aWR0aDogMTAwJTtcbn1cbiJdfQ== */"
 
 /***/ }),
 
@@ -1782,10 +1016,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GitComponent", function() { return GitComponent; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
-/* harmony import */ var _services_resource_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../services/resource.service */ "./src/app/editor/services/resource.service.ts");
-/* harmony import */ var _services_git_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../services/git.service */ "./src/app/editor/services/git.service.ts");
-/* harmony import */ var _services_task_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../services/task.service */ "./src/app/editor/services/task.service.ts");
+/* harmony import */ var _shared_services_core_git_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../shared/services/core/git.service */ "./src/app/editor/shared/services/core/git.service.ts");
+/* harmony import */ var _shared_services_core_task_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../shared/services/core/task.service */ "./src/app/editor/shared/services/core/task.service.ts");
+/* harmony import */ var _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../shared/services/core/resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
+/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
 
 
 
@@ -2006,10 +1240,10 @@ var GitComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./git.component.html */ "./src/app/editor/navigation/git/git.component.html"),
             styles: [__webpack_require__(/*! ./git.component.scss */ "./src/app/editor/navigation/git/git.component.scss")]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_services_git_service__WEBPACK_IMPORTED_MODULE_4__["GitService"],
-            _services_task_service__WEBPACK_IMPORTED_MODULE_5__["TaskService"],
-            _services_resource_service__WEBPACK_IMPORTED_MODULE_3__["ResourceService"],
-            src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_2__["NotificationService"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_core_git_service__WEBPACK_IMPORTED_MODULE_2__["GitService"],
+            _shared_services_core_task_service__WEBPACK_IMPORTED_MODULE_3__["TaskService"],
+            _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_4__["ResourceService"],
+            src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_5__["NotificationService"]])
     ], GitComponent);
     return GitComponent;
 }());
@@ -2052,30 +1286,30 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NavigationComponent", function() { return NavigationComponent; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _services_git_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../services/git.service */ "./src/app/editor/services/git.service.ts");
-/* harmony import */ var _services_logging_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../services/logging.service */ "./src/app/editor/services/logging.service.ts");
-/* harmony import */ var _services_resource_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../services/resource.service */ "./src/app/editor/services/resource.service.ts");
+/* harmony import */ var _shared_services_core_git_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/services/core/git.service */ "./src/app/editor/shared/services/core/git.service.ts");
+/* harmony import */ var _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../shared/services/core/resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
+/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
 
 
 
 
 
 var NavigationComponent = /** @class */ (function () {
-    function NavigationComponent(git, logging, resource) {
+    function NavigationComponent(git, resource, notification) {
         this.git = git;
-        this.logging = logging;
         this.resource = resource;
+        this.notification = notification;
         this.size = 25;
         this.index = 0;
     }
     NavigationComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.resource.refresh().catch(function (error) { return _this.logging.error(error); });
+        this.resource.refresh().catch(function (error) { return _this.notification.logError(error); });
     };
     NavigationComponent.prototype.didTapButton = function (index) {
         switch (index) {
             case 3:
-                this.logging.openEvent.next();
+                this.notification.onToggleDebuggingArea.next();
                 break;
             default:
                 if (index === this.index) {
@@ -2089,7 +1323,7 @@ var NavigationComponent = /** @class */ (function () {
         return this.git.size;
     };
     NavigationComponent.prototype.consoleBadge = function () {
-        return this.logging.size;
+        return this.notification.size;
     };
     NavigationComponent.prototype.resources = function () {
         return this.resource.resources;
@@ -2101,9 +1335,9 @@ var NavigationComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./navigation.component.html */ "./src/app/editor/navigation/navigation.component.html"),
             styles: [__webpack_require__(/*! ./navigation.component.scss */ "./src/app/editor/navigation/navigation.component.scss")]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_services_git_service__WEBPACK_IMPORTED_MODULE_2__["GitService"],
-            _services_logging_service__WEBPACK_IMPORTED_MODULE_3__["LoggingService"],
-            _services_resource_service__WEBPACK_IMPORTED_MODULE_4__["ResourceService"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_core_git_service__WEBPACK_IMPORTED_MODULE_2__["GitService"],
+            _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_3__["ResourceService"],
+            src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_4__["NotificationService"]])
     ], NavigationComponent);
     return NavigationComponent;
 }());
@@ -2119,7 +1353,7 @@ var NavigationComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<ng-container>\n    <div class='tab-bar border-bottom'>\n        <span>SEARCH</span>       \n        <div class=\"spacer\"></div>\n    </div>\n    <mat-form-field class='search'>\n        <input autoFocus matInput placeholder=\"Press enter to search\" (keydown)='search($event)' [(ngModel)]='searchValue'>\n    </mat-form-field>\n    <mat-progress-bar mode='indeterminate' color='warn' *ngIf='runningTask'></mat-progress-bar>\n    <div class=\"navigation_content\">\n        <explorer [resources]='result'></explorer>\n    </div>\n</ng-container>"
+module.exports = "<ng-container>\n    <div class='tab-bar border-bottom'>\n        <span>SEARCH</span>       \n        <div class=\"spacer\"></div>\n    </div>\n    <mat-form-field class='search'>\n        <input autoFocus matInput placeholder=\"Press enter to search\" (keydown)='search($event)' [(ngModel)]='searchValue'>\n    </mat-form-field>\n    <div class=\"navigation_content\">\n        <explorer [resources]='result'></explorer>\n    </div>\n</ng-container>"
 
 /***/ }),
 
@@ -2146,7 +1380,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SearchComponent", function() { return SearchComponent; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var src_app_editor_services_resource_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! src/app/editor/services/resource.service */ "./src/app/editor/services/resource.service.ts");
+/* harmony import */ var _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../shared/services/core/resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
 
 
 
@@ -2194,7 +1428,7 @@ var SearchComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./search.component.html */ "./src/app/editor/navigation/search/search.component.html"),
             styles: [__webpack_require__(/*! ./search.component.scss */ "./src/app/editor/navigation/search/search.component.scss")]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [src_app_editor_services_resource_service__WEBPACK_IMPORTED_MODULE_2__["ResourceService"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_2__["ResourceService"]])
     ], SearchComponent);
     return SearchComponent;
 }());
@@ -2260,32 +1494,1057 @@ var SettingsComponent = /** @class */ (function () {
 
 /***/ }),
 
-/***/ "./src/app/editor/services/git.service.ts":
-/*!************************************************!*\
-  !*** ./src/app/editor/services/git.service.ts ***!
-  \************************************************/
-/*! exports provided: GitService */
+/***/ "./src/app/editor/shared/models/editor-group.model.ts":
+/*!************************************************************!*\
+  !*** ./src/app/editor/shared/models/editor-group.model.ts ***!
+  \************************************************************/
+/*! exports provided: EditorGroup */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EditorGroup", function() { return EditorGroup; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _editor_model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./editor.model */ "./src/app/editor/shared/models/editor.model.ts");
+/* harmony import */ var _filters_model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+/* harmony import */ var _angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/cdk/drag-drop */ "./node_modules/@angular/cdk/esm5/drag-drop.es5.js");
+
+
+
+
+var EditorGroup = /** @class */ (function () {
+    function EditorGroup(editorService) {
+        this.editors = [];
+        this.actions = [];
+        this.tabs = [];
+        this._id = ++EditorGroup.COUNTER;
+        this._editorService = editorService;
+    }
+    EditorGroup.prototype.id = function () {
+        return this._id;
+    };
+    EditorGroup.prototype.focus = function (focused) {
+        this._focused = focused;
+    };
+    EditorGroup.prototype.hasFocus = function () {
+        return this._focused;
+    };
+    EditorGroup.prototype.isEmpty = function () {
+        return !this.tabs.some(function (_) { return true; });
+    };
+    EditorGroup.prototype.hidden = function () {
+        var _this = this;
+        if (!this.onlyPreview()) {
+            return false;
+        }
+        var groups = this._editorService.listGroups();
+        return !groups.find(function (g) { return g.id() !== _this.id() && g.isActive(_this._activeTab); });
+    };
+    EditorGroup.prototype.someTab = function (predicate) {
+        return this.tabs.some(predicate);
+    };
+    EditorGroup.prototype.someEditor = function (predicate) {
+        return this.editors.some(predicate);
+    };
+    EditorGroup.prototype.onlyPreview = function () {
+        return this.someEditor(function (e) { return e.type() === 'preview'; });
+    };
+    EditorGroup.prototype.open = function (tab) {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var opened, editor;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!!tab.preview) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this._editorService.openContent(tab.resource)];
+                    case 1:
+                        opened = _a.sent();
+                        if (!opened) {
+                            if (this.isEmpty()) {
+                                this.dispose();
+                            }
+                            return [2 /*return*/, false];
+                        }
+                        _a.label = 2;
+                    case 2:
+                        editor = this.editors.find(function (e) { return e.canOpen(tab); }) || this.createEditor(tab);
+                        if (!editor) {
+                            throw new Error('The is no registered editor that can open \'' + tab.resource.path + '\'');
+                        }
+                        this._activeTab = tab;
+                        this._activeEditor = editor;
+                        this._activeEditor.open(tab);
+                        this.actions = this._activeEditor.actions();
+                        if (tab.preview) {
+                            if (this.tabs.length === 0) {
+                                this.tabs.push(tab);
+                            }
+                            else {
+                                this.tabs[0] = tab;
+                            }
+                        }
+                        else {
+                            if (!this.someTab(function (e) { return e.resource.path === tab.resource.path; })) {
+                                this.tabs.push(tab);
+                            }
+                        }
+                        return [4 /*yield*/, this._editorService.addGroup(this)];
+                    case 3:
+                        _a.sent();
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    };
+    EditorGroup.prototype.openSide = function (tab) {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                return [2 /*return*/, this._editorService.open(tab, true)];
+            });
+        });
+    };
+    EditorGroup.prototype.save = function (tab) {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                return [2 /*return*/, this._editorService.saveContent(tab.resource)];
+            });
+        });
+    };
+    EditorGroup.prototype.saveAll = function () {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var _i, _a, resource;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _i = 0, _a = this.tabs;
+                        _b.label = 1;
+                    case 1:
+                        if (!(_i < _a.length)) return [3 /*break*/, 4];
+                        resource = _a[_i];
+                        return [4 /*yield*/, this.save(resource)];
+                    case 2:
+                        if (!(_b.sent())) {
+                            return [2 /*return*/, false];
+                        }
+                        _b.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4: return [2 /*return*/, true];
+                }
+            });
+        });
+    };
+    EditorGroup.prototype.close = function (tab, confirm) {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var options, _a;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        confirm = !this.onlyPreview() && confirm;
+                        options = {
+                            title: 'Do you want to close \'' + tab.resource.name + '\'?',
+                            message: 'Your changes will be lost if you don\'t save them.',
+                            okTitle: 'Don\'t Save',
+                            noTitle: 'Cancel'
+                        };
+                        _a = !confirm || !tab.resource.changed;
+                        if (_a) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this._editorService.confirm(options)];
+                    case 1:
+                        _a = (_b.sent());
+                        _b.label = 2;
+                    case 2:
+                        if (_a) {
+                            if (!this.onlyPreview()) {
+                                tab.resource.content = tab.resource.lastContent;
+                                tab.resource.changed = false;
+                            }
+                            this.removeTab(tab);
+                        }
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    };
+    EditorGroup.prototype.closeAll = function (confirm) {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var options, _a;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        confirm = !this.onlyPreview() && confirm;
+                        options = {
+                            title: 'Do you want to close the files ?',
+                            message: 'Your changes will be lost if you don\'t save them.',
+                            okTitle: 'Don\'t Save',
+                            noTitle: 'Cancel'
+                        };
+                        _a = !confirm || !this.someTab(function (e) { return e.resource.changed; });
+                        if (_a) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this._editorService.confirm(options)];
+                    case 1:
+                        _a = (_b.sent());
+                        _b.label = 2;
+                    case 2:
+                        if (!_a) return [3 /*break*/, 5];
+                        _b.label = 3;
+                    case 3:
+                        if (!(this.tabs.length > 0)) return [3 /*break*/, 5];
+                        return [4 /*yield*/, this.close(this.tabs[0], false)];
+                    case 4:
+                        if (!(_b.sent())) {
+                            return [2 /*return*/, false];
+                        }
+                        return [3 /*break*/, 3];
+                    case 5: return [2 /*return*/, true];
+                }
+            });
+        });
+    };
+    EditorGroup.prototype.closeSaved = function () {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var i;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.someTab(function (e) { return !e.resource.changed; })) return [3 /*break*/, 5];
+                        i = 0;
+                        _a.label = 1;
+                    case 1:
+                        if (!(i < this.tabs.length)) return [3 /*break*/, 4];
+                        if (!!this.tabs[i].resource.changed) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.close(this.tabs[i])];
+                    case 2:
+                        if (!(_a.sent())) {
+                            return [2 /*return*/, false];
+                        }
+                        _a.label = 3;
+                    case 3:
+                        i++;
+                        return [3 /*break*/, 1];
+                    case 4: return [3 /*break*/, 0];
+                    case 5: return [2 /*return*/, true];
+                }
+            });
+        });
+    };
+    EditorGroup.prototype.removeTab = function (tab) {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var index, toRemove;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        index = this.tabs.findIndex(function (e) { return e.resource.path === tab.resource.path; });
+                        if (index === -1) {
+                            throw new Error(tab.title + " is not a part of the group '" + this.id() + "'");
+                        }
+                        toRemove = this.tabs[index];
+                        if (!this.onlyPreview() && Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["openAsPreview"])(tab)) {
+                            toRemove.resource.meta.html = undefined;
+                        }
+                        this._activeTab = null;
+                        this.tabs.splice(index, 1);
+                        index = Math.max(0, index - 1);
+                        if (index < this.tabs.length) {
+                            this._activeTab = this.tabs[index];
+                        }
+                        if (this._activeTab) {
+                            this._activeTab.position = undefined;
+                            this.open(this._activeTab);
+                        }
+                        if (!this.isEmpty()) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.dispose()];
+                    case 1: return [2 /*return*/, _a.sent()];
+                    case 2: return [2 /*return*/, true];
+                }
+            });
+        });
+    };
+    EditorGroup.prototype.removeIndex = function (index) {
+        this.removeTab(this.tabs[index]);
+    };
+    EditorGroup.prototype.activeTab = function () {
+        return this._activeTab;
+    };
+    EditorGroup.prototype.activeEditor = function () {
+        return this._activeEditor;
+    };
+    EditorGroup.prototype.isActive = function (tab) {
+        return this._activeTab.resource.path === tab.resource.path;
+    };
+    EditorGroup.prototype.isChanged = function (tab) {
+        return tab.resource.changed;
+    };
+    EditorGroup.prototype.activeEditorIs = function (type) {
+        return this.activeEditor().type() === type;
+    };
+    EditorGroup.prototype.trackTab = function (index, tab) {
+        return tab.resource.path;
+    };
+    EditorGroup.prototype.trackEditor = function (index, editor) {
+        return editor.id();
+    };
+    EditorGroup.prototype.drop = function (event) {
+        var source = this._editorService.findGroup(parseInt(event.previousContainer.id, 10));
+        source.removeIndex(event.previousIndex);
+        if (event.previousContainer === event.container) {
+            Object(_angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_3__["moveItemInArray"])(event.container.data, event.previousIndex, event.currentIndex);
+        }
+        else {
+            Object(_angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_3__["transferArrayItem"])(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+        }
+    };
+    EditorGroup.prototype.editorService = function () {
+        return this._editorService;
+    };
+    EditorGroup.prototype.dispose = function () {
+        return this._editorService.removeGroup(this);
+    };
+    EditorGroup.prototype.createEditor = function (data) {
+        for (var _i = 0, INSTANTIATORS_1 = _editor_model__WEBPACK_IMPORTED_MODULE_1__["INSTANTIATORS"]; _i < INSTANTIATORS_1.length; _i++) {
+            var item = INSTANTIATORS_1[_i];
+            if (item.condition(data)) {
+                var editor = item.create(this, data);
+                this.editors.push(editor);
+                return editor;
+            }
+        }
+        return null;
+    };
+    EditorGroup.COUNTER = 0;
+    return EditorGroup;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/editor/shared/models/editor.model.ts":
+/*!******************************************************!*\
+  !*** ./src/app/editor/shared/models/editor.model.ts ***!
+  \******************************************************/
+/*! exports provided: AbstractEditor, CodeEditor, ImageEditor, PreviewEditor, INSTANTIATORS */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AbstractEditor", function() { return AbstractEditor; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CodeEditor", function() { return CodeEditor; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImageEditor", function() { return ImageEditor; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PreviewEditor", function() { return PreviewEditor; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "INSTANTIATORS", function() { return INSTANTIATORS; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var _filters_model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+// tslint:disable: max-line-length
+
+
+
+var AbstractEditor = /** @class */ (function () {
+    function AbstractEditor(group, data) {
+        this.onOpened = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
+        this._id = ++AbstractEditor.ID_COUNTER;
+        this._data = data;
+        this._group = group;
+    }
+    AbstractEditor.prototype.id = function () {
+        return this._id;
+    };
+    AbstractEditor.prototype.data = function () {
+        return this._data;
+    };
+    AbstractEditor.prototype.group = function () {
+        return this._group;
+    };
+    AbstractEditor.prototype.open = function (data) {
+        this._data = data;
+        this.onOpened.next(data);
+    };
+    AbstractEditor.prototype.focus = function (focused) {
+        this._focused = focused;
+    };
+    AbstractEditor.prototype.hasFocus = function () {
+        return this._focused;
+    };
+    AbstractEditor.ID_COUNTER = 0;
+    return AbstractEditor;
+}());
+
+var CodeEditor = /** @class */ (function (_super) {
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](CodeEditor, _super);
+    function CodeEditor(group, data) {
+        var _this = _super.call(this, group, data) || this;
+        _this.onDiffEditing = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
+        return _this;
+    }
+    CodeEditor.prototype.type = function () {
+        return 'code';
+    };
+    CodeEditor.prototype.actions = function () {
+        return [
+            this.preview(),
+            // this.diffMode(),
+            // this.codeMode(),
+            this.splitRight()
+        ];
+    };
+    CodeEditor.prototype.canOpen = function (data) {
+        return Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["openAsCode"])(data);
+    };
+    CodeEditor.prototype.preview = function () {
+        var _this = this;
+        return {
+            icon: 'fas fa-play', tooltip: 'Preview', condition: function (item) { return Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["canBePreviewed"])(item); }, invoke: function (item) {
+                _this.group().editorService().previewResource(item);
+            }
+        };
+    };
+    CodeEditor.prototype.diffMode = function () {
+        var _this = this;
+        return {
+            icon: 'fas fa-eye', tooltip: 'Open Changes', condition: function (item) { return Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["isRepo"])(item) && !_this.diffEditing; }, invoke: function (_) {
+                _this.diffEditing = true;
+                _this.onDiffEditing.next(_this.diffEditing);
+            }
+        };
+    };
+    CodeEditor.prototype.codeMode = function () {
+        var _this = this;
+        return {
+            icon: 'fas fa-eye-slash', tooltip: 'Close Changes', condition: function (item) { return _this.diffEditing; }, invoke: function (_) {
+                _this.diffEditing = false;
+                _this.onDiffEditing.next(_this.diffEditing);
+            }
+        };
+    };
+    CodeEditor.prototype.splitRight = function () {
+        var _this = this;
+        return {
+            icon: 'fas fa-columns', tooltip: 'Split Editor Right', condition: function () { return true; }, invoke: function (item) {
+                _this.group().openSide(Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["asTab"])(item));
+            }
+        };
+    };
+    return CodeEditor;
+}(AbstractEditor));
+
+var ImageEditor = /** @class */ (function (_super) {
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](ImageEditor, _super);
+    function ImageEditor(group, data) {
+        var _this = _super.call(this, group, data) || this;
+        _this.zoom = 0.7;
+        return _this;
+    }
+    ImageEditor.prototype.type = function () {
+        return 'image';
+    };
+    ImageEditor.prototype.actions = function () {
+        var _this = this;
+        return [
+            {
+                icon: 'fas fa-plus', tooltip: 'Zoom In', condition: function (item) { return true; }, invoke: function (item) {
+                    _this.zoomIn();
+                }
+            },
+            {
+                icon: 'fas fa-minus', tooltip: 'Zoom Out', condition: function (item) { return true; }, invoke: function (item) {
+                    _this.zoomOut();
+                }
+            }
+        ];
+    };
+    ImageEditor.prototype.canOpen = function (data) {
+        return Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["openAsImage"])(data);
+    };
+    ImageEditor.prototype.zoomIn = function () {
+        this.zoom = Math.min(this.zoom + .05, 1);
+    };
+    ImageEditor.prototype.zoomOut = function () {
+        this.zoom = Math.max(this.zoom - .05, 0.3);
+    };
+    return ImageEditor;
+}(AbstractEditor));
+
+var PreviewEditor = /** @class */ (function (_super) {
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](PreviewEditor, _super);
+    function PreviewEditor(group, data) {
+        return _super.call(this, group, data) || this;
+    }
+    PreviewEditor.prototype.type = function () {
+        return 'preview';
+    };
+    PreviewEditor.prototype.actions = function () {
+        return [
+            {
+                icon: 'fas fa-refresh', tooltip: 'Refresh', condition: function (item) { return true; }, invoke: function (item) {
+                }
+            }
+        ];
+    };
+    PreviewEditor.prototype.canOpen = function (data) {
+        return Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["openAsPreview"])(data);
+    };
+    return PreviewEditor;
+}(AbstractEditor));
+
+var INSTANTIATORS = [
+    { condition: _filters_model__WEBPACK_IMPORTED_MODULE_2__["openAsImage"], create: function (group, data) { return new ImageEditor(group, data); } },
+    { condition: _filters_model__WEBPACK_IMPORTED_MODULE_2__["openAsPreview"], create: function (group, data) { return new PreviewEditor(group, data); } },
+    { condition: _filters_model__WEBPACK_IMPORTED_MODULE_2__["openAsCode"], create: function (group, data) { return new CodeEditor(group, data); } }
+];
+
+
+/***/ }),
+
+/***/ "./src/app/editor/shared/models/filters.model.ts":
+/*!*******************************************************!*\
+  !*** ./src/app/editor/shared/models/filters.model.ts ***!
+  \*******************************************************/
+/*! exports provided: DISALLOWED_CHAR, canRead, canWrite, readonly, isFolder, isFile, isRoot, isPl, isMarkdown, isPltp, canBePreviewed, isHome, isNotRoot, isSVG, fromServer, isRepo, canAddFile, canCopy, canAddFolder, canBeRenamed, canBeDeleted, canBeTested, canBeLoaded, canBeReloaded, extension, canBeUsedAsFileName, checkName, requireNonNull, assert, basename, asURI, asTab, compareTab, resourceIsURI, openAsCode, openAsImage, openAsPreview */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DISALLOWED_CHAR", function() { return DISALLOWED_CHAR; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canRead", function() { return canRead; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canWrite", function() { return canWrite; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "readonly", function() { return readonly; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isFolder", function() { return isFolder; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isFile", function() { return isFile; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isRoot", function() { return isRoot; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPl", function() { return isPl; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isMarkdown", function() { return isMarkdown; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPltp", function() { return isPltp; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBePreviewed", function() { return canBePreviewed; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isHome", function() { return isHome; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isNotRoot", function() { return isNotRoot; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isSVG", function() { return isSVG; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fromServer", function() { return fromServer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isRepo", function() { return isRepo; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canAddFile", function() { return canAddFile; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canCopy", function() { return canCopy; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canAddFolder", function() { return canAddFolder; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBeRenamed", function() { return canBeRenamed; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBeDeleted", function() { return canBeDeleted; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBeTested", function() { return canBeTested; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBeLoaded", function() { return canBeLoaded; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBeReloaded", function() { return canBeReloaded; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "extension", function() { return extension; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBeUsedAsFileName", function() { return canBeUsedAsFileName; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "checkName", function() { return checkName; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "requireNonNull", function() { return requireNonNull; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "assert", function() { return assert; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "basename", function() { return basename; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asURI", function() { return asURI; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asTab", function() { return asTab; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compareTab", function() { return compareTab; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resourceIsURI", function() { return resourceIsURI; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "openAsCode", function() { return openAsCode; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "openAsImage", function() { return openAsImage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "openAsPreview", function() { return openAsPreview; });
+var DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&'];
+function canRead(item) {
+    return item && item.read;
+}
+function canWrite(item) {
+    return item && item.write;
+}
+function readonly(item) {
+    return !canWrite(item);
+}
+function isFolder(item) {
+    return item && item.type === 'folder';
+}
+function isFile(item) {
+    return item && item.type === 'file';
+}
+function isRoot(item) {
+    return item && item.name === 'home' || item.name === 'home/'
+        || item.name === 'lib' || item.name === 'lib/';
+}
+function isPl(item) {
+    return item && item.name.endsWith('.pl');
+}
+function isMarkdown(item) {
+    return item && item.name.endsWith('.md');
+}
+function isPltp(item) {
+    return item && item.name.endsWith('.pltp');
+}
+function canBePreviewed(item) {
+    return item && isPl(item) || isSVG(item);
+}
+function isHome(item) {
+    return item && item.name === 'home';
+}
+function isNotRoot(item) {
+    return !isRoot(item);
+}
+function isSVG(item) {
+    return extension(item) === 'svg';
+}
+function fromServer(resource) {
+    return !resource.meta || resource.meta.download_url;
+}
+function isRepo(item) {
+    return item && item.repo;
+}
+function canAddFile(item) {
+    return canWrite(item) && isFolder(item);
+}
+function canCopy(item) {
+    return canRead(item) && isNotRoot(item);
+}
+function canAddFolder(item) {
+    return canWrite(item) && isFolder(item);
+}
+function canBeRenamed(item) {
+    return canWrite(item) && !isRoot(item);
+}
+function canBeDeleted(item) {
+    return canWrite(item) && isNotRoot(item);
+}
+function canBeTested(item) {
+    return canRead(item) && isPl(item);
+}
+function canBeLoaded(item) {
+    return canWrite(item) && isPltp(item);
+}
+function canBeReloaded(item) {
+    return canWrite(item) && isPltp(item);
+}
+function extension(resource) {
+    var dotIndex = resource.name.lastIndexOf('.');
+    return resource.name.substring(dotIndex + 1);
+}
+function canBeUsedAsFileName(name) {
+    return name && DISALLOWED_CHAR.every(function (e) { return !name.includes(e); });
+}
+function checkName(name) {
+    if (!canBeUsedAsFileName(name)) {
+        throw new Error(name + ' cannot sould not contains any of ' + DISALLOWED_CHAR);
+    }
+}
+function requireNonNull(param, name) {
+    if (!param && typeof (param) !== 'boolean') {
+        throw new TypeError(name + ' param is required !');
+    }
+}
+function assert(condition, message) {
+    if (!condition) {
+        throw new Error(message);
+    }
+}
+function basename(path) {
+    if (!path) {
+        return path;
+    }
+    var array = path.split('/');
+    return array[array.length - 1];
+}
+function asURI(resource) {
+    var monaco = window.monaco;
+    return monaco.Uri.file(resource.path);
+}
+function asTab(resource, preview) {
+    return {
+        resource: resource,
+        uri: asURI(resource),
+        title: preview ? 'Preview \'' + resource.name + '\'' : resource.name,
+        preview: preview,
+        icon: resource.icon
+    };
+}
+function compareTab(tab1, tab2) {
+    return tab1.resource.path === tab2.resource.path;
+}
+function resourceIsURI(resource, uri) {
+    return '/' + resource.path === uri.path;
+}
+function openAsCode(data) {
+    return !openAsImage(data);
+}
+function openAsImage(data) {
+    return !openAsPreview(data) && data.resource.meta && data.resource.meta.image && !isSVG(data.resource);
+}
+function openAsPreview(data) {
+    return data.resource.meta && data.resource.meta.html !== undefined;
+}
+
+
+/***/ }),
+
+/***/ "./src/app/editor/shared/models/language.model.ts":
+/*!********************************************************!*\
+  !*** ./src/app/editor/shared/models/language.model.ts ***!
+  \********************************************************/
+/*! exports provided: LANGUAGES */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LANGUAGES", function() { return LANGUAGES; });
+var LANGUAGES = [
+    { extension: 'css', id: 'css' },
+    { extension: 'cs', id: 'csharp' },
+    { extension: 'js', id: 'javascript' },
+    { extension: 'ts', id: 'typescript' },
+    { extension: 'html', id: 'html' },
+    { extension: 'md', id: 'markdown' },
+    { extension: 'py', id: 'python' },
+    { extension: 'r', id: 'r' },
+    { extension: 'sql', id: 'sql' },
+    { extension: 'mysql', id: 'mysql' },
+    { extension: 'java', id: 'java' },
+    { extension: 'c', id: 'cpp' },
+    { extension: 'cpp', id: 'cpp' },
+    { extension: 'h', id: 'cpp' },
+    { extension: 'xml', id: 'xml' },
+    { extension: 'bat', id: 'bat' },
+    { extension: 'ini', id: 'ini' },
+    { extension: 'php', id: 'php' },
+    { extension: 'pl', id: 'pl' },
+    { extension: 'pltp', id: 'pl' }
+];
+
+
+/***/ }),
+
+/***/ "./src/app/editor/shared/models/monaco.model.ts":
+/*!******************************************************!*\
+  !*** ./src/app/editor/shared/models/monaco.model.ts ***!
+  \******************************************************/
+/*! exports provided: MONACO_LOADED, MONACO_CONFIG, onMonacoLoad */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MONACO_LOADED", function() { return MONACO_LOADED; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MONACO_CONFIG", function() { return MONACO_CONFIG; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "onMonacoLoad", function() { return onMonacoLoad; });
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+
+var MONACO_LOADED = new rxjs__WEBPACK_IMPORTED_MODULE_0__["Subject"]();
+var MONACO_CONFIG = {
+    baseUrl: '/static/filebrowser/app/assets',
+    defaultOptions: {
+        value: '',
+        theme: 'vs',
+        language: '',
+        renderWhitespace: 'all',
+        renderControlCharacters: true,
+        renderLineHighlight: true,
+        renderIndentGuides: true,
+        automaticLayout: true,
+        lineNumbers: 'on',
+        roundedSelection: true,
+        scrollBeyondLastLine: false,
+        scrollbar: {
+            verticalScrollbarSize: 7,
+            horizontalScrollbarSize: 7,
+        },
+        lightbulb: {
+            enabled: true
+        }
+    },
+    onMonacoLoad: onMonacoLoad
+};
+function onMonacoLoad() {
+    MONACO_LOADED.next(window.monaco);
+}
+
+
+/***/ }),
+
+/***/ "./src/app/editor/shared/models/schemas.model.ts":
+/*!*******************************************************!*\
+  !*** ./src/app/editor/shared/models/schemas.model.ts ***!
+  \*******************************************************/
+/*! exports provided: Schemas */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Schemas", function() { return Schemas; });
+var Schemas;
+(function (Schemas) {
+    /**
+     * A schema that is used for models that exist in memory
+     * only and that have no correspondence on a server or such.
+     */
+    Schemas.inMemory = 'inmemory';
+    /**
+     * A schema that is used for setting files
+     */
+    Schemas.vscode = 'vscode';
+    /**
+     * A schema that is used for internal private files
+     */
+    Schemas.internal = 'private';
+    /**
+     * A walk-through document.
+     */
+    Schemas.walkThrough = 'walkThrough';
+    /**
+     * An embedded code snippet.
+     */
+    Schemas.walkThroughSnippet = 'walkThroughSnippet';
+    Schemas.http = 'http';
+    Schemas.https = 'https';
+    Schemas.file = 'file';
+    Schemas.mailto = 'mailto';
+    Schemas.untitled = 'untitled';
+    Schemas.data = 'data';
+    Schemas.command = 'command';
+})(Schemas || (Schemas = {}));
+
+
+/***/ }),
+
+/***/ "./src/app/editor/shared/services/core/compiler.service.ts":
+/*!*****************************************************************!*\
+  !*** ./src/app/editor/shared/services/core/compiler.service.ts ***!
+  \*****************************************************************/
+/*! exports provided: CompilerService */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CompilerService", function() { return CompilerService; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+
+
+var CompilerService = /** @class */ (function () {
+    function CompilerService() {
+        this.state = {};
+    }
+    CompilerService.prototype.restoreState = function (resource) {
+        if (resource.path in this.state) {
+            return this.state[resource.path];
+        }
+        return undefined;
+    };
+    CompilerService.prototype.saveState = function (uri, state) {
+        this.state[uri.path] = state;
+    };
+    CompilerService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({ providedIn: 'root' })
+    ], CompilerService);
+    return CompilerService;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/editor/shared/services/core/editor.service.ts":
+/*!***************************************************************!*\
+  !*** ./src/app/editor/shared/services/core/editor.service.ts ***!
+  \***************************************************************/
+/*! exports provided: AbstractEditorService, EditorService */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AbstractEditorService", function() { return AbstractEditorService; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EditorService", function() { return EditorService; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var _models_editor_group_model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../models/editor-group.model */ "./src/app/editor/shared/models/editor-group.model.ts");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _resource_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
+/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
+/* harmony import */ var _models_filters_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+
+
+
+
+
+
+
+var AbstractEditorService = /** @class */ (function () {
+    function AbstractEditorService() {
+        this.groups = Object.create(null);
+        this.onGroupChanged = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
+    }
+    AbstractEditorService.prototype.addGroup = function (group) {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.groups[group.id()] = group;
+                        if (this.previewGroup) {
+                            this.previewGroup.closeAll();
+                        }
+                        this.previewGroup = group.onlyPreview() ? group : undefined;
+                        if (!this.previewGroup) return [3 /*break*/, 1];
+                        if (this.previewGroup.id() !== group.id()) {
+                            this.previewGroup.closeAll();
+                        }
+                        return [3 /*break*/, 4];
+                    case 1:
+                        if (!Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["openAsPreview"])(group.activeTab())) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.open(Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["asTab"])(group.activeTab().resource, true), true)];
+                    case 2:
+                        _a.sent();
+                        _a.label = 3;
+                    case 3:
+                        this.focus(group);
+                        _a.label = 4;
+                    case 4:
+                        this.onGroupChanged.next(this.listGroups());
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    };
+    AbstractEditorService.prototype.removeGroup = function (group) {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var newFocused;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.findGroup(group.id())) {
+                            throw new Error("The group '" + group.id() + "' is not found");
+                        }
+                        if (!group.hasFocus()) return [3 /*break*/, 2];
+                        newFocused = this.listGroups().find(function (g) { return g.id() !== group.id(); });
+                        if (!newFocused) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.addGroup(newFocused)];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        delete this.groups[group.id()];
+                        this.onGroupChanged.next(this.listGroups());
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    };
+    AbstractEditorService.prototype.focus = function (group) {
+        this.listGroups().forEach(function (item) {
+            item.focus(false);
+        });
+        group.focus(true);
+    };
+    AbstractEditorService.prototype.listGroups = function () {
+        var _this = this;
+        return Object.keys(this.groups).map(function (id) { return _this.groups[id]; });
+    };
+    AbstractEditorService.prototype.findGroup = function (id) {
+        return this.groups[id];
+    };
+    AbstractEditorService.prototype.subscribeChange = function (completion) {
+        return this.onGroupChanged.subscribe(completion);
+    };
+    AbstractEditorService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_3__["Injectable"])(),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
+    ], AbstractEditorService);
+    return AbstractEditorService;
+}());
+
+var EditorService = /** @class */ (function (_super) {
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](EditorService, _super);
+    function EditorService(resourceService, notification) {
+        var _this = _super.call(this) || this;
+        _this.resourceService = resourceService;
+        _this.notification = notification;
+        return _this;
+    }
+    EditorService.prototype.open = function (tab, sideBySide) {
+        var _this = this;
+        var group;
+        var groups = this.listGroups();
+        if (sideBySide || tab.preview) {
+            // tslint:disable-next-line: max-line-length
+            group = tab.preview ? (groups.find(function (g) { return g.onlyPreview(); }) || new _models_editor_group_model__WEBPACK_IMPORTED_MODULE_2__["EditorGroup"](this)) : new _models_editor_group_model__WEBPACK_IMPORTED_MODULE_2__["EditorGroup"](this);
+        }
+        else {
+            group = groups.find(function (g) { return g.someTab(function (t) { return t.resource.path === tab.resource.path; }); })
+                || groups.find(function (g) { return g.hasFocus() && !g.onlyPreview(); })
+                || groups.find(function (g) { return !g.onlyPreview(); }) || new _models_editor_group_model__WEBPACK_IMPORTED_MODULE_2__["EditorGroup"](this);
+        }
+        return group.open(tab).catch(function (error) {
+            _this.notification.logError(error);
+            return false;
+        });
+    };
+    EditorService.prototype.confirm = function (options) {
+        return this.notification.confirmAsync(options);
+    };
+    EditorService.prototype.openContent = function (resource) {
+        return this.resourceService.open(resource);
+    };
+    EditorService.prototype.saveContent = function (resource) {
+        return this.resourceService.save(resource);
+    };
+    EditorService.prototype.previewResource = function (resource) {
+        var _this = this;
+        var preview = tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"]({}, resource);
+        return this.resourceService.preview(preview).then(function () {
+            _this.open(Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["asTab"])(resource));
+            return preview;
+        }).catch(function (error) {
+            _this.notification.logError(error);
+            return null;
+        });
+    };
+    EditorService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_3__["Injectable"])({
+            providedIn: 'root'
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_resource_service__WEBPACK_IMPORTED_MODULE_4__["ResourceService"], src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_5__["NotificationService"]])
+    ], EditorService);
+    return EditorService;
+}(AbstractEditorService));
+
+
+
+/***/ }),
+
+/***/ "./src/app/editor/shared/services/core/git.service.ts":
+/*!************************************************************!*\
+  !*** ./src/app/editor/shared/services/core/git.service.ts ***!
+  \************************************************************/
+/*! exports provided: AbstractGitService, GitService */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AbstractGitService", function() { return AbstractGitService; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GitService", function() { return GitService; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
-/* harmony import */ var _editor_utils__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../editor.utils */ "./src/app/editor/editor.utils.ts");
-/* harmony import */ var _services_logging_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../services/logging.service */ "./src/app/editor/services/logging.service.ts");
+/* harmony import */ var _models_filters_model__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
 
 
 
 
 
-var GitService = /** @class */ (function () {
-    function GitService(http, logging) {
-        this.http = http;
-        this.logging = logging;
+var AbstractGitService = /** @class */ (function () {
+    function AbstractGitService() {
+    }
+    AbstractGitService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])()
+    ], AbstractGitService);
+    return AbstractGitService;
+}());
+
+var GitService = /** @class */ (function (_super) {
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](GitService, _super);
+    function GitService(http, notification) {
+        var _this = _super.call(this) || this;
+        _this.http = http;
+        _this.notification = notification;
         /** git repositories */
-        this.repos = [];
+        _this.repos = [];
+        return _this;
     }
     GitService.prototype.refresh = function () {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
@@ -2307,7 +2566,7 @@ var GitService = /** @class */ (function () {
                         Object.keys(response_1).forEach(function (key) {
                             var data = response_1[key];
                             _this.repos.push({
-                                name: Object(_editor_utils__WEBPACK_IMPORTED_MODULE_3__["basename"])(key),
+                                name: Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["basename"])(key),
                                 url: key,
                                 path: data.path,
                                 branch: data.branch,
@@ -2321,7 +2580,7 @@ var GitService = /** @class */ (function () {
                         return [3 /*break*/, 4];
                     case 3:
                         error_1 = _b.sent();
-                        this.logging.error(error_1);
+                        this.notification.logError(error_1);
                         return [3 /*break*/, 4];
                     case 4:
                         this.runningTask = false;
@@ -2340,7 +2599,7 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(_editor_utils__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
+                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
                         params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'git_show').set('path', item.path);
                         return [4 /*yield*/, this.http.get('/filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
                     case 2:
@@ -2348,7 +2607,7 @@ var GitService = /** @class */ (function () {
                         return [3 /*break*/, 4];
                     case 3:
                         error_2 = _b.sent();
-                        this.logging.error(error_2);
+                        this.notification.logError(error_2);
                         return [3 /*break*/, 4];
                     case 4:
                         this.runningTask = false;
@@ -2368,17 +2627,17 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(_editor_utils__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
+                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
                         params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'git_status').set('path', item.path);
                         return [4 /*yield*/, this.http.get('/filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
                     case 2:
                         response = _b.sent();
-                        this.logging.info(response);
+                        this.notification.logInfo(response);
                         success = true;
                         return [3 /*break*/, 4];
                     case 3:
                         error_3 = _b.sent();
-                        this.logging.error(error_3);
+                        this.notification.logError(error_3);
                         return [3 /*break*/, 4];
                     case 4:
                         this.runningTask = false;
@@ -2398,18 +2657,18 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(_editor_utils__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
+                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
                         params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'git_add').set('path', item.path);
                         return [4 /*yield*/, this.http.get('/filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
                     case 2:
                         response = _b.sent();
-                        this.logging.info(response);
+                        this.notification.logInfo(response);
                         this.refresh();
                         success = true;
                         return [3 /*break*/, 4];
                     case 3:
                         error_4 = _b.sent();
-                        this.logging.error(error_4);
+                        this.notification.logError(error_4);
                         return [3 /*break*/, 4];
                     case 4:
                         this.runningTask = false;
@@ -2429,18 +2688,18 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(_editor_utils__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
+                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
                         params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'git_checkout').set('path', item.path);
                         return [4 /*yield*/, this.http.get('/filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
                     case 2:
                         response = _b.sent();
-                        this.logging.info(response);
+                        this.notification.logInfo(response);
                         this.refresh();
                         success = true;
                         return [3 /*break*/, 4];
                     case 3:
                         error_5 = _b.sent();
-                        this.logging.error(error_5);
+                        this.notification.logError(error_5);
                         return [3 /*break*/, 4];
                     case 4:
                         this.runningTask = false;
@@ -2460,20 +2719,20 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(_editor_utils__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
-                        Object(_editor_utils__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(commit, 'commit');
+                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
+                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(commit, 'commit');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         data = { 'name': 'git_commit', 'path': item.path, commit: commit };
                         return [4 /*yield*/, this.http.post('/filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise()];
                     case 2:
                         response = _b.sent();
-                        this.logging.info(response);
+                        this.notification.logInfo(response);
                         this.refresh();
                         success = true;
                         return [3 /*break*/, 4];
                     case 3:
                         error_6 = _b.sent();
-                        this.logging.error(error_6);
+                        this.notification.logError(error_6);
                         return [3 /*break*/, 4];
                     case 4:
                         this.runningTask = false;
@@ -2483,8 +2742,6 @@ var GitService = /** @class */ (function () {
         });
     };
     GitService.prototype.push = function (item, username, password) {
-        if (username === void 0) { username = ''; }
-        if (password === void 0) { password = ''; }
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
             var success, headers, data, response, error_7;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
@@ -2495,19 +2752,19 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(_editor_utils__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
+                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         data = { 'name': 'git_push', 'path': item.path, username: username, password: password };
                         return [4 /*yield*/, this.http.post('/filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise()];
                     case 2:
                         response = _b.sent();
-                        this.logging.info(response);
+                        this.notification.logInfo(response);
                         this.refresh();
                         success = true;
                         return [3 /*break*/, 4];
                     case 3:
                         error_7 = _b.sent();
-                        this.logging.error(error_7);
+                        this.notification.logError(error_7);
                         return [3 /*break*/, 4];
                     case 4:
                         this.runningTask = false;
@@ -2517,8 +2774,6 @@ var GitService = /** @class */ (function () {
         });
     };
     GitService.prototype.pull = function (item, username, password) {
-        if (username === void 0) { username = ''; }
-        if (password === void 0) { password = ''; }
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
             var success, headers, data, response, error_8;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
@@ -2529,18 +2784,18 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(_editor_utils__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
+                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         data = { 'name': 'git_pull', 'path': item.path, username: username, password: password };
                         return [4 /*yield*/, this.http.post('/filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise()];
                     case 2:
                         response = _b.sent();
-                        this.logging.info(response);
+                        this.notification.logInfo(response);
                         success = true;
                         return [3 /*break*/, 4];
                     case 3:
                         error_8 = _b.sent();
-                        this.logging.error(error_8);
+                        this.notification.logError(error_8);
                         return [3 /*break*/, 4];
                     case 4:
                         this.runningTask = false;
@@ -2550,9 +2805,6 @@ var GitService = /** @class */ (function () {
         });
     };
     GitService.prototype.clone = function (parent, url, username, password, destination) {
-        if (username === void 0) { username = ''; }
-        if (password === void 0) { password = ''; }
-        if (destination === void 0) { destination = ''; }
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
             var success, headers, data, error_9;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
@@ -2563,9 +2815,9 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(_editor_utils__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(parent, 'parent');
-                        Object(_editor_utils__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(url, 'url');
-                        Object(_editor_utils__WEBPACK_IMPORTED_MODULE_3__["assert"])(Object(_editor_utils__WEBPACK_IMPORTED_MODULE_3__["isHome"])(parent), 'clone operation is applicable to home only');
+                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(parent, 'parent');
+                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(url, 'url');
+                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["assert"])(Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["isHome"])(parent), 'clone operation is applicable to home only');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         data = {
                             'name': 'git_clone',
@@ -2578,12 +2830,12 @@ var GitService = /** @class */ (function () {
                         return [4 /*yield*/, this.http.post('/filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise()];
                     case 2:
                         _b.sent();
-                        this.logging.info(url + ' cloned at ' + Object(_editor_utils__WEBPACK_IMPORTED_MODULE_3__["basename"])(url));
+                        this.notification.logInfo(url + ' cloned at ' + Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["basename"])(url));
                         success = true;
                         return [3 /*break*/, 4];
                     case 3:
                         error_9 = _b.sent();
-                        this.logging.error(error_9);
+                        this.notification.logError(error_9);
                         return [3 /*break*/, 4];
                     case 4:
                         this.runningTask = false;
@@ -2596,90 +2848,142 @@ var GitService = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
             providedIn: 'root'
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"], _services_logging_service__WEBPACK_IMPORTED_MODULE_4__["LoggingService"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"], src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_4__["NotificationService"]])
     ], GitService);
     return GitService;
-}());
+}(AbstractGitService));
 
 
 
 /***/ }),
 
-/***/ "./src/app/editor/services/logging.service.ts":
-/*!****************************************************!*\
-  !*** ./src/app/editor/services/logging.service.ts ***!
-  \****************************************************/
-/*! exports provided: LoggingService */
+/***/ "./src/app/editor/shared/services/core/opener.service.ts":
+/*!***************************************************************!*\
+  !*** ./src/app/editor/shared/services/core/opener.service.ts ***!
+  \***************************************************************/
+/*! exports provided: AbstractOpenerService, OpenerService */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LoggingService", function() { return LoggingService; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AbstractOpenerService", function() { return AbstractOpenerService; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OpenerService", function() { return OpenerService; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var _editor_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./editor.service */ "./src/app/editor/shared/services/core/editor.service.ts");
+/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
+/* harmony import */ var _models_schemas_model__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../models/schemas.model */ "./src/app/editor/shared/models/schemas.model.ts");
+/* harmony import */ var _resource_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
+/* harmony import */ var _models_filters_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
 
 
 
-var LoggingService = /** @class */ (function () {
-    function LoggingService() {
-        this.addEvent = new rxjs__WEBPACK_IMPORTED_MODULE_2__["Subject"]();
-        this.openEvent = new rxjs__WEBPACK_IMPORTED_MODULE_2__["Subject"]();
-        this._size = 0;
+
+
+
+
+var AbstractOpenerService = /** @class */ (function () {
+    function AbstractOpenerService() {
     }
-    LoggingService.prototype.message = function (message, type) {
-        var msg = message;
-        if (typeof message !== 'string') {
-            msg = message.error;
-            if (!msg) {
-                if (message.stack) {
-                    msg = message.stack.split('\n').join('<br/>');
-                }
-                else {
-                    msg = JSON.stringify(message);
-                }
-            }
-        }
-        var item = { message: msg, type: type };
-        this.addEvent.next(item);
-        this._size++;
-    };
-    LoggingService.prototype.info = function (message) {
-        this.message(message, 'info');
-    };
-    LoggingService.prototype.warning = function (message) {
-        this.message(message, 'warning');
-    };
-    LoggingService.prototype.error = function (message) {
-        this.message(message, 'error');
-    };
-    LoggingService.prototype.clear = function () {
-        this._size = 0;
-    };
-    Object.defineProperty(LoggingService.prototype, "size", {
-        get: function () {
-            return this._size;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    LoggingService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
-            providedIn: 'root'
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
-    ], LoggingService);
-    return LoggingService;
+    AbstractOpenerService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])()
+    ], AbstractOpenerService);
+    return AbstractOpenerService;
 }());
+
+var OpenerService = /** @class */ (function (_super) {
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](OpenerService, _super);
+    function OpenerService(editorService, resourceService, notificationService) {
+        var _this = _super.call(this) || this;
+        _this.editorService = editorService;
+        _this.resourceService = resourceService;
+        _this.notificationService = notificationService;
+        return _this;
+    }
+    OpenerService.prototype.openURI = function (resource, openToSide) {
+        if (openToSide === void 0) { openToSide = false; }
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var scheme, path, query, fragment, position, match, target;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                scheme = resource.scheme, path = resource.path, query = resource.query, fragment = resource.fragment;
+                if (!scheme) {
+                    return [2 /*return*/, Promise.resolve(false)];
+                }
+                if (scheme === _models_schemas_model__WEBPACK_IMPORTED_MODULE_4__["Schemas"].http || scheme === _models_schemas_model__WEBPACK_IMPORTED_MODULE_4__["Schemas"].https || scheme === _models_schemas_model__WEBPACK_IMPORTED_MODULE_4__["Schemas"].mailto) {
+                    // open http or default mail application
+                    console.log(scheme, path);
+                    this.openURL(resource.toString(true));
+                    return [2 /*return*/, Promise.resolve(true)];
+                }
+                match = /^L?(\d+)(?:,(\d+))?/.exec(fragment);
+                if (match) {
+                    // support file:///some/file.js#73,84
+                    // support file:///some/file.js#L73
+                    position = {
+                        // tslint:disable-next-line: radix
+                        line: parseInt(match[1]),
+                        // tslint:disable-next-line: radix
+                        column: match[2] ? parseInt(match[2]) : 1
+                    };
+                    // remove fragment
+                    resource = resource.with({ fragment: '' });
+                }
+                target = this.resourceService.find(resource.path);
+                if (!target) {
+                    return [2 /*return*/, Promise.reject(new Error('Unable to open \'' + resource.path + '\': File not found'))];
+                }
+                return [2 /*return*/, this.editorService.open({
+                        uri: resource,
+                        resource: target,
+                        position: position,
+                        title: target.name,
+                        icon: target.icon,
+                    }, openToSide)];
+            });
+        });
+    };
+    OpenerService.prototype.openURL = function (url, openInNewTab) {
+        if (openInNewTab === void 0) { openInNewTab = true; }
+        if (openInNewTab) {
+            window.open(url, '_blank');
+        }
+        else {
+            window.open(url);
+        }
+    };
+    OpenerService.prototype.openReference = function (base, target) {
+        var _this = this;
+        if (target.scheme === _models_schemas_model__WEBPACK_IMPORTED_MODULE_4__["Schemas"].http || target.scheme === _models_schemas_model__WEBPACK_IMPORTED_MODULE_4__["Schemas"].https || target.scheme === _models_schemas_model__WEBPACK_IMPORTED_MODULE_4__["Schemas"].mailto) {
+            this.openURL(target.toString(true));
+        }
+        else {
+            var resource = this.resourceService.find(base.path);
+            this.resourceService.findReference(resource, target.path).then(function (reference) {
+                _this.openURI(Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["asURI"])(reference));
+            }).catch(function (error) {
+                _this.notificationService.logError(error);
+            });
+        }
+    };
+    OpenerService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
+            providedIn: 'root',
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_editor_service__WEBPACK_IMPORTED_MODULE_2__["EditorService"],
+            _resource_service__WEBPACK_IMPORTED_MODULE_5__["ResourceService"],
+            src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_3__["NotificationService"]])
+    ], OpenerService);
+    return OpenerService;
+}(AbstractOpenerService));
 
 
 
 /***/ }),
 
-/***/ "./src/app/editor/services/resource.service.ts":
-/*!*****************************************************!*\
-  !*** ./src/app/editor/services/resource.service.ts ***!
-  \*****************************************************/
+/***/ "./src/app/editor/shared/services/core/resource.service.ts":
+/*!*****************************************************************!*\
+  !*** ./src/app/editor/shared/services/core/resource.service.ts ***!
+  \*****************************************************************/
 /*! exports provided: ResourceService */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -2689,11 +2993,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
-/* harmony import */ var _models_resource_model__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../models/resource.model */ "./src/app/editor/models/resource.model.ts");
-/* harmony import */ var _editor_utils__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../editor.utils */ "./src/app/editor/editor.utils.ts");
-/* harmony import */ var _git_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./git.service */ "./src/app/editor/services/git.service.ts");
-/* harmony import */ var _task_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./task.service */ "./src/app/editor/services/task.service.ts");
-
+/* harmony import */ var _git_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./git.service */ "./src/app/editor/shared/services/core/git.service.ts");
+/* harmony import */ var _task_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./task.service */ "./src/app/editor/shared/services/core/task.service.ts");
+/* harmony import */ var _models_filters_model__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
 
 
 
@@ -2705,10 +3007,11 @@ var ResourceService = /** @class */ (function () {
         this.http = http;
         this.task = task;
         this.git = git;
-        this.previewFunctions = {};
+        this.previewProviders = {};
         this.resources = [];
-        this.previewFunctions = {
+        this.previewProviders = {
             'pl': this.previewPL,
+            'svg': this.previewSVG,
         };
     }
     /**
@@ -2728,87 +3031,116 @@ var ResourceService = /** @class */ (function () {
         return this.add(resource, 'folder');
     };
     /**
-     * Cancels the editition or the creation of the resource depending to it's state.
+     * Cancels the edition or the creation of the resource depending to it's state.
      * - If the resource exists, the function will reset it's name to the name before the edition
      * - Else the function will cancel the creation of the resource by removing it to the local cache.
      * @param resource the resource (resource.editing must be == true)
      */
-    ResourceService.prototype.cancelOrRemove = function (resource) {
-        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["assert"](resource.editing, 'resource should be in editing state');
-        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["assert"](_editor_utils__WEBPACK_IMPORTED_MODULE_4__["canWrite"](resource), 'permission denied');
-        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["assert"](!_editor_utils__WEBPACK_IMPORTED_MODULE_4__["isRoot"](resource), 'permission denied');
-        var path = resource.path;
-        var success = false;
-        if (resource.nameBeforeEdition) {
-            resource.name = resource.nameBeforeEdition;
-            success = true;
-        }
-        else {
-            resource.path += '/' + resource.name;
-            success = this.remove(resource.path);
-            if (!success) {
-                resource.path = path;
-            }
-        }
-        if (success) {
-            delete resource.editing;
-            delete resource.parentRef;
-            delete resource.nameBeforeEdition;
-        }
-        return success;
+    ResourceService.prototype.cancel = function (resource) {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var path, success;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                path = resource.path;
+                success = false;
+                if (resource.nameBefore) {
+                    resource.name = resource.nameBefore;
+                    success = true;
+                }
+                else {
+                    resource.path += '/' + resource.name;
+                    success = this.remove(resource.path);
+                    if (!success) {
+                        resource.path = path;
+                    }
+                }
+                if (success) {
+                    delete resource.renaming;
+                    delete resource.parentRef;
+                    delete resource.nameBefore;
+                }
+                return [2 /*return*/, success];
+            });
+        });
     };
     /**
-     * Creates or renames the resource if needed.
-     * @param resource the resource object to creates.
+     * Renames the resource on the server.
+     * @param resource the resource object to rename.
      * @returns Promise<boolean> rejected with an error or resolved with true.
      */
-    ResourceService.prototype.createOrRename = function (resource) {
+    ResourceService.prototype.rename = function (resource) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var _this = this;
+            var success, data, error_1;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve, reject) {
-                        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["checkName"](resource.name);
-                        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["assert"](_editor_utils__WEBPACK_IMPORTED_MODULE_4__["canWrite"](resource.parentRef), 'permission denied');
-                        if (resource.nameBeforeEdition && resource.name === resource.nameBeforeEdition) {
-                            delete resource.editing;
-                            delete resource.parentRef;
-                            delete resource.nameBeforeEdition;
-                            resolve(true);
-                            return;
-                        }
-                        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["assert"](!resource.parentRef.children.find(function (it) {
-                            return it.name === resource.name && it.path !== resource.path;
-                        }), 'resource name already exists !');
-                        var data = {
+                switch (_a.label) {
+                    case 0:
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](resource.renaming, 'resource should be in renaming state');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_5__["canWrite"](resource.parentRef), 'permission denied');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["checkName"](resource.name);
+                        success = false;
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 6, , 7]);
+                        this.task.emitTaskEvent(true, 'rename resource');
+                        if (!(resource.name === resource.nameBefore)) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.cancel(resource)];
+                    case 2:
+                        success = _a.sent();
+                        return [3 /*break*/, 5];
+                    case 3:
+                        data = {
+                            name: 'rename_resource',
+                            path: resource.path,
+                            target: resource.name,
+                        };
+                        return [4 /*yield*/, this.endEdition(data, resource)];
+                    case 4:
+                        success = _a.sent();
+                        _a.label = 5;
+                    case 5: return [3 /*break*/, 7];
+                    case 6:
+                        error_1 = _a.sent();
+                        this.task.emitTaskEvent(false);
+                        throw error_1;
+                    case 7:
+                        this.task.emitTaskEvent(false);
+                        return [2 /*return*/, success];
+                }
+            });
+        });
+    };
+    /**
+     * creates the resource on the server.
+     * @param resource the resource object to create.
+     * @returns Promise<boolean> rejected with an error or resolved with true.
+     */
+    ResourceService.prototype.create = function (resource) {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var data, error_2;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.task.emitTaskEvent(true, 'create resource');
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["checkName"](resource.name);
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_5__["canWrite"](resource.parentRef), 'permission denied');
+                        data = {
                             name: 'create_resource',
                             path: resource.path + '/' + resource.name,
                             content: resource.content,
                             type: resource.type
                         };
-                        if (resource.nameBeforeEdition) {
-                            data.name = 'rename_resource';
-                            data.path = resource.path;
-                            data['target'] = resource.name;
-                            delete data.content;
-                            delete data.type;
-                        }
-                        _this.task.emitTaskEvent(true, 'create');
-                        var headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
-                        _this.http.post('filebrowser/option', data, { headers: headers }).toPromise().then(function (response) {
-                            resource.path = response['path'];
-                            resource.icon = response['icon'];
-                            _this.sort(resource.parentRef.children);
-                            delete resource.editing;
-                            delete resource.parentRef;
-                            delete resource.nameBeforeEdition;
-                            _this.git.refresh();
-                            _this.task.emitTaskEvent(false, 'create');
-                            resolve(true);
-                        }).catch(function (error) {
-                            _this.task.emitTaskEvent(false, 'create');
-                            reject(error);
-                        });
-                    })];
+                        return [4 /*yield*/, this.endEdition(data, resource)];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/, true];
+                    case 3:
+                        error_2 = _a.sent();
+                        this.task.emitTaskEvent(false, 'create resource');
+                        throw error_2;
+                    case 4: return [2 /*return*/];
+                }
             });
         });
     };
@@ -2819,14 +3151,14 @@ var ResourceService = /** @class */ (function () {
      */
     ResourceService.prototype.delete = function (resource) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var headers, error_1;
+            var headers, error_3;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["requireNonNull"](resource, 'resource');
-                        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["assert"](_editor_utils__WEBPACK_IMPORTED_MODULE_4__["canWrite"](resource), 'permission denied');
-                        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["assert"](!_editor_utils__WEBPACK_IMPORTED_MODULE_4__["isRoot"](resource), 'permission denied');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["requireNonNull"](resource, 'resource');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_5__["canWrite"](resource), 'permission denied');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](!_models_filters_model__WEBPACK_IMPORTED_MODULE_5__["isRoot"](resource), 'permission denied');
                         this.task.emitTaskEvent(true, 'delete');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         return [4 /*yield*/, this.http.post('filebrowser/option', {
@@ -2842,9 +3174,9 @@ var ResourceService = /** @class */ (function () {
                         this.git.refresh();
                         return [2 /*return*/, false];
                     case 2:
-                        error_1 = _a.sent();
+                        error_3 = _a.sent();
                         this.task.emitTaskEvent(false, 'delete');
-                        throw error_1;
+                        throw error_3;
                     case 3: return [2 /*return*/];
                 }
             });
@@ -2857,7 +3189,10 @@ var ResourceService = /** @class */ (function () {
      */
     ResourceService.prototype.find = function (path) {
         path = path.trim();
-        return this.findPredicate(function (item) { return item.path === path; });
+        if (!path.startsWith('/')) {
+            path = '/' + path;
+        }
+        return this.findPredicate(function (item) { return '/' + item.path === path; });
     };
     /**
      * Finds the resource which meets the given predicate.
@@ -2930,7 +3265,7 @@ var ResourceService = /** @class */ (function () {
     };
     ResourceService.prototype.loadPLTP = function (resource) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var response, params, error_2;
+            var response, params, error_4;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -2943,9 +3278,9 @@ var ResourceService = /** @class */ (function () {
                         this.task.emitTaskEvent(false, 'load pltp');
                         return [3 /*break*/, 3];
                     case 2:
-                        error_2 = _a.sent();
+                        error_4 = _a.sent();
                         this.task.emitTaskEvent(false, 'load pltp');
-                        throw error_2;
+                        throw error_4;
                     case 3: return [2 /*return*/, response];
                 }
             });
@@ -2953,7 +3288,7 @@ var ResourceService = /** @class */ (function () {
     };
     ResourceService.prototype.reloadPLTP = function (resource, activityId) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var response, data, headers, error_3;
+            var response, data, headers, error_5;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -2971,9 +3306,9 @@ var ResourceService = /** @class */ (function () {
                         this.task.emitTaskEvent(false, 'reload pltp');
                         return [3 /*break*/, 3];
                     case 2:
-                        error_3 = _a.sent();
+                        error_5 = _a.sent();
                         this.task.emitTaskEvent(false, 'reload pltp');
-                        throw error_3;
+                        throw error_5;
                     case 3: return [2 /*return*/, response];
                 }
             });
@@ -2987,16 +3322,16 @@ var ResourceService = /** @class */ (function () {
      */
     ResourceService.prototype.move = function (src, dst) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var resource, error_4;
+            var resource, error_6;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
                         this.task.emitTaskEvent(true, 'move');
-                        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["requireNonNull"](src, 'src');
-                        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["requireNonNull"](dst, 'dst');
-                        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["assert"](_editor_utils__WEBPACK_IMPORTED_MODULE_4__["canWrite"](dst), 'permission denied');
-                        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["assert"](_editor_utils__WEBPACK_IMPORTED_MODULE_4__["isFolder"](dst), 'destination must be a directory');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["requireNonNull"](src, 'src');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["requireNonNull"](dst, 'dst');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_5__["canWrite"](dst), 'permission denied');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_5__["isFolder"](dst), 'destination must be a directory');
                         resource = void 0;
                         if (!('size' in src)) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.moveFile(src, dst)];
@@ -3015,9 +3350,9 @@ var ResourceService = /** @class */ (function () {
                         this.git.refresh();
                         return [2 /*return*/, true];
                     case 5:
-                        error_4 = _a.sent();
+                        error_6 = _a.sent();
                         this.task.emitTaskEvent(false, 'move');
-                        throw error_4;
+                        throw error_6;
                     case 6: return [2 /*return*/];
                 }
             });
@@ -3030,34 +3365,44 @@ var ResourceService = /** @class */ (function () {
      */
     ResourceService.prototype.save = function (resource) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var headers, error_5;
+            var headers, error_7;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 2, , 3]);
+                        if (!_models_filters_model__WEBPACK_IMPORTED_MODULE_5__["fromServer"](resource)) {
+                            return [2 /*return*/, true];
+                        }
+                        if (!resource.changed) {
+                            return [2 /*return*/, true];
+                        }
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
                         this.task.emitTaskEvent(true, 'save');
-                        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["requireNonNull"](resource, 'resource');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["requireNonNull"](resource, 'resource');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         return [4 /*yield*/, this.http.post('filebrowser/option', {
                                 name: 'update_resource', path: resource.path, content: resource.content
                             }, { headers: headers }).toPromise()];
-                    case 1:
+                    case 2:
                         _a.sent();
+                        resource.changed = false;
+                        resource.lastContent = resource.content;
                         this.task.emitTaskEvent(false, 'save');
                         this.git.refresh();
                         return [2 /*return*/, true];
-                    case 2:
-                        error_5 = _a.sent();
+                    case 3:
+                        error_7 = _a.sent();
                         this.task.emitTaskEvent(false, 'save');
-                        throw error_5;
-                    case 3: return [2 /*return*/];
+                        throw error_7;
+                    case 4: return [2 /*return*/];
                 }
             });
         });
     };
     ResourceService.prototype.findReference = function (resource, path) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var params, response, error_6;
+            var params, response, error_8;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -3073,9 +3418,9 @@ var ResourceService = /** @class */ (function () {
                         this.task.emitTaskEvent(false, 'resolve path');
                         return [2 /*return*/, this.find(response)];
                     case 2:
-                        error_6 = _a.sent();
+                        error_8 = _a.sent();
                         this.task.emitTaskEvent(false, 'resolve path');
-                        throw error_6;
+                        throw error_8;
                     case 3: return [2 /*return*/];
                 }
             });
@@ -3083,14 +3428,14 @@ var ResourceService = /** @class */ (function () {
     };
     ResourceService.prototype.compilePL = function (resource) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var response, data, headers, error_7;
+            var response, data, headers, error_9;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         this.task.emitTaskEvent(true, 'compilation');
-                        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["requireNonNull"](resource, 'resource');
-                        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["assert"](_editor_utils__WEBPACK_IMPORTED_MODULE_4__["isPl"](resource), 'pl resource is expected');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["requireNonNull"](resource, 'resource');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_5__["isPl"](resource), 'pl resource is expected');
                         data = {
                             'name': 'compile_pl',
                             'path': resource.path,
@@ -3101,9 +3446,9 @@ var ResourceService = /** @class */ (function () {
                         response = _a.sent();
                         return [3 /*break*/, 3];
                     case 2:
-                        error_7 = _a.sent();
+                        error_9 = _a.sent();
                         this.task.emitTaskEvent(false, 'compilation');
-                        throw error_7;
+                        throw error_9;
                     case 3:
                         this.task.emitTaskEvent(false, 'compilation');
                         return [2 /*return*/, response];
@@ -3118,43 +3463,41 @@ var ResourceService = /** @class */ (function () {
      */
     ResourceService.prototype.open = function (resource) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var _this = this;
+            var params, response, error_10;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve, reject) {
-                        _this.selection = resource;
+                switch (_a.label) {
+                    case 0:
+                        if (!_models_filters_model__WEBPACK_IMPORTED_MODULE_5__["fromServer"](resource)) {
+                            return [2 /*return*/, true];
+                        }
+                        this.selection = resource;
                         if (resource.type === 'folder') {
                             resource.expanded = !resource.expanded;
-                            resolve(false);
+                            return [2 /*return*/, false];
                         }
-                        else {
-                            _this.task.emitTaskEvent(true, 'open');
-                            if ((resource.content || resource.image) && !resource.dirty) {
-                                _this.task.emitTaskEvent(false, 'open');
-                                resolve(true);
-                            }
-                            else {
-                                var params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'get_resource').set('path', resource.path);
-                                _this.http.get('filebrowser/option', { params: params }).toPromise().then(function (response) {
-                                    _this.task.emitTaskEvent(false, 'open');
-                                    resource.content = response['content'];
-                                    resource.image = response['image'];
-                                    resource.changed = false;
-                                    resource.dirty = false;
-                                    Object(_models_resource_model__WEBPACK_IMPORTED_MODULE_3__["resourceInit"])(resource);
-                                    resolve(true);
-                                }).catch(function (error) {
-                                    _this.task.emitTaskEvent(false, 'open');
-                                    if (error.error && error.error.includes('codec can\'t decode')) {
-                                        var msg = ' is not displayed in the editor because it is either binary or uses an unsupported text encoding.';
-                                        reject(resource.name + msg);
-                                    }
-                                    else {
-                                        reject(error);
-                                    }
-                                });
-                            }
+                        if (resource.content && !resource.dirty) {
+                            return [2 /*return*/, true];
                         }
-                    })];
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        this.task.emitTaskEvent(true, 'open');
+                        params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'get_resource').set('path', resource.path);
+                        return [4 /*yield*/, this.http.get('filebrowser/option', { params: params }).toPromise()];
+                    case 2:
+                        response = _a.sent();
+                        resource.content = resource.lastContent = response['content'];
+                        resource.meta = response['meta'];
+                        resource.changed = false;
+                        resource.dirty = false;
+                        this.task.emitTaskEvent(false, 'open');
+                        return [2 /*return*/, true];
+                    case 3:
+                        error_10 = _a.sent();
+                        this.task.emitTaskEvent(false, 'open');
+                        throw error_10;
+                    case 4: return [2 /*return*/];
+                }
             });
         });
     };
@@ -3169,18 +3512,18 @@ var ResourceService = /** @class */ (function () {
     /**
      * Loads the preview content of the resource.
      * @param resource the resource to preview.
-     * @returns Promise<boolean> resolved with true or false and rejected with an error
+     * @returns Promise<Resource> resolved with the resource
      */
     ResourceService.prototype.preview = function (resource) {
         var _this = this;
         return new Promise(function (resolve, reject) {
             _this.task.emitTaskEvent(true, 'preview');
-            var ext = _editor_utils__WEBPACK_IMPORTED_MODULE_4__["extensionOf"](resource);
-            var action = _this.previewFunctions[ext];
+            var ext = _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["extension"](resource);
+            var action = _this.previewProviders[ext];
             action(resource, _this).then(function (response) {
                 _this.task.emitTaskEvent(false, 'preview');
-                resource.state.preview = response.preview;
-                resolve(true);
+                resource.meta.html = response.preview;
+                resolve(resource);
             }).catch(function (error) {
                 _this.task.emitTaskEvent(false, 'preview');
                 reject(error);
@@ -3220,12 +3563,36 @@ var ResourceService = /** @class */ (function () {
             });
         });
     };
+    ResourceService.prototype.endEdition = function (data, resource) {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var headers, response;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
+                        return [4 /*yield*/, this.http.post('filebrowser/option', data, { headers: headers }).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        resource.path = response['path'];
+                        resource.icon = response['icon'];
+                        this.sort(resource.parentRef.children);
+                        resource.renaming = false;
+                        resource.creating = false;
+                        resource.parentRef = undefined;
+                        resource.nameBefore = undefined;
+                        this.git.refresh();
+                        this.task.emitTaskEvent(false, 'create resource');
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    };
     ResourceService.prototype.add = function (resource, type) {
-        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["assert"](resource.type === 'folder', 'resource.type must be folder');
+        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](resource.type === 'folder', 'resource.type must be folder');
         resource.children = resource.children || [];
-        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["assert"](resource.children.every(function (e) { return !e.editing; }), 'cannot edit multiple resources');
+        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](resource.children.every(function (e) { return !e.renaming; }), 'cannot edit multiple resources');
         resource.expanded = true;
-        var newResource = tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"]({}, resource, { editing: true, name: '', type: type, icon: 'fas fa-' + type, children: [], parent: resource.path, parentRef: resource });
+        var newResource = tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"]({}, resource, { creating: true, name: '', type: type, icon: 'fas fa-' + type, children: [], parent: resource.path, parentRef: resource });
         resource.children.push(newResource);
         return newResource;
     };
@@ -3235,10 +3602,10 @@ var ResourceService = /** @class */ (function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["requireNonNull"](src.path, 'src.path');
-                        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["requireNonNull"](dst.path, 'dst.path');
-                        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["assert"](src.path !== dst.path, 'cannot move the resource to the same path');
-                        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["assert"](!_editor_utils__WEBPACK_IMPORTED_MODULE_4__["isRoot"](src), 'cannot move a root resource');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["requireNonNull"](src.path, 'src.path');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["requireNonNull"](dst.path, 'dst.path');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](src.path !== dst.path, 'cannot move the resource to the same path');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](!_models_filters_model__WEBPACK_IMPORTED_MODULE_5__["isRoot"](src), 'cannot move a root resource');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         return [4 /*yield*/, this.http.post('filebrowser/option', {
                                 name: 'move_resource',
@@ -3263,9 +3630,9 @@ var ResourceService = /** @class */ (function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["requireNonNull"](src.name, 'src.name');
-                        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["requireNonNull"](dst.path, 'dst.path');
-                        _editor_utils__WEBPACK_IMPORTED_MODULE_4__["checkName"](src.name);
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["requireNonNull"](src.name, 'src.name');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["requireNonNull"](dst.path, 'dst.path');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["checkName"](src.name);
                         formData = new FormData();
                         formData.append('file', src, src.name);
                         formData.append('path', dst.path);
@@ -3278,21 +3645,11 @@ var ResourceService = /** @class */ (function () {
                         newRes = this.addFile(dst);
                         newRes.path += '/' + src.name;
                         newRes.name = src.name;
-                        delete newRes.editing;
+                        delete newRes.renaming;
                         return [2 /*return*/, newRes];
                 }
             });
         });
-    };
-    ResourceService.prototype.previewPL = function (resource, service) {
-        var data = {
-            'name': 'preview_pl',
-            'path': resource.path,
-            'content': resource.content,
-            'requested_action': 'preview'
-        };
-        var headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
-        return service.http.post('filebrowser/option', data, { headers: headers }).toPromise();
     };
     ResourceService.prototype.remove = function (path) {
         function remove_recursive(items) {
@@ -3327,13 +3684,26 @@ var ResourceService = /** @class */ (function () {
             }
         }
     };
+    ResourceService.prototype.previewPL = function (resource, service) {
+        var data = {
+            'name': 'preview_pl',
+            'path': resource.path,
+            'content': resource.content,
+            'requested_action': 'preview'
+        };
+        var headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
+        return service.http.post('filebrowser/option', data, { headers: headers }).toPromise();
+    };
+    ResourceService.prototype.previewSVG = function (resource) {
+        return Promise.resolve({ preview: resource.content });
+    };
     ResourceService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
             providedIn: 'root'
         }),
         tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"],
-            _task_service__WEBPACK_IMPORTED_MODULE_6__["TaskService"],
-            _git_service__WEBPACK_IMPORTED_MODULE_5__["GitService"]])
+            _task_service__WEBPACK_IMPORTED_MODULE_4__["TaskService"],
+            _git_service__WEBPACK_IMPORTED_MODULE_3__["GitService"]])
     ], ResourceService);
     return ResourceService;
 }());
@@ -3342,10 +3712,10 @@ var ResourceService = /** @class */ (function () {
 
 /***/ }),
 
-/***/ "./src/app/editor/services/task.service.ts":
-/*!*************************************************!*\
-  !*** ./src/app/editor/services/task.service.ts ***!
-  \*************************************************/
+/***/ "./src/app/editor/shared/services/core/task.service.ts":
+/*!*************************************************************!*\
+  !*** ./src/app/editor/shared/services/core/task.service.ts ***!
+  \*************************************************************/
 /*! exports provided: TaskService */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -3400,6 +3770,7 @@ var TaskService = /** @class */ (function () {
         this.onDeleted.next(resource);
     };
     TaskService.prototype.emitTaskEvent = function (running, taskName) {
+        if (taskName === void 0) { taskName = null; }
         this._running = running;
         this._taskName = taskName;
         this.onRunningTask.next(running);
@@ -3429,6 +3800,303 @@ var TaskService = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/app/editor/shared/services/monaco/monaco.service.ts":
+/*!*****************************************************************!*\
+  !*** ./src/app/editor/shared/services/monaco/monaco.service.ts ***!
+  \*****************************************************************/
+/*! exports provided: PL, MonacoService */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PL", function() { return PL; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MonacoService", function() { return MonacoService; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _models_filters_model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+/* harmony import */ var _models_language_model__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../models/language.model */ "./src/app/editor/shared/models/language.model.ts");
+/* harmony import */ var _core_opener_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../core/opener.service */ "./src/app/editor/shared/services/core/opener.service.ts");
+/* harmony import */ var _core_resource_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../core/resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
+
+
+
+
+
+
+// tslint:disable: max-line-length
+var PL = 'pl';
+var MonacoService = /** @class */ (function () {
+    function MonacoService(opener, resources) {
+        this.opener = opener;
+        this.resources = resources;
+        this.editors = [];
+    }
+    MonacoService_1 = MonacoService;
+    MonacoService.prototype.register = function (monaco) {
+        monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
+        monaco.languages.register({
+            id: PL,
+            extensions: ['.pl', '.pltp'],
+        });
+        monaco.languages.setMonarchTokensProvider(PL, {
+            // Set defaultToken to invalid to see what you do not tokenize yet
+            // defaultToken: 'invalid',
+            keywords: [
+                'title', 'author', 'introduction', 'teacher', 'text', 'build', 'before', 'form', 'template'
+            ],
+            operators: [
+                '=', '+', '@', '%', '==', '+=', '=@', '+=@',
+            ],
+            tokenizer: {
+                root: [
+                    [
+                        // (?=\s*(=|\+|\@|\%|(==)|(\+=)|(=\@)|(\+=\@)))
+                        /^[a-zA-Z_](\.?\w+)*/, {
+                            cases: {
+                                '@default': 'key'
+                            }
+                        }
+                    ],
+                    [/#.+/, 'comment'],
+                    [/==/, { token: 'open', next: '@embedded' }],
+                    [/%=/, { token: 'open', next: '@predefined', nextEmbedded: 'javascript' }],
+                    [/\{\{[a-zA-Z_](\.?\w+)\}\}/, 'key'],
+                    // numbers
+                    [/\d*\.\d+([eE][\-+]?\d+)?/, 'number.float'],
+                    [/0[xX][0-9a-fA-F]+/, 'number.hex'],
+                    [/\d+/, 'number'],
+                    // whitespace
+                    { include: '@whitespace' },
+                ],
+                embedded: [
+                    [/#\|(\w+)\|/, { token: 'string', next: '@predefined', nextEmbedded: '$1' }],
+                    [/\{\{[a-zA-Z_](\.?\w+)\}\}/, 'key'],
+                    [/^==\s*$/, { token: 'close', next: '@pop' }],
+                ],
+                predefined: [
+                    ['(?=\w+)==', 'string'],
+                    [/\{\{[a-zA-Z_](\.?\w+)\}\}/, 'key'],
+                    [/^==\s*$/, { token: 'close', next: '@root', nextEmbedded: '@pop' }],
+                ],
+                whitespace: [
+                    [/[ \t\r\n]+/, 'white'],
+                ],
+            },
+        });
+        monaco.editor.defineTheme(PL, {
+            base: 'vs',
+            inherit: true,
+            rules: [
+                { token: 'key', foreground: '1382dd', fontStyle: 'bold' },
+            ]
+        });
+        monaco.languages.registerLinkProvider(PL, {
+            provideLinks: function (model, _token) {
+                var links = [];
+                var lines = model.getValue().split('\n');
+                var match;
+                for (var i = 0; i < lines.length; i++) {
+                    if (lines[i].match(MonacoService_1.OPEN_PATTERN)) {
+                        i++;
+                        while (i < lines.length) {
+                            if (lines[i].match(MonacoService_1.CLOSE_PATTERN)) {
+                                break;
+                            }
+                            i++;
+                        }
+                    }
+                    match = MonacoService_1.REFERENCE_PATTERN.exec(lines[i]);
+                    if (match) {
+                        var url = match[match.length - 1];
+                        var index = match.index + match.input.length - url.length;
+                        var range = new monaco.Range(i + 1, index, i + 1, index + url.length + 1);
+                        var comment = false;
+                        while (index >= 0) {
+                            if (lines[i][index] === '#') {
+                                comment = true;
+                                break;
+                            }
+                            index--;
+                        }
+                        if (!comment) {
+                            links.push({
+                                range: range,
+                                url: url,
+                            });
+                        }
+                    }
+                }
+                return links;
+            },
+            resolveLink: function (link, _token) {
+                return link;
+            }
+        });
+        monaco.languages.registerFoldingRangeProvider(PL, {
+            provideFoldingRanges: function (model) {
+                var ranges = [];
+                var lines = model.getValue().split('\n');
+                var length = lines.length;
+                var i = 0, start = -1;
+                while (i < length) {
+                    if (lines[i].match(MonacoService_1.OPEN_PATTERN)) {
+                        start = i;
+                    }
+                    else if (lines[i].match(MonacoService_1.CLOSE_PATTERN)) {
+                        ranges.push({
+                            start: start + 1,
+                            end: i + 1,
+                            kind: monaco.languages.FoldingRangeKind.Region
+                        });
+                        start = -1;
+                    }
+                    i++;
+                }
+                return ranges;
+            }
+        });
+        /*         monaco.languages.registerHoverProvider(PREMIER_LANGAGE, {
+                    provideHover: function(model, position) {
+                        const lineContent = model.getLineContent(position.lineNumber);
+                        const token = model.getWordAtPosition(position);
+                        if (token) {
+                            const keys = self.getKeys();
+                            const k = keys.find(e => e === token.word);
+                            if (k) {
+                                const i = token.startColumn - 2;
+                                if (i > 0 && lineContent[i] === '{' && i - 1 >= 0 && lineContent[i - 1] === '{') {
+                                    return {
+                                        range: new monaco.Range(1, 1, 3, 10),
+                                        contents: [
+                                            { value: k },
+                                            { value: self.getValue(k) }
+                                        ]
+                                    };
+                                }
+                            }
+        
+                            if (token.word in BUILT_IN_WORDS) {
+                                const lineCount = model.getLineCount();
+                                return {
+                                    range: new monaco.Range(1, 1, 3, model.getLineMaxColumn(lineCount)),
+                                    contents: [
+                                        { value: '**PL BUILT-IN**' },
+                                        { value: BUILT_IN_WORDS[token.word] }
+                                    ]
+                                };
+                            }
+                        }
+                    }
+                }); */
+        monaco.languages.registerCompletionItemProvider(PL, {
+            provideCompletionItems: function (model, position) {
+                var line = model.getLineContent(position.lineNumber);
+                if (line.includes('{{')) {
+                    return [];
+                }
+                return Object.keys(MonacoService_1.BUILD_IN_WORDS).map(function (name) { return ({
+                    label: name,
+                    detail: MonacoService_1.BUILD_IN_WORDS[name],
+                    insertText: name + '== #|python| \n\n==',
+                    kind: monaco.languages.CompletionItemKind.Snippet,
+                }); });
+            },
+        });
+        /*      monaco.languages.registerCompletionItemProvider(PREMIER_LANGAGE, {
+                    triggerCharacters: ['{{'],
+                    provideCompletionItems: function(model, position) {
+                        const line = model.getLineContent(position.lineNumber);
+                        if (!line.includes('{{')) {
+                            return [];
+                        }
+                        const items: monaco.languages.CompletionItem[] = [];
+                        const keys = self.getKeys();
+                        if (keys.length > 0) {
+                            keys.forEach(k => {
+                                items.push({
+                                    label: k,
+                                    detail: '{{' + k + '}}',
+                                    insertText: k + '}}',
+                                    kind: monaco.languages.CompletionItemKind.Reference
+                                });
+                            });
+                        }
+                        return items;
+                    }
+                });
+                */
+    };
+    MonacoService.prototype.findLanguage = function (resource) {
+        var ext = Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_2__["extension"])(resource);
+        for (var _i = 0, LANGUAGES_1 = _models_language_model__WEBPACK_IMPORTED_MODULE_3__["LANGUAGES"]; _i < LANGUAGES_1.length; _i++) {
+            var item = LANGUAGES_1[_i];
+            if (item.extension === ext) {
+                return item.id;
+            }
+        }
+        return '';
+    };
+    MonacoService.prototype.registerEditor = function (editor) {
+        var _this = this;
+        var contribution = editor.getContribution('editor.linkDetector');
+        contribution.openerService.open = function (uri) {
+            _this.opener.openReference(editor.getModel().uri, uri);
+        };
+        editor.onDidBlurEditor(function () {
+        });
+        editor.onDidFocusEditor(function () {
+        });
+        editor.onDidChangeCursorPosition(function (e) {
+            for (var _i = 0, _a = _this.editors; _i < _a.length; _i++) {
+                var item = _a[_i];
+                if (item.getId() !== editor.getId() && item.getModel().getModeId() === editor.getModel().getModeId()) {
+                    item.setPosition(e.position);
+                }
+            }
+        });
+        editor.onDidChangeModelContent(function () {
+        });
+        this.editors.push(editor);
+    };
+    MonacoService.prototype.disposeEditor = function (editor) {
+        var monaco = window.monaco;
+        var models = monaco.editor.getModels();
+        for (var _i = 0, models_1 = models; _i < models_1.length; _i++) {
+            var model = models_1[_i];
+            if (model._attachedEditorCount === 0) {
+                model.dispose();
+            }
+        }
+        this.editors = this.editors.filter(function (e) { return e.getId() !== editor.getId(); });
+    };
+    var MonacoService_1;
+    MonacoService.BUILD_IN_WORDS = {
+        title: 'Titre de l\'exercice/feuille d\'exercice',
+        author: 'Auteur de l\'exercice',
+        introduction: 'Présentation de la feuille d\'exercice, le contenu de cette clé est interprété comme du markdown.',
+        teacher: 'Sur un PLTP, affiche un note visible par les enseignant seulement',
+        text: 'Énoncé de l\'exercice, le contenu de cette clé est interprété comme du markdown.',
+        build: 'Clé contenant une fonction build (ancienne syntaxe: utiliser de préférence before), '
+            + 'à utiliser avec le builder /builder/build.py',
+        before: 'Code python permettant de modifier l\'exercice avant sont exécution sur le navigateur',
+        form: 'Formulaire HTML permettant à l\'élève de répondre',
+        template: 'Définie template comme étant la base de ce fichier',
+    };
+    MonacoService.REFERENCE_PATTERN = /(@|(template|grader|builder|extends|builder|grader)\s*=)\s*(\w+:\/)?([~a-zA-Z0-9_\.\/]+)/;
+    MonacoService.OPEN_PATTERN = /^[a-zA-Z_](\.?\w+)*(==)|(%=)/;
+    MonacoService.CLOSE_PATTERN = /^==\s*$/;
+    MonacoService = MonacoService_1 = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({ providedIn: 'root' }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_core_opener_service__WEBPACK_IMPORTED_MODULE_4__["OpenerService"],
+            _core_resource_service__WEBPACK_IMPORTED_MODULE_5__["ResourceService"]])
+    ], MonacoService);
+    return MonacoService;
+}());
+
+
+
+/***/ }),
+
 /***/ "./src/app/editor/workspace/code-editor/code-editor.component.html":
 /*!*************************************************************************!*\
   !*** ./src/app/editor/workspace/code-editor/code-editor.component.html ***!
@@ -3436,7 +4104,7 @@ var TaskService = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<ngx-monaco-editor class='code-editor' [options]=\"{}\" [model]='{}' (onInit)=\"editorLoaded($event)\"></ngx-monaco-editor>"
+module.exports = "<ngx-monaco-editor [hidden]='editor.diffEditing' class='code-editor' [options]=\"{}\" [model]='{}' (onInit)=\"editorLoaded($event)\"></ngx-monaco-editor>\n<ngx-monaco-diff-editor [hidden]='!editor.diffEditing' class='code-editor' [options]=\"{}\" [originalModel]=\"{}\" [modifiedModel]=\"{}\" (onInit)=\"diffLoaded($event)\"></ngx-monaco-diff-editor>"
 
 /***/ }),
 
@@ -3447,7 +4115,7 @@ module.exports = "<ngx-monaco-editor class='code-editor' [options]=\"{}\" [model
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".code-editor {\n  height: 100%; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL3dvcmtzcGFjZS9jb2RlLWVkaXRvci9jb2RlLWVkaXRvci5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGFBQVksRUFDZiIsImZpbGUiOiJzcmMvYXBwL2VkaXRvci93b3Jrc3BhY2UvY29kZS1lZGl0b3IvY29kZS1lZGl0b3IuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuY29kZS1lZGl0b3Ige1xuICAgIGhlaWdodDogMTAwJTtcbn0iXX0= */"
+module.exports = ".code-editor {\n  height: 100%; }\n\n.monaco-editor .detected-link {\n  color: blue; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL3dvcmtzcGFjZS9jb2RlLWVkaXRvci9jb2RlLWVkaXRvci5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGFBQVksRUFDZjs7QUFDRDtFQUNJLFlBQVcsRUFDZCIsImZpbGUiOiJzcmMvYXBwL2VkaXRvci93b3Jrc3BhY2UvY29kZS1lZGl0b3IvY29kZS1lZGl0b3IuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuY29kZS1lZGl0b3Ige1xuICAgIGhlaWdodDogMTAwJTtcbn1cbi5tb25hY28tZWRpdG9yIC5kZXRlY3RlZC1saW5rIHtcbiAgICBjb2xvcjogYmx1ZTtcbn0iXX0= */"
 
 /***/ }),
 
@@ -3463,22 +4131,302 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CodeEditorComponent", function() { return CodeEditorComponent; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _shared_models_editor_model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../shared/models/editor.model */ "./src/app/editor/shared/models/editor.model.ts");
+/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
+/* harmony import */ var _shared_services_core_compiler_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../shared/services/core/compiler.service */ "./src/app/editor/shared/services/core/compiler.service.ts");
+/* harmony import */ var _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../shared/services/core/resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
+/* harmony import */ var _shared_services_monaco_monaco_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../shared/services/monaco/monaco.service */ "./src/app/editor/shared/services/monaco/monaco.service.ts");
+/* harmony import */ var _shared_services_core_git_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../shared/services/core/git.service */ "./src/app/editor/shared/services/core/git.service.ts");
+/* harmony import */ var _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../shared/models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+
+
+
+
+
+
+
 
 
 var CodeEditorComponent = /** @class */ (function () {
-    function CodeEditorComponent() {
+    function CodeEditorComponent(compiler, resources, git, notification, monacoService) {
+        this.compiler = compiler;
+        this.resources = resources;
+        this.git = git;
+        this.notification = notification;
+        this.monacoService = monacoService;
     }
-    CodeEditorComponent.prototype.editorLoaded = function (editor) {
+    CodeEditorComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.openSubscription = this.editor.onOpened.subscribe(function (uri) {
+            _this.open(uri);
+        });
+        this.diffSubscription = this.editor.onDiffEditing.subscribe(function (mode) {
+            if (mode) {
+                _this.git.show(_this.active).then(function (response) {
+                    _this.diffContent = response;
+                    if (_this.editor.diffEditor) {
+                        _this.open(_this.editor.data());
+                    }
+                }).catch(function (error) { return _this.notification.logError(error); });
+            }
+            else {
+                _this.open(_this.editor.data());
+                _this.editor.diffEditor.getModel().original.dispose();
+            }
+        });
     };
+    CodeEditorComponent.prototype.ngOnDestroy = function () {
+        this.openSubscription.unsubscribe();
+        this.diffSubscription.unsubscribe();
+        this.monacoService.disposeEditor(this.editor.codeEditor);
+    };
+    CodeEditorComponent.prototype.editorLoaded = function (codeEditor) {
+        this.monacoService.registerEditor(codeEditor);
+        this.editor.codeEditor = codeEditor;
+        this.addCommands(codeEditor);
+        this.open(this.editor.data());
+    };
+    CodeEditorComponent.prototype.diffLoaded = function (diffEditor) {
+        this.monacoService.registerEditor(diffEditor.getModifiedEditor());
+        this.editor.diffEditor = diffEditor;
+        this.addCommands(this.editor.diffEditor.getModifiedEditor());
+        this.open(this.editor.data());
+    };
+    CodeEditorComponent.prototype.open = function (data) {
+        var monaco = window.monaco;
+        this.active = data.resource;
+        var model = monaco.editor.getModel(data.uri)
+            || monaco.editor.createModel(this.active.content, this.monacoService.findLanguage(this.active), data.uri);
+        this.editor.codeEditor.setModel(model);
+        this.readonly = !this.active.write || (!this.active.meta.text && !Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_8__["isSVG"])(this.active));
+        this.editor.codeEditor.updateOptions({ readOnly: this.readonly });
+        this.editor.codeEditor.focus();
+        if (this.editor.diffEditing) {
+            this.editor.diffEditor.setModel({
+                original: monaco.editor.createModel(this.diffContent || '', this.monacoService.findLanguage(this.active)),
+                modified: this.editor.codeEditor.getModel()
+            });
+            this.editor.diffEditor.getModifiedEditor().updateOptions({ readOnly: !this.readonly });
+            this.editor.diffEditor.getModifiedEditor().focus();
+        }
+    };
+    CodeEditorComponent.prototype.addCommands = function (editor) {
+        var _this = this;
+        editor.onDidChangeModelContent(function () {
+            _this.didContentChanged(editor);
+        });
+        // tslint:disable: no-bitwise
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function () {
+            _this.editor.group().save(_this.editor.data()).catch(function (error) {
+                _this.notification.logError(error);
+            });
+        }, '');
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_S, function () {
+            _this.editor.group().saveAll().catch(function (error) {
+                _this.notification.logError(error);
+            });
+        }, '');
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_K, function () {
+            _this.editor.group().close(_this.editor.data(), true).catch(function (error) {
+                _this.notification.logError(error);
+            });
+        }, '');
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_K, function () {
+            _this.editor.group().closeAll(true).catch(function (error) {
+                _this.notification.logError(error);
+            });
+        }, '');
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_U, function () {
+            _this.editor.group().closeSaved().catch(function (error) {
+                _this.notification.logError(error);
+            });
+        }, '');
+        // tslint:enable: no-bitwise
+    };
+    CodeEditorComponent.prototype.didContentChanged = function (editor) {
+        var model = editor.getModel();
+        this.active.content = model.getValue();
+        this.active.changed = this.active.lastContent !== this.active.content;
+    };
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", _shared_models_editor_model__WEBPACK_IMPORTED_MODULE_2__["CodeEditor"])
+    ], CodeEditorComponent.prototype, "editor", void 0);
     CodeEditorComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
             // tslint:disable-next-line: component-selector
             selector: 'code-editor',
             template: __webpack_require__(/*! ./code-editor.component.html */ "./src/app/editor/workspace/code-editor/code-editor.component.html"),
             styles: [__webpack_require__(/*! ./code-editor.component.scss */ "./src/app/editor/workspace/code-editor/code-editor.component.scss")]
-        })
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_core_compiler_service__WEBPACK_IMPORTED_MODULE_4__["CompilerService"],
+            _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_5__["ResourceService"],
+            _shared_services_core_git_service__WEBPACK_IMPORTED_MODULE_7__["GitService"],
+            src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_3__["NotificationService"],
+            _shared_services_monaco_monaco_service__WEBPACK_IMPORTED_MODULE_6__["MonacoService"]])
     ], CodeEditorComponent);
     return CodeEditorComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/editor/workspace/image-editor/image-editor.component.html":
+/*!***************************************************************************!*\
+  !*** ./src/app/editor/workspace/image-editor/image-editor.component.html ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<div class='image-editor'>\n    <div *ngIf='isSVG; else notSVG' [innerHTML]='content | sanitizeHtml' [ngStyle]='{zoom: editor.zoom}'></div> \n    <ng-template #notSVG>\n        <img src='{{imageURL}}'  [ngStyle]='{zoom: editor.zoom}' />\n    </ng-template>\n    <div class='image-editor__btn-group'>\n        <div class='image-editor__btn'>{{editor.zoom | number:'1.1-1'}}</div>\n        <div class='image-editor__btn' matTooltip='Zoom In' (click)='editor.zoomIn()'>\n            <i class=\"fas fa-plus\"></i>\n        </div>\n        <div class='image-editor__btn' matTooltip='Zoom Out' (click)='editor.zoomOut()'>\n            <i class=\"fas fa-minus\"></i>\n        </div>\n    </div>\n</div>"
+
+/***/ }),
+
+/***/ "./src/app/editor/workspace/image-editor/image-editor.component.scss":
+/*!***************************************************************************!*\
+  !*** ./src/app/editor/workspace/image-editor/image-editor.component.scss ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ".image-editor {\n  height: 100%;\n  position: relative;\n  background-position: 0px 0px, 10px 10px;\n  background-size: 20px 20px;\n  background-image: linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee 100%), linear-gradient(45deg, #eee 25%, white 25%, white 75%, #eee 75%, #eee 100%);\n  text-align: center; }\n  .image-editor img {\n    text-align: center;\n    display: block;\n    position: absolute;\n    top: 0px;\n    right: 0px;\n    bottom: 0px;\n    left: 0px;\n    max-width: 100%;\n    height: auto;\n    margin: auto;\n    border-radius: 16px;\n    background-color: transparent;\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); }\n  .image-editor .image-editor__btn-group {\n    position: absolute;\n    top: 48px;\n    right: 12px;\n    width: 32px; }\n  .image-editor .image-editor__btn {\n    background-color: #ecedf0;\n    width: 32px;\n    height: 32px;\n    border-radius: 2px 4px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    cursor: zoom-in;\n    margin-bottom: 8px; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL3dvcmtzcGFjZS9pbWFnZS1lZGl0b3IvaW1hZ2UtZWRpdG9yLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksYUFBWTtFQUNaLG1CQUFrQjtFQUNsQix3Q0FBdUM7RUFDdkMsMkJBQTBCO0VBQzFCLHVMQUFxTDtFQUNyTCxtQkFBa0IsRUFvQ3JCO0VBMUNEO0lBUVEsbUJBQWtCO0lBQ2xCLGVBQWM7SUFDZCxtQkFBa0I7SUFDbEIsU0FBUTtJQUNSLFdBQVU7SUFDVixZQUFXO0lBQ1gsVUFBUztJQUNULGdCQUFlO0lBQ2YsYUFBWTtJQUNaLGFBQVk7SUFDWixvQkFBbUI7SUFDbkIsOEJBQTZCO0lBQzdCLDZFQUE0RSxFQUMvRTtFQXJCTDtJQXlCUSxtQkFBa0I7SUFDbEIsVUFBUztJQUNULFlBQVc7SUFDWCxZQUFXLEVBQ2Q7RUE3Qkw7SUFnQ1EsMEJBQXlCO0lBQ3pCLFlBQVc7SUFDWCxhQUFZO0lBQ1osdUJBQXNCO0lBQ3RCLGNBQWE7SUFDYixvQkFBbUI7SUFDbkIsd0JBQXVCO0lBQ3ZCLGdCQUFlO0lBQ2YsbUJBQWtCLEVBQ3JCIiwiZmlsZSI6InNyYy9hcHAvZWRpdG9yL3dvcmtzcGFjZS9pbWFnZS1lZGl0b3IvaW1hZ2UtZWRpdG9yLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmltYWdlLWVkaXRvciB7XG4gICAgaGVpZ2h0OiAxMDAlO1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBiYWNrZ3JvdW5kLXBvc2l0aW9uOiAwcHggMHB4LCAxMHB4IDEwcHg7XG4gICAgYmFja2dyb3VuZC1zaXplOiAyMHB4IDIwcHg7XG4gICAgYmFja2dyb3VuZC1pbWFnZTogbGluZWFyLWdyYWRpZW50KDQ1ZGVnLCAjZWVlIDI1JSwgdHJhbnNwYXJlbnQgMjUlLCB0cmFuc3BhcmVudCA3NSUsICNlZWUgNzUlLCAjZWVlIDEwMCUpLGxpbmVhci1ncmFkaWVudCg0NWRlZywgI2VlZSAyNSUsIHdoaXRlIDI1JSwgd2hpdGUgNzUlLCAjZWVlIDc1JSwgI2VlZSAxMDAlKTtcbiAgICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gICAgaW1nIHtcbiAgICAgICAgdGV4dC1hbGlnbjogY2VudGVyO1xuICAgICAgICBkaXNwbGF5OiBibG9jaztcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICB0b3A6IDBweDtcbiAgICAgICAgcmlnaHQ6IDBweDtcbiAgICAgICAgYm90dG9tOiAwcHg7XG4gICAgICAgIGxlZnQ6IDBweDtcbiAgICAgICAgbWF4LXdpZHRoOiAxMDAlO1xuICAgICAgICBoZWlnaHQ6IGF1dG87XG4gICAgICAgIG1hcmdpbjogYXV0bztcbiAgICAgICAgYm9yZGVyLXJhZGl1czogMTZweDtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogdHJhbnNwYXJlbnQ7XG4gICAgICAgIGJveC1zaGFkb3c6IDAgNHB4IDhweCAwIHJnYmEoMCwgMCwgMCwgMC4yKSwgMCA2cHggMjBweCAwIHJnYmEoMCwgMCwgMCwgMC4xOSk7XG4gICAgfVxuXG5cbiAgICAuaW1hZ2UtZWRpdG9yX19idG4tZ3JvdXAge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIHRvcDogNDhweDtcbiAgICAgICAgcmlnaHQ6IDEycHg7XG4gICAgICAgIHdpZHRoOiAzMnB4O1xuICAgIH1cblxuICAgIC5pbWFnZS1lZGl0b3JfX2J0biB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6ICNlY2VkZjA7XG4gICAgICAgIHdpZHRoOiAzMnB4O1xuICAgICAgICBoZWlnaHQ6IDMycHg7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDJweCA0cHg7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICBjdXJzb3I6IHpvb20taW47XG4gICAgICAgIG1hcmdpbi1ib3R0b206IDhweDtcbiAgICB9XG59Il19 */"
+
+/***/ }),
+
+/***/ "./src/app/editor/workspace/image-editor/image-editor.component.ts":
+/*!*************************************************************************!*\
+  !*** ./src/app/editor/workspace/image-editor/image-editor.component.ts ***!
+  \*************************************************************************/
+/*! exports provided: ImageEditorComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImageEditorComponent", function() { return ImageEditorComponent; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _shared_models_editor_model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../shared/models/editor.model */ "./src/app/editor/shared/models/editor.model.ts");
+/* harmony import */ var _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../shared/models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+
+
+
+
+var ImageEditorComponent = /** @class */ (function () {
+    function ImageEditorComponent() {
+    }
+    ImageEditorComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.open(this.editor.data());
+        this.openSubscription = this.editor.onOpened.subscribe(function (data) {
+            _this.open(data);
+        });
+    };
+    ImageEditorComponent.prototype.ngOnDestroy = function () {
+        this.openSubscription.unsubscribe();
+    };
+    ImageEditorComponent.prototype.open = function (data) {
+        this.content = data.resource.content;
+        this.imageURL = data.resource.meta.download_url;
+        this.isSVG = Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["isSVG"])(data.resource);
+    };
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", _shared_models_editor_model__WEBPACK_IMPORTED_MODULE_2__["ImageEditor"])
+    ], ImageEditorComponent.prototype, "editor", void 0);
+    ImageEditorComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
+            // tslint:disable-next-line: component-selector
+            selector: 'image-editor',
+            template: __webpack_require__(/*! ./image-editor.component.html */ "./src/app/editor/workspace/image-editor/image-editor.component.html"),
+            styles: [__webpack_require__(/*! ./image-editor.component.scss */ "./src/app/editor/workspace/image-editor/image-editor.component.scss")]
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
+    ], ImageEditorComponent);
+    return ImageEditorComponent;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/editor/workspace/preview-editor/preview-editor.component.html":
+/*!*******************************************************************************!*\
+  !*** ./src/app/editor/workspace/preview-editor/preview-editor.component.html ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<div *ngIf='!hidden' class='preview-editor' [innerHTML]='html | sanitizeHtml' runScripts></div>"
+
+/***/ }),
+
+/***/ "./src/app/editor/workspace/preview-editor/preview-editor.component.scss":
+/*!*******************************************************************************!*\
+  !*** ./src/app/editor/workspace/preview-editor/preview-editor.component.scss ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = ".preview-editor {\n  height: calc(100% - 36px);\n  overflow: auto;\n  padding: 8px; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL3dvcmtzcGFjZS9wcmV2aWV3LWVkaXRvci9wcmV2aWV3LWVkaXRvci5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLDBCQUF5QjtFQUN6QixlQUFjO0VBQ2QsYUFBWSxFQUNmIiwiZmlsZSI6InNyYy9hcHAvZWRpdG9yL3dvcmtzcGFjZS9wcmV2aWV3LWVkaXRvci9wcmV2aWV3LWVkaXRvci5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5wcmV2aWV3LWVkaXRvciB7XG4gICAgaGVpZ2h0OiBjYWxjKDEwMCUgLSAzNnB4KTtcbiAgICBvdmVyZmxvdzogYXV0bztcbiAgICBwYWRkaW5nOiA4cHg7XG59Il19 */"
+
+/***/ }),
+
+/***/ "./src/app/editor/workspace/preview-editor/preview-editor.component.ts":
+/*!*****************************************************************************!*\
+  !*** ./src/app/editor/workspace/preview-editor/preview-editor.component.ts ***!
+  \*****************************************************************************/
+/*! exports provided: PreviewEditorComponent */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PreviewEditorComponent", function() { return PreviewEditorComponent; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _shared_models_editor_model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../shared/models/editor.model */ "./src/app/editor/shared/models/editor.model.ts");
+/* harmony import */ var src_app_shared_directives_run_scripts_directive__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/app/shared/directives/run-scripts.directive */ "./src/app/shared/directives/run-scripts.directive.ts");
+
+
+
+
+var PreviewEditorComponent = /** @class */ (function () {
+    function PreviewEditorComponent() {
+    }
+    PreviewEditorComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.open(this.editor.data());
+        this.openSubscription = this.editor.onOpened.subscribe(function (data) {
+            _this.open(data);
+        });
+    };
+    PreviewEditorComponent.prototype.ngOnDestroy = function () {
+        this.openSubscription.unsubscribe();
+    };
+    PreviewEditorComponent.prototype.open = function (data) {
+        this.html = data.resource.meta.html;
+        if (this.scripts) {
+            this.scripts.reinsertScripts();
+        }
+    };
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", _shared_models_editor_model__WEBPACK_IMPORTED_MODULE_2__["ImageEditor"])
+    ], PreviewEditorComponent.prototype, "editor", void 0);
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ViewChild"])(src_app_shared_directives_run_scripts_directive__WEBPACK_IMPORTED_MODULE_3__["RunScriptsDirective"]),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", src_app_shared_directives_run_scripts_directive__WEBPACK_IMPORTED_MODULE_3__["RunScriptsDirective"])
+    ], PreviewEditorComponent.prototype, "scripts", void 0);
+    PreviewEditorComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
+            // tslint:disable-next-line: component-selector
+            selector: 'preview-editor',
+            template: __webpack_require__(/*! ./preview-editor.component.html */ "./src/app/editor/workspace/preview-editor/preview-editor.component.html"),
+            styles: [__webpack_require__(/*! ./preview-editor.component.scss */ "./src/app/editor/workspace/preview-editor/preview-editor.component.scss")]
+        }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
+    ], PreviewEditorComponent);
+    return PreviewEditorComponent;
 }());
 
 
@@ -3492,7 +4440,7 @@ var CodeEditorComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<as-split class='h100' *ngIf='editors.length > 0; else noGroup' direction='horizontal' gutterSize='5' useTransition='true' cdkDropListGroup>\n    <as-split-area class='editor-group h100' style='overflow: hidden;' *ngFor='let editor of editors'>\n        <div class='tab-bar'>\n            <div class='tab-group' cdkDropList [cdkDropListData]=\"editor.resources\" (cdkDropListDropped)=\"editor.drop($event)\">\n                <div *ngFor='let resource of editor.resources;trackBy: editor.track' [matTooltip]=\"resource.path\"\n                    [ngClass]=\"{'tab-item': true, active: editor.isSelected(resource), changed: editor.isChanged(resource)}\"\n                    (click)='editor.open(resource)' cdkDragAxis='x' cdkDrag>\n                    <i class=\"tab-icon {{resource.icon}}\"></i>\n                    <span>{{editor.title(resource)}}</span>\n                    <span class='tab-close' (click)='editor.closeConfirm(resource)'>&nbsp;&times;</span>\n                </div>\n            </div>\n            <div class=\"spacer\"></div>    \n            <ng-container *ngFor='let option of editor.options'>\n                <div class='tab-item' [matTooltip]='option.tooltip' *ngIf='option.enabled(editor.selection)' (click)='option.action(editor.selection)'>\n                    <i class=\"{{option.icon}}\"></i>\n                </div>\n            </ng-container>\n            <div *ngIf='editor.type===\"code\"' class='tab-item' matTooltip='More Options' [matMenuTriggerFor]=\"editorMenu\">\n                <i class=\"fas fa-ellipsis-h\"></i>\n            </div>\n            <mat-menu #editorMenu=\"matMenu\">\n                <button mat-menu-item (click)='editor.save(editor.selection)'>Save (Ctrl+S)</button>\n                <button mat-menu-item (click)='editor.saveAll()'>Save All (Ctrl+Alt+S)</button>\n                <button mat-menu-item (click)='editor.closeConfirm(editor.selection)'>Close (Ctrl+W)</button>\n                <button mat-menu-item (click)='editor.closeAllConfirm()'>Close All (Ctrl+Alt+W)</button>\n                <button mat-menu-item (click)='editor.closeSaved()'>Close Saved</button>\n            </mat-menu>\n        </div>\n        <ng-container [ngSwitch]=\"editor.type\">\n            <code-editor *ngSwitchCase=\"'code'\"></code-editor>\n            <ng-container *ngSwitchDefault></ng-container>\n        </ng-container>\n    </as-split-area>\n</as-split>"
+module.exports = "<!-- LITTLE HACK TO PRELOAD MONACO EDITOR -->\n<ngx-monaco-editor [hidden]='true' [options]='{}' [model]='{}'></ngx-monaco-editor>\n<as-split class='h100' direction='horizontal' gutterSize='5' useTransition='true' cdkDropListGroup>\n    <!-- EDITOR GROUPS SPLIT AREA -->\n    <ng-container  *ngFor='let group of groups'>\n        <as-split-area class='editor-group h100' style='overflow: hidden;'>\n            <!-- GROUP TABS -->\n            <div class='tab-bar'>\n                <div [id]='group.id()' class='tab-group' cdkDropList [cdkDropListData]=\"group.tabs\" (cdkDropListDropped)=\"group.drop($event)\">\n                    <div *ngFor='let tab of group.tabs;trackBy: group.trackTab' [matTooltip]=\"tab.resource.path\"\n                        [ngClass]=\"{'tab-item': true, active: group.isActive(tab), changed: group.isChanged(tab)}\"\n                        (click)='group.open(tab)' cdkDragAxis='x' cdkDrag>\n                        <i class=\"tab-icon {{tab.icon}}\"></i>\n                        <span>{{tab.title}}</span>\n                        <span class='tab-close' (click)='group.close(tab, true)'>&nbsp;&times;</span>\n                    </div>\n                </div>\n                <div class=\"spacer\"></div>  \n                <ng-container *ngIf='!group.isEmpty() && !group.onlyPreview(); else emptyGroup'>\n                    <ng-container *ngIf='group.hasFocus()'>\n                        <ng-container *ngFor='let action of group.actions'>\n                            <div class='tab-item' [matTooltip]='action.tooltip' *ngIf='action.condition(group.activeTab().resource)' (click)='action.invoke(group.activeTab().resource)'>\n                                <i class=\"{{action.icon}}\"></i>\n                            </div>\n                        </ng-container>\n                    </ng-container>\n                    \n                    <div class='tab-item' matTooltip='More Options' [matMenuTriggerFor]=\"editorMenu\">\n                        <i class=\"fas fa-ellipsis-h\"></i>\n                    </div>\n                    <mat-menu #editorMenu=\"matMenu\">\n                        <button mat-menu-item (click)='group.save(group.activeTab())'>Save ⌘S</button>\n                        <button mat-menu-item (click)='group.saveAll()'>Save All ⌘Alt S</button>\n                        <button mat-menu-item (click)='group.close(group.activeTab(), true)'>Close ⌘K</button>\n                        <button mat-menu-item (click)='group.closeAll(true)'>Close All ⌘Alt K</button>\n                        <button mat-menu-item (click)='group.closeSaved()'>Close Saved ⌘Alt U</button>\n                    </mat-menu>\n                </ng-container>\n                <ng-template #emptyGroup>\n                    <div class='tab-item' matTooltip='Close Group' (click)='group.dispose()'>\n                        <i class=\"fas fa-times\"></i>\n                    </div>\n                </ng-template>\n                \n            </div>\n            <ng-container *ngFor='let editor of group.editors; trackBy group.trackEditor'>\n                <ng-container [ngSwitch]=\"editor.type()\">\n                    <code-editor [hidden]='!group.activeEditorIs(\"code\")' *ngSwitchCase=\"'code'\" [editor]='editor'></code-editor>\n                    <image-editor [hidden]='!group.activeEditorIs(\"image\")' *ngSwitchCase=\"'image'\" [editor]='editor'></image-editor>\n                    <preview-editor [hidden]='!group.activeEditorIs(\"preview\")' *ngSwitchCase=\"'preview'\" [editor]='editor'></preview-editor>\n                </ng-container>\n            </ng-container>\n        </as-split-area>\n    </ng-container>\n</as-split>"
 
 /***/ }),
 
@@ -3503,7 +4451,7 @@ module.exports = "<as-split class='h100' *ngIf='editors.length > 0; else noGroup
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".editor-group {\n  position: relative;\n  overflow: hidden; }\n\n.tab-bar .tab-group {\n  display: flex;\n  align-items: center;\n  height: 100%;\n  width: 100%;\n  overflow-x: auto; }\n\n.tab-item.active {\n  background-color: #FFF; }\n\n.tab-item .tab-icon {\n  margin-right: 4px; }\n\n.tab-item .tab-close {\n  font-size: 18px; }\n\n.tab-item .tab-close:hover {\n    opacity: 1; }\n\n.tab-item.changed {\n  border-bottom: 1px solid salmon; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL3dvcmtzcGFjZS93b3Jrc3BhY2UuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxtQkFBa0I7RUFDbEIsaUJBQWdCLEVBQ25COztBQUVEO0VBQ0ksY0FBYTtFQUNiLG9CQUFtQjtFQUNuQixhQUFZO0VBQ1osWUFBVztFQUNYLGlCQUFnQixFQUNuQjs7QUFFRDtFQUVRLHVCQUFzQixFQUN6Qjs7QUFITDtFQU1RLGtCQUFpQixFQUNwQjs7QUFQTDtFQVVRLGdCQUFlLEVBSWxCOztBQWRMO0lBWVksV0FBVSxFQUNiOztBQWJUO0VBZ0JRLGdDQUErQixFQUNsQyIsImZpbGUiOiJzcmMvYXBwL2VkaXRvci93b3Jrc3BhY2Uvd29ya3NwYWNlLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmVkaXRvci1ncm91cCB7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlOyBcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xufVxuXG4udGFiLWJhciAudGFiLWdyb3VwIHtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgaGVpZ2h0OiAxMDAlO1xuICAgIHdpZHRoOiAxMDAlO1xuICAgIG92ZXJmbG93LXg6IGF1dG87XG59XG5cbi50YWItaXRlbSB7XG4gICAgJi5hY3RpdmUge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjRkZGO1xuICAgIH1cblxuICAgIC50YWItaWNvbiB7XG4gICAgICAgIG1hcmdpbi1yaWdodDogNHB4O1xuICAgIH1cblxuICAgIC50YWItY2xvc2Uge1xuICAgICAgICBmb250LXNpemU6IDE4cHg7XG4gICAgICAgICY6aG92ZXIge1xuICAgICAgICAgICAgb3BhY2l0eTogMTtcbiAgICAgICAgfVxuICAgIH1cbiAgICAmLmNoYW5nZWQge1xuICAgICAgICBib3JkZXItYm90dG9tOiAxcHggc29saWQgc2FsbW9uO1xuICAgIH1cblxufVxuIl19 */"
+module.exports = ".editor-group {\n  position: relative;\n  overflow: hidden; }\n\n.tab-bar {\n  padding: 0; }\n\n.tab-bar .tab-group {\n    display: flex;\n    align-items: center;\n    height: 100%;\n    width: 100%;\n    overflow-x: auto; }\n\n.tab-item.active {\n  background-color: #FFF; }\n\n.tab-item .tab-icon {\n  margin-right: 4px; }\n\n.tab-item .tab-close {\n  font-size: 18px; }\n\n.tab-item .tab-close:hover {\n    opacity: 1; }\n\n.tab-item.changed {\n  border-bottom: 1px solid salmon; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL3dvcmtzcGFjZS93b3Jrc3BhY2UuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxtQkFBa0I7RUFDbEIsaUJBQWdCLEVBQ25COztBQUVEO0VBQ0ksV0FBVSxFQVFiOztBQVREO0lBR1EsY0FBYTtJQUNiLG9CQUFtQjtJQUNuQixhQUFZO0lBQ1osWUFBVztJQUNYLGlCQUFnQixFQUNuQjs7QUFHTDtFQUVRLHVCQUFzQixFQUN6Qjs7QUFITDtFQU1RLGtCQUFpQixFQUNwQjs7QUFQTDtFQVVRLGdCQUFlLEVBSWxCOztBQWRMO0lBWVksV0FBVSxFQUNiOztBQWJUO0VBZ0JRLGdDQUErQixFQUNsQyIsImZpbGUiOiJzcmMvYXBwL2VkaXRvci93b3Jrc3BhY2Uvd29ya3NwYWNlLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmVkaXRvci1ncm91cCB7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlOyBcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xufVxuXG4udGFiLWJhciB7XG4gICAgcGFkZGluZzogMDtcbiAgICAudGFiLWdyb3VwIHtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAgaGVpZ2h0OiAxMDAlO1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgb3ZlcmZsb3cteDogYXV0bztcbiAgICB9XG59XG5cbi50YWItaXRlbSB7XG4gICAgJi5hY3RpdmUge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjRkZGO1xuICAgIH1cblxuICAgIC50YWItaWNvbiB7XG4gICAgICAgIG1hcmdpbi1yaWdodDogNHB4O1xuICAgIH1cblxuICAgIC50YWItY2xvc2Uge1xuICAgICAgICBmb250LXNpemU6IDE4cHg7XG4gICAgICAgICY6aG92ZXIge1xuICAgICAgICAgICAgb3BhY2l0eTogMTtcbiAgICAgICAgfVxuICAgIH1cbiAgICAmLmNoYW5nZWQge1xuICAgICAgICBib3JkZXItYm90dG9tOiAxcHggc29saWQgc2FsbW9uO1xuICAgIH1cblxufVxuIl19 */"
 
 /***/ }),
 
@@ -3519,144 +4467,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WorkspaceComponent", function() { return WorkspaceComponent; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _models_editor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../models/editor */ "./src/app/editor/models/editor.ts");
-/* harmony import */ var _services_git_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../services/git.service */ "./src/app/editor/services/git.service.ts");
-/* harmony import */ var _services_task_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../services/task.service */ "./src/app/editor/services/task.service.ts");
-/* harmony import */ var _services_logging_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../services/logging.service */ "./src/app/editor/services/logging.service.ts");
-/* harmony import */ var _services_resource_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../services/resource.service */ "./src/app/editor/services/resource.service.ts");
-/* harmony import */ var _shared_services_notification_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
-
-
-
-
+/* harmony import */ var _shared_services_core_opener_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/services/core/opener.service */ "./src/app/editor/shared/services/core/opener.service.ts");
+/* harmony import */ var _shared_services_core_editor_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../shared/services/core/editor.service */ "./src/app/editor/shared/services/core/editor.service.ts");
 
 
 
 
 var WorkspaceComponent = /** @class */ (function () {
-    function WorkspaceComponent(resources, changeDetector, notification, logging, git, task) {
-        this.resources = resources;
-        this.changeDetector = changeDetector;
-        this.notification = notification;
-        this.logging = logging;
-        this.git = git;
-        this.task = task;
-        this.editors = [];
+    function WorkspaceComponent(editor, opener) {
+        this.editor = editor;
+        this.opener = opener;
+        this.groups = [];
     }
     WorkspaceComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.task.subscribeRefreshEvent(function () {
-            _this.closeAllEditors();
-        });
-        this.task.subscribeSelectEvent(function (resource) {
-            _this.open(resource);
-        });
-        this.task.subscribeDeleteEvent(function (resource) {
-            _this.close(resource);
-        });
-    };
-    WorkspaceComponent.prototype.detectChanges = function () {
-        this.changeDetector.detectChanges();
-    };
-    WorkspaceComponent.prototype.didTapPreviewResource = function (resource) {
-        /*this.editors = this.editors.filter(e => e.type !== 'preview');
-        this.editorService.preview(resource).then(() => {
-            const preview = new PreviewEditor(this, resource);
-            this.editors.push(preview);
-            preview.open(resource);
-        }).catch(error => {
-            this.logging.error(error);
-        });
-        */
-    };
-    WorkspaceComponent.prototype.diff = function (resource) {
-        return this.git.show(resource);
-    };
-    WorkspaceComponent.prototype.confirm = function (options) {
-        return this.notification.confirmAsync(options);
-    };
-    WorkspaceComponent.prototype.open = function (resource) {
-        var _this = this;
-        this.resources.open(resource).then(function (opened) {
-            if (opened) {
-                var editor = _this.editors.find(function (e) { return e.canOpen(resource); });
-                if (editor) {
-                    editor.open(resource);
-                }
-                else {
-                    if (resource.image) {
-                        _this.editors.push(new _models_editor__WEBPACK_IMPORTED_MODULE_2__["ImageEditor"](_this, resource));
-                    }
-                    else {
-                        _this.editors.push(new _models_editor__WEBPACK_IMPORTED_MODULE_2__["CodeEditor"](_this, resource));
-                    }
-                }
-            }
-        }).catch(function (error) {
-            _this.logging.error(error);
-        });
-    };
-    WorkspaceComponent.prototype.findReference = function (resource, path) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var error_1;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.resources.findReference(resource, path)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                    case 2:
-                        error_1 = _a.sent();
-                        this.logging.error('cannot resolve reference ' + path);
-                        return [2 /*return*/, undefined];
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    WorkspaceComponent.prototype.close = function (resource) {
-        var i = 0;
-        var contains = false;
-        while (true) {
-            i = 0;
-            contains = false;
-            while (i < this.editors.length) {
-                if (this.editors[i].contains(resource)) {
-                    contains = true;
-                    this.editors[i].close(resource);
-                }
-                i++;
-            }
-            if (!contains) {
-                break;
-            }
-        }
-    };
-    WorkspaceComponent.prototype.closeAllEditors = function () {
-        while (this.editors.length > 0) {
-            this.editors[0].closeAll();
-        }
-    };
-    WorkspaceComponent.prototype.save = function (resource) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var error_2;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, this.resources.save(resource)];
-                    case 1:
-                        _a.sent();
-                        this.notification.success('resource saved on the server !');
-                        this.detectChanges();
-                        return [2 /*return*/, true];
-                    case 2:
-                        error_2 = _a.sent();
-                        this.notification.error(error_2);
-                        return [2 /*return*/, false];
-                    case 3: return [2 /*return*/];
-                }
-            });
+        this.groups = this.editor.listGroups();
+        this.editor.onGroupChanged.subscribe(function (groups) {
+            _this.groups = groups;
         });
     };
     WorkspaceComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
@@ -3666,10 +4493,8 @@ var WorkspaceComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./workspace.component.html */ "./src/app/editor/workspace/workspace.component.html"),
             styles: [__webpack_require__(/*! ./workspace.component.scss */ "./src/app/editor/workspace/workspace.component.scss")]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_services_resource_service__WEBPACK_IMPORTED_MODULE_6__["ResourceService"], _angular_core__WEBPACK_IMPORTED_MODULE_1__["ChangeDetectorRef"],
-            _shared_services_notification_service__WEBPACK_IMPORTED_MODULE_7__["NotificationService"], _services_logging_service__WEBPACK_IMPORTED_MODULE_5__["LoggingService"],
-            _services_git_service__WEBPACK_IMPORTED_MODULE_3__["GitService"],
-            _services_task_service__WEBPACK_IMPORTED_MODULE_4__["TaskService"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_core_editor_service__WEBPACK_IMPORTED_MODULE_3__["EditorService"],
+            _shared_services_core_opener_service__WEBPACK_IMPORTED_MODULE_2__["OpenerService"]])
     ], WorkspaceComponent);
     return WorkspaceComponent;
 }());
@@ -3980,7 +4805,7 @@ var DroppableDirective = /** @class */ (function () {
     function DroppableDirective(el) {
         this.el = el;
         this.dropCondition = true;
-        this.handDrop = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"]();
+        this.handleDrop = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"]();
     }
     DroppableDirective.prototype.ngAfterContentInit = function () {
         if (!this.dropCondition) {
@@ -4026,7 +4851,7 @@ var DroppableDirective = /** @class */ (function () {
             var destination = this.id;
             var source = e.dataTransfer.getData('Text');
             if (source || file) {
-                self.handDrop.emit({ src: source, file: file, dst: destination });
+                self.handleDrop.emit({ src: source, file: file, dst: destination });
             }
             return false;
         }, false);
@@ -4038,7 +4863,7 @@ var DroppableDirective = /** @class */ (function () {
     tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Output"])(),
         tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"])
-    ], DroppableDirective.prototype, "handDrop", void 0);
+    ], DroppableDirective.prototype, "handleDrop", void 0);
     DroppableDirective = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"])({
             // tslint:disable-next-line: directive-selector
@@ -4312,28 +5137,50 @@ var SanitizeHtmlPipe = /** @class */ (function () {
 /*!*********************************************************!*\
   !*** ./src/app/shared/services/notification.service.ts ***!
   \*********************************************************/
-/*! exports provided: NotificationService */
+/*! exports provided: AbstractNotificationService, NotificationService */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AbstractNotificationService", function() { return AbstractNotificationService; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NotificationService", function() { return NotificationService; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var ngx_toastr__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ngx-toastr */ "./node_modules/ngx-toastr/fesm5/ngx-toastr.js");
-/* harmony import */ var _angular_material__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm5/material.es5.js");
-/* harmony import */ var _components_prompt_prompt_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/prompt/prompt.component */ "./src/app/shared/components/prompt/prompt.component.ts");
-/* harmony import */ var _components_confirm_confirm_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/confirm/confirm.component */ "./src/app/shared/components/confirm/confirm.component.ts");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var _angular_material__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm5/material.es5.js");
+/* harmony import */ var _components_prompt_prompt_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/prompt/prompt.component */ "./src/app/shared/components/prompt/prompt.component.ts");
+/* harmony import */ var _components_confirm_confirm_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/confirm/confirm.component */ "./src/app/shared/components/confirm/confirm.component.ts");
 
 
 
 
 
 
-var NotificationService = /** @class */ (function () {
+
+var AbstractNotificationService = /** @class */ (function () {
+    function AbstractNotificationService() {
+        this.onLogAdded = new rxjs__WEBPACK_IMPORTED_MODULE_3__["Subject"]();
+        this.onToggleDebuggingArea = new rxjs__WEBPACK_IMPORTED_MODULE_3__["Subject"]();
+        this.size = 0;
+    }
+    AbstractNotificationService.prototype.clear = function () {
+        this.size = 0;
+    };
+    AbstractNotificationService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])(),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
+    ], AbstractNotificationService);
+    return AbstractNotificationService;
+}());
+
+var NotificationService = /** @class */ (function (_super) {
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](NotificationService, _super);
     function NotificationService(toastr, dialog) {
-        this.toastr = toastr;
-        this.dialog = dialog;
+        var _this = _super.call(this) || this;
+        _this.toastr = toastr;
+        _this.dialog = dialog;
+        return _this;
     }
     NotificationService.prototype.success = function (message, title) {
         if (title === void 0) { title = ''; }
@@ -4362,7 +5209,7 @@ var NotificationService = /** @class */ (function () {
         });
     };
     NotificationService.prototype.promptAsync = function (options) {
-        var ref = this.dialog.open(_components_prompt_prompt_component__WEBPACK_IMPORTED_MODULE_4__["PromptComponent"], {
+        var ref = this.dialog.open(_components_prompt_prompt_component__WEBPACK_IMPORTED_MODULE_5__["PromptComponent"], {
             hasBackdrop: true,
             disableClose: true,
             data: options,
@@ -4386,7 +5233,7 @@ var NotificationService = /** @class */ (function () {
         });
     };
     NotificationService.prototype.confirmAsync = function (options) {
-        var ref = this.dialog.open(_components_confirm_confirm_component__WEBPACK_IMPORTED_MODULE_5__["ConfirmComponent"], {
+        var ref = this.dialog.open(_components_confirm_confirm_component__WEBPACK_IMPORTED_MODULE_6__["ConfirmComponent"], {
             hasBackdrop: true,
             disableClose: true,
             data: options,
@@ -4402,14 +5249,40 @@ var NotificationService = /** @class */ (function () {
             });
         });
     };
+    NotificationService.prototype.logInfo = function (message) {
+        this.log(message, 'info');
+    };
+    NotificationService.prototype.logWarning = function (message) {
+        this.log(message, 'warning');
+    };
+    NotificationService.prototype.logError = function (message) {
+        this.log(message, 'error');
+    };
+    NotificationService.prototype.log = function (message, type) {
+        var msg = message;
+        if (typeof message !== 'string') {
+            msg = message.error;
+            if (!msg) {
+                if (message.stack) {
+                    msg = ''.concat(message.message, '<br/>Stacktrace:<br/>', message.stack.split('\n').join('<br/>'));
+                }
+                else {
+                    msg = JSON.stringify(message);
+                }
+            }
+        }
+        var item = { message: msg, type: type };
+        this.onLogAdded.next(item);
+        this.size++;
+    };
     NotificationService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
             providedIn: 'root'
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [ngx_toastr__WEBPACK_IMPORTED_MODULE_2__["ToastrService"], _angular_material__WEBPACK_IMPORTED_MODULE_3__["MatDialog"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [ngx_toastr__WEBPACK_IMPORTED_MODULE_2__["ToastrService"], _angular_material__WEBPACK_IMPORTED_MODULE_4__["MatDialog"]])
     ], NotificationService);
     return NotificationService;
-}());
+}(AbstractNotificationService));
 
 
 

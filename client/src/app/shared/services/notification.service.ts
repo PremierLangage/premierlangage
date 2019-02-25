@@ -1,16 +1,45 @@
 import { Injectable } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { PromptComponent, PrompOptions } from '../components/prompt/prompt.component';
 import { ConfirmComponent, ConfirmOptions } from '../components/confirm/confirm.component';
 
+@Injectable()
+export abstract class AbstractNotificationService {
+    readonly onLogAdded: Subject<LogItem> = new Subject();
+    readonly onToggleDebuggingArea: Subject<any> = new Subject();
+
+    size = 0;
+
+    constructor() { }
+
+    abstract logInfo(message: any);
+    abstract logWarning(message: any);
+    abstract logError(message: any);
+
+    abstract success(message: string, title?: string): void;
+    abstract warning(message: string, title?: string): void;
+    abstract error(message: string, title?: string): void;
+
+    abstract prompt(options: PrompOptions, completion: (value: boolean | PrompOptions) => void): void;
+    abstract promptAsync(options: PrompOptions): Promise<PrompOptions>;
+    abstract confirm(options: ConfirmOptions, confirm: () => void, cancel?: () => void): void;
+    abstract confirmAsync(options: ConfirmOptions): Promise<boolean>;
+
+    clear() {
+        this.size = 0;
+    }
+
+  }
 @Injectable({
   providedIn: 'root'
 })
-export class NotificationService {
+export class NotificationService extends AbstractNotificationService {
 
-    constructor(private toastr: ToastrService, private dialog: MatDialog) { }
+    constructor(private toastr: ToastrService, private dialog: MatDialog) {
+        super();
+    }
 
     success(message: string, title: string= '') {
         this.toastr.success(message, title, {
@@ -82,4 +111,41 @@ export class NotificationService {
             });
         });
     }
+
+
+    logInfo(message: any) {
+        this.log(message, 'info');
+    }
+
+    logWarning(message: any) {
+        this.log(message, 'warning');
+    }
+
+    logError(message: any) {
+        this.log(message, 'error');
+    }
+
+    private log(message: any, type: 'info' | 'error' | 'warning') {
+        let msg = message;
+        if (typeof message !== 'string') {
+            msg = message.error;
+            if (!msg) {
+                if (message.stack) {
+                    msg = ''.concat(message.message, '<br/>Stacktrace:<br/>', message.stack.split('\n').join('<br/>'));
+                } else {
+                    msg = JSON.stringify(message);
+                }
+            }
+        }
+        const item = { message: msg, type: type };
+        this.onLogAdded.next(item);
+        this.size++;
+    }
+
+}
+
+
+export interface LogItem {
+    message: string;
+    type: 'error' | 'info' | 'warning';
 }

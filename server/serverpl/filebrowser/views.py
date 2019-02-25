@@ -6,6 +6,7 @@ import subprocess
 import gitcmd
 import htmlprint
 import requests
+import codecs
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -22,7 +23,7 @@ from loader.loader import load_file, reload_pltp as rp
 from loader.utils import get_location
 
 from playexo.models import Activity, SessionTest
-
+import filebrowser.filter as filter
 
 
 @login_required
@@ -70,11 +71,22 @@ def get_resource(request):
         return HttpResponseBadRequest(missing_parameter('path'))
     
     try:
-        if (is_image(join_fb_root(path))):
-            return JsonResponse({'image': to_download_url(path)})
-        with open(join_fb_root(path)) as f:
+        full_path = join_fb_root(path)
+        meta = {
+                'text': filter.is_text(full_path),
+                'code': filter.is_code(full_path) or filter.is_pl(full_path) or filter.is_pltp(full_path),
+                'archive': filter.is_archive(full_path),
+                'application': filter.is_application(full_path),
+                'image': filter.is_image(full_path),
+                'excel': filter.is_excel(full_path),
+                'download_url': to_download_url(path)
+        }
+        with codecs.open(full_path, "r", encoding='utf-8', errors='ignore') as f:
             content = f.read()
-        return JsonResponse({'content': content})
+        return JsonResponse({
+            'content': content,
+            'meta': meta
+        })
     except Exception as e:  # pragma: no cover
         msg = "Impossible to open '" + path + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.DEBUG:
@@ -504,7 +516,7 @@ def preview_pl(request):
             file_path = os.path.join(*(path_components[1:]))
             pl, warnings = load_file(directory, file_path)
             if not pl:
-                preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
+                preview = '<div class="alert alert-danger" role="alert"> 1 Failed to load \'' \
                           + os.path.basename(file_path) + "': \n" + warnings + "</div>"
             else:
                 if warnings:
@@ -514,7 +526,7 @@ def preview_pl(request):
                 preview = exercise.get_exercise(request)
         
         except Exception as e:  # pragma: no cover
-            preview = ('<div class="alert alert-danger" role="alert"> Failed to load \''
+            preview = ('<div class="alert alert-danger" role="alert"> 3 Failed to load \''
                        + os.path.basename(file_path) + "': \n\n"
                        + htmlprint.code(str(e)))
             if settings.DEBUG:
@@ -550,7 +562,7 @@ def preview_pl(request):
 @csrf_exempt
 @require_POST
 def compile_pl(request):
-    """ Used by the PL editor to complie a PL"""
+    """ Used by the PL editor to compile a PL"""
     post = json.loads(request.body.decode())
     path = post.get('path')
     if not path:

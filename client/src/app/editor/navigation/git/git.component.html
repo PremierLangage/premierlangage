@@ -1,5 +1,6 @@
 <mat-progress-bar mode="query" *ngIf='runningTask()'></mat-progress-bar>
-<mat-accordion class='accordion' multi='true'>
+<div class='navigation__content'>
+  <mat-accordion class='accordion' multi='true'>
     <mat-expansion-panel class='repositories mat-elevation-z0' expanded='true'>
       <mat-expansion-panel-header collapsedHeight='48px' expandedHeight='48px'>
         <mat-panel-title>
@@ -28,14 +29,14 @@
     </mat-expansion-panel>
     <mat-divider></mat-divider>
     <mat-expansion-panel class='changes mat-elevation-z0' *ngIf='selection' expanded='true'>
-        <mat-expansion-panel-header collapsedHeight='48px' expandedHeight='48px'>
-          <mat-panel-title>
-            CHANGES IN {{selection.name | uppercase}}
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-        <mat-form-field class='commit' *ngIf='selection.count > 0; else uptodate'>
-            <input matInput placeholder="Press enter to commit" (keydown)='commit($event)' [(ngModel)]='commitMessage'>
-        </mat-form-field>
+      <mat-expansion-panel-header collapsedHeight='48px' expandedHeight='48px'>
+        <mat-panel-title>
+          CHANGES IN {{selection.name | uppercase}}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-form-field class='commit' *ngIf='selection.count > 0; else uptodate'>
+          <input matInput placeholder="Press enter to commit" (keydown)='commit($event)' [(ngModel)]='commitMessage'>
+      </mat-form-field>
         <ng-template #uptodate> <span>nothing to commit, working tree clean</span> </ng-template>
         <ng-container *ngFor="let change of selection.changes; trackBy trackChange">
             <div class='line' [matTooltip]="change.path"> 
@@ -53,5 +54,22 @@
               </ng-container>
             </mat-menu>
         </ng-container>
-    </mat-expansion-panel>
-</mat-accordion>
+        <ng-container *ngFor="let change of selection.changes; trackBy trackChange">
+          <div class='line' [matTooltip]="change.path"> 
+              <span class='line-title' [matBadge]="change.type" matBadgePosition="after">{{change.name}}</span>
+              <div class='spacer'></div>
+              <span class='pointer' [matMenuTriggerFor]="menu">
+                <i class='fas fa-ellipsis-h'></i>
+              </span>
+          </div>
+          <mat-menu #menu="matMenu">
+            <ng-container *ngFor='let option of options'>
+                <button *ngIf='option.enabled(change)' (click)='option.action(change)' mat-menu-item>
+                  {{option.label}}
+                </button>
+            </ng-container>
+          </mat-menu>
+      </ng-container>
+    </mat-expansion-panel>    
+  </mat-accordion>
+</div>

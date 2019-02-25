@@ -2,23 +2,26 @@
   <div class='editor-container'>
     <navigation #navigation></navigation>
     <as-split direction="horizontal" gutterSize='5' useTransition='true'>
+        
         <as-split-area class='navigation' style='overflow: hidden;' [size]="navigation.size" [ngSwitch]="navigation.index">
             <explorer *ngSwitchCase="0" [resources]='navigation.resources()' [showHeader]='true'></explorer>
             <search *ngSwitchCase="1" [resources]='navigation.resources()'></search>
             <git *ngSwitchCase="2"></git>
             <settings *ngSwitchCase="3"></settings>
         </as-split-area>
+
         <as-split-area class='h100' style='overflow: hidden;' [size]="100 - navigation.size">
             <as-split class='workspace' direction='vertical' gutterSize='5' useTransition='true' (dragEnd)='debugging.dragEnd($event)'>
                 <as-split-area class='h100' [size]='100 - debugging.size'>
                     <workspace></workspace>
                 </as-split-area>
                 <as-split-area class='debugging' style='overflow: hidden;' [size]='debugging.size'>
-                    <console #debugging></console>
+                    <debugging #debugging></debugging>
                 </as-split-area>
             </as-split>
         </as-split-area>
     </as-split>
   </div>
+  <mat-progress-bar mode='indeterminate' color='primary' *ngIf='runningTask()'></mat-progress-bar>
   <footer></footer>
 </div>

@@ -1,5 +1,5 @@
-import { Resource } from './models/resource.model';
-import { LANGUAGES } from './models/editor.config';
+import { Resource } from './resource.model';
+import { IEditorTab } from '../services/core/opener.service';
 
 export const DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&'];
 
@@ -41,7 +41,7 @@ export function isPltp(item: Resource) {
 }
 
 export function canBePreviewed(item: Resource) {
-    return item && isPl(item);
+    return item && isPl(item) || isSVG(item);
 }
 
 export function isHome(item: Resource) {
@@ -52,6 +52,14 @@ export function isNotRoot(item: Resource) {
     return !isRoot(item);
 }
 
+export function isSVG(item: Resource) {
+    return extension(item) === 'svg';
+}
+
+export function fromServer(resource: Resource) {
+    return !resource.meta || resource.meta.download_url;
+}
+
 export function isRepo(item: Resource) {
     return item && item.repo;
 }
@@ -59,9 +67,11 @@ export function isRepo(item: Resource) {
 export function canAddFile(item: Resource) {
     return canWrite(item) && isFolder(item);
 }
+
 export function canCopy(item: Resource) {
     return canRead(item) && isNotRoot(item);
 }
+
 export function canAddFolder(item: Resource) {
     return canWrite(item) && isFolder(item);
 }
@@ -86,17 +96,9 @@ export function canBeReloaded(item: Resource) {
     return canWrite(item) && isPltp(item);
 }
 
-export function extensionOf(resource: Resource) {
+export function extension(resource: Resource) {
     const dotIndex = resource.name.lastIndexOf('.');
     return resource.name.substring(dotIndex + 1);
-}
-
-export function language(resource: Resource) {
-    const extension = extensionOf(resource);
-    if (extension in LANGUAGES) {
-        return LANGUAGES[extension];
-    }
-    return '';
 }
 
 export function canBeUsedAsFileName(name: string) {
@@ -127,4 +129,40 @@ export function basename(path: string) {
     }
     const array = path.split('/');
     return array[array.length - 1];
+}
+
+export function asURI(resource: Resource) {
+    const monaco = (<any>window).monaco;
+    return monaco.Uri.file(resource.path);
+}
+
+export function asTab(resource: Resource, preview?: boolean): IEditorTab {
+    return {
+        resource: resource,
+        uri: asURI(resource),
+        title: preview ? 'Preview \'' + resource.name + '\'' : resource.name,
+        preview: preview,
+        icon: resource.icon
+    };
+}
+
+export function compareTab(tab1: IEditorTab, tab2: IEditorTab) {
+    return tab1.resource.path === tab2.resource.path;
+}
+
+
+export function resourceIsURI(resource: Resource, uri: monaco.Uri) {
+    return '/' + resource.path === uri.path;
+}
+
+export function openAsCode(data: IEditorTab) {
+    return !openAsImage(data);
+}
+
+export function openAsImage(data: IEditorTab) {
+    return !openAsPreview(data) && data.resource.meta && data.resource.meta.image && !isSVG(data.resource);
+}
+
+export function openAsPreview(data: IEditorTab) {
+    return data.resource.meta && data.resource.meta.html !== undefined;
 }

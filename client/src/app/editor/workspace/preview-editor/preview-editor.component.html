@@ -1,1 +1,1 @@
-<div class='preview-editor__content' [innerHTML]='editor.content() | sanitizeHtml' runScripts></div>
+<div *ngIf='!hidden' class='preview-editor' [innerHTML]='html | sanitizeHtml' runScripts></div>
