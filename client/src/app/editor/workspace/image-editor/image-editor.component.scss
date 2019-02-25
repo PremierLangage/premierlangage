@@ -1,0 +1,39 @@
+.image-editor {
+    height: 100%;
+    position: relative;
+    background-position: 0px 0px, 10px 10px;
+    background-size: 20px 20px;
+    background-image: linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee 100%),linear-gradient(45deg, #eee 25%, white 25%, white 75%, #eee 75%, #eee 100%);
+    img {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        bottom: 0px;
+        left: 0px;
+        max-width: 100%;
+        height: auto;
+        margin: auto;
+        border-radius: 16px;
+        background-color: white;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    .code-editor__btn-group {
+        position: absolute;
+        top: 48px;
+        right: 12px;
+        width: 32px;
+    }
+
+    .code-editor__btn {
+        background-color: #ecedf0;
+        width: 32px;
+        height: 32px;
+        border-radius: 2px 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: zoom-in;
+        margin-bottom: 8px;
+    }
+}

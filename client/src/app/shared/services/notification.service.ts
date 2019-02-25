@@ -10,28 +10,28 @@ import { ConfirmComponent, ConfirmOptions } from '../components/confirm/confirm.
 })
 export class NotificationService {
 
-	constructor(private toastr: ToastrService, private dialog: MatDialog) { }
+    constructor(private toastr: ToastrService, private dialog: MatDialog) { }
 
-	success(message: string, title: string='') {
-		this.toastr.success(message, title, {
-			enableHtml: true,
-			onActivateTick: true,
-		});
-	}
+    success(message: string, title: string= '') {
+        this.toastr.success(message, title, {
+            enableHtml: true,
+            onActivateTick: true,
+        });
+    }
 
-	warning(message: string, title: string='') {
-		this.toastr.warning(message, title, {
-			enableHtml: true,
-			onActivateTick: true,
-		});
-	}
+    warning(message: string, title: string= '') {
+        this.toastr.warning(message, title, {
+            enableHtml: true,
+            onActivateTick: true,
+        });
+    }
 
-	error(message: string, title: string='') {
-		this.toastr.error(message, title, {
-			enableHtml: true,
-			onActivateTick: true,
-		});
-	}
+    error(message: string, title: string= '') {
+        this.toastr.error(message, title, {
+            enableHtml: true,
+            onActivateTick: true,
+        });
+    }
 
     prompt(options: PrompOptions, completion: (value: boolean | PrompOptions) => void) {
         this.promptAsync(options).then((data) => {
@@ -39,12 +39,12 @@ export class NotificationService {
         });
     }
 
-    promptAsync(options: PrompOptions) {   
+    promptAsync(options: PrompOptions) {
         const ref: MatDialogRef<PromptComponent, PrompOptions> = this.dialog.open(PromptComponent, {
             hasBackdrop: true,
             disableClose : true,
-			data: options,
-        });      
+            data: options,
+        });
         return new Promise<PrompOptions>(resolve => {
             let subscription: Subscription;
             subscription = ref.afterClosed().subscribe(value => {
@@ -58,7 +58,7 @@ export class NotificationService {
         this.confirmAsync(options).then((success) => {
             if (success && confirm) {
                 confirm();
-            } else if(!success && cancel) {
+            } else if (!success && cancel) {
                 cancel();
             }
         });

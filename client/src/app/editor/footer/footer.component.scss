@@ -2,11 +2,15 @@
     display: flex;    
     align-content: center;
     align-items: center;
-    height: 32px;
-    background-color:#343A40;
+    height: 20px;
+    background-color:#2f77c2;
     color: white;
-    font-size: 12px;
+    font-size: 14px;
     padding: 0 8px;
+}
+
+a {
+    color: white;
 }
 
 .repo-icon {

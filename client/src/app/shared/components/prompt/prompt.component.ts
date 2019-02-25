@@ -1,5 +1,5 @@
-import { Component, Inject } from "@angular/core";
-import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
+import { Component, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 @Component({
     selector: 'app-prompt',
@@ -7,7 +7,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
     styleUrls: ['./prompt.component.scss']
   })
 export class PromptComponent {
-    constructor(public dialog: MatDialogRef<PromptComponent>, @Inject(MAT_DIALOG_DATA) public data: PrompOptions) {     
+    constructor(public dialog: MatDialogRef<PromptComponent>, @Inject(MAT_DIALOG_DATA) public data: PrompOptions) {
         data.okTitle = data.okTitle || 'OK';
         data.noTitle = data.noTitle || 'CANCEL';
     }
@@ -24,5 +24,5 @@ export interface PrompOptions {
     message?: string;
     okTitle?: string;
     noTitle?: string;
-    fields: PrompField[]
+    fields: PrompField[];
 }

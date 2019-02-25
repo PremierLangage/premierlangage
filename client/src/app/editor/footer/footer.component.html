@@ -1,10 +1,9 @@
 <ng-container *ngIf="inRepo()">
     <i class='repo-icon {{repoHost()}} fa-1x'></i> 
-    <a class='repo-url' href="{{repoUrl()}} ">{{repoUrl()}}</a>
-    <i class='repo-branch'>{{repoBranch()}}</i>
+    <a class='repo-url' href="{{repoUrl()}} ">{{repoUrl()}}</a> <i class='repo-branch'> - {{repoBranch()}} </i>
 </ng-container>
 <div class="spacer"></div>
 <ng-container *ngIf='runningTask()'>
-    <mat-progress-spinner mode='indeterminate' color='warn' strokeWidth='2' diameter='24'></mat-progress-spinner> 
+    <mat-progress-spinner mode='indeterminate' color='warn' strokeWidth='2' diameter='16'></mat-progress-spinner> 
     <span class='task-name'>{{taskName()}} task in progress...</span>
 </ng-container>

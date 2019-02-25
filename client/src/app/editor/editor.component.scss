@@ -1,7 +1,7 @@
 $header-height: 64px;
 $tab-height: 36px;
 
-.editor-host {
+.host {
     position: relative;
     padding: 0;
     margin: 0;
@@ -11,11 +11,18 @@ $tab-height: 36px;
     color: #5a5a5a;
 }
 
-.editor__container {
-    position: relative;
+.editor-container {
     display: flex;
-    flex: 1;
+    position: relative;
     overflow: hidden;
+    height: 100%;
+    flex: 1;
+}
+
+.navigation {
+    height: 100%;
+    overflow: hidden; 
+    background-color: #F6F6F6;
 }
 
 .tab-bar {
@@ -24,139 +31,34 @@ $tab-height: 36px;
     position: relative;
     height: $tab-height;
     align-items: center;
-    overflow-x: auto;
-    overflow-y: hidden;
-    background-color: #F5F5F5;
-}
-
-.tab-item {
-    display: inline-flex;
-    height: 100%;
-    align-items: center;
-    position: relative;
-    font-size: 14px;
-    color: #5a5a5a;
-    font-style: normal;
-    padding: 0px 12px;
-    cursor: pointer;
-}
-
-.editor__workspace-container  {
-    position: relative;
-    .editor__workspace {
-        height: 100%;
-    }
-    
-    .tab-bar  .item-group {
-        display: flex;
-        align-items: center;
-        height: 100%;
-        width: 100%;
-    }
-    
-    .tab-item {
-        background-color: #ecedf0;
-
-        &.active {
-            background-color: #FFF;
-        }
-
-        .tab-icon {
-            margin-right: 4px;
-        }
-
-        .tab-close {
-            font-size: 18px;
-            &:hover {
-                opacity: 1;
-            }
-        }
-
-        &.changed .tab-close {
-            color:red;
-            font-size: 36px;
-        }
-    }
-
-    .code-editor, .preview-editor, .image-editor {
-        height: calc(100%);
-    }
-
-    .image-editor {
-        background-color: #fff;
-        background-size: 100% 1.2em;
-        background-image: -webkit-linear-gradient(0deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px),
-                        -webkit-linear-gradient(#eee .05em, transparent .05em);
-        background-image: -moz-linear-gradient(0deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px),
-                        -moz-linear-gradient(#eee .05em, transparent .05em);
-        background-image: -ms-linear-gradient(0deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px),
-                        -ms-linear-gradient(#eee .05em, transparent .05em);
-        background-image: -o-linear-gradient(0deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px),
-                        -o-linear-gradient(#eee .05em, transparent .05em);
-        background-image: linear-gradient(0deg, transparent 79px, #abced4 79px, #abced4 81px, transparent 81px),
-                        linear-gradient(#eee .05em, transparent .05em);
-    
-        img {
-            margin: auto;
-            position: absolute;
-            top: 0; left: 0; bottom: 0; right: 0;
-        }
-    
-        .code-editor__btn-group {
-            position: absolute;
-            top: 48px;
-            right: 12px;
-            width: 32px;
-        }
-
-        .code-editor__btn {
-            background-color: #ecedf0;
-            width: 32px;
-            height: 32px;
-            border-radius: 2px 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: zoom-in;
-            margin-bottom: 8px;
-        }
-    }
-
-    .preview-editor {
-        overflow: auto;
-        .preview-editor__content {
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            padding: 0 12px;
-        }
-    }
-}
-
-
-.sidebar-panel {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    background-color: #ecedf0;
     overflow: hidden;
-    
-    .tab-bar { 
-        font-size: 1rem;
-        padding: 0 0 0 16px;
-    }
-    
-    .sidebar-panel__content {
+    background-color: #F5F5F5;
+    border-bottom: 1px solid #dee2e6!important;
+
+    .tab-item {
+        display: inline-flex;
+        height: 100%;
+        align-items: center;
         position: relative;
-        margin-top: 8px;
-        overflow-y: auto;
-        margin: 0;
-        height: calc(100% - 36px);
+        font-size: 14px;
+        color: #5a5a5a;
+        font-style: normal;
+        padding: 0px 12px;
+        cursor: pointer;
     }
+}
+
+.workspace {
+    position: relative;
+    height: 100%;
 }
 
 .spacer {
     flex-grow: 1;
+}
+
+.h100 {
+    height: 100%;
 }
 
 .editor-home {

@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { EditorComponent } from './editor/editor.component';
 
 const routes: Routes = [
-  {path: 'filebrowser', component: EditorComponent}
+  /* {path: '', component: EditorComponent} */
 ];
 
 @NgModule({

@@ -350,7 +350,7 @@ def git_clone(request):
             message = htmlprint.code(out + err)
             ret, out, err = gitcmd.set_url(path, url)
             if not ret:
-                return HttpResponse(htmlprint.code(out + err))
+                return HttpResponse(message + htmlprint.code(out + err))
             else:  # pragma: no cover
                 shutil.rmtree(path, ignore_errors=True)
                 raise Exception(err + out)

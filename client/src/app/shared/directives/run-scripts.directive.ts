@@ -1,5 +1,6 @@
 import { Directive, ElementRef, OnInit } from '@angular/core';
 
+// tslint:disable-next-line: directive-selector
 @Directive({ selector: '[runScripts]', exportAs: 'runScripts' })
 export class RunScriptsDirective implements OnInit {
     constructor(private elementRef: ElementRef) { }

@@ -1,7 +1,7 @@
-import { Resource } from '../models/resource';
-import { LANGUAGES } from './editor.config';
+import { Resource } from './models/resource.model';
+import { LANGUAGES } from './models/editor.config';
 
-export const DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&']
+export const DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&'];
 
 export function canRead(item: Resource) {
     return item && item.read;
@@ -16,15 +16,15 @@ export function readonly(item: Resource) {
 }
 
 export function isFolder(item: Resource) {
-    return item &&  item.type == 'folder';
+    return item &&  item.type === 'folder';
 }
 
 export function isFile(item: Resource) {
-    return item &&  item.type == 'file';
+    return item &&  item.type === 'file';
 }
 
 export function isRoot(item: Resource) {
-    return item &&  item.name === 'home' || item.name === 'home/' 
+    return item &&  item.name === 'home' || item.name === 'home/'
     || item.name === 'lib' || item.name === 'lib/';
 }
 
@@ -93,8 +93,9 @@ export function extensionOf(resource: Resource) {
 
 export function language(resource: Resource) {
     const extension = extensionOf(resource);
-    if (extension in LANGUAGES)
+    if (extension in LANGUAGES) {
         return LANGUAGES[extension];
+    }
     return '';
 }
 
@@ -121,8 +122,9 @@ export function assert(condition: any, message: string) {
 }
 
 export function basename(path: string) {
-    if (!path)
+    if (!path) {
         return path;
+    }
     const array = path.split('/');
     return array[array.length - 1];
 }

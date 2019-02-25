@@ -1,40 +1,45 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { EditorService } from '../editor.service';
+import { Component, OnInit } from '@angular/core';
+import { ResourceService } from '../services/resource.service';
+import { TaskService } from '../services/task.service';
 import * as utils from '../editor.utils';
 
 @Component({
-  selector: 'app-footer',
+    // tslint:disable-next-line: component-selector
+  selector: 'footer',
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
 })
 export class FooterComponent implements OnInit {
 
-	constructor(private editor: EditorService) { }
+    constructor(
+        private readonly task: TaskService,
+        private readonly resources: ResourceService
+    ) { }
 
-	ngOnInit() {
-	}
+    ngOnInit() {
+    }
 
-	runningTask() { 
-		return this.editor.runningTask;
-	}
+    runningTask() {
+        return this.task.running;
+    }
 
-	taskName() {
-		return this.editor.taskName;
-	}
-	
-	inRepo() {
-		return utils.isRepo(this.editor.selection);
-	}
+    taskName() {
+        return this.task.taskName;
+    }
 
-	repoHost() {
-		return this.editor.selection.repo.host;
-	}
+    inRepo() {
+        return utils.isRepo(this.resources.selection);
+    }
 
-	repoUrl() {
-		return this.editor.selection.repo.url;
-	}
+    repoHost() {
+        return this.resources.selection.repo.host;
+    }
 
-	repoBranch() {
-		return this.editor.selection.repo.branch;
-	}
+    repoUrl() {
+        return this.resources.selection.repo.url;
+    }
+
+    repoBranch() {
+        return this.resources.selection.repo.branch;
+    }
 }
