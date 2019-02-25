@@ -62,14 +62,14 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         this.monacoService.disposeEditor(this.editor.codeEditor);
     }
 
-    private editorLoaded(codeEditor: IStandaloneCodeEditor) {
+    private codeEditorLoaded(codeEditor: IStandaloneCodeEditor) {
         this.monacoService.registerEditor(codeEditor);
         this.editor.codeEditor = codeEditor;
         this.addCommands(codeEditor);
         this.open(this.editor.data());
     }
 
-    private diffLoaded(diffEditor: IStandaloneDiffEditor) {
+    private diffEditorLoaded(diffEditor: IStandaloneDiffEditor) {
         this.monacoService.registerEditor(diffEditor.getModifiedEditor());
         this.editor.diffEditor = diffEditor;
         this.addCommands(this.editor.diffEditor.getModifiedEditor());
@@ -90,7 +90,6 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         this.editor.codeEditor.updateOptions({ readOnly: this.readonly });
         this.editor.codeEditor.focus();
 
-
         if (this.editor.diffEditing) {
             this.editor.diffEditor.setModel({
                 original: monaco.editor.createModel(this.diffContent || '', this.monacoService.findLanguage(this.active)),
@@ -99,7 +98,12 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
             this.editor.diffEditor.getModifiedEditor().updateOptions({ readOnly: !this.readonly });
             this.editor.diffEditor.getModifiedEditor().focus();
         }
+
+        if (this.readonly) {
+            this.notification.warning('readonly editor');
+        }
     }
+
 
     private addCommands(editor: IStandaloneCodeEditor) {
         editor.onDidChangeModelContent(() => {

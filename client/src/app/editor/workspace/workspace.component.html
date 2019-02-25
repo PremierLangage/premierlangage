@@ -1,13 +1,11 @@
 <!-- LITTLE HACK TO PRELOAD MONACO EDITOR -->
 <ngx-monaco-editor [hidden]='true' [options]='{}' [model]='{}'></ngx-monaco-editor>
 <as-split class='h100' direction='horizontal' gutterSize='5' useTransition='true' cdkDropListGroup>
-    <!-- EDITOR GROUPS SPLIT AREA -->
-    <ng-container  *ngFor='let group of groups'>
+    <ng-container *ngFor='let group of groups'>
         <as-split-area class='editor-group h100' style='overflow: hidden;'>
-            <!-- GROUP TABS -->
             <div class='tab-bar'>
                 <div [id]='group.id()' class='tab-group' cdkDropList [cdkDropListData]="group.tabs" (cdkDropListDropped)="group.drop($event)">
-                    <div *ngFor='let tab of group.tabs;trackBy: group.trackTab' [matTooltip]="tab.resource.path"
+                    <div *ngFor='let tab of group.tabs; trackBy: group.trackTab' [matTooltip]="tab.resource.path"
                         [ngClass]="{'tab-item': true, active: group.isActive(tab), changed: group.isChanged(tab)}"
                         (click)='group.open(tab)' cdkDragAxis='x' cdkDrag>
                         <i class="tab-icon {{tab.icon}}"></i>
@@ -16,15 +14,14 @@
                     </div>
                 </div>
                 <div class="spacer"></div>  
-                <ng-container *ngIf='!group.isEmpty() && !group.onlyPreview(); else emptyGroup'>
-                    <ng-container *ngIf='group.hasFocus()'>
-                        <ng-container *ngFor='let action of group.actions'>
+                <ng-container *ngIf='group.someAction();'>
+                    <ng-container *ngIf='group.focused()'>
+                        <ng-container *ngFor='let action of group.actions()'>
                             <div class='tab-item' [matTooltip]='action.tooltip' *ngIf='action.condition(group.activeTab().resource)' (click)='action.invoke(group.activeTab().resource)'>
                                 <i class="{{action.icon}}"></i>
                             </div>
                         </ng-container>
                     </ng-container>
-                    
                     <div class='tab-item' matTooltip='More Options' [matMenuTriggerFor]="editorMenu">
                         <i class="fas fa-ellipsis-h"></i>
                     </div>
@@ -36,12 +33,6 @@
                         <button mat-menu-item (click)='group.closeSaved()'>Close Saved ⌘Alt U</button>
                     </mat-menu>
                 </ng-container>
-                <ng-template #emptyGroup>
-                    <div class='tab-item' matTooltip='Close Group' (click)='group.dispose()'>
-                        <i class="fas fa-times"></i>
-                    </div>
-                </ng-template>
-                
             </div>
             <ng-container *ngFor='let editor of group.editors; trackBy group.trackEditor'>
                 <ng-container [ngSwitch]="editor.type()">

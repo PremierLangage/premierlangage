@@ -7,19 +7,20 @@ import { ResourceService } from './resource.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { ConfirmOptions } from 'src/app/shared/components/confirm/confirm.component';
 import { IEditorTab } from './opener.service';
-import { asTab, compareTab, openAsPreview } from '../../models/filters.model';
+import { asTab, compareTab, openAsPreview, compareGroup } from '../../models/filters.model';
 
 export interface IEditorService {
+    open(tab: IEditorTab, sideBySide?: boolean): Promise<boolean>;
     listGroups(): IEditorGroup[];
     findGroup(id: number): IEditorGroup;
-    addGroup(group: IEditorGroup): Promise<boolean>;
+    findGroups(tab: IEditorTab): IEditorGroup[];
+    updateGroup(group: IEditorGroup): Promise<boolean>;
     removeGroup(group: IEditorGroup): Promise<boolean>;
-    confirm(options: ConfirmOptions): Promise<boolean>;
     openContent(resource: Resource): Promise<boolean>;
     saveContent(resource: Resource): Promise<boolean>;
     focus(group: IEditorGroup): void;
-    open(tab: IEditorTab, sideBySide?: boolean): Promise<boolean>;
     previewResource(resource: Resource): Promise<Resource>;
+    confirm(options: ConfirmOptions): Promise<boolean>;
     subscribeChange(completion: (groups: IEditorGroup[]) => void): Subscription;
 }
 
@@ -32,43 +33,6 @@ export abstract class AbstractEditorService implements IEditorService {
     readonly onGroupChanged: Subject<any> = new Subject();
 
     constructor() {
-    }
-
-    async addGroup(group: IEditorGroup): Promise<boolean> {
-        this.groups[group.id()] = group;
-        if (this.previewGroup) {
-            this.previewGroup.closeAll();
-        }
-        this.previewGroup = group.onlyPreview() ? group : undefined;
-        if (this.previewGroup) {
-            if (this.previewGroup.id() !== group.id()) {
-                this.previewGroup.closeAll();
-            }
-        } else {
-            if (openAsPreview(group.activeTab())) {
-                await this.open(asTab(group.activeTab().resource, true), true);
-            }
-            this.focus(group);
-        }
-        this.onGroupChanged.next(this.listGroups());
-        return true;
-    }
-
-    async removeGroup(group: IEditorGroup): Promise<boolean> {
-        if (!this.findGroup(group.id())) {
-            throw new Error(`The group '${group.id()}' is not found`);
-        }
-
-        if (group.hasFocus()) {
-            const newFocused = this.listGroups().find(g => g.id() !== group.id());
-            if (newFocused) {
-                await this.addGroup(newFocused);
-            }
-        }
-
-        delete this.groups[group.id()];
-        this.onGroupChanged.next(this.listGroups());
-        return true;
     }
 
     focus(group: IEditorGroup): void {
@@ -86,8 +50,54 @@ export abstract class AbstractEditorService implements IEditorService {
         return this.groups[id];
     }
 
+    findGroups(tab: IEditorTab): IEditorGroup[] {
+        return this.listGroups().filter(group => {
+            return group.someTab(item => compareTab(tab, item));
+        });
+    }
+
     subscribeChange(completion: (groups: IEditorGroup[]) => void): Subscription {
        return this.onGroupChanged.subscribe(completion);
+    }
+
+    async updateGroup(group: IEditorGroup): Promise<boolean> {
+        this.groups[group.id()] = group;
+        if (this.previewGroup) {
+            this.previewGroup.closeAll();
+        }
+        if (this.previewGroup = group.somePreview() ? group : undefined) {
+            if (!compareGroup(this.previewGroup, group)) {
+                if (!await this.previewGroup.closeAll()) {
+                    return false;
+                }
+            }
+        } else {
+            if (openAsPreview(group.activeTab())) {
+                if (!await this.open(asTab(group.activeTab().resource, true))) {
+                    return false;
+                }
+            }
+            this.focus(group);
+        }
+        this.onGroupChanged.next(this.listGroups());
+        return true;
+    }
+
+    async removeGroup(group: IEditorGroup): Promise<boolean> {
+        if (!this.findGroup(group.id())) {
+            throw new Error(`The group '${group.id()}' is not found`);
+        }
+
+        if (group.focused()) {
+            const newFocused = this.listGroups().find(g => !compareGroup(g, group));
+            if (newFocused) {
+                await this.updateGroup(newFocused);
+            }
+        }
+
+        delete this.groups[group.id()];
+        this.onGroupChanged.next(this.listGroups());
+        return true;
     }
 
     abstract confirm(options: ConfirmOptions): Promise<boolean>;
@@ -111,11 +121,11 @@ export class EditorService extends AbstractEditorService {
         const groups = this.listGroups();
         if (sideBySide || tab.preview) {
             // tslint:disable-next-line: max-line-length
-            group = tab.preview ? (groups.find(g => g.onlyPreview()) || new EditorGroup(this)) : new EditorGroup(this);
+            group = tab.preview ? (groups.find(g => g.somePreview()) || new EditorGroup(this)) : new EditorGroup(this);
         } else {
             group =     groups.find(g => g.someTab(t => t.resource.path === tab.resource.path))
-                    ||  groups.find(g => g.hasFocus() && !g.onlyPreview())
-                    ||  groups.find(g => !g.onlyPreview()) || new EditorGroup(this);
+                    ||  groups.find(g => g.focused() && !g.somePreview())
+                    ||  groups.find(g => !g.somePreview()) || new EditorGroup(this);
         }
         return group.open(tab).catch(error => {
             this.notification.logError(error);

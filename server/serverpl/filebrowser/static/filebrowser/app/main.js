@@ -413,7 +413,7 @@ var EditorRoutingModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class='host'>\n  <div class='editor-container'>\n    <navigation #navigation></navigation>\n    <as-split direction=\"horizontal\" gutterSize='5' useTransition='true'>\n        \n        <as-split-area class='navigation' style='overflow: hidden;' [size]=\"navigation.size\" [ngSwitch]=\"navigation.index\">\n            <explorer *ngSwitchCase=\"0\" [resources]='navigation.resources()' [showHeader]='true'></explorer>\n            <search *ngSwitchCase=\"1\" [resources]='navigation.resources()'></search>\n            <git *ngSwitchCase=\"2\"></git>\n            <settings *ngSwitchCase=\"3\"></settings>\n        </as-split-area>\n\n        <as-split-area class='h100' style='overflow: hidden;' [size]=\"100 - navigation.size\">\n            <as-split class='workspace' direction='vertical' gutterSize='5' useTransition='true' (dragEnd)='debugging.dragEnd($event)'>\n                <as-split-area class='h100' [size]='100 - debugging.size'>\n                    <workspace></workspace>\n                </as-split-area>\n                <as-split-area class='debugging' style='overflow: hidden;' [size]='debugging.size'>\n                    <debugging #debugging></debugging>\n                </as-split-area>\n            </as-split>\n        </as-split-area>\n    </as-split>\n  </div>\n  <mat-progress-bar mode='indeterminate' color='primary' *ngIf='runningTask()'></mat-progress-bar>\n  <footer></footer>\n</div>"
+module.exports = "<div class='host'>\n  <div class='editor-container'>\n    <navigation #navigation></navigation>\n    <as-split direction=\"horizontal\" gutterSize='5' useTransition='true'>    \n        <as-split-area class='navigation' style='overflow: hidden;' [size]=\"navigation.size\" [ngSwitch]=\"navigation.index\">\n            <explorer *ngSwitchCase=\"0\" [resources]='navigation.resources()' [showHeader]='true'></explorer>\n            <search *ngSwitchCase=\"1\" [resources]='navigation.resources()'></search>\n            <git *ngSwitchCase=\"2\"></git>\n            <settings *ngSwitchCase=\"3\"></settings>\n        </as-split-area>\n        <as-split-area class='h100' style='overflow: hidden;' [size]=\"100 - navigation.size\">\n            <as-split class='workspace' direction='vertical' gutterSize='5' useTransition='true' (dragEnd)='debugging.dragEnd($event)'>\n                <as-split-area class='h100' [size]='100 - debugging.size'>\n                    <workspace></workspace>\n                </as-split-area>\n                <as-split-area class='debugging' style='overflow: hidden;' [size]='debugging.size'>\n                    <debugging #debugging></debugging>\n                </as-split-area>\n            </as-split>\n        </as-split-area>\n    </as-split>\n  </div>\n  <mat-progress-bar mode='indeterminate' color='primary' *ngIf='runningTask()'></mat-progress-bar>\n  <footer></footer>\n</div>"
 
 /***/ }),
 
@@ -1515,30 +1515,36 @@ __webpack_require__.r(__webpack_exports__);
 var EditorGroup = /** @class */ (function () {
     function EditorGroup(editorService) {
         this.editors = [];
-        this.actions = [];
         this.tabs = [];
+        this._actions = [];
         this._id = ++EditorGroup.COUNTER;
         this._editorService = editorService;
     }
     EditorGroup.prototype.id = function () {
         return this._id;
     };
+    EditorGroup.prototype.empty = function () {
+        return !this.tabs.some(function (_) { return true; });
+    };
     EditorGroup.prototype.focus = function (focused) {
         this._focused = focused;
     };
-    EditorGroup.prototype.hasFocus = function () {
+    EditorGroup.prototype.focused = function () {
         return this._focused;
-    };
-    EditorGroup.prototype.isEmpty = function () {
-        return !this.tabs.some(function (_) { return true; });
     };
     EditorGroup.prototype.hidden = function () {
         var _this = this;
-        if (!this.onlyPreview()) {
+        if (!this.somePreview()) {
             return false;
         }
         var groups = this._editorService.listGroups();
         return !groups.find(function (g) { return g.id() !== _this.id() && g.isActive(_this._activeTab); });
+    };
+    EditorGroup.prototype.isActive = function (tab) {
+        return this._activeTab.resource.path === tab.resource.path;
+    };
+    EditorGroup.prototype.isChanged = function (tab) {
+        return tab.resource.changed;
     };
     EditorGroup.prototype.someTab = function (predicate) {
         return this.tabs.some(predicate);
@@ -1546,21 +1552,23 @@ var EditorGroup = /** @class */ (function () {
     EditorGroup.prototype.someEditor = function (predicate) {
         return this.editors.some(predicate);
     };
-    EditorGroup.prototype.onlyPreview = function () {
-        return this.someEditor(function (e) { return e.type() === 'preview'; });
+    EditorGroup.prototype.someAction = function () {
+        return !this.empty() && !this.somePreview();
+    };
+    EditorGroup.prototype.somePreview = function () {
+        return this.someEditor(function (e) { return e.type() === _editor_model__WEBPACK_IMPORTED_MODULE_1__["PREVIEW_EDITOR"]; });
     };
     EditorGroup.prototype.open = function (tab) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var opened, editor;
+            var editor;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         if (!!tab.preview) return [3 /*break*/, 2];
                         return [4 /*yield*/, this._editorService.openContent(tab.resource)];
                     case 1:
-                        opened = _a.sent();
-                        if (!opened) {
-                            if (this.isEmpty()) {
+                        if (!(_a.sent())) {
+                            if (this.empty()) {
                                 this.dispose();
                             }
                             return [2 /*return*/, false];
@@ -1574,7 +1582,7 @@ var EditorGroup = /** @class */ (function () {
                         this._activeTab = tab;
                         this._activeEditor = editor;
                         this._activeEditor.open(tab);
-                        this.actions = this._activeEditor.actions();
+                        this._actions = this._activeEditor.actions() || [];
                         if (tab.preview) {
                             if (this.tabs.length === 0) {
                                 this.tabs.push(tab);
@@ -1583,15 +1591,11 @@ var EditorGroup = /** @class */ (function () {
                                 this.tabs[0] = tab;
                             }
                         }
-                        else {
-                            if (!this.someTab(function (e) { return e.resource.path === tab.resource.path; })) {
-                                this.tabs.push(tab);
-                            }
+                        else if (!this.someTab(function (e) { return Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["compareTab"])(e, tab); })) {
+                            this.tabs.push(tab);
                         }
-                        return [4 /*yield*/, this._editorService.addGroup(this)];
-                    case 3:
-                        _a.sent();
-                        return [2 /*return*/, true];
+                        return [4 /*yield*/, this._editorService.updateGroup(this)];
+                    case 3: return [2 /*return*/, _a.sent()];
                 }
             });
         });
@@ -1612,7 +1616,7 @@ var EditorGroup = /** @class */ (function () {
     };
     EditorGroup.prototype.saveAll = function () {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var _i, _a, resource;
+            var _i, _a, tab;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -1620,8 +1624,8 @@ var EditorGroup = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         if (!(_i < _a.length)) return [3 /*break*/, 4];
-                        resource = _a[_i];
-                        return [4 /*yield*/, this.save(resource)];
+                        tab = _a[_i];
+                        return [4 /*yield*/, this.save(tab)];
                     case 2:
                         if (!(_b.sent())) {
                             return [2 /*return*/, false];
@@ -1637,52 +1641,56 @@ var EditorGroup = /** @class */ (function () {
     };
     EditorGroup.prototype.close = function (tab, confirm) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var options, _a;
+            var changed, options, _a;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        confirm = !this.onlyPreview() && confirm;
+                        changed = this.confirmBeforeClose(tab);
                         options = {
                             title: 'Do you want to close \'' + tab.resource.name + '\'?',
                             message: 'Your changes will be lost if you don\'t save them.',
                             okTitle: 'Don\'t Save',
                             noTitle: 'Cancel'
                         };
-                        _a = !confirm || !tab.resource.changed;
+                        _a = !(confirm && changed);
                         if (_a) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this._editorService.confirm(options)];
+                        return [4 /*yield*/, this.confirm(options)];
                     case 1:
                         _a = (_b.sent());
                         _b.label = 2;
                     case 2:
-                        if (_a) {
-                            if (!this.onlyPreview()) {
-                                tab.resource.content = tab.resource.lastContent;
-                                tab.resource.changed = false;
-                            }
-                            this.removeTab(tab);
+                        if (!_a) return [3 /*break*/, 4];
+                        if (changed) {
+                            tab.resource.content = tab.resource.lastContent;
+                            tab.resource.changed = false;
                         }
-                        return [2 /*return*/, true];
+                        if (confirm) {
+                            tab.resource.meta.html = undefined;
+                        }
+                        return [4 /*yield*/, this.removeTab(tab)];
+                    case 3: return [2 /*return*/, _b.sent()];
+                    case 4: return [2 /*return*/, false];
                 }
             });
         });
     };
     EditorGroup.prototype.closeAll = function (confirm) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var options, _a;
+            var changed, options, _a;
+            var _this = this;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        confirm = !this.onlyPreview() && confirm;
+                        changed = this.someTab(function (tab) { return _this.confirmBeforeClose(tab); });
                         options = {
                             title: 'Do you want to close the files ?',
                             message: 'Your changes will be lost if you don\'t save them.',
                             okTitle: 'Don\'t Save',
                             noTitle: 'Cancel'
                         };
-                        _a = !confirm || !this.someTab(function (e) { return e.resource.changed; });
+                        _a = !(confirm && changed);
                         if (_a) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this._editorService.confirm(options)];
+                        return [4 /*yield*/, this.confirm(options)];
                     case 1:
                         _a = (_b.sent());
                         _b.label = 2;
@@ -1731,17 +1739,13 @@ var EditorGroup = /** @class */ (function () {
     };
     EditorGroup.prototype.removeTab = function (tab) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var index, toRemove;
+            var index;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        index = this.tabs.findIndex(function (e) { return e.resource.path === tab.resource.path; });
+                        index = this.tabs.findIndex(function (e) { return Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["compareTab"])(e, tab); });
                         if (index === -1) {
                             throw new Error(tab.title + " is not a part of the group '" + this.id() + "'");
-                        }
-                        toRemove = this.tabs[index];
-                        if (!this.onlyPreview() && Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["openAsPreview"])(tab)) {
-                            toRemove.resource.meta.html = undefined;
                         }
                         this._activeTab = null;
                         this.tabs.splice(index, 1);
@@ -1753,7 +1757,7 @@ var EditorGroup = /** @class */ (function () {
                             this._activeTab.position = undefined;
                             this.open(this._activeTab);
                         }
-                        if (!this.isEmpty()) return [3 /*break*/, 2];
+                        if (!this.empty()) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.dispose()];
                     case 1: return [2 /*return*/, _a.sent()];
                     case 2: return [2 /*return*/, true];
@@ -1762,7 +1766,26 @@ var EditorGroup = /** @class */ (function () {
         });
     };
     EditorGroup.prototype.removeIndex = function (index) {
-        this.removeTab(this.tabs[index]);
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.removeTab(this.tabs[index])];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    EditorGroup.prototype.findTab = function (predicate) {
+        return this.tabs.find(function (e) { return predicate(e); });
+    };
+    EditorGroup.prototype.findTabAt = function (index) {
+        return this.tabs[index];
+    };
+    EditorGroup.prototype.actions = function () {
+        return this._actions || (this._actions = []);
+    };
+    EditorGroup.prototype.dispose = function () {
+        return this._editorService.removeGroup(this);
     };
     EditorGroup.prototype.activeTab = function () {
         return this._activeTab;
@@ -1770,14 +1793,27 @@ var EditorGroup = /** @class */ (function () {
     EditorGroup.prototype.activeEditor = function () {
         return this._activeEditor;
     };
-    EditorGroup.prototype.isActive = function (tab) {
-        return this._activeTab.resource.path === tab.resource.path;
-    };
-    EditorGroup.prototype.isChanged = function (tab) {
-        return tab.resource.changed;
-    };
     EditorGroup.prototype.activeEditorIs = function (type) {
         return this.activeEditor().type() === type;
+    };
+    EditorGroup.prototype.editorService = function () {
+        return this._editorService;
+    };
+    //#region USED INSIDE THE WORKSPACE TEMPLATE
+    EditorGroup.prototype.drop = function (event) {
+        var source = this._editorService.findGroup(parseInt(event.previousContainer.id, 10));
+        var target = this;
+        if (this.somePreview() || source.somePreview()) {
+            return;
+        }
+        if (event.previousContainer === event.container) {
+            Object(_angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_3__["moveItemInArray"])(event.container.data, event.previousIndex, event.currentIndex);
+        }
+        else {
+            var movedTab = source.findTabAt(event.previousIndex);
+            target.open(movedTab);
+            source.close(movedTab, false);
+        }
     };
     EditorGroup.prototype.trackTab = function (index, tab) {
         return tab.resource.path;
@@ -1785,22 +1821,7 @@ var EditorGroup = /** @class */ (function () {
     EditorGroup.prototype.trackEditor = function (index, editor) {
         return editor.id();
     };
-    EditorGroup.prototype.drop = function (event) {
-        var source = this._editorService.findGroup(parseInt(event.previousContainer.id, 10));
-        source.removeIndex(event.previousIndex);
-        if (event.previousContainer === event.container) {
-            Object(_angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_3__["moveItemInArray"])(event.container.data, event.previousIndex, event.currentIndex);
-        }
-        else {
-            Object(_angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_3__["transferArrayItem"])(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
-        }
-    };
-    EditorGroup.prototype.editorService = function () {
-        return this._editorService;
-    };
-    EditorGroup.prototype.dispose = function () {
-        return this._editorService.removeGroup(this);
-    };
+    //#endregion USED INSIDE THE WORKSPACE TEMPLATE
     EditorGroup.prototype.createEditor = function (data) {
         for (var _i = 0, INSTANTIATORS_1 = _editor_model__WEBPACK_IMPORTED_MODULE_1__["INSTANTIATORS"]; _i < INSTANTIATORS_1.length; _i++) {
             var item = INSTANTIATORS_1[_i];
@@ -1811,6 +1832,15 @@ var EditorGroup = /** @class */ (function () {
             }
         }
         return null;
+    };
+    EditorGroup.prototype.confirmBeforeClose = function (tab) {
+        if (this.somePreview()) {
+            return false;
+        }
+        return tab.resource.changed; //&& this._editorService.findGroups(tab).length > 1;
+    };
+    EditorGroup.prototype.confirm = function (options) {
+        return this._editorService.confirm(options);
     };
     EditorGroup.COUNTER = 0;
     return EditorGroup;
@@ -1824,11 +1854,14 @@ var EditorGroup = /** @class */ (function () {
 /*!******************************************************!*\
   !*** ./src/app/editor/shared/models/editor.model.ts ***!
   \******************************************************/
-/*! exports provided: AbstractEditor, CodeEditor, ImageEditor, PreviewEditor, INSTANTIATORS */
+/*! exports provided: CODE_EDITOR, PREVIEW_EDITOR, IMAGE_EDITOR, AbstractEditor, CodeEditor, ImageEditor, PreviewEditor, INSTANTIATORS */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CODE_EDITOR", function() { return CODE_EDITOR; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PREVIEW_EDITOR", function() { return PREVIEW_EDITOR; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "IMAGE_EDITOR", function() { return IMAGE_EDITOR; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AbstractEditor", function() { return AbstractEditor; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CodeEditor", function() { return CodeEditor; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImageEditor", function() { return ImageEditor; });
@@ -1841,6 +1874,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+var CODE_EDITOR = 'code';
+var PREVIEW_EDITOR = 'preview';
+var IMAGE_EDITOR = 'image';
 var AbstractEditor = /** @class */ (function () {
     function AbstractEditor(group, data) {
         this.onOpened = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
@@ -1879,7 +1915,7 @@ var CodeEditor = /** @class */ (function (_super) {
         return _this;
     }
     CodeEditor.prototype.type = function () {
-        return 'code';
+        return CODE_EDITOR;
     };
     CodeEditor.prototype.actions = function () {
         return [
@@ -1937,7 +1973,7 @@ var ImageEditor = /** @class */ (function (_super) {
         return _this;
     }
     ImageEditor.prototype.type = function () {
-        return 'image';
+        return IMAGE_EDITOR;
     };
     ImageEditor.prototype.actions = function () {
         var _this = this;
@@ -1972,7 +2008,7 @@ var PreviewEditor = /** @class */ (function (_super) {
         return _super.call(this, group, data) || this;
     }
     PreviewEditor.prototype.type = function () {
-        return 'preview';
+        return PREVIEW_EDITOR;
     };
     PreviewEditor.prototype.actions = function () {
         return [
@@ -2001,7 +2037,7 @@ var INSTANTIATORS = [
 /*!*******************************************************!*\
   !*** ./src/app/editor/shared/models/filters.model.ts ***!
   \*******************************************************/
-/*! exports provided: DISALLOWED_CHAR, canRead, canWrite, readonly, isFolder, isFile, isRoot, isPl, isMarkdown, isPltp, canBePreviewed, isHome, isNotRoot, isSVG, fromServer, isRepo, canAddFile, canCopy, canAddFolder, canBeRenamed, canBeDeleted, canBeTested, canBeLoaded, canBeReloaded, extension, canBeUsedAsFileName, checkName, requireNonNull, assert, basename, asURI, asTab, compareTab, resourceIsURI, openAsCode, openAsImage, openAsPreview */
+/*! exports provided: DISALLOWED_CHAR, canRead, canWrite, readonly, isFolder, isFile, isRoot, isPl, isMarkdown, isPltp, canBePreviewed, isHome, isNotRoot, isSVG, fromServer, isRepo, canAddFile, canCopy, canAddFolder, canBeRenamed, canBeDeleted, canBeTested, canBeLoaded, canBeReloaded, extension, canBeUsedAsFileName, checkName, requireNonNull, assert, basename, asURI, asTab, compareTab, compareGroup, resourceIsURI, openAsCode, openAsImage, openAsPreview */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2039,6 +2075,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asURI", function() { return asURI; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asTab", function() { return asTab; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compareTab", function() { return compareTab; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compareGroup", function() { return compareGroup; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resourceIsURI", function() { return resourceIsURI; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "openAsCode", function() { return openAsCode; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "openAsImage", function() { return openAsImage; });
@@ -2158,6 +2195,9 @@ function asTab(resource, preview) {
 }
 function compareTab(tab1, tab2) {
     return tab1.resource.path === tab2.resource.path;
+}
+function compareGroup(grp1, grp2) {
+    return grp1.id() === grp2.id();
 }
 function resourceIsURI(resource, uri) {
     return '/' + resource.path === uri.path;
@@ -2369,7 +2409,28 @@ var AbstractEditorService = /** @class */ (function () {
         this.groups = Object.create(null);
         this.onGroupChanged = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
     }
-    AbstractEditorService.prototype.addGroup = function (group) {
+    AbstractEditorService.prototype.focus = function (group) {
+        this.listGroups().forEach(function (item) {
+            item.focus(false);
+        });
+        group.focus(true);
+    };
+    AbstractEditorService.prototype.listGroups = function () {
+        var _this = this;
+        return Object.keys(this.groups).map(function (id) { return _this.groups[id]; });
+    };
+    AbstractEditorService.prototype.findGroup = function (id) {
+        return this.groups[id];
+    };
+    AbstractEditorService.prototype.findGroups = function (tab) {
+        return this.listGroups().filter(function (group) {
+            return group.someTab(function (item) { return Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["compareTab"])(tab, item); });
+        });
+    };
+    AbstractEditorService.prototype.subscribeChange = function (completion) {
+        return this.onGroupChanged.subscribe(completion);
+    };
+    AbstractEditorService.prototype.updateGroup = function (group) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
@@ -2378,22 +2439,27 @@ var AbstractEditorService = /** @class */ (function () {
                         if (this.previewGroup) {
                             this.previewGroup.closeAll();
                         }
-                        this.previewGroup = group.onlyPreview() ? group : undefined;
-                        if (!this.previewGroup) return [3 /*break*/, 1];
-                        if (this.previewGroup.id() !== group.id()) {
-                            this.previewGroup.closeAll();
-                        }
-                        return [3 /*break*/, 4];
+                        if (!(this.previewGroup = group.somePreview() ? group : undefined)) return [3 /*break*/, 3];
+                        if (!!Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["compareGroup"])(this.previewGroup, group)) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.previewGroup.closeAll()];
                     case 1:
-                        if (!Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["openAsPreview"])(group.activeTab())) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.open(Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["asTab"])(group.activeTab().resource, true), true)];
-                    case 2:
-                        _a.sent();
-                        _a.label = 3;
+                        if (!(_a.sent())) {
+                            return [2 /*return*/, false];
+                        }
+                        _a.label = 2;
+                    case 2: return [3 /*break*/, 6];
                     case 3:
-                        this.focus(group);
-                        _a.label = 4;
+                        if (!Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["openAsPreview"])(group.activeTab())) return [3 /*break*/, 5];
+                        return [4 /*yield*/, this.open(Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["asTab"])(group.activeTab().resource, true))];
                     case 4:
+                        if (!(_a.sent())) {
+                            return [2 /*return*/, false];
+                        }
+                        _a.label = 5;
+                    case 5:
+                        this.focus(group);
+                        _a.label = 6;
+                    case 6:
                         this.onGroupChanged.next(this.listGroups());
                         return [2 /*return*/, true];
                 }
@@ -2409,10 +2475,10 @@ var AbstractEditorService = /** @class */ (function () {
                         if (!this.findGroup(group.id())) {
                             throw new Error("The group '" + group.id() + "' is not found");
                         }
-                        if (!group.hasFocus()) return [3 /*break*/, 2];
-                        newFocused = this.listGroups().find(function (g) { return g.id() !== group.id(); });
+                        if (!group.focused()) return [3 /*break*/, 2];
+                        newFocused = this.listGroups().find(function (g) { return !Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["compareGroup"])(g, group); });
                         if (!newFocused) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.addGroup(newFocused)];
+                        return [4 /*yield*/, this.updateGroup(newFocused)];
                     case 1:
                         _a.sent();
                         _a.label = 2;
@@ -2423,22 +2489,6 @@ var AbstractEditorService = /** @class */ (function () {
                 }
             });
         });
-    };
-    AbstractEditorService.prototype.focus = function (group) {
-        this.listGroups().forEach(function (item) {
-            item.focus(false);
-        });
-        group.focus(true);
-    };
-    AbstractEditorService.prototype.listGroups = function () {
-        var _this = this;
-        return Object.keys(this.groups).map(function (id) { return _this.groups[id]; });
-    };
-    AbstractEditorService.prototype.findGroup = function (id) {
-        return this.groups[id];
-    };
-    AbstractEditorService.prototype.subscribeChange = function (completion) {
-        return this.onGroupChanged.subscribe(completion);
     };
     AbstractEditorService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_3__["Injectable"])(),
@@ -2461,12 +2511,12 @@ var EditorService = /** @class */ (function (_super) {
         var groups = this.listGroups();
         if (sideBySide || tab.preview) {
             // tslint:disable-next-line: max-line-length
-            group = tab.preview ? (groups.find(function (g) { return g.onlyPreview(); }) || new _models_editor_group_model__WEBPACK_IMPORTED_MODULE_2__["EditorGroup"](this)) : new _models_editor_group_model__WEBPACK_IMPORTED_MODULE_2__["EditorGroup"](this);
+            group = tab.preview ? (groups.find(function (g) { return g.somePreview(); }) || new _models_editor_group_model__WEBPACK_IMPORTED_MODULE_2__["EditorGroup"](this)) : new _models_editor_group_model__WEBPACK_IMPORTED_MODULE_2__["EditorGroup"](this);
         }
         else {
             group = groups.find(function (g) { return g.someTab(function (t) { return t.resource.path === tab.resource.path; }); })
-                || groups.find(function (g) { return g.hasFocus() && !g.onlyPreview(); })
-                || groups.find(function (g) { return !g.onlyPreview(); }) || new _models_editor_group_model__WEBPACK_IMPORTED_MODULE_2__["EditorGroup"](this);
+                || groups.find(function (g) { return g.focused() && !g.somePreview(); })
+                || groups.find(function (g) { return !g.somePreview(); }) || new _models_editor_group_model__WEBPACK_IMPORTED_MODULE_2__["EditorGroup"](this);
         }
         return group.open(tab).catch(function (error) {
             _this.notification.logError(error);
@@ -4104,7 +4154,7 @@ var MonacoService = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<ngx-monaco-editor [hidden]='editor.diffEditing' class='code-editor' [options]=\"{}\" [model]='{}' (onInit)=\"editorLoaded($event)\"></ngx-monaco-editor>\n<ngx-monaco-diff-editor [hidden]='!editor.diffEditing' class='code-editor' [options]=\"{}\" [originalModel]=\"{}\" [modifiedModel]=\"{}\" (onInit)=\"diffLoaded($event)\"></ngx-monaco-diff-editor>"
+module.exports = "<ngx-monaco-editor [hidden]='editor.diffEditing' class='code-editor' [options]=\"{}\" [model]='{}' (onInit)=\"codeEditorLoaded($event)\"></ngx-monaco-editor>\n<ngx-monaco-diff-editor [hidden]='!editor.diffEditing' class='code-editor' [options]=\"{}\" [originalModel]=\"{}\" [modifiedModel]=\"{}\" (onInit)=\"diffEditorLoaded($event)\"></ngx-monaco-diff-editor>"
 
 /***/ }),
 
@@ -4180,13 +4230,13 @@ var CodeEditorComponent = /** @class */ (function () {
         this.diffSubscription.unsubscribe();
         this.monacoService.disposeEditor(this.editor.codeEditor);
     };
-    CodeEditorComponent.prototype.editorLoaded = function (codeEditor) {
+    CodeEditorComponent.prototype.codeEditorLoaded = function (codeEditor) {
         this.monacoService.registerEditor(codeEditor);
         this.editor.codeEditor = codeEditor;
         this.addCommands(codeEditor);
         this.open(this.editor.data());
     };
-    CodeEditorComponent.prototype.diffLoaded = function (diffEditor) {
+    CodeEditorComponent.prototype.diffEditorLoaded = function (diffEditor) {
         this.monacoService.registerEditor(diffEditor.getModifiedEditor());
         this.editor.diffEditor = diffEditor;
         this.addCommands(this.editor.diffEditor.getModifiedEditor());
@@ -4208,6 +4258,9 @@ var CodeEditorComponent = /** @class */ (function () {
             });
             this.editor.diffEditor.getModifiedEditor().updateOptions({ readOnly: !this.readonly });
             this.editor.diffEditor.getModifiedEditor().focus();
+        }
+        if (this.readonly) {
+            this.notification.warning('readonly editor');
         }
     };
     CodeEditorComponent.prototype.addCommands = function (editor) {
@@ -4440,7 +4493,7 @@ var PreviewEditorComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- LITTLE HACK TO PRELOAD MONACO EDITOR -->\n<ngx-monaco-editor [hidden]='true' [options]='{}' [model]='{}'></ngx-monaco-editor>\n<as-split class='h100' direction='horizontal' gutterSize='5' useTransition='true' cdkDropListGroup>\n    <!-- EDITOR GROUPS SPLIT AREA -->\n    <ng-container  *ngFor='let group of groups'>\n        <as-split-area class='editor-group h100' style='overflow: hidden;'>\n            <!-- GROUP TABS -->\n            <div class='tab-bar'>\n                <div [id]='group.id()' class='tab-group' cdkDropList [cdkDropListData]=\"group.tabs\" (cdkDropListDropped)=\"group.drop($event)\">\n                    <div *ngFor='let tab of group.tabs;trackBy: group.trackTab' [matTooltip]=\"tab.resource.path\"\n                        [ngClass]=\"{'tab-item': true, active: group.isActive(tab), changed: group.isChanged(tab)}\"\n                        (click)='group.open(tab)' cdkDragAxis='x' cdkDrag>\n                        <i class=\"tab-icon {{tab.icon}}\"></i>\n                        <span>{{tab.title}}</span>\n                        <span class='tab-close' (click)='group.close(tab, true)'>&nbsp;&times;</span>\n                    </div>\n                </div>\n                <div class=\"spacer\"></div>  \n                <ng-container *ngIf='!group.isEmpty() && !group.onlyPreview(); else emptyGroup'>\n                    <ng-container *ngIf='group.hasFocus()'>\n                        <ng-container *ngFor='let action of group.actions'>\n                            <div class='tab-item' [matTooltip]='action.tooltip' *ngIf='action.condition(group.activeTab().resource)' (click)='action.invoke(group.activeTab().resource)'>\n                                <i class=\"{{action.icon}}\"></i>\n                            </div>\n                        </ng-container>\n                    </ng-container>\n                    \n                    <div class='tab-item' matTooltip='More Options' [matMenuTriggerFor]=\"editorMenu\">\n                        <i class=\"fas fa-ellipsis-h\"></i>\n                    </div>\n                    <mat-menu #editorMenu=\"matMenu\">\n                        <button mat-menu-item (click)='group.save(group.activeTab())'>Save ⌘S</button>\n                        <button mat-menu-item (click)='group.saveAll()'>Save All ⌘Alt S</button>\n                        <button mat-menu-item (click)='group.close(group.activeTab(), true)'>Close ⌘K</button>\n                        <button mat-menu-item (click)='group.closeAll(true)'>Close All ⌘Alt K</button>\n                        <button mat-menu-item (click)='group.closeSaved()'>Close Saved ⌘Alt U</button>\n                    </mat-menu>\n                </ng-container>\n                <ng-template #emptyGroup>\n                    <div class='tab-item' matTooltip='Close Group' (click)='group.dispose()'>\n                        <i class=\"fas fa-times\"></i>\n                    </div>\n                </ng-template>\n                \n            </div>\n            <ng-container *ngFor='let editor of group.editors; trackBy group.trackEditor'>\n                <ng-container [ngSwitch]=\"editor.type()\">\n                    <code-editor [hidden]='!group.activeEditorIs(\"code\")' *ngSwitchCase=\"'code'\" [editor]='editor'></code-editor>\n                    <image-editor [hidden]='!group.activeEditorIs(\"image\")' *ngSwitchCase=\"'image'\" [editor]='editor'></image-editor>\n                    <preview-editor [hidden]='!group.activeEditorIs(\"preview\")' *ngSwitchCase=\"'preview'\" [editor]='editor'></preview-editor>\n                </ng-container>\n            </ng-container>\n        </as-split-area>\n    </ng-container>\n</as-split>"
+module.exports = "<!-- LITTLE HACK TO PRELOAD MONACO EDITOR -->\n<ngx-monaco-editor [hidden]='true' [options]='{}' [model]='{}'></ngx-monaco-editor>\n<as-split class='h100' direction='horizontal' gutterSize='5' useTransition='true' cdkDropListGroup>\n    <ng-container *ngFor='let group of groups'>\n        <as-split-area class='editor-group h100' style='overflow: hidden;'>\n            <div class='tab-bar'>\n                <div [id]='group.id()' class='tab-group' cdkDropList [cdkDropListData]=\"group.tabs\" (cdkDropListDropped)=\"group.drop($event)\">\n                    <div *ngFor='let tab of group.tabs; trackBy: group.trackTab' [matTooltip]=\"tab.resource.path\"\n                        [ngClass]=\"{'tab-item': true, active: group.isActive(tab), changed: group.isChanged(tab)}\"\n                        (click)='group.open(tab)' cdkDragAxis='x' cdkDrag>\n                        <i class=\"tab-icon {{tab.icon}}\"></i>\n                        <span>{{tab.title}}</span>\n                        <span class='tab-close' (click)='group.close(tab, true)'>&nbsp;&times;</span>\n                    </div>\n                </div>\n                <div class=\"spacer\"></div>  \n                <ng-container *ngIf='group.someAction();'>\n                    <ng-container *ngIf='group.focused()'>\n                        <ng-container *ngFor='let action of group.actions()'>\n                            <div class='tab-item' [matTooltip]='action.tooltip' *ngIf='action.condition(group.activeTab().resource)' (click)='action.invoke(group.activeTab().resource)'>\n                                <i class=\"{{action.icon}}\"></i>\n                            </div>\n                        </ng-container>\n                    </ng-container>\n                    <div class='tab-item' matTooltip='More Options' [matMenuTriggerFor]=\"editorMenu\">\n                        <i class=\"fas fa-ellipsis-h\"></i>\n                    </div>\n                    <mat-menu #editorMenu=\"matMenu\">\n                        <button mat-menu-item (click)='group.save(group.activeTab())'>Save ⌘S</button>\n                        <button mat-menu-item (click)='group.saveAll()'>Save All ⌘Alt S</button>\n                        <button mat-menu-item (click)='group.close(group.activeTab(), true)'>Close ⌘K</button>\n                        <button mat-menu-item (click)='group.closeAll(true)'>Close All ⌘Alt K</button>\n                        <button mat-menu-item (click)='group.closeSaved()'>Close Saved ⌘Alt U</button>\n                    </mat-menu>\n                </ng-container>\n            </div>\n            <ng-container *ngFor='let editor of group.editors; trackBy group.trackEditor'>\n                <ng-container [ngSwitch]=\"editor.type()\">\n                    <code-editor [hidden]='!group.activeEditorIs(\"code\")' *ngSwitchCase=\"'code'\" [editor]='editor'></code-editor>\n                    <image-editor [hidden]='!group.activeEditorIs(\"image\")' *ngSwitchCase=\"'image'\" [editor]='editor'></image-editor>\n                    <preview-editor [hidden]='!group.activeEditorIs(\"preview\")' *ngSwitchCase=\"'preview'\" [editor]='editor'></preview-editor>\n                </ng-container>\n            </ng-container>\n        </as-split-area>\n    </ng-container>\n</as-split>"
 
 /***/ }),
 
@@ -4474,9 +4527,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var WorkspaceComponent = /** @class */ (function () {
-    function WorkspaceComponent(editor, opener) {
+    function WorkspaceComponent(editor, opener, changes) {
         this.editor = editor;
         this.opener = opener;
+        this.changes = changes;
         this.groups = [];
     }
     WorkspaceComponent.prototype.ngOnInit = function () {
@@ -4484,6 +4538,7 @@ var WorkspaceComponent = /** @class */ (function () {
         this.groups = this.editor.listGroups();
         this.editor.onGroupChanged.subscribe(function (groups) {
             _this.groups = groups;
+            _this.changes.detectChanges();
         });
     };
     WorkspaceComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
@@ -4494,7 +4549,8 @@ var WorkspaceComponent = /** @class */ (function () {
             styles: [__webpack_require__(/*! ./workspace.component.scss */ "./src/app/editor/workspace/workspace.component.scss")]
         }),
         tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_core_editor_service__WEBPACK_IMPORTED_MODULE_3__["EditorService"],
-            _shared_services_core_opener_service__WEBPACK_IMPORTED_MODULE_2__["OpenerService"]])
+            _shared_services_core_opener_service__WEBPACK_IMPORTED_MODULE_2__["OpenerService"],
+            _angular_core__WEBPACK_IMPORTED_MODULE_1__["ChangeDetectorRef"]])
     ], WorkspaceComponent);
     return WorkspaceComponent;
 }());

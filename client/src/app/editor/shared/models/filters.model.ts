@@ -1,5 +1,6 @@
 import { Resource } from './resource.model';
 import { IEditorTab } from '../services/core/opener.service';
+import { IEditorGroup } from './editor-group.model';
 
 export const DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&'];
 
@@ -150,6 +151,9 @@ export function compareTab(tab1: IEditorTab, tab2: IEditorTab) {
     return tab1.resource.path === tab2.resource.path;
 }
 
+export function compareGroup(grp1: IEditorGroup, grp2: IEditorGroup) {
+    return grp1.id() === grp2.id();
+}
 
 export function resourceIsURI(resource: Resource, uri: monaco.Uri) {
     return '/' + resource.path === uri.path;

@@ -24,12 +24,14 @@ export class WorkspaceComponent implements OnInit {
     constructor(
         readonly editor: EditorService,
         readonly opener: OpenerService,
+        readonly changes: ChangeDetectorRef,
     ) { }
 
     ngOnInit() {
         this.groups = this.editor.listGroups();
         this.editor.onGroupChanged.subscribe((groups) => {
             this.groups = groups;
+            this.changes.detectChanges();
         });
     }
 }

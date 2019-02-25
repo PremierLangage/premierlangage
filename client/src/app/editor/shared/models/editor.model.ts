@@ -6,6 +6,9 @@ import { IEditorTab } from '../services/core/opener.service';
 import { IEditorGroup } from './editor-group.model';
 import { asURI, openAsImage, openAsCode, canBePreviewed, isRepo, openAsPreview, asTab } from './filters.model';
 
+export const CODE_EDITOR = 'code';
+export const PREVIEW_EDITOR = 'preview';
+export const IMAGE_EDITOR = 'image';
 
 export interface IEditorAction {
     icon: string;
@@ -83,7 +86,7 @@ export class CodeEditor extends AbstractEditor {
     }
 
     type(): string {
-        return 'code';
+        return CODE_EDITOR;
     }
 
     actions(): IEditorAction[] {
@@ -143,7 +146,7 @@ export class ImageEditor extends AbstractEditor {
     }
 
     type(): string {
-        return 'image';
+        return IMAGE_EDITOR;
     }
 
     actions(): IEditorAction[] {
@@ -182,7 +185,7 @@ export class PreviewEditor extends AbstractEditor {
     }
 
     type(): string {
-        return 'preview';
+        return PREVIEW_EDITOR;
     }
 
     actions(): IEditorAction[] {
@@ -197,6 +200,7 @@ export class PreviewEditor extends AbstractEditor {
     canOpen(data: IEditorTab): boolean {
         return openAsPreview(data);
     }
+
 }
 
 export const INSTANTIATORS: {condition: (data: IEditorTab) => boolean, create: (group: IEditorGroup, data: IEditorTab) => IEditor }[] = [
