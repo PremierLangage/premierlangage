@@ -14,7 +14,7 @@ sys.path.append(APPS_DIR)
 SECRET_KEY = "o!m$n&s4=kcftm1de1m+7!36a=8x38wrr)m9)i@ru7j-*c7vgm"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # List of Allowed Hosts
 ALLOWED_HOSTS = ['127.0.0.1']
@@ -273,6 +273,9 @@ FILEBROWSER_DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&']
 # Path to directory containing parsers
 PARSERS_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'loader/parsers/'))
 PARSERS_MODULE = 'loader.parsers'
+
+# Default home directory name for pl users
+HOME = "Yggdrasil"
 
 # Allow a file '[PL_ROOT]/server/serverpl/serverpl/config.py' to override any of the settings above.
 try:
