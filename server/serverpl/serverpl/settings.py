@@ -14,7 +14,7 @@ sys.path.append(APPS_DIR)
 SECRET_KEY = "o!m$n&s4=kcftm1de1m+7!36a=8x38wrr)m9)i@ru7j-*c7vgm"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # List of Allowed Hosts
 ALLOWED_HOSTS = ['127.0.0.1']
