@@ -78,11 +78,11 @@ export function canAddFolder(item: Resource) {
 }
 
 export function canBeRenamed(item: Resource) {
-    return canWrite(item) && !isRoot(item);
+    return !item.opened && canWrite(item) && !isRoot(item);
 }
 
 export function canBeDeleted(item: Resource) {
-    return canWrite(item) && isNotRoot(item);
+    return !item.opened && canWrite(item) && isNotRoot(item);
 }
 
 export function canBeTested(item: Resource) {
@@ -107,6 +107,9 @@ export function canBeUsedAsFileName(name: string) {
 }
 
 export function checkName(name: string) {
+    if (!name) {
+        throw new Error('a resource name cannot be empty');
+    } 
     if (!canBeUsedAsFileName(name)) {
         throw new Error(name + ' cannot sould not contains any of ' + DISALLOWED_CHAR);
     }

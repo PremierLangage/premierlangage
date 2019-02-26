@@ -1,3 +1,5 @@
+import { assert } from './filters.model';
+
 export interface ResourceMeta {
     text: boolean;
     code: boolean;
@@ -31,8 +33,6 @@ export interface Resource {
     /** changed on the server */
     dirty: boolean;
 
-    nameBefore: string;
-    parentRef: Resource;
     repo: {
         url: string,
         branch: string,
@@ -54,4 +54,39 @@ export interface Change {
     path: string;
     type: string;
     isdir: boolean;
+}
+
+export const FILE_RESOURCE = 'file';
+export const FOLDER_RESOURCE = 'folder';
+
+export function newResource(parent: Resource, type: string): Resource {
+    assert(type === FILE_RESOURCE || type === FOLDER_RESOURCE, `type param must be '${FILE_RESOURCE}' or '${FOLDER_RESOURCE}'`);
+    assert(parent.type === 'folder', 'resource.type must be folder');
+    assert(parent.children.every(e => !e.renaming), 'cannot edit multiple resources');
+    parent.expanded = true;
+    parent.children = parent.children || [];
+    return {
+        name: '',
+        parent: parent.path,
+        path: parent.path + '/',
+        type: type,
+        icon: 'fas fa-' + type,
+        write: parent.write,
+        read: parent.read,
+        children: [],
+        content: undefined,
+        lastContent: undefined,
+        creating: true,
+        renaming: false,
+        expanded: false,
+        changed: false,
+        opened: false,
+        dirty: false,
+        repo: {
+            url: parent.repo.url,
+            host: parent.repo.host,
+            branch: parent.repo.branch,
+        },
+        meta: undefined,
+    };
 }

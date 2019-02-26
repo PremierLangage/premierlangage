@@ -42,21 +42,21 @@ export class NotificationService extends AbstractNotificationService {
     }
 
     success(message: string, title: string= '') {
-        this.toastr.success(message, title, {
+        this.toastr.success(this.parseMessage(message, false), title, {
             enableHtml: true,
             onActivateTick: true,
         });
     }
 
     warning(message: string, title: string= '') {
-        this.toastr.warning(message, title, {
+        this.toastr.warning(this.parseMessage(message, false), title, {
             enableHtml: true,
             onActivateTick: true,
         });
     }
 
     error(message: string, title: string= '') {
-        this.toastr.error(message, title, {
+        this.toastr.error(this.parseMessage(message, false), title, {
             enableHtml: true,
             onActivateTick: true,
         });
@@ -113,33 +113,38 @@ export class NotificationService extends AbstractNotificationService {
     }
 
 
-    logInfo(message: any) {
-        this.log(message, 'info');
+    logInfo(message: any, stackTrace: boolean = true) {
+        this.log(message, 'info', stackTrace);
     }
 
-    logWarning(message: any) {
-        this.log(message, 'warning');
+    logWarning(message: any, stackTrace: boolean = true) {
+        this.log(message, 'warning', stackTrace);
     }
 
-    logError(message: any) {
-        this.log(message, 'error');
+    logError(message: any, stackTrace: boolean = true) {
+        this.log(message, 'error', stackTrace);
     }
 
-    private log(message: any, type: 'info' | 'error' | 'warning') {
+    private log(message: any, type: 'info' | 'error' | 'warning', stackTrace: boolean = true) {
+        const item = { message: this.parseMessage(message, stackTrace), type: type };
+        this.onLogAdded.next(item);
+        this.size++;
+    }
+
+    private parseMessage(message: any, stackTrace: boolean): string {
         let msg = message;
         if (typeof message !== 'string') {
             msg = message.error;
             if (!msg) {
                 if (message.stack) {
-                    msg = ''.concat(message.message, '<br/>Stacktrace:<br/>', message.stack.split('\n').join('<br/>'));
+                    const trace = stackTrace ? message.stack.split('\n').join('<br/>') : '';
+                    msg = message.message + trace;
                 } else {
                     msg = JSON.stringify(message);
                 }
             }
         }
-        const item = { message: msg, type: type };
-        this.onLogAdded.next(item);
-        this.size++;
+        return msg;
     }
 
 }

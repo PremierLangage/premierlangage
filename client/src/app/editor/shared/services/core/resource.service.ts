@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Resource } from '../../models/resource.model';
+import { Resource, FILE_RESOURCE, FOLDER_RESOURCE, newResource } from '../../models/resource.model';
 import { Subscription, Subject } from 'rxjs';
 import { GitService } from './git.service';
 import { TaskService } from './task.service';
@@ -28,71 +28,30 @@ export class ResourceService {
     }
 
     /**
-     * Adds new file resource into 'resource'
-     * @param resource the resource (must be a directory)
-     * @returns The added resource
-     */
-    addFile(resource: Resource) {
-        return this.add(resource, 'file');
-    }
-
-    /**
-     * Adds new directory resource into 'resource'
-     * @param resource the resource (must be a directory)
-     * @returns The added resource
-     */
-    addFolder(resource: Resource) {
-        return this.add(resource, 'folder');
-    }
-
-    /**
-     * Cancels the edition or the creation of the resource depending to it's state.
-     * - If the resource exists, the function will reset it's name to the name before the edition
-     * - Else the function will cancel the creation of the resource by removing it to the local cache.
-     * @param resource the resource (resource.editing must be == true)
-     */
-    async cancel(resource: Resource): Promise<boolean> {
-        const path = resource.path;
-        let success = false;
-        if (resource.nameBefore) {
-            resource.name = resource.nameBefore;
-            success = true;
-        } else {
-            resource.path += '/' + resource.name;
-            success = this.remove(resource.path);
-            if (!success) {
-                resource.path = path;
-            }
-        }
-        if (success) {
-            delete resource.renaming;
-            delete resource.parentRef;
-            delete resource.nameBefore;
-        }
-        return success;
-    }
-
-    /**
      * Renames the resource on the server.
      * @param resource the resource object to rename.
+     * @param name the new name of the resource.
      * @returns Promise<boolean> rejected with an error or resolved with true.
      */
-    async rename(resource: Resource) {
-        filters.assert(resource.renaming, 'resource should be in renaming state');
-        filters.assert(filters.canWrite(resource.parentRef), 'permission denied');
-        filters.checkName(resource.name);
+    async rename(resource: Resource, name: string) {
+        filters.checkName(name);
+        filters.assert(filters.canWrite(resource), 'permission denied');
+        filters.assert(filters.canWrite(this.find(resource.parent)), 'permission denied on parent directory');
         let success = false;
         try {
-            this.task.emitTaskEvent(true, 'rename resource');
-            if (resource.name === resource.nameBefore) {
-                success = await this.cancel(resource);
+            this.task.emitTaskEvent(true, 'rename');
+            if (name === resource.name) {
+                success = true;
             } else {
                 const data = {
                     name: 'rename_resource',
                     path: resource.path,
-                    target: resource.name,
+                    target: name,
                 };
                 success = await this.endEdition(data, resource);
+                if (success) {
+                    resource.name = name;
+                }
             }
         } catch (error) {
             this.task.emitTaskEvent(false);
@@ -108,13 +67,16 @@ export class ResourceService {
      * @returns Promise<boolean> rejected with an error or resolved with true.
      */
     async create(resource: Resource) {
+        filters.checkName(resource.name);
+        filters.assert(filters.canWrite(resource), 'permission denied');
+        filters.assert(filters.canWrite(this.find(resource.parent)), 'permission denied on parent directory');
         this.task.emitTaskEvent(true, 'create resource');
         try {
             filters.checkName(resource.name);
-            filters.assert(filters.canWrite(resource.parentRef), 'permission denied');
+            filters.assert(filters.canWrite(this.find(resource.parent)), 'permission denied');
             const data = {
                 name: 'create_resource',
-                path: resource.path + '/' + resource.name,
+                path: resource.parent + '/' + resource.name,
                 content: resource.content,
                 type: resource.type
             };
@@ -463,38 +425,22 @@ export class ResourceService {
         });
     }
 
-    private async endEdition(data: any, resource: Resource) {
+    private async endEdition(postData: any, resource: Resource) {
         const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
-        const response = await this.http.post('filebrowser/option', data, { headers: headers }).toPromise();
+        const response = await this.http.post('filebrowser/option', postData, { headers: headers }).toPromise();
         resource.path = response['path'];
         resource.icon = response['icon'];
-        this.sort(resource.parentRef.children);
+        const parent = this.find(resource.parent);
+        parent.children = parent.children || [];
+        if (resource.creating) {
+            parent.children.push(resource);
+        }
+        this.sort(parent.children);
         resource.renaming = false;
         resource.creating = false;
-        resource.parentRef = undefined;
-        resource.nameBefore = undefined;
         this.git.refresh();
         this.task.emitTaskEvent(false, 'create resource');
         return true;
-    }
-
-    private add(resource: Resource, type: string) {
-        filters.assert(resource.type === 'folder', 'resource.type must be folder');
-        resource.children = resource.children || [];
-        filters.assert(resource.children.every(e => !e.renaming), 'cannot edit multiple resources');
-        resource.expanded = true;
-        const newResource: Resource = {
-            ...resource,
-            creating: true,
-            name: '',
-            type: type,
-            icon: 'fas fa-' + type,
-            children: [],
-            parent: resource.path,
-            parentRef: resource,
-        };
-        resource.children.push(newResource);
-        return newResource;
     }
 
     private async moveResource(src: Resource, dst: Resource) {
@@ -529,11 +475,27 @@ export class ResourceService {
         headers.set('Content-Type', null);
         headers.set('Accept', 'multipart/form-data');
         await this.http.post('/filebrowser/upload_resource', formData, { headers: headers }).toPromise();
-        const newRes = this.addFile(dst);
-        newRes.path += '/' + src.name;
+        const newRes = newResource(dst, FILE_RESOURCE);
+        newRes.path = dst.path + '/' + src.name;
         newRes.name = src.name;
-        delete newRes.renaming;
+        newRes.renaming = newRes.creating = false;
+        dst.children = dst.children || [];
+        dst.children.push(newRes);
         return newRes;
+    }
+
+    private sort(resources: Resource[]) {
+        if (resources) {
+            resources.sort((a: Resource, b: Resource) => {
+                if (a.type === b.type) {
+                  return a.name.toLocaleLowerCase() < b.name.toLocaleLowerCase() ? -1 : 1;
+                }
+                return a.type === 'folder' ? -1 : 1;
+            });
+            for (const item of resources) {
+                this.sort(item.children);
+            }
+        }
     }
 
     private remove(path: string) {
@@ -554,21 +516,6 @@ export class ResourceService {
         }
         return remove_recursive(this.resources);
     }
-
-    private sort(resources: Resource[]) {
-        if (resources) {
-            resources.sort((a: Resource, b: Resource) => {
-                if (a.type === b.type) {
-                  return a.name < b.name ? -1 : 1;
-                }
-                return a.type === 'folder' ? -1 : 1;
-            });
-            for (const item of resources) {
-                this.sort(item.children);
-            }
-        }
-    }
-
 
     private previewPL(resource: Resource, service: ResourceService) {
         const data = {

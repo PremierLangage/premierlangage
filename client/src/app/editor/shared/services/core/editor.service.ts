@@ -18,6 +18,7 @@ export interface IEditorService {
     removeGroup(group: IEditorGroup): Promise<boolean>;
     openContent(resource: Resource): Promise<boolean>;
     saveContent(resource: Resource): Promise<boolean>;
+    closeAll(): Promise<boolean>;
     focus(group: IEditorGroup): void;
     previewResource(resource: Resource): Promise<Resource>;
     confirm(options: ConfirmOptions): Promise<boolean>;
@@ -54,6 +55,17 @@ export abstract class AbstractEditorService implements IEditorService {
         return this.listGroups().filter(group => {
             return group.someTab(item => compareTab(tab, item));
         });
+    }
+
+    async closeAll(): Promise<boolean> {
+        let groups = this.listGroups();
+        while (groups.length !== 0) {
+            if (!await groups[0].closeAll()) {
+                return false;
+            }
+            groups = this.listGroups();
+        }
+        return true;
     }
 
     subscribeChange(completion: (groups: IEditorGroup[]) => void): Subscription {

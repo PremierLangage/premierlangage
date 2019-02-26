@@ -680,7 +680,7 @@ var FooterComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = " <ng-container *ngIf='showHeader; else tree'>\n    <div class='tab-bar'>\n        <span>EXPLORER</span>       \n        <div class=\"spacer\"></div>\n        <div class='tab-item' (click)='didTapRefresh()' matTooltip='Refresh'>\n            <i class=\"fas fa-sync\"></i>\n        </div>\n    </div>\n    <div class='navigation_content'>\n        <explorer [resources]='resources' [showHeader]='false'></explorer>\n    </div>\n</ng-container>\n<ng-template #tree>\n    <ul class='tree'>\n        <li *ngFor='let resource of resources; trackBy:trackByFn'>\n            <div *ngIf='isEditing(resource); else notEditing' class='tree__item editing'>\n                <span>\n                    <i class=\"{{resource.icon}}\"></i>&nbsp;\n                    <input autofocus\n                           type='text' \n                           placeholder='Press Enter to create ESC to cancel...' \n                           [(ngModel)]='resource.name' \n                           (keydown)='didEditingChanged(resource, $event)' \n                           (blur)='didEditingChanged(resource, $event)'/>\n                           <!-- TODO replace resource.name -->\n                </span>\n            </div>    \n            <ng-template #notEditing>\n                <div id='{{resource.path}}' class='tree__item' [ngClass]='{selected: isSelection(resource), changed: resource.changed, opened: resource.opened}' \n                    draggable droppable [dragCondition]='draggable(resource)' [dropCondition]='droppable(resource)' (handleDrop)='didDropData($event)'\n                    (click)='didTapOnResource(resource, $event)'>\n                    <span class='tree__item-label'>\n                        <i class=\"{{icon(resource)}}\"></i>&nbsp;\n                        <span>{{resource.name}}</span>\n                    </span>\n                    <span class='tree__item-option-group'>\n                        <ng-container *ngFor='let option of options'>\n                            <span class='tree__item-option' *ngIf='option.enabled(resource)' matTooltip='{{option.label}}' (click)='option.action(resource, $event)'>\n                                <i class=\"{{option.icon}}\"></i>&nbsp;\n                            </span>\n                        </ng-container>\n                    </span>\n                    <div class='overlay'></div>\n                </div>\n            </ng-template>\n            <explorer *ngIf='resource.expanded' [resources]=\"resource.children\" [showHeader]='false'></explorer>\n        </li>\n    </ul>        \n</ng-template>\n"
+module.exports = " <ng-container *ngIf='showHeader; else tree'>\n    <div class='tab-bar'>\n        <span>EXPLORER</span>       \n        <div class=\"spacer\"></div>\n        <div class='tab-item' (click)='didTapRefresh()' matTooltip='Refresh'>\n            <i class=\"fas fa-sync\"></i>\n        </div>\n    </div>\n    <div class='navigation_content'>\n        <explorer [resources]='resources' [showHeader]='false'></explorer>\n    </div>\n</ng-container>\n<ng-template #tree>\n    <ul class='tree'>\n        <li *ngFor='let resource of resources; trackBy:trackByFn'>\n            <div *ngIf='resource.renaming; else notEditing' class='tree__item editing'>\n                <span>\n                    <i class=\"{{resource.icon}}\"></i>&nbsp;\n                    <input autofocus\n                           type='text' \n                           placeholder='Press Enter to create ESC to cancel...' \n                           [(ngModel)]='newName' \n                           (keydown)='didEditingChanged(resource, $event)' \n                           (blur)='didEditingChanged(resource, $event)'/>\n                </span>\n            </div>    \n            <ng-template #notEditing>\n                <div id='{{resource.path}}' class='tree__item' [ngClass]='{selected: isSelection(resource), changed: resource.changed, opened: resource.opened}' \n                    draggable droppable [dragCondition]='draggable(resource)' [dropCondition]='droppable(resource)' (handleDrop)='didDropData($event)'\n                    (click)='didTapOnResource(resource, $event)'>\n                    <span class='tree__item-label'>\n                        <i class=\"{{icon(resource)}}\"></i>&nbsp;\n                        <span>{{resource.name}}</span>\n                    </span>\n                    <span class='tree__item-option-group'>\n                        <ng-container *ngFor='let option of options'>\n                            <span class='tree__item-option' *ngIf='option.enabled(resource)' matTooltip='{{option.label}}' (click)='option.action(resource, $event)'>\n                                <i class=\"{{option.icon}}\"></i>&nbsp;\n                            </span>\n                        </ng-container>\n                    </span>\n                    <div class='overlay'></div>\n                </div>\n            </ng-template>\n            <div *ngIf='creating && newResource.parent === resource.path'>\n                <div class='tree__item editing'>\n                    <span>\n                        <i class=\"{{newResource.icon}}\"></i>&nbsp;\n                        <input autofocus\n                               type='text' \n                               placeholder='Press Enter to create ESC to cancel...' \n                               [(ngModel)]='newResource.name' \n                               (keydown)='didEditingChanged(newResource, $event)' \n                               (blur)='didEditingChanged(newResource, $event)'/>\n                    </span>\n                </div>   \n            </div>\n            <explorer *ngIf='resource.expanded' [resources]=\"resource.children\" [showHeader]='false'></explorer>\n        </li>\n    </ul>        \n</ng-template>\n"
 
 /***/ }),
 
@@ -711,7 +711,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _shared_services_core_opener_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../shared/services/core/opener.service */ "./src/app/editor/shared/services/core/opener.service.ts");
 /* harmony import */ var _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../shared/services/core/resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
 /* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
-/* harmony import */ var _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../shared/models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+/* harmony import */ var _shared_models_resource_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../shared/models/resource.model */ "./src/app/editor/shared/models/resource.model.ts");
+/* harmony import */ var _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../shared/models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+/* harmony import */ var _shared_services_core_editor_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../shared/services/core/editor.service */ "./src/app/editor/shared/services/core/editor.service.ts");
+
+
 
 
 
@@ -720,49 +724,84 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var ExplorerComponent = /** @class */ (function () {
-    function ExplorerComponent(task, opener, notification, resourceService) {
+    function ExplorerComponent(task, opener, notification, resourceService, editorService) {
         this.task = task;
         this.opener = opener;
         this.notification = notification;
         this.resourceService = resourceService;
+        this.editorService = editorService;
         /** the dynamic options of the resources */
         this.options = [];
         var that = this;
         this.resources = this.resourceService.resources;
+        this.newName = '';
         this.options = [
-            { icon: 'fas fa-check', label: 'Test', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canBeTested"], action: function (r, e) {
+            { icon: 'fas fa-check', label: 'Test', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["canBeTested"], action: function (r, e) {
                     that.optionTest(r, e);
                 } },
-            { icon: 'fas fa-play', label: 'Load', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canBeLoaded"], action: function (r, e) {
+            { icon: 'fas fa-play', label: 'Load', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["canBeLoaded"], action: function (r, e) {
                     that.optionLoad(r, e);
                 } },
-            { icon: 'fas fa-sync', label: 'Reload', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canBeReloaded"], action: function (r, e) {
+            { icon: 'fas fa-sync', label: 'Reload', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["canBeReloaded"], action: function (r, e) {
                     that.optionReload(r, e);
                 } },
-            { icon: 'far fa-file', label: 'New File', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canAddFile"], action: function (r, e) {
+            { icon: 'far fa-file', label: 'New File', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["canAddFile"], action: function (r, e) {
                     that.optionAddFile(r, e);
                 } },
-            { icon: 'far fa-folder', label: 'New Folder', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canAddFile"], action: function (r, e) {
+            { icon: 'far fa-folder', label: 'New Folder', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["canAddFile"], action: function (r, e) {
                     that.optionFolder(r, e);
                 } },
-            { icon: 'far fa-edit', label: 'Rename', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canBeRenamed"], action: function (r, e) {
+            { icon: 'far fa-edit', label: 'Rename', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["canBeRenamed"], action: function (r, e) {
                     that.optionRename(r, e);
                 } },
-            { icon: 'far fa-trash-alt', label: 'Delete', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canBeDeleted"], action: function (r, e) {
+            { icon: 'far fa-trash-alt', label: 'Delete', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["canBeDeleted"], action: function (r, e) {
                     that.optionDelete(r, e);
                 } },
-            { icon: 'fas fa-lock', label: 'Read Only', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["readonly"], action: function () { } },
+            { icon: 'fas fa-lock', label: 'Read Only', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["readonly"], action: function () { } },
         ];
     }
     /** Handles refresh button click by retrieving resources from the server. */
     ExplorerComponent.prototype.didTapRefresh = function () {
-        var _this = this;
-        this.notification.confirmAsync({ title: 'You will lose any unsaved changes after this. Are you sure ?' }).then(function (confirmed) {
-            if (confirmed) {
-                _this.resourceService.refresh().catch(function (error) {
-                    _this.notification.logError(error);
-                });
-            }
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var confirm, _a, error_1;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        confirm = this.resourceService.findPredicate(function (e) { return e.changed || e.opened; });
+                        _b.label = 1;
+                    case 1:
+                        _b.trys.push([1, 8, , 9]);
+                        _a = !confirm;
+                        if (_a) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.notification.confirmAsync({
+                                title: 'You will lose any unsaved changes after this. Are you sure ?',
+                                okTitle: 'Refresh',
+                                noTitle: 'Cancel'
+                            })];
+                    case 2:
+                        _a = (_b.sent());
+                        _b.label = 3;
+                    case 3:
+                        if (!_a) return [3 /*break*/, 7];
+                        return [4 /*yield*/, this.editorService.closeAll()];
+                    case 4:
+                        if (!_b.sent()) return [3 /*break*/, 6];
+                        return [4 /*yield*/, this.resourceService.refresh()];
+                    case 5:
+                        _b.sent();
+                        this.notification.success('refreshed !');
+                        return [3 /*break*/, 7];
+                    case 6:
+                        this.notification.logError('an error occured while trying to close the editor groups');
+                        _b.label = 7;
+                    case 7: return [3 /*break*/, 9];
+                    case 8:
+                        error_1 = _b.sent();
+                        this.notification.logError(error_1);
+                        return [3 /*break*/, 9];
+                    case 9: return [2 /*return*/];
+                }
+            });
         });
     };
     /**
@@ -771,7 +810,7 @@ var ExplorerComponent = /** @class */ (function () {
      * 	@returns true only if the resource is not a root folder.
      */
     ExplorerComponent.prototype.draggable = function (resource) {
-        return !_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["isRoot"](resource) && resource.write;
+        return !resource.opened && !_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["isRoot"](resource) && resource.write;
     };
     /**
      * Gets a value indicating a resource is droppable into the given 'resource'
@@ -779,7 +818,7 @@ var ExplorerComponent = /** @class */ (function () {
      * 	@returns true only if the resource is folder.
      */
     ExplorerComponent.prototype.droppable = function (resource) {
-        return _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["isFolder"](resource) && resource.write;
+        return _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["isFolder"](resource) && resource.write;
     };
     /**
      * Handles drag and drop event by asking a confirmation to the user then :
@@ -791,19 +830,26 @@ var ExplorerComponent = /** @class */ (function () {
         var _this = this;
         var srcPath = data.src || data.file.name;
         var dstPath = data.dst;
-        var srcName = _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["basename"](srcPath);
+        var srcName = _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["basename"](srcPath);
         var src = this.resourceService.find(srcPath);
         var dst = this.resourceService.find(dstPath);
-        if (src && src.parent === data.dst) {
-            return;
+        if (src) {
+            if (src.parent === data.dst) {
+                return;
+            }
+            if (src.opened) {
+                throw new Error('Cannot move an opened resource');
+            }
         }
         var options = {
             title: 'Are you sure you want to move \'' + srcName + '\'?',
+            okTitle: 'Move',
+            noTitle: 'Cancel'
         };
         this.notification.confirmAsync(options).then(function (confirmed) {
             if (confirmed) {
                 _this.resourceService.move(src || data.file, dst).catch(function (error) {
-                    _this.notification.logError(error);
+                    _this.notification.error(error);
                 });
             }
         });
@@ -817,25 +863,36 @@ var ExplorerComponent = /** @class */ (function () {
      */
     ExplorerComponent.prototype.didEditingChanged = function (resource, event) {
         var _this = this;
-        if (resource.renaming || resource.creating) {
+        if (this.renaming || this.creating) {
             if (event.keyCode === 27) { // escape key
-                if (resource.renaming) {
-                    this.resourceService.cancel(resource);
+                if (this.renaming) {
+                    resource.renaming = this.renaming = false;
+                    this.newName = '';
                 }
                 else {
-                    this.optionDelete(resource, event);
+                    this.creating = false;
+                    this.newResource = undefined;
                 }
             }
             else if (event.type === 'blur' || event.keyCode === 13) { // focus losed or enter key
                 var promise = void 0;
-                if (resource.renaming) {
-                    promise = this.resourceService.rename(resource);
+                if (this.renaming) {
+                    promise = this.resourceService.rename(resource, this.newName);
                 }
                 else {
                     promise = this.resourceService.create(resource);
                 }
-                promise.catch(function (error) {
-                    _this.notification.logError(error);
+                promise.then(function () {
+                    _this.creating = _this.renaming = false;
+                    resource.renaming = resource.creating = false;
+                    _this.newName = '';
+                    _this.newResource = undefined;
+                }).catch(function (error) {
+                    _this.creating = _this.renaming = false;
+                    resource.renaming = resource.creating = false;
+                    _this.newName = '';
+                    _this.newResource = undefined;
+                    _this.notification.error(error);
                 });
             }
         }
@@ -848,11 +905,11 @@ var ExplorerComponent = /** @class */ (function () {
     ExplorerComponent.prototype.didTapOnResource = function (resource, event) {
         event.preventDefault();
         event.stopPropagation();
-        if (_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["isFolder"](resource)) {
+        if (_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["isFolder"](resource)) {
             resource.expanded = !resource.expanded;
         }
         else {
-            this.opener.openURI(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["asURI"](resource));
+            this.opener.openURI(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["asURI"](resource));
         }
     };
     /**
@@ -863,7 +920,7 @@ var ExplorerComponent = /** @class */ (function () {
      * - resource.icon otherwise.
      */
     ExplorerComponent.prototype.icon = function (resource) {
-        if (_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["isFolder"](resource)) {
+        if (_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["isFolder"](resource)) {
             return resource.expanded ? 'fas fa-folder-open' : 'fas fa-folder';
         }
         return resource.icon;
@@ -875,9 +932,6 @@ var ExplorerComponent = /** @class */ (function () {
     ExplorerComponent.prototype.isSelection = function (resource) {
         return this.resourceService.isSelection(resource);
     };
-    ExplorerComponent.prototype.isEditing = function (resource) {
-        return resource.renaming || resource.creating;
-    };
     /** Used in the html template with *ngFor to keep track of the resource */
     ExplorerComponent.prototype.trackByFn = function (_index, item) {
         return item.path;
@@ -885,12 +939,16 @@ var ExplorerComponent = /** @class */ (function () {
     ExplorerComponent.prototype.optionAddFile = function (resource, event) {
         event.preventDefault();
         event.stopPropagation();
-        this.resourceService.addFile(resource);
+        this.newResource = Object(_shared_models_resource_model__WEBPACK_IMPORTED_MODULE_6__["newResource"])(resource, _shared_models_resource_model__WEBPACK_IMPORTED_MODULE_6__["FILE_RESOURCE"]);
+        this.creating = this.newResource.creating = true;
+        this.renaming = false;
     };
     ExplorerComponent.prototype.optionFolder = function (resource, event) {
         event.preventDefault();
         event.stopPropagation();
-        this.resourceService.addFolder(resource);
+        this.newResource = Object(_shared_models_resource_model__WEBPACK_IMPORTED_MODULE_6__["newResource"])(resource, _shared_models_resource_model__WEBPACK_IMPORTED_MODULE_6__["FOLDER_RESOURCE"]);
+        this.creating = this.newResource.creating = true;
+        this.renaming = false;
     };
     ExplorerComponent.prototype.optionDelete = function (resource, event) {
         var _this = this;
@@ -945,9 +1003,9 @@ var ExplorerComponent = /** @class */ (function () {
     ExplorerComponent.prototype.optionRename = function (resource, event) {
         event.preventDefault();
         event.stopPropagation();
-        resource.renaming = true;
-        resource.parentRef = this.resourceService.find(resource.parent);
-        resource.nameBefore = resource.name;
+        this.newName = resource.name;
+        resource.renaming = this.renaming = true;
+        resource.creating = this.creating = false;
     };
     ExplorerComponent.prototype.optionTest = function (resource, event) {
         event.preventDefault();
@@ -973,7 +1031,8 @@ var ExplorerComponent = /** @class */ (function () {
         tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_core_task_service__WEBPACK_IMPORTED_MODULE_2__["TaskService"],
             _shared_services_core_opener_service__WEBPACK_IMPORTED_MODULE_3__["OpenerService"],
             src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_5__["NotificationService"],
-            _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_4__["ResourceService"]])
+            _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_4__["ResourceService"],
+            _shared_services_core_editor_service__WEBPACK_IMPORTED_MODULE_8__["EditorService"]])
     ], ExplorerComponent);
     return ExplorerComponent;
 }());
@@ -2139,10 +2198,10 @@ function canAddFolder(item) {
     return canWrite(item) && isFolder(item);
 }
 function canBeRenamed(item) {
-    return canWrite(item) && !isRoot(item);
+    return !item.opened && canWrite(item) && !isRoot(item);
 }
 function canBeDeleted(item) {
-    return canWrite(item) && isNotRoot(item);
+    return !item.opened && canWrite(item) && isNotRoot(item);
 }
 function canBeTested(item) {
     return canRead(item) && isPl(item);
@@ -2161,6 +2220,9 @@ function canBeUsedAsFileName(name) {
     return name && DISALLOWED_CHAR.every(function (e) { return !name.includes(e); });
 }
 function checkName(name) {
+    if (!name) {
+        throw new Error('a resource name cannot be empty');
+    }
     if (!canBeUsedAsFileName(name)) {
         throw new Error(name + ' cannot sould not contains any of ' + DISALLOWED_CHAR);
     }
@@ -2299,6 +2361,57 @@ function onMonacoLoad() {
 
 /***/ }),
 
+/***/ "./src/app/editor/shared/models/resource.model.ts":
+/*!********************************************************!*\
+  !*** ./src/app/editor/shared/models/resource.model.ts ***!
+  \********************************************************/
+/*! exports provided: FILE_RESOURCE, FOLDER_RESOURCE, newResource */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FILE_RESOURCE", function() { return FILE_RESOURCE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FOLDER_RESOURCE", function() { return FOLDER_RESOURCE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "newResource", function() { return newResource; });
+/* harmony import */ var _filters_model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+
+var FILE_RESOURCE = 'file';
+var FOLDER_RESOURCE = 'folder';
+function newResource(parent, type) {
+    Object(_filters_model__WEBPACK_IMPORTED_MODULE_0__["assert"])(type === FILE_RESOURCE || type === FOLDER_RESOURCE, "type param must be '" + FILE_RESOURCE + "' or '" + FOLDER_RESOURCE + "'");
+    Object(_filters_model__WEBPACK_IMPORTED_MODULE_0__["assert"])(parent.type === 'folder', 'resource.type must be folder');
+    Object(_filters_model__WEBPACK_IMPORTED_MODULE_0__["assert"])(parent.children.every(function (e) { return !e.renaming; }), 'cannot edit multiple resources');
+    parent.expanded = true;
+    parent.children = parent.children || [];
+    return {
+        name: '',
+        parent: parent.path,
+        path: parent.path + '/',
+        type: type,
+        icon: 'fas fa-' + type,
+        write: parent.write,
+        read: parent.read,
+        children: [],
+        content: undefined,
+        lastContent: undefined,
+        creating: true,
+        renaming: false,
+        expanded: false,
+        changed: false,
+        opened: false,
+        dirty: false,
+        repo: {
+            url: parent.repo.url,
+            host: parent.repo.host,
+            branch: parent.repo.branch,
+        },
+        meta: undefined,
+    };
+}
+
+
+/***/ }),
+
 /***/ "./src/app/editor/shared/models/schemas.model.ts":
 /*!*******************************************************!*\
   !*** ./src/app/editor/shared/models/schemas.model.ts ***!
@@ -2427,6 +2540,28 @@ var AbstractEditorService = /** @class */ (function () {
     AbstractEditorService.prototype.findGroups = function (tab) {
         return this.listGroups().filter(function (group) {
             return group.someTab(function (item) { return Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["compareTab"])(tab, item); });
+        });
+    };
+    AbstractEditorService.prototype.closeAll = function () {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var groups;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        groups = this.listGroups();
+                        _a.label = 1;
+                    case 1:
+                        if (!(groups.length !== 0)) return [3 /*break*/, 3];
+                        return [4 /*yield*/, groups[0].closeAll()];
+                    case 2:
+                        if (!(_a.sent())) {
+                            return [2 /*return*/, false];
+                        }
+                        groups = this.listGroups();
+                        return [3 /*break*/, 1];
+                    case 3: return [2 /*return*/, true];
+                }
+            });
         });
     };
     AbstractEditorService.prototype.subscribeChange = function (completion) {
@@ -3045,9 +3180,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
-/* harmony import */ var _git_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./git.service */ "./src/app/editor/shared/services/core/git.service.ts");
-/* harmony import */ var _task_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./task.service */ "./src/app/editor/shared/services/core/task.service.ts");
-/* harmony import */ var _models_filters_model__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+/* harmony import */ var _models_resource_model__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../models/resource.model */ "./src/app/editor/shared/models/resource.model.ts");
+/* harmony import */ var _git_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./git.service */ "./src/app/editor/shared/services/core/git.service.ts");
+/* harmony import */ var _task_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./task.service */ "./src/app/editor/shared/services/core/task.service.ts");
+/* harmony import */ var _models_filters_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+
 
 
 
@@ -3067,93 +3204,47 @@ var ResourceService = /** @class */ (function () {
         };
     }
     /**
-     * Adds new file resource into 'resource'
-     * @param resource the resource (must be a directory)
-     * @returns The added resource
-     */
-    ResourceService.prototype.addFile = function (resource) {
-        return this.add(resource, 'file');
-    };
-    /**
-     * Adds new directory resource into 'resource'
-     * @param resource the resource (must be a directory)
-     * @returns The added resource
-     */
-    ResourceService.prototype.addFolder = function (resource) {
-        return this.add(resource, 'folder');
-    };
-    /**
-     * Cancels the edition or the creation of the resource depending to it's state.
-     * - If the resource exists, the function will reset it's name to the name before the edition
-     * - Else the function will cancel the creation of the resource by removing it to the local cache.
-     * @param resource the resource (resource.editing must be == true)
-     */
-    ResourceService.prototype.cancel = function (resource) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var path, success;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                path = resource.path;
-                success = false;
-                if (resource.nameBefore) {
-                    resource.name = resource.nameBefore;
-                    success = true;
-                }
-                else {
-                    resource.path += '/' + resource.name;
-                    success = this.remove(resource.path);
-                    if (!success) {
-                        resource.path = path;
-                    }
-                }
-                if (success) {
-                    delete resource.renaming;
-                    delete resource.parentRef;
-                    delete resource.nameBefore;
-                }
-                return [2 /*return*/, success];
-            });
-        });
-    };
-    /**
      * Renames the resource on the server.
      * @param resource the resource object to rename.
+     * @param name the new name of the resource.
      * @returns Promise<boolean> rejected with an error or resolved with true.
      */
-    ResourceService.prototype.rename = function (resource) {
+    ResourceService.prototype.rename = function (resource, name) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
             var success, data, error_1;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](resource.renaming, 'resource should be in renaming state');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_5__["canWrite"](resource.parentRef), 'permission denied');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["checkName"](resource.name);
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["checkName"](name);
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canWrite"](resource), 'permission denied');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canWrite"](this.find(resource.parent)), 'permission denied on parent directory');
                         success = false;
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 6, , 7]);
-                        this.task.emitTaskEvent(true, 'rename resource');
-                        if (!(resource.name === resource.nameBefore)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.cancel(resource)];
+                        _a.trys.push([1, 5, , 6]);
+                        this.task.emitTaskEvent(true, 'rename');
+                        if (!(name === resource.name)) return [3 /*break*/, 2];
+                        success = true;
+                        return [3 /*break*/, 4];
                     case 2:
-                        success = _a.sent();
-                        return [3 /*break*/, 5];
-                    case 3:
                         data = {
                             name: 'rename_resource',
                             path: resource.path,
-                            target: resource.name,
+                            target: name,
                         };
                         return [4 /*yield*/, this.endEdition(data, resource)];
-                    case 4:
+                    case 3:
                         success = _a.sent();
-                        _a.label = 5;
-                    case 5: return [3 /*break*/, 7];
-                    case 6:
+                        if (success) {
+                            resource.name = name;
+                        }
+                        _a.label = 4;
+                    case 4: return [3 /*break*/, 6];
+                    case 5:
                         error_1 = _a.sent();
                         this.task.emitTaskEvent(false);
                         throw error_1;
-                    case 7:
+                    case 6:
                         this.task.emitTaskEvent(false);
                         return [2 /*return*/, success];
                 }
@@ -3171,15 +3262,18 @@ var ResourceService = /** @class */ (function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["checkName"](resource.name);
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canWrite"](resource), 'permission denied');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canWrite"](this.find(resource.parent)), 'permission denied on parent directory');
                         this.task.emitTaskEvent(true, 'create resource');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["checkName"](resource.name);
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_5__["canWrite"](resource.parentRef), 'permission denied');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["checkName"](resource.name);
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canWrite"](this.find(resource.parent)), 'permission denied');
                         data = {
                             name: 'create_resource',
-                            path: resource.path + '/' + resource.name,
+                            path: resource.parent + '/' + resource.name,
                             content: resource.content,
                             type: resource.type
                         };
@@ -3208,9 +3302,9 @@ var ResourceService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["requireNonNull"](resource, 'resource');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_5__["canWrite"](resource), 'permission denied');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](!_models_filters_model__WEBPACK_IMPORTED_MODULE_5__["isRoot"](resource), 'permission denied');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"](resource, 'resource');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canWrite"](resource), 'permission denied');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](!_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["isRoot"](resource), 'permission denied');
                         this.task.emitTaskEvent(true, 'delete');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         return [4 /*yield*/, this.http.post('filebrowser/option', {
@@ -3380,10 +3474,10 @@ var ResourceService = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
                         this.task.emitTaskEvent(true, 'move');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["requireNonNull"](src, 'src');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["requireNonNull"](dst, 'dst');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_5__["canWrite"](dst), 'permission denied');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_5__["isFolder"](dst), 'destination must be a directory');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"](src, 'src');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"](dst, 'dst');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canWrite"](dst), 'permission denied');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["isFolder"](dst), 'destination must be a directory');
                         resource = void 0;
                         if (!('size' in src)) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.moveFile(src, dst)];
@@ -3421,7 +3515,7 @@ var ResourceService = /** @class */ (function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!_models_filters_model__WEBPACK_IMPORTED_MODULE_5__["fromServer"](resource)) {
+                        if (!_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["fromServer"](resource)) {
                             return [2 /*return*/, true];
                         }
                         if (!resource.changed) {
@@ -3431,7 +3525,7 @@ var ResourceService = /** @class */ (function () {
                     case 1:
                         _a.trys.push([1, 3, , 4]);
                         this.task.emitTaskEvent(true, 'save');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["requireNonNull"](resource, 'resource');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"](resource, 'resource');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         return [4 /*yield*/, this.http.post('filebrowser/option', {
                                 name: 'update_resource', path: resource.path, content: resource.content
@@ -3486,8 +3580,8 @@ var ResourceService = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         this.task.emitTaskEvent(true, 'compilation');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["requireNonNull"](resource, 'resource');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_5__["isPl"](resource), 'pl resource is expected');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"](resource, 'resource');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["isPl"](resource), 'pl resource is expected');
                         data = {
                             'name': 'compile_pl',
                             'path': resource.path,
@@ -3519,7 +3613,7 @@ var ResourceService = /** @class */ (function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!_models_filters_model__WEBPACK_IMPORTED_MODULE_5__["fromServer"](resource)) {
+                        if (!_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["fromServer"](resource)) {
                             return [2 /*return*/, true];
                         }
                         this.selection = resource;
@@ -3570,7 +3664,7 @@ var ResourceService = /** @class */ (function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
             _this.task.emitTaskEvent(true, 'preview');
-            var ext = _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["extension"](resource);
+            var ext = _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["extension"](resource);
             var action = _this.previewProviders[ext];
             action(resource, _this).then(function (response) {
                 _this.task.emitTaskEvent(false, 'preview');
@@ -3615,23 +3709,26 @@ var ResourceService = /** @class */ (function () {
             });
         });
     };
-    ResourceService.prototype.endEdition = function (data, resource) {
+    ResourceService.prototype.endEdition = function (postData, resource) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var headers, response;
+            var headers, response, parent;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
-                        return [4 /*yield*/, this.http.post('filebrowser/option', data, { headers: headers }).toPromise()];
+                        return [4 /*yield*/, this.http.post('filebrowser/option', postData, { headers: headers }).toPromise()];
                     case 1:
                         response = _a.sent();
                         resource.path = response['path'];
                         resource.icon = response['icon'];
-                        this.sort(resource.parentRef.children);
+                        parent = this.find(resource.parent);
+                        parent.children = parent.children || [];
+                        if (resource.creating) {
+                            parent.children.push(resource);
+                        }
+                        this.sort(parent.children);
                         resource.renaming = false;
                         resource.creating = false;
-                        resource.parentRef = undefined;
-                        resource.nameBefore = undefined;
                         this.git.refresh();
                         this.task.emitTaskEvent(false, 'create resource');
                         return [2 /*return*/, true];
@@ -3639,25 +3736,16 @@ var ResourceService = /** @class */ (function () {
             });
         });
     };
-    ResourceService.prototype.add = function (resource, type) {
-        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](resource.type === 'folder', 'resource.type must be folder');
-        resource.children = resource.children || [];
-        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](resource.children.every(function (e) { return !e.renaming; }), 'cannot edit multiple resources');
-        resource.expanded = true;
-        var newResource = tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"]({}, resource, { creating: true, name: '', type: type, icon: 'fas fa-' + type, children: [], parent: resource.path, parentRef: resource });
-        resource.children.push(newResource);
-        return newResource;
-    };
     ResourceService.prototype.moveResource = function (src, dst) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
             var headers, response, srcLastParent;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["requireNonNull"](src.path, 'src.path');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["requireNonNull"](dst.path, 'dst.path');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](src.path !== dst.path, 'cannot move the resource to the same path');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["assert"](!_models_filters_model__WEBPACK_IMPORTED_MODULE_5__["isRoot"](src), 'cannot move a root resource');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"](src.path, 'src.path');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"](dst.path, 'dst.path');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](src.path !== dst.path, 'cannot move the resource to the same path');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](!_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["isRoot"](src), 'cannot move a root resource');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         return [4 /*yield*/, this.http.post('filebrowser/option', {
                                 name: 'move_resource',
@@ -3682,9 +3770,9 @@ var ResourceService = /** @class */ (function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["requireNonNull"](src.name, 'src.name');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["requireNonNull"](dst.path, 'dst.path');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_5__["checkName"](src.name);
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"](src.name, 'src.name');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"](dst.path, 'dst.path');
+                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["checkName"](src.name);
                         formData = new FormData();
                         formData.append('file', src, src.name);
                         formData.append('path', dst.path);
@@ -3694,14 +3782,30 @@ var ResourceService = /** @class */ (function () {
                         return [4 /*yield*/, this.http.post('/filebrowser/upload_resource', formData, { headers: headers }).toPromise()];
                     case 1:
                         _a.sent();
-                        newRes = this.addFile(dst);
-                        newRes.path += '/' + src.name;
+                        newRes = Object(_models_resource_model__WEBPACK_IMPORTED_MODULE_3__["newResource"])(dst, _models_resource_model__WEBPACK_IMPORTED_MODULE_3__["FILE_RESOURCE"]);
+                        newRes.path = dst.path + '/' + src.name;
                         newRes.name = src.name;
-                        delete newRes.renaming;
+                        newRes.renaming = newRes.creating = false;
+                        dst.children = dst.children || [];
+                        dst.children.push(newRes);
                         return [2 /*return*/, newRes];
                 }
             });
         });
+    };
+    ResourceService.prototype.sort = function (resources) {
+        if (resources) {
+            resources.sort(function (a, b) {
+                if (a.type === b.type) {
+                    return a.name.toLocaleLowerCase() < b.name.toLocaleLowerCase() ? -1 : 1;
+                }
+                return a.type === 'folder' ? -1 : 1;
+            });
+            for (var _i = 0, resources_1 = resources; _i < resources_1.length; _i++) {
+                var item = resources_1[_i];
+                this.sort(item.children);
+            }
+        }
     };
     ResourceService.prototype.remove = function (path) {
         function remove_recursive(items) {
@@ -3722,20 +3826,6 @@ var ResourceService = /** @class */ (function () {
         }
         return remove_recursive(this.resources);
     };
-    ResourceService.prototype.sort = function (resources) {
-        if (resources) {
-            resources.sort(function (a, b) {
-                if (a.type === b.type) {
-                    return a.name < b.name ? -1 : 1;
-                }
-                return a.type === 'folder' ? -1 : 1;
-            });
-            for (var _i = 0, resources_1 = resources; _i < resources_1.length; _i++) {
-                var item = resources_1[_i];
-                this.sort(item.children);
-            }
-        }
-    };
     ResourceService.prototype.previewPL = function (resource, service) {
         var data = {
             'name': 'preview_pl',
@@ -3754,8 +3844,8 @@ var ResourceService = /** @class */ (function () {
             providedIn: 'root'
         }),
         tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"],
-            _task_service__WEBPACK_IMPORTED_MODULE_4__["TaskService"],
-            _git_service__WEBPACK_IMPORTED_MODULE_3__["GitService"]])
+            _task_service__WEBPACK_IMPORTED_MODULE_5__["TaskService"],
+            _git_service__WEBPACK_IMPORTED_MODULE_4__["GitService"]])
     ], ResourceService);
     return ResourceService;
 }());
@@ -4189,8 +4279,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../shared/services/core/resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
 /* harmony import */ var _shared_services_monaco_monaco_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../shared/services/monaco/monaco.service */ "./src/app/editor/shared/services/monaco/monaco.service.ts");
 /* harmony import */ var _shared_services_core_git_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../shared/services/core/git.service */ "./src/app/editor/shared/services/core/git.service.ts");
-/* harmony import */ var _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../shared/models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
-
 
 
 
@@ -4250,7 +4338,9 @@ var CodeEditorComponent = /** @class */ (function () {
         var model = monaco.editor.getModel(data.uri)
             || monaco.editor.createModel(this.active.content, this.monacoService.findLanguage(this.active), data.uri);
         this.editor.codeEditor.setModel(model);
-        this.readonly = !this.active.write || (!this.active.meta.text && !Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_8__["isSVG"])(this.active));
+        var meta = this.active.meta;
+        // tslint:disable-next-line: max-line-length
+        this.readonly = (!this.active.write || meta.application || meta.archive || meta.image);
         this.editor.codeEditor.updateOptions({ readOnly: this.readonly });
         this.editor.codeEditor.focus();
         if (this.editor.diffEditing) {
@@ -5242,21 +5332,21 @@ var NotificationService = /** @class */ (function (_super) {
     }
     NotificationService.prototype.success = function (message, title) {
         if (title === void 0) { title = ''; }
-        this.toastr.success(message, title, {
+        this.toastr.success(this.parseMessage(message, false), title, {
             enableHtml: true,
             onActivateTick: true,
         });
     };
     NotificationService.prototype.warning = function (message, title) {
         if (title === void 0) { title = ''; }
-        this.toastr.warning(message, title, {
+        this.toastr.warning(this.parseMessage(message, false), title, {
             enableHtml: true,
             onActivateTick: true,
         });
     };
     NotificationService.prototype.error = function (message, title) {
         if (title === void 0) { title = ''; }
-        this.toastr.error(message, title, {
+        this.toastr.error(this.parseMessage(message, false), title, {
             enableHtml: true,
             onActivateTick: true,
         });
@@ -5307,31 +5397,39 @@ var NotificationService = /** @class */ (function (_super) {
             });
         });
     };
-    NotificationService.prototype.logInfo = function (message) {
-        this.log(message, 'info');
+    NotificationService.prototype.logInfo = function (message, stackTrace) {
+        if (stackTrace === void 0) { stackTrace = true; }
+        this.log(message, 'info', stackTrace);
     };
-    NotificationService.prototype.logWarning = function (message) {
-        this.log(message, 'warning');
+    NotificationService.prototype.logWarning = function (message, stackTrace) {
+        if (stackTrace === void 0) { stackTrace = true; }
+        this.log(message, 'warning', stackTrace);
     };
-    NotificationService.prototype.logError = function (message) {
-        this.log(message, 'error');
+    NotificationService.prototype.logError = function (message, stackTrace) {
+        if (stackTrace === void 0) { stackTrace = true; }
+        this.log(message, 'error', stackTrace);
     };
-    NotificationService.prototype.log = function (message, type) {
+    NotificationService.prototype.log = function (message, type, stackTrace) {
+        if (stackTrace === void 0) { stackTrace = true; }
+        var item = { message: this.parseMessage(message, stackTrace), type: type };
+        this.onLogAdded.next(item);
+        this.size++;
+    };
+    NotificationService.prototype.parseMessage = function (message, stackTrace) {
         var msg = message;
         if (typeof message !== 'string') {
             msg = message.error;
             if (!msg) {
                 if (message.stack) {
-                    msg = ''.concat(message.message, '<br/>Stacktrace:<br/>', message.stack.split('\n').join('<br/>'));
+                    var trace = stackTrace ? message.stack.split('\n').join('<br/>') : '';
+                    msg = message.message + trace;
                 }
                 else {
                     msg = JSON.stringify(message);
                 }
             }
         }
-        var item = { message: msg, type: type };
-        this.onLogAdded.next(item);
-        this.size++;
+        return msg;
     };
     NotificationService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({

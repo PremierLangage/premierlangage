@@ -8,8 +8,9 @@ import { OpenerService } from '../../shared/services/core/opener.service';
 import { ResourceService } from '../../shared/services/core/resource.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 
-import { Resource } from '../../shared/models/resource.model';
+import { Resource, newResource, FILE_RESOURCE, FOLDER_RESOURCE } from '../../shared/models/resource.model';
 import * as filters from '../../shared/models/filters.model';
+import { EditorService } from '../../shared/services/core/editor.service';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -19,6 +20,9 @@ import * as filters from '../../shared/models/filters.model';
   encapsulation: ViewEncapsulation.None
 })
 export class ExplorerComponent {
+
+    private renaming: boolean;
+    private creating: boolean;
 
     /** the tree resources */
     @Input()
@@ -31,14 +35,20 @@ export class ExplorerComponent {
     /** the dynamic options of the resources */
     readonly options = [];
 
+    /** rename input value */
+    newName: string;
+    newResource: Resource;
+
     constructor(
         private readonly task: TaskService,
         private readonly opener: OpenerService,
         private readonly notification: NotificationService,
         private readonly resourceService: ResourceService,
+        private readonly editorService: EditorService,
     ) {
         const that = this;
         this.resources = this.resourceService.resources;
+        this.newName = '';
         this.options = [
             { icon: 'fas fa-check', label: 'Test', enabled: filters.canBeTested, action: (r: Resource, e: MouseEvent) => {
                 that.optionTest(r, e);
@@ -66,14 +76,24 @@ export class ExplorerComponent {
     }
 
     /** Handles refresh button click by retrieving resources from the server. */
-    didTapRefresh() {
-        this.notification.confirmAsync({ title: 'You will lose any unsaved changes after this. Are you sure ?'}).then(confirmed => {
-            if (confirmed) {
-                this.resourceService.refresh().catch(error => {
-                    this.notification.logError(error);
-                });
+    async didTapRefresh() {
+        const confirm = this.resourceService.findPredicate(e => e.changed || e.opened);
+        try {
+            if (!confirm || await this.notification.confirmAsync({
+                title: 'You will lose any unsaved changes after this. Are you sure ?',
+                okTitle: 'Refresh',
+                noTitle: 'Cancel'
+            })) {
+                if (await this.editorService.closeAll()) {
+                    await this.resourceService.refresh();
+                    this.notification.success('refreshed !');
+                } else {
+                    this.notification.logError('an error occured while trying to close the editor groups');
+                }
             }
-        });
+        } catch (error) {
+            this.notification.logError(error);
+        }
     }
 
     /**
@@ -82,7 +102,7 @@ export class ExplorerComponent {
      * 	@returns true only if the resource is not a root folder.
      */
     draggable(resource: Resource) {
-        return !filters.isRoot(resource) && resource.write;
+        return !resource.opened && !filters.isRoot(resource) && resource.write;
     }
 
     /**
@@ -106,16 +126,24 @@ export class ExplorerComponent {
         const srcName = filters.basename(srcPath);
         const src = this.resourceService.find(srcPath);
         const dst = this.resourceService.find(dstPath);
-        if (src && src.parent === data.dst) {
-            return;
+        if (src) {
+            if (src.parent === data.dst) {
+                return;
+            }
+            if (src.opened) {
+                throw new Error('Cannot move an opened resource');
+            }
         }
+
         const options = {
             title: 'Are you sure you want to move \'' + srcName + '\'?',
+            okTitle: 'Move',
+            noTitle: 'Cancel'
         };
         this.notification.confirmAsync(options).then(confirmed => {
             if (confirmed) {
                 this.resourceService.move(src || data.file , dst).catch(error => {
-                    this.notification.logError(error);
+                    this.notification.error(error);
                 });
             }
         });
@@ -129,22 +157,33 @@ export class ExplorerComponent {
      * @param event KeyboardEvent or Focus event.
      */
     didEditingChanged(resource: Resource, event: any) {
-        if (resource.renaming || resource.creating) {
+        if (this.renaming || this.creating) {
             if (event.keyCode === 27) { // escape key
-                if (resource.renaming) {
-                    this.resourceService.cancel(resource);
+                if (this.renaming) {
+                    resource.renaming = this.renaming = false;
+                    this.newName = '';
                 } else {
-                    this.optionDelete(resource, event);
+                    this.creating = false;
+                    this.newResource = undefined;
                 }
             } else if (event.type === 'blur' || event.keyCode === 13) { // focus losed or enter key
                 let promise: Promise<boolean>;
-                if (resource.renaming) {
-                    promise = this.resourceService.rename(resource);
+                if (this.renaming) {
+                    promise = this.resourceService.rename(resource, this.newName);
                 } else {
                     promise = this.resourceService.create(resource);
                 }
-                promise.catch(error => {
-                    this.notification.logError(error);
+                promise.then(() => {
+                    this.creating = this.renaming = false;
+                    resource.renaming = resource.creating = false;
+                    this.newName = '';
+                    this.newResource = undefined;
+                }).catch(error => {
+                    this.creating = this.renaming = false;
+                    resource.renaming = resource.creating = false;
+                    this.newName = '';
+                    this.newResource = undefined;
+                    this.notification.error(error);
                 });
             }
         }
@@ -187,10 +226,6 @@ export class ExplorerComponent {
         return this.resourceService.isSelection(resource);
     }
 
-    isEditing(resource: Resource) {
-        return resource.renaming || resource.creating;
-    }
-
     /** Used in the html template with *ngFor to keep track of the resource */
     trackByFn(_index: number, item: Resource) {
         return item.path;
@@ -200,13 +235,17 @@ export class ExplorerComponent {
     private optionAddFile(resource: Resource, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        this.resourceService.addFile(resource);
+        this.newResource = newResource(resource, FILE_RESOURCE);
+        this.creating = this.newResource.creating = true;
+        this.renaming = false;
     }
 
     private optionFolder(resource: Resource, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        this.resourceService.addFolder(resource);
+        this.newResource = newResource(resource, FOLDER_RESOURCE);
+        this.creating = this.newResource.creating = true;
+        this.renaming = false;
     }
 
     private optionDelete(resource: Resource, event: MouseEvent) {
@@ -262,9 +301,9 @@ export class ExplorerComponent {
     private optionRename(resource: Resource, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        resource.renaming = true;
-        resource.parentRef = this.resourceService.find(resource.parent);
-        resource.nameBefore = resource.name;
+        this.newName = resource.name;
+        resource.renaming = this.renaming = true;
+        resource.creating = this.creating = false;
     }
 
     private optionTest(resource: Resource, event: MouseEvent) {

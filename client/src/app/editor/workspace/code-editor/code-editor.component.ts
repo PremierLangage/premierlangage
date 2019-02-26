@@ -86,7 +86,9 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
                 data.uri
         );
         this.editor.codeEditor.setModel(model);
-        this.readonly = !this.active.write || (!this.active.meta.text && !isSVG(this.active));
+        const meta = this.active.meta;
+        // tslint:disable-next-line: max-line-length
+        this.readonly = (!this.active.write || meta.application || meta.archive || meta.image);
         this.editor.codeEditor.updateOptions({ readOnly: this.readonly });
         this.editor.codeEditor.focus();
 
