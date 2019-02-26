@@ -509,24 +509,32 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var angular_split__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! angular-split */ "./node_modules/angular-split/fesm5/angular-split.js");
 /* harmony import */ var ngx_monaco_editor__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ngx-monaco-editor */ "./node_modules/ngx-monaco-editor/index.js");
-/* harmony import */ var _shared_modules_shared_module__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../shared/modules/shared.module */ "./src/app/shared/modules/shared.module.ts");
-/* harmony import */ var _editor_routing_module__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./editor-routing.module */ "./src/app/editor/editor-routing.module.ts");
-/* harmony import */ var _editor_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./editor.component */ "./src/app/editor/editor.component.ts");
-/* harmony import */ var _debugging_debugging_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./debugging/debugging.component */ "./src/app/editor/debugging/debugging.component.ts");
-/* harmony import */ var _debugging_console_console_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./debugging/console/console.component */ "./src/app/editor/debugging/console/console.component.ts");
-/* harmony import */ var _footer_footer_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./footer/footer.component */ "./src/app/editor/footer/footer.component.ts");
-/* harmony import */ var _navigation_navigation_component__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./navigation/navigation.component */ "./src/app/editor/navigation/navigation.component.ts");
-/* harmony import */ var _navigation_explorer_explorer_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./navigation/explorer/explorer.component */ "./src/app/editor/navigation/explorer/explorer.component.ts");
-/* harmony import */ var _navigation_search_search_component__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./navigation/search/search.component */ "./src/app/editor/navigation/search/search.component.ts");
-/* harmony import */ var _navigation_git_git_component__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./navigation/git/git.component */ "./src/app/editor/navigation/git/git.component.ts");
-/* harmony import */ var _navigation_settings_settings_component__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./navigation/settings/settings.component */ "./src/app/editor/navigation/settings/settings.component.ts");
-/* harmony import */ var _workspace_workspace_component__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./workspace/workspace.component */ "./src/app/editor/workspace/workspace.component.ts");
-/* harmony import */ var _shared_models_monaco_model__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./shared/models/monaco.model */ "./src/app/editor/shared/models/monaco.model.ts");
-/* harmony import */ var _workspace_code_editor_code_editor_component__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./workspace/code-editor/code-editor.component */ "./src/app/editor/workspace/code-editor/code-editor.component.ts");
-/* harmony import */ var _workspace_image_editor_image_editor_component__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./workspace/image-editor/image-editor.component */ "./src/app/editor/workspace/image-editor/image-editor.component.ts");
-/* harmony import */ var _workspace_preview_editor_preview_editor_component__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./workspace/preview-editor/preview-editor.component */ "./src/app/editor/workspace/preview-editor/preview-editor.component.ts");
+/* harmony import */ var angular2_markdown__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! angular2-markdown */ "./node_modules/angular2-markdown/index.js");
+/* harmony import */ var rxjs_compat_Observable__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! rxjs-compat/Observable */ "./node_modules/rxjs-compat/Observable.js");
+/* harmony import */ var rxjs_compat_Observable__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(rxjs_compat_Observable__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _shared_modules_shared_module__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../shared/modules/shared.module */ "./src/app/shared/modules/shared.module.ts");
+/* harmony import */ var _editor_routing_module__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./editor-routing.module */ "./src/app/editor/editor-routing.module.ts");
+/* harmony import */ var _editor_component__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./editor.component */ "./src/app/editor/editor.component.ts");
+/* harmony import */ var _debugging_debugging_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./debugging/debugging.component */ "./src/app/editor/debugging/debugging.component.ts");
+/* harmony import */ var _debugging_console_console_component__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./debugging/console/console.component */ "./src/app/editor/debugging/console/console.component.ts");
+/* harmony import */ var _footer_footer_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./footer/footer.component */ "./src/app/editor/footer/footer.component.ts");
+/* harmony import */ var _navigation_navigation_component__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./navigation/navigation.component */ "./src/app/editor/navigation/navigation.component.ts");
+/* harmony import */ var _navigation_explorer_explorer_component__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./navigation/explorer/explorer.component */ "./src/app/editor/navigation/explorer/explorer.component.ts");
+/* harmony import */ var _navigation_search_search_component__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./navigation/search/search.component */ "./src/app/editor/navigation/search/search.component.ts");
+/* harmony import */ var _navigation_git_git_component__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./navigation/git/git.component */ "./src/app/editor/navigation/git/git.component.ts");
+/* harmony import */ var _navigation_settings_settings_component__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./navigation/settings/settings.component */ "./src/app/editor/navigation/settings/settings.component.ts");
+/* harmony import */ var _workspace_workspace_component__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./workspace/workspace.component */ "./src/app/editor/workspace/workspace.component.ts");
+/* harmony import */ var _shared_models_monaco_model__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./shared/models/monaco.model */ "./src/app/editor/shared/models/monaco.model.ts");
+/* harmony import */ var _workspace_code_editor_code_editor_component__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./workspace/code-editor/code-editor.component */ "./src/app/editor/workspace/code-editor/code-editor.component.ts");
+/* harmony import */ var _workspace_image_editor_image_editor_component__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./workspace/image-editor/image-editor.component */ "./src/app/editor/workspace/image-editor/image-editor.component.ts");
+/* harmony import */ var _workspace_preview_editor_preview_editor_component__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./workspace/preview-editor/preview-editor.component */ "./src/app/editor/workspace/preview-editor/preview-editor.component.ts");
 
 
+// https://www.npmjs.com/package/angular-split
+
+// https://www.npmjs.com/package/ngx-monaco-editor/v/7.0.0
+
+// https://www.npmjs.com/package/angular2-markdown
 
 
 
@@ -554,28 +562,29 @@ var EditorModule = /** @class */ (function () {
     EditorModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"])({
             declarations: [
-                _editor_component__WEBPACK_IMPORTED_MODULE_6__["EditorComponent"],
-                _navigation_navigation_component__WEBPACK_IMPORTED_MODULE_10__["NavigationComponent"],
-                _navigation_explorer_explorer_component__WEBPACK_IMPORTED_MODULE_11__["ExplorerComponent"],
-                _navigation_search_search_component__WEBPACK_IMPORTED_MODULE_12__["SearchComponent"],
-                _navigation_git_git_component__WEBPACK_IMPORTED_MODULE_13__["GitComponent"],
-                _navigation_settings_settings_component__WEBPACK_IMPORTED_MODULE_14__["SettingsComponent"],
-                _footer_footer_component__WEBPACK_IMPORTED_MODULE_9__["FooterComponent"],
-                _debugging_debugging_component__WEBPACK_IMPORTED_MODULE_7__["DebuggingComponent"],
-                _debugging_console_console_component__WEBPACK_IMPORTED_MODULE_8__["ConsoleComponent"],
-                _workspace_workspace_component__WEBPACK_IMPORTED_MODULE_15__["WorkspaceComponent"],
-                _workspace_code_editor_code_editor_component__WEBPACK_IMPORTED_MODULE_17__["CodeEditorComponent"],
-                _workspace_image_editor_image_editor_component__WEBPACK_IMPORTED_MODULE_18__["ImageEditorComponent"],
-                _workspace_preview_editor_preview_editor_component__WEBPACK_IMPORTED_MODULE_19__["PreviewEditorComponent"]
+                _editor_component__WEBPACK_IMPORTED_MODULE_8__["EditorComponent"],
+                _navigation_navigation_component__WEBPACK_IMPORTED_MODULE_12__["NavigationComponent"],
+                _navigation_explorer_explorer_component__WEBPACK_IMPORTED_MODULE_13__["ExplorerComponent"],
+                _navigation_search_search_component__WEBPACK_IMPORTED_MODULE_14__["SearchComponent"],
+                _navigation_git_git_component__WEBPACK_IMPORTED_MODULE_15__["GitComponent"],
+                _navigation_settings_settings_component__WEBPACK_IMPORTED_MODULE_16__["SettingsComponent"],
+                _footer_footer_component__WEBPACK_IMPORTED_MODULE_11__["FooterComponent"],
+                _debugging_debugging_component__WEBPACK_IMPORTED_MODULE_9__["DebuggingComponent"],
+                _debugging_console_console_component__WEBPACK_IMPORTED_MODULE_10__["ConsoleComponent"],
+                _workspace_workspace_component__WEBPACK_IMPORTED_MODULE_17__["WorkspaceComponent"],
+                _workspace_code_editor_code_editor_component__WEBPACK_IMPORTED_MODULE_19__["CodeEditorComponent"],
+                _workspace_image_editor_image_editor_component__WEBPACK_IMPORTED_MODULE_20__["ImageEditorComponent"],
+                _workspace_preview_editor_preview_editor_component__WEBPACK_IMPORTED_MODULE_21__["PreviewEditorComponent"]
             ],
             imports: [
-                _editor_routing_module__WEBPACK_IMPORTED_MODULE_5__["EditorRoutingModule"],
-                _shared_modules_shared_module__WEBPACK_IMPORTED_MODULE_4__["SharedModule"],
+                _editor_routing_module__WEBPACK_IMPORTED_MODULE_7__["EditorRoutingModule"],
+                _shared_modules_shared_module__WEBPACK_IMPORTED_MODULE_6__["SharedModule"],
                 angular_split__WEBPACK_IMPORTED_MODULE_2__["AngularSplitModule"].forRoot(),
-                ngx_monaco_editor__WEBPACK_IMPORTED_MODULE_3__["MonacoEditorModule"].forRoot(_shared_models_monaco_model__WEBPACK_IMPORTED_MODULE_16__["MONACO_CONFIG"]),
+                ngx_monaco_editor__WEBPACK_IMPORTED_MODULE_3__["MonacoEditorModule"].forRoot(_shared_models_monaco_model__WEBPACK_IMPORTED_MODULE_18__["MONACO_CONFIG"]),
+                angular2_markdown__WEBPACK_IMPORTED_MODULE_4__["MarkdownModule"].forRoot()
             ],
             exports: [
-                _editor_component__WEBPACK_IMPORTED_MODULE_6__["EditorComponent"],
+                _editor_component__WEBPACK_IMPORTED_MODULE_8__["EditorComponent"],
             ],
             providers: []
         })
@@ -2098,7 +2107,7 @@ var INSTANTIATORS = [
 /*!*******************************************************!*\
   !*** ./src/app/editor/shared/models/filters.model.ts ***!
   \*******************************************************/
-/*! exports provided: DISALLOWED_CHAR, canRead, canWrite, readonly, isFolder, isFile, isRoot, isPl, isMarkdown, isPltp, canBePreviewed, isHome, isNotRoot, isSVG, fromServer, isRepo, canAddFile, canCopy, canAddFolder, canBeRenamed, canBeDeleted, canBeTested, canBeLoaded, canBeReloaded, extension, canBeUsedAsFileName, checkName, requireNonNull, assert, basename, asURI, asTab, compareTab, compareGroup, resourceIsURI, openAsCode, openAsImage, openAsPreview */
+/*! exports provided: DISALLOWED_CHAR, canRead, canWrite, readonly, isFolder, isFile, isRoot, isPl, isMarkdown, isPltp, isSVG, canBePreviewed, isHome, isNotRoot, fromServer, isRepo, canAddFile, canCopy, canAddFolder, canBeRenamed, canBeDeleted, canBeTested, canBeLoaded, canBeReloaded, extension, canBeUsedAsFileName, checkName, requireNonNull, assert, basename, asURI, asTab, compareTab, compareGroup, resourceIsURI, openAsCode, openAsImage, openAsPreview */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2113,10 +2122,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPl", function() { return isPl; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isMarkdown", function() { return isMarkdown; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPltp", function() { return isPltp; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isSVG", function() { return isSVG; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBePreviewed", function() { return canBePreviewed; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isHome", function() { return isHome; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isNotRoot", function() { return isNotRoot; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isSVG", function() { return isSVG; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fromServer", function() { return fromServer; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isRepo", function() { return isRepo; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canAddFile", function() { return canAddFile; });
@@ -2165,22 +2174,22 @@ function isPl(item) {
     return item && item.name.endsWith('.pl');
 }
 function isMarkdown(item) {
-    return item && item.name.endsWith('.md');
+    return item && item.name.toLowerCase().endsWith('.md');
 }
 function isPltp(item) {
-    return item && item.name.endsWith('.pltp');
+    return item && item.name.toLowerCase().endsWith('.pltp');
+}
+function isSVG(item) {
+    return item && item.name.toLowerCase().endsWith('.pltp');
 }
 function canBePreviewed(item) {
-    return item && isPl(item) || isSVG(item);
+    return item && isPl(item) || isSVG(item) || isMarkdown(item);
 }
 function isHome(item) {
     return item && item.name === 'home';
 }
 function isNotRoot(item) {
     return !isRoot(item);
-}
-function isSVG(item) {
-    return extension(item) === 'svg';
 }
 function fromServer(resource) {
     return !resource.meta || resource.meta.download_url;
@@ -2214,7 +2223,7 @@ function canBeReloaded(item) {
 }
 function extension(resource) {
     var dotIndex = resource.name.lastIndexOf('.');
-    return resource.name.substring(dotIndex + 1);
+    return resource.name.substring(dotIndex + 1).toLowerCase();
 }
 function canBeUsedAsFileName(name) {
     return name && DISALLOWED_CHAR.every(function (e) { return !name.includes(e); });
@@ -3201,6 +3210,7 @@ var ResourceService = /** @class */ (function () {
         this.previewProviders = {
             'pl': this.previewPL,
             'svg': this.previewSVG,
+            'md': this.previewMD,
         };
     }
     /**
@@ -3797,7 +3807,7 @@ var ResourceService = /** @class */ (function () {
         if (resources) {
             resources.sort(function (a, b) {
                 if (a.type === b.type) {
-                    return a.name.toLocaleLowerCase() < b.name.toLocaleLowerCase() ? -1 : 1;
+                    return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
                 }
                 return a.type === 'folder' ? -1 : 1;
             });
@@ -3835,6 +3845,9 @@ var ResourceService = /** @class */ (function () {
         };
         var headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
         return service.http.post('filebrowser/option', data, { headers: headers }).toPromise();
+    };
+    ResourceService.prototype.previewMD = function (resource, service) {
+        return Promise.resolve({ preview: resource.content });
     };
     ResourceService.prototype.previewSVG = function (resource) {
         return Promise.resolve({ preview: resource.content });
@@ -4502,7 +4515,7 @@ var ImageEditorComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class='preview-editor' [innerHTML]='html | sanitizeHtml' runScripts></div>"
+module.exports = "<div *ngIf='notMD; else MD' class='preview-editor' [innerHTML]='content | sanitizeHtml' runScripts></div>\n\n<ng-template #MD>\n    <div class='preview-editor'>\n        <markdown [data]=\"content\"></markdown>\n    </div>\n</ng-template>\n"
 
 /***/ }),
 
@@ -4531,6 +4544,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _shared_models_editor_model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../shared/models/editor.model */ "./src/app/editor/shared/models/editor.model.ts");
 /* harmony import */ var src_app_shared_directives_run_scripts_directive__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/app/shared/directives/run-scripts.directive */ "./src/app/shared/directives/run-scripts.directive.ts");
+/* harmony import */ var _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../shared/models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+
 
 
 
@@ -4549,7 +4564,8 @@ var PreviewEditorComponent = /** @class */ (function () {
         this.openSubscription.unsubscribe();
     };
     PreviewEditorComponent.prototype.open = function (data) {
-        this.html = data.resource.meta.html;
+        this.content = data.resource.meta.html;
+        this.isMarkdown = Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_4__["isMarkdown"])(data.resource);
         if (this.scripts) {
             this.scripts.reinsertScripts();
         }

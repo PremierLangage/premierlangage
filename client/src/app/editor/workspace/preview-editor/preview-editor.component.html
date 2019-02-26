@@ -1,1 +1,7 @@
-<div class='preview-editor' [innerHTML]='html | sanitizeHtml' runScripts></div>
+<div *ngIf='notMD; else MD' class='preview-editor' [innerHTML]='content | sanitizeHtml' runScripts></div>
+
+<ng-template #MD>
+    <div class='preview-editor'>
+        <markdown [data]="content"></markdown>
+    </div>
+</ng-template>

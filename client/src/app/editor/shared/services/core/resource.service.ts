@@ -24,6 +24,7 @@ export class ResourceService {
         this.previewProviders = {
             'pl': this.previewPL,
             'svg': this.previewSVG,
+            'md': this.previewMD,
         };
     }
 
@@ -488,7 +489,7 @@ export class ResourceService {
         if (resources) {
             resources.sort((a: Resource, b: Resource) => {
                 if (a.type === b.type) {
-                  return a.name.toLocaleLowerCase() < b.name.toLocaleLowerCase() ? -1 : 1;
+                  return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
                 }
                 return a.type === 'folder' ? -1 : 1;
             });
@@ -526,6 +527,10 @@ export class ResourceService {
         };
         const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
         return service.http.post('filebrowser/option', data, { headers: headers }).toPromise();
+    }
+
+    private previewMD(resource: Resource, service: ResourceService) {
+        return Promise.resolve({ preview: resource.content });
     }
 
     private previewSVG(resource: Resource) {

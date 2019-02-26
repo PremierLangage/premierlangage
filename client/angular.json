@@ -32,7 +32,8 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "./node_modules/prismjs/themes/prism-okaidia.css"
             ],
             "scripts": []
           },

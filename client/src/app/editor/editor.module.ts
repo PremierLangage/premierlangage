@@ -1,7 +1,14 @@
 import { NgModule } from '@angular/core';
 
+// https://www.npmjs.com/package/angular-split
 import { AngularSplitModule } from 'angular-split';
+
+// https://www.npmjs.com/package/ngx-monaco-editor/v/7.0.0
 import { MonacoEditorModule } from 'ngx-monaco-editor';
+
+// https://www.npmjs.com/package/angular2-markdown
+import { MarkdownModule } from 'angular2-markdown';
+import 'rxjs-compat/Observable';
 
 import { SharedModule } from '../shared/modules/shared.module';
 import { EditorRoutingModule } from './editor-routing.module';
@@ -51,6 +58,7 @@ import { PreviewEditorComponent } from './workspace/preview-editor/preview-edito
         SharedModule,
         AngularSplitModule.forRoot(),
         MonacoEditorModule.forRoot(MONACO_CONFIG),
+        MarkdownModule.forRoot()
     ],
     exports: [
         EditorComponent,

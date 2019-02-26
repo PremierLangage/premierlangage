@@ -34,15 +34,19 @@ export function isPl(item: Resource) {
 }
 
 export function isMarkdown(item: Resource) {
-    return item &&  item.name.endsWith('.md');
+    return item &&  item.name.toLowerCase().endsWith('.md');
 }
 
 export function isPltp(item: Resource) {
-    return item &&  item.name.endsWith('.pltp');
+    return item &&  item.name.toLowerCase().endsWith('.pltp');
+}
+
+export function isSVG(item: Resource) {
+    return item &&  item.name.toLowerCase().endsWith('.pltp');
 }
 
 export function canBePreviewed(item: Resource) {
-    return item && isPl(item) || isSVG(item);
+    return item && isPl(item) || isSVG(item) || isMarkdown(item);
 }
 
 export function isHome(item: Resource) {
@@ -53,9 +57,6 @@ export function isNotRoot(item: Resource) {
     return !isRoot(item);
 }
 
-export function isSVG(item: Resource) {
-    return extension(item) === 'svg';
-}
 
 export function fromServer(resource: Resource) {
     return !resource.meta || resource.meta.download_url;
@@ -99,7 +100,7 @@ export function canBeReloaded(item: Resource) {
 
 export function extension(resource: Resource) {
     const dotIndex = resource.name.lastIndexOf('.');
-    return resource.name.substring(dotIndex + 1);
+    return resource.name.substring(dotIndex + 1).toLowerCase();
 }
 
 export function canBeUsedAsFileName(name: string) {

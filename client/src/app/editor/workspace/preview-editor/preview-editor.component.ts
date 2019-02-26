@@ -3,6 +3,7 @@ import { ImageEditor, PreviewEditor } from '../../shared/models/editor.model';
 import { IEditorTab } from '../../shared/services/core/opener.service';
 import { Subscription } from 'rxjs';
 import { RunScriptsDirective } from 'src/app/shared/directives/run-scripts.directive';
+import { isMarkdown } from '../../shared/models/filters.model';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -15,7 +16,9 @@ export class PreviewEditorComponent implements OnInit, OnDestroy {
     editor: PreviewEditor;
     @ViewChild(RunScriptsDirective)
     scripts: RunScriptsDirective;
-    html: string;
+    content: string;
+    isMarkdown: boolean;
+
     private openSubscription: Subscription;
 
     constructor() { }
@@ -32,7 +35,8 @@ export class PreviewEditorComponent implements OnInit, OnDestroy {
     }
 
     private open(data: IEditorTab): void {
-        this.html = data.resource.meta.html;
+        this.content = data.resource.meta.html;
+        this.isMarkdown = isMarkdown(data.resource);
         if (this.scripts) {
             this.scripts.reinsertScripts();
         }
