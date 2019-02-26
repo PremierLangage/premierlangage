@@ -490,8 +490,9 @@ class Answer(models.Model):
     
     @staticmethod
     def highest_grade(pl, user):
-        answers = Answer.objects.filter(pl=pl, user=user).order_by("-grade")
-        return answers[0] if answers else None
+        null = Answer.objects.filter(pl=pl, user=user).filter(grade__isnull=True)
+        answers = Answer.objects.filter(pl=pl, user=user).filter(grade__isnull=False).order_by("-grade")
+        return (answers | null)[0] if (answers | null) else None
     
     
     @staticmethod
@@ -503,8 +504,8 @@ class Answer(models.Model):
     @staticmethod
     def pl_state(pl, user):
         """Return the state of the answer with the highest grade."""
-        answers = Answer.objects.filter(user=user, pl=pl).order_by("-grade")
-        return State.by_grade(answers[0].grade if answers else ...)
+        answer = Answer.highest_grade(pl, user)
+        return State.by_grade(answer.grade if answer else ...)
     
     
     @staticmethod
