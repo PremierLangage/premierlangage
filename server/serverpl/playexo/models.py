@@ -490,9 +490,10 @@ class Answer(models.Model):
     
     @staticmethod
     def highest_grade(pl, user):
-        null = Answer.objects.filter(pl=pl, user=user).filter(grade__isnull=True)
-        answers = Answer.objects.filter(pl=pl, user=user).filter(grade__isnull=False).order_by("-grade")
-        return (answers | null)[0] if (answers | null) else None
+        null = list(Answer.objects.filter(pl=pl, user=user).filter(grade__isnull=True))
+        answers = list(Answer.objects.filter(pl=pl, user=user)
+                             .filter(grade__isnull=False).order_by("-grade"))
+        return (answers + null)[0] if (answers + null) else None
     
     
     @staticmethod
