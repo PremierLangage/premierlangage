@@ -62,7 +62,7 @@ def evaluate(request, activity_id, pl_id):
 def activity_view(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
     if not activity.open:
-        raise PermissionDenied("This activity is closed.")
+        raise PermissionDenied("Cette activité est fermé.")
     session, _ = SessionActivity.objects.get_or_create(user=request.user, activity=activity)
     
     if request.method == 'GET':
