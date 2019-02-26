@@ -5,9 +5,11 @@ import { PrompField, PrompOptions } from 'src/app/shared/components/prompt/promp
 import { Change, Repo } from '../../shared/models/resource.model';
 
 import { GitService } from '../../shared/services/core/git.service';
-import { TaskService } from '../../shared/services/core/task.service';
 import { ResourceService } from '../../shared/services/core/resource.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
+import { OpenerService } from '../../shared/services/core/opener.service';
+import { asURI } from '../../shared/models/filters.model';
+import { EditorService } from '../../shared/services/core/editor.service';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -26,7 +28,8 @@ export class GitComponent implements OnInit, OnDestroy {
 
     constructor(
         private readonly git: GitService,
-        private readonly task: TaskService,
+        private readonly opener: OpenerService,
+        private readonly editor: EditorService,
         private readonly resources: ResourceService,
         private readonly notification: NotificationService
     ) { }
@@ -48,9 +51,10 @@ export class GitComponent implements OnInit, OnDestroy {
 
     private refreshSelection() {
         if (this.selection) {
-            this.selection = this.repositories().find(e => e.url === this.selection.url);
+            this.selection = this.repositories().find(e => e.url !== this.selection.url) || this.repositories().find(_ => true);
         }
     }
+
     /**
      * changes the selected repository.
      * @param item the new seleted repository.
@@ -75,7 +79,7 @@ export class GitComponent implements OnInit, OnDestroy {
      * @param item the repository item.
     */
     canAdd(item: Change) {
-        return item.type !== 'A';
+        return !item.type.includes('A');
     }
 
     /**
@@ -101,7 +105,7 @@ export class GitComponent implements OnInit, OnDestroy {
      * @param item the repository item.
     */
     open(item: Change) {
-        this.task.emitSelectEvent(this.resources.find(item.path));
+        this.opener.openURI(asURI(this.resources.find(item.path)));
     }
 
     /**
@@ -109,7 +113,9 @@ export class GitComponent implements OnInit, OnDestroy {
      *	@param item the repository item.
      */
     add(item: Repo | Change) {
-        this.git.add(item);
+        this.git.add(item).then(() => {
+            this.refreshSelection();
+        });
     }
 
     /**
@@ -128,7 +134,9 @@ export class GitComponent implements OnInit, OnDestroy {
     pull(item: Repo | Change) {
         this.notification.confirmAsync({
             title: 'Please confirm your action',
-            message: 'You will lose the unsaved changes after this action !'
+            message: 'You will lose the unsaved changes after this action !',
+            okTitle: 'Pull',
+            noTitle: 'Cancel'
         }).then(confirmed => {
             if (confirmed) {
                 this.git.pull(item).then(success => {
@@ -158,17 +166,20 @@ export class GitComponent implements OnInit, OnDestroy {
      */
     checkout(repo: Repo | Change) {
         const msg = 'This action will reset all your local changes up to your last commit !';
-        this.notification.confirmAsync({title: msg}).then(confirmed => {
+        this.notification.confirmAsync({
+            title: msg,
+            okTitle: 'Checkout',
+            noTitle: 'Cancel'
+        }).then(confirmed => {
             if (confirmed) {
                 this.git.checkout(repo).then((success) => {
                     if (success) {
+                        this.refreshSelection();
                         const resource = this.resources.find(repo.path);
                         if (resource) {
                             resource.dirty = true;
                             this.resources.open(resource).then((opened) => {
-                                if (opened) {
-                                    this.task.emitSelectEvent(resource);
-                                }
+                                this.opener.openURI(asURI(resource));
                             });
                         }
                         this.selection.changes = this.selection.changes.filter(e => e.path !== resource.path);
@@ -204,7 +215,7 @@ export class GitComponent implements OnInit, OnDestroy {
      * executes git clone command.
      * - if the command succeed, the resources of the editor will be refreshed.
      */
-    clone() {
+    async clone() {
         const fields: PrompField[] = [
             { type: 'url', placeholder: 'Url', required: true, value: '' },
             { type: 'text', placeholder: 'Username', required: false, value: '' },
@@ -215,17 +226,16 @@ export class GitComponent implements OnInit, OnDestroy {
             fields: fields
         };
         this.notification.warning('Please close the opened editors before submitting the form');
-        this.notification.promptAsync(options).then((response => {
-            if (response) {
-                this.git.clone(this.resources.resources[0], response.fields[0].value,  response.fields[1].value,  response.fields[2].value)
-                .then((success => {
-                    if (success) {
-                        this.resources.refresh();
-                        this.refreshSelection();
-                    }
-                })
-            ); }
-        }));
+        const response = await this.notification.promptAsync(options);
+        if (response) {
+            // tslint:disable-next-line: max-line-length
+            const success = await this.git.clone(this.resources.resources[0], response.fields[0].value,  response.fields[1].value,  response.fields[2].value);
+            if (success) {
+                await this.editor.closeAll();
+                await this.resources.refresh();
+                this.refreshSelection();
+            }
+        }
     }
 
     /** gets the repositories */

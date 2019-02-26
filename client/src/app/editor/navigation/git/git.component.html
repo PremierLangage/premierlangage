@@ -54,22 +54,6 @@
               </ng-container>
             </mat-menu>
         </ng-container>
-        <ng-container *ngFor="let change of selection.changes; trackBy trackChange">
-          <div class='line' [matTooltip]="change.path"> 
-              <span class='line-title' [matBadge]="change.type" matBadgePosition="after">{{change.name}}</span>
-              <div class='spacer'></div>
-              <span class='pointer' [matMenuTriggerFor]="menu">
-                <i class='fas fa-ellipsis-h'></i>
-              </span>
-          </div>
-          <mat-menu #menu="matMenu">
-            <ng-container *ngFor='let option of options'>
-                <button *ngIf='option.enabled(change)' (click)='option.action(change)' mat-menu-item>
-                  {{option.label}}
-                </button>
-            </ng-container>
-          </mat-menu>
-      </ng-container>
     </mat-expansion-panel>    
   </mat-accordion>
 </div>

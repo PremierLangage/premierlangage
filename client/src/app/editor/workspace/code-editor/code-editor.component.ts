@@ -78,13 +78,16 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
     private open(data: IEditorTab) {
         const monaco = (<any>window).monaco;
-        this.active = data.resource as Resource;
+        this.active = data.resource;
         const model = monaco.editor.getModel(data.uri)
         || monaco.editor.createModel(
                 this.active.content,
                 this.monacoService.findLanguage(this.active),
                 data.uri
         );
+        if (model.getValue() !== this.active.content) {
+            model.setValue(this.active.content);
+        }
         this.editor.codeEditor.setModel(model);
         const meta = this.active.meta;
         // tslint:disable-next-line: max-line-length

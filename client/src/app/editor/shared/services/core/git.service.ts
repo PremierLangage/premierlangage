@@ -5,22 +5,22 @@ import { Resource, Repo, Change } from '../../models/resource.model';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 
 @Injectable()
-export abstract class AbstractGitService {
-    abstract async refresh(): Promise<boolean>;
-    abstract async show(item: Resource): Promise<string>;
-    abstract async status(item: Repo | Change): Promise<boolean>;
-    abstract async add(item: Repo | Change): Promise<boolean>;
-    abstract async checkout(item: Repo | Change): Promise<boolean>;
-    abstract async commit(item: Repo | Change, commit: string): Promise<boolean>;
-    abstract async push(item: Repo | Change, username?: string, password?: string): Promise<boolean>;
-    abstract async pull(item: Repo | Change, username?: string, password?: string): Promise<boolean>;
-    abstract async clone(parent: Resource, url: string, username?: string, password?: string, destination?: string);
+export interface IGitService {
+    refresh(): Promise<boolean>;
+    show(item: Resource): Promise<string>;
+    status(item: Repo | Change): Promise<boolean>;
+    add(item: Repo | Change): Promise<boolean>;
+    checkout(item: Repo | Change): Promise<boolean>;
+    commit(item: Repo | Change, commit: string): Promise<boolean>;
+    push(item: Repo | Change, username?: string, password?: string): Promise<boolean>;
+    pull(item: Repo | Change, username?: string, password?: string): Promise<boolean>;
+    clone(parent: Resource, url: string, username?: string, password?: string, destination?: string);
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class GitService extends AbstractGitService {
+export class GitService implements IGitService {
 
     /** git repositories */
     repos: Repo[] = [];
@@ -28,7 +28,6 @@ export class GitService extends AbstractGitService {
     size: number;
 
     constructor(private http: HttpClient, private notification: NotificationService) {
-        super();
     }
 
     async refresh() {
@@ -97,8 +96,7 @@ export class GitService extends AbstractGitService {
             const params = new HttpParams().set('name', 'git_add').set('path', item.path);
             const response = await this.http.get('/filebrowser/option', { params: params , responseType: 'text'}).toPromise();
             this.notification.logInfo(response);
-            this.refresh();
-            success = true;
+            success = await this.refresh();
         } catch (error) {
             this.notification.logError(error);
         }
@@ -114,8 +112,7 @@ export class GitService extends AbstractGitService {
             const params = new HttpParams().set('name', 'git_checkout').set('path', item.path);
             const response = await this.http.get('/filebrowser/option', { params: params , responseType: 'text'}).toPromise();
             this.notification.logInfo(response);
-            this.refresh();
-            success = true;
+            success = await this.refresh();
         } catch (error) {
             this.notification.logError(error);
         }
