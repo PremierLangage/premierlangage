@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-
+from django.core.exceptions import PermissionDenied
 from loader.models import PL
 from playexo.models import Activity, Answer, SessionActivity
 from playexo.utils import render_feedback
@@ -61,6 +61,8 @@ def evaluate(request, activity_id, pl_id):
 @login_required
 def activity_view(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
+    if not activity.open:
+        raise PermissionDenied("This activity is closed.")
     session, _ = SessionActivity.objects.get_or_create(user=request.user, activity=activity)
     
     if request.method == 'GET':
