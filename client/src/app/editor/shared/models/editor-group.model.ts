@@ -1,10 +1,10 @@
 import { Resource } from './resource.model';
 import { IEditor, INSTANTIATORS, IEditorAction, PREVIEW_EDITOR } from './editor.model';
-import { asURI, resourceIsURI, asTab, openAsPreview, compareTab, compareGroup } from './filters.model';
+import { asURI, resourceIsURI, asDocument, compareDocument, compareGroup } from './filters.model';
 import { EditorService, IEditorService } from '../services/core/editor.service';
 import { ConfirmOptions } from 'src/app/shared/components/confirm/confirm.component';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { IEditorTab } from '../services/core/opener.service';
+import { IEditorDocument } from '../services/core/opener.service';
 
 export interface IEditorGroup {
 
@@ -13,33 +13,33 @@ export interface IEditorGroup {
     focus(focused: boolean): void;
     focused(): boolean;
     hidden(): boolean;
-    isActive(tab: IEditorTab): boolean;
-    isChanged(tab: IEditorTab): boolean;
-    someTab(predicate: (tab: IEditorTab) => boolean): boolean;
+    isActive(document: IEditorDocument): boolean;
+    isChanged(document: IEditorDocument): boolean;
+    someDocument(predicate: (document: IEditorDocument) => boolean): boolean;
     someEditor(predicate: (editor: IEditor) => boolean): boolean;
     someAction(): boolean;
     somePreview(): boolean;
 
-    open(tab: IEditorTab):  Promise<boolean>;
-    openSide(tab: IEditorTab):  Promise<boolean>;
+    open(document: IEditorDocument, fromTemplate?: boolean):  Promise<boolean>;
+    openSide(document: IEditorDocument):  Promise<boolean>;
 
-    save(tab: IEditorTab): Promise<boolean>;
+    save(tab: IEditorDocument): Promise<boolean>;
     saveAll():  Promise<boolean>;
 
-    close(tab: IEditorTab, confirm?: boolean): Promise<boolean>;
-    close(tab: IEditorTab, confirm?: boolean): Promise<boolean>;
+    close(document: IEditorDocument, confirm?: boolean): Promise<boolean>;
+    close(document: IEditorDocument, confirm?: boolean): Promise<boolean>;
     closeAll(confirm?: boolean): Promise<boolean>;
     closeSaved(): Promise<boolean>;
 
-    findTab(predicate: (tab: IEditorTab) => boolean): IEditorTab;
-    findTabAt(index: number): IEditorTab;
-    removeTab(tab: IEditorTab): Promise<boolean>;
+    findTab(predicate: (document: IEditorDocument) => boolean): IEditorDocument;
+    findTabAt(index: number): IEditorDocument;
+    removeTab(document: IEditorDocument): Promise<boolean>;
     removeIndex(index: number): Promise<boolean>;
 
     dispose(): Promise<boolean>;
 
     actions(): IEditorAction[];
-    activeTab(): IEditorTab;
+    activeDocument(): IEditorDocument;
     activeEditor(): IEditor;
     editorService(): IEditorService;
     activeEditorIs(type: string): boolean;
@@ -54,12 +54,12 @@ export class EditorGroup implements IEditorGroup {
     private readonly editors: IEditor[] = [];
     private readonly _editorService: IEditorService;
 
-    private tabs: IEditorTab[] = [];
+    private documents: IEditorDocument[] = [];
 
     private _actions: IEditorAction[] = [];
     private _focused: boolean;
-    private _activeTab: IEditorTab;
     private _activeEditor: IEditor;
+    private _activeDocument: IEditorDocument;
 
     constructor(editorService: IEditorService) {
         this._id = ++EditorGroup.COUNTER;
@@ -71,7 +71,7 @@ export class EditorGroup implements IEditorGroup {
     }
 
     empty(): boolean {
-        return !this.tabs.some(_ => true);
+        return !this.documents.some(_ => true);
     }
 
     focus(focused: boolean): void {
@@ -87,19 +87,19 @@ export class EditorGroup implements IEditorGroup {
             return false;
         }
         const groups = this._editorService.listGroups();
-        return !groups.find(g => g.id() !== this.id() && g.isActive(this._activeTab));
+        return !groups.find(g => g.id() !== this.id() && g.isActive(this._activeDocument));
     }
 
-    isActive(tab: IEditorTab): boolean {
-        return this._activeTab.resource.path === tab.resource.path;
+    isActive(document: IEditorDocument): boolean {
+        return this._activeDocument.resource.path === document.resource.path;
     }
 
-    isChanged(tab: IEditorTab): boolean {
-        return tab.resource.changed;
+    isChanged(document: IEditorDocument): boolean {
+        return document.resource.changed;
     }
 
-    someTab(predicate: (tab: IEditorTab) => boolean): boolean {
-        return this.tabs.some(predicate);
+    someDocument(predicate: (document: IEditorDocument) => boolean): boolean {
+        return this.documents.some(predicate);
     }
 
     someEditor(predicate: (editor: IEditor) => boolean): boolean {
@@ -114,52 +114,55 @@ export class EditorGroup implements IEditorGroup {
         return this.someEditor(e => e.type() === PREVIEW_EDITOR);
     }
 
-    async open(tab: IEditorTab): Promise<boolean> {
-        if (!tab.preview) {
-            if (!await this._editorService.openContent(tab.resource)) {
+    async open(document: IEditorDocument, fromTemplate?: boolean): Promise<boolean> {
+        if (fromTemplate && this.somePreview()) { // skip click from template for preview editor
+            return true;
+        }
+        if (!document.preview) {
+            if (!await this._editorService.openContent(document.resource)) {
                 if (this.empty()) {
                     this.dispose();
                 }
                 return false;
             }
         }
-        const editor = this.editors.find(e => e.canOpen(tab)) || this.createEditor(tab);
+        const editor = this.editors.find(e => e.canOpen(document)) || this.createEditor(document);
         if (!editor) {
-            throw new Error('The is no registered editor that can open \'' + tab.resource.path + '\'');
+            throw new Error('The is no registered editor to open \'' + document.resource.path + '\'');
         }
 
-        if (tab.resource.opened) {
-            this._activeTab.position = undefined; // unset position because to scroll to the position only once.
+        if (document.resource.opened) {
+            document.position = undefined; // unset position to scroll to the position only once.
         }
 
-        tab.resource.opened = true;
-        this._activeTab = tab;
+        document.resource.opened = true;
+        this._activeDocument = document;
         this._activeEditor = editor;
-        this._activeEditor.open(tab);
+        this._activeEditor.open(document);
         this._actions = this._activeEditor.actions() || [];
 
-        if (tab.preview) {
-            if (this.tabs.length === 0) {
-                this.tabs.push(tab);
+        if (document.preview) {
+            if (this.documents.length === 0) {
+                this.documents.push(document);
             } else {
-                this.tabs[0] = tab;
+                this.documents[0] = document;
             }
-        } else if (!this.someTab(e => compareTab(e, tab))) {
-            this.tabs.push(tab);
+        } else if (!this.someDocument(e => compareDocument(e, document))) {
+            this.documents.push(document);
         }
         return await this._editorService.updateGroup(this);
     }
 
-    async openSide(tab: IEditorTab) {
-        return this._editorService.open(tab, true);
+    async openSide(document: IEditorDocument) {
+        return this._editorService.open(document, true);
     }
 
-    async save(tab: IEditorTab): Promise<boolean> {
+    async save(tab: IEditorDocument): Promise<boolean> {
         return this._editorService.saveContent(tab.resource);
     }
 
     async saveAll(): Promise<boolean> {
-        for (const tab of this.tabs) {
+        for (const tab of this.documents) {
             if (!await this.save(tab)) {
                 return false;
             }
@@ -167,29 +170,29 @@ export class EditorGroup implements IEditorGroup {
         return true;
     }
 
-    async close(tab: IEditorTab, confirm?: boolean): Promise<boolean> {
-        const changed = this.confirmBeforeClose(tab);
+    async close(document: IEditorDocument, confirm?: boolean): Promise<boolean> {
+        const changed = this.confirmBeforeClose(document);
         const options: ConfirmOptions = {
-            title: 'Do you want to close \'' + tab.resource.name + '\'?',
+            title: 'Do you want to close \'' + document.resource.name + '\'?',
             message: 'Your changes will be lost if you don\'t save them.',
             okTitle: 'Don\'t Save',
             noTitle: 'Cancel'
         };
         if (!(confirm && changed) || await this.confirm(options)) {
             if (changed) {
-                tab.resource.content = tab.resource.lastContent;
-                tab.resource.changed = false;
+                document.resource.content = document.resource.lastContent;
+                document.resource.changed = false;
             }
             if (confirm) {
-                tab.resource.meta.previewData = undefined;
+                document.resource.meta.previewData = undefined;
             }
-            return await this.removeTab(tab);
+            return await this.removeTab(document);
         }
         return false;
     }
 
     async closeAll(confirm?: boolean): Promise<boolean> {
-        const changed = this.someTab(tab => this.confirmBeforeClose(tab));
+        const changed = this.someDocument(tab => this.confirmBeforeClose(tab));
         const options = {
             title: 'Do you want to close the files ?',
             message: 'Your changes will be lost if you don\'t save them.',
@@ -197,8 +200,8 @@ export class EditorGroup implements IEditorGroup {
             noTitle: 'Cancel'
         };
         if (!(confirm && changed) || await this.confirm(options)) {
-            while (this.tabs.length > 0) {
-                if (!await this.close(this.tabs[0], false)) {
+            while (this.documents.length > 0) {
+                if (!await this.close(this.documents[0], false)) {
                     return false;
                 }
             }
@@ -207,10 +210,10 @@ export class EditorGroup implements IEditorGroup {
     }
 
     async closeSaved(): Promise<boolean> {
-        while (this.someTab(e => !e.resource.changed)) {
-            for (let i = 0; i < this.tabs.length; i++) {
-                if (!this.tabs[i].resource.changed) {
-                    if (!await this.close(this.tabs[i])) {
+        while (this.someDocument(e => !e.resource.changed)) {
+            for (let i = 0; i < this.documents.length; i++) {
+                if (!this.documents[i].resource.changed) {
+                    if (!await this.close(this.documents[i])) {
                         return false;
                     }
                 }
@@ -219,23 +222,23 @@ export class EditorGroup implements IEditorGroup {
         return true;
     }
 
-    async removeTab(tab: IEditorTab): Promise<boolean> {
-        let index = this.tabs.findIndex(e => compareTab(e, tab));
+    async removeTab(document: IEditorDocument): Promise<boolean> {
+        let index = this.documents.findIndex(e => compareDocument(e, document));
         if (index === -1) {
-            throw new Error(`${tab.title} is not a part of the group '${this.id()}'`);
+            throw new Error(`${document.title} is not a part of the group '${this.id()}'`);
         }
 
-        this._activeTab = null;
-        this.tabs.splice(index, 1);
-        tab.resource.opened = this._editorService.findGroups(tab).length > 0;
+        this._activeDocument = null;
+        this.documents.splice(index, 1);
+        document.resource.opened = this._editorService.findGroups(document).length > 0;
 
         index = Math.max(0, index - 1);
-        if (index < this.tabs.length) {
-            this._activeTab = this.tabs[index];
+        if (index < this.documents.length) {
+            this._activeDocument = this.documents[index];
         }
 
-        if (this._activeTab) {
-            this.open(this._activeTab);
+        if (this._activeDocument) {
+            this.open(this._activeDocument);
         }
 
         if (this.empty()) {
@@ -246,15 +249,15 @@ export class EditorGroup implements IEditorGroup {
     }
 
     async removeIndex(index: number): Promise<boolean> {
-        return await this.removeTab(this.tabs[index]);
+        return await this.removeTab(this.documents[index]);
     }
 
-    findTab(predicate: (tab: IEditorTab) => boolean): IEditorTab {
-        return this.tabs.find(e => predicate(e));
+    findTab(predicate: (document: IEditorDocument) => boolean): IEditorDocument {
+        return this.documents.find(e => predicate(e));
     }
 
-    findTabAt(index: number): IEditorTab {
-        return this.tabs[index];
+    findTabAt(index: number): IEditorDocument {
+        return this.documents[index];
     }
 
     actions(): IEditorAction[] {
@@ -266,8 +269,8 @@ export class EditorGroup implements IEditorGroup {
     }
 
 
-    activeTab(): IEditorTab {
-        return this._activeTab;
+    activeDocument(): IEditorDocument {
+        return this._activeDocument;
     }
 
     activeEditor(): IEditor {
@@ -283,7 +286,7 @@ export class EditorGroup implements IEditorGroup {
     }
 
     //#region USED INSIDE THE WORKSPACE TEMPLATE
-    private drop(event: CdkDragDrop<IEditorTab[]>) {
+    private drop(event: CdkDragDrop<IEditorDocument[]>) {
         const source = this._editorService.findGroup(parseInt(event.previousContainer.id, 10));
         const target = this;
         if (this.somePreview() || source.somePreview()) {
@@ -298,7 +301,7 @@ export class EditorGroup implements IEditorGroup {
         }
     }
 
-    private trackTab(index: number, tab: IEditorTab) {
+    private trackDocument(index: number, tab: IEditorDocument) {
         return tab.resource.path;
     }
 
@@ -307,10 +310,10 @@ export class EditorGroup implements IEditorGroup {
     }
     //#endregion USED INSIDE THE WORKSPACE TEMPLATE
 
-    private createEditor(data: IEditorTab): IEditor {
+    private createEditor(document: IEditorDocument): IEditor {
         for (const item of INSTANTIATORS) {
-            if (item.condition(data)) {
-                const editor = item.create(this, data);
+            if (item.condition(document)) {
+                const editor = item.create(this, document);
                 this.editors.push(editor);
                 return editor;
             }
@@ -318,13 +321,12 @@ export class EditorGroup implements IEditorGroup {
         return null;
     }
 
-    private confirmBeforeClose(tab: IEditorTab): boolean {
+    private confirmBeforeClose(document: IEditorDocument): boolean {
         if (this.somePreview()) {
             return false;
         }
-        return tab.resource.changed && this._editorService.findGroups(tab).length === 1;
+        return document.resource.changed && this._editorService.findGroups(document).length === 1;
     }
-
 
     private confirm(options: ConfirmOptions): Promise<boolean> {
         return this._editorService.confirm(options);

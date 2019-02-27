@@ -1,6 +1,6 @@
 import { ViewEncapsulation, Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { ImageEditor } from '../../shared/models/editor.model';
-import { IEditorTab } from '../../shared/services/core/opener.service';
+import { IEditorDocument } from '../../shared/services/core/opener.service';
 import { isSVG } from '../../shared/models/filters.model';
 import { Subscription } from 'rxjs';
 
@@ -22,9 +22,9 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
     constructor() {}
 
     ngOnInit() {
-        this.open(this.editor.data());
-        this.openSubscription =  this.editor.onOpened.subscribe(data => {
-            this.open(data);
+        this.open(this.editor.document());
+        this.openSubscription =  this.editor.onOpened.subscribe(document => {
+            this.open(document);
         });
     }
 
@@ -32,11 +32,11 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
         this.openSubscription.unsubscribe();
     }
 
-    private open(data: IEditorTab) {
-        this.svg = data.resource.content;
-        this.url = data.resource.meta.downloadUrl;
-        this.isSVG = isSVG(data.resource);
-        console.log(data.resource);
+    private open(document: IEditorDocument) {
+        this.svg = document.resource.content;
+        this.url = document.resource.meta.downloadUrl;
+        this.isSVG = isSVG(document.resource);
+        console.log(document.resource);
     }
 
 }

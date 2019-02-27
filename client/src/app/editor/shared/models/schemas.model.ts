@@ -7,24 +7,9 @@ export namespace Schemas {
     export const inMemory = 'inmemory';
 
     /**
-     * A schema that is used for setting files
-     */
-    export const vscode = 'vscode';
-
-    /**
      * A schema that is used for internal private files
      */
     export const internal = 'private';
-
-    /**
-     * A walk-through document.
-     */
-    export const walkThrough = 'walkThrough';
-
-    /**
-     * An embedded code snippet.
-     */
-    export const walkThroughSnippet = 'walkThroughSnippet';
 
     export const http = 'http';
 

@@ -4,10 +4,10 @@
     <ng-container *ngFor='let group of groups'>
         <as-split-area class='editor-group h100' style='overflow: hidden;'>
             <div class='tab-bar'>
-                <div [id]='group.id()' class='tab-group' cdkDropList [cdkDropListData]="group.tabs" (cdkDropListDropped)="group.drop($event)">
-                    <div *ngFor='let tab of group.tabs; trackBy: group.trackTab' [matTooltip]="tab.resource.path"
+                <div [id]='group.id()' class='tab-group' cdkDropList [cdkDropListData]="group.documents" (cdkDropListDropped)="group.drop($event)">
+                    <div *ngFor='let tab of group.documents; trackBy: group.trackDocument' [matTooltip]="tab.resource.path"
                         [ngClass]="{'tab-item': true, active: group.isActive(tab), changed: group.isChanged(tab)}"
-                        (click)='group.open(tab)' cdkDragAxis='x' cdkDrag>
+                        (click)='group.open(tab, true)' cdkDragAxis='x' cdkDrag>
                         <i class="tab-icon {{tab.icon}}"></i>
                         <span>{{tab.title}}</span>
                         <span class='tab-close' (click)='group.close(tab, true)'>&nbsp;&times;</span>
@@ -17,7 +17,7 @@
                 <ng-container *ngIf='group.someAction();'>
                     <ng-container *ngIf='group.focused()'>
                         <ng-container *ngFor='let action of group.actions()'>
-                            <div class='tab-item' [matTooltip]='action.tooltip' *ngIf='action.condition(group.activeTab().resource)' (click)='action.invoke(group.activeTab().resource)'>
+                            <div class='tab-item' [matTooltip]='action.tooltip' *ngIf='action.condition(group.activeDocument().resource)' (click)='action.invoke(group.activeDocument().resource)'>
                                 <i class="{{action.icon}}"></i>
                             </div>
                         </ng-container>
@@ -26,9 +26,9 @@
                         <i class="fas fa-ellipsis-h"></i>
                     </div>
                     <mat-menu #editorMenu="matMenu">
-                        <button mat-menu-item (click)='group.save(group.activeTab())'>Save ⌘S</button>
+                        <button mat-menu-item (click)='group.save(group.activeDocument())'>Save ⌘S</button>
                         <button mat-menu-item (click)='group.saveAll()'>Save All ⌘Alt S</button>
-                        <button mat-menu-item (click)='group.close(group.activeTab(), true)'>Close ⌘K</button>
+                        <button mat-menu-item (click)='group.close(group.activeDocument(), true)'>Close ⌘K</button>
                         <button mat-menu-item (click)='group.closeAll(true)'>Close All ⌘Alt K</button>
                         <button mat-menu-item (click)='group.closeSaved()'>Close Saved ⌘Alt U</button>
                     </mat-menu>

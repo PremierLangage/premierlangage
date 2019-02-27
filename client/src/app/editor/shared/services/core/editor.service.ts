@@ -1,27 +1,97 @@
 import { Subject, Subscription } from 'rxjs';
-import { IEditor, CodeEditor } from '../../models/editor.model';
+import { IEditor, CodeEditor, openAsPreview } from '../../models/editor.model';
 import { IEditorGroup, EditorGroup } from '../../models/editor-group.model';
 import { Resource } from '../../models/resource.model';
 import { Injectable } from '@angular/core';
 import { ResourceService } from './resource.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { ConfirmOptions } from 'src/app/shared/components/confirm/confirm.component';
-import { IEditorTab } from './opener.service';
-import { asTab, compareTab, openAsPreview, compareGroup } from '../../models/filters.model';
+import { IEditorDocument } from './opener.service';
+import { asDocument, compareDocument, compareGroup } from '../../models/filters.model';
 
 export interface IEditorService {
-    open(tab: IEditorTab, sideBySide?: boolean): Promise<boolean>;
+    /**
+     * Opens the document with the right editor.
+     * @param document The document
+     * @pram sideBySide Open the document in a new group
+     * @returns true if the document is opened false otherwise
+     */
+    open(document: IEditorDocument, sideBySide?: boolean): Promise<boolean>;
+
+    /**
+     * Gets an array of the opened editor groups.
+    */
     listGroups(): IEditorGroup[];
+
+    /**
+     * Finds the group with the given id.
+     * @param id the id of the group
+     * @returns the group or undefined.
+     */
     findGroup(id: number): IEditorGroup;
-    findGroups(tab: IEditorTab): IEditorGroup[];
+
+    /**
+     * Finds all the groups whichs contains the document.
+     * @param document the document
+     * @returns an array of editor groups
+     */
+    findGroups(document: IEditorDocument): IEditorGroup[];
+
+    /**
+     * Refreshs the editor group.
+     * - focus 'group' if it's not a preview group.
+     * - open the preview group with the active document of 'group' should be previewed.
+     * - close the preview group if the active document of 'group' is not a previewed document.
+     *
+     * @param group the group
+     */
     updateGroup(group: IEditorGroup): Promise<boolean>;
+
+    /**
+     * Disposes the editor group and focus a random group.
+     * @param group the group
+     */
     removeGroup(group: IEditorGroup): Promise<boolean>;
+
+    /**
+     * Loads the content of the resource.
+     * @param resource the resource
+     */
     openContent(resource: Resource): Promise<boolean>;
+
+    /**
+     * Saves the content of the resource.
+     * @param resource the resource
+     */
     saveContent(resource: Resource): Promise<boolean>;
-    closeAll(): Promise<boolean>;
-    focus(group: IEditorGroup): void;
-    previewResource(resource: Resource): Promise<Resource>;
+
+    /**
+     * Opens a confirm dialog
+     * @param options dialog options
+     */
     confirm(options: ConfirmOptions): Promise<boolean>;
+
+    /**
+     * Closes all the groups
+     */
+    closeAll(): Promise<boolean>;
+
+    /**
+     * Focus the editor group and unfocus all the others.
+     * @param group the editor group
+     */
+    focus(group: IEditorGroup): void;
+
+    /**
+     * Loads the preview of the resource in the preview group.
+     * @param resource the resource to preview.
+     */
+    previewResource(resource: Resource): Promise<Resource>;
+
+    /**
+     * Invokes 'completion' after each group change.
+     * @param completion function to invoke.
+     */
     subscribeChange(completion: (groups: IEditorGroup[]) => void): Subscription;
 }
 
@@ -29,8 +99,11 @@ export interface IEditorService {
 export abstract class AbstractEditorService implements IEditorService {
 
     private readonly groups: { [groupId: number]: IEditorGroup; } = Object.create(null);
+
+    /** the current preview group of the editor */
     private previewGroup: IEditorGroup;
 
+    /** invoked each time a (focus | open | close) event is raised */
     readonly onGroupChanged: Subject<any> = new Subject();
 
     constructor() {
@@ -51,9 +124,9 @@ export abstract class AbstractEditorService implements IEditorService {
         return this.groups[id];
     }
 
-    findGroups(tab: IEditorTab): IEditorGroup[] {
+    findGroups(document: IEditorDocument): IEditorGroup[] {
         return this.listGroups().filter(group => {
-            return group.someTab(item => compareTab(tab, item));
+            return group.someDocument(item => compareDocument(document, item));
         });
     }
 
@@ -84,8 +157,8 @@ export abstract class AbstractEditorService implements IEditorService {
                 }
             }
         } else {
-            if (openAsPreview(group.activeTab())) {
-                if (!await this.open(asTab(group.activeTab().resource, true))) {
+            if (openAsPreview(group.activeDocument())) { // open the preview of the document in a side group
+                if (!await this.open(asDocument(group.activeDocument().resource, true))) {
                     return false;
                 }
             }
@@ -113,12 +186,13 @@ export abstract class AbstractEditorService implements IEditorService {
     }
 
     abstract confirm(options: ConfirmOptions): Promise<boolean>;
-    abstract open(tab: IEditorTab, sideBySide?: boolean): Promise<boolean>;
+    abstract open(document: IEditorDocument, sideBySide?: boolean): Promise<boolean>;
     abstract openContent(resource: Resource): Promise<boolean>;
     abstract saveContent(resource: Resource): Promise<boolean>;
     abstract previewResource(resource: Resource): Promise<Resource>;
 }
 
+/** Concretes implementation of IEditorService interface */
 @Injectable({
     providedIn: 'root'
 })
@@ -128,19 +202,19 @@ export class EditorService extends AbstractEditorService {
         super();
     }
 
-    open(tab: IEditorTab, sideBySide?: boolean): Promise<boolean> {
+    open(document: IEditorDocument, sideBySide?: boolean): Promise<boolean> {
         let group: IEditorGroup;
         let groups = this.listGroups();
-        if (sideBySide || tab.preview) {
-            // tslint:disable-next-line: max-line-length
-            group = tab.preview ? (groups.find(g => g.somePreview()) || new EditorGroup(this)) : new EditorGroup(this);
+        if (sideBySide || document.preview) {
+            group = document.preview ? (groups.find(g => g.somePreview()) || new EditorGroup(this)) : new EditorGroup(this);
         } else {
             groups = groups.filter(g => !g.somePreview()); // remove preview group
-            group =     groups.find(g => g.focused() && g.someTab(t => compareTab(t, tab))) // find focused that contains the tab
+            // tslint:disable-next-line: max-line-length
+            group =     groups.find(g => g.focused() && g.someDocument(t => compareDocument(t, document))) // find focused that contains the tab
                     ||  groups.find(g => g.focused()) // find focused
                     ||  groups.find(_ => true) || new EditorGroup(this); // find any or create new group
         }
-        return group.open(tab).catch(error => {
+        return group.open(document).catch(error => {
             this.notification.logError(error);
             return false;
         });
@@ -161,7 +235,7 @@ export class EditorService extends AbstractEditorService {
     previewResource(resource: Resource): Promise<Resource> {
         const preview = { ...resource };
         return this.resourceService.preview(preview).then(() => {
-            this.open(asTab(resource));
+            this.open(asDocument(resource));
             return preview;
         }).catch(error => {
             this.notification.logError(error);

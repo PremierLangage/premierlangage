@@ -6,7 +6,7 @@ import { Schemas } from '../../models/schemas.model';
 import { ResourceService } from './resource.service';
 import { asURI } from '../../models/filters.model';
 
-export interface IEditorTab {
+export interface IEditorDocument {
     uri: monaco.Uri;
     resource: Resource;
     title: string;
@@ -16,14 +16,14 @@ export interface IEditorTab {
 }
 
 export interface IOpenerService {
-    openURI(resource: monaco.Uri, openToSide?: boolean): Promise<boolean>;
+    openURI(uri: monaco.Uri, openToSide?: boolean): Promise<boolean>;
     openURL(url: string, openInNewTab: boolean): void;
     openReference(base: monaco.Uri, target: monaco.Uri): void;
 }
 
 @Injectable()
 export abstract class AbstractOpenerService implements IOpenerService {
-    abstract openURI(resource: monaco.Uri, openToSide?: boolean): Promise<boolean>;
+    abstract openURI(uri: monaco.Uri, openToSide?: boolean): Promise<boolean>;
     abstract openURL(url: string, openInNewTab?: boolean): void;
     abstract openReference(base: monaco.Uri, target: monaco.Uri): void;
 }
@@ -41,8 +41,8 @@ export class OpenerService extends AbstractOpenerService {
         super();
     }
 
-    async openURI(resource: monaco.Uri, openToSide: boolean = false): Promise<boolean> {
-        const { scheme, path, query, fragment } = resource;
+    async openURI(uri: monaco.Uri, openToSide: boolean = false): Promise<boolean> {
+        const { scheme, path, query, fragment } = uri;
         if (!scheme) {
             return Promise.resolve(false);
         }
@@ -50,7 +50,7 @@ export class OpenerService extends AbstractOpenerService {
         if (scheme === Schemas.http || scheme === Schemas.https || scheme === Schemas.mailto) {
             // open http or default mail application
             console.log(scheme, path);
-            this.openURL(resource.toString(true));
+            this.openURL(uri.toString(true));
             return Promise.resolve(true);
         }
 
@@ -66,19 +66,19 @@ export class OpenerService extends AbstractOpenerService {
                 column: match[2] ? parseInt(match[2]) : 1
             };
             // remove fragment
-            resource = resource.with({ fragment: '' });
+            uri = uri.with({ fragment: '' });
         }
 
-        const target = this.resourceService.find(resource.path);
-        if (!target) {
-            return Promise.reject(new Error('Unable to open \'' + resource.path + '\': File not found'));
+        const resource = this.resourceService.find(uri.path);
+        if (!resource) {
+            return Promise.reject(new Error('Unable to open \'' + uri.path + '\': File not found'));
         }
         return this.editorService.open({
-            uri: resource,
-            resource: target,
+            uri: uri,
+            resource: resource,
             position: position,
-            title: target.name,
-            icon: target.icon,
+            title: resource.name,
+            icon: resource.icon,
         }, openToSide);
     }
 

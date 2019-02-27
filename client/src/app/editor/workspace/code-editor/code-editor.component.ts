@@ -5,7 +5,7 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
 import { CompilerService } from '../../shared/services/core/compiler.service';
 import { ResourceService } from '../../shared/services/core/resource.service';
 import { PL, MonacoService } from '../../shared/services/monaco/monaco.service';
-import { IEditorTab } from '../../shared/services/core/opener.service';
+import { IEditorDocument } from '../../shared/services/core/opener.service';
 
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import IStandaloneDiffEditor = monaco.editor.IStandaloneDiffEditor;
@@ -22,6 +22,7 @@ import { isSVG } from '../../shared/models/filters.model';
 export class CodeEditorComponent implements OnInit, OnDestroy {
     @Input()
     editor: CodeEditor;
+
     private active: Resource;
     private readonly: boolean;
     private openSubscription: Subscription;
@@ -43,9 +44,9 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
         this.diffSubscription = this.editor.onDiffEditing.subscribe(mode => {
             if (mode) {
-                this.open(this.editor.data());
+                this.open(this.editor.document());
             } else {
-                this.open(this.editor.data());
+                this.open(this.editor.document());
                 this.editor.diffEditor.getModel().original.dispose();
                 this.editor.diffEditor.getModel().modified.dispose();
             }
@@ -62,18 +63,18 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         this.monacoService.registerEditor(codeEditor);
         this.editor.codeEditor = codeEditor;
         this.addCommands(codeEditor);
-        this.open(this.editor.data());
+        this.open(this.editor.document());
     }
 
     diffEditorLoaded(diffEditor: IStandaloneDiffEditor) {
         this.monacoService.registerEditor(diffEditor.getModifiedEditor());
         this.editor.diffEditor = diffEditor;
         this.addCommands(this.editor.diffEditor.getModifiedEditor());
-        this.open(this.editor.data());
+        this.open(this.editor.document());
     }
 
-    private async open(data: IEditorTab) {
-        this.active = data.resource;
+    private async open(document: IEditorDocument) {
+        this.active = document.resource;
 
         if (this.editor.diffEditing) {
             try {
@@ -85,7 +86,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
         const monaco = (<any>window).monaco;
         const language = this.monacoService.findLanguage(this.active);
-        const model = monaco.editor.getModel(data.uri) || monaco.editor.createModel(this.active.content, language, data.uri);
+        const model = monaco.editor.getModel(document.uri) || monaco.editor.createModel(this.active.content, language, document.uri);
         if (model.getValue() !== this.active.content) {
             model.setValue(this.active.content);
             this.active.changed = false;
@@ -98,11 +99,11 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         this.editor.codeEditor.updateOptions({ readOnly: this.readonly });
         this.editor.codeEditor.focus();
 
-        if (data.position) {
+        if (document.position) {
             this.editor.codeEditor.setPosition({
-                lineNumber: data.position.line, column: data.position.line
+                lineNumber: document.position.line, column: document.position.line
             });
-            this.editor.codeEditor.revealLineInCenter(data.position.line, monaco.editor.ScrollType.Smooth);
+            this.editor.codeEditor.revealLineInCenter(document.position.line, monaco.editor.ScrollType.Smooth);
         }
 
         if (this.editor.diffEditing) {
@@ -127,7 +128,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
         // tslint:disable: no-bitwise
         editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => {
-            this.editor.group().save(this.editor.data()).catch(error => {
+            this.editor.group().save(this.editor.document()).catch(error => {
                 this.notification.logError(error);
             });
         }, '');
@@ -139,7 +140,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         }, '');
 
         editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_K, () => {
-            this.editor.group().close(this.editor.data(), true).catch(error => {
+            this.editor.group().close(this.editor.document(), true).catch(error => {
                 this.notification.logError(error);
             });
         }, '');

@@ -1719,7 +1719,7 @@ __webpack_require__.r(__webpack_exports__);
 var EditorGroup = /** @class */ (function () {
     function EditorGroup(editorService) {
         this.editors = [];
-        this.tabs = [];
+        this.documents = [];
         this._actions = [];
         this._id = ++EditorGroup.COUNTER;
         this._editorService = editorService;
@@ -1728,7 +1728,7 @@ var EditorGroup = /** @class */ (function () {
         return this._id;
     };
     EditorGroup.prototype.empty = function () {
-        return !this.tabs.some(function (_) { return true; });
+        return !this.documents.some(function (_) { return true; });
     };
     EditorGroup.prototype.focus = function (focused) {
         this._focused = focused;
@@ -1742,16 +1742,16 @@ var EditorGroup = /** @class */ (function () {
             return false;
         }
         var groups = this._editorService.listGroups();
-        return !groups.find(function (g) { return g.id() !== _this.id() && g.isActive(_this._activeTab); });
+        return !groups.find(function (g) { return g.id() !== _this.id() && g.isActive(_this._activeDocument); });
     };
-    EditorGroup.prototype.isActive = function (tab) {
-        return this._activeTab.resource.path === tab.resource.path;
+    EditorGroup.prototype.isActive = function (document) {
+        return this._activeDocument.resource.path === document.resource.path;
     };
-    EditorGroup.prototype.isChanged = function (tab) {
-        return tab.resource.changed;
+    EditorGroup.prototype.isChanged = function (document) {
+        return document.resource.changed;
     };
-    EditorGroup.prototype.someTab = function (predicate) {
-        return this.tabs.some(predicate);
+    EditorGroup.prototype.someDocument = function (predicate) {
+        return this.documents.some(predicate);
     };
     EditorGroup.prototype.someEditor = function (predicate) {
         return this.editors.some(predicate);
@@ -1762,14 +1762,17 @@ var EditorGroup = /** @class */ (function () {
     EditorGroup.prototype.somePreview = function () {
         return this.someEditor(function (e) { return e.type() === _editor_model__WEBPACK_IMPORTED_MODULE_1__["PREVIEW_EDITOR"]; });
     };
-    EditorGroup.prototype.open = function (tab) {
+    EditorGroup.prototype.open = function (document, fromTemplate) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
             var editor;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!!tab.preview) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this._editorService.openContent(tab.resource)];
+                        if (fromTemplate && this.somePreview()) { // skip click from template for preview editor
+                            return [2 /*return*/, true];
+                        }
+                        if (!!document.preview) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this._editorService.openContent(document.resource)];
                     case 1:
                         if (!(_a.sent())) {
                             if (this.empty()) {
@@ -1779,28 +1782,28 @@ var EditorGroup = /** @class */ (function () {
                         }
                         _a.label = 2;
                     case 2:
-                        editor = this.editors.find(function (e) { return e.canOpen(tab); }) || this.createEditor(tab);
+                        editor = this.editors.find(function (e) { return e.canOpen(document); }) || this.createEditor(document);
                         if (!editor) {
-                            throw new Error('The is no registered editor that can open \'' + tab.resource.path + '\'');
+                            throw new Error('The is no registered editor to open \'' + document.resource.path + '\'');
                         }
-                        if (tab.resource.opened) {
-                            this._activeTab.position = undefined; // unset position because to scroll to the position only once.
+                        if (document.resource.opened) {
+                            document.position = undefined; // unset position to scroll to the position only once.
                         }
-                        tab.resource.opened = true;
-                        this._activeTab = tab;
+                        document.resource.opened = true;
+                        this._activeDocument = document;
                         this._activeEditor = editor;
-                        this._activeEditor.open(tab);
+                        this._activeEditor.open(document);
                         this._actions = this._activeEditor.actions() || [];
-                        if (tab.preview) {
-                            if (this.tabs.length === 0) {
-                                this.tabs.push(tab);
+                        if (document.preview) {
+                            if (this.documents.length === 0) {
+                                this.documents.push(document);
                             }
                             else {
-                                this.tabs[0] = tab;
+                                this.documents[0] = document;
                             }
                         }
-                        else if (!this.someTab(function (e) { return Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["compareTab"])(e, tab); })) {
-                            this.tabs.push(tab);
+                        else if (!this.someDocument(function (e) { return Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["compareDocument"])(e, document); })) {
+                            this.documents.push(document);
                         }
                         return [4 /*yield*/, this._editorService.updateGroup(this)];
                     case 3: return [2 /*return*/, _a.sent()];
@@ -1808,10 +1811,10 @@ var EditorGroup = /** @class */ (function () {
             });
         });
     };
-    EditorGroup.prototype.openSide = function (tab) {
+    EditorGroup.prototype.openSide = function (document) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                return [2 /*return*/, this._editorService.open(tab, true)];
+                return [2 /*return*/, this._editorService.open(document, true)];
             });
         });
     };
@@ -1828,7 +1831,7 @@ var EditorGroup = /** @class */ (function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        _i = 0, _a = this.tabs;
+                        _i = 0, _a = this.documents;
                         _b.label = 1;
                     case 1:
                         if (!(_i < _a.length)) return [3 /*break*/, 4];
@@ -1847,15 +1850,15 @@ var EditorGroup = /** @class */ (function () {
             });
         });
     };
-    EditorGroup.prototype.close = function (tab, confirm) {
+    EditorGroup.prototype.close = function (document, confirm) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
             var changed, options, _a;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        changed = this.confirmBeforeClose(tab);
+                        changed = this.confirmBeforeClose(document);
                         options = {
-                            title: 'Do you want to close \'' + tab.resource.name + '\'?',
+                            title: 'Do you want to close \'' + document.resource.name + '\'?',
                             message: 'Your changes will be lost if you don\'t save them.',
                             okTitle: 'Don\'t Save',
                             noTitle: 'Cancel'
@@ -1869,13 +1872,13 @@ var EditorGroup = /** @class */ (function () {
                     case 2:
                         if (!_a) return [3 /*break*/, 4];
                         if (changed) {
-                            tab.resource.content = tab.resource.lastContent;
-                            tab.resource.changed = false;
+                            document.resource.content = document.resource.lastContent;
+                            document.resource.changed = false;
                         }
                         if (confirm) {
-                            tab.resource.meta.previewData = undefined;
+                            document.resource.meta.previewData = undefined;
                         }
-                        return [4 /*yield*/, this.removeTab(tab)];
+                        return [4 /*yield*/, this.removeTab(document)];
                     case 3: return [2 /*return*/, _b.sent()];
                     case 4: return [2 /*return*/, false];
                 }
@@ -1889,7 +1892,7 @@ var EditorGroup = /** @class */ (function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        changed = this.someTab(function (tab) { return _this.confirmBeforeClose(tab); });
+                        changed = this.someDocument(function (tab) { return _this.confirmBeforeClose(tab); });
                         options = {
                             title: 'Do you want to close the files ?',
                             message: 'Your changes will be lost if you don\'t save them.',
@@ -1906,8 +1909,8 @@ var EditorGroup = /** @class */ (function () {
                         if (!_a) return [3 /*break*/, 5];
                         _b.label = 3;
                     case 3:
-                        if (!(this.tabs.length > 0)) return [3 /*break*/, 5];
-                        return [4 /*yield*/, this.close(this.tabs[0], false)];
+                        if (!(this.documents.length > 0)) return [3 /*break*/, 5];
+                        return [4 /*yield*/, this.close(this.documents[0], false)];
                     case 4:
                         if (!(_b.sent())) {
                             return [2 /*return*/, false];
@@ -1924,13 +1927,13 @@ var EditorGroup = /** @class */ (function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!this.someTab(function (e) { return !e.resource.changed; })) return [3 /*break*/, 5];
+                        if (!this.someDocument(function (e) { return !e.resource.changed; })) return [3 /*break*/, 5];
                         i = 0;
                         _a.label = 1;
                     case 1:
-                        if (!(i < this.tabs.length)) return [3 /*break*/, 4];
-                        if (!!this.tabs[i].resource.changed) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.close(this.tabs[i])];
+                        if (!(i < this.documents.length)) return [3 /*break*/, 4];
+                        if (!!this.documents[i].resource.changed) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.close(this.documents[i])];
                     case 2:
                         if (!(_a.sent())) {
                             return [2 /*return*/, false];
@@ -1945,25 +1948,25 @@ var EditorGroup = /** @class */ (function () {
             });
         });
     };
-    EditorGroup.prototype.removeTab = function (tab) {
+    EditorGroup.prototype.removeTab = function (document) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
             var index;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        index = this.tabs.findIndex(function (e) { return Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["compareTab"])(e, tab); });
+                        index = this.documents.findIndex(function (e) { return Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["compareDocument"])(e, document); });
                         if (index === -1) {
-                            throw new Error(tab.title + " is not a part of the group '" + this.id() + "'");
+                            throw new Error(document.title + " is not a part of the group '" + this.id() + "'");
                         }
-                        this._activeTab = null;
-                        this.tabs.splice(index, 1);
-                        tab.resource.opened = this._editorService.findGroups(tab).length > 0;
+                        this._activeDocument = null;
+                        this.documents.splice(index, 1);
+                        document.resource.opened = this._editorService.findGroups(document).length > 0;
                         index = Math.max(0, index - 1);
-                        if (index < this.tabs.length) {
-                            this._activeTab = this.tabs[index];
+                        if (index < this.documents.length) {
+                            this._activeDocument = this.documents[index];
                         }
-                        if (this._activeTab) {
-                            this.open(this._activeTab);
+                        if (this._activeDocument) {
+                            this.open(this._activeDocument);
                         }
                         if (!this.empty()) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.dispose()];
@@ -1977,17 +1980,17 @@ var EditorGroup = /** @class */ (function () {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.removeTab(this.tabs[index])];
+                    case 0: return [4 /*yield*/, this.removeTab(this.documents[index])];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         });
     };
     EditorGroup.prototype.findTab = function (predicate) {
-        return this.tabs.find(function (e) { return predicate(e); });
+        return this.documents.find(function (e) { return predicate(e); });
     };
     EditorGroup.prototype.findTabAt = function (index) {
-        return this.tabs[index];
+        return this.documents[index];
     };
     EditorGroup.prototype.actions = function () {
         return this._actions || (this._actions = []);
@@ -1995,8 +1998,8 @@ var EditorGroup = /** @class */ (function () {
     EditorGroup.prototype.dispose = function () {
         return this._editorService.removeGroup(this);
     };
-    EditorGroup.prototype.activeTab = function () {
-        return this._activeTab;
+    EditorGroup.prototype.activeDocument = function () {
+        return this._activeDocument;
     };
     EditorGroup.prototype.activeEditor = function () {
         return this._activeEditor;
@@ -2023,29 +2026,29 @@ var EditorGroup = /** @class */ (function () {
             source.close(movedTab, false);
         }
     };
-    EditorGroup.prototype.trackTab = function (index, tab) {
+    EditorGroup.prototype.trackDocument = function (index, tab) {
         return tab.resource.path;
     };
     EditorGroup.prototype.trackEditor = function (index, editor) {
         return editor.id();
     };
     //#endregion USED INSIDE THE WORKSPACE TEMPLATE
-    EditorGroup.prototype.createEditor = function (data) {
+    EditorGroup.prototype.createEditor = function (document) {
         for (var _i = 0, INSTANTIATORS_1 = _editor_model__WEBPACK_IMPORTED_MODULE_1__["INSTANTIATORS"]; _i < INSTANTIATORS_1.length; _i++) {
             var item = INSTANTIATORS_1[_i];
-            if (item.condition(data)) {
-                var editor = item.create(this, data);
+            if (item.condition(document)) {
+                var editor = item.create(this, document);
                 this.editors.push(editor);
                 return editor;
             }
         }
         return null;
     };
-    EditorGroup.prototype.confirmBeforeClose = function (tab) {
+    EditorGroup.prototype.confirmBeforeClose = function (document) {
         if (this.somePreview()) {
             return false;
         }
-        return tab.resource.changed && this._editorService.findGroups(tab).length === 1;
+        return document.resource.changed && this._editorService.findGroups(document).length === 1;
     };
     EditorGroup.prototype.confirm = function (options) {
         return this._editorService.confirm(options);
@@ -2062,7 +2065,7 @@ var EditorGroup = /** @class */ (function () {
 /*!******************************************************!*\
   !*** ./src/app/editor/shared/models/editor.model.ts ***!
   \******************************************************/
-/*! exports provided: CODE_EDITOR, PREVIEW_EDITOR, IMAGE_EDITOR, DIFF_FRAGMENT, AbstractEditor, CodeEditor, ImageEditor, PreviewEditor, INSTANTIATORS */
+/*! exports provided: CODE_EDITOR, PREVIEW_EDITOR, IMAGE_EDITOR, DIFF_FRAGMENT, AbstractEditor, CodeEditor, ImageEditor, PreviewEditor, openAsCode, openAsImage, openAsPreview, INSTANTIATORS */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2075,6 +2078,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CodeEditor", function() { return CodeEditor; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImageEditor", function() { return ImageEditor; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PreviewEditor", function() { return PreviewEditor; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "openAsCode", function() { return openAsCode; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "openAsImage", function() { return openAsImage; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "openAsPreview", function() { return openAsPreview; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "INSTANTIATORS", function() { return INSTANTIATORS; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
@@ -2088,24 +2094,24 @@ var PREVIEW_EDITOR = 'preview';
 var IMAGE_EDITOR = 'image';
 var DIFF_FRAGMENT = 'diff';
 var AbstractEditor = /** @class */ (function () {
-    function AbstractEditor(group, data) {
+    function AbstractEditor(group, document) {
         this.onOpened = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
         this._id = ++AbstractEditor.ID_COUNTER;
-        this._data = data;
+        this._document = document;
         this._group = group;
     }
     AbstractEditor.prototype.id = function () {
         return this._id;
     };
-    AbstractEditor.prototype.data = function () {
-        return this._data;
+    AbstractEditor.prototype.document = function () {
+        return this._document;
     };
     AbstractEditor.prototype.group = function () {
         return this._group;
     };
-    AbstractEditor.prototype.open = function (data) {
-        this._data = data;
-        this.onOpened.next(data);
+    AbstractEditor.prototype.open = function (document) {
+        this._document = document;
+        this.onOpened.next(document);
     };
     AbstractEditor.prototype.focus = function (focused) {
         this._focused = focused;
@@ -2119,8 +2125,8 @@ var AbstractEditor = /** @class */ (function () {
 
 var CodeEditor = /** @class */ (function (_super) {
     tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](CodeEditor, _super);
-    function CodeEditor(group, data) {
-        var _this = _super.call(this, group, data) || this;
+    function CodeEditor(group, document) {
+        var _this = _super.call(this, group, document) || this;
         _this.onDiffEditing = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
         return _this;
     }
@@ -2135,15 +2141,15 @@ var CodeEditor = /** @class */ (function (_super) {
             this.splitRight()
         ];
     };
-    CodeEditor.prototype.canOpen = function (data) {
-        return Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["openAsCode"])(data);
+    CodeEditor.prototype.canOpen = function (document) {
+        return openAsCode(document);
     };
-    CodeEditor.prototype.open = function (data) {
-        if (data.uri.fragment === DIFF_FRAGMENT) {
+    CodeEditor.prototype.open = function (document) {
+        if (document.uri.fragment === DIFF_FRAGMENT) {
             this.diffEditing = true;
         }
-        data.uri = data.uri.with({ fragment: '' });
-        _super.prototype.open.call(this, data);
+        document.uri = document.uri.with({ fragment: '' });
+        _super.prototype.open.call(this, document);
     };
     CodeEditor.prototype.preview = function () {
         var _this = this;
@@ -2175,7 +2181,7 @@ var CodeEditor = /** @class */ (function (_super) {
         var _this = this;
         return {
             icon: 'fas fa-columns', tooltip: 'Split Editor Right', condition: function () { return true; }, invoke: function (item) {
-                _this.group().openSide(Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["asTab"])(item));
+                _this.group().openSide(Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["asDocument"])(item));
             }
         };
     };
@@ -2184,8 +2190,8 @@ var CodeEditor = /** @class */ (function (_super) {
 
 var ImageEditor = /** @class */ (function (_super) {
     tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](ImageEditor, _super);
-    function ImageEditor(group, data) {
-        var _this = _super.call(this, group, data) || this;
+    function ImageEditor(group, document) {
+        var _this = _super.call(this, group, document) || this;
         _this.zoom = 0.7;
         return _this;
     }
@@ -2207,8 +2213,8 @@ var ImageEditor = /** @class */ (function (_super) {
             }
         ];
     };
-    ImageEditor.prototype.canOpen = function (data) {
-        return Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["openAsImage"])(data);
+    ImageEditor.prototype.canOpen = function (document) {
+        return openAsImage(document);
     };
     ImageEditor.prototype.zoomIn = function () {
         this.zoom = Math.min(this.zoom + .05, 1);
@@ -2221,8 +2227,8 @@ var ImageEditor = /** @class */ (function (_super) {
 
 var PreviewEditor = /** @class */ (function (_super) {
     tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](PreviewEditor, _super);
-    function PreviewEditor(group, data) {
-        return _super.call(this, group, data) || this;
+    function PreviewEditor(group, document) {
+        return _super.call(this, group, document) || this;
     }
     PreviewEditor.prototype.type = function () {
         return PREVIEW_EDITOR;
@@ -2235,16 +2241,25 @@ var PreviewEditor = /** @class */ (function (_super) {
             }
         ];
     };
-    PreviewEditor.prototype.canOpen = function (data) {
-        return Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["openAsPreview"])(data);
+    PreviewEditor.prototype.canOpen = function (document) {
+        return openAsPreview(document);
     };
     return PreviewEditor;
 }(AbstractEditor));
 
+function openAsCode(doc) {
+    return !openAsImage(doc);
+}
+function openAsImage(doc) {
+    return !openAsPreview(doc) && doc.resource.meta && doc.resource.meta.image && !Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["isSVG"])(doc.resource);
+}
+function openAsPreview(doc) {
+    return doc.resource.meta && doc.resource.meta.previewData !== undefined;
+}
 var INSTANTIATORS = [
-    { condition: _filters_model__WEBPACK_IMPORTED_MODULE_2__["openAsImage"], create: function (group, data) { return new ImageEditor(group, data); } },
-    { condition: _filters_model__WEBPACK_IMPORTED_MODULE_2__["openAsPreview"], create: function (group, data) { return new PreviewEditor(group, data); } },
-    { condition: _filters_model__WEBPACK_IMPORTED_MODULE_2__["openAsCode"], create: function (group, data) { return new CodeEditor(group, data); } }
+    { condition: openAsImage, create: function (group, doc) { return new ImageEditor(group, doc); } },
+    { condition: openAsPreview, create: function (group, doc) { return new PreviewEditor(group, doc); } },
+    { condition: openAsCode, create: function (group, doc) { return new CodeEditor(group, doc); } }
 ];
 
 
@@ -2254,7 +2269,7 @@ var INSTANTIATORS = [
 /*!*******************************************************!*\
   !*** ./src/app/editor/shared/models/filters.model.ts ***!
   \*******************************************************/
-/*! exports provided: DISALLOWED_CHAR, canRead, canWrite, readonly, isFolder, isFile, isRoot, isPl, isMarkdown, isPltp, isSVG, canBePreviewed, isHome, isNotRoot, fromServer, isRepo, canAddFile, canCopy, canAddFolder, canBeRenamed, canBeDeleted, canBeTested, canBeLoaded, canBeReloaded, extension, canBeUsedAsFileName, checkName, requireNonNull, assert, basename, asURI, asURIGoTo, asURIFragment, asTab, compareTab, compareGroup, resourceIsURI, openAsCode, openAsImage, openAsPreview */
+/*! exports provided: DISALLOWED_CHAR, canRead, canWrite, readonly, isFolder, isFile, isRoot, isPl, isMarkdown, isPltp, isSVG, canBePreviewed, isHome, isNotRoot, fromServer, isRepo, canAddFile, canCopy, canAddFolder, canBeRenamed, canBeDeleted, canBeTested, canBeLoaded, canBeReloaded, extension, canBeUsedAsFileName, checkName, requireNonNull, assert, basename, asURI, asURIGoTo, asURIFragment, asDocument, compareDocument, compareGroup, resourceIsURI */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2292,13 +2307,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asURI", function() { return asURI; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asURIGoTo", function() { return asURIGoTo; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asURIFragment", function() { return asURIFragment; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asTab", function() { return asTab; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compareTab", function() { return compareTab; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asDocument", function() { return asDocument; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compareDocument", function() { return compareDocument; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compareGroup", function() { return compareGroup; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resourceIsURI", function() { return resourceIsURI; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "openAsCode", function() { return openAsCode; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "openAsImage", function() { return openAsImage; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "openAsPreview", function() { return openAsPreview; });
 var DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&'];
 function canRead(item) {
     return item && item.read;
@@ -2414,7 +2426,7 @@ function asURIFragment(resource, fragment) {
     var monaco = window.monaco;
     return monaco.Uri.file(resource.path).with({ fragment: fragment });
 }
-function asTab(resource, preview) {
+function asDocument(resource, preview) {
     return {
         resource: resource,
         uri: asURI(resource),
@@ -2423,23 +2435,14 @@ function asTab(resource, preview) {
         icon: resource.icon
     };
 }
-function compareTab(tab1, tab2) {
-    return tab1.resource.path === tab2.resource.path;
+function compareDocument(doc1, doc2) {
+    return doc1.resource.path === doc2.resource.path;
 }
 function compareGroup(grp1, grp2) {
     return grp1.id() === grp2.id();
 }
 function resourceIsURI(resource, uri) {
     return '/' + resource.path === uri.path;
-}
-function openAsCode(data) {
-    return !openAsImage(data);
-}
-function openAsImage(data) {
-    return !openAsPreview(data) && data.resource.meta && data.resource.meta.image && !isSVG(data.resource);
-}
-function openAsPreview(data) {
-    return data.resource.meta && data.resource.meta.previewData !== undefined;
 }
 
 
@@ -2596,21 +2599,9 @@ var Schemas;
      */
     Schemas.inMemory = 'inmemory';
     /**
-     * A schema that is used for setting files
-     */
-    Schemas.vscode = 'vscode';
-    /**
      * A schema that is used for internal private files
      */
     Schemas.internal = 'private';
-    /**
-     * A walk-through document.
-     */
-    Schemas.walkThrough = 'walkThrough';
-    /**
-     * An embedded code snippet.
-     */
-    Schemas.walkThroughSnippet = 'walkThroughSnippet';
     Schemas.http = 'http';
     Schemas.https = 'https';
     Schemas.file = 'file';
@@ -2673,11 +2664,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EditorService", function() { return EditorService; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
-/* harmony import */ var _models_editor_group_model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../models/editor-group.model */ "./src/app/editor/shared/models/editor-group.model.ts");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _resource_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
-/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
-/* harmony import */ var _models_filters_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+/* harmony import */ var _models_editor_model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../models/editor.model */ "./src/app/editor/shared/models/editor.model.ts");
+/* harmony import */ var _models_editor_group_model__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../models/editor-group.model */ "./src/app/editor/shared/models/editor-group.model.ts");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _resource_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
+/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
+/* harmony import */ var _models_filters_model__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+
 
 
 
@@ -2688,6 +2681,7 @@ __webpack_require__.r(__webpack_exports__);
 var AbstractEditorService = /** @class */ (function () {
     function AbstractEditorService() {
         this.groups = Object.create(null);
+        /** invoked each time a (focus | open | close) event is raised */
         this.onGroupChanged = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
     }
     AbstractEditorService.prototype.focus = function (group) {
@@ -2703,9 +2697,9 @@ var AbstractEditorService = /** @class */ (function () {
     AbstractEditorService.prototype.findGroup = function (id) {
         return this.groups[id];
     };
-    AbstractEditorService.prototype.findGroups = function (tab) {
+    AbstractEditorService.prototype.findGroups = function (document) {
         return this.listGroups().filter(function (group) {
-            return group.someTab(function (item) { return Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["compareTab"])(tab, item); });
+            return group.someDocument(function (item) { return Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["compareDocument"])(document, item); });
         });
     };
     AbstractEditorService.prototype.subscribeChange = function (completion) {
@@ -2743,7 +2737,7 @@ var AbstractEditorService = /** @class */ (function () {
                             this.previewGroup.closeAll();
                         }
                         if (!(this.previewGroup = group.somePreview() ? group : undefined)) return [3 /*break*/, 3];
-                        if (!!Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["compareGroup"])(this.previewGroup, group)) return [3 /*break*/, 2];
+                        if (!!Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["compareGroup"])(this.previewGroup, group)) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.previewGroup.closeAll()];
                     case 1:
                         if (!(_a.sent())) {
@@ -2752,8 +2746,8 @@ var AbstractEditorService = /** @class */ (function () {
                         _a.label = 2;
                     case 2: return [3 /*break*/, 6];
                     case 3:
-                        if (!Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["openAsPreview"])(group.activeTab())) return [3 /*break*/, 5];
-                        return [4 /*yield*/, this.open(Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["asTab"])(group.activeTab().resource, true))];
+                        if (!Object(_models_editor_model__WEBPACK_IMPORTED_MODULE_2__["openAsPreview"])(group.activeDocument())) return [3 /*break*/, 5];
+                        return [4 /*yield*/, this.open(Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["asDocument"])(group.activeDocument().resource, true))];
                     case 4:
                         if (!(_a.sent())) {
                             return [2 /*return*/, false];
@@ -2779,7 +2773,7 @@ var AbstractEditorService = /** @class */ (function () {
                             throw new Error("The group '" + group.id() + "' is not found");
                         }
                         if (!group.focused()) return [3 /*break*/, 2];
-                        newFocused = this.listGroups().find(function (g) { return !Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["compareGroup"])(g, group); });
+                        newFocused = this.listGroups().find(function (g) { return !Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["compareGroup"])(g, group); });
                         if (!newFocused) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.updateGroup(newFocused)];
                     case 1:
@@ -2794,12 +2788,13 @@ var AbstractEditorService = /** @class */ (function () {
         });
     };
     AbstractEditorService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_3__["Injectable"])(),
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_4__["Injectable"])(),
         tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
     ], AbstractEditorService);
     return AbstractEditorService;
 }());
 
+/** Concretes implementation of IEditorService interface */
 var EditorService = /** @class */ (function (_super) {
     tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](EditorService, _super);
     function EditorService(resourceService, notification) {
@@ -2808,21 +2803,21 @@ var EditorService = /** @class */ (function (_super) {
         _this.notification = notification;
         return _this;
     }
-    EditorService.prototype.open = function (tab, sideBySide) {
+    EditorService.prototype.open = function (document, sideBySide) {
         var _this = this;
         var group;
         var groups = this.listGroups();
-        if (sideBySide || tab.preview) {
-            // tslint:disable-next-line: max-line-length
-            group = tab.preview ? (groups.find(function (g) { return g.somePreview(); }) || new _models_editor_group_model__WEBPACK_IMPORTED_MODULE_2__["EditorGroup"](this)) : new _models_editor_group_model__WEBPACK_IMPORTED_MODULE_2__["EditorGroup"](this);
+        if (sideBySide || document.preview) {
+            group = document.preview ? (groups.find(function (g) { return g.somePreview(); }) || new _models_editor_group_model__WEBPACK_IMPORTED_MODULE_3__["EditorGroup"](this)) : new _models_editor_group_model__WEBPACK_IMPORTED_MODULE_3__["EditorGroup"](this);
         }
         else {
             groups = groups.filter(function (g) { return !g.somePreview(); }); // remove preview group
-            group = groups.find(function (g) { return g.focused() && g.someTab(function (t) { return Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["compareTab"])(t, tab); }); }) // find focused that contains the tab
+            // tslint:disable-next-line: max-line-length
+            group = groups.find(function (g) { return g.focused() && g.someDocument(function (t) { return Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["compareDocument"])(t, document); }); }) // find focused that contains the tab
                 || groups.find(function (g) { return g.focused(); }) // find focused
-                || groups.find(function (_) { return true; }) || new _models_editor_group_model__WEBPACK_IMPORTED_MODULE_2__["EditorGroup"](this); // find any or create new group
+                || groups.find(function (_) { return true; }) || new _models_editor_group_model__WEBPACK_IMPORTED_MODULE_3__["EditorGroup"](this); // find any or create new group
         }
-        return group.open(tab).catch(function (error) {
+        return group.open(document).catch(function (error) {
             _this.notification.logError(error);
             return false;
         });
@@ -2840,7 +2835,7 @@ var EditorService = /** @class */ (function (_super) {
         var _this = this;
         var preview = tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"]({}, resource);
         return this.resourceService.preview(preview).then(function () {
-            _this.open(Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["asTab"])(resource));
+            _this.open(Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["asDocument"])(resource));
             return preview;
         }).catch(function (error) {
             _this.notification.logError(error);
@@ -2848,10 +2843,10 @@ var EditorService = /** @class */ (function (_super) {
         });
     };
     EditorService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_3__["Injectable"])({
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_4__["Injectable"])({
             providedIn: 'root'
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_resource_service__WEBPACK_IMPORTED_MODULE_4__["ResourceService"], src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_5__["NotificationService"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_resource_service__WEBPACK_IMPORTED_MODULE_5__["ResourceService"], src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_6__["NotificationService"]])
     ], EditorService);
     return EditorService;
 }(AbstractEditorService));
@@ -3246,19 +3241,19 @@ var OpenerService = /** @class */ (function (_super) {
         _this.notificationService = notificationService;
         return _this;
     }
-    OpenerService.prototype.openURI = function (resource, openToSide) {
+    OpenerService.prototype.openURI = function (uri, openToSide) {
         if (openToSide === void 0) { openToSide = false; }
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var scheme, path, query, fragment, position, match, target;
+            var scheme, path, query, fragment, position, match, resource;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                scheme = resource.scheme, path = resource.path, query = resource.query, fragment = resource.fragment;
+                scheme = uri.scheme, path = uri.path, query = uri.query, fragment = uri.fragment;
                 if (!scheme) {
                     return [2 /*return*/, Promise.resolve(false)];
                 }
                 if (scheme === _models_schemas_model__WEBPACK_IMPORTED_MODULE_4__["Schemas"].http || scheme === _models_schemas_model__WEBPACK_IMPORTED_MODULE_4__["Schemas"].https || scheme === _models_schemas_model__WEBPACK_IMPORTED_MODULE_4__["Schemas"].mailto) {
                     // open http or default mail application
                     console.log(scheme, path);
-                    this.openURL(resource.toString(true));
+                    this.openURL(uri.toString(true));
                     return [2 /*return*/, Promise.resolve(true)];
                 }
                 match = /^L?(\d+)(?:,(\d+))?/.exec(fragment);
@@ -3272,18 +3267,18 @@ var OpenerService = /** @class */ (function (_super) {
                         column: match[2] ? parseInt(match[2]) : 1
                     };
                     // remove fragment
-                    resource = resource.with({ fragment: '' });
+                    uri = uri.with({ fragment: '' });
                 }
-                target = this.resourceService.find(resource.path);
-                if (!target) {
-                    return [2 /*return*/, Promise.reject(new Error('Unable to open \'' + resource.path + '\': File not found'))];
+                resource = this.resourceService.find(uri.path);
+                if (!resource) {
+                    return [2 /*return*/, Promise.reject(new Error('Unable to open \'' + uri.path + '\': File not found'))];
                 }
                 return [2 /*return*/, this.editorService.open({
-                        uri: resource,
-                        resource: target,
+                        uri: uri,
+                        resource: resource,
                         position: position,
-                        title: target.name,
-                        icon: target.icon,
+                        title: resource.name,
+                        icon: resource.icon,
                     }, openToSide)];
             });
         });
@@ -4480,10 +4475,10 @@ var CodeEditorComponent = /** @class */ (function () {
         });
         this.diffSubscription = this.editor.onDiffEditing.subscribe(function (mode) {
             if (mode) {
-                _this.open(_this.editor.data());
+                _this.open(_this.editor.document());
             }
             else {
-                _this.open(_this.editor.data());
+                _this.open(_this.editor.document());
                 _this.editor.diffEditor.getModel().original.dispose();
                 _this.editor.diffEditor.getModel().modified.dispose();
             }
@@ -4498,21 +4493,21 @@ var CodeEditorComponent = /** @class */ (function () {
         this.monacoService.registerEditor(codeEditor);
         this.editor.codeEditor = codeEditor;
         this.addCommands(codeEditor);
-        this.open(this.editor.data());
+        this.open(this.editor.document());
     };
     CodeEditorComponent.prototype.diffEditorLoaded = function (diffEditor) {
         this.monacoService.registerEditor(diffEditor.getModifiedEditor());
         this.editor.diffEditor = diffEditor;
         this.addCommands(this.editor.diffEditor.getModifiedEditor());
-        this.open(this.editor.data());
+        this.open(this.editor.document());
     };
-    CodeEditorComponent.prototype.open = function (data) {
+    CodeEditorComponent.prototype.open = function (document) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
             var _a, error_1, monaco, language, model, meta;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        this.active = data.resource;
+                        this.active = document.resource;
                         if (!this.editor.diffEditing) return [3 /*break*/, 4];
                         _b.label = 1;
                     case 1:
@@ -4529,7 +4524,7 @@ var CodeEditorComponent = /** @class */ (function () {
                     case 4:
                         monaco = window.monaco;
                         language = this.monacoService.findLanguage(this.active);
-                        model = monaco.editor.getModel(data.uri) || monaco.editor.createModel(this.active.content, language, data.uri);
+                        model = monaco.editor.getModel(document.uri) || monaco.editor.createModel(this.active.content, language, document.uri);
                         if (model.getValue() !== this.active.content) {
                             model.setValue(this.active.content);
                             this.active.changed = false;
@@ -4540,11 +4535,11 @@ var CodeEditorComponent = /** @class */ (function () {
                         this.editor.codeEditor.setModel(model);
                         this.editor.codeEditor.updateOptions({ readOnly: this.readonly });
                         this.editor.codeEditor.focus();
-                        if (data.position) {
+                        if (document.position) {
                             this.editor.codeEditor.setPosition({
-                                lineNumber: data.position.line, column: data.position.line
+                                lineNumber: document.position.line, column: document.position.line
                             });
-                            this.editor.codeEditor.revealLineInCenter(data.position.line, monaco.editor.ScrollType.Smooth);
+                            this.editor.codeEditor.revealLineInCenter(document.position.line, monaco.editor.ScrollType.Smooth);
                         }
                         if (this.editor.diffEditing) {
                             this.editor.diffEditor.setModel({
@@ -4569,7 +4564,7 @@ var CodeEditorComponent = /** @class */ (function () {
         });
         // tslint:disable: no-bitwise
         editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function () {
-            _this.editor.group().save(_this.editor.data()).catch(function (error) {
+            _this.editor.group().save(_this.editor.document()).catch(function (error) {
                 _this.notification.logError(error);
             });
         }, '');
@@ -4579,7 +4574,7 @@ var CodeEditorComponent = /** @class */ (function () {
             });
         }, '');
         editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_K, function () {
-            _this.editor.group().close(_this.editor.data(), true).catch(function (error) {
+            _this.editor.group().close(_this.editor.document(), true).catch(function (error) {
                 _this.notification.logError(error);
             });
         }, '');
@@ -4671,19 +4666,19 @@ var ImageEditorComponent = /** @class */ (function () {
     }
     ImageEditorComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.open(this.editor.data());
-        this.openSubscription = this.editor.onOpened.subscribe(function (data) {
-            _this.open(data);
+        this.open(this.editor.document());
+        this.openSubscription = this.editor.onOpened.subscribe(function (document) {
+            _this.open(document);
         });
     };
     ImageEditorComponent.prototype.ngOnDestroy = function () {
         this.openSubscription.unsubscribe();
     };
-    ImageEditorComponent.prototype.open = function (data) {
-        this.svg = data.resource.content;
-        this.url = data.resource.meta.downloadUrl;
-        this.isSVG = Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["isSVG"])(data.resource);
-        console.log(data.resource);
+    ImageEditorComponent.prototype.open = function (document) {
+        this.svg = document.resource.content;
+        this.url = document.resource.meta.downloadUrl;
+        this.isSVG = Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["isSVG"])(document.resource);
+        console.log(document.resource);
     };
     tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
@@ -4752,9 +4747,9 @@ var PreviewEditorComponent = /** @class */ (function () {
     }
     PreviewEditorComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.open(this.editor.data());
-        this.openSubscription = this.editor.onOpened.subscribe(function (data) {
-            _this.open(data);
+        this.open(this.editor.document());
+        this.openSubscription = this.editor.onOpened.subscribe(function (document) {
+            _this.open(document);
         });
     };
     PreviewEditorComponent.prototype.ngOnDestroy = function () {
@@ -4765,11 +4760,11 @@ var PreviewEditorComponent = /** @class */ (function () {
         // for some reason onload of iframe is called twice
         this.loading = this.counter % 2 === 0;
     };
-    PreviewEditorComponent.prototype.open = function (data) {
-        this.content = data.resource.meta.previewData;
-        this.isMarkdown = Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_4__["isMarkdown"])(data.resource);
-        this.isHTML = Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_4__["isSVG"])(data.resource);
-        this.isURL = Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_4__["isPl"])(data.resource);
+    PreviewEditorComponent.prototype.open = function (document) {
+        this.content = document.resource.meta.previewData;
+        this.isMarkdown = Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_4__["isMarkdown"])(document.resource);
+        this.isHTML = Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_4__["isSVG"])(document.resource);
+        this.isURL = Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_4__["isPl"])(document.resource);
         this.loading = this.isURL;
         if (this.isHTML && this.scripts) {
             this.scripts.reinsertScripts();
@@ -4806,7 +4801,7 @@ var PreviewEditorComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- LITTLE HACK TO PRELOAD MONACO EDITOR -->\n<ngx-monaco-editor [hidden]='true' [options]='{}' [model]='{}'></ngx-monaco-editor>\n<as-split class='h100' direction='horizontal' gutterSize='5' useTransition='true' cdkDropListGroup>\n    <ng-container *ngFor='let group of groups'>\n        <as-split-area class='editor-group h100' style='overflow: hidden;'>\n            <div class='tab-bar'>\n                <div [id]='group.id()' class='tab-group' cdkDropList [cdkDropListData]=\"group.tabs\" (cdkDropListDropped)=\"group.drop($event)\">\n                    <div *ngFor='let tab of group.tabs; trackBy: group.trackTab' [matTooltip]=\"tab.resource.path\"\n                        [ngClass]=\"{'tab-item': true, active: group.isActive(tab), changed: group.isChanged(tab)}\"\n                        (click)='group.open(tab)' cdkDragAxis='x' cdkDrag>\n                        <i class=\"tab-icon {{tab.icon}}\"></i>\n                        <span>{{tab.title}}</span>\n                        <span class='tab-close' (click)='group.close(tab, true)'>&nbsp;&times;</span>\n                    </div>\n                </div>\n                <div class=\"spacer\"></div>  \n                <ng-container *ngIf='group.someAction();'>\n                    <ng-container *ngIf='group.focused()'>\n                        <ng-container *ngFor='let action of group.actions()'>\n                            <div class='tab-item' [matTooltip]='action.tooltip' *ngIf='action.condition(group.activeTab().resource)' (click)='action.invoke(group.activeTab().resource)'>\n                                <i class=\"{{action.icon}}\"></i>\n                            </div>\n                        </ng-container>\n                    </ng-container>\n                    <div class='tab-item' matTooltip='More Options' [matMenuTriggerFor]=\"editorMenu\">\n                        <i class=\"fas fa-ellipsis-h\"></i>\n                    </div>\n                    <mat-menu #editorMenu=\"matMenu\">\n                        <button mat-menu-item (click)='group.save(group.activeTab())'>Save ⌘S</button>\n                        <button mat-menu-item (click)='group.saveAll()'>Save All ⌘Alt S</button>\n                        <button mat-menu-item (click)='group.close(group.activeTab(), true)'>Close ⌘K</button>\n                        <button mat-menu-item (click)='group.closeAll(true)'>Close All ⌘Alt K</button>\n                        <button mat-menu-item (click)='group.closeSaved()'>Close Saved ⌘Alt U</button>\n                    </mat-menu>\n                </ng-container>\n            </div>\n            <ng-container *ngFor='let editor of group.editors; trackBy group.trackEditor'>\n                <ng-container [ngSwitch]=\"editor.type()\">\n                    <code-editor [hidden]='!group.activeEditorIs(\"code\")' *ngSwitchCase=\"'code'\" [editor]='editor'></code-editor>\n                    <image-editor [hidden]='!group.activeEditorIs(\"image\")' *ngSwitchCase=\"'image'\" [editor]='editor'></image-editor>\n                    <preview-editor [hidden]='!group.activeEditorIs(\"preview\")' *ngSwitchCase=\"'preview'\" [editor]='editor'></preview-editor>\n                </ng-container>\n            </ng-container>\n        </as-split-area>\n    </ng-container>\n</as-split>"
+module.exports = "<!-- LITTLE HACK TO PRELOAD MONACO EDITOR -->\n<ngx-monaco-editor [hidden]='true' [options]='{}' [model]='{}'></ngx-monaco-editor>\n<as-split class='h100' direction='horizontal' gutterSize='5' useTransition='true' cdkDropListGroup>\n    <ng-container *ngFor='let group of groups'>\n        <as-split-area class='editor-group h100' style='overflow: hidden;'>\n            <div class='tab-bar'>\n                <div [id]='group.id()' class='tab-group' cdkDropList [cdkDropListData]=\"group.documents\" (cdkDropListDropped)=\"group.drop($event)\">\n                    <div *ngFor='let tab of group.documents; trackBy: group.trackDocument' [matTooltip]=\"tab.resource.path\"\n                        [ngClass]=\"{'tab-item': true, active: group.isActive(tab), changed: group.isChanged(tab)}\"\n                        (click)='group.open(tab, true)' cdkDragAxis='x' cdkDrag>\n                        <i class=\"tab-icon {{tab.icon}}\"></i>\n                        <span>{{tab.title}}</span>\n                        <span class='tab-close' (click)='group.close(tab, true)'>&nbsp;&times;</span>\n                    </div>\n                </div>\n                <div class=\"spacer\"></div>  \n                <ng-container *ngIf='group.someAction();'>\n                    <ng-container *ngIf='group.focused()'>\n                        <ng-container *ngFor='let action of group.actions()'>\n                            <div class='tab-item' [matTooltip]='action.tooltip' *ngIf='action.condition(group.activeDocument().resource)' (click)='action.invoke(group.activeDocument().resource)'>\n                                <i class=\"{{action.icon}}\"></i>\n                            </div>\n                        </ng-container>\n                    </ng-container>\n                    <div class='tab-item' matTooltip='More Options' [matMenuTriggerFor]=\"editorMenu\">\n                        <i class=\"fas fa-ellipsis-h\"></i>\n                    </div>\n                    <mat-menu #editorMenu=\"matMenu\">\n                        <button mat-menu-item (click)='group.save(group.activeDocument())'>Save ⌘S</button>\n                        <button mat-menu-item (click)='group.saveAll()'>Save All ⌘Alt S</button>\n                        <button mat-menu-item (click)='group.close(group.activeDocument(), true)'>Close ⌘K</button>\n                        <button mat-menu-item (click)='group.closeAll(true)'>Close All ⌘Alt K</button>\n                        <button mat-menu-item (click)='group.closeSaved()'>Close Saved ⌘Alt U</button>\n                    </mat-menu>\n                </ng-container>\n            </div>\n            <ng-container *ngFor='let editor of group.editors; trackBy group.trackEditor'>\n                <ng-container [ngSwitch]=\"editor.type()\">\n                    <code-editor [hidden]='!group.activeEditorIs(\"code\")' *ngSwitchCase=\"'code'\" [editor]='editor'></code-editor>\n                    <image-editor [hidden]='!group.activeEditorIs(\"image\")' *ngSwitchCase=\"'image'\" [editor]='editor'></image-editor>\n                    <preview-editor [hidden]='!group.activeEditorIs(\"preview\")' *ngSwitchCase=\"'preview'\" [editor]='editor'></preview-editor>\n                </ng-container>\n            </ng-container>\n        </as-split-area>\n    </ng-container>\n</as-split>"
 
 /***/ }),
 

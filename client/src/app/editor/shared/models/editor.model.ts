@@ -2,9 +2,9 @@
 
 import { Resource } from './resource.model';
 import { Subject } from 'rxjs';
-import { IEditorTab } from '../services/core/opener.service';
+import { IEditorDocument } from '../services/core/opener.service';
 import { IEditorGroup } from './editor-group.model';
-import { asURI, openAsImage, openAsCode, canBePreviewed, isRepo, openAsPreview, asTab } from './filters.model';
+import { asURI, canBePreviewed, isRepo, asDocument, isSVG } from './filters.model';
 
 export const CODE_EDITOR = 'code';
 export const PREVIEW_EDITOR = 'preview';
@@ -21,13 +21,13 @@ export interface IEditorAction {
 export interface IEditor {
     id(): number;
     type(): string;
-    data(): IEditorTab;
+    document(): IEditorDocument;
     actions(): IEditorAction[];
     group(): IEditorGroup;
     focus(focused: boolean): void;
     hasFocus(): boolean;
-    open(data: IEditorTab): void;
-    canOpen(data: IEditorTab): boolean;
+    open(document: IEditorDocument): void;
+    canOpen(document: IEditorDocument): boolean;
 }
 
 export abstract class AbstractEditor implements IEditor {
@@ -35,35 +35,35 @@ export abstract class AbstractEditor implements IEditor {
     private readonly _id: number;
     private readonly _group: IEditorGroup;
     private _focused: boolean;
-    private _data: IEditorTab;
+    private _document: IEditorDocument;
 
-    readonly onOpened: Subject<IEditorTab> = new Subject();
+    readonly onOpened: Subject<IEditorDocument> = new Subject();
 
-    constructor(group: IEditorGroup, data: IEditorTab) {
+    constructor(group: IEditorGroup, document: IEditorDocument) {
         this._id = ++AbstractEditor.ID_COUNTER;
-        this._data = data;
+        this._document = document;
         this._group = group;
     }
 
     abstract type(): string;
-    abstract canOpen(data: IEditorTab): boolean;
+    abstract canOpen(document: IEditorDocument): boolean;
     abstract actions(): IEditorAction[];
 
     id(): number {
         return this._id;
     }
 
-    data(): IEditorTab {
-        return this._data;
+    document(): IEditorDocument {
+        return this._document;
     }
 
     group(): IEditorGroup {
         return this._group;
     }
 
-    open(data: IEditorTab): void {
-        this._data = data;
-        this.onOpened.next(data);
+    open(document: IEditorDocument): void {
+        this._document = document;
+        this.onOpened.next(document);
     }
 
     focus(focused: boolean): void {
@@ -82,8 +82,8 @@ export class CodeEditor extends AbstractEditor {
     codeEditor: monaco.editor.IStandaloneCodeEditor;
     diffEditor: monaco.editor.IStandaloneDiffEditor;
 
-    constructor(group: IEditorGroup, data: IEditorTab) {
-        super(group, data);
+    constructor(group: IEditorGroup, document: IEditorDocument) {
+        super(group, document);
     }
 
     type(): string {
@@ -99,16 +99,16 @@ export class CodeEditor extends AbstractEditor {
         ];
     }
 
-    canOpen(data: IEditorTab): boolean {
-        return openAsCode(data);
+    canOpen(document: IEditorDocument): boolean {
+        return openAsCode(document);
     }
 
-    open(data: IEditorTab): void {
-        if (data.uri.fragment === DIFF_FRAGMENT) {
+    open(document: IEditorDocument): void {
+        if (document.uri.fragment === DIFF_FRAGMENT) {
             this.diffEditing = true;
         }
-        data.uri = data.uri.with({ fragment: ''});
-        super.open(data);
+        document.uri = document.uri.with({ fragment: ''});
+        super.open(document);
     }
 
     private preview() {
@@ -140,7 +140,7 @@ export class CodeEditor extends AbstractEditor {
     private splitRight() {
         return {
             icon: 'fas fa-columns', tooltip: 'Split Editor Right', condition: () => true, invoke: (item: Resource) => {
-                this.group().openSide(asTab(item));
+                this.group().openSide(asDocument(item));
             }
         };
     }
@@ -150,8 +150,8 @@ export class ImageEditor extends AbstractEditor {
 
     zoom = 0.7;
 
-    constructor(group: IEditorGroup, data: IEditorTab) {
-        super(group, data);
+    constructor(group: IEditorGroup, document: IEditorDocument) {
+        super(group, document);
     }
 
     type(): string {
@@ -173,8 +173,8 @@ export class ImageEditor extends AbstractEditor {
         ];
     }
 
-    canOpen(data: IEditorTab): boolean {
-        return openAsImage(data);
+    canOpen(document: IEditorDocument): boolean {
+        return openAsImage(document);
     }
 
     zoomIn() {
@@ -189,8 +189,8 @@ export class ImageEditor extends AbstractEditor {
 
 export class PreviewEditor extends AbstractEditor {
 
-    constructor(group: IEditorGroup, data: IEditorTab) {
-        super(group, data);
+    constructor(group: IEditorGroup, document: IEditorDocument) {
+        super(group, document);
     }
 
     type(): string {
@@ -206,14 +206,26 @@ export class PreviewEditor extends AbstractEditor {
         ];
     }
 
-    canOpen(data: IEditorTab): boolean {
-        return openAsPreview(data);
+    canOpen(document: IEditorDocument): boolean {
+        return openAsPreview(document);
     }
 
 }
 
-export const INSTANTIATORS: {condition: (data: IEditorTab) => boolean, create: (group: IEditorGroup, data: IEditorTab) => IEditor }[] = [
-    { condition: openAsImage, create: (group: IEditorGroup, data: IEditorTab) => new ImageEditor(group, data) },
-    { condition: openAsPreview, create: (group: IEditorGroup, data: IEditorTab) => new PreviewEditor(group, data) },
-    { condition: openAsCode,  create: (group: IEditorGroup, data: IEditorTab) => new CodeEditor(group, data) }
+export function openAsCode(doc: IEditorDocument) {
+    return !openAsImage(doc);
+}
+
+export function openAsImage(doc: IEditorDocument) {
+    return !openAsPreview(doc) && doc.resource.meta && doc.resource.meta.image && !isSVG(doc.resource);
+}
+
+export function openAsPreview(doc: IEditorDocument) {
+    return doc.resource.meta && doc.resource.meta.previewData !== undefined;
+}
+
+export const INSTANTIATORS: {condition: (doc: IEditorDocument) => boolean, create: (group: IEditorGroup, doc: IEditorDocument) => IEditor }[] = [
+    { condition: openAsImage, create: (group: IEditorGroup, doc: IEditorDocument) => new ImageEditor(group, doc) },
+    { condition: openAsPreview, create: (group: IEditorGroup, doc: IEditorDocument) => new PreviewEditor(group, doc) },
+    { condition: openAsCode,  create: (group: IEditorGroup, doc: IEditorDocument) => new CodeEditor(group, doc) }
 ];

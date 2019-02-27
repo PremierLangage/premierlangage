@@ -1,5 +1,5 @@
 import { Resource } from './resource.model';
-import { IEditorTab } from '../services/core/opener.service';
+import { IEditorDocument } from '../services/core/opener.service';
 import { IEditorGroup } from './editor-group.model';
 
 export const DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&'];
@@ -152,7 +152,7 @@ export function asURIFragment(resource: Resource, fragment: string) {
     return monaco.Uri.file(resource.path).with({ fragment: fragment });
 }
 
-export function asTab(resource: Resource, preview?: boolean): IEditorTab {
+export function asDocument(resource: Resource, preview?: boolean): IEditorDocument {
     return {
         resource: resource,
         uri: asURI(resource),
@@ -162,8 +162,8 @@ export function asTab(resource: Resource, preview?: boolean): IEditorTab {
     };
 }
 
-export function compareTab(tab1: IEditorTab, tab2: IEditorTab) {
-    return tab1.resource.path === tab2.resource.path;
+export function compareDocument(doc1: IEditorDocument, doc2: IEditorDocument) {
+    return doc1.resource.path === doc2.resource.path;
 }
 
 export function compareGroup(grp1: IEditorGroup, grp2: IEditorGroup) {
@@ -172,16 +172,4 @@ export function compareGroup(grp1: IEditorGroup, grp2: IEditorGroup) {
 
 export function resourceIsURI(resource: Resource, uri: monaco.Uri) {
     return '/' + resource.path === uri.path;
-}
-
-export function openAsCode(data: IEditorTab) {
-    return !openAsImage(data);
-}
-
-export function openAsImage(data: IEditorTab) {
-    return !openAsPreview(data) && data.resource.meta && data.resource.meta.image && !isSVG(data.resource);
-}
-
-export function openAsPreview(data: IEditorTab) {
-    return data.resource.meta && data.resource.meta.previewData !== undefined;
 }
