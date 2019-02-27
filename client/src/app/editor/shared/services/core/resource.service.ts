@@ -396,6 +396,19 @@ export class ResourceService {
         });
     }
 
+    restore(path: string): Resource {
+        const name = filters.basename(path);
+        const parentPath = path.substring(0, path.length - (name.length + 1));
+        const parent = this.find(parentPath);
+        const resource = newResource(parent, FILE_RESOURCE);
+        resource.creating = resource.renaming = false;
+        resource.name = name;
+        resource.path = parentPath + '/' + name;
+        parent.children = parent.children || [];
+        parent.children.push(resource);
+        return resource;
+    }
+
     /**
      * Reloads the resources from the server.
      * @returns Promise<boolean> resolved with true or rejected with an error.

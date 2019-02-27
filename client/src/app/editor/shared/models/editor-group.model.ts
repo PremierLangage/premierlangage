@@ -127,6 +127,11 @@ export class EditorGroup implements IEditorGroup {
         if (!editor) {
             throw new Error('The is no registered editor that can open \'' + tab.resource.path + '\'');
         }
+
+        if (tab.resource.opened) {
+            this._activeTab.position = undefined; // unset position because to scroll to the position only once.
+        }
+
         tab.resource.opened = true;
         this._activeTab = tab;
         this._activeEditor = editor;
@@ -230,7 +235,6 @@ export class EditorGroup implements IEditorGroup {
         }
 
         if (this._activeTab) {
-            this._activeTab.position = undefined;
             this.open(this._activeTab);
         }
 

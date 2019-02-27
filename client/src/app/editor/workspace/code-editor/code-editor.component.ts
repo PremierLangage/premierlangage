@@ -43,15 +43,11 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
 
         this.diffSubscription = this.editor.onDiffEditing.subscribe(mode => {
             if (mode) {
-                this.git.show(this.active).then(response => {
-                    this.diffContent = response;
-                    if (this.editor.diffEditor) {
-                        this.open(this.editor.data());
-                    }
-                }).catch(error => this.notification.logError(error));
+                this.open(this.editor.data());
             } else {
                 this.open(this.editor.data());
                 this.editor.diffEditor.getModel().original.dispose();
+                this.editor.diffEditor.getModel().modified.dispose();
             }
         });
     }
@@ -76,31 +72,44 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         this.open(this.editor.data());
     }
 
-    private open(data: IEditorTab) {
-        const monaco = (<any>window).monaco;
+    private async open(data: IEditorTab) {
         this.active = data.resource;
-        const model = monaco.editor.getModel(data.uri)
-        || monaco.editor.createModel(
-                this.active.content,
-                this.monacoService.findLanguage(this.active),
-                data.uri
-        );
+
+        if (this.editor.diffEditing) {
+            try {
+                this.diffContent = await this.git.show(this.active) || '';
+            } catch (error) {
+                this.notification.logError(error);
+            }
+        }
+
+        const monaco = (<any>window).monaco;
+        const language = this.monacoService.findLanguage(this.active);
+        const model = monaco.editor.getModel(data.uri) || monaco.editor.createModel(this.active.content, language, data.uri);
         if (model.getValue() !== this.active.content) {
             model.setValue(this.active.content);
         }
-        this.editor.codeEditor.setModel(model);
+
         const meta = this.active.meta;
-        // tslint:disable-next-line: max-line-length
-        this.readonly = (!this.active.write || meta.application || meta.archive || meta.image);
+        this.readonly = (this.editor.diffEditing || !this.active.write || meta.application || meta.archive || meta.image);
+
+        this.editor.codeEditor.setModel(model);
         this.editor.codeEditor.updateOptions({ readOnly: this.readonly });
         this.editor.codeEditor.focus();
 
+        if (data.position) {
+            this.editor.codeEditor.setPosition({
+                lineNumber: data.position.line, column: data.position.line
+            });
+            this.editor.codeEditor.revealLineInCenter(data.position.line, monaco.editor.ScrollType.Smooth);
+        }
+
         if (this.editor.diffEditing) {
             this.editor.diffEditor.setModel({
-                original: monaco.editor.createModel(this.diffContent || '', this.monacoService.findLanguage(this.active)),
-                modified: this.editor.codeEditor.getModel()
+                original: monaco.editor.createModel(this.diffContent, language),
+                modified: monaco.editor.createModel(this.active.content, language),
             });
-            this.editor.diffEditor.getModifiedEditor().updateOptions({ readOnly: !this.readonly });
+            this.editor.diffEditor.getModifiedEditor().updateOptions({ readOnly: this.readonly });
             this.editor.diffEditor.getModifiedEditor().focus();
         }
 

@@ -413,7 +413,7 @@ var EditorRoutingModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class='host'>\n  <div class='editor-container'>\n    <navigation #navigation></navigation>\n    <as-split direction=\"horizontal\" gutterSize='5' useTransition='true'>    \n        <as-split-area class='navigation' style='overflow: hidden;' [size]=\"navigation.size\" [ngSwitch]=\"navigation.index\">\n            <explorer *ngSwitchCase=\"0\" [resources]='navigation.resources()' [showHeader]='true'></explorer>\n            <search *ngSwitchCase=\"1\" [resources]='navigation.resources()'></search>\n            <git *ngSwitchCase=\"2\"></git>\n            <settings *ngSwitchCase=\"3\"></settings>\n        </as-split-area>\n        <as-split-area class='h100' style='overflow: hidden;' [size]=\"100 - navigation.size\">\n            <as-split class='workspace' direction='vertical' gutterSize='5' useTransition='true' (dragEnd)='debugging.dragEnd($event)'>\n                <as-split-area class='h100' [size]='100 - debugging.size'>\n                    <workspace></workspace>\n                </as-split-area>\n                <as-split-area class='debugging' style='overflow: hidden;' [size]='debugging.size'>\n                    <debugging #debugging></debugging>\n                </as-split-area>\n            </as-split>\n        </as-split-area>\n    </as-split>\n  </div>\n  <mat-progress-bar mode='indeterminate' color='primary' *ngIf='runningTask()'></mat-progress-bar>\n  <footer></footer>\n</div>"
+module.exports = "<div class='host'>\n  <div class='host-container'>\n    <navigation #navigation></navigation>\n    <as-split direction=\"horizontal\" gutterSize='5' useTransition='true'>    \n        <as-split-area class='navigation' style='overflow: hidden;' [size]=\"navigation.size\" [ngSwitch]=\"navigation.index\">\n            <explorer *ngSwitchCase=\"0\" [resources]='navigation.resources()' [showHeader]='true'></explorer>\n            <search *ngSwitchCase=\"1\" [resources]='navigation.resources()'></search>\n            <git *ngSwitchCase=\"2\"></git>\n            <settings *ngSwitchCase=\"3\"></settings>\n        </as-split-area>\n        <as-split-area class='h100' style='overflow: hidden;' [size]=\"100 - navigation.size\">\n            <as-split class='workspace' direction='vertical' gutterSize='5' useTransition='true' (dragEnd)='debugging.dragEnd($event)'>\n                <as-split-area class='h100' [size]='100 - debugging.size'>\n                    <workspace></workspace>\n                </as-split-area>\n                <as-split-area class='debugging' style='overflow: hidden;' [size]='debugging.size'>\n                    <debugging #debugging></debugging>\n                </as-split-area>\n            </as-split>\n        </as-split-area>\n    </as-split>\n  </div>\n  <mat-progress-bar mode='indeterminate' color='warn' *ngIf='runningTask()'></mat-progress-bar>\n  <footer></footer>\n</div>"
 
 /***/ }),
 
@@ -424,7 +424,7 @@ module.exports = "<div class='host'>\n  <div class='editor-container'>\n    <nav
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".host {\n  position: relative;\n  padding: 0;\n  margin: 0;\n  display: flex;\n  flex-flow: column;\n  height: calc(100vh - 64px);\n  color: #5a5a5a; }\n\n.editor-container {\n  display: flex;\n  position: relative;\n  overflow: hidden;\n  height: 100%;\n  flex: 1; }\n\n.navigation {\n  height: 100%;\n  overflow: hidden;\n  background-color: #F6F6F6; }\n\n.tab-bar {\n  z-index: 1;\n  display: flex;\n  position: relative;\n  height: 36px;\n  align-items: center;\n  overflow: hidden;\n  background-color: #F5F5F5;\n  border-bottom: 1px solid #dee2e6 !important; }\n\n.tab-bar .tab-item {\n    display: inline-flex;\n    height: 100%;\n    align-items: center;\n    position: relative;\n    font-size: 14px;\n    color: #5a5a5a;\n    font-style: normal;\n    padding: 0px 12px;\n    cursor: pointer; }\n\n.workspace {\n  position: relative;\n  height: 100%; }\n\n.spacer {\n  flex-grow: 1; }\n\n.h100 {\n  height: 100%; }\n\n.editor-home {\n  text-align: center;\n  padding: 5rem 3rem; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL2VkaXRvci5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFHQTtFQUNJLG1CQUFrQjtFQUNsQixXQUFVO0VBQ1YsVUFBUztFQUNULGNBQWE7RUFDYixrQkFBaUI7RUFDakIsMkJBQXVDO0VBQ3ZDLGVBQWMsRUFDakI7O0FBRUQ7RUFDSSxjQUFhO0VBQ2IsbUJBQWtCO0VBQ2xCLGlCQUFnQjtFQUNoQixhQUFZO0VBQ1osUUFBTyxFQUNWOztBQUVEO0VBQ0ksYUFBWTtFQUNaLGlCQUFnQjtFQUNoQiwwQkFBeUIsRUFDNUI7O0FBRUQ7RUFDSSxXQUFVO0VBQ1YsY0FBYTtFQUNiLG1CQUFrQjtFQUNsQixhQTlCYTtFQStCYixvQkFBbUI7RUFDbkIsaUJBQWdCO0VBQ2hCLDBCQUF5QjtFQUN6Qiw0Q0FBMEMsRUFhN0M7O0FBckJEO0lBV1EscUJBQW9CO0lBQ3BCLGFBQVk7SUFDWixvQkFBbUI7SUFDbkIsbUJBQWtCO0lBQ2xCLGdCQUFlO0lBQ2YsZUFBYztJQUNkLG1CQUFrQjtJQUNsQixrQkFBaUI7SUFDakIsZ0JBQWUsRUFDbEI7O0FBR0w7RUFDSSxtQkFBa0I7RUFDbEIsYUFBWSxFQUNmOztBQUVEO0VBQ0ksYUFBWSxFQUNmOztBQUVEO0VBQ0ksYUFBWSxFQUNmOztBQUVEO0VBQ0ksbUJBQWtCO0VBQ2xCLG1CQUFrQixFQUNyQiIsImZpbGUiOiJzcmMvYXBwL2VkaXRvci9lZGl0b3IuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIkaGVhZGVyLWhlaWdodDogNjRweDtcbiR0YWItaGVpZ2h0OiAzNnB4O1xuXG4uaG9zdCB7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgIHBhZGRpbmc6IDA7XG4gICAgbWFyZ2luOiAwO1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgZmxleC1mbG93OiBjb2x1bW47XG4gICAgaGVpZ2h0OiBjYWxjKDEwMHZoIC0gI3skaGVhZGVyLWhlaWdodH0pO1xuICAgIGNvbG9yOiAjNWE1YTVhO1xufVxuXG4uZWRpdG9yLWNvbnRhaW5lciB7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICBoZWlnaHQ6IDEwMCU7XG4gICAgZmxleDogMTtcbn1cblxuLm5hdmlnYXRpb24ge1xuICAgIGhlaWdodDogMTAwJTtcbiAgICBvdmVyZmxvdzogaGlkZGVuOyBcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjRjZGNkY2O1xufVxuXG4udGFiLWJhciB7XG4gICAgei1pbmRleDogMTtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBoZWlnaHQ6ICR0YWItaGVpZ2h0O1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjRjVGNUY1O1xuICAgIGJvcmRlci1ib3R0b206IDFweCBzb2xpZCAjZGVlMmU2IWltcG9ydGFudDtcblxuICAgIC50YWItaXRlbSB7XG4gICAgICAgIGRpc3BsYXk6IGlubGluZS1mbGV4O1xuICAgICAgICBoZWlnaHQ6IDEwMCU7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgZm9udC1zaXplOiAxNHB4O1xuICAgICAgICBjb2xvcjogIzVhNWE1YTtcbiAgICAgICAgZm9udC1zdHlsZTogbm9ybWFsO1xuICAgICAgICBwYWRkaW5nOiAwcHggMTJweDtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIH1cbn1cblxuLndvcmtzcGFjZSB7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgIGhlaWdodDogMTAwJTtcbn1cblxuLnNwYWNlciB7XG4gICAgZmxleC1ncm93OiAxO1xufVxuXG4uaDEwMCB7XG4gICAgaGVpZ2h0OiAxMDAlO1xufVxuXG4uZWRpdG9yLWhvbWUge1xuICAgIHRleHQtYWxpZ246IGNlbnRlcjtcbiAgICBwYWRkaW5nOiA1cmVtIDNyZW07XG59Il19 */"
+module.exports = ".host {\n  position: relative;\n  padding: 0;\n  margin: 0;\n  display: flex;\n  flex-flow: column;\n  height: calc(100vh - 64px);\n  color: #5a5a5a; }\n  .host .host-container {\n    display: flex;\n    position: relative;\n    overflow: hidden;\n    height: 100%;\n    flex: 1; }\n  .navigation {\n  height: 100%;\n  overflow: hidden;\n  background-color: #F6F6F6; }\n  .tab-bar {\n  z-index: 1;\n  display: flex;\n  position: relative;\n  height: 36px;\n  align-items: center;\n  overflow: hidden;\n  background-color: #F5F5F5;\n  border-bottom: 1px solid #dee2e6 !important; }\n  .tab-bar .tab-item {\n    display: inline-flex;\n    height: 100%;\n    align-items: center;\n    position: relative;\n    font-size: 14px;\n    color: #5a5a5a;\n    font-style: normal;\n    padding: 0px 12px;\n    cursor: pointer; }\n  .workspace {\n  position: relative;\n  height: 100%; }\n  .spacer {\n  flex-grow: 1; }\n  .h100 {\n  height: 100%; }\n  .editor-home {\n  text-align: center;\n  padding: 5rem 3rem; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL2VkaXRvci5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFHQTtFQUNJLG1CQUFrQjtFQUNsQixXQUFVO0VBQ1YsVUFBUztFQUNULGNBQWE7RUFDYixrQkFBaUI7RUFDakIsMkJBQXVDO0VBQ3ZDLGVBQWMsRUFRakI7RUFmRDtJQVNRLGNBQWE7SUFDYixtQkFBa0I7SUFDbEIsaUJBQWdCO0lBQ2hCLGFBQVk7SUFDWixRQUFPLEVBQ1Y7RUFJTDtFQUNJLGFBQVk7RUFDWixpQkFBZ0I7RUFDaEIsMEJBQXlCLEVBQzVCO0VBRUQ7RUFDSSxXQUFVO0VBQ1YsY0FBYTtFQUNiLG1CQUFrQjtFQUNsQixhQTlCYTtFQStCYixvQkFBbUI7RUFDbkIsaUJBQWdCO0VBQ2hCLDBCQUF5QjtFQUN6Qiw0Q0FBMEMsRUFhN0M7RUFyQkQ7SUFXUSxxQkFBb0I7SUFDcEIsYUFBWTtJQUNaLG9CQUFtQjtJQUNuQixtQkFBa0I7SUFDbEIsZ0JBQWU7SUFDZixlQUFjO0lBQ2QsbUJBQWtCO0lBQ2xCLGtCQUFpQjtJQUNqQixnQkFBZSxFQUNsQjtFQUdMO0VBQ0ksbUJBQWtCO0VBQ2xCLGFBQVksRUFDZjtFQUVEO0VBQ0ksYUFBWSxFQUNmO0VBRUQ7RUFDSSxhQUFZLEVBQ2Y7RUFFRDtFQUNJLG1CQUFrQjtFQUNsQixtQkFBa0IsRUFDckIiLCJmaWxlIjoic3JjL2FwcC9lZGl0b3IvZWRpdG9yLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiJGhlYWRlci1oZWlnaHQ6IDY0cHg7XG4kdGFiLWhlaWdodDogMzZweDtcblxuLmhvc3Qge1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBwYWRkaW5nOiAwO1xuICAgIG1hcmdpbjogMDtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGZsZXgtZmxvdzogY29sdW1uO1xuICAgIGhlaWdodDogY2FsYygxMDB2aCAtICN7JGhlYWRlci1oZWlnaHR9KTtcbiAgICBjb2xvcjogIzVhNWE1YTtcbiAgICAuaG9zdC1jb250YWluZXIge1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgICAgIGhlaWdodDogMTAwJTtcbiAgICAgICAgZmxleDogMTtcbiAgICB9XG59XG5cblxuLm5hdmlnYXRpb24ge1xuICAgIGhlaWdodDogMTAwJTtcbiAgICBvdmVyZmxvdzogaGlkZGVuOyBcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjRjZGNkY2O1xufVxuXG4udGFiLWJhciB7XG4gICAgei1pbmRleDogMTtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBoZWlnaHQ6ICR0YWItaGVpZ2h0O1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjRjVGNUY1O1xuICAgIGJvcmRlci1ib3R0b206IDFweCBzb2xpZCAjZGVlMmU2IWltcG9ydGFudDtcblxuICAgIC50YWItaXRlbSB7XG4gICAgICAgIGRpc3BsYXk6IGlubGluZS1mbGV4O1xuICAgICAgICBoZWlnaHQ6IDEwMCU7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgZm9udC1zaXplOiAxNHB4O1xuICAgICAgICBjb2xvcjogIzVhNWE1YTtcbiAgICAgICAgZm9udC1zdHlsZTogbm9ybWFsO1xuICAgICAgICBwYWRkaW5nOiAwcHggMTJweDtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIH1cbn1cblxuLndvcmtzcGFjZSB7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgIGhlaWdodDogMTAwJTtcbn1cblxuLnNwYWNlciB7XG4gICAgZmxleC1ncm93OiAxO1xufVxuXG4uaDEwMCB7XG4gICAgaGVpZ2h0OiAxMDAlO1xufVxuXG4uZWRpdG9yLWhvbWUge1xuICAgIHRleHQtYWxpZ246IGNlbnRlcjtcbiAgICBwYWRkaW5nOiA1cmVtIDNyZW07XG59Il19 */"
 
 /***/ }),
 
@@ -965,6 +965,8 @@ var ExplorerComponent = /** @class */ (function () {
         event.stopPropagation();
         this.notification.confirmAsync({
             title: 'Are you sure you want to delete \'' + resource.name + '\'?',
+            okTitle: 'Delete',
+            noTitle: 'Cancel'
         }).then(function (confirmed) {
             if (confirmed) {
                 _this.resourceService.delete(resource).catch(function (error) {
@@ -1057,7 +1059,7 @@ var ExplorerComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-progress-bar mode=\"query\" *ngIf='runningTask()'></mat-progress-bar>\n<div class='navigation__content'>\n  <mat-accordion class='accordion' multi='true'>\n    <mat-expansion-panel class='repositories mat-elevation-z0' expanded='true'>\n      <mat-expansion-panel-header collapsedHeight='48px' expandedHeight='48px'>\n        <mat-panel-title>\n          REPOSITORIES\n        </mat-panel-title>\n      </mat-expansion-panel-header>\n      <ng-container *ngFor=\"let repo of repositories(); trackBy trackRepo\">\n          <div class='line pointer' (click)='changeSelection(repo)' [matTooltip]='repo.url'> \n              <span class='line-title' [matBadgeHidden]='repo.count === 0' [matBadge]=\"repo.count\" matBadgePosition=\"after\">{{repo.name}}</span>\n              <div class='spacer'></div>\n              <span class='line-subtitle'>{{repo.branch}}</span>\n              <span [matMenuTriggerFor]=\"options\">\n                  <i class='fas fa-ellipsis-h'></i>\n              </span>\n          </div>\n          <mat-menu #options=\"matMenu\">\n              <button mat-menu-item (click)='add(repo)'>Git add</button>\n              <button mat-menu-item (click)='push(repo)'>Git push</button>\n              <button mat-menu-item (click)='pull(repo)'>Git pull</button>\n              <button mat-menu-item (click)='status(repo)'>Git status</button>\n              <button mat-menu-item (click)='checkout(repo)'>Git checkout</button>\n          </mat-menu>\n      </ng-container>\n      <br/>\n      <button class='clone' mat-stroked-button matTooltip='Clone' (click)='clone()'>+</button>\n    </mat-expansion-panel>\n    <mat-divider></mat-divider>\n    <mat-expansion-panel class='changes mat-elevation-z0' *ngIf='selection' expanded='true'>\n      <mat-expansion-panel-header collapsedHeight='48px' expandedHeight='48px'>\n        <mat-panel-title>\n          CHANGES IN {{selection.name | uppercase}}\n        </mat-panel-title>\n      </mat-expansion-panel-header>\n      <mat-form-field class='commit' *ngIf='selection.count > 0; else uptodate'>\n          <input matInput placeholder=\"Press enter to commit\" (keydown)='commit($event)' [(ngModel)]='commitMessage'>\n      </mat-form-field>\n        <ng-template #uptodate> <span>nothing to commit, working tree clean</span> </ng-template>\n        <ng-container *ngFor=\"let change of selection.changes; trackBy trackChange\">\n            <div class='line' [matTooltip]=\"change.path\"> \n                <span class='line-title' [matBadge]=\"change.type\" matBadgePosition=\"after\">{{change.name}}</span>\n                <div class='spacer'></div>\n                <span class='pointer' [matMenuTriggerFor]=\"menu\">\n                  <i class='fas fa-ellipsis-h'></i>\n                </span>\n            </div>\n            <mat-menu #menu=\"matMenu\">\n              <ng-container *ngFor='let option of options'>\n                  <button *ngIf='option.enabled(change)' (click)='option.action(change)' mat-menu-item>\n                    {{option.label}}\n                  </button>\n              </ng-container>\n            </mat-menu>\n        </ng-container>\n    </mat-expansion-panel>    \n  </mat-accordion>\n</div>\n"
+module.exports = "<mat-progress-bar mode=\"query\" *ngIf='runningTask()'></mat-progress-bar>\n<div class='navigation__content'>\n  <mat-accordion class='accordion' multi='true'>\n    <mat-expansion-panel class='repositories mat-elevation-z0' expanded='true'>\n      <mat-expansion-panel-header collapsedHeight='48px' expandedHeight='48px'>\n        <mat-panel-title>\n          REPOSITORIES\n        </mat-panel-title>\n      </mat-expansion-panel-header>\n      <ng-container *ngFor=\"let repo of repositories(); trackBy trackRepo\">\n          <div class='line pointer' (click)='changeSelection(repo)' [matTooltip]='repo.url'> \n              <span class='line-title' [matBadgeHidden]='repo.count === 0' [matBadge]=\"repo.count\" matBadgePosition=\"after\">{{repo.name}}</span>\n              <div class='spacer'></div>\n              <span class='line-subtitle'>{{repo.branch}}</span>\n              <span [matMenuTriggerFor]=\"options\">\n                  <i class='fas fa-ellipsis-h'></i>\n              </span>\n          </div>\n          <mat-menu #options=\"matMenu\">\n              <button mat-menu-item (click)='add(repo)'>Git add</button>\n              <button mat-menu-item (click)='push(repo)'>Git push</button>\n              <button mat-menu-item (click)='pull(repo)'>Git pull</button>\n              <button mat-menu-item (click)='status(repo)'>Git status</button>\n              <button mat-menu-item (click)='checkout(repo)'>Git checkout</button>\n          </mat-menu>\n      </ng-container>\n      <br/>\n      <button class='clone' mat-stroked-button matTooltip='Clone' (click)='clone()'>+</button>\n    </mat-expansion-panel>\n    <mat-divider></mat-divider>\n    <mat-expansion-panel class='changes mat-elevation-z0' *ngIf='selection' expanded='true'>\n      <mat-expansion-panel-header collapsedHeight='48px' expandedHeight='48px'>\n        <mat-panel-title>\n          CHANGES IN {{selection.name | uppercase}}\n        </mat-panel-title>\n      </mat-expansion-panel-header>\n      <mat-form-field class='commit' *ngIf='selection.count > 0; else uptodate'>\n          <input matInput placeholder=\"Press enter to commit\" (keydown)='commit($event)' [(ngModel)]='commitMessage'>\n      </mat-form-field>\n        <ng-template #uptodate> <span>nothing to commit, working tree clean</span> </ng-template>\n        <ng-container *ngFor=\"let change of selection.changes; trackBy trackChange\">\n            <div class='line clickable' [matTooltip]=\"change.path\"> \n                <span class='line-title' [matBadge]=\"change.type\" matBadgePosition=\"after\" (click)='open(change)'>{{change.name}}</span>\n                <div class='spacer'></div>\n                <span class='pointer' [matMenuTriggerFor]=\"menu\">\n                  <i class='fas fa-ellipsis-h'></i>\n                </span>\n            </div>\n            <mat-menu #menu=\"matMenu\">\n              <ng-container *ngFor='let option of options'>\n                  <button *ngIf='option.enabled(change)' (click)='option.action(change)' mat-menu-item>\n                    {{option.label}}\n                  </button>\n              </ng-container>\n            </mat-menu>\n        </ng-container>\n    </mat-expansion-panel>    \n  </mat-accordion>\n</div>\n"
 
 /***/ }),
 
@@ -1068,7 +1070,7 @@ module.exports = "<mat-progress-bar mode=\"query\" *ngIf='runningTask()'></mat-p
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".navigation__content {\n  height: 100%;\n  overflow: auto; }\n\n.line {\n  display: flex;\n  height: 32px;\n  align-items: center;\n  overflow: visible; }\n\n.line-title {\n  font-size: 1em;\n  margin-right: 8px; }\n\n.line-title .mat-badge-content {\n    right: -24px;\n    top: 0; }\n\n.line-subtitle {\n  margin-right: 8px; }\n\n.commit, .clone {\n  width: 100%; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL25hdmlnYXRpb24vZ2l0L2dpdC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGFBQVk7RUFDWixlQUFjLEVBQ2pCOztBQUVEO0VBQ0ksY0FBYTtFQUNiLGFBQVk7RUFDWixvQkFBbUI7RUFDbkIsa0JBQWlCLEVBQ3BCOztBQUVEO0VBQ0ksZUFBYztFQUNkLGtCQUFpQixFQUtwQjs7QUFQRDtJQUlRLGFBQVk7SUFDWixPQUFNLEVBQ1Q7O0FBR0w7RUFDSSxrQkFBaUIsRUFDcEI7O0FBRUQ7RUFDSSxZQUFXLEVBQ2QiLCJmaWxlIjoic3JjL2FwcC9lZGl0b3IvbmF2aWdhdGlvbi9naXQvZ2l0LmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLm5hdmlnYXRpb25fX2NvbnRlbnQge1xuICAgIGhlaWdodDogMTAwJTtcbiAgICBvdmVyZmxvdzogYXV0bztcbn1cblxuLmxpbmUge1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgaGVpZ2h0OiAzMnB4O1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgb3ZlcmZsb3c6IHZpc2libGU7XG59XG5cbi5saW5lLXRpdGxlIHtcbiAgICBmb250LXNpemU6IDFlbTtcbiAgICBtYXJnaW4tcmlnaHQ6IDhweDtcbiAgICAubWF0LWJhZGdlLWNvbnRlbnQge1xuICAgICAgICByaWdodDogLTI0cHg7XG4gICAgICAgIHRvcDogMDtcbiAgICB9XG59XG5cbi5saW5lLXN1YnRpdGxlIHtcbiAgICBtYXJnaW4tcmlnaHQ6IDhweDtcbn1cblxuLmNvbW1pdCwgLmNsb25lIHtcbiAgICB3aWR0aDogMTAwJTtcbn1cbiJdfQ== */"
+module.exports = ".navigation__content {\n  height: 100%;\n  overflow: auto; }\n\n.line {\n  display: flex;\n  height: 32px;\n  align-items: center;\n  overflow: visible; }\n\n.line.clickable .line-title {\n    cursor: pointer; }\n\n.line-title {\n  font-size: 1em;\n  margin-right: 8px; }\n\n.line-title .mat-badge-content {\n    right: -24px;\n    top: 0; }\n\n.line-subtitle {\n  margin-right: 8px; }\n\n.commit, .clone {\n  width: 100%; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL25hdmlnYXRpb24vZ2l0L2dpdC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGFBQVk7RUFDWixlQUFjLEVBQ2pCOztBQUVEO0VBQ0ksY0FBYTtFQUNiLGFBQVk7RUFDWixvQkFBbUI7RUFDbkIsa0JBQWlCLEVBS3BCOztBQVREO0lBT1EsZ0JBQWUsRUFDbEI7O0FBR0w7RUFDSSxlQUFjO0VBQ2Qsa0JBQWlCLEVBS3BCOztBQVBEO0lBSVEsYUFBWTtJQUNaLE9BQU0sRUFDVDs7QUFHTDtFQUNJLGtCQUFpQixFQUNwQjs7QUFFRDtFQUNJLFlBQVcsRUFDZCIsImZpbGUiOiJzcmMvYXBwL2VkaXRvci9uYXZpZ2F0aW9uL2dpdC9naXQuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIubmF2aWdhdGlvbl9fY29udGVudCB7XG4gICAgaGVpZ2h0OiAxMDAlO1xuICAgIG92ZXJmbG93OiBhdXRvO1xufVxuXG4ubGluZSB7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBoZWlnaHQ6IDMycHg7XG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICBvdmVyZmxvdzogdmlzaWJsZTtcblxuICAgICYuY2xpY2thYmxlIC5saW5lLXRpdGxlIHtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIH1cbn1cblxuLmxpbmUtdGl0bGUge1xuICAgIGZvbnQtc2l6ZTogMWVtO1xuICAgIG1hcmdpbi1yaWdodDogOHB4O1xuICAgIC5tYXQtYmFkZ2UtY29udGVudCB7XG4gICAgICAgIHJpZ2h0OiAtMjRweDtcbiAgICAgICAgdG9wOiAwO1xuICAgIH1cbn1cblxuLmxpbmUtc3VidGl0bGUge1xuICAgIG1hcmdpbi1yaWdodDogOHB4O1xufVxuXG4uY29tbWl0LCAuY2xvbmUge1xuICAgIHdpZHRoOiAxMDAlO1xufVxuIl19 */"
 
 /***/ }),
 
@@ -1090,6 +1092,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _shared_services_core_opener_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../shared/services/core/opener.service */ "./src/app/editor/shared/services/core/opener.service.ts");
 /* harmony import */ var _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../shared/models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
 /* harmony import */ var _shared_services_core_editor_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../shared/services/core/editor.service */ "./src/app/editor/shared/services/core/editor.service.ts");
+/* harmony import */ var _shared_models_editor_model__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../shared/models/editor.model */ "./src/app/editor/shared/models/editor.model.ts");
+
 
 
 
@@ -1151,7 +1155,7 @@ var GitComponent = /** @class */ (function () {
      * @param item the repository item.
     */
     GitComponent.prototype.canAdd = function (item) {
-        return !item.type.includes('A');
+        return !item.type.includes('A') && !item.type.includes('D');
     };
     /**
      * gets a value indicating whether git checkout command can be applied to
@@ -1167,14 +1171,16 @@ var GitComponent = /** @class */ (function () {
      * @param item the repository item.
     */
     GitComponent.prototype.canOpen = function (item) {
-        return !item.isdir;
+        return !item.isdir && !item.type.includes('D');
     };
     /**
      * open the resource linked to the repository object in the editor.
      * @param item the repository item.
     */
     GitComponent.prototype.open = function (item) {
-        this.opener.openURI(Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["asURI"])(this.resources.find(item.path)));
+        if (this.canAdd(item)) {
+            this.opener.openURI(Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["asURIFragment"])(this.resources.find(item.path), _shared_models_editor_model__WEBPACK_IMPORTED_MODULE_8__["DIFF_FRAGMENT"]));
+        }
     };
     /**
      * executes git add command on the given repository item.
@@ -1232,6 +1238,7 @@ var GitComponent = /** @class */ (function () {
      */
     GitComponent.prototype.checkout = function (repo) {
         var _this = this;
+        // TODO FIX Cannot use apply option git_checkout: [Errno 2] No such file or directory: '/Users/mamadou/Desktop/PL/premierlangage/home/Yggdrasil/pl-test/exos'
         var msg = 'This action will reset all your local changes up to your last commit !';
         this.notification.confirmAsync({
             title: msg,
@@ -1242,7 +1249,7 @@ var GitComponent = /** @class */ (function () {
                 _this.git.checkout(repo).then(function (success) {
                     if (success) {
                         _this.refreshSelection();
-                        var resource_1 = _this.resources.find(repo.path);
+                        var resource_1 = _this.resources.find(repo.path) || _this.resources.restore(repo.path);
                         if (resource_1) {
                             resource_1.dirty = true;
                             _this.resources.open(resource_1).then(function (opened) {
@@ -1674,6 +1681,9 @@ var EditorGroup = /** @class */ (function () {
                         if (!editor) {
                             throw new Error('The is no registered editor that can open \'' + tab.resource.path + '\'');
                         }
+                        if (tab.resource.opened) {
+                            this._activeTab.position = undefined; // unset position because to scroll to the position only once.
+                        }
                         tab.resource.opened = true;
                         this._activeTab = tab;
                         this._activeEditor = editor;
@@ -1851,7 +1861,6 @@ var EditorGroup = /** @class */ (function () {
                             this._activeTab = this.tabs[index];
                         }
                         if (this._activeTab) {
-                            this._activeTab.position = undefined;
                             this.open(this._activeTab);
                         }
                         if (!this.empty()) return [3 /*break*/, 2];
@@ -1951,7 +1960,7 @@ var EditorGroup = /** @class */ (function () {
 /*!******************************************************!*\
   !*** ./src/app/editor/shared/models/editor.model.ts ***!
   \******************************************************/
-/*! exports provided: CODE_EDITOR, PREVIEW_EDITOR, IMAGE_EDITOR, AbstractEditor, CodeEditor, ImageEditor, PreviewEditor, INSTANTIATORS */
+/*! exports provided: CODE_EDITOR, PREVIEW_EDITOR, IMAGE_EDITOR, DIFF_FRAGMENT, AbstractEditor, CodeEditor, ImageEditor, PreviewEditor, INSTANTIATORS */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1959,6 +1968,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CODE_EDITOR", function() { return CODE_EDITOR; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PREVIEW_EDITOR", function() { return PREVIEW_EDITOR; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "IMAGE_EDITOR", function() { return IMAGE_EDITOR; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DIFF_FRAGMENT", function() { return DIFF_FRAGMENT; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AbstractEditor", function() { return AbstractEditor; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CodeEditor", function() { return CodeEditor; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImageEditor", function() { return ImageEditor; });
@@ -1974,6 +1984,7 @@ __webpack_require__.r(__webpack_exports__);
 var CODE_EDITOR = 'code';
 var PREVIEW_EDITOR = 'preview';
 var IMAGE_EDITOR = 'image';
+var DIFF_FRAGMENT = 'diff';
 var AbstractEditor = /** @class */ (function () {
     function AbstractEditor(group, data) {
         this.onOpened = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
@@ -2017,13 +2028,20 @@ var CodeEditor = /** @class */ (function (_super) {
     CodeEditor.prototype.actions = function () {
         return [
             this.preview(),
-            // this.diffMode(),
-            // this.codeMode(),
+            this.diffMode(),
+            this.codeMode(),
             this.splitRight()
         ];
     };
     CodeEditor.prototype.canOpen = function (data) {
         return Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["openAsCode"])(data);
+    };
+    CodeEditor.prototype.open = function (data) {
+        if (data.uri.fragment === DIFF_FRAGMENT) {
+            this.diffEditing = true;
+        }
+        data.uri = data.uri.with({ fragment: '' });
+        _super.prototype.open.call(this, data);
     };
     CodeEditor.prototype.preview = function () {
         var _this = this;
@@ -2134,7 +2152,7 @@ var INSTANTIATORS = [
 /*!*******************************************************!*\
   !*** ./src/app/editor/shared/models/filters.model.ts ***!
   \*******************************************************/
-/*! exports provided: DISALLOWED_CHAR, canRead, canWrite, readonly, isFolder, isFile, isRoot, isPl, isMarkdown, isPltp, isSVG, canBePreviewed, isHome, isNotRoot, fromServer, isRepo, canAddFile, canCopy, canAddFolder, canBeRenamed, canBeDeleted, canBeTested, canBeLoaded, canBeReloaded, extension, canBeUsedAsFileName, checkName, requireNonNull, assert, basename, asURI, asTab, compareTab, compareGroup, resourceIsURI, openAsCode, openAsImage, openAsPreview */
+/*! exports provided: DISALLOWED_CHAR, canRead, canWrite, readonly, isFolder, isFile, isRoot, isPl, isMarkdown, isPltp, isSVG, canBePreviewed, isHome, isNotRoot, fromServer, isRepo, canAddFile, canCopy, canAddFolder, canBeRenamed, canBeDeleted, canBeTested, canBeLoaded, canBeReloaded, extension, canBeUsedAsFileName, checkName, requireNonNull, assert, basename, asURI, asURIGoTo, asURIFragment, asTab, compareTab, compareGroup, resourceIsURI, openAsCode, openAsImage, openAsPreview */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2170,6 +2188,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "assert", function() { return assert; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "basename", function() { return basename; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asURI", function() { return asURI; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asURIGoTo", function() { return asURIGoTo; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asURIFragment", function() { return asURIFragment; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asTab", function() { return asTab; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compareTab", function() { return compareTab; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compareGroup", function() { return compareGroup; });
@@ -2283,6 +2303,14 @@ function basename(path) {
 function asURI(resource) {
     var monaco = window.monaco;
     return monaco.Uri.file(resource.path);
+}
+function asURIGoTo(resource, line, column) {
+    var monaco = window.monaco;
+    return monaco.Uri.file(resource.path).with({ fragment: line + "," + column });
+}
+function asURIFragment(resource, fragment) {
+    var monaco = window.monaco;
+    return monaco.Uri.file(resource.path).with({ fragment: fragment });
 }
 function asTab(resource, preview) {
     return {
@@ -3703,6 +3731,18 @@ var ResourceService = /** @class */ (function () {
             });
         });
     };
+    ResourceService.prototype.restore = function (path) {
+        var name = _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["basename"](path);
+        var parentPath = path.substring(0, path.length - (name.length + 1));
+        var parent = this.find(parentPath);
+        var resource = Object(_models_resource_model__WEBPACK_IMPORTED_MODULE_3__["newResource"])(parent, _models_resource_model__WEBPACK_IMPORTED_MODULE_3__["FILE_RESOURCE"]);
+        resource.creating = resource.renaming = false;
+        resource.name = name;
+        resource.path = parentPath + '/' + name;
+        parent.children = parent.children || [];
+        parent.children.push(resource);
+        return resource;
+    };
     /**
      * Reloads the resources from the server.
      * @returns Promise<boolean> resolved with true or rejected with an error.
@@ -4331,16 +4371,12 @@ var CodeEditorComponent = /** @class */ (function () {
         });
         this.diffSubscription = this.editor.onDiffEditing.subscribe(function (mode) {
             if (mode) {
-                _this.git.show(_this.active).then(function (response) {
-                    _this.diffContent = response;
-                    if (_this.editor.diffEditor) {
-                        _this.open(_this.editor.data());
-                    }
-                }).catch(function (error) { return _this.notification.logError(error); });
+                _this.open(_this.editor.data());
             }
             else {
                 _this.open(_this.editor.data());
                 _this.editor.diffEditor.getModel().original.dispose();
+                _this.editor.diffEditor.getModel().modified.dispose();
             }
         });
     };
@@ -4362,30 +4398,58 @@ var CodeEditorComponent = /** @class */ (function () {
         this.open(this.editor.data());
     };
     CodeEditorComponent.prototype.open = function (data) {
-        var monaco = window.monaco;
-        this.active = data.resource;
-        var model = monaco.editor.getModel(data.uri)
-            || monaco.editor.createModel(this.active.content, this.monacoService.findLanguage(this.active), data.uri);
-        if (model.getValue() !== this.active.content) {
-            model.setValue(this.active.content);
-        }
-        this.editor.codeEditor.setModel(model);
-        var meta = this.active.meta;
-        // tslint:disable-next-line: max-line-length
-        this.readonly = (!this.active.write || meta.application || meta.archive || meta.image);
-        this.editor.codeEditor.updateOptions({ readOnly: this.readonly });
-        this.editor.codeEditor.focus();
-        if (this.editor.diffEditing) {
-            this.editor.diffEditor.setModel({
-                original: monaco.editor.createModel(this.diffContent || '', this.monacoService.findLanguage(this.active)),
-                modified: this.editor.codeEditor.getModel()
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var _a, error_1, monaco, language, model, meta;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        this.active = data.resource;
+                        if (!this.editor.diffEditing) return [3 /*break*/, 4];
+                        _b.label = 1;
+                    case 1:
+                        _b.trys.push([1, 3, , 4]);
+                        _a = this;
+                        return [4 /*yield*/, this.git.show(this.active)];
+                    case 2:
+                        _a.diffContent = (_b.sent()) || '';
+                        return [3 /*break*/, 4];
+                    case 3:
+                        error_1 = _b.sent();
+                        this.notification.logError(error_1);
+                        return [3 /*break*/, 4];
+                    case 4:
+                        monaco = window.monaco;
+                        language = this.monacoService.findLanguage(this.active);
+                        model = monaco.editor.getModel(data.uri) || monaco.editor.createModel(this.active.content, language, data.uri);
+                        if (model.getValue() !== this.active.content) {
+                            model.setValue(this.active.content);
+                        }
+                        meta = this.active.meta;
+                        this.readonly = (this.editor.diffEditing || !this.active.write || meta.application || meta.archive || meta.image);
+                        this.editor.codeEditor.setModel(model);
+                        this.editor.codeEditor.updateOptions({ readOnly: this.readonly });
+                        this.editor.codeEditor.focus();
+                        if (data.position) {
+                            this.editor.codeEditor.setPosition({
+                                lineNumber: data.position.line, column: data.position.line
+                            });
+                            this.editor.codeEditor.revealLineInCenter(data.position.line, monaco.editor.ScrollType.Smooth);
+                        }
+                        if (this.editor.diffEditing) {
+                            this.editor.diffEditor.setModel({
+                                original: monaco.editor.createModel(this.diffContent, language),
+                                modified: monaco.editor.createModel(this.active.content, language),
+                            });
+                            this.editor.diffEditor.getModifiedEditor().updateOptions({ readOnly: this.readonly });
+                            this.editor.diffEditor.getModifiedEditor().focus();
+                        }
+                        if (this.readonly) {
+                            this.notification.warning('readonly editor');
+                        }
+                        return [2 /*return*/];
+                }
             });
-            this.editor.diffEditor.getModifiedEditor().updateOptions({ readOnly: !this.readonly });
-            this.editor.diffEditor.getModifiedEditor().focus();
-        }
-        if (this.readonly) {
-            this.notification.warning('readonly editor');
-        }
+        });
     };
     CodeEditorComponent.prototype.addCommands = function (editor) {
         var _this = this;

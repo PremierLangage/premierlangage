@@ -253,6 +253,8 @@ export class ExplorerComponent {
         event.stopPropagation();
         this.notification.confirmAsync({
             title: 'Are you sure you want to delete \'' + resource.name + '\'?',
+            okTitle: 'Delete',
+            noTitle: 'Cancel'
         }).then(confirmed => {
             if (confirmed) {
                 this.resourceService.delete(resource).catch(error => {

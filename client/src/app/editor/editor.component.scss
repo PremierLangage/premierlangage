@@ -9,15 +9,15 @@ $tab-height: 36px;
     flex-flow: column;
     height: calc(100vh - #{$header-height});
     color: #5a5a5a;
+    .host-container {
+        display: flex;
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        flex: 1;
+    }
 }
 
-.editor-container {
-    display: flex;
-    position: relative;
-    overflow: hidden;
-    height: 100%;
-    flex: 1;
-}
 
 .navigation {
     height: 100%;

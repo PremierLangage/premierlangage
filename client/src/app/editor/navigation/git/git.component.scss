@@ -8,6 +8,10 @@
     height: 32px;
     align-items: center;
     overflow: visible;
+
+    &.clickable .line-title {
+        cursor: pointer;
+    }
 }
 
 .line-title {

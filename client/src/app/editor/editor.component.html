@@ -1,5 +1,5 @@
 <div class='host'>
-  <div class='editor-container'>
+  <div class='host-container'>
     <navigation #navigation></navigation>
     <as-split direction="horizontal" gutterSize='5' useTransition='true'>    
         <as-split-area class='navigation' style='overflow: hidden;' [size]="navigation.size" [ngSwitch]="navigation.index">
@@ -20,6 +20,6 @@
         </as-split-area>
     </as-split>
   </div>
-  <mat-progress-bar mode='indeterminate' color='primary' *ngIf='runningTask()'></mat-progress-bar>
+  <mat-progress-bar mode='indeterminate' color='warn' *ngIf='runningTask()'></mat-progress-bar>
   <footer></footer>
 </div>

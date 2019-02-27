@@ -9,6 +9,7 @@ import { asURI, openAsImage, openAsCode, canBePreviewed, isRepo, openAsPreview, 
 export const CODE_EDITOR = 'code';
 export const PREVIEW_EDITOR = 'preview';
 export const IMAGE_EDITOR = 'image';
+export const DIFF_FRAGMENT = 'diff';
 
 export interface IEditorAction {
     icon: string;
@@ -92,14 +93,22 @@ export class CodeEditor extends AbstractEditor {
     actions(): IEditorAction[] {
         return [
             this.preview(),
-            // this.diffMode(),
-            // this.codeMode(),
+            this.diffMode(),
+            this.codeMode(),
             this.splitRight()
         ];
     }
 
     canOpen(data: IEditorTab): boolean {
         return openAsCode(data);
+    }
+
+    open(data: IEditorTab): void {
+        if (data.uri.fragment === DIFF_FRAGMENT) {
+            this.diffEditing = true;
+        }
+        data.uri = data.uri.with({ fragment: ''});
+        super.open(data);
     }
 
     private preview() {

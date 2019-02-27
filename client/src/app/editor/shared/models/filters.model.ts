@@ -142,6 +142,16 @@ export function asURI(resource: Resource) {
     return monaco.Uri.file(resource.path);
 }
 
+export function asURIGoTo(resource: Resource, line: number, column: number) {
+    const monaco = (<any>window).monaco;
+    return monaco.Uri.file(resource.path).with({ fragment: `${line},${column}`});
+}
+
+export function asURIFragment(resource: Resource, fragment: string) {
+    const monaco = (<any>window).monaco;
+    return monaco.Uri.file(resource.path).with({ fragment: fragment });
+}
+
 export function asTab(resource: Resource, preview?: boolean): IEditorTab {
     return {
         resource: resource,

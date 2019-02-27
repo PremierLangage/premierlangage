@@ -8,8 +8,9 @@ import { GitService } from '../../shared/services/core/git.service';
 import { ResourceService } from '../../shared/services/core/resource.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { OpenerService } from '../../shared/services/core/opener.service';
-import { asURI } from '../../shared/models/filters.model';
+import { asURI, asURIFragment } from '../../shared/models/filters.model';
 import { EditorService } from '../../shared/services/core/editor.service';
+import { DIFF_FRAGMENT } from '../../shared/models/editor.model';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -79,7 +80,7 @@ export class GitComponent implements OnInit, OnDestroy {
      * @param item the repository item.
     */
     canAdd(item: Change) {
-        return !item.type.includes('A');
+        return !item.type.includes('A') && !item.type.includes('D');
     }
 
     /**
@@ -97,7 +98,7 @@ export class GitComponent implements OnInit, OnDestroy {
      * @param item the repository item.
     */
     canOpen(item: Change) {
-        return !item.isdir;
+        return !item.isdir && !item.type.includes('D');
     }
 
     /**
@@ -105,7 +106,9 @@ export class GitComponent implements OnInit, OnDestroy {
      * @param item the repository item.
     */
     open(item: Change) {
-        this.opener.openURI(asURI(this.resources.find(item.path)));
+        if (this.canAdd(item)) {
+            this.opener.openURI(asURIFragment(this.resources.find(item.path), DIFF_FRAGMENT));
+        }
     }
 
     /**
@@ -165,6 +168,7 @@ export class GitComponent implements OnInit, OnDestroy {
      *	@param item the repository item.
      */
     checkout(repo: Repo | Change) {
+    // TODO FIX Cannot use apply option git_checkout: [Errno 2] No such file or directory: '/Users/mamadou/Desktop/PL/premierlangage/home/Yggdrasil/pl-test/exos'
         const msg = 'This action will reset all your local changes up to your last commit !';
         this.notification.confirmAsync({
             title: msg,
@@ -175,7 +179,7 @@ export class GitComponent implements OnInit, OnDestroy {
                 this.git.checkout(repo).then((success) => {
                     if (success) {
                         this.refreshSelection();
-                        const resource = this.resources.find(repo.path);
+                        const resource = this.resources.find(repo.path) || this.resources.restore(repo.path);
                         if (resource) {
                             resource.dirty = true;
                             this.resources.open(resource).then((opened) => {
