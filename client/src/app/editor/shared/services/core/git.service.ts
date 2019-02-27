@@ -78,7 +78,7 @@ export class GitService implements IGitService {
             requireNonNull(item, 'item');
             const params = new HttpParams().set('name', 'git_status').set('path', item.path);
             const response = await this.http.get('/filebrowser/option', { params: params , responseType: 'text'}).toPromise();
-            this.notification.logInfo(response);
+            this.logResponse(item, response);
             success = true;
         } catch (error) {
             this.notification.logError(error);
@@ -94,7 +94,7 @@ export class GitService implements IGitService {
             requireNonNull(item, 'item');
             const params = new HttpParams().set('name', 'git_add').set('path', item.path);
             const response = await this.http.get('/filebrowser/option', { params: params , responseType: 'text'}).toPromise();
-            this.notification.logInfo(response);
+            this.logResponse(item, response);
             success = await this.refresh();
         } catch (error) {
             this.notification.logError(error);
@@ -110,7 +110,7 @@ export class GitService implements IGitService {
             requireNonNull(item, 'item');
             const params = new HttpParams().set('name', 'git_checkout').set('path', item.path);
             const response = await this.http.get('/filebrowser/option', { params: params , responseType: 'text'}).toPromise();
-            this.notification.logInfo(response);
+            this.logResponse(item, response);
             success = await this.refresh();
         } catch (error) {
             this.notification.logError(error);
@@ -128,7 +128,7 @@ export class GitService implements IGitService {
             const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
             const data = {'name': 'git_commit', 'path': item.path, commit: commit};
             const response = await this.http.post('/filebrowser/option', data, { headers: headers , responseType: 'text'}).toPromise();
-            this.notification.logInfo(response);
+            this.logResponse(item, response);
             this.refresh();
             success = true;
         } catch (error) {
@@ -146,7 +146,7 @@ export class GitService implements IGitService {
             const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
             const data = {'name': 'git_push', 'path': item.path, username: username, password: password};
             const response = await this.http.post('/filebrowser/option', data, { headers: headers , responseType: 'text'}).toPromise();
-            this.notification.logInfo(response);
+            this.logResponse(item, response);
             this.refresh();
             success = true;
         } catch (error) {
@@ -164,7 +164,7 @@ export class GitService implements IGitService {
             const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
             const data = {'name': 'git_pull', 'path': item.path, username: username, password: password};
             const response = await this.http.post('/filebrowser/option', data, { headers: headers , responseType: 'text'}).toPromise();
-            this.notification.logInfo(response);
+            this.logResponse(item, response);
             success = true;
         } catch (error) {
             this.notification.logError(error);
@@ -190,13 +190,17 @@ export class GitService implements IGitService {
                 destination: destination
             };
             await this.http.post('/filebrowser/option', data, { headers: headers , responseType: 'text'}).toPromise();
-            this.notification.logInfo(url + ' cloned at ' + basename(url));
+            this.notification.logInfo(`${url} cloned into the directory ${basename(url)}`);
             success = true;
         } catch (error) {
             this.notification.logError(error);
         }
         this.runningTask = false;
         return success;
+    }
+
+    private logResponse(item: Repo | Change, response: string) {
+        this.notification.logInfo(`${item.path}:<br/> ${response}`);
     }
 
 }

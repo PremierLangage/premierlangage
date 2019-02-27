@@ -21,7 +21,7 @@ import { DIFF_FRAGMENT } from '../../shared/models/editor.model';
 export class GitComponent implements OnInit, OnDestroy {
 
     /** changes options */
-    readonly options = [];
+    readonly options: ChangeOption[] = [];
     /** value of commit input form */
     commitMessage = '';
     /** selected repository */
@@ -36,13 +36,13 @@ export class GitComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
-        this.options.push({label: 'Open file', enabled: (item: Change) => this.canOpen(item), action: (item: Change) => {
+        this.options.push({label: 'Open File', enabled: (item: Change) => this.canOpen(item), action: (item: Change) => {
             this.open(item);
         }});
-        this.options.push({label: 'Git add', enabled: (item: Change) => this.canAdd(item), action: (item: Change) => {
+        this.options.push({label: 'Git Add', enabled: (item: Change) => this.canAdd(item), action: (item: Change) => {
             this.add(item);
         }});
-        this.options.push({label: 'Git checkout', enabled: (item: Change) => this.canCheckout(item), action: (item: Change) => {
+        this.options.push({label: 'Git Checkout', enabled: (item: Change) => this.canCheckout(item), action: (item: Change) => {
             this.checkout(item);
         }});
     }
@@ -50,10 +50,10 @@ export class GitComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
     }
 
-    private refreshSelection() {
-        if (this.selection) {
-            this.selection = this.repositories().find(e => e.url !== this.selection.url) || this.repositories().find(_ => true);
-        }
+
+    /** used inside the html template to checks if a repo is selected */
+    isSelection(item: Repo) {
+        return this.selection && this.selection.url === item.url;
     }
 
     /**
@@ -80,7 +80,7 @@ export class GitComponent implements OnInit, OnDestroy {
      * @param item the repository item.
     */
     canAdd(item: Change) {
-        return !item.type.includes('A') && !item.type.includes('D');
+        return item.type.includes('M') || !item.type.includes('D');
     }
 
     /**
@@ -89,7 +89,7 @@ export class GitComponent implements OnInit, OnDestroy {
      * @param item the repository item.
     */
     canCheckout(item: Change) {
-        return item.type !== '??';
+        return item.type !== '??' && item.type !== 'D';
     }
 
     /**
@@ -106,7 +106,7 @@ export class GitComponent implements OnInit, OnDestroy {
      * @param item the repository item.
     */
     open(item: Change) {
-        if (this.canAdd(item)) {
+        if (this.canOpen(item)) {
             this.opener.openURI(asURIFragment(this.resources.find(item.path), DIFF_FRAGMENT));
         }
     }
@@ -115,18 +115,20 @@ export class GitComponent implements OnInit, OnDestroy {
      * executes git add command on the given repository item.
      *	@param item the repository item.
      */
-    add(item: Repo | Change) {
-        this.git.add(item).then(() => {
-            this.refreshSelection();
-        });
+    async add(item: Repo | Change) {
+        if (await this.git.add(item)) {
+            this.refresh();
+            return true;
+        }
+        return false;
     }
 
     /**
      * executes git push command on the given repository item
      *	@param item the repository item.
      */
-    push(item: Repo | Change) {
-        this.git.push(item);
+    async push(item: Repo | Change) {
+        return this.git.push(item);
     }
 
     /**
@@ -134,64 +136,127 @@ export class GitComponent implements OnInit, OnDestroy {
      * - if the command succeed, the resources of the editor will be refreshed.
      *	@param item the repository item.
      */
-    pull(item: Repo | Change) {
-        this.notification.confirmAsync({
+    async pull(item: Repo | Change) {
+        const confirmed = await this.notification.confirmAsync({
             title: 'Please confirm your action',
-            message: 'You will lose the unsaved changes after this action !',
+            message: 'This action will pull the latest changes from the remote server and close the opened editors!',
             okTitle: 'Pull',
             noTitle: 'Cancel'
-        }).then(confirmed => {
-            if (confirmed) {
-                this.git.pull(item).then(success => {
-                    if (success) {
-                        this.resources.refresh().then((succees) => {
-                            if (success) {
-                                this.refreshSelection();
-                            }
-                        });
-                    }
-                });
-            }
         });
+
+        try {
+            if (confirmed) {
+                const success = await this.git.pull(item);
+                if (success) {
+                    if (await this.editor.closeAll()) {
+                        const refreshed = await this.resources.refresh();
+                        if (refreshed) {
+                            this.refresh();
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                }
+                return false;
+            }
+            return false;
+        } catch (error) {
+            this.notification.logError(error);
+            return false;
+        }
     }
 
     /**
      * executes git status command on the given repository.
      *	@param item the repository item.
      */
-    status(repo: Repo | Change) {
-        this.git.status(repo);
+    async status(item: Repo | Change) {
+        return this.git.status(item);
     }
 
     /**
      * executes git pull command on the given repository item after asking a confirmation.
      *	@param item the repository item.
      */
-    checkout(repo: Repo | Change) {
-    // TODO FIX Cannot use apply option git_checkout: [Errno 2] No such file or directory: '/Users/mamadou/Desktop/PL/premierlangage/home/Yggdrasil/pl-test/exos'
-        const msg = 'This action will reset all your local changes up to your last commit !';
-        this.notification.confirmAsync({
-            title: msg,
+    async checkout(item: Repo | Change) {
+        const confirmed = await this.notification.confirmAsync({
+            title: 'Please confirm your action',
+            message: 'This action will reset all your local changes up to your last commit and close the opened editors!',
             okTitle: 'Checkout',
             noTitle: 'Cancel'
-        }).then(confirmed => {
-            if (confirmed) {
-                this.git.checkout(repo).then((success) => {
-                    if (success) {
-                        this.refreshSelection();
-                        const resource = this.resources.find(repo.path) || this.resources.restore(repo.path);
-                        if (resource) {
-                            resource.dirty = true;
-                            this.resources.open(resource).then((opened) => {
-                                this.opener.openURI(asURI(resource));
-                            });
-                        }
-                        this.selection.changes = this.selection.changes.filter(e => e.path !== resource.path);
-                    }
-                    this.refreshSelection();
-                });
-            }
         });
+        try {
+            if (confirmed) {
+                const success = await this.git.checkout(item);
+                if (success) {
+                    if (await this.editor.closeAll()) {
+                        const refreshed = await this.resources.refresh();
+                        if (refreshed) {
+                            const resource = await this.resources.find(item.path);
+                            if (resource) {
+                                this.opener.openURI(asURI(resource));
+                            }
+                            this.refresh();
+                            return true;
+                        }
+                        return false;
+                    }
+                    return false;
+                }
+                return false;
+            }
+        } catch (error) {
+            this.notification.logError(error);
+            return false;
+        }
+    }
+
+    /**
+     * executes git clone command.
+     * - if the command succeed, the resources of the editor will be refreshed.
+     */
+    async clone() {
+        const fields: PrompField[] = [
+            { type: 'url', placeholder: 'Url', required: true, value: '' },
+            { type: 'text', placeholder: 'Username', required: false, value: '' },
+            { type: 'password', placeholder: 'Passsword', required: false, value: '' },
+        ];
+        const options: PrompOptions = {
+            title: 'Clone repository',
+            fields: fields
+        };
+        const response = await this.notification.promptAsync(options);
+        try {
+            if (response) {
+                if (this.resources.changed()) {
+                    const confirmOptions = {
+                        title: 'Please confirm your action',
+                        message: 'This action will create new directory and close the opened editors!',
+                        okTitle: 'Clone',
+                        noTitle: 'Cancel'
+                    };
+                    if (!await this.notification.confirmAsync(confirmOptions)) {
+                        return false;
+                    }
+                }
+                const url = response.fields[0].value;
+                const username = response.fields[1].value;
+                const password = response.fields[2].value;
+                const success = await this.git.clone(this.resources.resources[0], url,  username, password);
+                if (success) {
+                    if (await this.editor.closeAll() && await this.resources.refresh()) {
+                        this.refresh();
+                        return true;
+                    }
+                    return false;
+                }
+                return false;
+            }
+        } catch (error) {
+            this.notification.logError(error);
+            return false;
+        }
     }
 
     /**
@@ -215,33 +280,6 @@ export class GitComponent implements OnInit, OnDestroy {
         }
     }
 
-    /**
-     * executes git clone command.
-     * - if the command succeed, the resources of the editor will be refreshed.
-     */
-    async clone() {
-        const fields: PrompField[] = [
-            { type: 'url', placeholder: 'Url', required: true, value: '' },
-            { type: 'text', placeholder: 'Username', required: false, value: '' },
-            { type: 'password', placeholder: 'Passsword', required: false, value: '' },
-        ];
-        const options: PrompOptions = {
-            title: 'Clone repository',
-            fields: fields
-        };
-        this.notification.warning('Please close the opened editors before submitting the form');
-        const response = await this.notification.promptAsync(options);
-        if (response) {
-            // tslint:disable-next-line: max-line-length
-            const success = await this.git.clone(this.resources.resources[0], response.fields[0].value,  response.fields[1].value,  response.fields[2].value);
-            if (success) {
-                await this.editor.closeAll();
-                await this.resources.refresh();
-                this.refreshSelection();
-            }
-        }
-    }
-
     /** gets the repositories */
     repositories() {
         return this.git.repos;
@@ -252,4 +290,22 @@ export class GitComponent implements OnInit, OnDestroy {
         return this.git.runningTask;
     }
 
+    hasOption(item: Change) {
+        return this.options.some(option => option.enabled(item));
+    }
+
+    private refresh() {
+        if (this.selection) {
+            this.selection = this.repositories().find(item => {
+                return item.url === this.selection.url;
+            }) || this.repositories().find(_ => true);
+        }
+    }
+
+}
+
+interface ChangeOption {
+    label: string;
+    enabled: (item: Change) => boolean;
+    action: (item: Change) => void;
 }

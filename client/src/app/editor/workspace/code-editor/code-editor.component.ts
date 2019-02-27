@@ -88,11 +88,12 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         const model = monaco.editor.getModel(data.uri) || monaco.editor.createModel(this.active.content, language, data.uri);
         if (model.getValue() !== this.active.content) {
             model.setValue(this.active.content);
+            this.active.changed = false;
+            this.active.lastContent = this.active.content;
         }
 
         const meta = this.active.meta;
-        this.readonly = (this.editor.diffEditing || !this.active.write || meta.application || meta.archive || meta.image);
-
+        this.readonly = (this.editor.diffEditing || !this.active.write);
         this.editor.codeEditor.setModel(model);
         this.editor.codeEditor.updateOptions({ readOnly: this.readonly });
         this.editor.codeEditor.focus();

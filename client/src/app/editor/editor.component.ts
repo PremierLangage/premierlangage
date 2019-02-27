@@ -13,25 +13,25 @@ import { TaskService } from './shared/services/core/task.service';
 export class EditorComponent implements OnInit {
 
     constructor(
-        private readonly taskService: TaskService,
-        private readonly monacoService: MonacoService,
-        private readonly resourceService: ResourceService
+        private readonly task: TaskService,
+        private readonly monaco: MonacoService,
+        private readonly resources: ResourceService
     ) {}
 
     ngOnInit(): void {
-        MONACO_LOADED.subscribe(monaco => this.monacoService.register(monaco));
+        MONACO_LOADED.subscribe(monaco => this.monaco.register(monaco));
     }
 
         /**
      * Gets a value indicating whether a task is running in the editor.
      */
     runningTask() {
-        return this.taskService.running;
+        return this.task.running;
     }
 
     @HostListener('window:beforeunload', ['$event'])
     beforeunload($event: any) {
-        if (this.resourceService.findPredicate(e => e.changed)) {
+        if (this.resources.changed()) { // the if is required
             $event.returnValue = true;
         }
     }

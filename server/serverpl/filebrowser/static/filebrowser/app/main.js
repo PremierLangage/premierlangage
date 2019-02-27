@@ -451,23 +451,23 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var EditorComponent = /** @class */ (function () {
-    function EditorComponent(taskService, monacoService, resourceService) {
-        this.taskService = taskService;
-        this.monacoService = monacoService;
-        this.resourceService = resourceService;
+    function EditorComponent(task, monaco, resources) {
+        this.task = task;
+        this.monaco = monaco;
+        this.resources = resources;
     }
     EditorComponent.prototype.ngOnInit = function () {
         var _this = this;
-        _shared_models_monaco_model__WEBPACK_IMPORTED_MODULE_4__["MONACO_LOADED"].subscribe(function (monaco) { return _this.monacoService.register(monaco); });
+        _shared_models_monaco_model__WEBPACK_IMPORTED_MODULE_4__["MONACO_LOADED"].subscribe(function (monaco) { return _this.monaco.register(monaco); });
     };
     /**
  * Gets a value indicating whether a task is running in the editor.
  */
     EditorComponent.prototype.runningTask = function () {
-        return this.taskService.running;
+        return this.task.running;
     };
     EditorComponent.prototype.beforeunload = function ($event) {
-        if (this.resourceService.findPredicate(function (e) { return e.changed; })) {
+        if (this.resources.changed()) { // the if is required
             $event.returnValue = true;
         }
     };
@@ -1059,7 +1059,7 @@ var ExplorerComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<mat-progress-bar mode=\"query\" *ngIf='runningTask()'></mat-progress-bar>\n<div class='navigation__content'>\n  <mat-accordion class='accordion' multi='true'>\n    <mat-expansion-panel class='repositories mat-elevation-z0' expanded='true'>\n      <mat-expansion-panel-header collapsedHeight='48px' expandedHeight='48px'>\n        <mat-panel-title>\n          REPOSITORIES\n        </mat-panel-title>\n      </mat-expansion-panel-header>\n      <ng-container *ngFor=\"let repo of repositories(); trackBy trackRepo\">\n          <div class='line pointer' (click)='changeSelection(repo)' [matTooltip]='repo.url'> \n              <span class='line-title' [matBadgeHidden]='repo.count === 0' [matBadge]=\"repo.count\" matBadgePosition=\"after\">{{repo.name}}</span>\n              <div class='spacer'></div>\n              <span class='line-subtitle'>{{repo.branch}}</span>\n              <span [matMenuTriggerFor]=\"options\">\n                  <i class='fas fa-ellipsis-h'></i>\n              </span>\n          </div>\n          <mat-menu #options=\"matMenu\">\n              <button mat-menu-item (click)='add(repo)'>Git add</button>\n              <button mat-menu-item (click)='push(repo)'>Git push</button>\n              <button mat-menu-item (click)='pull(repo)'>Git pull</button>\n              <button mat-menu-item (click)='status(repo)'>Git status</button>\n              <button mat-menu-item (click)='checkout(repo)'>Git checkout</button>\n          </mat-menu>\n      </ng-container>\n      <br/>\n      <button class='clone' mat-stroked-button matTooltip='Clone' (click)='clone()'>+</button>\n    </mat-expansion-panel>\n    <mat-divider></mat-divider>\n    <mat-expansion-panel class='changes mat-elevation-z0' *ngIf='selection' expanded='true'>\n      <mat-expansion-panel-header collapsedHeight='48px' expandedHeight='48px'>\n        <mat-panel-title>\n          CHANGES IN {{selection.name | uppercase}}\n        </mat-panel-title>\n      </mat-expansion-panel-header>\n      <mat-form-field class='commit' *ngIf='selection.count > 0; else uptodate'>\n          <input matInput placeholder=\"Press enter to commit\" (keydown)='commit($event)' [(ngModel)]='commitMessage'>\n      </mat-form-field>\n        <ng-template #uptodate> <span>nothing to commit, working tree clean</span> </ng-template>\n        <ng-container *ngFor=\"let change of selection.changes; trackBy trackChange\">\n            <div class='line clickable' [matTooltip]=\"change.path\"> \n                <span class='line-title' [matBadge]=\"change.type\" matBadgePosition=\"after\" (click)='open(change)'>{{change.name}}</span>\n                <div class='spacer'></div>\n                <span class='pointer' [matMenuTriggerFor]=\"menu\">\n                  <i class='fas fa-ellipsis-h'></i>\n                </span>\n            </div>\n            <mat-menu #menu=\"matMenu\">\n              <ng-container *ngFor='let option of options'>\n                  <button *ngIf='option.enabled(change)' (click)='option.action(change)' mat-menu-item>\n                    {{option.label}}\n                  </button>\n              </ng-container>\n            </mat-menu>\n        </ng-container>\n    </mat-expansion-panel>    \n  </mat-accordion>\n</div>\n"
+module.exports = "<mat-progress-bar mode=\"query\" *ngIf='runningTask()'></mat-progress-bar>\n<div class='navigation__content'>\n  <mat-accordion class='accordion' multi='true'>\n    <mat-expansion-panel class='repositories mat-elevation-z0' expanded='true'>\n      <mat-expansion-panel-header collapsedHeight='48px' expandedHeight='48px'>\n        <mat-panel-title>\n          REPOSITORIES\n        </mat-panel-title>\n      </mat-expansion-panel-header>\n      <ng-container *ngFor=\"let repo of repositories(); trackBy trackRepo\">\n          <div class='line pointer' [ngClass]='{ selected: isSelection(repo) }' (click)='changeSelection(repo)' [matTooltip]='repo.url'> \n              <span class='line-title' [matBadgeHidden]='repo.count === 0' [matBadge]=\"repo.count\" matBadgePosition=\"after\">{{repo.name}}</span>\n              <div class='spacer'></div>\n              <span class='line-subtitle'>{{repo.branch}}</span>\n              <span [matMenuTriggerFor]=\"options\">\n                  <i class='fas fa-ellipsis-h'></i>\n              </span>\n          </div>\n          <mat-menu #options=\"matMenu\">\n              <button mat-menu-item (click)='add(repo)' matTooltip='Add to git index'>Git Add</button>\n              <button mat-menu-item (click)='push(repo)'>Git Push</button>\n              <button mat-menu-item (click)='pull(repo)'>Git Pull</button>\n              <button mat-menu-item (click)='status(repo)'>Git Status</button>\n              <button mat-menu-item (click)='checkout(repo)'>Git Checkout</button>\n          </mat-menu>\n      </ng-container>\n      <br/>\n      <button class='clone' mat-stroked-button matTooltip='Clone' (click)='clone()'>+</button>\n    </mat-expansion-panel>\n    <mat-divider></mat-divider>\n    <mat-expansion-panel class='changes mat-elevation-z0' *ngIf='selection' expanded='true'>\n      <mat-expansion-panel-header collapsedHeight='48px' expandedHeight='48px'>\n        <mat-panel-title>\n          CHANGES IN {{selection.name | uppercase}}\n        </mat-panel-title>\n      </mat-expansion-panel-header>\n      <mat-form-field class='commit' *ngIf='selection.count > 0; else uptodate'>\n          <input matInput placeholder=\"Press enter to commit\" (keydown)='commit($event)' [(ngModel)]='commitMessage'>\n      </mat-form-field>\n        <ng-template #uptodate> <span>nothing to commit, working tree clean</span> </ng-template>\n        <ng-container *ngFor=\"let change of selection.changes; trackBy trackChange\">\n            <div class='line' [ngClass]='{clickable: canOpen(change)}' [matTooltip]=\"change.path\"> \n                <span class='line-title' [matBadge]=\"change.type\" matBadgePosition=\"after\" (click)='open(change)'>{{change.name}}</span>\n                <div class='spacer'></div>\n                <ng-container *ngIf='hasOption(change)'>\n                    <span class='pointer' [matMenuTriggerFor]=\"menu\">\n                        <i class='fas fa-ellipsis-h'></i>\n                      </span>\n                </ng-container>\n            </div>\n            <mat-menu #menu=\"matMenu\">\n              <ng-container *ngFor='let option of options'>\n                  <button *ngIf='option.enabled(change)' (click)='option.action(change)' mat-menu-item>\n                    {{option.label}}\n                  </button>\n              </ng-container>\n            </mat-menu>\n        </ng-container>\n    </mat-expansion-panel>    \n  </mat-accordion>\n</div>\n"
 
 /***/ }),
 
@@ -1070,7 +1070,7 @@ module.exports = "<mat-progress-bar mode=\"query\" *ngIf='runningTask()'></mat-p
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".navigation__content {\n  height: 100%;\n  overflow: auto; }\n\n.line {\n  display: flex;\n  height: 32px;\n  align-items: center;\n  overflow: visible; }\n\n.line.clickable .line-title {\n    cursor: pointer; }\n\n.line-title {\n  font-size: 1em;\n  margin-right: 8px; }\n\n.line-title .mat-badge-content {\n    right: -24px;\n    top: 0; }\n\n.line-subtitle {\n  margin-right: 8px; }\n\n.commit, .clone {\n  width: 100%; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL25hdmlnYXRpb24vZ2l0L2dpdC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGFBQVk7RUFDWixlQUFjLEVBQ2pCOztBQUVEO0VBQ0ksY0FBYTtFQUNiLGFBQVk7RUFDWixvQkFBbUI7RUFDbkIsa0JBQWlCLEVBS3BCOztBQVREO0lBT1EsZ0JBQWUsRUFDbEI7O0FBR0w7RUFDSSxlQUFjO0VBQ2Qsa0JBQWlCLEVBS3BCOztBQVBEO0lBSVEsYUFBWTtJQUNaLE9BQU0sRUFDVDs7QUFHTDtFQUNJLGtCQUFpQixFQUNwQjs7QUFFRDtFQUNJLFlBQVcsRUFDZCIsImZpbGUiOiJzcmMvYXBwL2VkaXRvci9uYXZpZ2F0aW9uL2dpdC9naXQuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIubmF2aWdhdGlvbl9fY29udGVudCB7XG4gICAgaGVpZ2h0OiAxMDAlO1xuICAgIG92ZXJmbG93OiBhdXRvO1xufVxuXG4ubGluZSB7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBoZWlnaHQ6IDMycHg7XG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICBvdmVyZmxvdzogdmlzaWJsZTtcblxuICAgICYuY2xpY2thYmxlIC5saW5lLXRpdGxlIHtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIH1cbn1cblxuLmxpbmUtdGl0bGUge1xuICAgIGZvbnQtc2l6ZTogMWVtO1xuICAgIG1hcmdpbi1yaWdodDogOHB4O1xuICAgIC5tYXQtYmFkZ2UtY29udGVudCB7XG4gICAgICAgIHJpZ2h0OiAtMjRweDtcbiAgICAgICAgdG9wOiAwO1xuICAgIH1cbn1cblxuLmxpbmUtc3VidGl0bGUge1xuICAgIG1hcmdpbi1yaWdodDogOHB4O1xufVxuXG4uY29tbWl0LCAuY2xvbmUge1xuICAgIHdpZHRoOiAxMDAlO1xufVxuIl19 */"
+module.exports = ".navigation__content {\n  height: 100%;\n  overflow: auto; }\n\n.mat-accordion .mat-expansion-panel {\n  background-color: transparent; }\n\n.line {\n  display: flex;\n  height: 32px;\n  align-items: center;\n  padding-right: 8px;\n  overflow: visible; }\n\n.line.selected {\n    border-right: 1px solid; }\n\n.line.clickable .line-title {\n    cursor: pointer; }\n\n.line-title {\n  font-size: 1em;\n  margin-right: 8px; }\n\n.line-title .mat-badge-content {\n    right: -24px;\n    top: 0; }\n\n.line-subtitle {\n  margin-right: 8px; }\n\n.commit, .clone {\n  width: 100%; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL25hdmlnYXRpb24vZ2l0L2dpdC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGFBQVk7RUFDWixlQUFjLEVBQ2pCOztBQUVEO0VBQ0ksOEJBQTZCLEVBQ2hDOztBQUVEO0VBQ0ksY0FBYTtFQUNiLGFBQVk7RUFDWixvQkFBbUI7RUFDbkIsbUJBQWtCO0VBQ2xCLGtCQUFpQixFQVFwQjs7QUFiRDtJQVFRLHdCQUF1QixFQUMxQjs7QUFUTDtJQVdRLGdCQUFlLEVBQ2xCOztBQUdMO0VBQ0ksZUFBYztFQUNkLGtCQUFpQixFQUtwQjs7QUFQRDtJQUlRLGFBQVk7SUFDWixPQUFNLEVBQ1Q7O0FBR0w7RUFDSSxrQkFBaUIsRUFDcEI7O0FBRUQ7RUFDSSxZQUFXLEVBQ2QiLCJmaWxlIjoic3JjL2FwcC9lZGl0b3IvbmF2aWdhdGlvbi9naXQvZ2l0LmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLm5hdmlnYXRpb25fX2NvbnRlbnQge1xuICAgIGhlaWdodDogMTAwJTtcbiAgICBvdmVyZmxvdzogYXV0bztcbn1cblxuLm1hdC1hY2NvcmRpb24gLm1hdC1leHBhbnNpb24tcGFuZWwge1xuICAgIGJhY2tncm91bmQtY29sb3I6IHRyYW5zcGFyZW50O1xufVxuXG4ubGluZSB7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBoZWlnaHQ6IDMycHg7XG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICBwYWRkaW5nLXJpZ2h0OiA4cHg7XG4gICAgb3ZlcmZsb3c6IHZpc2libGU7XG5cbiAgICAmLnNlbGVjdGVkIHtcbiAgICAgICAgYm9yZGVyLXJpZ2h0OiAxcHggc29saWQ7XG4gICAgfVxuICAgICYuY2xpY2thYmxlIC5saW5lLXRpdGxlIHtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIH1cbn1cblxuLmxpbmUtdGl0bGUge1xuICAgIGZvbnQtc2l6ZTogMWVtO1xuICAgIG1hcmdpbi1yaWdodDogOHB4O1xuICAgIC5tYXQtYmFkZ2UtY29udGVudCB7XG4gICAgICAgIHJpZ2h0OiAtMjRweDtcbiAgICAgICAgdG9wOiAwO1xuICAgIH1cbn1cblxuLmxpbmUtc3VidGl0bGUge1xuICAgIG1hcmdpbi1yaWdodDogOHB4O1xufVxuXG4uY29tbWl0LCAuY2xvbmUge1xuICAgIHdpZHRoOiAxMDAlO1xufVxuIl19 */"
 
 /***/ }),
 
@@ -1116,23 +1116,21 @@ var GitComponent = /** @class */ (function () {
     }
     GitComponent.prototype.ngOnInit = function () {
         var _this = this;
-        this.options.push({ label: 'Open file', enabled: function (item) { return _this.canOpen(item); }, action: function (item) {
+        this.options.push({ label: 'Open File', enabled: function (item) { return _this.canOpen(item); }, action: function (item) {
                 _this.open(item);
             } });
-        this.options.push({ label: 'Git add', enabled: function (item) { return _this.canAdd(item); }, action: function (item) {
+        this.options.push({ label: 'Git Add', enabled: function (item) { return _this.canAdd(item); }, action: function (item) {
                 _this.add(item);
             } });
-        this.options.push({ label: 'Git checkout', enabled: function (item) { return _this.canCheckout(item); }, action: function (item) {
+        this.options.push({ label: 'Git Checkout', enabled: function (item) { return _this.canCheckout(item); }, action: function (item) {
                 _this.checkout(item);
             } });
     };
     GitComponent.prototype.ngOnDestroy = function () {
     };
-    GitComponent.prototype.refreshSelection = function () {
-        var _this = this;
-        if (this.selection) {
-            this.selection = this.repositories().find(function (e) { return e.url !== _this.selection.url; }) || this.repositories().find(function (_) { return true; });
-        }
+    /** used inside the html template to checks if a repo is selected */
+    GitComponent.prototype.isSelection = function (item) {
+        return this.selection && this.selection.url === item.url;
     };
     /**
      * changes the selected repository.
@@ -1155,7 +1153,7 @@ var GitComponent = /** @class */ (function () {
      * @param item the repository item.
     */
     GitComponent.prototype.canAdd = function (item) {
-        return !item.type.includes('A') && !item.type.includes('D');
+        return item.type.includes('M') || !item.type.includes('D');
     };
     /**
      * gets a value indicating whether git checkout command can be applied to
@@ -1163,7 +1161,7 @@ var GitComponent = /** @class */ (function () {
      * @param item the repository item.
     */
     GitComponent.prototype.canCheckout = function (item) {
-        return item.type !== '??';
+        return item.type !== '??' && item.type !== 'D';
     };
     /**
      * gets a value indicating whether the resource linked to the repository item
@@ -1178,7 +1176,7 @@ var GitComponent = /** @class */ (function () {
      * @param item the repository item.
     */
     GitComponent.prototype.open = function (item) {
-        if (this.canAdd(item)) {
+        if (this.canOpen(item)) {
             this.opener.openURI(Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["asURIFragment"])(this.resources.find(item.path), _shared_models_editor_model__WEBPACK_IMPORTED_MODULE_8__["DIFF_FRAGMENT"]));
         }
     };
@@ -1187,9 +1185,18 @@ var GitComponent = /** @class */ (function () {
      *	@param item the repository item.
      */
     GitComponent.prototype.add = function (item) {
-        var _this = this;
-        this.git.add(item).then(function () {
-            _this.refreshSelection();
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.git.add(item)];
+                    case 1:
+                        if (_a.sent()) {
+                            this.refresh();
+                            return [2 /*return*/, true];
+                        }
+                        return [2 /*return*/, false];
+                }
+            });
         });
     };
     /**
@@ -1197,7 +1204,11 @@ var GitComponent = /** @class */ (function () {
      *	@param item the repository item.
      */
     GitComponent.prototype.push = function (item) {
-        this.git.push(item);
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                return [2 /*return*/, this.git.push(item)];
+            });
+        });
     };
     /**
      * executes git pull command on the given repository item after asking a confirmation.
@@ -1205,62 +1216,183 @@ var GitComponent = /** @class */ (function () {
      *	@param item the repository item.
      */
     GitComponent.prototype.pull = function (item) {
-        var _this = this;
-        this.notification.confirmAsync({
-            title: 'Please confirm your action',
-            message: 'You will lose the unsaved changes after this action !',
-            okTitle: 'Pull',
-            noTitle: 'Cancel'
-        }).then(function (confirmed) {
-            if (confirmed) {
-                _this.git.pull(item).then(function (success) {
-                    if (success) {
-                        _this.resources.refresh().then(function (succees) {
-                            if (success) {
-                                _this.refreshSelection();
-                            }
-                        });
-                    }
-                });
-            }
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var confirmed, success, refreshed, error_1;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.notification.confirmAsync({
+                            title: 'Please confirm your action',
+                            message: 'This action will pull the latest changes from the remote server and close the opened editors!',
+                            okTitle: 'Pull',
+                            noTitle: 'Cancel'
+                        })];
+                    case 1:
+                        confirmed = _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 9, , 10]);
+                        if (!confirmed) return [3 /*break*/, 8];
+                        return [4 /*yield*/, this.git.pull(item)];
+                    case 3:
+                        success = _a.sent();
+                        if (!success) return [3 /*break*/, 7];
+                        return [4 /*yield*/, this.editor.closeAll()];
+                    case 4:
+                        if (!_a.sent()) return [3 /*break*/, 6];
+                        return [4 /*yield*/, this.resources.refresh()];
+                    case 5:
+                        refreshed = _a.sent();
+                        if (refreshed) {
+                            this.refresh();
+                            return [2 /*return*/, true];
+                        }
+                        return [2 /*return*/, false];
+                    case 6: return [2 /*return*/, false];
+                    case 7: return [2 /*return*/, false];
+                    case 8: return [2 /*return*/, false];
+                    case 9:
+                        error_1 = _a.sent();
+                        this.notification.logError(error_1);
+                        return [2 /*return*/, false];
+                    case 10: return [2 /*return*/];
+                }
+            });
         });
     };
     /**
      * executes git status command on the given repository.
      *	@param item the repository item.
      */
-    GitComponent.prototype.status = function (repo) {
-        this.git.status(repo);
+    GitComponent.prototype.status = function (item) {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                return [2 /*return*/, this.git.status(item)];
+            });
+        });
     };
     /**
      * executes git pull command on the given repository item after asking a confirmation.
      *	@param item the repository item.
      */
-    GitComponent.prototype.checkout = function (repo) {
-        var _this = this;
-        // TODO FIX Cannot use apply option git_checkout: [Errno 2] No such file or directory: '/Users/mamadou/Desktop/PL/premierlangage/home/Yggdrasil/pl-test/exos'
-        var msg = 'This action will reset all your local changes up to your last commit !';
-        this.notification.confirmAsync({
-            title: msg,
-            okTitle: 'Checkout',
-            noTitle: 'Cancel'
-        }).then(function (confirmed) {
-            if (confirmed) {
-                _this.git.checkout(repo).then(function (success) {
-                    if (success) {
-                        _this.refreshSelection();
-                        var resource_1 = _this.resources.find(repo.path) || _this.resources.restore(repo.path);
-                        if (resource_1) {
-                            resource_1.dirty = true;
-                            _this.resources.open(resource_1).then(function (opened) {
-                                _this.opener.openURI(Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["asURI"])(resource_1));
-                            });
+    GitComponent.prototype.checkout = function (item) {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var confirmed, success, refreshed, resource, error_2;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.notification.confirmAsync({
+                            title: 'Please confirm your action',
+                            message: 'This action will reset all your local changes up to your last commit and close the opened editors!',
+                            okTitle: 'Checkout',
+                            noTitle: 'Cancel'
+                        })];
+                    case 1:
+                        confirmed = _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 11, , 12]);
+                        if (!confirmed) return [3 /*break*/, 10];
+                        return [4 /*yield*/, this.git.checkout(item)];
+                    case 3:
+                        success = _a.sent();
+                        if (!success) return [3 /*break*/, 9];
+                        return [4 /*yield*/, this.editor.closeAll()];
+                    case 4:
+                        if (!_a.sent()) return [3 /*break*/, 8];
+                        return [4 /*yield*/, this.resources.refresh()];
+                    case 5:
+                        refreshed = _a.sent();
+                        if (!refreshed) return [3 /*break*/, 7];
+                        return [4 /*yield*/, this.resources.find(item.path)];
+                    case 6:
+                        resource = _a.sent();
+                        if (resource) {
+                            this.opener.openURI(Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["asURI"])(resource));
                         }
-                        _this.selection.changes = _this.selection.changes.filter(function (e) { return e.path !== resource_1.path; });
-                    }
-                    _this.refreshSelection();
-                });
-            }
+                        this.refresh();
+                        return [2 /*return*/, true];
+                    case 7: return [2 /*return*/, false];
+                    case 8: return [2 /*return*/, false];
+                    case 9: return [2 /*return*/, false];
+                    case 10: return [3 /*break*/, 12];
+                    case 11:
+                        error_2 = _a.sent();
+                        this.notification.logError(error_2);
+                        return [2 /*return*/, false];
+                    case 12: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    /**
+     * executes git clone command.
+     * - if the command succeed, the resources of the editor will be refreshed.
+     */
+    GitComponent.prototype.clone = function () {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var fields, options, response, confirmOptions, url, username, password, success, _a, error_3;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        fields = [
+                            { type: 'url', placeholder: 'Url', required: true, value: '' },
+                            { type: 'text', placeholder: 'Username', required: false, value: '' },
+                            { type: 'password', placeholder: 'Passsword', required: false, value: '' },
+                        ];
+                        options = {
+                            title: 'Clone repository',
+                            fields: fields
+                        };
+                        return [4 /*yield*/, this.notification.promptAsync(options)];
+                    case 1:
+                        response = _b.sent();
+                        _b.label = 2;
+                    case 2:
+                        _b.trys.push([2, 11, , 12]);
+                        if (!response) return [3 /*break*/, 10];
+                        if (!this.resources.changed()) return [3 /*break*/, 4];
+                        confirmOptions = {
+                            title: 'Please confirm your action',
+                            message: 'This action will create new directory and close the opened editors!',
+                            okTitle: 'Clone',
+                            noTitle: 'Cancel'
+                        };
+                        return [4 /*yield*/, this.notification.confirmAsync(confirmOptions)];
+                    case 3:
+                        if (!(_b.sent())) {
+                            return [2 /*return*/, false];
+                        }
+                        _b.label = 4;
+                    case 4:
+                        url = response.fields[0].value;
+                        username = response.fields[1].value;
+                        password = response.fields[2].value;
+                        return [4 /*yield*/, this.git.clone(this.resources.resources[0], url, username, password)];
+                    case 5:
+                        success = _b.sent();
+                        if (!success) return [3 /*break*/, 9];
+                        return [4 /*yield*/, this.editor.closeAll()];
+                    case 6:
+                        _a = (_b.sent());
+                        if (!_a) return [3 /*break*/, 8];
+                        return [4 /*yield*/, this.resources.refresh()];
+                    case 7:
+                        _a = (_b.sent());
+                        _b.label = 8;
+                    case 8:
+                        if (_a) {
+                            this.refresh();
+                            return [2 /*return*/, true];
+                        }
+                        return [2 /*return*/, false];
+                    case 9: return [2 /*return*/, false];
+                    case 10: return [3 /*break*/, 12];
+                    case 11:
+                        error_3 = _b.sent();
+                        this.notification.logError(error_3);
+                        return [2 /*return*/, false];
+                    case 12: return [2 /*return*/];
+                }
+            });
         });
     };
     /**
@@ -1285,47 +1417,6 @@ var GitComponent = /** @class */ (function () {
             }
         }
     };
-    /**
-     * executes git clone command.
-     * - if the command succeed, the resources of the editor will be refreshed.
-     */
-    GitComponent.prototype.clone = function () {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var fields, options, response, success;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fields = [
-                            { type: 'url', placeholder: 'Url', required: true, value: '' },
-                            { type: 'text', placeholder: 'Username', required: false, value: '' },
-                            { type: 'password', placeholder: 'Passsword', required: false, value: '' },
-                        ];
-                        options = {
-                            title: 'Clone repository',
-                            fields: fields
-                        };
-                        this.notification.warning('Please close the opened editors before submitting the form');
-                        return [4 /*yield*/, this.notification.promptAsync(options)];
-                    case 1:
-                        response = _a.sent();
-                        if (!response) return [3 /*break*/, 5];
-                        return [4 /*yield*/, this.git.clone(this.resources.resources[0], response.fields[0].value, response.fields[1].value, response.fields[2].value)];
-                    case 2:
-                        success = _a.sent();
-                        if (!success) return [3 /*break*/, 5];
-                        return [4 /*yield*/, this.editor.closeAll()];
-                    case 3:
-                        _a.sent();
-                        return [4 /*yield*/, this.resources.refresh()];
-                    case 4:
-                        _a.sent();
-                        this.refreshSelection();
-                        _a.label = 5;
-                    case 5: return [2 /*return*/];
-                }
-            });
-        });
-    };
     /** gets the repositories */
     GitComponent.prototype.repositories = function () {
         return this.git.repos;
@@ -1333,6 +1424,17 @@ var GitComponent = /** @class */ (function () {
     /** gets a value indicating whether a git command is running */
     GitComponent.prototype.runningTask = function () {
         return this.git.runningTask;
+    };
+    GitComponent.prototype.hasOption = function (item) {
+        return this.options.some(function (option) { return option.enabled(item); });
+    };
+    GitComponent.prototype.refresh = function () {
+        var _this = this;
+        if (this.selection) {
+            this.selection = this.repositories().find(function (item) {
+                return item.url === _this.selection.url;
+            }) || this.repositories().find(function (_) { return true; });
+        }
     };
     GitComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
@@ -2871,7 +2973,7 @@ var GitService = /** @class */ (function () {
                         return [4 /*yield*/, this.http.get('/filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
                     case 2:
                         response = _b.sent();
-                        this.notification.logInfo(response);
+                        this.logResponse(item, response);
                         success = true;
                         return [3 /*break*/, 4];
                     case 3:
@@ -2901,7 +3003,7 @@ var GitService = /** @class */ (function () {
                         return [4 /*yield*/, this.http.get('/filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
                     case 2:
                         response = _b.sent();
-                        this.notification.logInfo(response);
+                        this.logResponse(item, response);
                         return [4 /*yield*/, this.refresh()];
                     case 3:
                         success = _b.sent();
@@ -2933,7 +3035,7 @@ var GitService = /** @class */ (function () {
                         return [4 /*yield*/, this.http.get('/filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
                     case 2:
                         response = _b.sent();
-                        this.notification.logInfo(response);
+                        this.logResponse(item, response);
                         return [4 /*yield*/, this.refresh()];
                     case 3:
                         success = _b.sent();
@@ -2967,7 +3069,7 @@ var GitService = /** @class */ (function () {
                         return [4 /*yield*/, this.http.post('/filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise()];
                     case 2:
                         response = _b.sent();
-                        this.notification.logInfo(response);
+                        this.logResponse(item, response);
                         this.refresh();
                         success = true;
                         return [3 /*break*/, 4];
@@ -2999,7 +3101,7 @@ var GitService = /** @class */ (function () {
                         return [4 /*yield*/, this.http.post('/filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise()];
                     case 2:
                         response = _b.sent();
-                        this.notification.logInfo(response);
+                        this.logResponse(item, response);
                         this.refresh();
                         success = true;
                         return [3 /*break*/, 4];
@@ -3031,7 +3133,7 @@ var GitService = /** @class */ (function () {
                         return [4 /*yield*/, this.http.post('/filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise()];
                     case 2:
                         response = _b.sent();
-                        this.notification.logInfo(response);
+                        this.logResponse(item, response);
                         success = true;
                         return [3 /*break*/, 4];
                     case 3:
@@ -3071,7 +3173,7 @@ var GitService = /** @class */ (function () {
                         return [4 /*yield*/, this.http.post('/filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise()];
                     case 2:
                         _b.sent();
-                        this.notification.logInfo(url + ' cloned at ' + Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["basename"])(url));
+                        this.notification.logInfo(url + " cloned into the directory " + Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["basename"])(url));
                         success = true;
                         return [3 /*break*/, 4];
                     case 3:
@@ -3084,6 +3186,9 @@ var GitService = /** @class */ (function () {
                 }
             });
         });
+    };
+    GitService.prototype.logResponse = function (item, response) {
+        this.notification.logInfo(item.path + ":<br/> " + response);
     };
     GitService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
@@ -3382,6 +3487,10 @@ var ResourceService = /** @class */ (function () {
                 }
             });
         });
+    };
+    /** Gets a value indicating whether any resource is changec */
+    ResourceService.prototype.changed = function () {
+        return this.findPredicate(function (item) { return item.changed; }) !== undefined;
     };
     /**
      * Finds the resource with the given path.
@@ -4423,9 +4532,11 @@ var CodeEditorComponent = /** @class */ (function () {
                         model = monaco.editor.getModel(data.uri) || monaco.editor.createModel(this.active.content, language, data.uri);
                         if (model.getValue() !== this.active.content) {
                             model.setValue(this.active.content);
+                            this.active.changed = false;
+                            this.active.lastContent = this.active.content;
                         }
                         meta = this.active.meta;
-                        this.readonly = (this.editor.diffEditing || !this.active.write || meta.application || meta.archive || meta.image);
+                        this.readonly = (this.editor.diffEditing || !this.active.write);
                         this.editor.codeEditor.setModel(model);
                         this.editor.codeEditor.updateOptions({ readOnly: this.readonly });
                         this.editor.codeEditor.focus();

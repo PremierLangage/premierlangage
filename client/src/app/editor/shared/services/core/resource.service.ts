@@ -118,6 +118,11 @@ export class ResourceService {
         }
     }
 
+    /** Gets a value indicating whether any resource is changec */
+    changed() {
+        return this.findPredicate(item => item.changed) !== undefined;
+    }
+
     /**
      * Finds the resource with the given path.
      * @param path the path of the resource to search
@@ -136,7 +141,7 @@ export class ResourceService {
      * @param predicate the predicate to test
      * @returns the resource or undefined
      */
-    findPredicate(predicate: (resource: Resource) => boolean) {
+    findPredicate(predicate: (resource: Resource) => boolean): Resource {
         function recursive(resource: Resource) {
             if (!resource) {
                 return undefined;
