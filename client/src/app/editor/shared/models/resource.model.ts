@@ -7,8 +7,8 @@ export interface ResourceMeta {
     application: boolean;
     image: boolean;
     excel: boolean;
-    html: string;
-    download_url: string;
+    previewData: string;
+    downloadUrl: string;
 }
 
 export interface Resource {

@@ -176,7 +176,7 @@ export class EditorGroup implements IEditorGroup {
                 tab.resource.changed = false;
             }
             if (confirm) {
-                tab.resource.meta.html = undefined;
+                tab.resource.meta.previewData = undefined;
             }
             return await this.removeTab(tab);
         }
@@ -318,7 +318,7 @@ export class EditorGroup implements IEditorGroup {
         if (this.somePreview()) {
             return false;
         }
-        return tab.resource.changed //&& this._editorService.findGroups(tab).length > 1;
+        return tab.resource.changed && this._editorService.findGroups(tab).length === 1;
     }
 
 

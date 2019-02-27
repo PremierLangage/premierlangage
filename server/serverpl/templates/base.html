@@ -29,6 +29,7 @@
             </div>
         </main>
     </div>
+    {% block end_script %}
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
             tex2jax: {
@@ -37,6 +38,6 @@
             }
         });
     </script>
-    {% block end_script %}{% endblock %}
+    {% endblock %}
 </body>
 </html>

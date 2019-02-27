@@ -88,14 +88,13 @@ class PreviewTestCase(TestCase):
         self.assertContains(response, missing_parameter('path'), status_code=400)
     
     
-    def test_preview_submit(self):
+    def test_evaluate_pl(self):
         pl = load_file(self.dir, "working.pl")[0]
         pl.save()
         s_test = SessionTest.objects.create(user=self.user, pl=pl)
         response = self.c.post(reverse("filebrowser:option"), {
-                'name'            : 'preview_pl',
+                'name'            : 'evaluate_pl',
                 'path'            : 'Yggdrasil/working.pl',
-                'requested_action': 'submit',
                 'data'            : {
                         'session_id': s_test.id,
                         'answers'   : {},
@@ -106,11 +105,10 @@ class PreviewTestCase(TestCase):
         self.assertContains(response, "Quentin Coumes<", status_code=200)
     
     
-    def test_preview_submit_invalid_session_id(self):
+    def test_evaluate_pl_invalid_session_id(self):
         response = self.c.post(reverse("filebrowser:option"), {
-                'name'            : 'preview_pl',
+                'name'            : 'evaluate_pl',
                 'path'            : 'Yggdrasil/working.pl',
-                'requested_action': 'submit',
                 'data'            : {
                         'session_id': 100
                 }
@@ -118,19 +116,19 @@ class PreviewTestCase(TestCase):
         self.assertContains(response, "SessionTest matching query does not exist.", status_code=400)
     
     
-    def test_preview_submit_empty_data(self):
+    def test_evaluate_pl_empty_data(self):
         response = self.c.post(reverse("filebrowser:option"), {
-                'name'            : 'preview_pl',
+                'name'            : 'evaluate_pl',
                 'path'            : 'Yggdrasil/working.pl',
-                'requested_action': 'submit',
                 'data'            : {}
         }, content_type='application/json')
         self.assertContains(response, "Couldn't resolve ajax request", status_code=400)
     
-    
-    def test_preview_no_requested_action(self):
+# not used anymore because preview_pl
+"""     def test_preview_no_requested_action(self): 
         response = self.c.post(reverse("filebrowser:option"), {
                 'name': 'preview_pl',
                 'path': 'Yggdrasil/working.pl',
         }, content_type='application/json')
         self.assertContains(response, "Couldn't resolve ajax request", status_code=400)
+ """

@@ -25,7 +25,7 @@ function getInputs(){
     return inputs;
 }
 
-function handleResponse(response) {
+function onEvaluatedPL(response) {
     if (response.exercise) {
         $("#exercise").html(response.exercise);
     }
@@ -37,106 +37,129 @@ function handleResponse(response) {
             node.show();
         }, 100);
     }
+    emitOnAfterPL();
+}
+
+function onFailedPL(error) {
+    const node = $("#feedback");
+    node.hide();
+    setTimeout(function () {
+        node.html(JSON.stringify(error));
+        node.show();
+    }, 100);
+}
+
+function emitOnBeforePL() {
+    if (window.onBeforeSubmitPL) {
+        window.onBeforeSubmitPL();
+    }
+}
+
+function emitOnAfterPL() {
+    if (window.onAfterSubmitPL) {
+        window.onAfterSubmitPL();
+    }
 }
 
 function previewPL(activityId, sessionId) {
-    $(document).ready(function () {
-        let submitButton = $("#submit_button");
-        const loadingIndicator = $("#loading-indicator");
+    let submitButton = $("#submit_button");
+    const downloadButton = $( "#download_env_button" );
+    const loadingIndicator = $("#loading-indicator");
+    loadingIndicator.hide();
+    
+    function toggleButtons(disable) {
+        submitButton.prop('disabled', disable);
         loadingIndicator.hide();
-        function toggleButtons(disable) {
-            submitButton.prop('disabled', disable);
-            loadingIndicator.hide();
-            if (disable) {
-                loadingIndicator.show();
+        if (disable) {
+            loadingIndicator.show();
+        }
+        componentHandler.upgradeDom();
+    }
+
+    submitButton.click(function() {
+        emitOnBeforePL();
+        toggleButtons(true);
+        
+        const postData = {
+            name: "evaluate_pl",
+            data: {
+                answers: getInputs(),
+                id: activityId,
+                session_id: sessionId,
+                other: [],
+            },
+        };
+
+        $.ajax({
+            type : "POST",
+            url : "/filebrowser/option",
+            data: JSON.stringify(postData, null, '\t'),
+            contentType: 'application/json;charset=UTF-8',
+            success: function(response) {
+                onEvaluatedPL(response);
+                toggleButtons(false);
+        
+            },
+            error: function(error) {
+                onFailedPL(error);
+                toggleButtons(false);
             }
-            componentHandler.upgradeDom();
-        }
-
-        submitButton.click(function() {
-            toggleButtons(true);
-            
-            const postData = {
-                name: "preview_pl",
-                requested_action: 'submit',
-                data: {
-                    answers: getInputs(),
-                    id: activityId,
-                    session_id: sessionId,
-                    other: [],
-                },
-            };
-
-            $.ajax({
-                type : "POST",
-                url : "/filebrowser/option",
-                data: JSON.stringify(postData, null, '\t'),
-                contentType: 'application/json;charset=UTF-8',
-                success: function(response) {
-                    handleResponse(response);
-                    toggleButtons(false);
-            
-                },
-                error: function(error) {
-                    console.log(error);
-                    toggleButtons(false);
-                }
-            });
-        });
-        
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-        
-        if(window.top != window.self) {
-            $('#home-link').remove();
-        }
-
-        $( "#download_env_button" ).click(function() {
-            window.onbeforeunload = function () {}
         });
     });
+    
+    downloadButton.click(function() {
+        window.onbeforeunload = function () {}
+    });
+
+   // MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    
+    if(window.top != window.self) {
+        $('#home-link').remove();
+    }
+
 }
 
 function evaluatePL(url) {
-    $(document).ready(function () {
-        const submitButton = $("#submit_button");
-        const saveButton = $("#save_button");
-        const loadingIndicator = $("#loading-indicator");
+    const submitButton = $("#submit_button");
+    const saveButton = $("#save_button");
+    const loadingIndicator = $("#loading-indicator");
+
+    loadingIndicator.hide();
+
+    function toggleButtons(disable) {
+        submitButton.prop('disabled', disable);
+        saveButton.prop('disabled', disable);
         loadingIndicator.hide();
-        function toggleButtons(disable) {
-            submitButton.prop('disabled', disable);
-            saveButton.prop('disabled', disable);
-            loadingIndicator.hide();
-            if (disable) {
-                loadingIndicator.show();
+        if (disable) {
+            loadingIndicator.show();
+        }
+        componentHandler.upgradeDom();
+    }
+      
+    submitButton.click(() => submitForm('submit'));
+    saveButton.click(() => submitForm('save'));
+
+    function submitForm(action) {
+        emitOnBeforePL();
+        toggleButtons(true);
+        const postData = {
+            requested_action: action, 
+            inputs: getInputs()
+        };
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: JSON.stringify(postData, null, '\t'),
+            contentType: 'application/json;charset=UTF-8',
+            success: function (response) {
+                onEvaluatedPL(response);
+                toggleButtons(false);
+            },
+            error: function (error) {
+                onFailedPL(error);
+                toggleButtons(false);
             }
-            componentHandler.upgradeDom();
-        }
-          
-        submitButton.click(() => submitForm('submit'));
-        saveButton.click(() => submitForm('save'));
-
-        function submitForm(action) {
-            toggleButtons(true);
-  
-            const postData = {
-                requested_action: action, 
-                inputs: getInputs()
-            };
-
-            $.ajax({
-                type: "POST",
-                url: url,
-                data: JSON.stringify(postData, null, '\t'),
-                contentType: 'application/json;charset=UTF-8',
-                success: function (response) {
-                    handleResponse(response);
-                    toggleButtons(false);
-                },
-                error: function (error) {
-                    console.log(error);
-                    toggleButtons(false);
-                }
-            });
-        }
-    });
+        });
+    }
 }

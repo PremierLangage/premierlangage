@@ -1,7 +1,7 @@
 <div class='image-editor'>
-    <div *ngIf='isSVG; else notSVG' [innerHTML]='svgContent | sanitizeHtml' [ngStyle]='{zoom: editor.zoom}'></div> 
+    <div *ngIf='isSVG; else notSVG' [innerHTML]='svg | sanitizeHtml' [ngStyle]='{zoom: editor.zoom}'></div> 
     <ng-template #notSVG>
-        <img src='{{imageURL}}'  [ngStyle]='{zoom: editor.zoom}' />
+        <img [src]='url'  [ngStyle]='{zoom: editor.zoom}' />
     </ng-template>
     <div class='image-editor__btn-group'>
         <div class='image-editor__btn'>{{editor.zoom | number:'1.1-1'}}</div>

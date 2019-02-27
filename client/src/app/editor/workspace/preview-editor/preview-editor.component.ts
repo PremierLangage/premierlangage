@@ -3,7 +3,7 @@ import { ImageEditor, PreviewEditor } from '../../shared/models/editor.model';
 import { IEditorTab } from '../../shared/services/core/opener.service';
 import { Subscription } from 'rxjs';
 import { RunScriptsDirective } from 'src/app/shared/directives/run-scripts.directive';
-import { isMarkdown } from '../../shared/models/filters.model';
+import { isMarkdown, isSVG, isPl } from '../../shared/models/filters.model';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -16,8 +16,13 @@ export class PreviewEditorComponent implements OnInit, OnDestroy {
     editor: PreviewEditor;
     @ViewChild(RunScriptsDirective)
     scripts: RunScriptsDirective;
+
+    private counter: number;
     content: string;
     isMarkdown: boolean;
+    isURL: boolean;
+    isHTML: boolean;
+    loading: boolean;
 
     private openSubscription: Subscription;
 
@@ -34,10 +39,21 @@ export class PreviewEditorComponent implements OnInit, OnDestroy {
         this.openSubscription.unsubscribe();
     }
 
+    didFrameLoaded() {
+        this.counter++;
+        // for some reason onload of iframe is called twice
+        this.loading = this.counter % 2 === 0;
+    }
+
     private open(data: IEditorTab): void {
-        this.content = data.resource.meta.html;
+        this.content = data.resource.meta.previewData;
         this.isMarkdown = isMarkdown(data.resource);
-        if (this.scripts) {
+        this.isHTML = isSVG(data.resource);
+        this.isURL = isPl(data.resource);
+
+        this.loading = this.isURL;
+
+        if (this.isHTML && this.scripts) {
             this.scripts.reinsertScripts();
         }
     }

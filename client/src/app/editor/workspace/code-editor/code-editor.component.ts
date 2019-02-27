@@ -149,9 +149,11 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     }
 
     private didContentChanged(editor: IStandaloneCodeEditor) {
-        const model = editor.getModel();
-        this.active.content = model.getValue();
-        this.active.changed = this.active.lastContent !== this.active.content;
+        if (!this.readonly) {
+            const model = editor.getModel();
+            this.active.content = model.getValue();
+            this.active.changed = this.active.lastContent !== this.active.content;
+        }
     }
 
     /*

@@ -36,6 +36,7 @@ import { DroppableDirective } from '../directives/droppable.directive';
 import { PromptComponent } from '../components/prompt/prompt.component';
 import { ConfirmComponent } from '../components/confirm/confirm.component';
 import { EmptyStateComponent } from '../components/empty-state/empty-state.component';
+import { SanitizeResourceUrlPipe } from '../pipes/sanitize-url.pipe';
 
 @NgModule({
     declarations: [
@@ -46,6 +47,7 @@ import { EmptyStateComponent } from '../components/empty-state/empty-state.compo
         DroppableDirective,
         AutofocusDirective,
         SanitizeHtmlPipe,
+        SanitizeResourceUrlPipe,
         RunScriptsDirective,
     ],
     imports: [
@@ -116,6 +118,7 @@ import { EmptyStateComponent } from '../components/empty-state/empty-state.compo
         DroppableDirective,
         AutofocusDirective,
         SanitizeHtmlPipe,
+        SanitizeResourceUrlPipe,
         RunScriptsDirective,
     ],
     entryComponents: [

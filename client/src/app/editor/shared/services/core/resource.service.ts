@@ -387,7 +387,7 @@ export class ResourceService {
             const action = this.previewProviders[ext];
             action(resource, this).then(response => {
                 this.task.emitTaskEvent(false, 'preview');
-                resource.meta.html = response.preview;
+                resource.meta.previewData = response.preview;
                 resolve(resource);
             }).catch((error: any) => {
                 this.task.emitTaskEvent(false, 'preview');
@@ -522,8 +522,7 @@ export class ResourceService {
         const data = {
             'name': 'preview_pl',
             'path': resource.path,
-            'content': resource.content,
-            'requested_action': 'preview'
+            'content': resource.content
         };
         const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
         return service.http.post('filebrowser/option', data, { headers: headers }).toPromise();

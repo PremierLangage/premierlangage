@@ -1,7 +1,4 @@
-<div *ngIf='notMD; else MD' class='preview-editor' [innerHTML]='content | sanitizeHtml' runScripts></div>
-
-<ng-template #MD>
-    <div class='preview-editor'>
-        <markdown [data]="content"></markdown>
-    </div>
-</ng-template>
+<mat-progress-bar *ngIf='loading' mode="indeterminate"></mat-progress-bar>
+<iframe *ngIf='isURL' class="preview-editor" [srcdoc]="content | sanitizeHtml" frameborder="0" (load)='didFrameLoaded()'></iframe>
+<div *ngIf='isHTML' class='preview-editor' [innerHTML]='content | sanitizeHtml' runScripts></div>
+<div *ngIf='isMarkdown' class='preview-editor'><markdown [data]="content"></markdown></div>

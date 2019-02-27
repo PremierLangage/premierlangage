@@ -776,7 +776,7 @@ var ExplorerComponent = /** @class */ (function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        confirm = this.resourceService.findPredicate(function (e) { return e.changed || e.opened; });
+                        confirm = this.resourceService.findPredicate(function (e) { return e.changed && e.opened; });
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 8, , 9]);
@@ -1354,7 +1354,7 @@ var GitComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<img class='navigation-icon' src='static/filebrowser/app/assets/icons/explorer.svg' matTooltip=\"Explorer\" (click)='didTapButton(0)'/>\n<img class='navigation-icon' src='static/filebrowser/app/assets/icons/search.svg' matTooltip=\"Search\" (click)='didTapButton(1)'/>\n<div [matBadge]=\"gitBadge()\" matTooltip=\"Git\">\n    <img class='navigation-icon' src='static/filebrowser/app/assets/icons/git.svg' (click)='didTapButton(2)'/>\n</div>\n<div [matBadge]=\"consoleBadge()\" matTooltip=\"Console\">\n    <div class='navigation-icon'(click)='didTapButton(3)'>\n        <i class='fas fa-info'></i>\n    </div>\n</div>\n<div class='spacer'></div>\n<img class='navigation-icon' src='static/filebrowser/app/assets/icons/settings.svg'  matTooltip=\"Settings\" (click)='didTapButton(4)'/>\n"
+module.exports = "<img class='navigation-icon' src='static/filebrowser/app/assets/icons/explorer.svg' matTooltip=\"Explorer\" (click)='didTapButton(0)'/>\n<img class='navigation-icon' src='static/filebrowser/app/assets/icons/search.svg' matTooltip=\"Search\" (click)='didTapButton(1)'/>\n<div [matBadge]=\"gitBadge()\" matTooltip=\"Git\">\n    <img class='navigation-icon' src='static/filebrowser/app/assets/icons/git.svg' (click)='didTapButton(2)'/>\n</div>\n<div [matBadge]=\"consoleBadge()\" matTooltip=\"Console\">\n    <div class='navigation-icon'(click)='didTapButton(3)'>\n        <i class='fas fa-info'></i>\n    </div>\n</div>\n<div class='spacer'></div>\n<!-- <img class='navigation-icon' src='static/filebrowser/app/assets/icons/settings.svg'  matTooltip=\"Settings\" (click)='didTapButton(4)'/>\n -->"
 
 /***/ }),
 
@@ -1761,7 +1761,7 @@ var EditorGroup = /** @class */ (function () {
                             tab.resource.changed = false;
                         }
                         if (confirm) {
-                            tab.resource.meta.html = undefined;
+                            tab.resource.meta.previewData = undefined;
                         }
                         return [4 /*yield*/, this.removeTab(tab)];
                     case 3: return [2 /*return*/, _b.sent()];
@@ -1934,7 +1934,7 @@ var EditorGroup = /** @class */ (function () {
         if (this.somePreview()) {
             return false;
         }
-        return tab.resource.changed; //&& this._editorService.findGroups(tab).length > 1;
+        return tab.resource.changed && this._editorService.findGroups(tab).length === 1;
     };
     EditorGroup.prototype.confirm = function (options) {
         return this._editorService.confirm(options);
@@ -2198,19 +2198,19 @@ function isRoot(item) {
         || item.name === 'lib' || item.name === 'lib/';
 }
 function isPl(item) {
-    return item && item.name.endsWith('.pl');
+    return extension(item) === 'pl';
 }
 function isMarkdown(item) {
-    return item && item.name.toLowerCase().endsWith('.md');
+    return extension(item) === 'md';
 }
 function isPltp(item) {
-    return item && item.name.toLowerCase().endsWith('.pltp');
+    return extension(item) === 'pltp';
 }
 function isSVG(item) {
-    return item && item.name.toLowerCase().endsWith('.pltp');
+    return extension(item) === 'svg';
 }
 function canBePreviewed(item) {
-    return item && isPl(item) || isSVG(item) || isMarkdown(item);
+    return isPl(item) || isSVG(item) || isMarkdown(item);
 }
 function isHome(item) {
     return item && item.name === 'home';
@@ -2219,7 +2219,7 @@ function isNotRoot(item) {
     return !isRoot(item);
 }
 function fromServer(resource) {
-    return !resource.meta || resource.meta.download_url;
+    return !resource.meta || resource.meta.downloadUrl;
 }
 function isRepo(item) {
     return item && item.repo;
@@ -2309,7 +2309,7 @@ function openAsImage(data) {
     return !openAsPreview(data) && data.resource.meta && data.resource.meta.image && !isSVG(data.resource);
 }
 function openAsPreview(data) {
-    return data.resource.meta && data.resource.meta.html !== undefined;
+    return data.resource.meta && data.resource.meta.previewData !== undefined;
 }
 
 
@@ -2578,6 +2578,9 @@ var AbstractEditorService = /** @class */ (function () {
             return group.someTab(function (item) { return Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["compareTab"])(tab, item); });
         });
     };
+    AbstractEditorService.prototype.subscribeChange = function (completion) {
+        return this.onGroupChanged.subscribe(completion);
+    };
     AbstractEditorService.prototype.closeAll = function () {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
             var groups;
@@ -2599,9 +2602,6 @@ var AbstractEditorService = /** @class */ (function () {
                 }
             });
         });
-    };
-    AbstractEditorService.prototype.subscribeChange = function (completion) {
-        return this.onGroupChanged.subscribe(completion);
     };
     AbstractEditorService.prototype.updateGroup = function (group) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
@@ -2687,9 +2687,10 @@ var EditorService = /** @class */ (function (_super) {
             group = tab.preview ? (groups.find(function (g) { return g.somePreview(); }) || new _models_editor_group_model__WEBPACK_IMPORTED_MODULE_2__["EditorGroup"](this)) : new _models_editor_group_model__WEBPACK_IMPORTED_MODULE_2__["EditorGroup"](this);
         }
         else {
-            group = groups.find(function (g) { return g.someTab(function (t) { return t.resource.path === tab.resource.path; }); })
-                || groups.find(function (g) { return g.focused() && !g.somePreview(); })
-                || groups.find(function (g) { return !g.somePreview(); }) || new _models_editor_group_model__WEBPACK_IMPORTED_MODULE_2__["EditorGroup"](this);
+            groups = groups.filter(function (g) { return !g.somePreview(); }); // remove preview group
+            group = groups.find(function (g) { return g.focused() && g.someTab(function (t) { return Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["compareTab"])(t, tab); }); }) // find focused that contains the tab
+                || groups.find(function (g) { return g.focused(); }) // find focused
+                || groups.find(function (_) { return true; }) || new _models_editor_group_model__WEBPACK_IMPORTED_MODULE_2__["EditorGroup"](this); // find any or create new group
         }
         return group.open(tab).catch(function (error) {
             _this.notification.logError(error);
@@ -3694,7 +3695,7 @@ var ResourceService = /** @class */ (function () {
             var action = _this.previewProviders[ext];
             action(resource, _this).then(function (response) {
                 _this.task.emitTaskEvent(false, 'preview');
-                resource.meta.html = response.preview;
+                resource.meta.previewData = response.preview;
                 resolve(resource);
             }).catch(function (error) {
                 _this.task.emitTaskEvent(false, 'preview');
@@ -3856,8 +3857,7 @@ var ResourceService = /** @class */ (function () {
         var data = {
             'name': 'preview_pl',
             'path': resource.path,
-            'content': resource.content,
-            'requested_action': 'preview'
+            'content': resource.content
         };
         var headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
         return service.http.post('filebrowser/option', data, { headers: headers }).toPromise();
@@ -4286,7 +4286,7 @@ module.exports = "<ngx-monaco-editor [hidden]='editor.diffEditing' class='code-e
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".code-editor {\n  height: 100%; }\n\n.monaco-editor .detected-link {\n  color: blue; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL3dvcmtzcGFjZS9jb2RlLWVkaXRvci9jb2RlLWVkaXRvci5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGFBQVksRUFDZjs7QUFDRDtFQUNJLFlBQVcsRUFDZCIsImZpbGUiOiJzcmMvYXBwL2VkaXRvci93b3Jrc3BhY2UvY29kZS1lZGl0b3IvY29kZS1lZGl0b3IuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuY29kZS1lZGl0b3Ige1xuICAgIGhlaWdodDogMTAwJTtcbn1cbi5tb25hY28tZWRpdG9yIC5kZXRlY3RlZC1saW5rIHtcbiAgICBjb2xvcjogYmx1ZTtcbn0iXX0= */"
+module.exports = ".code-editor {\n  height: calc(100% - 36px); }\n\n.monaco-editor .detected-link {\n  color: blue; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL3dvcmtzcGFjZS9jb2RlLWVkaXRvci9jb2RlLWVkaXRvci5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLDBCQUF5QixFQUM1Qjs7QUFDRDtFQUNJLFlBQVcsRUFDZCIsImZpbGUiOiJzcmMvYXBwL2VkaXRvci93b3Jrc3BhY2UvY29kZS1lZGl0b3IvY29kZS1lZGl0b3IuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuY29kZS1lZGl0b3Ige1xuICAgIGhlaWdodDogY2FsYygxMDAlIC0gMzZweCk7XG59XG4ubW9uYWNvLWVkaXRvciAuZGV0ZWN0ZWQtbGluayB7XG4gICAgY29sb3I6IGJsdWU7XG59Il19 */"
 
 /***/ }),
 
@@ -4421,9 +4421,11 @@ var CodeEditorComponent = /** @class */ (function () {
         // tslint:enable: no-bitwise
     };
     CodeEditorComponent.prototype.didContentChanged = function (editor) {
-        var model = editor.getModel();
-        this.active.content = model.getValue();
-        this.active.changed = this.active.lastContent !== this.active.content;
+        if (!this.readonly) {
+            var model = editor.getModel();
+            this.active.content = model.getValue();
+            this.active.changed = this.active.lastContent !== this.active.content;
+        }
     };
     tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
@@ -4456,7 +4458,7 @@ var CodeEditorComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class='image-editor'>\n    <div *ngIf='isSVG; else notSVG' [innerHTML]='svgContent | sanitizeHtml' [ngStyle]='{zoom: editor.zoom}'></div> \n    <ng-template #notSVG>\n        <img src='{{imageURL}}'  [ngStyle]='{zoom: editor.zoom}' />\n    </ng-template>\n    <div class='image-editor__btn-group'>\n        <div class='image-editor__btn'>{{editor.zoom | number:'1.1-1'}}</div>\n        <div class='image-editor__btn' matTooltip='Zoom In' (click)='editor.zoomIn()'>\n            <i class=\"fas fa-plus\"></i>\n        </div>\n        <div class='image-editor__btn' matTooltip='Zoom Out' (click)='editor.zoomOut()'>\n            <i class=\"fas fa-minus\"></i>\n        </div>\n    </div>\n</div>"
+module.exports = "<div class='image-editor'>\n    <div *ngIf='isSVG; else notSVG' [innerHTML]='svg | sanitizeHtml' [ngStyle]='{zoom: editor.zoom}'></div> \n    <ng-template #notSVG>\n        <img [src]='url'  [ngStyle]='{zoom: editor.zoom}' />\n    </ng-template>\n    <div class='image-editor__btn-group'>\n        <div class='image-editor__btn'>{{editor.zoom | number:'1.1-1'}}</div>\n        <div class='image-editor__btn' matTooltip='Zoom In' (click)='editor.zoomIn()'>\n            <i class=\"fas fa-plus\"></i>\n        </div>\n        <div class='image-editor__btn' matTooltip='Zoom Out' (click)='editor.zoomOut()'>\n            <i class=\"fas fa-minus\"></i>\n        </div>\n    </div>\n</div>"
 
 /***/ }),
 
@@ -4467,7 +4469,7 @@ module.exports = "<div class='image-editor'>\n    <div *ngIf='isSVG; else notSVG
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".image-editor {\n  height: 100%;\n  position: relative;\n  background-position: 0px 0px, 10px 10px;\n  background-size: 20px 20px;\n  background-image: linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee 100%), linear-gradient(45deg, #eee 25%, white 25%, white 75%, #eee 75%, #eee 100%);\n  text-align: center; }\n  .image-editor img {\n    text-align: center;\n    display: block;\n    position: absolute;\n    top: 0px;\n    right: 0px;\n    bottom: 0px;\n    left: 0px;\n    max-width: 100%;\n    height: auto;\n    margin: auto;\n    border-radius: 16px;\n    background-color: transparent;\n    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); }\n  .image-editor .image-editor__btn-group {\n    position: absolute;\n    top: 48px;\n    right: 12px;\n    width: 32px; }\n  .image-editor .image-editor__btn {\n    background-color: #ecedf0;\n    width: 32px;\n    height: 32px;\n    border-radius: 2px 4px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    cursor: zoom-in;\n    margin-bottom: 8px; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL3dvcmtzcGFjZS9pbWFnZS1lZGl0b3IvaW1hZ2UtZWRpdG9yLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksYUFBWTtFQUNaLG1CQUFrQjtFQUNsQix3Q0FBdUM7RUFDdkMsMkJBQTBCO0VBQzFCLHVMQUFxTDtFQUNyTCxtQkFBa0IsRUFvQ3JCO0VBMUNEO0lBUVEsbUJBQWtCO0lBQ2xCLGVBQWM7SUFDZCxtQkFBa0I7SUFDbEIsU0FBUTtJQUNSLFdBQVU7SUFDVixZQUFXO0lBQ1gsVUFBUztJQUNULGdCQUFlO0lBQ2YsYUFBWTtJQUNaLGFBQVk7SUFDWixvQkFBbUI7SUFDbkIsOEJBQTZCO0lBQzdCLDZFQUE0RSxFQUMvRTtFQXJCTDtJQXlCUSxtQkFBa0I7SUFDbEIsVUFBUztJQUNULFlBQVc7SUFDWCxZQUFXLEVBQ2Q7RUE3Qkw7SUFnQ1EsMEJBQXlCO0lBQ3pCLFlBQVc7SUFDWCxhQUFZO0lBQ1osdUJBQXNCO0lBQ3RCLGNBQWE7SUFDYixvQkFBbUI7SUFDbkIsd0JBQXVCO0lBQ3ZCLGdCQUFlO0lBQ2YsbUJBQWtCLEVBQ3JCIiwiZmlsZSI6InNyYy9hcHAvZWRpdG9yL3dvcmtzcGFjZS9pbWFnZS1lZGl0b3IvaW1hZ2UtZWRpdG9yLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmltYWdlLWVkaXRvciB7XG4gICAgaGVpZ2h0OiAxMDAlO1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBiYWNrZ3JvdW5kLXBvc2l0aW9uOiAwcHggMHB4LCAxMHB4IDEwcHg7XG4gICAgYmFja2dyb3VuZC1zaXplOiAyMHB4IDIwcHg7XG4gICAgYmFja2dyb3VuZC1pbWFnZTogbGluZWFyLWdyYWRpZW50KDQ1ZGVnLCAjZWVlIDI1JSwgdHJhbnNwYXJlbnQgMjUlLCB0cmFuc3BhcmVudCA3NSUsICNlZWUgNzUlLCAjZWVlIDEwMCUpLGxpbmVhci1ncmFkaWVudCg0NWRlZywgI2VlZSAyNSUsIHdoaXRlIDI1JSwgd2hpdGUgNzUlLCAjZWVlIDc1JSwgI2VlZSAxMDAlKTtcbiAgICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gICAgaW1nIHtcbiAgICAgICAgdGV4dC1hbGlnbjogY2VudGVyO1xuICAgICAgICBkaXNwbGF5OiBibG9jaztcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICB0b3A6IDBweDtcbiAgICAgICAgcmlnaHQ6IDBweDtcbiAgICAgICAgYm90dG9tOiAwcHg7XG4gICAgICAgIGxlZnQ6IDBweDtcbiAgICAgICAgbWF4LXdpZHRoOiAxMDAlO1xuICAgICAgICBoZWlnaHQ6IGF1dG87XG4gICAgICAgIG1hcmdpbjogYXV0bztcbiAgICAgICAgYm9yZGVyLXJhZGl1czogMTZweDtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogdHJhbnNwYXJlbnQ7XG4gICAgICAgIGJveC1zaGFkb3c6IDAgNHB4IDhweCAwIHJnYmEoMCwgMCwgMCwgMC4yKSwgMCA2cHggMjBweCAwIHJnYmEoMCwgMCwgMCwgMC4xOSk7XG4gICAgfVxuXG5cbiAgICAuaW1hZ2UtZWRpdG9yX19idG4tZ3JvdXAge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIHRvcDogNDhweDtcbiAgICAgICAgcmlnaHQ6IDEycHg7XG4gICAgICAgIHdpZHRoOiAzMnB4O1xuICAgIH1cblxuICAgIC5pbWFnZS1lZGl0b3JfX2J0biB7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6ICNlY2VkZjA7XG4gICAgICAgIHdpZHRoOiAzMnB4O1xuICAgICAgICBoZWlnaHQ6IDMycHg7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDJweCA0cHg7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGp1c3RpZnktY29udGVudDogY2VudGVyO1xuICAgICAgICBjdXJzb3I6IHpvb20taW47XG4gICAgICAgIG1hcmdpbi1ib3R0b206IDhweDtcbiAgICB9XG59Il19 */"
+module.exports = ".image-editor {\n  height: calc(100% - 36px);\n  position: relative;\n  background-position: 0px 0px, 10px 10px;\n  background-size: 20px 20px;\n  background-image: linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee 100%), linear-gradient(45deg, #eee 25%, white 25%, white 75%, #eee 75%, #eee 100%);\n  text-align: center; }\n  .image-editor img {\n    text-align: center;\n    display: block;\n    position: absolute;\n    top: 0px;\n    right: 0px;\n    bottom: 0px;\n    left: 0px;\n    max-width: 100%;\n    height: auto;\n    margin: auto;\n    border-radius: 16px;\n    background-color: transparent;\n    /*         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */ }\n  .image-editor .image-editor__btn-group {\n    position: absolute;\n    top: 48px;\n    right: 12px;\n    width: 32px; }\n  .image-editor .image-editor__btn {\n    background-color: #ecedf0;\n    width: 32px;\n    height: 32px;\n    border-radius: 2px 4px;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n    cursor: pointer;\n    margin-bottom: 8px; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL3dvcmtzcGFjZS9pbWFnZS1lZGl0b3IvaW1hZ2UtZWRpdG9yLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksMEJBQXlCO0VBQ3pCLG1CQUFrQjtFQUNsQix3Q0FBdUM7RUFDdkMsMkJBQTBCO0VBQzFCLHVMQUFxTDtFQUNyTCxtQkFBa0IsRUFvQ3JCO0VBMUNEO0lBUVEsbUJBQWtCO0lBQ2xCLGVBQWM7SUFDZCxtQkFBa0I7SUFDbEIsU0FBUTtJQUNSLFdBQVU7SUFDVixZQUFXO0lBQ1gsVUFBUztJQUNULGdCQUFlO0lBQ2YsYUFBWTtJQUNaLGFBQVk7SUFDWixvQkFBbUI7SUFDbkIsOEJBQTZCO0lBQ3JDLDJGQUEyRixFQUN0RjtFQXJCTDtJQXlCUSxtQkFBa0I7SUFDbEIsVUFBUztJQUNULFlBQVc7SUFDWCxZQUFXLEVBQ2Q7RUE3Qkw7SUFnQ1EsMEJBQXlCO0lBQ3pCLFlBQVc7SUFDWCxhQUFZO0lBQ1osdUJBQXNCO0lBQ3RCLGNBQWE7SUFDYixvQkFBbUI7SUFDbkIsd0JBQXVCO0lBQ3ZCLGdCQUFlO0lBQ2YsbUJBQWtCLEVBQ3JCIiwiZmlsZSI6InNyYy9hcHAvZWRpdG9yL3dvcmtzcGFjZS9pbWFnZS1lZGl0b3IvaW1hZ2UtZWRpdG9yLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmltYWdlLWVkaXRvciB7XG4gICAgaGVpZ2h0OiBjYWxjKDEwMCUgLSAzNnB4KTtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgYmFja2dyb3VuZC1wb3NpdGlvbjogMHB4IDBweCwgMTBweCAxMHB4O1xuICAgIGJhY2tncm91bmQtc2l6ZTogMjBweCAyMHB4O1xuICAgIGJhY2tncm91bmQtaW1hZ2U6IGxpbmVhci1ncmFkaWVudCg0NWRlZywgI2VlZSAyNSUsIHRyYW5zcGFyZW50IDI1JSwgdHJhbnNwYXJlbnQgNzUlLCAjZWVlIDc1JSwgI2VlZSAxMDAlKSxsaW5lYXItZ3JhZGllbnQoNDVkZWcsICNlZWUgMjUlLCB3aGl0ZSAyNSUsIHdoaXRlIDc1JSwgI2VlZSA3NSUsICNlZWUgMTAwJSk7XG4gICAgdGV4dC1hbGlnbjogY2VudGVyO1xuICAgIGltZyB7XG4gICAgICAgIHRleHQtYWxpZ246IGNlbnRlcjtcbiAgICAgICAgZGlzcGxheTogYmxvY2s7XG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgICAgdG9wOiAwcHg7XG4gICAgICAgIHJpZ2h0OiAwcHg7XG4gICAgICAgIGJvdHRvbTogMHB4O1xuICAgICAgICBsZWZ0OiAwcHg7XG4gICAgICAgIG1heC13aWR0aDogMTAwJTtcbiAgICAgICAgaGVpZ2h0OiBhdXRvO1xuICAgICAgICBtYXJnaW46IGF1dG87XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDE2cHg7XG4gICAgICAgIGJhY2tncm91bmQtY29sb3I6IHRyYW5zcGFyZW50O1xuLyogICAgICAgICBib3gtc2hhZG93OiAwIDRweCA4cHggMCByZ2JhKDAsIDAsIDAsIDAuMiksIDAgNnB4IDIwcHggMCByZ2JhKDAsIDAsIDAsIDAuMTkpOyAqL1xuICAgIH1cblxuXG4gICAgLmltYWdlLWVkaXRvcl9fYnRuLWdyb3VwIHtcbiAgICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgICB0b3A6IDQ4cHg7XG4gICAgICAgIHJpZ2h0OiAxMnB4O1xuICAgICAgICB3aWR0aDogMzJweDtcbiAgICB9XG5cbiAgICAuaW1hZ2UtZWRpdG9yX19idG4ge1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjZWNlZGYwO1xuICAgICAgICB3aWR0aDogMzJweDtcbiAgICAgICAgaGVpZ2h0OiAzMnB4O1xuICAgICAgICBib3JkZXItcmFkaXVzOiAycHggNHB4O1xuICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBqdXN0aWZ5LWNvbnRlbnQ6IGNlbnRlcjtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgICAgICBtYXJnaW4tYm90dG9tOiA4cHg7XG4gICAgfVxufSJdfQ== */"
 
 /***/ }),
 
@@ -4503,9 +4505,10 @@ var ImageEditorComponent = /** @class */ (function () {
         this.openSubscription.unsubscribe();
     };
     ImageEditorComponent.prototype.open = function (data) {
-        this.svgContent = data.resource.content;
-        this.imageURL = data.resource.meta.download_url;
+        this.svg = data.resource.content;
+        this.url = data.resource.meta.downloadUrl;
         this.isSVG = Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["isSVG"])(data.resource);
+        console.log(data.resource);
     };
     tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
@@ -4534,7 +4537,7 @@ var ImageEditorComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div *ngIf='notMD; else MD' class='preview-editor' [innerHTML]='content | sanitizeHtml' runScripts></div>\n\n<ng-template #MD>\n    <div class='preview-editor'>\n        <markdown [data]=\"content\"></markdown>\n    </div>\n</ng-template>\n"
+module.exports = "<mat-progress-bar *ngIf='loading' mode=\"indeterminate\"></mat-progress-bar>\n<iframe *ngIf='isURL' class=\"preview-editor\" [srcdoc]=\"content | sanitizeHtml\" frameborder=\"0\" (load)='didFrameLoaded()'></iframe>\n<div *ngIf='isHTML' class='preview-editor' [innerHTML]='content | sanitizeHtml' runScripts></div>\n<div *ngIf='isMarkdown' class='preview-editor'><markdown [data]=\"content\"></markdown></div>"
 
 /***/ }),
 
@@ -4582,10 +4585,18 @@ var PreviewEditorComponent = /** @class */ (function () {
     PreviewEditorComponent.prototype.ngOnDestroy = function () {
         this.openSubscription.unsubscribe();
     };
+    PreviewEditorComponent.prototype.didFrameLoaded = function () {
+        this.counter++;
+        // for some reason onload of iframe is called twice
+        this.loading = this.counter % 2 === 0;
+    };
     PreviewEditorComponent.prototype.open = function (data) {
-        this.content = data.resource.meta.html;
+        this.content = data.resource.meta.previewData;
         this.isMarkdown = Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_4__["isMarkdown"])(data.resource);
-        if (this.scripts) {
+        this.isHTML = Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_4__["isSVG"])(data.resource);
+        this.isURL = Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_4__["isPl"])(data.resource);
+        this.loading = this.isURL;
+        if (this.isHTML && this.scripts) {
             this.scripts.reinsertScripts();
         }
     };
@@ -5094,7 +5105,7 @@ var RunScriptsDirective = /** @class */ (function () {
             var scriptCopy = document.createElement('script');
             scriptCopy.type = script.type ? script.type : 'text/javascript';
             if (script.innerHTML) {
-                scriptCopy.innerHTML = script.innerHTML;
+                scriptCopy.innerHTML = "" + script.innerHTML;
             }
             else if (script.src) {
                 scriptCopy.src = script.src;
@@ -5156,6 +5167,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_prompt_prompt_component__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ../components/prompt/prompt.component */ "./src/app/shared/components/prompt/prompt.component.ts");
 /* harmony import */ var _components_confirm_confirm_component__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ../components/confirm/confirm.component */ "./src/app/shared/components/confirm/confirm.component.ts");
 /* harmony import */ var _components_empty_state_empty_state_component__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ../components/empty-state/empty-state.component */ "./src/app/shared/components/empty-state/empty-state.component.ts");
+/* harmony import */ var _pipes_sanitize_url_pipe__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ../pipes/sanitize-url.pipe */ "./src/app/shared/pipes/sanitize-url.pipe.ts");
 
 /* angular core  */
 
@@ -5165,6 +5177,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /* material design  */
+
 
 
 
@@ -5203,6 +5216,7 @@ var SharedModule = /** @class */ (function () {
                 _directives_droppable_directive__WEBPACK_IMPORTED_MODULE_28__["DroppableDirective"],
                 _directives_autofocus_directive__WEBPACK_IMPORTED_MODULE_24__["AutofocusDirective"],
                 _pipes_sanitize_html_pipe__WEBPACK_IMPORTED_MODULE_25__["SanitizeHtmlPipe"],
+                _pipes_sanitize_url_pipe__WEBPACK_IMPORTED_MODULE_32__["SanitizeResourceUrlPipe"],
                 _directives_run_scripts_directive__WEBPACK_IMPORTED_MODULE_26__["RunScriptsDirective"],
             ],
             imports: [
@@ -5267,6 +5281,7 @@ var SharedModule = /** @class */ (function () {
                 _directives_droppable_directive__WEBPACK_IMPORTED_MODULE_28__["DroppableDirective"],
                 _directives_autofocus_directive__WEBPACK_IMPORTED_MODULE_24__["AutofocusDirective"],
                 _pipes_sanitize_html_pipe__WEBPACK_IMPORTED_MODULE_25__["SanitizeHtmlPipe"],
+                _pipes_sanitize_url_pipe__WEBPACK_IMPORTED_MODULE_32__["SanitizeResourceUrlPipe"],
                 _directives_run_scripts_directive__WEBPACK_IMPORTED_MODULE_26__["RunScriptsDirective"],
             ],
             entryComponents: [
@@ -5310,6 +5325,40 @@ var SanitizeHtmlPipe = /** @class */ (function () {
         tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__["DomSanitizer"]])
     ], SanitizeHtmlPipe);
     return SanitizeHtmlPipe;
+}());
+
+
+
+/***/ }),
+
+/***/ "./src/app/shared/pipes/sanitize-url.pipe.ts":
+/*!***************************************************!*\
+  !*** ./src/app/shared/pipes/sanitize-url.pipe.ts ***!
+  \***************************************************/
+/*! exports provided: SanitizeResourceUrlPipe */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SanitizeResourceUrlPipe", function() { return SanitizeResourceUrlPipe; });
+/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
+/* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
+
+
+
+var SanitizeResourceUrlPipe = /** @class */ (function () {
+    function SanitizeResourceUrlPipe(sanitizer) {
+        this.sanitizer = sanitizer;
+    }
+    SanitizeResourceUrlPipe.prototype.transform = function (v) {
+        return this.sanitizer.bypassSecurityTrustResourceUrl(v);
+    };
+    SanitizeResourceUrlPipe = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Pipe"])({ name: 'sanitizeResourceUrl' }),
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__["DomSanitizer"]])
+    ], SanitizeResourceUrlPipe);
+    return SanitizeResourceUrlPipe;
 }());
 
 

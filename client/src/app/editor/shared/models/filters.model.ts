@@ -30,23 +30,23 @@ export function isRoot(item: Resource) {
 }
 
 export function isPl(item: Resource) {
-    return item &&  item.name.endsWith('.pl');
+    return extension(item) === 'pl';
 }
 
 export function isMarkdown(item: Resource) {
-    return item &&  item.name.toLowerCase().endsWith('.md');
+    return extension(item) === 'md';
 }
 
 export function isPltp(item: Resource) {
-    return item &&  item.name.toLowerCase().endsWith('.pltp');
+    return extension(item) === 'pltp';
 }
 
 export function isSVG(item: Resource) {
-    return item &&  item.name.toLowerCase().endsWith('.pltp');
+    return extension(item) === 'svg';
 }
 
 export function canBePreviewed(item: Resource) {
-    return item && isPl(item) || isSVG(item) || isMarkdown(item);
+    return isPl(item) || isSVG(item) || isMarkdown(item);
 }
 
 export function isHome(item: Resource) {
@@ -59,7 +59,7 @@ export function isNotRoot(item: Resource) {
 
 
 export function fromServer(resource: Resource) {
-    return !resource.meta || resource.meta.download_url;
+    return !resource.meta || resource.meta.downloadUrl;
 }
 
 export function isRepo(item: Resource) {
@@ -110,7 +110,8 @@ export function canBeUsedAsFileName(name: string) {
 export function checkName(name: string) {
     if (!name) {
         throw new Error('a resource name cannot be empty');
-    } 
+    }
+
     if (!canBeUsedAsFileName(name)) {
         throw new Error(name + ' cannot sould not contains any of ' + DISALLOWED_CHAR);
     }
@@ -172,5 +173,5 @@ export function openAsImage(data: IEditorTab) {
 }
 
 export function openAsPreview(data: IEditorTab) {
-    return data.resource.meta && data.resource.meta.html !== undefined;
+    return data.resource.meta && data.resource.meta.previewData !== undefined;
 }

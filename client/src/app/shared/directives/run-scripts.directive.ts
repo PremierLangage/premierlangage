@@ -17,7 +17,7 @@ export class RunScriptsDirective implements OnInit {
             const scriptCopy = <HTMLScriptElement>document.createElement('script');
             scriptCopy.type = script.type ? script.type : 'text/javascript';
             if (script.innerHTML) {
-                scriptCopy.innerHTML = script.innerHTML;
+                scriptCopy.innerHTML = `${script.innerHTML}`;
             } else if (script.src) {
                 scriptCopy.src = script.src;
             }

@@ -4,7 +4,6 @@ import { basename, requireNonNull, assert, isHome } from '../../models/filters.m
 import { Resource, Repo, Change } from '../../models/resource.model';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 
-@Injectable()
 export interface IGitService {
     refresh(): Promise<boolean>;
     show(item: Resource): Promise<string>;

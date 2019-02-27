@@ -47,7 +47,7 @@ class GetUpdateResourceTestCase(TestCase):
         }, content_type='application/json')
         self.assertContains(response, 'test', status_code=200)
     
-    def test_get_resource_image(self):
+    def test_get_resource_meta(self):
         response = self.c.get(reverse("filebrowser:option"), {
                 'name': 'get_resource',
                 'path': 'Yggdrasil/image.png',

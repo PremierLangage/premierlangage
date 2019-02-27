@@ -57,6 +57,10 @@ export abstract class AbstractEditorService implements IEditorService {
         });
     }
 
+    subscribeChange(completion: (groups: IEditorGroup[]) => void): Subscription {
+        return this.onGroupChanged.subscribe(completion);
+    }
+
     async closeAll(): Promise<boolean> {
         let groups = this.listGroups();
         while (groups.length !== 0) {
@@ -66,10 +70,6 @@ export abstract class AbstractEditorService implements IEditorService {
             groups = this.listGroups();
         }
         return true;
-    }
-
-    subscribeChange(completion: (groups: IEditorGroup[]) => void): Subscription {
-       return this.onGroupChanged.subscribe(completion);
     }
 
     async updateGroup(group: IEditorGroup): Promise<boolean> {
@@ -130,14 +130,15 @@ export class EditorService extends AbstractEditorService {
 
     open(tab: IEditorTab, sideBySide?: boolean): Promise<boolean> {
         let group: IEditorGroup;
-        const groups = this.listGroups();
+        let groups = this.listGroups();
         if (sideBySide || tab.preview) {
             // tslint:disable-next-line: max-line-length
             group = tab.preview ? (groups.find(g => g.somePreview()) || new EditorGroup(this)) : new EditorGroup(this);
         } else {
-            group =     groups.find(g => g.someTab(t => t.resource.path === tab.resource.path))
-                    ||  groups.find(g => g.focused() && !g.somePreview())
-                    ||  groups.find(g => !g.somePreview()) || new EditorGroup(this);
+            groups = groups.filter(g => !g.somePreview()); // remove preview group
+            group =     groups.find(g => g.focused() && g.someTab(t => compareTab(t, tab))) // find focused that contains the tab
+                    ||  groups.find(g => g.focused()) // find focused
+                    ||  groups.find(_ => true) || new EditorGroup(this); // find any or create new group
         }
         return group.open(tab).catch(error => {
             this.notification.logError(error);

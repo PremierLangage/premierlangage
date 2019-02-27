@@ -77,7 +77,7 @@ export class ExplorerComponent {
 
     /** Handles refresh button click by retrieving resources from the server. */
     async didTapRefresh() {
-        const confirm = this.resourceService.findPredicate(e => e.changed || e.opened);
+        const confirm = this.resourceService.findPredicate(e => e.changed && e.opened);
         try {
             if (!confirm || await this.notification.confirmAsync({
                 title: 'You will lose any unsaved changes after this. Are you sure ?',

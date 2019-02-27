@@ -1,5 +1,5 @@
 .image-editor {
-    height: 100%;
+    height: calc(100% - 36px);
     position: relative;
     background-position: 0px 0px, 10px 10px;
     background-size: 20px 20px;
@@ -18,7 +18,7 @@
         margin: auto;
         border-radius: 16px;
         background-color: transparent;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+/*         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
     }
 
 
@@ -37,7 +37,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        cursor: zoom-in;
+        cursor: pointer;
         margin-bottom: 8px;
     }
 }

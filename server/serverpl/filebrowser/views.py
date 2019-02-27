@@ -15,6 +15,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
+from django.template.loader import get_template
 
 from filebrowser.filter import is_root, is_image, in_repository
 from filebrowser.models import Directory
@@ -34,7 +35,7 @@ def index(request):
 @login_required
 @require_POST
 @csrf_exempt
-def upload_resource(request):
+def upload_resource(request):  #TODO ADD TEST
     """ Allow the user to upload a file in the filebrowser """
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
@@ -62,7 +63,6 @@ def upload_resource(request):
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
 
-
 @require_GET
 def get_resource(request):
     """Return the content of <path>."""
@@ -79,7 +79,7 @@ def get_resource(request):
                 'application': filter.is_application(full_path),
                 'image': filter.is_image(full_path),
                 'excel': filter.is_excel(full_path),
-                'download_url': to_download_url(path)
+                'downloadUrl': to_download_url(path)
         }
         with codecs.open(full_path, "r", encoding='utf-8', errors='ignore') as f:
             content = f.read()
@@ -93,7 +93,6 @@ def get_resource(request):
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
 
-
 @require_GET
 def get_resources(request):
     """Returns home + lib directory structure."""
@@ -101,8 +100,6 @@ def get_resources(request):
         return HttpResponse(json.dumps(walkalldirs(request)), content_type='application/json')
     except Exception as e:  # pragma: no cover
         return HttpResponseNotFound(str(e))
-
-
 
 @require_POST
 def update_resource(request):
@@ -119,8 +116,6 @@ def update_resource(request):
         return JsonResponse({'success': True})
     except Exception as e:  # pragma: no cover
         return HttpResponseNotFound(str(e))
-
-
 
 @require_POST
 def create_resource(request):
@@ -157,8 +152,6 @@ def create_resource(request):
             msg += ("DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
 
-
-
 @require_POST
 def delete_resource(request):
     """Delete a file or folder """
@@ -182,8 +175,6 @@ def delete_resource(request):
         if settings.DEBUG:
             msg += ("DEBUG: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
-
-
 
 @require_POST
 def rename_resource(request):
@@ -220,8 +211,6 @@ def rename_resource(request):
             msg += ("DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
 
-
-
 @require_POST
 def move_resource(request):
     """ Move post.get('path'] to POST['dst')."""
@@ -257,7 +246,6 @@ def move_resource(request):
                 str(type(e)) + ' - ' + str(e))
         return HttpResponseNotFound(msg)
 
-
 @require_GET
 def download_resource(request):
     path = request.GET.get('path')
@@ -271,7 +259,6 @@ def download_resource(request):
     response['Content-Disposition'] = 'attachment; filename=%s' % filename # force browser to download file
     response.write(data)
     return response
-
 
 @require_GET
 def git_changes(request):
@@ -330,7 +317,6 @@ def git_changes(request):
             return HttpResponseNotFound(msg)
     return HttpResponse(json.dumps(response), content_type='application/json')
 
-
 @require_POST
 def git_clone(request):
     """Execute a git clone on the targeted entry with the informations of POST."""
@@ -369,8 +355,6 @@ def git_clone(request):
     except Exception as e:  # pragma: no cover
         return HttpResponseNotFound(str(e))
 
-
-
 @require_POST
 def git_pull(request):
     """ Execute a git pull on the targeted entry with the informations of POST."""
@@ -389,7 +373,6 @@ def git_pull(request):
     else:  # pragma: no cover
         return HttpResponseNotFound(htmlprint.code(err + out))
 
-
 @require_POST
 def git_push(request):
     """ Execute a git push on the targeted entry with the informations of POST."""
@@ -407,8 +390,6 @@ def git_push(request):
     else:  # pragma: no cover
         return HttpResponseNotFound(htmlprint.code(err + out))
 
-
-
 @require_GET
 def git_status(request):
     """ Execute a git status on the targeted entry."""
@@ -421,8 +402,6 @@ def git_status(request):
         return HttpResponse(htmlprint.code(out + err))
     else:  # pragma: no cover
         return HttpResponseNotFound(htmlprint.code(out + err))
-
-
 
 @require_GET
 def git_show(request):
@@ -466,7 +445,6 @@ def git_add(request):
     else:  # pragma: no cover
         return HttpResponseNotFound("Nothing to add." if not err else htmlprint.code(err + out))
 
-
 @require_POST
 def git_commit(request):
     """ Execute an add and commit of the targeted entry with the informations of POST. """
@@ -491,73 +469,108 @@ def git_commit(request):
     else:  # pragma: no cover
         return HttpResponseNotFound(htmlprint.code(err + out))
 
+@login_required
+@require_GET
+def load_pltp(request):
+    path = request.GET.get('path')
+    if not path:
+        return HttpResponseBadRequest(missing_parameter('path'))
+    
+    try:
+        path_components = path.split('/')
+        directory = Directory.objects.get(name=path_components[0])
+        file_path = os.path.join(*(path_components[1:]))
+        pltp, warnings = load_file(directory, file_path)
+        
+        if not pltp and not warnings:  # pragma: no cover
+            return HttpResponseBadRequest("This PLTP is already loaded")
+        elif not pltp:  # pragma: no cover
+            return HttpResponseBadRequest("Failed to load '" + path + "': \n" + warnings)
+        else:
+            msg = ''
+            if warnings:  # pragma: no cover
+                for warning in warnings:
+                    msg += str(warning)
+            activity = Activity.objects.create(name=pltp.name, pltp=pltp)
+            url_lti = request.build_absolute_uri(reverse("playexo:activity", args=[activity.pk]))
+            
+            msg += "L'activité <b>'" + pltp.name + "'</b> a bien été créée et a pour URL LTI: \
+                    <br>&emsp;&emsp;&emsp; <input id=\"copy\" style=\"width: 700px;\" value=\"" + \
+                   url_lti + "\" readonly>  \
+                    <a target='_blank' rel='noopener noreferrer' class='btn btn-dark' href='" + \
+                   url_lti + "'><i class='far fa-eye'></i> OPEN\
+                    </a>"
+            
+            return HttpResponse(msg)
+    except Exception as e:  # pragma: no cover
+        msg = "Impossible to load '" + path + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
+        if settings.DEBUG:
+            msg += ("DEBUG set to True: " + htmlprint.html_exc())
+        return HttpResponseBadRequest(msg)
 
+@require_POST
+def reload_pltp(request):
+    """Reload a given activity with the targeted PLTP."""
+    post = json.loads(request.body.decode())
+    path = post.get('path')
+    if not path:
+        return HttpResponseBadRequest(missing_parameter('path'))
+    activity_id = post.get('activity_id')
+    if not activity_id:
+        return HttpResponseBadRequest(missing_parameter('activity_id'))
+    try:
+        activity = Activity.objects.get(id=activity_id)
+        path_components = path.split('/')
+        directory = Directory.objects.get(name=path_components[0])
+        file_path = os.path.join(*(path_components[1:]))
+        pltp, warnings = rp(directory, file_path, activity.pltp)
+        
+        if not pltp and not warnings:  # pragma: no cover
+            return HttpResponse("This PLTP is already loaded")
+        elif not pltp:  # pragma: no cover
+            return HttpResponseNotFound("Failed to load '%s': \n%s"
+                                        % (os.path.basename(path), warnings.join("\n")))
+        else:
+            activity.reload()
+            msg = ''
+            if warnings:  # pragma: no cover
+                for warning in warnings:
+                    msg += str(warning)
+            return HttpResponse(msg + "L'activité <b>'" + pltp.name + "'</b> a bien été rechargé.")
+    except Exception as e:  # pragma: no cover
+        msg = "Impossible to load '" + os.path.basename(path) + "' : " + htmlprint.code(
+                str(type(e)) + ' - ' + str(e))
+        if settings.DEBUG:
+            msg += ("DEBUG set to True: " + htmlprint.html_exc())
+        return HttpResponseNotFound(msg)
 
 @login_required
-@csrf_exempt
-@require_POST
-def preview_pl(request):
-    """ Used by the PL editor to preview a PL and test the preview's answers"""
-    post = json.loads(request.body.decode())
-    if post.get('requested_action', '') == 'preview':  # Asking for preview
-        path = post.get('path')
-        if not path:
-            return HttpResponseBadRequest(missing_parameter('path'))
-        
+@require_GET
+def test_pl(request):
+    path = request.GET.get('path')
+    if not path:
+        return HttpResponseBadRequest(missing_parameter('path'))
+    
+    try:
         path_components = path.split('/')
-        directory = path_components[0]
-        try:
-            path = os.path.join(settings.FILEBROWSER_ROOT, path)
-            shutil.copyfile(path, path + ".bk")
-            with open(path, 'w+') as f:  # Writting editor content into the file
-                print(post.get('content', ''), file=f)
-            
-            directory = Directory.objects.get(name=directory)
-            file_path = os.path.join(*(path_components[1:]))
-            pl, warnings = load_file(directory, file_path)
-            if not pl:
-                preview = '<div class="alert alert-danger" role="alert"> 1 Failed to load \'' \
-                          + os.path.basename(file_path) + "': \n" + warnings + "</div>"
-            else:
-                if warnings:
-                    [messages.warning(request, warning) for warning in warnings]
-                pl.save()
-                exercise = SessionTest.objects.create(pl=pl, user=request.user)
-                preview = exercise.get_exercise(request)
+        directory = Directory.objects.get(name=path_components[0])
+        file_path = os.path.join(*(path_components[1:]))
+        pl, warnings = load_file(directory, file_path)
         
-        except Exception as e:  # pragma: no cover
-            preview = ('<div class="alert alert-danger" role="alert"> 3 Failed to load \''
-                       + os.path.basename(file_path) + "': \n\n"
-                       + htmlprint.code(str(e)))
-            if settings.DEBUG:
-                preview += "\n\nDEBUG set to True:\n" + htmlprint.html_exc()
-            preview += "</div>"
-        finally:
-            shutil.move(path + ".bk", path)
-            return HttpResponse(
-                    json.dumps({'preview': preview}),
-                    content_type='application/json',
-                    status=200
-            )
-    
-    elif post.get('requested_action', '') == 'submit':  # Answer from the preview
-        data = post.get('data', {})
-        if 'session_id' not in data or not data['session_id']:
-            return HttpResponseBadRequest(content="Couldn't resolve ajax request")
+        if not pl:
+            return HttpResponseBadRequest(warnings.replace(settings.FILEBROWSER_ROOT, ""))
         
-        exercise = SessionTest.objects.get(pk=data['session_id'])
-        answer, feedback = exercise.evaluate(request, data['answers'], test=True)
+        pl.save()
+        exercise = SessionTest.objects.create(pl=pl, user=request.user)
+        preview = exercise.get_exercise(request)
         
-        return HttpResponse(
-                json.dumps({
-                        "navigation": None,
-                        "exercise"  : exercise.get_exercise(request, answer=answer),
-                        "feedback"  : feedback,
-                }),
-                content_type='application/json'
-        )
-    
-    return HttpResponseBadRequest(content="Couldn't resolve ajax request")
+        return render(request, 'filebrowser/test.html', {
+                'preview': preview,
+        })
+    except Exception as e:  # pragma: no cover
+        msg = ("Impossible to test '" + os.path.basename(path) + "' : " + htmlprint.code(
+                str(type(e)) + ' - ' + str(e)))
+        return HttpResponseBadRequest(msg.replace(settings.FILEBROWSER_ROOT, ""))
 
 @csrf_exempt
 @require_POST
@@ -599,128 +612,79 @@ def compile_pl(request):
     
     return HttpResponseBadRequest(content="Couldn't resolve ajax request")
 
-
 @login_required
-@require_GET
-def load_pltp(request):
-    path = request.GET.get('path')
-    if not path:
-        return HttpResponseBadRequest(missing_parameter('path'))
-    
-    try:
-        path_components = path.split('/')
-        directory = Directory.objects.get(name=path_components[0])
-        file_path = os.path.join(*(path_components[1:]))
-        pltp, warnings = load_file(directory, file_path)
-        
-        if not pltp and not warnings:  # pragma: no cover
-            return HttpResponseBadRequest("This PLTP is already loaded")
-        elif not pltp:  # pragma: no cover
-            return HttpResponseBadRequest("Failed to load '" + path + "': \n" + warnings)
-        else:
-            msg = ''
-            if warnings:  # pragma: no cover
-                for warning in warnings:
-                    msg += str(warning)
-            activity = Activity.objects.create(name=pltp.name, pltp=pltp)
-            url_lti = request.build_absolute_uri(reverse("playexo:activity", args=[activity.pk]))
-            
-            msg += "L'activité <b>'" + pltp.name + "'</b> a bien été créée et a pour URL LTI: \
-                    <br>&emsp;&emsp;&emsp; <input id=\"copy\" style=\"width: 700px;\" value=\"" + \
-                   url_lti + "\" readonly>  \
-                    <a target='_blank' rel='noopener noreferrer' class='btn btn-dark' href='" + \
-                   url_lti + "'><i class='far fa-eye'></i> OPEN\
-                    </a>"
-            
-            return HttpResponse(msg)
-    except Exception as e:  # pragma: no cover
-        msg = "Impossible to load '" + path + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
-        if settings.DEBUG:
-            msg += ("DEBUG set to True: " + htmlprint.html_exc())
-        return HttpResponseBadRequest(msg)
-
-
-
+@csrf_exempt
 @require_POST
-def reload_pltp(request):
-    """Reload a given activity with the targeted PLTP."""
+def preview_pl(request):
+    """ Used by the PL editor to preview a PL"""
     post = json.loads(request.body.decode())
     path = post.get('path')
     if not path:
         return HttpResponseBadRequest(missing_parameter('path'))
-    activity_id = post.get('activity_id')
-    if not activity_id:
-        return HttpResponseBadRequest(missing_parameter('activity_id'))
+
+    content = post.get('content', '')
+
+    path_components = path.split('/')
+    directory = path_components[0]
     try:
-        activity = Activity.objects.get(id=activity_id)
-        path_components = path.split('/')
-        directory = Directory.objects.get(name=path_components[0])
-        file_path = os.path.join(*(path_components[1:]))
-        pltp, warnings = rp(directory, file_path, activity.pltp)
+        path = os.path.join(settings.FILEBROWSER_ROOT, path)
+        shutil.copyfile(path, path + ".bk")
+        with open(path, 'w+') as f:  # Writting editor content into the file
+            print(content, file=f)
         
-        if not pltp and not warnings:  # pragma: no cover
-            return HttpResponse("This PLTP is already loaded")
-        elif not pltp:  # pragma: no cover
-            return HttpResponseNotFound("Failed to load '%s': \n%s"
-                                        % (os.path.basename(path), warnings.join("\n")))
-        else:
-            activity.reload()
-            msg = ''
-            if warnings:  # pragma: no cover
-                for warning in warnings:
-                    msg += str(warning)
-            return HttpResponse(msg + "L'activité <b>'" + pltp.name + "'</b> a bien été rechargé.")
-    except Exception as e:  # pragma: no cover
-        msg = "Impossible to load '" + os.path.basename(path) + "' : " + htmlprint.code(
-                str(type(e)) + ' - ' + str(e))
-        if settings.DEBUG:
-            msg += ("DEBUG set to True: " + htmlprint.html_exc())
-        return HttpResponseNotFound(msg)
-
-
-
-@login_required
-@require_GET
-def test_pl(request):
-    path = request.GET.get('path')
-    if not path:
-        return HttpResponseBadRequest(missing_parameter('path'))
-    
-    try:
-        path_components = path.split('/')
-        directory = Directory.objects.get(name=path_components[0])
+        directory = Directory.objects.get(name=directory)
         file_path = os.path.join(*(path_components[1:]))
         pl, warnings = load_file(directory, file_path)
-        
         if not pl:
-            return HttpResponseBadRequest(warnings.replace(settings.FILEBROWSER_ROOT, ""))
-        
-        pl.save()
-        exercise = SessionTest.objects.create(pl=pl, user=request.user)
-        preview = exercise.get_exercise(request)
-        
-        return render(request, 'filebrowser/test_pl.html', {
-                'preview': preview,
-        })
+            preview = '<div class="alert alert-danger" role="alert"> 1 Failed to load \'' \
+                        + os.path.basename(file_path) + "': \n" + warnings + "</div>"
+        else:
+            if warnings:
+                [messages.warning(request, warning) for warning in warnings]
+            pl.save()
+            exercise = SessionTest.objects.create(pl=pl, user=request.user)
+            preview = exercise.get_exercise(request)
     except Exception as e:  # pragma: no cover
-        msg = ("Impossible to test '" + os.path.basename(path) + "' : " + htmlprint.code(
-                str(type(e)) + ' - ' + str(e)))
-        return HttpResponseBadRequest(msg.replace(settings.FILEBROWSER_ROOT, ""))
+        preview = ('<div class="alert alert-danger" role="alert"> 3 Failed to load \''
+                    + os.path.basename(file_path) + "': \n\n"
+                    + htmlprint.code(str(e)))
+        if settings.DEBUG:
+            preview += "\n\nDEBUG set to True:\n" + htmlprint.html_exc()
+        preview += "</div>"
+    finally:
+        shutil.move(path + ".bk", path)
+        preview = get_template("filebrowser/preview.html").render({'preview': preview}, request)
+        return HttpResponse(
+                json.dumps({ 'preview': preview }),
+                content_type='application/json',
+                status=200
+        )
 
-
+@login_required
+@csrf_exempt
+@require_POST
+def evaluate_pl(request):
+    """ Used by the PL editor to evaluate the answer from a previewed PL"""
+    post = json.loads(request.body.decode())
+    data = post.get('data', {})
+    if 'session_id' not in data or not data['session_id']:
+        return HttpResponseBadRequest(content="Couldn't resolve ajax request")
+    
+    exercise = SessionTest.objects.get(pk=data['session_id'])
+    answer, feedback = exercise.evaluate(request, data['answers'], test=True)
+    
+    return HttpResponse(
+            json.dumps({
+                    "navigation": None,
+                    "exercise"  : exercise.get_exercise(request, answer=answer),
+                    "feedback"  : feedback,
+            }),
+            content_type='application/json'
+    )
 
 @login_required
 @require_GET
-def download_env(request, envid):
-    r = requests.get(os.path.join(settings.SANDBOX, "env", envid, ""))
-    response = HttpResponse(r)
-    response['Content-Type'] = "application/gzip"
-    response['Content-Disposition'] = r.headers['Content-Disposition']
-    return response
-
-@login_required
-@require_GET
-def resolve_path(request):
+def resolve_path(request): #TODO ADD TEST
     path = request.GET.get('path')
     if not path:
         return HttpResponseBadRequest(missing_parameter('path'))
@@ -739,6 +703,15 @@ def resolve_path(request):
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
+
+@login_required
+@require_GET
+def download_env(request, envid):
+    r = requests.get(os.path.join(settings.SANDBOX, "env", envid, ""))
+    response = HttpResponse(r)
+    response['Content-Type'] = "application/gzip"
+    response['Content-Disposition'] = r.headers['Content-Disposition']
+    return response
 
 @login_required
 @csrf_exempt
