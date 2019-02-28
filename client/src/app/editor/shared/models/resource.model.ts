@@ -1,15 +1,7 @@
 import { assert } from './filters.model';
 
-export interface ResourceMeta {
-    text: boolean;
-    code: boolean;
-    archive: boolean;
-    application: boolean;
-    image: boolean;
-    excel: boolean;
-    previewData: string;
-    downloadUrl: string;
-}
+export const FILE_RESOURCE = 'file';
+export const FOLDER_RESOURCE = 'folder';
 
 export interface Resource {
     name: string;
@@ -40,24 +32,16 @@ export interface Resource {
     };
 }
 
-export interface Repo {
-    name: string;
-    path: string;
-    url: string;
-    branch: string;
-    count: number;
-    changes: Change[];
+export interface ResourceMeta {
+    text: boolean;
+    code: boolean;
+    archive: boolean;
+    application: boolean;
+    image: boolean;
+    excel: boolean;
+    previewData: string;
+    downloadUrl: string;
 }
-
-export interface Change {
-    name: string;
-    path: string;
-    type: string;
-    isdir: boolean;
-}
-
-export const FILE_RESOURCE = 'file';
-export const FOLDER_RESOURCE = 'folder';
 
 export function newResource(parent: Resource, type: string): Resource {
     assert(type === FILE_RESOURCE || type === FOLDER_RESOURCE, `type param must be '${FILE_RESOURCE}' or '${FOLDER_RESOURCE}'`);

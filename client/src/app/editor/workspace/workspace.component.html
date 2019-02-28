@@ -39,6 +39,7 @@
                     <code-editor [hidden]='!group.activeEditorIs("code")' *ngSwitchCase="'code'" [editor]='editor'></code-editor>
                     <image-editor [hidden]='!group.activeEditorIs("image")' *ngSwitchCase="'image'" [editor]='editor'></image-editor>
                     <preview-editor [hidden]='!group.activeEditorIs("preview")' *ngSwitchCase="'preview'" [editor]='editor'></preview-editor>
+                    <web-editor [hidden]='!group.activeEditorIs("web")' *ngSwitchCase="'web'" [editor]='editor'></web-editor>
                 </ng-container>
             </ng-container>
         </as-split-area>

@@ -13,6 +13,8 @@ export class ResourceService {
 
     private subscription: Subscription;
     private readonly previewProviders = {};
+    private __resources__: Resource[] = [];
+
     resources: Resource[] = [];
     selection: Resource;
 
@@ -29,6 +31,73 @@ export class ResourceService {
     }
 
     /**
+     * Gets a value indicating whether the given resource is the selected one inside the explorer
+     * @param resource the resource
+     * @returns true if the resource is the selected one false otherwise
+     */
+    isSelection(resource: Resource) {
+        return this.selection && resource.path === this.selection.path;
+    }
+
+    getResources() {
+        return this.__resources__;
+    }
+
+    /** Gets a value indicating whether any resource is changec */
+    changed() {
+        return this.findPredicate(item => item.changed) !== undefined;
+    }
+
+    /**
+     * Finds the resource with the given path.
+     * @param path the path of the resource to search
+     * @returns the resource or undefined
+     */
+    find(path: string): Resource {
+        path = path.trim();
+        if (!path.startsWith('/')) {
+            path = '/' + path;
+        }
+        return this.findPredicate(item => '/' + item.path === path);
+    }
+
+    /**
+     * Finds the resource which meets the given predicate.
+     * @param predicate the predicate to test
+     */
+    findPredicate(predicate: (resource: Resource) => boolean): Resource {
+        return this.__resources__.find(r => predicate(r));
+    }
+
+    /**
+     * Finds the resources which meets the given predicate.
+     * @param predicate the predicate to test
+     */
+    findAll(predicate: (resource: Resource) => boolean): Resource[] {
+        return this.__resources__.filter(r => predicate(r));
+    }
+
+    /**
+     * Creates new file at the given path
+     * @param the path of the file
+     * @returns the created resource
+     */
+    restore(path: string): Resource {
+        const name = filters.basename(path);
+        const parentPath = path.substring(0, path.length - (name.length + 1));
+        const parent = this.find(parentPath);
+        const resource = newResource(parent, FILE_RESOURCE);
+        resource.creating = resource.renaming = false;
+        resource.name = name;
+        resource.path = parentPath + '/' + name;
+        parent.children = parent.children || [];
+        parent.children.push(resource);
+        filters.findIcon(resource);
+        this.__resources__.push(resource);
+        return resource;
+    }
+
+    /**
      * Renames the resource on the server.
      * @param resource the resource object to rename.
      * @param name the new name of the resource.
@@ -38,8 +107,8 @@ export class ResourceService {
         filters.checkName(name);
         filters.assert(filters.canWrite(resource), 'permission denied');
         filters.assert(filters.canWrite(this.find(resource.parent)), 'permission denied on parent directory');
-        let success = false;
         try {
+            let success = false;
             this.task.emitTaskEvent(true, 'rename');
             if (name === resource.name) {
                 success = true;
@@ -52,14 +121,15 @@ export class ResourceService {
                 success = await this.endEdition(data, resource);
                 if (success) {
                     resource.name = name;
+                    filters.findIcon(resource);
                 }
             }
+            this.task.emitTaskEvent(false);
+            return success;
         } catch (error) {
             this.task.emitTaskEvent(false);
             throw error;
         }
-        this.task.emitTaskEvent(false);
-        return success;
     }
 
     /**
@@ -81,10 +151,12 @@ export class ResourceService {
                 content: resource.content,
                 type: resource.type
             };
-            await this.endEdition(data, resource);
-            return true;
+            const success = await this.endEdition(data, resource);
+            this.task.emitTaskEvent(false);
+            filters.findIcon(resource);
+            return success;
         } catch (error) {
-            this.task.emitTaskEvent(false, 'create resource');
+            this.task.emitTaskEvent(false);
             throw error;
         }
     }
@@ -109,99 +181,13 @@ export class ResourceService {
             if (this.remove(resource.path)) {
                 this.task.emitDeleteEvent(resource);
             }
-            this.task.emitTaskEvent(false, 'delete');
+            this.task.emitTaskEvent(false);
             this.git.refresh();
             return false;
         } catch (error) {
-            this.task.emitTaskEvent(false, 'delete');
+            this.task.emitTaskEvent(false);
             throw error;
         }
-    }
-
-    /** Gets a value indicating whether any resource is changec */
-    changed() {
-        return this.findPredicate(item => item.changed) !== undefined;
-    }
-
-    /**
-     * Finds the resource with the given path.
-     * @param path the path of the resource to search
-     * @returns the resource or undefined
-     */
-    find(path: string): Resource {
-        path = path.trim();
-        if (!path.startsWith('/')) {
-            path = '/' + path;
-        }
-        return this.findPredicate(item => '/' + item.path === path);
-    }
-
-    /**
-     * Finds the resource which meets the given predicate.
-     * @param predicate the predicate to test
-     * @returns the resource or undefined
-     */
-    findPredicate(predicate: (resource: Resource) => boolean): Resource {
-        function recursive(resource: Resource) {
-            if (!resource) {
-                return undefined;
-            }
-            if (predicate(resource)) {
-                return resource;
-            }
-            if (resource.children) {
-                for (const root of resource.children) {
-                    const result = recursive(root);
-                    if (result) {
-                        return result;
-                    }
-                }
-            }
-            return undefined;
-        }
-
-        for (const root of this.resources) {
-            const resource = recursive(root);
-            if (resource) {
-                return resource;
-            }
-        }
-        return undefined;
-    }
-
-    /**
-     * Finds the resources which meets the given predicate.
-     * @param predicate the predicate to test
-     * @returns A Promise resolved with the search result
-     */
-    findAll(predicate: (resource: Resource) => boolean): Promise<Resource[]> {
-        return new Promise((resolve) => {
-            const result = [];
-            this.task.emitTaskEvent(true, 'search');
-            function recursive(resource: Resource) {
-                if (!resource) {
-                    return undefined;
-                }
-                if (predicate(resource)) {
-                    result.push(resource);
-                }
-                if (resource.children) {
-                    for (const root of resource.children) {
-                        const item = recursive(root);
-                        if (item) {
-                            return item;
-                        }
-                    }
-                }
-                return undefined;
-            }
-
-            for (const root of this.resources) {
-               recursive(root);
-            }
-            this.task.emitTaskEvent(false, 'search');
-            resolve(result);
-        });
     }
 
     async loadPLTP(resource: Resource) {
@@ -210,9 +196,9 @@ export class ResourceService {
             this.task.emitTaskEvent(true, 'load pltp');
             const params = new HttpParams().set('name', 'load_pltp').set('path', resource.path);
             response = await this.http.get('/filebrowser/option', { params: params , responseType: 'text'}).toPromise();
-            this.task.emitTaskEvent(false, 'load pltp');
+            this.task.emitTaskEvent(false);
         } catch (error) {
-            this.task.emitTaskEvent(false, 'load pltp');
+            this.task.emitTaskEvent(false);
             throw error;
         }
         return response;
@@ -229,9 +215,9 @@ export class ResourceService {
             };
             const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
             response = await this.http.post('filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise();
-            this.task.emitTaskEvent(false, 'reload pltp');
+            this.task.emitTaskEvent(false);
         } catch (error) {
-            this.task.emitTaskEvent(false, 'reload pltp');
+            this.task.emitTaskEvent(false);
             throw error;
         }
         return response;
@@ -260,11 +246,11 @@ export class ResourceService {
             this.sort(dst.children);
             dst.expanded = true;
             this.selection = resource;
-            this.task.emitTaskEvent(false, 'move');
+            this.task.emitTaskEvent(false);
             this.git.refresh();
             return true;
         } catch (error) {
-            this.task.emitTaskEvent(false, 'move');
+            this.task.emitTaskEvent(false);
             throw error;
         }
     }
@@ -290,11 +276,11 @@ export class ResourceService {
             }, {headers: headers}).toPromise();
             resource.changed = false;
             resource.lastContent = resource.content;
-            this.task.emitTaskEvent(false, 'save');
+            this.task.emitTaskEvent(false);
             this.git.refresh();
             return true;
         } catch (error) {
-            this.task.emitTaskEvent(false, 'save');
+            this.task.emitTaskEvent(false);
             throw error;
         }
     }
@@ -307,10 +293,10 @@ export class ResourceService {
                             .set('path', resource.path)
                             .set('target', path);
             const response = await this.http.get('filebrowser/option', { params: params, responseType: 'text' }).toPromise();
-            this.task.emitTaskEvent(false, 'resolve path');
+            this.task.emitTaskEvent(false);
             return this.find(response);
         } catch (error) {
-            this.task.emitTaskEvent(false, 'resolve path');
+            this.task.emitTaskEvent(false);
             throw error;
         }
     }
@@ -328,10 +314,10 @@ export class ResourceService {
             const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
             response = await this.http.post('filebrowser/option', data, { headers: headers }).toPromise();
         } catch (error) {
-            this.task.emitTaskEvent(false, 'compilation');
+            this.task.emitTaskEvent(false);
             throw error;
         }
-        this.task.emitTaskEvent(false, 'compilation');
+        this.task.emitTaskEvent(false);
         return response;
     }
 
@@ -363,21 +349,12 @@ export class ResourceService {
             resource.meta = response['meta'];
             resource.changed = false;
             resource.dirty = false;
-            this.task.emitTaskEvent(false, 'open');
+            this.task.emitTaskEvent(false);
             return true;
         } catch (error) {
-            this.task.emitTaskEvent(false, 'open');
+            this.task.emitTaskEvent(false);
             throw error;
         }
-    }
-
-    /**
-     * Gets a value indicating whether the given resource is the selected one inside the explorer
-     * @param resource the resource
-     * @returns true if the resource is the selected one false otherwise
-     */
-    isSelection(resource: Resource) {
-        return this.selection && resource.path === this.selection.path;
     }
 
     /**
@@ -385,33 +362,21 @@ export class ResourceService {
      * @param resource the resource to preview.
      * @returns Promise<Resource> resolved with the resource
      */
-    preview(resource:  Resource): Promise<Resource> {
-        return new Promise((resolve, reject) => {
+    async preview(resource:  Resource): Promise<Resource> {
+        try {
+            if (!filters.fromServer(resource)) {
+                resource.meta.previewData = resource.content;
+                return Promise.resolve(resource);
+            }
             this.task.emitTaskEvent(true, 'preview');
-            const ext = filters.extension(resource);
-            const action = this.previewProviders[ext];
-            action(resource, this).then(response => {
-                this.task.emitTaskEvent(false, 'preview');
-                resource.meta.previewData = response.preview;
-                resolve(resource);
-            }).catch((error: any) => {
-                this.task.emitTaskEvent(false, 'preview');
-                reject(error);
-            });
-        });
-    }
-
-    restore(path: string): Resource {
-        const name = filters.basename(path);
-        const parentPath = path.substring(0, path.length - (name.length + 1));
-        const parent = this.find(parentPath);
-        const resource = newResource(parent, FILE_RESOURCE);
-        resource.creating = resource.renaming = false;
-        resource.name = name;
-        resource.path = parentPath + '/' + name;
-        parent.children = parent.children || [];
-        parent.children.push(resource);
-        return resource;
+            const response = await this.previewProviders[filters.extension(resource)](resource, this);
+            resource.meta.previewData = response.preview;
+            this.task.emitTaskEvent(false);
+            return resource;
+        } catch (error) {
+            this.task.emitTaskEvent(false);
+            throw error;
+        }
     }
 
     /**
@@ -433,6 +398,7 @@ export class ResourceService {
                     this.resources[0].expanded = true;
                     this.sort(this.resources);
                 }
+                this.build();
                 this.git.refresh();
                 this.task.emitTaskEvent(false, 'refresh');
                 resolve(true);
@@ -453,34 +419,13 @@ export class ResourceService {
         parent.children = parent.children || [];
         if (resource.creating) {
             parent.children.push(resource);
+            this.__resources__.push(resource);
         }
         this.sort(parent.children);
         resource.renaming = false;
         resource.creating = false;
         this.git.refresh();
-        this.task.emitTaskEvent(false, 'create resource');
         return true;
-    }
-
-    private async moveResource(src: Resource, dst: Resource) {
-        filters.requireNonNull(src.path, 'src.path');
-        filters.requireNonNull(dst.path, 'dst.path');
-        filters.assert(src.path !== dst.path, 'cannot move the resource to the same path');
-        filters.assert(!filters.isRoot(src), 'cannot move a root resource');
-
-        const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
-        const response = await this.http.post('filebrowser/option',  {
-            name: 'move_resource',
-            path: src.path,
-            dst: dst.path
-        }, { headers: headers }).toPromise();
-
-        const srcLastParent = this.find(src.parent);
-        srcLastParent.children = srcLastParent.children.filter(item => item.path !== src.path);
-        src.parent = dst.path;
-        src.path = response['path'];
-        dst.children.push(src);
-        return src;
     }
 
     private async moveFile(src: File, dst: Resource) {
@@ -500,7 +445,29 @@ export class ResourceService {
         newRes.renaming = newRes.creating = false;
         dst.children = dst.children || [];
         dst.children.push(newRes);
+        this.__resources__.push(newRes);
         return newRes;
+    }
+
+    private async moveResource(src: Resource, dst: Resource) {
+        filters.requireNonNull(src.path, 'src.path');
+        filters.requireNonNull(dst.path, 'dst.path');
+        filters.assert(src.path !== dst.path, 'cannot move the resource to the same path');
+        filters.assert(!filters.isRoot(src), 'cannot move a root resource');
+
+        const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
+        const response = await this.http.post('filebrowser/option',  {
+            name: 'move_resource',
+            path: src.path,
+            dst: dst.path
+        }, { headers: headers }).toPromise();
+
+        const parent = this.find(src.parent);
+        parent.children = parent.children.filter(item => item.path !== src.path);
+        src.parent = dst.path;
+        src.path = response['path'];
+        dst.children.push(src);
+        return src;
     }
 
     private sort(resources: Resource[]) {
@@ -517,23 +484,40 @@ export class ResourceService {
         }
     }
 
-    private remove(path: string) {
-        function remove_recursive(items: Resource[]): boolean {
-            if (items) {
-                for (let i = 0; i < items.length; i++) {
-                    if (items[i].path === path) {
-                        items.splice(i, 1);
-                        return true;
-                    } else {
-                        if (remove_recursive(items[i].children)) {
-                            return true;
-                        }
-                    }
+    private build() {
+        const array = [];
+        function recursive(item: Resource) {
+           filters.findIcon(item);
+            array.push(item);
+            if (item.children) {
+                for (const child of item.children) {
+                    recursive(child);
                 }
             }
+        }
+        for (const root of this.resources) {
+            recursive(root);
+        }
+        this.__resources__ = array;
+    }
+
+    private remove(path: string) {
+        path = path.trim();
+        const r = this.find(path);
+        if (!r) {
             return false;
         }
-        return remove_recursive(this.resources);
+        const p = this.find(r.parent);
+        if (!p) {
+            return false;
+        }
+        const index = p.children.findIndex(e => e.path === path);
+        if (index === -1) {
+            return false;
+        }
+        p.children.splice(index, 1);
+        this.__resources__ = this.__resources__.filter(e => e.path !== path);
+        return true;
     }
 
     private previewPL(resource: Resource, service: ResourceService) {

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { PrompField, PrompOptions } from 'src/app/shared/components/prompt/prompt.component';
 
-import { Change, Repo } from '../../shared/models/resource.model';
+import { IChange, IRepo } from '../../shared/models/git.model';
 
 import { GitService } from '../../shared/services/core/git.service';
 import { ResourceService } from '../../shared/services/core/resource.service';
@@ -25,7 +25,7 @@ export class GitComponent implements OnInit, OnDestroy {
     /** value of commit input form */
     commitMessage = '';
     /** selected repository */
-    selection: Repo;
+    selection: IRepo;
 
     constructor(
         private readonly git: GitService,
@@ -36,13 +36,13 @@ export class GitComponent implements OnInit, OnDestroy {
     ) { }
 
     ngOnInit() {
-        this.options.push({label: 'Open File', enabled: (item: Change) => this.canOpen(item), action: (item: Change) => {
+        this.options.push({label: 'Open File', enabled: (item: IChange) => this.canOpen(item), action: (item: IChange) => {
             this.open(item);
         }});
-        this.options.push({label: 'Git Add', enabled: (item: Change) => this.canAdd(item), action: (item: Change) => {
+        this.options.push({label: 'Git Add', enabled: (item: IChange) => this.canAdd(item), action: (item: IChange) => {
             this.add(item);
         }});
-        this.options.push({label: 'Git Checkout', enabled: (item: Change) => this.canCheckout(item), action: (item: Change) => {
+        this.options.push({label: 'Git Checkout', enabled: (item: IChange) => this.canCheckout(item), action: (item: IChange) => {
             this.checkout(item);
         }});
     }
@@ -52,7 +52,7 @@ export class GitComponent implements OnInit, OnDestroy {
 
 
     /** used inside the html template to checks if a repo is selected */
-    isSelection(item: Repo) {
+    isSelection(item: IRepo) {
         return this.selection && this.selection.url === item.url;
     }
 
@@ -60,17 +60,17 @@ export class GitComponent implements OnInit, OnDestroy {
      * changes the selected repository.
      * @param item the new seleted repository.
      */
-    changeSelection(item: Repo) {
+    changeSelection(item: IRepo) {
         this.selection = item;
     }
 
     /** used inside html template with *ngFor to keep track of the repository item */
-    trackRepo(_index: number, item: Repo) {
+    trackRepo(_index: number, item: IRepo) {
         return item.url;
     }
 
     /** used inside html template with *ngFor to keep track of the repository item */
-    trackChange(_index: number, item: Change) {
+    trackChange(_index: number, item: IChange) {
         return item.path;
     }
 
@@ -79,7 +79,7 @@ export class GitComponent implements OnInit, OnDestroy {
      * the resource linked to the repository item.
      * @param item the repository item.
     */
-    canAdd(item: Change) {
+    canAdd(item: IChange) {
         return item.type.includes('M') || !item.type.includes('D');
     }
 
@@ -88,7 +88,7 @@ export class GitComponent implements OnInit, OnDestroy {
      * the resource linked to the repository item.
      * @param item the repository item.
     */
-    canCheckout(item: Change) {
+    canCheckout(item: IChange) {
         return item.type !== '??' && item.type !== 'D';
     }
 
@@ -97,7 +97,7 @@ export class GitComponent implements OnInit, OnDestroy {
      * can be opened by any editor.
      * @param item the repository item.
     */
-    canOpen(item: Change) {
+    canOpen(item: IChange) {
         return !item.isdir && !item.type.includes('D');
     }
 
@@ -105,7 +105,7 @@ export class GitComponent implements OnInit, OnDestroy {
      * open the resource linked to the repository object in the editor.
      * @param item the repository item.
     */
-    open(item: Change) {
+    open(item: IChange) {
         if (this.canOpen(item)) {
             this.opener.openURI(asURIFragment(this.resources.find(item.path), DIFF_FRAGMENT));
         }
@@ -115,7 +115,7 @@ export class GitComponent implements OnInit, OnDestroy {
      * executes git add command on the given repository item.
      *	@param item the repository item.
      */
-    async add(item: Repo | Change) {
+    async add(item: IRepo | IChange) {
         if (await this.git.add(item)) {
             this.refresh();
             return true;
@@ -127,7 +127,7 @@ export class GitComponent implements OnInit, OnDestroy {
      * executes git push command on the given repository item
      *	@param item the repository item.
      */
-    async push(item: Repo | Change) {
+    async push(item: IRepo | IChange) {
         return this.git.push(item);
     }
 
@@ -136,7 +136,7 @@ export class GitComponent implements OnInit, OnDestroy {
      * - if the command succeed, the resources of the editor will be refreshed.
      *	@param item the repository item.
      */
-    async pull(item: Repo | Change) {
+    async pull(item: IRepo | IChange) {
         const confirmed = await this.notification.confirmAsync({
             title: 'Please confirm your action',
             message: 'This action will pull the latest changes from the remote server and close the opened editors!',
@@ -171,7 +171,7 @@ export class GitComponent implements OnInit, OnDestroy {
      * executes git status command on the given repository.
      *	@param item the repository item.
      */
-    async status(item: Repo | Change) {
+    async status(item: IRepo | IChange) {
         return this.git.status(item);
     }
 
@@ -179,7 +179,7 @@ export class GitComponent implements OnInit, OnDestroy {
      * executes git pull command on the given repository item after asking a confirmation.
      *	@param item the repository item.
      */
-    async checkout(item: Repo | Change) {
+    async checkout(item: IRepo | IChange) {
         const confirmed = await this.notification.confirmAsync({
             title: 'Please confirm your action',
             message: 'This action will reset all your local changes up to your last commit and close the opened editors!',
@@ -290,7 +290,7 @@ export class GitComponent implements OnInit, OnDestroy {
         return this.git.runningTask;
     }
 
-    hasOption(item: Change) {
+    hasOption(item: IChange) {
         return this.options.some(option => option.enabled(item));
     }
 
@@ -303,9 +303,8 @@ export class GitComponent implements OnInit, OnDestroy {
     }
 
 }
-
 interface ChangeOption {
     label: string;
-    enabled: (item: Change) => boolean;
-    action: (item: Change) => void;
+    enabled: (item: IChange) => boolean;
+    action: (item: IChange) => void;
 }

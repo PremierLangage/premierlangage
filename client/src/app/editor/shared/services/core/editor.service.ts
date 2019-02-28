@@ -77,16 +77,15 @@ export interface IEditorService {
     closeAll(): Promise<boolean>;
 
     /**
+     * Closes preview group
+     */
+    closePreview(): Promise<boolean>;
+
+    /**
      * Focus the editor group and unfocus all the others.
      * @param group the editor group
      */
     focus(group: IEditorGroup): void;
-
-    /**
-     * Loads the preview of the resource in the preview group.
-     * @param resource the resource to preview.
-     */
-    previewResource(resource: Resource): Promise<Resource>;
 
     /**
      * Invokes 'completion' after each group change.
@@ -145,6 +144,13 @@ export abstract class AbstractEditorService implements IEditorService {
         return true;
     }
 
+    async closePreview(): Promise<boolean> {
+        if (!this.previewGroup) {
+            return Promise.resolve(true);
+        }
+        return this.previewGroup.closeAll();
+    }
+
     async updateGroup(group: IEditorGroup): Promise<boolean> {
         this.groups[group.id()] = group;
         if (this.previewGroup) {
@@ -189,7 +195,6 @@ export abstract class AbstractEditorService implements IEditorService {
     abstract open(document: IEditorDocument, sideBySide?: boolean): Promise<boolean>;
     abstract openContent(resource: Resource): Promise<boolean>;
     abstract saveContent(resource: Resource): Promise<boolean>;
-    abstract previewResource(resource: Resource): Promise<Resource>;
 }
 
 /** Concretes implementation of IEditorService interface */
@@ -230,17 +235,6 @@ export class EditorService extends AbstractEditorService {
 
     saveContent(resource: Resource): Promise<boolean> {
         return this.resourceService.save(resource);
-    }
-
-    previewResource(resource: Resource): Promise<Resource> {
-        const preview = { ...resource };
-        return this.resourceService.preview(preview).then(() => {
-            this.open(asDocument(resource));
-            return preview;
-        }).catch(error => {
-            this.notification.logError(error);
-            return null;
-        });
     }
 
 }

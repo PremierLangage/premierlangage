@@ -8,7 +8,7 @@
             <git *ngSwitchCase="2"></git>
             <settings *ngSwitchCase="3"></settings>
         </as-split-area>
-        <as-split-area class='h100' style='overflow: hidden;' [size]="100 - navigation.size">
+        <as-split-area class='h100' style='position: relative; overflow: hidden;' [size]="100 - navigation.size">
             <as-split class='workspace' direction='vertical' gutterSize='5' useTransition='true' (dragEnd)='debugging.dragEnd($event)'>
                 <as-split-area class='h100' [size]='100 - debugging.size'>
                     <workspace></workspace>
@@ -17,6 +17,17 @@
                     <debugging #debugging></debugging>
                 </as-split-area>
             </as-split>
+            <div id='editor-overlay-quickOpenWidget' #quickOpen *ngIf='showQuickOpen'>
+                <mat-form-field>
+                    <input type="text" placeholder="Quick open a file" matInput [matAutocomplete]="auto"
+                        autoFocus (blur)='closeQuickOpen()' [formControl]="quickOpenForm">
+                </mat-form-field>
+                <mat-autocomplete autoFocus #auto="matAutocomplete" (optionSelected)='quickOpenItemSelected($event)' >
+                    <mat-option *ngFor="let entry of quickOpenEntries | async" [value]="entry">
+                        <i class='{{entry.icon}} entry-icon'></i>&nbsp;<span class='entry-name'>{{entry.name}}</span> - <span class='entry-path'>{{entry.path}}</span>
+                    </mat-option>
+                </mat-autocomplete>
+            </div>
         </as-split-area>
     </as-split>
   </div>

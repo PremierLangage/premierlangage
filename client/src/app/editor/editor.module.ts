@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 
+// https://www.npmjs.com/package/time-ago-pipe
+import { TimeAgoPipe } from 'time-ago-pipe';
+
 // https://www.npmjs.com/package/angular-split
 import { AngularSplitModule } from 'angular-split';
 
@@ -36,9 +39,11 @@ import { MONACO_CONFIG } from './shared/models/monaco.model';
 import { CodeEditorComponent } from './workspace/code-editor/code-editor.component';
 import { ImageEditorComponent } from './workspace/image-editor/image-editor.component';
 import { PreviewEditorComponent } from './workspace/preview-editor/preview-editor.component';
+import { WebEditorComponent } from './workspace/web-editor/web-editor.component';
 
 @NgModule({
     declarations: [
+        TimeAgoPipe,
         EditorComponent,
         NavigationComponent,
         ExplorerComponent,
@@ -51,7 +56,8 @@ import { PreviewEditorComponent } from './workspace/preview-editor/preview-edito
         WorkspaceComponent,
         CodeEditorComponent,
         ImageEditorComponent,
-        PreviewEditorComponent
+        PreviewEditorComponent,
+        WebEditorComponent,
     ],
     imports: [
         EditorRoutingModule,
@@ -68,5 +74,3 @@ import { PreviewEditorComponent } from './workspace/preview-editor/preview-edito
     ]
 })
 export class EditorModule { }
-// https://blog.expo.io/building-a-code-editor-with-monaco-f84b3a06deaf
-// http://devarea.com/angular-and-django-websockets-communication/

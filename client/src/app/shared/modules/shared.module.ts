@@ -23,6 +23,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatBadgeModule } from '@angular/material/badge';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 
 import { ToastrModule } from 'ngx-toastr';
@@ -82,7 +83,7 @@ import { SanitizeResourceUrlPipe } from '../pipes/sanitize-url.pipe';
         MatChipsModule,
         MatDividerModule,
         MatBadgeModule,
-
+        MatAutocompleteModule,
     ],
     exports: [
         BrowserModule,
@@ -110,6 +111,7 @@ import { SanitizeResourceUrlPipe } from '../pipes/sanitize-url.pipe';
         MatChipsModule,
         MatDividerModule,
         MatBadgeModule,
+        MatAutocompleteModule,
 
         PromptComponent,
         ConfirmComponent,

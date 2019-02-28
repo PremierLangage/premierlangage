@@ -2,7 +2,37 @@ import { Resource } from './resource.model';
 import { IEditorDocument } from '../services/core/opener.service';
 import { IEditorGroup } from './editor-group.model';
 
+const ICONS = {
+    'css': 'fab fa-css3',
+    'scss': 'fab fa-css3',
+    'js': 'fab fa-js-square',
+    'ts': 'fab fa-file-code',
+    'html': 'fab fa-html5',
+    'py': 'fab fa-python',
+    'md': 'fab fa-markdown',
+    'c': 'fas fa-file-code',
+    'cpp': 'fas fa-code',
+    'h': 'fas fa-code',
+    'pdf': 'fas fa-file-pdf',
+    'csv': 'fas fa-file-csv',
+    'xls': 'fas fa-file-pdf',
+    'java': 'fab fa-java',
+    'cs': 'fas fa-code',
+    'pl': 'fas fa-code',
+    'pltp': 'fas fa-code',
+    'png': 'fas fa-file-image',
+    'jpg': 'fas fa-file-image',
+    'svg': 'fas fa-file-image',
+};
+
 export const DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&'];
+
+export function findIcon(item: Resource) {
+    const ext = extension(item);
+    if (ext in ICONS) {
+        item.icon = ICONS[ext];
+    }
+}
 
 export function canRead(item: Resource) {
     return item && item.read;

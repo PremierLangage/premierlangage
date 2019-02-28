@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Resource } from '../../shared/models/resource.model';
+import { Resource, FILE_RESOURCE } from '../../shared/models/resource.model';
 import { ResourceService } from '../../shared/services/core/resource.service';
 
 
@@ -33,13 +33,11 @@ export class SearchComponent implements OnInit {
             this._runningTask = true;
             this.searchValue = this.searchValue.trim().toLocaleLowerCase();
             if (this.searchValue) {
-                this.editor.findAll((e => {
-                    return e.path.toLocaleLowerCase().includes(this.searchValue);
-                })).then(res => {
-                    this.result = res;
-                });
-                this._runningTask = false;
+                this.result = this.editor.findAll((e => {
+                    return e.type === FILE_RESOURCE && e.path.toLocaleLowerCase().includes(this.searchValue);
+                }));
             }
+            this._runningTask = false;
         }
     }
 

@@ -3,7 +3,7 @@
     <a class='repo-url' href="{{repoUrl()}} ">{{repoUrl()}}</a> <i class='repo-branch'> - {{repoBranch()}} </i>
 </ng-container>
 <div class="spacer"></div>
+<span *ngIf='cursor'>Ln {{cursor.lineNumber}}, Col {{cursor.column}}</span>
 <ng-container *ngIf='runningTask()'>
-    <mat-progress-spinner mode='indeterminate' color='primary' strokeWidth='2' diameter='16'></mat-progress-spinner> 
-    <span class='task-name'>{{taskName()}} task in progress...</span>
+    <mat-progress-spinner mode='indeterminate' color='warn' strokeWidth='2' diameter='16'></mat-progress-spinner> 
 </ng-container>

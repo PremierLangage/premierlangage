@@ -4,6 +4,7 @@ import { Subscription, Subject } from 'rxjs';
 import { MatDialogRef, MatDialog } from '@angular/material';
 import { PromptComponent, PrompOptions } from '../components/prompt/prompt.component';
 import { ConfirmComponent, ConfirmOptions } from '../components/confirm/confirm.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable()
 export abstract class AbstractNotificationService {
@@ -132,19 +133,28 @@ export class NotificationService extends AbstractNotificationService {
     }
 
     private parseMessage(message: any, stackTrace: boolean): string {
-        let msg = message;
-        if (typeof message !== 'string') {
-            msg = message.error;
-            if (!msg) {
-                if (message.stack) {
-                    const trace = stackTrace ? message.stack.split('\n').join('<br/>') : '';
-                    msg = message.message + trace;
+        let output = message;
+        if (message instanceof HttpErrorResponse) {
+            const error = message as HttpErrorResponse;
+            output = error.message;
+            console.error(message);
+        } else {
+            if (typeof message !== 'string') {
+                output = message.error; // JavaScript Error Object
+                if (!output) {
+                    if (message.stack) {
+                        const trace = stackTrace ? message.stack.split('\n').join('<br/>') : '';
+                        output = message.message + trace;
+                    } else {
+                        output = JSON.stringify(message);
+                    }
                 } else {
-                    msg = JSON.stringify(message);
+                    output = JSON.stringify(message);
                 }
             }
         }
-        return msg;
+
+        return output;
     }
 
 }

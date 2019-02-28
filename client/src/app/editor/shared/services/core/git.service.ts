@@ -1,19 +1,21 @@
 import { Injectable } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders } from '@angular/common/http';
 import { basename, requireNonNull, assert, isHome } from '../../models/filters.model';
-import { Resource, Repo, Change } from '../../models/resource.model';
+import { Resource } from '../../models/resource.model';
+import { IRepo, IChange, IBlame } from '../../models/git.model';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 
 export interface IGitService {
     refresh(): Promise<boolean>;
     show(item: Resource): Promise<string>;
-    status(item: Repo | Change): Promise<boolean>;
-    add(item: Repo | Change): Promise<boolean>;
-    checkout(item: Repo | Change): Promise<boolean>;
-    commit(item: Repo | Change, commit: string): Promise<boolean>;
-    push(item: Repo | Change, username?: string, password?: string): Promise<boolean>;
-    pull(item: Repo | Change, username?: string, password?: string): Promise<boolean>;
-    clone(parent: Resource, url: string, username?: string, password?: string, destination?: string);
+    blame(item: IRepo | IChange | Resource): Promise<IBlame[]>;
+    status(item: IRepo | IChange | Resource): Promise<boolean>;
+    add(item: IRepo | IChange | Resource): Promise<boolean>;
+    checkout(item: IRepo | IChange | Resource): Promise<boolean>;
+    commit(item: IRepo | IChange | Resource, commit: string): Promise<boolean>;
+    push(item: IRepo | IChange | Resource, username?: string, password?: string): Promise<boolean>;
+    pull(item: IRepo | IChange | Resource, username?: string, password?: string): Promise<boolean>;
+    clone(home: Resource, url: string, username?: string, password?: string, destination?: string);
 }
 
 @Injectable({
@@ -22,7 +24,7 @@ export interface IGitService {
 export class GitService implements IGitService {
 
     /** git repositories */
-    repos: Repo[] = [];
+    repos: IRepo[] = [];
     runningTask: boolean;
     size: number;
 
@@ -71,7 +73,7 @@ export class GitService implements IGitService {
         return response;
     }
 
-    async status(item: Repo | Change) {
+    async status(item: IRepo | IChange | Resource) {
         let success = false;
         this.runningTask = true;
         try {
@@ -87,7 +89,7 @@ export class GitService implements IGitService {
         return success;
     }
 
-    async add(item: Repo | Change) {
+    async add(item: IRepo | IChange | Resource) {
         let success = false;
         this.runningTask = true;
         try {
@@ -103,7 +105,7 @@ export class GitService implements IGitService {
         return success;
     }
 
-    async checkout(item: Repo | Change) {
+    async checkout(item: IRepo | IChange | Resource) {
         this.runningTask = true;
         let success = false;
         try {
@@ -119,7 +121,7 @@ export class GitService implements IGitService {
         return success;
     }
 
-    async commit(item: Repo | Change, commit: string) {
+    async commit(item: IRepo | IChange | Resource, commit: string) {
         let success = false;
         this.runningTask = true;
         try {
@@ -138,7 +140,7 @@ export class GitService implements IGitService {
         return success;
     }
 
-    async push(item: Repo | Change, username?: string, password?: string) {
+    async push(item: IRepo | IChange | Resource, username?: string, password?: string) {
         let success = false;
         this.runningTask = true;
         try {
@@ -156,7 +158,7 @@ export class GitService implements IGitService {
         return success;
     }
 
-    async pull(item: Repo | Change, username?: string, password?: string) {
+    async pull(item: IRepo | IChange | Resource, username?: string, password?: string) {
         let success = false;
         this.runningTask = true;
         try {
@@ -173,17 +175,17 @@ export class GitService implements IGitService {
         return success;
     }
 
-    async clone(parent: Resource, url: string, username?: string, password?: string, destination?: string) {
+    async clone(home: Resource, url: string, username?: string, password?: string, destination?: string) {
         let success = false;
         this.runningTask = true;
         try {
-            requireNonNull(parent, 'parent');
+            requireNonNull(home, 'parent');
             requireNonNull(url, 'url');
-            assert(isHome(parent), 'clone operation is applicable to home only');
+            assert(isHome(home), 'clone operation is applicable to home only');
             const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
             const data = {
                 'name': 'git_clone',
-                'path': parent.path,
+                'path': home.path,
                 url: url,
                 username: username,
                 password: password,
@@ -199,7 +201,23 @@ export class GitService implements IGitService {
         return success;
     }
 
-    private logResponse(item: Repo | Change, response: string) {
+    async blame(item: IRepo | IChange | Resource): Promise<IBlame[]> {
+        let response: IBlame[];
+        this.runningTask = true;
+        try {
+            requireNonNull(item, 'item');
+            const params = new HttpParams().set('name', 'git_blame').set('path', item.path);
+            const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
+            response = await this.http.get('/filebrowser/option', { headers: headers, params: params }).toPromise() as IBlame[];
+            this.runningTask = false;
+        } catch (error) {
+            this.runningTask = false;
+            throw error;
+        }
+        return response;
+    }
+
+    private logResponse(item: IRepo | IChange | Resource, response: string) {
         this.notification.logInfo(`${item.path}:<br/> ${response}`);
     }
 

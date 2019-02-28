@@ -61,7 +61,74 @@ $tab-height: 36px;
     height: 100%;
 }
 
-.editor-home {
-    text-align: center;
-    padding: 5rem 3rem;
+#editor-overlay-quickOpenWidget {
+    z-index: 100000;
+    left: 0;
+    right: 0;
+    width: 40%;
+    margin: auto;
+    position: absolute;
+    top: 36px;
+    background-color: white;
+    padding: 0 4px;
+    mat-form-field {
+        width: 100%;
+    }
 }
+
+.entry-icon {
+    font-size: 14px;
+}
+
+.entry-name {
+    font-size: 14px;
+}
+
+.entry-path {
+    font-size: 10px;
+}
+
+div.mat-autocomplete-panel {
+    height: auto;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* .fab.fa-css3 {
+    color: #e91e63;
+}
+.fab.fa-js-square {
+    color: #ffea00;
+}
+
+.fab.fa-html5 {
+    color: #ff9800;
+}
+
+.fab.fa-python {
+    color: #009688;
+}
+
+.fab.fa-markdown {
+    color: #2196f3
+}
+
+.fas.fa-file-pdf {
+    color:#f44336;
+}
+
+.fas.fa-file-csv {
+    color:#f44336;
+}
+
+.fab.fa-java {
+    color: #f44336;
+}
+
+.fas.fa-file-image {
+    color: #ffc107;
+}
+
+.fas.fa-code {
+    color: #03a9f4
+} */

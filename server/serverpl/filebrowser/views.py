@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import shutil
 import traceback
 import subprocess
@@ -19,7 +20,7 @@ from django.template.loader import get_template
 
 from filebrowser.filter import is_root, is_image, in_repository
 from filebrowser.models import Directory
-from filebrowser.utils import fa_icon, join_fb_root, rm_fb_root, walkdir, walkalldirs, repository_url, repository_branch, to_download_url, missing_parameter
+from filebrowser.utils import fa_icon, join_fb_root, rm_fb_root, walkdir, walkalldirs, repository_url, repository_branch, to_download_url, missing_parameter, exec_git_cmd
 from loader.loader import load_file, reload_pltp as rp
 from loader.utils import get_location
 
@@ -262,33 +263,21 @@ def download_resource(request):
 
 @require_GET
 def git_changes(request):
-    def command(path):
-        if not gitcmd.in_repository(path):
-            raise gitcmd.NotInRepositoryError("'" + path + "' is not inside a repository")
-        cwd = os.getcwd()   
-        try:
-            if os.path.isdir(path):
-                os.chdir(path)
-            else:
-                os.chdir(os.path.dirname(path))
-            cmd = "LANGUAGE=" + gitcmd.GIT_LANG + " git status --short"
-            p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-            out, err = p.communicate()
-        finally:
-            os.chdir(cwd)
-        return p.returncode, out.decode().strip("\n"), err.decode()
-
+    
+    error = ''
     response = {}
-    msg = ''
+    
     def extract_changes(path):
         roots = os.listdir(join_fb_root(path))
         directory = Directory.objects.get(name=path)
         if not directory.can_write(request.user):
-            return True          
+            return True
+
         for root in roots:    
             full_path = join_fb_root(os.path.join(path, root))
             if not in_repository(full_path):
                 continue
+            
             def parse_change(change):
                 tmp = change.strip().split(' ')
                 ftype = tmp[0]
@@ -296,7 +285,9 @@ def git_changes(request):
                 isdir = fpath.endswith('/')
                 name = fpath.split('/')[-2] if isdir else os.path.basename(fpath)
                 return { 'name': name, 'type': ftype, 'path': fpath, 'isdir': isdir }
-            ret, out, err = command(full_path)
+            
+            ret, out, err = exec_git_cmd(full_path, 'git status --short')
+
             if not ret:
                 changes = out.split("\n")
                 changes = [parse_change(x) for x in changes if x and not '..' in x] # only result in home/
@@ -309,12 +300,14 @@ def git_changes(request):
                     value = { 'path': os.path.join(path, root), 'branch': repository_branch(full_path), 'changes': changes }
                 response[key] = value
             else:  # pragma: no cover
-                msg = htmlprint.code(out + err)
+                error = htmlprint.code(out + err)
                 return False
         return True
+
     for e in ['Yggdrasil', 'lib']:
         if not extract_changes(e):
-            return HttpResponseNotFound(msg)
+            return HttpResponseNotFound(error)
+
     return HttpResponse(json.dumps(response), content_type='application/json')
 
 @require_POST
@@ -404,6 +397,44 @@ def git_status(request):
         return HttpResponseNotFound(htmlprint.code(out + err))
 
 @require_GET
+def git_blame(request): # TODO ADD TEST
+    """ Execute a git blame on the targeted entry."""
+    path = request.GET.get('path')
+    if not path:
+        return HttpResponseBadRequest(missing_parameter('path'))
+    
+    path = join_fb_root(path)
+    base = os.path.basename(path)
+    command = 'git blame {0} --root -w --show-email --contents {1}'.format(base, path)
+
+    ret, out, err = exec_git_cmd(path, command)
+    response = []
+    if not ret:
+        regex = r'(?P<sha1>[^\s]+)\s+(?P<filename>[^\s]+)\s+\(<(?P<email>[^>]+)>\s+(?P<day>[^\s]+)\s+(?P<hour>[^\s]+)\s+(?P<gmt>[^\s]+)\s+(?P<line>[^\)]+)\)(?P<text>[^\n]+)'
+        matches = re.findall(regex, out)
+        for match in matches:
+            sha1 = match[1]
+            command = 'git show --no-patch --oneline {0}'.format(sha1)
+            ret, out, err =  exec_git_cmd(path, command)
+            if not ret:
+                commit = ' '.join(out.split()[1:])
+            else:
+                commit = ''
+            response.append({
+                "sha1": sha1,
+                "email": match[2],
+                "day": match[3],
+                "hour": match[4],
+                "gmt": match[5],
+                "line": int(match[6]),
+                "commit": commit,
+                "text": match[0]
+            })
+        return HttpResponse(json.dumps(response), content_type='application/json')
+    else:  # pragma: no cover
+        return HttpResponseNotFound(htmlprint.code(out + err))
+
+@require_GET
 def git_show(request):
     """ Execute a git show on the targeted entry."""
     path = request.GET.get('path')
@@ -416,8 +447,8 @@ def git_show(request):
         else:  # pragma: no cover
             return HttpResponseNotFound(htmlprint.code(out + err))
     except Exception as e:  # pragma: no cover
-        msg = htmlprint.code(str(type(e)) + ' - ' + str(e))
-        return HttpResponseNotFound(msg)
+        error = htmlprint.code(str(type(e)) + ' - ' + str(e))
+        return HttpResponseNotFound(error)
 
 @require_GET
 def git_checkout(request):

@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { TaskService } from '../shared/services/core/task.service';
 import { ResourceService } from '../shared/services/core/resource.service';
 
 import * as filters from '../shared/models/filters.model';
+import { MonacoService } from '../shared/services/monaco/monaco.service';
+import { Subscription } from 'rxjs';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -11,16 +13,26 @@ import * as filters from '../shared/models/filters.model';
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.scss'],
 })
-export class FooterComponent implements OnInit {
+export class FooterComponent implements OnInit, OnDestroy {
+
+    cursor: monaco.IPosition;
+    cursorSubscription: Subscription;
 
     constructor(
         private readonly task: TaskService,
+        private readonly monaco: MonacoService,
         private readonly resources: ResourceService
     ) { }
 
     ngOnInit() {
+        this.cursorSubscription = this.monaco.cursorChanged.subscribe(cursor => {
+            this.cursor = cursor;
+        });
     }
 
+    ngOnDestroy() {
+        this.cursorSubscription.unsubscribe();
+    }
     runningTask() {
         return this.task.running;
     }

@@ -1,12 +1,29 @@
 import os
 
 import gitcmd
+import subprocess
 import magic
 from django.conf import settings
 
 from filebrowser import filter
 from filebrowser.models import Directory
 
+
+def exec_git_cmd(path, command):
+    if not gitcmd.in_repository(path):
+        raise gitcmd.NotInRepositoryError("'" + path + "' is not inside a repository")
+    cwd = os.getcwd()   
+    try:
+        if os.path.isdir(path):
+            os.chdir(path)
+        else:
+            os.chdir(os.path.dirname(path))
+        cmd = "LANGUAGE=" + gitcmd.GIT_LANG + ' ' + command
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        out, err = p.communicate()
+    finally:
+        os.chdir(cwd)
+    return p.returncode, out.decode().strip("\n"), err.decode()
 
 
 def missing_parameter(name):
