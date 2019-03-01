@@ -8,6 +8,8 @@ from django.conf import settings
 from filebrowser import filter
 from filebrowser.models import Directory
 
+HOME_DIR = 'Yggdrasil'
+LIB_DIR = 'lib'
 
 def exec_git_cmd(path, command):
     if not gitcmd.in_repository(path):
@@ -150,7 +152,7 @@ def walkdir(path, user, parent='', write=None, read=None, repo=None, sort=False)
 
 
 def walkalldirs(request):
-    lib = walkdir(join_fb_root('lib'), request.user)
-    home = walkdir(join_fb_root("Yggdrasil"), request.user)
+    lib = walkdir(join_fb_root(LIB_DIR), request.user)
+    home = walkdir(join_fb_root(HOME_DIR), request.user)
     home["name"] = 'home'
     return [home, lib]

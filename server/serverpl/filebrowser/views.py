@@ -20,7 +20,7 @@ from django.template.loader import get_template
 
 from filebrowser.filter import is_root, is_image, in_repository
 from filebrowser.models import Directory
-from filebrowser.utils import fa_icon, join_fb_root, rm_fb_root, walkdir, walkalldirs, repository_url, repository_branch, to_download_url, missing_parameter, exec_git_cmd
+from filebrowser.utils import fa_icon, join_fb_root, rm_fb_root, walkdir, walkalldirs, repository_url, repository_branch, to_download_url, missing_parameter, exec_git_cmd, HOME_DIR, LIB_DIR
 from loader.loader import load_file, reload_pltp as rp
 from loader.utils import get_location
 
@@ -726,7 +726,7 @@ def resolve_path(request): #TODO ADD TEST
     try:
         path_components = path.split('/')
         directory = Directory.objects.get(name=path_components[0])
-        directory, path = get_location(directory, target, current=path_components[1])
+        directory, path = get_location(directory, target, current=os.path.join(*path_components[1:-1]))
         return HttpResponse(os.path.join(directory, path))
 
     except Exception as e:
@@ -734,6 +734,35 @@ def resolve_path(request): #TODO ADD TEST
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
+
+@login_required
+@require_GET
+def search_in_files(request): #TODO ADD TEST
+    path = request.GET.get('path')
+    if not path:
+        return HttpResponseBadRequest(missing_parameter('path'))
+    query = request.GET.get('query')
+    if not query:
+        return HttpResponseBadRequest(missing_parameter('query'))
+
+    cwd = os.getcwd()   
+    try:
+        if (not path.startswith(HOME_DIR) and not path.startswith(LIB_DIR)):
+            return HttpResponseBadRequest('cannot search outside of root directories')
+        path = join_fb_root(path)
+        if not os.path.isdir(path):
+            return HttpResponseBadRequest('path should point to a directory')
+        os.chdir(path)
+        p = subprocess.Popen("grep -nr '{0}' .".format(query), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        out, err = p.communicate()
+    finally:
+        os.chdir(cwd)
+    
+    ret, out, err = p.returncode, out.decode().strip("\n"), err.decode()
+    if not ret:
+        return HttpResponse(out)
+    else:  # pragma: no cover
+        return HttpResponseNotFound(htmlprint.code(out + err))
 
 @login_required
 @require_GET

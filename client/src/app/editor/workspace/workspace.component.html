@@ -44,4 +44,137 @@
             </ng-container>
         </as-split-area>
     </ng-container>
+    <div class='welcome' *ngIf='!hasGroup'>
+        <h3 class='welcome-title'>PL Editor</h3>
+
+        <div class='welcome-section'>
+            <h3>User Interface</h3>
+            <img src="static/filebrowser/app/assets/icons/interface.png" alt="interface"> <br/> <br/>
+            <p>
+                PL Editor comes with a simple and intuitive layout that maximizes the space provided for the editor while leaving ample room to browse and access the full context of your project. 
+                The UI is divided into five areas:
+            </p>
+            <mat-list>
+                <mat-list-item>
+                    <p>A)&nbsp; <b>Side Bar</b> Contains different views like the Explorer to assist you while working on your project.</p>
+                </mat-list-item>
+                <mat-list-item>
+                    <p>B)&nbsp; <b>Editor</b> The main area to edit your files. You can open as many editors as you like side by side.</p>
+                </mat-list-item>
+                <mat-list-item>
+                    <p>C)&nbsp; <b>Debugging</b> Display different debugging information below the editor region for output or debug information, errors and warnings.</p>
+                </mat-list-item>
+                <mat-list-item>
+                    <p> D)&nbsp; <b>Status Bar</b> Gives you additional context-specific indicators like the repository of the focused file/folder, the position of the cursor inside the focused editor..</p>
+                </mat-list-item>
+            </mat-list>
+        </div>
+      
+        <div class='welcome-section'>
+            <h3>Side by side editing</h3>
+            <mat-divider></mat-divider>
+            <p>
+                You can open as many editors as you like side by side horizontally. 
+                If you already have one editor open, there are multiple ways of opening another editor to the side of the existing one:
+            </p>
+            <mat-list>
+                <mat-list-item>
+                    <p>Click on a file in the Explorer.</p>
+                </mat-list-item>
+                <mat-list-item>
+                    <p>Press <b>⌘Enter</b> (<b>Ctrl+Enter</b> on Windows/Linux) inside a code editor will split the editor.</p>
+                </mat-list-item>
+                <mat-list-item>
+                    <p>Click the <b>Split Editor</b> button in the upper right of an editor.</p>
+                </mat-list-item>
+                <mat-list-item>
+                    <p>Press <b>F2</b> to open the <b>Quick Open</b> dialog.</p>
+                </mat-list-item>
+            </mat-list>
+            <p>
+                Whenever you open another file, the editor that is active will display the content of that file. 
+                So if you have two editors side by side and you want to open file into the right hand editor, 
+                make sure that editor is active (by clicking inside it) before opening your file.
+            </p>
+            <p class='welcome-tip'>
+                Tip: You can resize editors and reorder them. Drag and drop the editor title area to reposition or resize the editor.
+            </p>
+        </div>
+
+        <div class='welcome-section'>
+            <h3>Explorer</h3>
+            <mat-divider></mat-divider>
+            <p>
+                The Explorer is used to browse, open, and manage all of the files and folders in your project.
+                You can do many things from here:
+            </p>
+            <mat-list>
+                <mat-list-item>
+                    <p>Create, delete, and rename files and folders.</p>
+                </mat-list-item>
+                <mat-list-item>
+                    <p>Move files and folders with drag and drop.</p>
+                </mat-list-item>
+                <mat-list-item>
+                    <p>Load, reload, and test pl files </p>
+                </mat-list-item>
+            </mat-list>
+            <p>
+                Opened files are locked you cannot rename or delete them. 
+            </p>
+            <p>Tip: You can open quickly a file with <b>F2</b></p>
+            <p>Tip: You can drag and drop files (Single file) into the Explorer from outside to copy them</p>
+        </div>
+        
+        <div class='welcome-section'>
+            <h3>PL code colorization</h3>
+            <mat-divider></mat-divider>
+            <p>The editor provides a syntax colorization for the following languages:</p>
+            <mat-list>
+                <mat-list-item> css </mat-list-item> 
+                <mat-list-item> csharp </mat-list-item> 
+                <mat-list-item> javascript </mat-list-item> 
+                <mat-list-item> typescript </mat-list-item> 
+                <mat-list-item> html </mat-list-item> 
+                <mat-list-item> markdown </mat-list-item> 
+                <mat-list-item> python </mat-list-item> 
+                <mat-list-item> r </mat-list-item> 
+                <mat-list-item> sql </mat-list-item> 
+                <mat-list-item> mysql </mat-list-item> 
+                <mat-list-item> java </mat-list-item> 
+                <mat-list-item> c </mat-list-item> 
+                <mat-list-item> cpp </mat-list-item> 
+                <mat-list-item> cpp </mat-list-item> 
+                <mat-list-item> xml </mat-list-item> 
+                <mat-list-item> bat </mat-list-item> 
+                <mat-list-item> ini </mat-list-item> 
+                <mat-list-item> php </mat-list-item> 
+            </mat-list>
+            <p>
+                There is also a special feature for files with <b>.pl</b> and <b>.pltp</b> extensions that allow you to embed a colorization of all the other languages inside a multiline key like in the following image. <br/>
+            </p>
+            <img src="static/filebrowser/app/assets/icons/embed-style.png" alt="embed style"> <br/>
+        </div>
+
+        <div>
+            <h3>Shorcuts</h3>
+            <mat-divider></mat-divider>
+            <table mat-table [dataSource]="shorcuts" class="mat-elevation-z1" style='width: 100%'>
+                <!-- Command -->
+                <ng-container matColumnDef="command">
+                    <th mat-header-cell *matHeaderCellDef> Command </th>
+                    <td mat-cell *matCellDef="let element"> {{element.command}} </td>
+                </ng-container>
+
+                <!-- Action -->
+                <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef> Action </th>
+                    <td mat-cell *matCellDef="let element"> {{element.action}} </td>
+                </ng-container>
+        
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
+    </div>
 </as-split>

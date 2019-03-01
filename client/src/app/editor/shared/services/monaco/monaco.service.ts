@@ -23,7 +23,7 @@ export const PL = 'pl';
 @Injectable({ providedIn: 'root' })
 export class MonacoService  {
 
-    private static readonly BUILD_IN_WORDS = {
+    private static readonly BUILT_IN_WORDS = {
         title: 'Titre de l\'exercice/feuille d\'exercice',
         author: 'Auteur de l\'exercice',
         introduction: 'Présentation de la feuille d\'exercice, le contenu de cette clé est interprété comme du markdown.',
@@ -36,7 +36,7 @@ export class MonacoService  {
         template: 'Définie template comme étant la base de ce fichier',
     };
 
-    private static readonly REFERENCE_PATTERN = /(@|(template|grader|builder|extends|builder|grader)\s*=)\s*(\w+:\/)?([~a-zA-Z0-9_\.\/]+)/;
+    private static readonly REFERENCE_PATTERN = /(@|(template|grader|builder|extends|builder|grader)\s*=)\s*(\w+:)?([~a-zA-Z0-9_\.\/]+)/;
     private static readonly OPEN_PATTERN = /^[a-zA-Z_](\.?\w+)*(==)|(%=)/;
     private static readonly CLOSE_PATTERN = /^==\s*$/;
 
@@ -236,9 +236,9 @@ export class MonacoService  {
                 if (line.includes('{{')) {
                     return [];
                 }
-                return Object.keys(MonacoService.BUILD_IN_WORDS).map(name => ({
+                return Object.keys(MonacoService.BUILT_IN_WORDS).map(name => ({
                     label: name,
-                    detail: MonacoService.BUILD_IN_WORDS[name],
+                    detail: MonacoService.BUILT_IN_WORDS[name],
                     insertText: name + '== #|python| \n\n==',
                     kind: monaco.languages.CompletionItemKind.Snippet,
                 }));
@@ -322,12 +322,12 @@ export class MonacoService  {
     }
 
     private registerHover(monaco: any) {
- /*        monaco.languages.registerHoverProvider(PREMIER_LANGAGE, {
+         monaco.languages.registerHoverProvider(PL, {
             provideHover: function (model, position) {
                 const lineContent = model.getLineContent(position.lineNumber);
                 const token = model.getWordAtPosition(position);
                 if (token) {
-                    const keys = self.getKeys();
+                    /*const keys = self.getKeys();
                     const k = keys.find(e => e === token.word);
                     if (k) {
                         const i = token.startColumn - 2;
@@ -341,19 +341,20 @@ export class MonacoService  {
                             };
                         }
                     }
-                    if (token.word in BUILT_IN_WORDS) {
+                    */
+                    if (token.word in MonacoService.BUILT_IN_WORDS) {
                         const lineCount = model.getLineCount();
                         return {
                             range: new monaco.Range(1, 1, 3, model.getLineMaxColumn(lineCount)),
                             contents: [
                                 { value: '**PL BUILT-IN**' },
-                                { value: BUILT_IN_WORDS[token.word] }
+                                { value: MonacoService.BUILT_IN_WORDS[token.word] }
                             ]
                         };
                     }
                 }
             }
-        }); */
+        });
     }
 
     private registerFolding(monaco: any) {

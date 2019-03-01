@@ -24,6 +24,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatTableModule } from '@angular/material';
 
 
 import { ToastrModule } from 'ngx-toastr';
@@ -112,6 +113,7 @@ import { SanitizeResourceUrlPipe } from '../pipes/sanitize-url.pipe';
         MatDividerModule,
         MatBadgeModule,
         MatAutocompleteModule,
+        MatTableModule,
 
         PromptComponent,
         ConfirmComponent,
