@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Resource, FILE_RESOURCE, FOLDER_RESOURCE, newResource } from '../../models/resource.model';
+import { Resource, ResourceTypes, newResource } from '../../models/resource.model';
 import { Subscription, Subject } from 'rxjs';
 import { GitService } from './git.service';
 import { TaskService } from './task.service';
+import { basename, extname, findIcon } from 'src/app/shared/models/paths.model';
+import { assert, checkName, requireNonNull } from 'src/app/shared/models/assert.model';
 import * as filters from '../../models/filters.model';
 
 @Injectable({
@@ -83,16 +85,16 @@ export class ResourceService {
      * @returns the created resource
      */
     restore(path: string): Resource {
-        const name = filters.basename(path);
+        const name = basename(path);
         const parentPath = path.substring(0, path.length - (name.length + 1));
         const parent = this.find(parentPath);
-        const resource = newResource(parent, FILE_RESOURCE);
+        const resource = newResource(parent, ResourceTypes.FILE);
         resource.creating = resource.renaming = false;
         resource.name = name;
         resource.path = parentPath + '/' + name;
         parent.children = parent.children || [];
         parent.children.push(resource);
-        filters.findIcon(resource);
+        resource.icon = findIcon(resource.path, resource.icon);
         this.__resources__.push(resource);
         return resource;
     }
@@ -104,9 +106,9 @@ export class ResourceService {
      * @returns Promise<boolean> rejected with an error or resolved with true.
      */
     async rename(resource: Resource, name: string) {
-        filters.checkName(name);
-        filters.assert(filters.canWrite(resource), 'permission denied');
-        filters.assert(filters.canWrite(this.find(resource.parent)), 'permission denied on parent directory');
+        checkName(name);
+        assert(filters.canWrite(resource), 'permission denied');
+        assert(filters.canWrite(this.find(resource.parent)), 'permission denied on parent directory');
         try {
             let success = false;
             this.task.emitTaskEvent(true, 'rename');
@@ -121,7 +123,7 @@ export class ResourceService {
                 success = await this.endEdition(data, resource);
                 if (success) {
                     resource.name = name;
-                    filters.findIcon(resource);
+                    resource.icon = findIcon(resource.path, resource.icon);
                 }
             }
             this.task.emitTaskEvent(false);
@@ -138,13 +140,13 @@ export class ResourceService {
      * @returns Promise<boolean> rejected with an error or resolved with true.
      */
     async create(resource: Resource) {
-        filters.checkName(resource.name);
-        filters.assert(filters.canWrite(resource), 'permission denied');
-        filters.assert(filters.canWrite(this.find(resource.parent)), 'permission denied on parent directory');
+        checkName(resource.name);
+        assert(filters.canWrite(resource), 'permission denied');
+        assert(filters.canWrite(this.find(resource.parent)), 'permission denied on parent directory');
         this.task.emitTaskEvent(true, 'create resource');
         try {
-            filters.checkName(resource.name);
-            filters.assert(filters.canWrite(this.find(resource.parent)), 'permission denied');
+            checkName(resource.name);
+            assert(filters.canWrite(this.find(resource.parent)), 'permission denied');
             const data = {
                 name: 'create_resource',
                 path: resource.parent + '/' + resource.name,
@@ -153,7 +155,7 @@ export class ResourceService {
             };
             const success = await this.endEdition(data, resource);
             this.task.emitTaskEvent(false);
-            filters.findIcon(resource);
+            resource.icon = findIcon(resource.path, resource.icon);
             return success;
         } catch (error) {
             this.task.emitTaskEvent(false);
@@ -168,9 +170,9 @@ export class ResourceService {
      */
     async delete(resource: Resource) {
         try {
-            filters.requireNonNull(resource, 'resource');
-            filters.assert(filters.canWrite(resource), 'permission denied');
-            filters.assert(!filters.isRoot(resource), 'permission denied');
+            requireNonNull(resource, 'resource');
+            assert(filters.canWrite(resource), 'permission denied');
+            assert(!filters.isRoot(resource), 'permission denied');
             this.task.emitTaskEvent(true, 'delete');
             const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
             await this.http.post('filebrowser/option', {
@@ -232,10 +234,10 @@ export class ResourceService {
     async move(src: Resource | File, dst: Resource) {
         try {
             this.task.emitTaskEvent(true, 'move');
-            filters.requireNonNull(src, 'src');
-            filters.requireNonNull(dst, 'dst');
-            filters.assert(filters.canWrite(dst), 'permission denied');
-            filters.assert(filters.isFolder(dst), 'destination must be a directory');
+            requireNonNull(src, 'src');
+            requireNonNull(dst, 'dst');
+            assert(filters.canWrite(dst), 'permission denied');
+            assert(filters.isFolder(dst), 'destination must be a directory');
 
             let resource: Resource;
             if ('size' in src) { // File type contains size property
@@ -261,7 +263,7 @@ export class ResourceService {
      * @returns Promise<boolean> resolved with true and rejected with an error
      */
     async save(resource: Resource) {
-        if (!filters.fromServer(resource)) {
+        if (!filters.isFromServer(resource)) {
             return true;
         }
         if (!resource.changed) {
@@ -269,7 +271,7 @@ export class ResourceService {
         }
         try {
             this.task.emitTaskEvent(true, 'save');
-            filters.requireNonNull(resource, 'resource');
+            requireNonNull(resource, 'resource');
             const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
             await this.http.post('filebrowser/option',   {
                 name: 'update_resource', path: resource.path, content: resource.content
@@ -305,8 +307,8 @@ export class ResourceService {
         let response: Object;
         try {
             this.task.emitTaskEvent(true, 'compilation');
-            filters.requireNonNull(resource, 'resource');
-            filters.assert(filters.isPl(resource), 'pl resource is expected');
+            requireNonNull(resource, 'resource');
+            assert(filters.isPl(resource), 'pl resource is expected');
             const data = {
                 'name': 'compile_pl',
                 'path': resource.path,
@@ -327,7 +329,7 @@ export class ResourceService {
      * @returns Promise<boolean> resolved with true or false and rejected with an error
      */
     async open(resource: Resource) {
-        if (!filters.fromServer(resource)) {
+        if (!filters.isFromServer(resource)) {
             return true;
         }
 
@@ -364,12 +366,8 @@ export class ResourceService {
      */
     async preview(resource:  Resource): Promise<Resource> {
         try {
-            if (!filters.fromServer(resource)) {
-                resource.meta.previewData = resource.content;
-                return Promise.resolve(resource);
-            }
             this.task.emitTaskEvent(true, 'preview');
-            const response = await this.previewProviders[filters.extension(resource)](resource, this);
+            const response = await this.previewProviders[extname(resource.path)](resource, this);
             resource.meta.previewData = response.preview;
             this.task.emitTaskEvent(false);
             return resource;
@@ -429,9 +427,9 @@ export class ResourceService {
     }
 
     private async moveFile(src: File, dst: Resource) {
-        filters.requireNonNull(src.name, 'src.name');
-        filters.requireNonNull(dst.path, 'dst.path');
-        filters.checkName(src.name);
+        requireNonNull(src.name, 'src.name');
+        requireNonNull(dst.path, 'dst.path');
+        checkName(src.name);
         const formData = new FormData();
         formData.append('file', src, src.name);
         formData.append('path', dst.path);
@@ -439,7 +437,7 @@ export class ResourceService {
         headers.set('Content-Type', null);
         headers.set('Accept', 'multipart/form-data');
         await this.http.post('/filebrowser/upload_resource', formData, { headers: headers }).toPromise();
-        const newRes = newResource(dst, FILE_RESOURCE);
+        const newRes = newResource(dst, ResourceTypes.FILE);
         newRes.path = dst.path + '/' + src.name;
         newRes.name = src.name;
         newRes.renaming = newRes.creating = false;
@@ -450,10 +448,10 @@ export class ResourceService {
     }
 
     private async moveResource(src: Resource, dst: Resource) {
-        filters.requireNonNull(src.path, 'src.path');
-        filters.requireNonNull(dst.path, 'dst.path');
-        filters.assert(src.path !== dst.path, 'cannot move the resource to the same path');
-        filters.assert(!filters.isRoot(src), 'cannot move a root resource');
+        requireNonNull(src.path, 'src.path');
+        requireNonNull(dst.path, 'dst.path');
+        assert(src.path !== dst.path, 'cannot move the resource to the same path');
+        assert(!filters.isRoot(src), 'cannot move a root resource');
 
         const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
         const response = await this.http.post('filebrowser/option',  {
@@ -487,7 +485,7 @@ export class ResourceService {
     private build() {
         const array = [];
         function recursive(item: Resource) {
-           filters.findIcon(item);
+            item.icon = findIcon(item.path, item.icon);
             array.push(item);
             if (item.children) {
                 for (const child of item.children) {

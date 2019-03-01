@@ -4,7 +4,7 @@ import { Injectable, Inject } from '@angular/core';
 import { LANGUAGE_PROVIDERS } from '../../tokens/monaco-providers.token';
 import { Language } from '../../models/language.model';
 import { Resource } from '../../models/resource.model';
-import { extension, asURI } from '../../models/filters.model';
+import { asURI } from 'src/app/shared/models/paths.model';
 import { LANGUAGES } from '../../models/language.model';
 import { OpenerService } from '../core/opener.service';
 import { ResourceService } from '../core/resource.service';
@@ -16,6 +16,7 @@ import { GitService } from '../core/git.service';
 import { isNgContainer, isNgTemplate } from '@angular/compiler';
 import { Subject } from 'rxjs';
 import { IBlame } from '../../models/git.model';
+import { extname } from 'src/app/shared/models/paths.model';
 
 export const PL = 'pl';
 
@@ -79,7 +80,7 @@ export class MonacoService  {
     }
 
     findLanguage(resource: Resource) {
-        const ext = extension(resource);
+        const ext = extname(resource.path);
         for (const item of LANGUAGES) {
             if (item.extension === ext) {
                 return item.id;
@@ -200,7 +201,7 @@ export class MonacoService  {
                             }
                         }
                     ],
-                    [/#.+/, 'comment'],
+                    [/#.*/, 'comment'],
                     [/==/, { token: 'open', next: '@embedded' }],
                     [/%=/, { token: 'open', next: '@predefined', nextEmbedded: 'javascript' }],
                     [/\{\{[a-zA-Z_](\.?\w+)\}\}/, 'key'],
@@ -288,20 +289,25 @@ export class MonacoService  {
                     }
                     match = MonacoService.REFERENCE_PATTERN.exec(lines[i]);
                     if (match) {
-                        const url = match[match.length - 1];
-                        let index = match.index + match.input.length - url.length;
-                        const range = new monaco.Range(i + 1, index, i + 1, index + url.length + 1);
                         let comment = false;
-                        while (index >= 0) {
-                            if (lines[i][index] === '#') {
+                        while (match.index >= 0) {
+                            if (lines[i][match.index] === '#') {
                                 comment = true;
                                 break;
                             }
-                            index--;
+                            match.index--;
                         }
                         if (!comment) {
+                            let index = lines[i].indexOf('@');
+                            if (index === -1) {
+                                index = lines[i].indexOf('/');
+                                if (index === -1) {
+                                    index = match.index;
+                                }
+                            }
+                            const url = match.pop();
                             links.push({
-                                range: range,
+                                range: new monaco.Range(i + 1, index + 1, i + 1, index + url.length + 2),
                                 url: url,
                             });
                         }

@@ -7,7 +7,8 @@ import { ResourceService } from './resource.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { ConfirmOptions } from 'src/app/shared/components/confirm/confirm.component';
 import { IEditorDocument } from './opener.service';
-import { asDocument, compareDocument, compareGroup } from '../../models/filters.model';
+import { compareDocument, compareGroup } from '../../models/filters.model';
+import { asDocument } from 'src/app/shared/models/paths.model';
 
 export interface IEditorService {
     /**

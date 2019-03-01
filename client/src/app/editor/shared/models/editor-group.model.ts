@@ -1,6 +1,6 @@
 import { Resource } from './resource.model';
 import { IEditor, INSTANTIATORS, IEditorAction, PREVIEW_EDITOR } from './editor.model';
-import { asURI, resourceIsURI, asDocument, compareDocument, compareGroup } from './filters.model';
+import { compareDocument } from './filters.model';
 import { EditorService, IEditorService } from '../services/core/editor.service';
 import { ConfirmOptions } from 'src/app/shared/components/confirm/confirm.component';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';

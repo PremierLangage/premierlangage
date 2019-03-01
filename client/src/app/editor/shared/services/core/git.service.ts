@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders } from '@angular/common/http';
-import { basename, requireNonNull, assert, isHome } from '../../models/filters.model';
+import { isHome } from '../../models/filters.model';
 import { Resource } from '../../models/resource.model';
 import { IRepo, IChange, IBlame } from '../../models/git.model';
 import { NotificationService } from 'src/app/shared/services/notification.service';
+import { basename } from 'src/app/shared/models/paths.model';
+import { assert, requireNonNull } from 'src/app/shared/models/assert.model';
 
 export interface IGitService {
     refresh(): Promise<boolean>;

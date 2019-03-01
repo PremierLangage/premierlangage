@@ -4,7 +4,9 @@ import { EditorService } from './editor.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { Schemas } from '../../models/schemas.model';
 import { ResourceService } from './resource.service';
-import { asURI } from '../../models/filters.model';
+import { asURI } from 'src/app/shared/models/paths.model';
+
+
 
 export interface IEditorDocument {
     uri: monaco.Uri;

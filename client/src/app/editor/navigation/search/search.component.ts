@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Resource, FILE_RESOURCE } from '../../shared/models/resource.model';
 import { ResourceService } from '../../shared/services/core/resource.service';
+import { Resource, ResourceTypes } from '../../shared/models/resource.model';
 
 
 @Component({
@@ -13,33 +13,31 @@ export class SearchComponent implements OnInit {
 
     @Input()
     resources: Resource[] = [];
-    result: Resource[] = [];
-    mode: 'F' | 'T';
+    entries: Resource[] = [];
+    runningTask: boolean;
     searchValue = '';
-    private _runningTask: boolean;
+    size = 0;
+    empty = false;
 
     constructor(private editor: ResourceService) { }
 
     ngOnInit() {
     }
 
-    changeMode(mode: 'F' | 'T') {
-        this.mode = mode;
-    }
 
     search(event: KeyboardEvent) {
         // tslint:disable-next-line: deprecation
         if (event.keyCode === 13) {
-            this._runningTask = true;
+            this.runningTask = true;
             this.searchValue = this.searchValue.trim().toLocaleLowerCase();
             if (this.searchValue) {
-                this.result = this.editor.findAll((e => {
-                    return e.type === FILE_RESOURCE && e.path.toLocaleLowerCase().includes(this.searchValue);
+                this.entries = this.editor.findAll((e => {
+                    return e.type === ResourceTypes.FILE && e.path.toLocaleLowerCase().includes(this.searchValue);
                 }));
+                this.size = this.entries.length;
+                this.empty = this.size === 0;
             }
-            this._runningTask = false;
+            this.runningTask = false;
         }
     }
-
-    get runningTask() { return this._runningTask; }
 }

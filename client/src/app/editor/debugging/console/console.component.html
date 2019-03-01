@@ -1,4 +1,5 @@
 <ul class='console__content' #container>
+    <h4 *ngIf='empty'>Nothing to display</h4>
     <ng-container *ngFor="let item of items; let last = last; trackBy track">
         <li class='log log--{{item.type}}'>
         <ng-container [ngSwitch]="item.type">

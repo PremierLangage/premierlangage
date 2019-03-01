@@ -4,7 +4,8 @@ import { Resource } from './resource.model';
 import { Subject } from 'rxjs';
 import { IEditorDocument } from '../services/core/opener.service';
 import { IEditorGroup } from './editor-group.model';
-import { asURI, canBePreviewed, isRepo, asDocument, isSVG, fromServer } from './filters.model';
+import { canBePreviewed, isRepo, isSVG, isFromServer } from './filters.model';
+import { asURI, asDocument } from 'src/app//shared/models/paths.model';
 
 export const CODE_EDITOR = 'code';
 export const PREVIEW_EDITOR = 'preview';
@@ -125,27 +126,30 @@ export class CodeEditor extends AbstractEditor {
     }
 
     private diffMode() {
+        const that = this;
         return {
-            icon: 'fas fa-eye', tooltip: 'Open Changes', condition: (item: Resource) => isRepo(item) && !this.diffEditing, invoke: _ => {
-                this.diffEditing = true;
-                this.onDiffCommand.next(this.diffEditing);
+            icon: 'fas fa-eye', tooltip: 'Open Changes', condition: (item: Resource) => isRepo(item) && !that.diffEditing, invoke: _ => {
+                that.diffEditing = true;
+                that.onDiffCommand.next(that.diffEditing);
             }
         };
     }
 
     private codeMode() {
+        const that = this;
         return {
-            icon: 'fas fa-eye-slash', tooltip: 'Close Changes', condition: (item: Resource) => this.diffEditing, invoke: _ => {
-                this.diffEditing = false;
-                this.onDiffCommand.next(this.diffEditing);
+            icon: 'fas fa-eye-slash', tooltip: 'Close Changes', condition: (item: Resource) => that.diffEditing, invoke: _ => {
+                that.diffEditing = false;
+                that.onDiffCommand.next(that.diffEditing);
             }
         };
     }
 
     private splitRight() {
+        const that = this;
         return {
-            icon: 'fas fa-columns', tooltip: 'Split Editor Right ⌘ >', condition: () => true, invoke: (item: Resource) => {
-                this.group().openSide(asDocument(item));
+            icon: 'fas fa-columns', tooltip: 'Split ⌘Right', condition: () => true, invoke: (item: Resource) => {
+                that.group().openSide(asDocument(item));
             }
         };
     }
@@ -244,11 +248,11 @@ export function openAsImage(doc: IEditorDocument) {
 }
 
 export function openAsPreview(doc: IEditorDocument) {
-    return fromServer(doc.resource) && doc.resource.meta && doc.resource.meta.previewData !== undefined;
+    return isFromServer(doc.resource) && doc.resource.meta && doc.resource.meta.previewData !== undefined;
 }
 
 export function openAsWeb(doc: IEditorDocument) {
-    return  !fromServer(doc.resource);
+    return  !isFromServer(doc.resource);
 }
 
 export const INSTANTIATORS: {condition: (doc: IEditorDocument) => boolean, create: (group: IEditorGroup, doc: IEditorDocument) => IEditor }[] = [

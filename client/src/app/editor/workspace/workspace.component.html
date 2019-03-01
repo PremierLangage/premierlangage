@@ -1,5 +1,5 @@
 <!-- LITTLE HACK TO PRELOAD MONACO EDITOR -->
-<ngx-monaco-editor [hidden]='true' [options]='{}' [model]='{}'></ngx-monaco-editor>
+<ngx-monaco-editor [hidden]='true' [options]='{}' [model]='{}' (onInit)='monacoLoaded()'></ngx-monaco-editor>
 <as-split class='h100' direction='horizontal' gutterSize='5' useTransition='true' cdkDropListGroup>
     <ng-container *ngFor='let group of groups'>
         <as-split-area class='editor-group h100' style='overflow: hidden;'>

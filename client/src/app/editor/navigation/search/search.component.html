@@ -1,12 +1,15 @@
 <ng-container>
     <div class='tab-bar border-bottom'>
-        <span>SEARCH</span> F2
+        <span>SEARCH</span>
         <div class="spacer"></div>
     </div>
     <mat-form-field class='search'>
         <input autoFocus matInput placeholder="Press Enter to search" (keydown)='search($event)' [(ngModel)]='searchValue'>
     </mat-form-field>
     <div class="navigation_content">
-        <explorer [resources]='result'></explorer>
+        <ng-container>
+            <span class='result'>{{size}} result(s)</span>
+        </ng-container>       
+        <explorer [resources]='entries'></explorer>
     </div>
 </ng-container>

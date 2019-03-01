@@ -5,12 +5,14 @@ import { DropData } from 'src/app/shared/directives/droppable.directive';
 
 import { TaskService } from '../../shared/services/core/task.service';
 import { OpenerService } from '../../shared/services/core/opener.service';
+import { EditorService } from '../../shared/services/core/editor.service';
 import { ResourceService } from '../../shared/services/core/resource.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 
-import { Resource, newResource, FILE_RESOURCE, FOLDER_RESOURCE } from '../../shared/models/resource.model';
+import { asURI } from 'src/app//shared/models/paths.model';
+import { basename } from 'src/app/shared/models/paths.model';
+import { Resource, ResourceTypes, newResource, } from '../../shared/models/resource.model';
 import * as filters from '../../shared/models/filters.model';
-import { EditorService } from '../../shared/services/core/editor.service';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -71,7 +73,7 @@ export class ExplorerComponent {
             { icon: 'far fa-trash-alt', label: 'Delete', enabled: filters.canBeDeleted, action: (r: Resource, e: MouseEvent) => {
                 that.optionDelete(r, e );
             }},
-            { icon: 'fas fa-lock', label: 'Read Only', enabled: filters.readonly, action: function () { } },
+            { icon: 'fas fa-lock', label: 'Read Only', enabled: filters.isReadonly, action: function () { } },
         ];
     }
 
@@ -123,7 +125,7 @@ export class ExplorerComponent {
     didDropData(data: DropData) {
         const srcPath = data.src || data.file.name;
         const dstPath = data.dst;
-        const srcName = filters.basename(srcPath);
+        const srcName = basename(srcPath);
         const src = this.resourceService.find(srcPath);
         const dst = this.resourceService.find(dstPath);
         if (src) {
@@ -200,7 +202,7 @@ export class ExplorerComponent {
         if (filters.isFolder(resource)) {
             resource.expanded = !resource.expanded;
         } else {
-            this.opener.openURI(filters.asURI(resource));
+            this.opener.openURI(asURI(resource));
         }
     }
 
@@ -235,7 +237,7 @@ export class ExplorerComponent {
     private optionAddFile(resource: Resource, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        this.newResource = newResource(resource, FILE_RESOURCE);
+        this.newResource = newResource(resource, ResourceTypes.FILE);
         this.creating = this.newResource.creating = true;
         this.renaming = false;
     }
@@ -243,7 +245,7 @@ export class ExplorerComponent {
     private optionFolder(resource: Resource, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        this.newResource = newResource(resource, FOLDER_RESOURCE);
+        this.newResource = newResource(resource, ResourceTypes.FOLDER);
         this.creating = this.newResource.creating = true;
         this.renaming = false;
     }

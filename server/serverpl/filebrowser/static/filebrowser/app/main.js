@@ -190,7 +190,7 @@ var AppModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<ul class='console__content' #container>\n    <ng-container *ngFor=\"let item of items; let last = last; trackBy track\">\n        <li class='log log--{{item.type}}'>\n        <ng-container [ngSwitch]=\"item.type\">\n            <mat-icon *ngSwitchCase=\"'info'\" mat-list-icon class='log-icon'>info</mat-icon>\n            <mat-icon *ngSwitchCase=\"'warning'\" mat-list-icon class='log-icon'>warning</mat-icon>\n            <mat-icon *ngSwitchDefault mat-list-icon class='log-icon'>error</mat-icon>\n        </ng-container>\n        <p class='log-content' [innerHTML]='item.message | sanitizeHtml'></p>\n        </li>\n        <mat-divider *ngIf='!last'></mat-divider>\n    </ng-container>\n</ul>"
+module.exports = "<ul class='console__content' #container>\n    <h4 *ngIf='empty'>Nothing to display</h4>\n    <ng-container *ngFor=\"let item of items; let last = last; trackBy track\">\n        <li class='log log--{{item.type}}'>\n        <ng-container [ngSwitch]=\"item.type\">\n            <mat-icon *ngSwitchCase=\"'info'\" mat-list-icon class='log-icon'>info</mat-icon>\n            <mat-icon *ngSwitchCase=\"'warning'\" mat-list-icon class='log-icon'>warning</mat-icon>\n            <mat-icon *ngSwitchDefault mat-list-icon class='log-icon'>error</mat-icon>\n        </ng-container>\n        <p class='log-content' [innerHTML]='item.message | sanitizeHtml'></p>\n        </li>\n        <mat-divider *ngIf='!last'></mat-divider>\n    </ng-container>\n</ul>"
 
 /***/ }),
 
@@ -440,15 +440,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EditorComponent", function() { return EditorComponent; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./shared/services/core/resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
-/* harmony import */ var _shared_services_monaco_monaco_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./shared/services/monaco/monaco.service */ "./src/app/editor/shared/services/monaco/monaco.service.ts");
-/* harmony import */ var _shared_models_monaco_model__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./shared/models/monaco.model */ "./src/app/editor/shared/models/monaco.model.ts");
-/* harmony import */ var _shared_services_core_task_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./shared/services/core/task.service */ "./src/app/editor/shared/services/core/task.service.ts");
-/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm5/forms.js");
-/* harmony import */ var _shared_models_resource_model__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./shared/models/resource.model */ "./src/app/editor/shared/models/resource.model.ts");
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
-/* harmony import */ var _shared_services_core_opener_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./shared/services/core/opener.service */ "./src/app/editor/shared/services/core/opener.service.ts");
-/* harmony import */ var _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./shared/models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm5/forms.js");
+/* harmony import */ var src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/app//shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
+/* harmony import */ var _shared_services_core_task_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./shared/services/core/task.service */ "./src/app/editor/shared/services/core/task.service.ts");
+/* harmony import */ var _shared_services_monaco_monaco_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./shared/services/monaco/monaco.service */ "./src/app/editor/shared/services/monaco/monaco.service.ts");
+/* harmony import */ var _shared_models_monaco_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./shared/models/monaco.model */ "./src/app/editor/shared/models/monaco.model.ts");
+/* harmony import */ var _shared_services_core_opener_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./shared/services/core/opener.service */ "./src/app/editor/shared/services/core/opener.service.ts");
+/* harmony import */ var _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./shared/services/core/resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
+/* harmony import */ var _shared_models_resource_model__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./shared/models/resource.model */ "./src/app/editor/shared/models/resource.model.ts");
+/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
 /* harmony import */ var rxjs_add_operator_debounceTime__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! rxjs/add/operator/debounceTime */ "./node_modules/rxjs-compat/_esm5/add/operator/debounceTime.js");
 /* harmony import */ var rxjs_add_operator_map__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! rxjs/add/operator/map */ "./node_modules/rxjs-compat/_esm5/add/operator/map.js");
 
@@ -471,14 +471,14 @@ var EditorComponent = /** @class */ (function () {
         this.opener = opener;
         this.monaco = monaco;
         this.resources = resources;
-        this.quickOpenForm = new _angular_forms__WEBPACK_IMPORTED_MODULE_6__["FormControl"]();
+        this.quickOpenForm = new _angular_forms__WEBPACK_IMPORTED_MODULE_2__["FormControl"]();
         this.quickOpenEntries = this.quickOpenForm.valueChanges
             .debounceTime(400)
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_8__["startWith"])(''), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_8__["map"])(function (r) { return r ? _this.filterQuickOpen(r) : _this.quickOpenData().slice(); }));
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_10__["startWith"])(''), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_10__["map"])(function (r) { return r ? _this.filterQuickOpen(r) : _this.quickOpenData().slice(); }));
     }
     EditorComponent.prototype.ngOnInit = function () {
         var _this = this;
-        _shared_models_monaco_model__WEBPACK_IMPORTED_MODULE_4__["MONACO_LOADED"].subscribe(function (monaco) { return _this.monaco.register(monaco); });
+        _shared_models_monaco_model__WEBPACK_IMPORTED_MODULE_6__["MONACO_LOADED"].subscribe(function (monaco) { return _this.monaco.register(monaco); });
     };
     EditorComponent.prototype.runningTask = function () {
         return this.task.running;
@@ -491,7 +491,7 @@ var EditorComponent = /** @class */ (function () {
     };
     EditorComponent.prototype.quickOpenItemSelected = function (e) {
         this.showQuickOpen = false;
-        this.opener.openURI(Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_10__["asURI"])(e.option.value));
+        this.opener.openURI(Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_3__["asURI"])(e.option.value));
     };
     EditorComponent.prototype.beforeunload = function ($event) {
         if (this.resources.changed()) { // the if is required
@@ -511,7 +511,7 @@ var EditorComponent = /** @class */ (function () {
         return this.quickOpenData().filter(function (r) { return r.name.toLowerCase().indexOf(filterValue) === 0; });
     };
     EditorComponent.prototype.quickOpenData = function () {
-        return this.resources.findAll(function (r) { return r.type === _shared_models_resource_model__WEBPACK_IMPORTED_MODULE_7__["FILE_RESOURCE"]; });
+        return this.resources.findAll(function (r) { return r.type === _shared_models_resource_model__WEBPACK_IMPORTED_MODULE_9__["ResourceTypes"].FILE; });
     };
     tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["HostListener"])('window:beforeunload', ['$event']),
@@ -532,10 +532,10 @@ var EditorComponent = /** @class */ (function () {
             encapsulation: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ViewEncapsulation"].None,
             styles: [__webpack_require__(/*! ./editor.component.scss */ "./src/app/editor/editor.component.scss")]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_core_task_service__WEBPACK_IMPORTED_MODULE_5__["TaskService"],
-            _shared_services_core_opener_service__WEBPACK_IMPORTED_MODULE_9__["OpenerService"],
-            _shared_services_monaco_monaco_service__WEBPACK_IMPORTED_MODULE_3__["MonacoService"],
-            _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_2__["ResourceService"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_core_task_service__WEBPACK_IMPORTED_MODULE_4__["TaskService"],
+            _shared_services_core_opener_service__WEBPACK_IMPORTED_MODULE_7__["OpenerService"],
+            _shared_services_monaco_monaco_service__WEBPACK_IMPORTED_MODULE_5__["MonacoService"],
+            _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_8__["ResourceService"]])
     ], EditorComponent);
     return EditorComponent;
 }());
@@ -783,11 +783,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _shared_services_core_task_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../shared/services/core/task.service */ "./src/app/editor/shared/services/core/task.service.ts");
 /* harmony import */ var _shared_services_core_opener_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../shared/services/core/opener.service */ "./src/app/editor/shared/services/core/opener.service.ts");
-/* harmony import */ var _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../shared/services/core/resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
-/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
-/* harmony import */ var _shared_models_resource_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../shared/models/resource.model */ "./src/app/editor/shared/models/resource.model.ts");
-/* harmony import */ var _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../shared/models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
-/* harmony import */ var _shared_services_core_editor_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../shared/services/core/editor.service */ "./src/app/editor/shared/services/core/editor.service.ts");
+/* harmony import */ var _shared_services_core_editor_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../shared/services/core/editor.service */ "./src/app/editor/shared/services/core/editor.service.ts");
+/* harmony import */ var _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../shared/services/core/resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
+/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
+/* harmony import */ var src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! src/app//shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
+/* harmony import */ var _shared_models_resource_model__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../shared/models/resource.model */ "./src/app/editor/shared/models/resource.model.ts");
+/* harmony import */ var _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../../shared/models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+
+
 
 
 
@@ -810,28 +813,28 @@ var ExplorerComponent = /** @class */ (function () {
         this.resources = this.resourceService.resources;
         this.newName = '';
         this.options = [
-            { icon: 'fas fa-check', label: 'Test', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["canBeTested"], action: function (r, e) {
+            { icon: 'fas fa-check', label: 'Test', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["canBeTested"], action: function (r, e) {
                     that.optionTest(r, e);
                 } },
-            { icon: 'fas fa-play', label: 'Load', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["canBeLoaded"], action: function (r, e) {
+            { icon: 'fas fa-play', label: 'Load', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["canBeLoaded"], action: function (r, e) {
                     that.optionLoad(r, e);
                 } },
-            { icon: 'fas fa-sync', label: 'Reload', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["canBeReloaded"], action: function (r, e) {
+            { icon: 'fas fa-sync', label: 'Reload', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["canBeReloaded"], action: function (r, e) {
                     that.optionReload(r, e);
                 } },
-            { icon: 'far fa-file', label: 'New File', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["canAddFile"], action: function (r, e) {
+            { icon: 'far fa-file', label: 'New File', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["canAddFile"], action: function (r, e) {
                     that.optionAddFile(r, e);
                 } },
-            { icon: 'far fa-folder', label: 'New Folder', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["canAddFile"], action: function (r, e) {
+            { icon: 'far fa-folder', label: 'New Folder', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["canAddFile"], action: function (r, e) {
                     that.optionFolder(r, e);
                 } },
-            { icon: 'far fa-edit', label: 'Rename', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["canBeRenamed"], action: function (r, e) {
+            { icon: 'far fa-edit', label: 'Rename', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["canBeRenamed"], action: function (r, e) {
                     that.optionRename(r, e);
                 } },
-            { icon: 'far fa-trash-alt', label: 'Delete', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["canBeDeleted"], action: function (r, e) {
+            { icon: 'far fa-trash-alt', label: 'Delete', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["canBeDeleted"], action: function (r, e) {
                     that.optionDelete(r, e);
                 } },
-            { icon: 'fas fa-lock', label: 'Read Only', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["readonly"], action: function () { } },
+            { icon: 'fas fa-lock', label: 'Read Only', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["isReadonly"], action: function () { } },
         ];
     }
     /** Handles refresh button click by retrieving resources from the server. */
@@ -884,7 +887,7 @@ var ExplorerComponent = /** @class */ (function () {
      * 	@returns true only if the resource is not a root folder.
      */
     ExplorerComponent.prototype.draggable = function (resource) {
-        return !resource.opened && !_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["isRoot"](resource) && resource.write;
+        return !resource.opened && !_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["isRoot"](resource) && resource.write;
     };
     /**
      * Gets a value indicating a resource is droppable into the given 'resource'
@@ -892,7 +895,7 @@ var ExplorerComponent = /** @class */ (function () {
      * 	@returns true only if the resource is folder.
      */
     ExplorerComponent.prototype.droppable = function (resource) {
-        return _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["isFolder"](resource) && resource.write;
+        return _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["isFolder"](resource) && resource.write;
     };
     /**
      * Handles drag and drop event by asking a confirmation to the user then :
@@ -904,7 +907,7 @@ var ExplorerComponent = /** @class */ (function () {
         var _this = this;
         var srcPath = data.src || data.file.name;
         var dstPath = data.dst;
-        var srcName = _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["basename"](srcPath);
+        var srcName = Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_7__["basename"])(srcPath);
         var src = this.resourceService.find(srcPath);
         var dst = this.resourceService.find(dstPath);
         if (src) {
@@ -979,11 +982,11 @@ var ExplorerComponent = /** @class */ (function () {
     ExplorerComponent.prototype.didTapOnResource = function (resource, event) {
         event.preventDefault();
         event.stopPropagation();
-        if (_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["isFolder"](resource)) {
+        if (_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["isFolder"](resource)) {
             resource.expanded = !resource.expanded;
         }
         else {
-            this.opener.openURI(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["asURI"](resource));
+            this.opener.openURI(Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_7__["asURI"])(resource));
         }
     };
     /**
@@ -994,7 +997,7 @@ var ExplorerComponent = /** @class */ (function () {
      * - resource.icon otherwise.
      */
     ExplorerComponent.prototype.icon = function (resource) {
-        if (_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["isFolder"](resource)) {
+        if (_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["isFolder"](resource)) {
             return resource.expanded ? 'fas fa-folder-open' : 'fas fa-folder';
         }
         return resource.icon;
@@ -1013,14 +1016,14 @@ var ExplorerComponent = /** @class */ (function () {
     ExplorerComponent.prototype.optionAddFile = function (resource, event) {
         event.preventDefault();
         event.stopPropagation();
-        this.newResource = Object(_shared_models_resource_model__WEBPACK_IMPORTED_MODULE_6__["newResource"])(resource, _shared_models_resource_model__WEBPACK_IMPORTED_MODULE_6__["FILE_RESOURCE"]);
+        this.newResource = Object(_shared_models_resource_model__WEBPACK_IMPORTED_MODULE_8__["newResource"])(resource, _shared_models_resource_model__WEBPACK_IMPORTED_MODULE_8__["ResourceTypes"].FILE);
         this.creating = this.newResource.creating = true;
         this.renaming = false;
     };
     ExplorerComponent.prototype.optionFolder = function (resource, event) {
         event.preventDefault();
         event.stopPropagation();
-        this.newResource = Object(_shared_models_resource_model__WEBPACK_IMPORTED_MODULE_6__["newResource"])(resource, _shared_models_resource_model__WEBPACK_IMPORTED_MODULE_6__["FOLDER_RESOURCE"]);
+        this.newResource = Object(_shared_models_resource_model__WEBPACK_IMPORTED_MODULE_8__["newResource"])(resource, _shared_models_resource_model__WEBPACK_IMPORTED_MODULE_8__["ResourceTypes"].FOLDER);
         this.creating = this.newResource.creating = true;
         this.renaming = false;
     };
@@ -1106,9 +1109,9 @@ var ExplorerComponent = /** @class */ (function () {
         }),
         tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_core_task_service__WEBPACK_IMPORTED_MODULE_2__["TaskService"],
             _shared_services_core_opener_service__WEBPACK_IMPORTED_MODULE_3__["OpenerService"],
-            src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_5__["NotificationService"],
-            _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_4__["ResourceService"],
-            _shared_services_core_editor_service__WEBPACK_IMPORTED_MODULE_8__["EditorService"]])
+            src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_6__["NotificationService"],
+            _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_5__["ResourceService"],
+            _shared_services_core_editor_service__WEBPACK_IMPORTED_MODULE_4__["EditorService"]])
     ], ExplorerComponent);
     return ExplorerComponent;
 }());
@@ -1155,9 +1158,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../shared/services/core/resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
 /* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
 /* harmony import */ var _shared_services_core_opener_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../shared/services/core/opener.service */ "./src/app/editor/shared/services/core/opener.service.ts");
-/* harmony import */ var _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../shared/models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
-/* harmony import */ var _shared_services_core_editor_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../shared/services/core/editor.service */ "./src/app/editor/shared/services/core/editor.service.ts");
-/* harmony import */ var _shared_models_editor_model__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../shared/models/editor.model */ "./src/app/editor/shared/models/editor.model.ts");
+/* harmony import */ var _shared_services_core_editor_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../shared/services/core/editor.service */ "./src/app/editor/shared/services/core/editor.service.ts");
+/* harmony import */ var _shared_models_editor_model__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../shared/models/editor.model */ "./src/app/editor/shared/models/editor.model.ts");
+/* harmony import */ var src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! src/app//shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
 
 
 
@@ -1242,7 +1245,7 @@ var GitComponent = /** @class */ (function () {
     */
     GitComponent.prototype.open = function (item) {
         if (this.canOpen(item)) {
-            this.opener.openURI(Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["asURIFragment"])(this.resources.find(item.path), _shared_models_editor_model__WEBPACK_IMPORTED_MODULE_8__["DIFF_FRAGMENT"]));
+            this.opener.openURI(Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_8__["asURIFragment"])(this.resources.find(item.path), _shared_models_editor_model__WEBPACK_IMPORTED_MODULE_7__["DIFF_FRAGMENT"]));
         }
     };
     /**
@@ -1371,7 +1374,7 @@ var GitComponent = /** @class */ (function () {
                     case 6:
                         resource = _a.sent();
                         if (resource) {
-                            this.opener.openURI(Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["asURI"])(resource));
+                            this.opener.openURI(Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_8__["asURI"])(resource));
                         }
                         this.refresh();
                         return [2 /*return*/, true];
@@ -1510,7 +1513,7 @@ var GitComponent = /** @class */ (function () {
         }),
         tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_core_git_service__WEBPACK_IMPORTED_MODULE_2__["GitService"],
             _shared_services_core_opener_service__WEBPACK_IMPORTED_MODULE_5__["OpenerService"],
-            _shared_services_core_editor_service__WEBPACK_IMPORTED_MODULE_7__["EditorService"],
+            _shared_services_core_editor_service__WEBPACK_IMPORTED_MODULE_6__["EditorService"],
             _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_3__["ResourceService"],
             src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_4__["NotificationService"]])
     ], GitComponent);
@@ -1568,7 +1571,7 @@ var NavigationComponent = /** @class */ (function () {
         this.git = git;
         this.resource = resource;
         this.notification = notification;
-        this.size = 25;
+        this.size = 0;
         this.index = 0;
     }
     NavigationComponent.prototype.ngOnInit = function () {
@@ -1622,7 +1625,7 @@ var NavigationComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<ng-container>\n    <div class='tab-bar border-bottom'>\n        <span>SEARCH</span> F2\n        <div class=\"spacer\"></div>\n    </div>\n    <mat-form-field class='search'>\n        <input autoFocus matInput placeholder=\"Press Enter to search\" (keydown)='search($event)' [(ngModel)]='searchValue'>\n    </mat-form-field>\n    <div class=\"navigation_content\">\n        <explorer [resources]='result'></explorer>\n    </div>\n</ng-container>"
+module.exports = "<ng-container>\n    <div class='tab-bar border-bottom'>\n        <span>SEARCH</span>\n        <div class=\"spacer\"></div>\n    </div>\n    <mat-form-field class='search'>\n        <input autoFocus matInput placeholder=\"Press Enter to search\" (keydown)='search($event)' [(ngModel)]='searchValue'>\n    </mat-form-field>\n    <div class=\"navigation_content\">\n        <ng-container>\n            <span class='result'>{{size}} result(s)</span>\n        </ng-container>       \n        <explorer [resources]='entries'></explorer>\n    </div>\n</ng-container>"
 
 /***/ }),
 
@@ -1633,7 +1636,7 @@ module.exports = "<ng-container>\n    <div class='tab-bar border-bottom'>\n     
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".navigation_content {\n  padding: 0 8px;\n  height: calc(100% - 36px); }\n\n.search {\n  width: 90%;\n  margin: 0 16px; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL25hdmlnYXRpb24vc2VhcmNoL3NlYXJjaC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGVBQWM7RUFDZCwwQkFBeUIsRUFDNUI7O0FBRUQ7RUFDSSxXQUFVO0VBQ1YsZUFBYyxFQUNqQiIsImZpbGUiOiJzcmMvYXBwL2VkaXRvci9uYXZpZ2F0aW9uL3NlYXJjaC9zZWFyY2guY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIubmF2aWdhdGlvbl9jb250ZW50IHtcbiAgICBwYWRkaW5nOiAwIDhweDtcbiAgICBoZWlnaHQ6IGNhbGMoMTAwJSAtIDM2cHgpO1xufVxuXG4uc2VhcmNoIHtcbiAgICB3aWR0aDogOTAlO1xuICAgIG1hcmdpbjogMCAxNnB4O1xufSJdfQ== */"
+module.exports = ".navigation_content {\n  padding: 0 8px;\n  height: calc(100% - 36px); }\n\n.search {\n  width: 90%;\n  margin: 0 16px; }\n\n.result {\n  padding: 0 16px;\n  font-size: 1.1; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvY2xpZW50L3NyYy9hcHAvZWRpdG9yL25hdmlnYXRpb24vc2VhcmNoL3NlYXJjaC5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGVBQWM7RUFDZCwwQkFBeUIsRUFDNUI7O0FBRUQ7RUFDSSxXQUFVO0VBQ1YsZUFBYyxFQUNqQjs7QUFDRDtFQUNJLGdCQUFlO0VBQ2YsZUFBYyxFQUNqQiIsImZpbGUiOiJzcmMvYXBwL2VkaXRvci9uYXZpZ2F0aW9uL3NlYXJjaC9zZWFyY2guY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIubmF2aWdhdGlvbl9jb250ZW50IHtcbiAgICBwYWRkaW5nOiAwIDhweDtcbiAgICBoZWlnaHQ6IGNhbGMoMTAwJSAtIDM2cHgpO1xufVxuXG4uc2VhcmNoIHtcbiAgICB3aWR0aDogOTAlO1xuICAgIG1hcmdpbjogMCAxNnB4O1xufVxuLnJlc3VsdCB7XG4gICAgcGFkZGluZzogMCAxNnB4O1xuICAgIGZvbnQtc2l6ZTogMS4xO1xufSJdfQ== */"
 
 /***/ }),
 
@@ -1649,8 +1652,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SearchComponent", function() { return SearchComponent; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _shared_models_resource_model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../shared/models/resource.model */ "./src/app/editor/shared/models/resource.model.ts");
-/* harmony import */ var _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../shared/services/core/resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
+/* harmony import */ var _shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../shared/services/core/resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
+/* harmony import */ var _shared_models_resource_model__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../shared/models/resource.model */ "./src/app/editor/shared/models/resource.model.ts");
 
 
 
@@ -1659,33 +1662,29 @@ var SearchComponent = /** @class */ (function () {
     function SearchComponent(editor) {
         this.editor = editor;
         this.resources = [];
-        this.result = [];
+        this.entries = [];
         this.searchValue = '';
+        this.size = 0;
+        this.empty = false;
     }
     SearchComponent.prototype.ngOnInit = function () {
-    };
-    SearchComponent.prototype.changeMode = function (mode) {
-        this.mode = mode;
     };
     SearchComponent.prototype.search = function (event) {
         var _this = this;
         // tslint:disable-next-line: deprecation
         if (event.keyCode === 13) {
-            this._runningTask = true;
+            this.runningTask = true;
             this.searchValue = this.searchValue.trim().toLocaleLowerCase();
             if (this.searchValue) {
-                this.result = this.editor.findAll((function (e) {
-                    return e.type === _shared_models_resource_model__WEBPACK_IMPORTED_MODULE_2__["FILE_RESOURCE"] && e.path.toLocaleLowerCase().includes(_this.searchValue);
+                this.entries = this.editor.findAll((function (e) {
+                    return e.type === _shared_models_resource_model__WEBPACK_IMPORTED_MODULE_3__["ResourceTypes"].FILE && e.path.toLocaleLowerCase().includes(_this.searchValue);
                 }));
+                this.size = this.entries.length;
+                this.empty = this.size === 0;
             }
-            this._runningTask = false;
+            this.runningTask = false;
         }
     };
-    Object.defineProperty(SearchComponent.prototype, "runningTask", {
-        get: function () { return this._runningTask; },
-        enumerable: true,
-        configurable: true
-    });
     tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
         tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", Array)
@@ -1697,7 +1696,7 @@ var SearchComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./search.component.html */ "./src/app/editor/navigation/search/search.component.html"),
             styles: [__webpack_require__(/*! ./search.component.scss */ "./src/app/editor/navigation/search/search.component.scss")]
         }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_3__["ResourceService"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_core_resource_service__WEBPACK_IMPORTED_MODULE_2__["ResourceService"]])
     ], SearchComponent);
     return SearchComponent;
 }());
@@ -2153,7 +2152,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
 /* harmony import */ var _filters_model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+/* harmony import */ var src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/app//shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
 // tslint:disable: max-line-length
+
 
 
 
@@ -2231,28 +2232,28 @@ var CodeEditor = /** @class */ (function (_super) {
         };
     };
     CodeEditor.prototype.diffMode = function () {
-        var _this = this;
+        var that = this;
         return {
-            icon: 'fas fa-eye', tooltip: 'Open Changes', condition: function (item) { return Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["isRepo"])(item) && !_this.diffEditing; }, invoke: function (_) {
-                _this.diffEditing = true;
-                _this.onDiffCommand.next(_this.diffEditing);
+            icon: 'fas fa-eye', tooltip: 'Open Changes', condition: function (item) { return Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["isRepo"])(item) && !that.diffEditing; }, invoke: function (_) {
+                that.diffEditing = true;
+                that.onDiffCommand.next(that.diffEditing);
             }
         };
     };
     CodeEditor.prototype.codeMode = function () {
-        var _this = this;
+        var that = this;
         return {
-            icon: 'fas fa-eye-slash', tooltip: 'Close Changes', condition: function (item) { return _this.diffEditing; }, invoke: function (_) {
-                _this.diffEditing = false;
-                _this.onDiffCommand.next(_this.diffEditing);
+            icon: 'fas fa-eye-slash', tooltip: 'Close Changes', condition: function (item) { return that.diffEditing; }, invoke: function (_) {
+                that.diffEditing = false;
+                that.onDiffCommand.next(that.diffEditing);
             }
         };
     };
     CodeEditor.prototype.splitRight = function () {
-        var _this = this;
+        var that = this;
         return {
-            icon: 'fas fa-columns', tooltip: 'Split Editor Right ⌘ >', condition: function () { return true; }, invoke: function (item) {
-                _this.group().openSide(Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["asDocument"])(item));
+            icon: 'fas fa-columns', tooltip: 'Split ⌘Right', condition: function () { return true; }, invoke: function (item) {
+                that.group().openSide(Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_3__["asDocument"])(item));
             }
         };
     };
@@ -2342,10 +2343,10 @@ function openAsImage(doc) {
     return !openAsPreview(doc) && doc.resource.meta && doc.resource.meta.image && !Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["isSVG"])(doc.resource);
 }
 function openAsPreview(doc) {
-    return Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["fromServer"])(doc.resource) && doc.resource.meta && doc.resource.meta.previewData !== undefined;
+    return Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["isFromServer"])(doc.resource) && doc.resource.meta && doc.resource.meta.previewData !== undefined;
 }
 function openAsWeb(doc) {
-    return !Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["fromServer"])(doc.resource);
+    return !Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["isFromServer"])(doc.resource);
 }
 var INSTANTIATORS = [
     { condition: openAsImage, create: function (group, doc) { return new ImageEditor(group, doc); } },
@@ -2361,28 +2362,27 @@ var INSTANTIATORS = [
 /*!*******************************************************!*\
   !*** ./src/app/editor/shared/models/filters.model.ts ***!
   \*******************************************************/
-/*! exports provided: DISALLOWED_CHAR, findIcon, canRead, canWrite, readonly, isFolder, isFile, isRoot, isPl, isMarkdown, isPltp, isSVG, canBePreviewed, isHome, isNotRoot, fromServer, isRepo, canAddFile, canCopy, canAddFolder, canBeRenamed, canBeDeleted, canBeTested, canBeLoaded, canBeReloaded, extension, canBeUsedAsFileName, checkName, requireNonNull, assert, basename, asURI, asURIGoTo, asURIFragment, asDocument, compareDocument, compareGroup, resourceIsURI */
+/*! exports provided: canRead, canWrite, isReadonly, isRepo, isFromServer, isHome, isLib, isRoot, isNotRoot, isFolder, isFile, isPl, isSVG, isPltp, isMarkdown, canBePreviewed, canAddFile, canCopy, canAddFolder, canBeRenamed, canBeDeleted, canBeTested, canBeLoaded, canBeReloaded, compareDocument, compareGroup */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DISALLOWED_CHAR", function() { return DISALLOWED_CHAR; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "findIcon", function() { return findIcon; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canRead", function() { return canRead; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canWrite", function() { return canWrite; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "readonly", function() { return readonly; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isReadonly", function() { return isReadonly; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isRepo", function() { return isRepo; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isFromServer", function() { return isFromServer; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isHome", function() { return isHome; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isLib", function() { return isLib; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isRoot", function() { return isRoot; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isNotRoot", function() { return isNotRoot; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isFolder", function() { return isFolder; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isFile", function() { return isFile; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isRoot", function() { return isRoot; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPl", function() { return isPl; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isMarkdown", function() { return isMarkdown; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPltp", function() { return isPltp; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isSVG", function() { return isSVG; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPltp", function() { return isPltp; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isMarkdown", function() { return isMarkdown; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBePreviewed", function() { return canBePreviewed; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isHome", function() { return isHome; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isNotRoot", function() { return isNotRoot; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fromServer", function() { return fromServer; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isRepo", function() { return isRepo; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canAddFile", function() { return canAddFile; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canCopy", function() { return canCopy; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canAddFolder", function() { return canAddFolder; });
@@ -2391,93 +2391,60 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBeTested", function() { return canBeTested; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBeLoaded", function() { return canBeLoaded; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBeReloaded", function() { return canBeReloaded; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "extension", function() { return extension; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBeUsedAsFileName", function() { return canBeUsedAsFileName; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "checkName", function() { return checkName; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "requireNonNull", function() { return requireNonNull; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "assert", function() { return assert; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "basename", function() { return basename; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asURI", function() { return asURI; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asURIGoTo", function() { return asURIGoTo; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asURIFragment", function() { return asURIFragment; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asDocument", function() { return asDocument; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compareDocument", function() { return compareDocument; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compareGroup", function() { return compareGroup; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "resourceIsURI", function() { return resourceIsURI; });
-var ICONS = {
-    'css': 'fab fa-css3',
-    'scss': 'fab fa-css3',
-    'js': 'fab fa-js-square',
-    'ts': 'fab fa-file-code',
-    'html': 'fab fa-html5',
-    'py': 'fab fa-python',
-    'md': 'fab fa-markdown',
-    'c': 'fas fa-file-code',
-    'cpp': 'fas fa-code',
-    'h': 'fas fa-code',
-    'pdf': 'fas fa-file-pdf',
-    'csv': 'fas fa-file-csv',
-    'xls': 'fas fa-file-pdf',
-    'java': 'fab fa-java',
-    'cs': 'fas fa-code',
-    'pl': 'fas fa-code',
-    'pltp': 'fas fa-code',
-    'png': 'fas fa-file-image',
-    'jpg': 'fas fa-file-image',
-    'svg': 'fas fa-file-image',
-};
-var DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&'];
-function findIcon(item) {
-    var ext = extension(item);
-    if (ext in ICONS) {
-        item.icon = ICONS[ext];
-    }
-}
+/* harmony import */ var _resource_model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./resource.model */ "./src/app/editor/shared/models/resource.model.ts");
+/* harmony import */ var src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! src/app/shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
+
+
+var PREVIEW_EXTENSIONS = ['pl', 'md', 'svg'];
 function canRead(item) {
     return item && item.read;
 }
 function canWrite(item) {
     return item && item.write;
 }
-function readonly(item) {
+function isReadonly(item) {
     return !canWrite(item);
 }
-function isFolder(item) {
-    return item && item.type === 'folder';
+function isRepo(item) {
+    return item && item.repo;
 }
-function isFile(item) {
-    return item && item.type === 'file';
-}
-function isRoot(item) {
-    return item && item.name === 'home' || item.name === 'home/'
-        || item.name === 'lib' || item.name === 'lib/';
-}
-function isPl(item) {
-    return extension(item) === 'pl';
-}
-function isMarkdown(item) {
-    return extension(item) === 'md';
-}
-function isPltp(item) {
-    return extension(item) === 'pltp';
-}
-function isSVG(item) {
-    return extension(item) === 'svg';
-}
-function canBePreviewed(item) {
-    return isPl(item) || isSVG(item) || isMarkdown(item);
+function isFromServer(resource) {
+    return resource.type !== _resource_model__WEBPACK_IMPORTED_MODULE_0__["ResourceTypes"].LOCAL;
 }
 function isHome(item) {
-    return item && item.name === 'home';
+    return item && item.path === 'Yggdrasil';
+}
+function isLib(item) {
+    return item && item.path === 'lib';
+}
+function isRoot(item) {
+    return isHome(item) || isLib(item);
 }
 function isNotRoot(item) {
     return !isRoot(item);
 }
-function fromServer(resource) {
-    return !resource.meta || resource.meta.downloadUrl;
+function isFolder(item) {
+    return item && item.type === _resource_model__WEBPACK_IMPORTED_MODULE_0__["ResourceTypes"].FOLDER;
 }
-function isRepo(item) {
-    return item && item.repo;
+function isFile(item) {
+    return item && item.type === _resource_model__WEBPACK_IMPORTED_MODULE_0__["ResourceTypes"].FILE;
+}
+function isPl(item) {
+    return Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_1__["extname"])(item.path) === 'pl';
+}
+function isSVG(item) {
+    return Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_1__["extname"])(item.path) === 'svg';
+}
+function isPltp(item) {
+    return Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_1__["extname"])(item.path) === 'pltp';
+}
+function isMarkdown(item) {
+    return Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_1__["extname"])(item.path) === 'md';
+}
+function canBePreviewed(item) {
+    return PREVIEW_EXTENSIONS.includes(Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_1__["extname"])(item.path));
 }
 function canAddFile(item) {
     return canWrite(item) && isFolder(item);
@@ -2503,67 +2470,11 @@ function canBeLoaded(item) {
 function canBeReloaded(item) {
     return canWrite(item) && isPltp(item);
 }
-function extension(resource) {
-    var dotIndex = resource.name.lastIndexOf('.');
-    return resource.name.substring(dotIndex + 1).toLowerCase();
-}
-function canBeUsedAsFileName(name) {
-    return name && DISALLOWED_CHAR.every(function (e) { return !name.includes(e); });
-}
-function checkName(name) {
-    if (!name) {
-        throw new Error('a resource name cannot be empty');
-    }
-    if (!canBeUsedAsFileName(name)) {
-        throw new Error(name + ' cannot sould not contains any of ' + DISALLOWED_CHAR);
-    }
-}
-function requireNonNull(param, name) {
-    if (!param && typeof (param) !== 'boolean') {
-        throw new TypeError(name + ' param is required !');
-    }
-}
-function assert(condition, message) {
-    if (!condition) {
-        throw new Error(message);
-    }
-}
-function basename(path) {
-    if (!path) {
-        return path;
-    }
-    var array = path.split('/');
-    return array[array.length - 1];
-}
-function asURI(resource) {
-    var monaco = window.monaco;
-    return monaco.Uri.file(resource.path);
-}
-function asURIGoTo(resource, line, column) {
-    var monaco = window.monaco;
-    return monaco.Uri.file(resource.path).with({ fragment: line + "," + column });
-}
-function asURIFragment(resource, fragment) {
-    var monaco = window.monaco;
-    return monaco.Uri.file(resource.path).with({ fragment: fragment });
-}
-function asDocument(resource, preview) {
-    return {
-        resource: resource,
-        uri: asURI(resource),
-        title: preview ? 'Preview \'' + resource.name + '\'' : resource.name,
-        preview: preview,
-        icon: resource.icon
-    };
-}
 function compareDocument(doc1, doc2) {
     return doc1.resource.path === doc2.resource.path;
 }
 function compareGroup(grp1, grp2) {
     return grp1.id() === grp2.id();
-}
-function resourceIsURI(resource, uri) {
-    return '/' + resource.path === uri.path;
 }
 
 
@@ -2655,22 +2566,24 @@ function onMonacoLoad() {
 /*!********************************************************!*\
   !*** ./src/app/editor/shared/models/resource.model.ts ***!
   \********************************************************/
-/*! exports provided: FILE_RESOURCE, FOLDER_RESOURCE, newResource */
+/*! exports provided: ResourceTypes, newResource */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FILE_RESOURCE", function() { return FILE_RESOURCE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FOLDER_RESOURCE", function() { return FOLDER_RESOURCE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ResourceTypes", function() { return ResourceTypes; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "newResource", function() { return newResource; });
-/* harmony import */ var _filters_model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+/* harmony import */ var src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! src/app/shared/models/assert.model */ "./src/app/shared/models/assert.model.ts");
 
-var FILE_RESOURCE = 'file';
-var FOLDER_RESOURCE = 'folder';
+var ResourceTypes;
+(function (ResourceTypes) {
+    ResourceTypes["FILE"] = "file";
+    ResourceTypes["FOLDER"] = "folder";
+    ResourceTypes["LOCAL"] = "local";
+})(ResourceTypes || (ResourceTypes = {}));
 function newResource(parent, type) {
-    Object(_filters_model__WEBPACK_IMPORTED_MODULE_0__["assert"])(type === FILE_RESOURCE || type === FOLDER_RESOURCE, "type param must be '" + FILE_RESOURCE + "' or '" + FOLDER_RESOURCE + "'");
-    Object(_filters_model__WEBPACK_IMPORTED_MODULE_0__["assert"])(parent.type === 'folder', 'resource.type must be folder');
-    Object(_filters_model__WEBPACK_IMPORTED_MODULE_0__["assert"])(parent.children.every(function (e) { return !e.renaming; }), 'cannot edit multiple resources');
+    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_0__["assert"])(parent.type === 'folder', 'resource.type must be folder');
+    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_0__["assert"])(parent.children.every(function (e) { return !e.renaming; }), 'cannot edit multiple resources');
     parent.expanded = true;
     parent.children = parent.children || [];
     return {
@@ -2754,6 +2667,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _resource_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
 /* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
 /* harmony import */ var _models_filters_model__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+/* harmony import */ var src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! src/app/shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
+
 
 
 
@@ -2841,7 +2756,7 @@ var AbstractEditorService = /** @class */ (function () {
                     case 2: return [3 /*break*/, 6];
                     case 3:
                         if (!Object(_models_editor_model__WEBPACK_IMPORTED_MODULE_2__["openAsPreview"])(group.activeDocument())) return [3 /*break*/, 5];
-                        return [4 /*yield*/, this.open(Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["asDocument"])(group.activeDocument().resource, true))];
+                        return [4 /*yield*/, this.open(Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_8__["asDocument"])(group.activeDocument().resource, true))];
                     case 4:
                         if (!(_a.sent())) {
                             return [2 /*return*/, false];
@@ -2953,6 +2868,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
 /* harmony import */ var _models_filters_model__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
 /* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
+/* harmony import */ var src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! src/app/shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
+/* harmony import */ var src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! src/app/shared/models/assert.model */ "./src/app/shared/models/assert.model.ts");
+
+
 
 
 
@@ -2985,7 +2904,7 @@ var GitService = /** @class */ (function () {
                         Object.keys(response_1).forEach(function (key) {
                             var data = response_1[key];
                             _this.repos.push({
-                                name: Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["basename"])(key),
+                                name: Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_5__["basename"])(key),
                                 url: key,
                                 path: data.path,
                                 branch: data.branch,
@@ -3018,7 +2937,7 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(item, 'item');
                         params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'git_show').set('path', item.path);
                         return [4 /*yield*/, this.http.get('/filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
                     case 2:
@@ -3046,7 +2965,7 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(item, 'item');
                         params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'git_status').set('path', item.path);
                         return [4 /*yield*/, this.http.get('/filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
                     case 2:
@@ -3076,7 +2995,7 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 4, , 5]);
-                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(item, 'item');
                         params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'git_add').set('path', item.path);
                         return [4 /*yield*/, this.http.get('/filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
                     case 2:
@@ -3108,7 +3027,7 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 4, , 5]);
-                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(item, 'item');
                         params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'git_checkout').set('path', item.path);
                         return [4 /*yield*/, this.http.get('/filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
                     case 2:
@@ -3140,8 +3059,8 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
-                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(commit, 'commit');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(item, 'item');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(commit, 'commit');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         data = { 'name': 'git_commit', 'path': item.path, commit: commit };
                         return [4 /*yield*/, this.http.post('/filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise()];
@@ -3173,7 +3092,7 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(item, 'item');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         data = { 'name': 'git_push', 'path': item.path, username: username, password: password };
                         return [4 /*yield*/, this.http.post('/filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise()];
@@ -3205,7 +3124,7 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(item, 'item');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         data = { 'name': 'git_pull', 'path': item.path, username: username, password: password };
                         return [4 /*yield*/, this.http.post('/filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise()];
@@ -3236,9 +3155,9 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(home, 'parent');
-                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(url, 'url');
-                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["assert"])(Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["isHome"])(home), 'clone operation is applicable to home only');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(home, 'parent');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(url, 'url');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["assert"])(Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["isHome"])(home), 'clone operation is applicable to home only');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         data = {
                             'name': 'git_clone',
@@ -3251,7 +3170,7 @@ var GitService = /** @class */ (function () {
                         return [4 /*yield*/, this.http.post('/filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise()];
                     case 2:
                         _b.sent();
-                        this.notification.logInfo(url + " cloned into the directory " + Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["basename"])(url));
+                        this.notification.logInfo(url + " cloned into the directory " + Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_5__["basename"])(url));
                         success = true;
                         return [3 /*break*/, 4];
                     case 3:
@@ -3275,7 +3194,7 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["requireNonNull"])(item, 'item');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(item, 'item');
                         params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'git_blame').set('path', item.path);
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         return [4 /*yield*/, this.http.get('/filebrowser/option', { headers: headers, params: params }).toPromise()];
@@ -3325,7 +3244,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
 /* harmony import */ var _models_schemas_model__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../models/schemas.model */ "./src/app/editor/shared/models/schemas.model.ts");
 /* harmony import */ var _resource_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
-/* harmony import */ var _models_filters_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+/* harmony import */ var src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! src/app/shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
 
 
 
@@ -3410,7 +3329,7 @@ var OpenerService = /** @class */ (function (_super) {
         else {
             var resource = this.resourceService.find(base.path);
             this.resourceService.findReference(resource, target.path).then(function (reference) {
-                _this.openURI(Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["asURI"])(reference));
+                _this.openURI(Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_6__["asURI"])(reference));
             }).catch(function (error) {
                 _this.notificationService.logError(error);
             });
@@ -3447,7 +3366,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _models_resource_model__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../models/resource.model */ "./src/app/editor/shared/models/resource.model.ts");
 /* harmony import */ var _git_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./git.service */ "./src/app/editor/shared/services/core/git.service.ts");
 /* harmony import */ var _task_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./task.service */ "./src/app/editor/shared/services/core/task.service.ts");
-/* harmony import */ var _models_filters_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+/* harmony import */ var src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! src/app/shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
+/* harmony import */ var src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! src/app/shared/models/assert.model */ "./src/app/shared/models/assert.model.ts");
+/* harmony import */ var _models_filters_model__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
+
+
 
 
 
@@ -3516,16 +3439,16 @@ var ResourceService = /** @class */ (function () {
      * @returns the created resource
      */
     ResourceService.prototype.restore = function (path) {
-        var name = _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["basename"](path);
+        var name = Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_6__["basename"])(path);
         var parentPath = path.substring(0, path.length - (name.length + 1));
         var parent = this.find(parentPath);
-        var resource = Object(_models_resource_model__WEBPACK_IMPORTED_MODULE_3__["newResource"])(parent, _models_resource_model__WEBPACK_IMPORTED_MODULE_3__["FILE_RESOURCE"]);
+        var resource = Object(_models_resource_model__WEBPACK_IMPORTED_MODULE_3__["newResource"])(parent, _models_resource_model__WEBPACK_IMPORTED_MODULE_3__["ResourceTypes"].FILE);
         resource.creating = resource.renaming = false;
         resource.name = name;
         resource.path = parentPath + '/' + name;
         parent.children = parent.children || [];
         parent.children.push(resource);
-        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["findIcon"](resource);
+        resource.icon = Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_6__["findIcon"])(resource.path, resource.icon);
         this.__resources__.push(resource);
         return resource;
     };
@@ -3541,9 +3464,9 @@ var ResourceService = /** @class */ (function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["checkName"](name);
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canWrite"](resource), 'permission denied');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canWrite"](this.find(resource.parent)), 'permission denied on parent directory');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["checkName"])(name);
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["assert"])(_models_filters_model__WEBPACK_IMPORTED_MODULE_8__["canWrite"](resource), 'permission denied');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["assert"])(_models_filters_model__WEBPACK_IMPORTED_MODULE_8__["canWrite"](this.find(resource.parent)), 'permission denied on parent directory');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 5, , 6]);
@@ -3563,7 +3486,7 @@ var ResourceService = /** @class */ (function () {
                         success = _a.sent();
                         if (success) {
                             resource.name = name;
-                            _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["findIcon"](resource);
+                            resource.icon = Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_6__["findIcon"])(resource.path, resource.icon);
                         }
                         _a.label = 4;
                     case 4:
@@ -3589,15 +3512,15 @@ var ResourceService = /** @class */ (function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["checkName"](resource.name);
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canWrite"](resource), 'permission denied');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canWrite"](this.find(resource.parent)), 'permission denied on parent directory');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["checkName"])(resource.name);
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["assert"])(_models_filters_model__WEBPACK_IMPORTED_MODULE_8__["canWrite"](resource), 'permission denied');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["assert"])(_models_filters_model__WEBPACK_IMPORTED_MODULE_8__["canWrite"](this.find(resource.parent)), 'permission denied on parent directory');
                         this.task.emitTaskEvent(true, 'create resource');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["checkName"](resource.name);
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canWrite"](this.find(resource.parent)), 'permission denied');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["checkName"])(resource.name);
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["assert"])(_models_filters_model__WEBPACK_IMPORTED_MODULE_8__["canWrite"](this.find(resource.parent)), 'permission denied');
                         data = {
                             name: 'create_resource',
                             path: resource.parent + '/' + resource.name,
@@ -3608,7 +3531,7 @@ var ResourceService = /** @class */ (function () {
                     case 2:
                         success = _a.sent();
                         this.task.emitTaskEvent(false);
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["findIcon"](resource);
+                        resource.icon = Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_6__["findIcon"])(resource.path, resource.icon);
                         return [2 /*return*/, success];
                     case 3:
                         error_2 = _a.sent();
@@ -3631,9 +3554,9 @@ var ResourceService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"](resource, 'resource');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canWrite"](resource), 'permission denied');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](!_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["isRoot"](resource), 'permission denied');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["requireNonNull"])(resource, 'resource');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["assert"])(_models_filters_model__WEBPACK_IMPORTED_MODULE_8__["canWrite"](resource), 'permission denied');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["assert"])(!_models_filters_model__WEBPACK_IMPORTED_MODULE_8__["isRoot"](resource), 'permission denied');
                         this.task.emitTaskEvent(true, 'delete');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         return [4 /*yield*/, this.http.post('filebrowser/option', {
@@ -3722,10 +3645,10 @@ var ResourceService = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
                         this.task.emitTaskEvent(true, 'move');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"](src, 'src');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"](dst, 'dst');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["canWrite"](dst), 'permission denied');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["isFolder"](dst), 'destination must be a directory');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["requireNonNull"])(src, 'src');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["requireNonNull"])(dst, 'dst');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["assert"])(_models_filters_model__WEBPACK_IMPORTED_MODULE_8__["canWrite"](dst), 'permission denied');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["assert"])(_models_filters_model__WEBPACK_IMPORTED_MODULE_8__["isFolder"](dst), 'destination must be a directory');
                         resource = void 0;
                         if (!('size' in src)) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.moveFile(src, dst)];
@@ -3763,7 +3686,7 @@ var ResourceService = /** @class */ (function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["fromServer"](resource)) {
+                        if (!_models_filters_model__WEBPACK_IMPORTED_MODULE_8__["isFromServer"](resource)) {
                             return [2 /*return*/, true];
                         }
                         if (!resource.changed) {
@@ -3773,7 +3696,7 @@ var ResourceService = /** @class */ (function () {
                     case 1:
                         _a.trys.push([1, 3, , 4]);
                         this.task.emitTaskEvent(true, 'save');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"](resource, 'resource');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["requireNonNull"])(resource, 'resource');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         return [4 /*yield*/, this.http.post('filebrowser/option', {
                                 name: 'update_resource', path: resource.path, content: resource.content
@@ -3828,8 +3751,8 @@ var ResourceService = /** @class */ (function () {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         this.task.emitTaskEvent(true, 'compilation');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"](resource, 'resource');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["isPl"](resource), 'pl resource is expected');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["requireNonNull"])(resource, 'resource');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["assert"])(_models_filters_model__WEBPACK_IMPORTED_MODULE_8__["isPl"](resource), 'pl resource is expected');
                         data = {
                             'name': 'compile_pl',
                             'path': resource.path,
@@ -3861,7 +3784,7 @@ var ResourceService = /** @class */ (function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["fromServer"](resource)) {
+                        if (!_models_filters_model__WEBPACK_IMPORTED_MODULE_8__["isFromServer"](resource)) {
                             return [2 /*return*/, true];
                         }
                         this.selection = resource;
@@ -3907,12 +3830,8 @@ var ResourceService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        if (!_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["fromServer"](resource)) {
-                            resource.meta.previewData = resource.content;
-                            return [2 /*return*/, Promise.resolve(resource)];
-                        }
                         this.task.emitTaskEvent(true, 'preview');
-                        return [4 /*yield*/, this.previewProviders[_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["extension"](resource)](resource, this)];
+                        return [4 /*yield*/, this.previewProviders[Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_6__["extname"])(resource.path)](resource, this)];
                     case 1:
                         response = _a.sent();
                         resource.meta.previewData = response.preview;
@@ -3994,9 +3913,9 @@ var ResourceService = /** @class */ (function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"](src.name, 'src.name');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"](dst.path, 'dst.path');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["checkName"](src.name);
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["requireNonNull"])(src.name, 'src.name');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["requireNonNull"])(dst.path, 'dst.path');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["checkName"])(src.name);
                         formData = new FormData();
                         formData.append('file', src, src.name);
                         formData.append('path', dst.path);
@@ -4006,7 +3925,7 @@ var ResourceService = /** @class */ (function () {
                         return [4 /*yield*/, this.http.post('/filebrowser/upload_resource', formData, { headers: headers }).toPromise()];
                     case 1:
                         _a.sent();
-                        newRes = Object(_models_resource_model__WEBPACK_IMPORTED_MODULE_3__["newResource"])(dst, _models_resource_model__WEBPACK_IMPORTED_MODULE_3__["FILE_RESOURCE"]);
+                        newRes = Object(_models_resource_model__WEBPACK_IMPORTED_MODULE_3__["newResource"])(dst, _models_resource_model__WEBPACK_IMPORTED_MODULE_3__["ResourceTypes"].FILE);
                         newRes.path = dst.path + '/' + src.name;
                         newRes.name = src.name;
                         newRes.renaming = newRes.creating = false;
@@ -4024,10 +3943,10 @@ var ResourceService = /** @class */ (function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"](src.path, 'src.path');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"](dst.path, 'dst.path');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](src.path !== dst.path, 'cannot move the resource to the same path');
-                        _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["assert"](!_models_filters_model__WEBPACK_IMPORTED_MODULE_6__["isRoot"](src), 'cannot move a root resource');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["requireNonNull"])(src.path, 'src.path');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["requireNonNull"])(dst.path, 'dst.path');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["assert"])(src.path !== dst.path, 'cannot move the resource to the same path');
+                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_7__["assert"])(!_models_filters_model__WEBPACK_IMPORTED_MODULE_8__["isRoot"](src), 'cannot move a root resource');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         return [4 /*yield*/, this.http.post('filebrowser/option', {
                                 name: 'move_resource',
@@ -4063,7 +3982,7 @@ var ResourceService = /** @class */ (function () {
     ResourceService.prototype.build = function () {
         var array = [];
         function recursive(item) {
-            _models_filters_model__WEBPACK_IMPORTED_MODULE_6__["findIcon"](item);
+            item.icon = Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_6__["findIcon"])(item.path, item.icon);
             array.push(item);
             if (item.children) {
                 for (var _i = 0, _a = item.children; _i < _a.length; _i++) {
@@ -4227,12 +4146,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MonacoService", function() { return MonacoService; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _models_filters_model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
-/* harmony import */ var _models_language_model__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../models/language.model */ "./src/app/editor/shared/models/language.model.ts");
-/* harmony import */ var _core_opener_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../core/opener.service */ "./src/app/editor/shared/services/core/opener.service.ts");
-/* harmony import */ var _core_resource_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../core/resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
-/* harmony import */ var _core_git_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../core/git.service */ "./src/app/editor/shared/services/core/git.service.ts");
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var _models_language_model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../models/language.model */ "./src/app/editor/shared/models/language.model.ts");
+/* harmony import */ var _core_opener_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../core/opener.service */ "./src/app/editor/shared/services/core/opener.service.ts");
+/* harmony import */ var _core_resource_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../core/resource.service */ "./src/app/editor/shared/services/core/resource.service.ts");
+/* harmony import */ var _core_git_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../core/git.service */ "./src/app/editor/shared/services/core/git.service.ts");
+/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
+/* harmony import */ var src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! src/app/shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
 // tslint:disable: max-line-length
 
 
@@ -4251,8 +4170,8 @@ var MonacoService = /** @class */ (function () {
         this.editors = [];
         this.codeLens = {};
         this.blames = {};
-        this.cursorChanged = new rxjs__WEBPACK_IMPORTED_MODULE_7__["Subject"]();
-        this.blameChanged = new rxjs__WEBPACK_IMPORTED_MODULE_7__["Subject"]();
+        this.cursorChanged = new rxjs__WEBPACK_IMPORTED_MODULE_6__["Subject"]();
+        this.blameChanged = new rxjs__WEBPACK_IMPORTED_MODULE_6__["Subject"]();
     }
     MonacoService_1 = MonacoService;
     MonacoService.prototype.register = function (monaco) {
@@ -4276,8 +4195,8 @@ var MonacoService = /** @class */ (function () {
         this.registerCompletion(monaco);
     };
     MonacoService.prototype.findLanguage = function (resource) {
-        var ext = Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_2__["extension"])(resource);
-        for (var _i = 0, LANGUAGES_1 = _models_language_model__WEBPACK_IMPORTED_MODULE_3__["LANGUAGES"]; _i < LANGUAGES_1.length; _i++) {
+        var ext = Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_7__["extname"])(resource.path);
+        for (var _i = 0, LANGUAGES_1 = _models_language_model__WEBPACK_IMPORTED_MODULE_2__["LANGUAGES"]; _i < LANGUAGES_1.length; _i++) {
             var item = LANGUAGES_1[_i];
             if (item.extension === ext) {
                 return item.id;
@@ -4389,7 +4308,7 @@ var MonacoService = /** @class */ (function () {
                             }
                         }
                     ],
-                    [/#.+/, 'comment'],
+                    [/#.*/, 'comment'],
                     [/==/, { token: 'open', next: '@embedded' }],
                     [/%=/, { token: 'open', next: '@predefined', nextEmbedded: 'javascript' }],
                     [/\{\{[a-zA-Z_](\.?\w+)\}\}/, 'key'],
@@ -4473,20 +4392,25 @@ var MonacoService = /** @class */ (function () {
                     }
                     match = MonacoService_1.REFERENCE_PATTERN.exec(lines[i]);
                     if (match) {
-                        var url = match[match.length - 1];
-                        var index = match.index + match.input.length - url.length;
-                        var range = new monaco.Range(i + 1, index, i + 1, index + url.length + 1);
                         var comment = false;
-                        while (index >= 0) {
-                            if (lines[i][index] === '#') {
+                        while (match.index >= 0) {
+                            if (lines[i][match.index] === '#') {
                                 comment = true;
                                 break;
                             }
-                            index--;
+                            match.index--;
                         }
                         if (!comment) {
+                            var index = lines[i].indexOf('@');
+                            if (index === -1) {
+                                index = lines[i].indexOf('/');
+                                if (index === -1) {
+                                    index = match.index;
+                                }
+                            }
+                            var url = match.pop();
                             links.push({
-                                range: range,
+                                range: new monaco.Range(i + 1, index + 1, i + 1, index + url.length + 2),
                                 url: url,
                             });
                         }
@@ -4576,9 +4500,9 @@ var MonacoService = /** @class */ (function () {
     MonacoService.CLOSE_PATTERN = /^==\s*$/;
     MonacoService = MonacoService_1 = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({ providedIn: 'root' }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_core_git_service__WEBPACK_IMPORTED_MODULE_6__["GitService"],
-            _core_opener_service__WEBPACK_IMPORTED_MODULE_4__["OpenerService"],
-            _core_resource_service__WEBPACK_IMPORTED_MODULE_5__["ResourceService"]])
+        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_core_git_service__WEBPACK_IMPORTED_MODULE_5__["GitService"],
+            _core_opener_service__WEBPACK_IMPORTED_MODULE_3__["OpenerService"],
+            _core_resource_service__WEBPACK_IMPORTED_MODULE_4__["ResourceService"]])
     ], MonacoService);
     return MonacoService;
 }());
@@ -4628,6 +4552,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _shared_services_core_git_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../shared/services/core/git.service */ "./src/app/editor/shared/services/core/git.service.ts");
 /* harmony import */ var _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../shared/models/filters.model */ "./src/app/editor/shared/models/filters.model.ts");
 /* harmony import */ var _shared_services_core_editor_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../shared/services/core/editor.service */ "./src/app/editor/shared/services/core/editor.service.ts");
+/* harmony import */ var src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! src/app/shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
+
 
 
 
@@ -4654,6 +4580,9 @@ var CodeEditorComponent = /** @class */ (function () {
         }));
         this.subscriptions.push(this.editor.onPreviewCommand.subscribe(function (item) {
             _this.didPreview(item);
+        }));
+        this.subscriptions.push(this.editor.onDiffCommand.subscribe(function () {
+            _this.open(_this.editor.document());
         }));
         this.subscriptions.push(this.monacoService.blameChanged.subscribe(function (e) {
             if (e.blame && e.modelId === _this.editor.codeEditor.getModel().id) {
@@ -4744,7 +4673,7 @@ var CodeEditorComponent = /** @class */ (function () {
     CodeEditorComponent.prototype.didPreview = function (item) {
         var _this = this;
         this.resources.preview(item).then(function () {
-            _this.editorService.open(Object(_shared_models_filters_model__WEBPACK_IMPORTED_MODULE_7__["asDocument"])(item));
+            _this.editorService.open(Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_9__["asDocument"])(item));
         }).catch(function (error) {
             _this.notification.logError(error);
         });
@@ -4767,7 +4696,7 @@ var CodeEditorComponent = /** @class */ (function () {
                             this.active.changed = false;
                             this.active.lastContent = this.active.content;
                         }
-                        this.readonly = (this.editor.diffEditing || !this.active.write);
+                        this.readonly = this.editor.diffEditing || !this.active.write;
                         this.editor.codeEditor.setModel(model);
                         this.editor.codeEditor.updateOptions({ readOnly: this.readonly });
                         this.editor.codeEditor.focus();
@@ -4777,30 +4706,6 @@ var CodeEditorComponent = /** @class */ (function () {
                         return [4 /*yield*/, this.checkDiffOptions(monaco, language)];
                     case 2:
                         _a.sent();
-                        this.decorations = this.editor.codeEditor.deltaDecorations(this.decorations, [
-                            {
-                                range: new monaco.Range(3, 1, 3, 1),
-                                options: {
-                                    isWholeLine: true,
-                                    className: 'myContentClass',
-                                    glyphMarginClassName: 'myGlyphMarginClass',
-                                    glyphMarginHoverMessage: {
-                                        isTrusted: true,
-                                        value: 'value'
-                                    }
-                                }
-                            }
-                        ]);
-                        this.decorations = this.editor.codeEditor.deltaDecorations(this.decorations, [
-                            {
-                                range: new monaco.Range(3, 1, 3, 20),
-                                options: {
-                                    isWholeLine: true,
-                                    linesDecorationsClassName: 'myLineDecoration',
-                                    hoverMessage: { isTrusted: true, value: 'Hover' }
-                                }
-                            }
-                        ]);
                         return [2 /*return*/];
                 }
             });
@@ -4812,29 +4717,27 @@ var CodeEditorComponent = /** @class */ (function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!this.editor.diffEditing) return [3 /*break*/, 6];
+                        if (!this.editor.diffEditing) return [3 /*break*/, 5];
                         diff = '';
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 4, , 5]);
-                        if (!this.editor.diffEditing) return [3 /*break*/, 3];
+                        _a.trys.push([1, 3, , 4]);
                         return [4 /*yield*/, this.gitService.show(this.active)];
                     case 2:
                         diff = (_a.sent()) || '';
-                        _a.label = 3;
-                    case 3: return [3 /*break*/, 5];
-                    case 4:
+                        return [3 /*break*/, 4];
+                    case 3:
                         _1 = _a.sent();
-                        return [3 /*break*/, 5];
-                    case 5:
+                        return [3 /*break*/, 4];
+                    case 4:
                         this.editor.diffEditor.setModel({
                             original: monaco.editor.createModel(diff, language),
                             modified: monaco.editor.createModel(this.active.content, language),
                         });
                         this.editor.diffEditor.getModifiedEditor().updateOptions({ readOnly: this.readonly });
                         this.editor.diffEditor.getModifiedEditor().focus();
-                        _a.label = 6;
-                    case 6: return [2 /*return*/];
+                        _a.label = 5;
+                    case 5: return [2 /*return*/];
                 }
             });
         });
@@ -5101,7 +5004,7 @@ var WebEditorComponent = /** @class */ (function () {
         this.openSubscription.unsubscribe();
     };
     WebEditorComponent.prototype.open = function (document) {
-        this.content = document.resource.meta.previewData;
+        this.content = document.resource.content;
     };
     tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
@@ -5130,7 +5033,7 @@ var WebEditorComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!-- LITTLE HACK TO PRELOAD MONACO EDITOR -->\n<ngx-monaco-editor [hidden]='true' [options]='{}' [model]='{}'></ngx-monaco-editor>\n<as-split class='h100' direction='horizontal' gutterSize='5' useTransition='true' cdkDropListGroup>\n    <ng-container *ngFor='let group of groups'>\n        <as-split-area class='editor-group h100' style='overflow: hidden;'>\n            <div class='tab-bar'>\n                <div [id]='group.id()' class='tab-group' cdkDropList [cdkDropListData]=\"group.documents\" (cdkDropListDropped)=\"group.drop($event)\">\n                    <div *ngFor='let tab of group.documents; trackBy: group.trackDocument' [matTooltip]=\"tab.resource.path\"\n                        [ngClass]=\"{'tab-item': true, active: group.isActive(tab), changed: group.isChanged(tab)}\"\n                        (click)='group.open(tab, true)' cdkDragAxis='x' cdkDrag>\n                        <i class=\"tab-icon {{tab.icon}}\"></i>\n                        <span>{{tab.title}}</span>\n                        <span class='tab-close' (click)='group.close(tab, true)'>&nbsp;&times;</span>\n                    </div>\n                </div>\n                <div class=\"spacer\"></div>  \n                <ng-container *ngIf='group.someAction();'>\n                    <ng-container *ngIf='group.focused()'>\n                        <ng-container *ngFor='let action of group.actions()'>\n                            <div class='tab-item' [matTooltip]='action.tooltip' *ngIf='action.condition(group.activeDocument().resource)' (click)='action.invoke(group.activeDocument().resource)'>\n                                <i class=\"{{action.icon}}\"></i>\n                            </div>\n                        </ng-container>\n                    </ng-container>\n                    <div class='tab-item' matTooltip='More Options' [matMenuTriggerFor]=\"editorMenu\">\n                        <i class=\"fas fa-ellipsis-h\"></i>\n                    </div>\n                    <mat-menu #editorMenu=\"matMenu\">\n                        <button mat-menu-item (click)='group.save(group.activeDocument())'>Save ⌘S</button>\n                        <button mat-menu-item (click)='group.saveAll()'>Save All ⌘Alt S</button>\n                        <button mat-menu-item (click)='group.close(group.activeDocument(), true)'>Close ⌘K</button>\n                        <button mat-menu-item (click)='group.closeAll(true)'>Close All ⌘Alt K</button>\n                        <button mat-menu-item (click)='group.closeSaved()'>Close Saved ⌘Alt U</button>\n                    </mat-menu>\n                </ng-container>\n            </div>\n            <ng-container *ngFor='let editor of group.editors; trackBy group.trackEditor'>\n                <ng-container [ngSwitch]=\"editor.type()\">\n                    <code-editor [hidden]='!group.activeEditorIs(\"code\")' *ngSwitchCase=\"'code'\" [editor]='editor'></code-editor>\n                    <image-editor [hidden]='!group.activeEditorIs(\"image\")' *ngSwitchCase=\"'image'\" [editor]='editor'></image-editor>\n                    <preview-editor [hidden]='!group.activeEditorIs(\"preview\")' *ngSwitchCase=\"'preview'\" [editor]='editor'></preview-editor>\n                    <web-editor [hidden]='!group.activeEditorIs(\"web\")' *ngSwitchCase=\"'web'\" [editor]='editor'></web-editor>\n                </ng-container>\n            </ng-container>\n        </as-split-area>\n    </ng-container>\n</as-split>"
+module.exports = "<!-- LITTLE HACK TO PRELOAD MONACO EDITOR -->\n<ngx-monaco-editor [hidden]='true' [options]='{}' [model]='{}' (onInit)='monacoLoaded()'></ngx-monaco-editor>\n<as-split class='h100' direction='horizontal' gutterSize='5' useTransition='true' cdkDropListGroup>\n    <ng-container *ngFor='let group of groups'>\n        <as-split-area class='editor-group h100' style='overflow: hidden;'>\n            <div class='tab-bar'>\n                <div [id]='group.id()' class='tab-group' cdkDropList [cdkDropListData]=\"group.documents\" (cdkDropListDropped)=\"group.drop($event)\">\n                    <div *ngFor='let tab of group.documents; trackBy: group.trackDocument' [matTooltip]=\"tab.resource.path\"\n                        [ngClass]=\"{'tab-item': true, active: group.isActive(tab), changed: group.isChanged(tab)}\"\n                        (click)='group.open(tab, true)' cdkDragAxis='x' cdkDrag>\n                        <i class=\"tab-icon {{tab.icon}}\"></i>\n                        <span>{{tab.title}}</span>\n                        <span class='tab-close' (click)='group.close(tab, true)'>&nbsp;&times;</span>\n                    </div>\n                </div>\n                <div class=\"spacer\"></div>  \n                <ng-container *ngIf='group.someAction();'>\n                    <ng-container *ngIf='group.focused()'>\n                        <ng-container *ngFor='let action of group.actions()'>\n                            <div class='tab-item' [matTooltip]='action.tooltip' *ngIf='action.condition(group.activeDocument().resource)' (click)='action.invoke(group.activeDocument().resource)'>\n                                <i class=\"{{action.icon}}\"></i>\n                            </div>\n                        </ng-container>\n                    </ng-container>\n                    <div class='tab-item' matTooltip='More Options' [matMenuTriggerFor]=\"editorMenu\">\n                        <i class=\"fas fa-ellipsis-h\"></i>\n                    </div>\n                    <mat-menu #editorMenu=\"matMenu\">\n                        <button mat-menu-item (click)='group.save(group.activeDocument())'>Save ⌘S</button>\n                        <button mat-menu-item (click)='group.saveAll()'>Save All ⌘Alt S</button>\n                        <button mat-menu-item (click)='group.close(group.activeDocument(), true)'>Close ⌘K</button>\n                        <button mat-menu-item (click)='group.closeAll(true)'>Close All ⌘Alt K</button>\n                        <button mat-menu-item (click)='group.closeSaved()'>Close Saved ⌘Alt U</button>\n                    </mat-menu>\n                </ng-container>\n            </div>\n            <ng-container *ngFor='let editor of group.editors; trackBy group.trackEditor'>\n                <ng-container [ngSwitch]=\"editor.type()\">\n                    <code-editor [hidden]='!group.activeEditorIs(\"code\")' *ngSwitchCase=\"'code'\" [editor]='editor'></code-editor>\n                    <image-editor [hidden]='!group.activeEditorIs(\"image\")' *ngSwitchCase=\"'image'\" [editor]='editor'></image-editor>\n                    <preview-editor [hidden]='!group.activeEditorIs(\"preview\")' *ngSwitchCase=\"'preview'\" [editor]='editor'></preview-editor>\n                    <web-editor [hidden]='!group.activeEditorIs(\"web\")' *ngSwitchCase=\"'web'\" [editor]='editor'></web-editor>\n                </ng-container>\n            </ng-container>\n        </as-split-area>\n    </ng-container>\n</as-split>"
 
 /***/ }),
 
@@ -5177,6 +5080,8 @@ var WorkspaceComponent = /** @class */ (function () {
             _this.groups = groups;
             _this.changes.detectChanges();
         });
+    };
+    WorkspaceComponent.prototype.monacoLoaded = function () {
     };
     WorkspaceComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
@@ -5620,6 +5525,176 @@ var RunScriptsDirective = /** @class */ (function () {
     return RunScriptsDirective;
 }());
 
+
+
+/***/ }),
+
+/***/ "./src/app/shared/models/assert.model.ts":
+/*!***********************************************!*\
+  !*** ./src/app/shared/models/assert.model.ts ***!
+  \***********************************************/
+/*! exports provided: DISALLOWED_CHAR, requireNonNull, assert, checkName */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DISALLOWED_CHAR", function() { return DISALLOWED_CHAR; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "requireNonNull", function() { return requireNonNull; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "assert", function() { return assert; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "checkName", function() { return checkName; });
+var DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&'];
+/**
+ * Throws an exception if obj is null or empty (expected for boolean and number)
+ * @param obj - the object to evaluate
+ * @param message - an optional error message
+ * @return the object itself.
+ */
+function requireNonNull(obj, message) {
+    if (!obj && typeof (obj) !== 'boolean' && typeof (obj) !== 'number') {
+        message = message ? message : 'should not be null or empty';
+        throw new TypeError(message);
+    }
+    return obj;
+}
+/**
+ * Throws an exception if condition if false.
+ * @param condition - the condition
+ * @param message - an optional error message
+ * @return true if ther
+ */
+function assert(condition, message) {
+    if (!condition) {
+        throw new Error(message);
+    }
+    return true;
+}
+/**
+ * Checks if name can be used a file name.
+ * @param name the name to evaluate
+ * @return true else throw an exception
+ */
+function checkName(name) {
+    if (!name) {
+        throw new TypeError('a non empty name should be provided');
+    }
+    if (!DISALLOWED_CHAR.every(function (e) { return !name.includes(e); })) {
+        throw new Error(name + 'should not contains any of ' + DISALLOWED_CHAR);
+    }
+    return true;
+}
+
+
+/***/ }),
+
+/***/ "./src/app/shared/models/paths.model.ts":
+/*!**********************************************!*\
+  !*** ./src/app/shared/models/paths.model.ts ***!
+  \**********************************************/
+/*! exports provided: basename, dirname, extname, findIcon, isURI, asURI, asURIFragment, asDocument, asURIGoTo */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "basename", function() { return basename; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dirname", function() { return dirname; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "extname", function() { return extname; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "findIcon", function() { return findIcon; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isURI", function() { return isURI; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asURI", function() { return asURI; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asURIFragment", function() { return asURIFragment; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asDocument", function() { return asDocument; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "asURIGoTo", function() { return asURIGoTo; });
+var ICONS_MAP = {
+    'js': 'fab fa-js-square',
+    'py': 'fab fa-python',
+    'pdf': 'fas fa-file-pdf',
+    'css': 'fab fa-css3',
+    'scss': 'fab fa-css3',
+    'html': 'fab fa-html5',
+    'csv': 'fas fa-file-csv',
+    'xls': 'fas fa-file-pdf',
+    'java': 'fab fa-java',
+    'png': 'fas fa-file-image',
+    'jpg': 'fas fa-file-image',
+    'svg': 'fas fa-file-image',
+};
+/**
+ * Returns the last portion of a path. Similar to the Unix basename command.
+ * Often used to extract the file name from a fully qualified path.
+ * @param the path to evaluate.
+ */
+function basename(path) {
+    if (!path) {
+        return path;
+    }
+    return path.replace(/\\/g, '/').replace(/.*\//, '');
+}
+/**
+ * Returns the directory name of a path. Similar to the Unix dirname command.
+ * @param path the path to evaluate
+ */
+function dirname(path) {
+    if (!path) {
+        return path;
+    }
+    return path.replace(/\\/g, '/').replace(/\/[^\/]*$/, '');
+}
+/**
+ * Returns the extension of the path, from the last '.' to end of string in the last portion of the path.
+ * If there is no '.' in the last portion of the path or the first character of it is '.', then it returns an empty string
+ * @param path the path to evaluate
+ */
+function extname(path) {
+    var base = basename(path);
+    if (!base) {
+        return base;
+    }
+    if (base.startsWith('.')) {
+        return '';
+    }
+    var dotIndex = base.lastIndexOf('.');
+    if (dotIndex === -1) {
+        return '';
+    }
+    return base.substring(dotIndex + 1).toLowerCase();
+}
+/**
+ * Finds the font awesome icon representing the most the given path.
+ * If an icon is not found, fallback will be returned.
+ * @param path the path to evaluate
+ * @param fallback the icon to return if the function cannot find an icon.
+ */
+function findIcon(path, fallback) {
+    var ext = extname(path);
+    if (ext in ICONS_MAP) {
+        return ICONS_MAP[ext];
+    }
+    return fallback;
+}
+function isURI(resource, uri) {
+    return '/' + resource.path === uri.path;
+}
+function asURI(resource) {
+    var monaco = window.monaco;
+    return monaco.Uri.file(resource.path);
+}
+function asURIFragment(resource, fragment) {
+    var monaco = window.monaco;
+    return monaco.Uri.file(resource.path).with({ fragment: fragment });
+}
+function asDocument(resource, preview) {
+    return {
+        resource: resource,
+        uri: asURI(resource),
+        title: preview ? 'Preview \'' + resource.name + '\'' : resource.name,
+        preview: preview,
+        icon: resource.icon
+    };
+}
+function asURIGoTo(resource, line, column) {
+    var monaco = window.monaco;
+    return monaco.Uri.file(resource.path).with({ fragment: line + "," + column });
+}
 
 
 /***/ }),

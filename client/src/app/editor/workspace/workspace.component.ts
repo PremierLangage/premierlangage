@@ -11,6 +11,7 @@ import { NotificationService } from '../../shared/services/notification.service'
 import { OpenerService } from '../shared/services/core/opener.service';
 import { IEditorGroup } from '../shared/models/editor-group.model';
 import { EditorService } from '../shared/services/core/editor.service';
+import { asURI } from 'src/app/shared/models/paths.model';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -25,7 +26,7 @@ export class WorkspaceComponent implements OnInit {
         readonly editor: EditorService,
         readonly opener: OpenerService,
         readonly changes: ChangeDetectorRef,
-    ) { }
+    ) {}
 
     ngOnInit() {
         this.groups = this.editor.listGroups();
@@ -33,5 +34,8 @@ export class WorkspaceComponent implements OnInit {
             this.groups = groups;
             this.changes.detectChanges();
         });
+    }
+
+    monacoLoaded() {
     }
 }

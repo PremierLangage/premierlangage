@@ -1,13 +1,16 @@
-import { assert } from './filters.model';
+import { assert } from 'src/app/shared/models/assert.model';
 
-export const FILE_RESOURCE = 'file';
-export const FOLDER_RESOURCE = 'folder';
+export enum ResourceTypes {
+    FILE = 'file',
+    FOLDER = 'folder',
+    LOCAL = 'local'
+}
 
 export interface Resource {
     name: string;
     path: string;
     parent: string;
-    type: string;
+    type: ResourceTypes;
     icon: string;
     write: boolean;
     read: boolean;
@@ -33,18 +36,17 @@ export interface Resource {
 }
 
 export interface ResourceMeta {
-    text: boolean;
-    code: boolean;
-    archive: boolean;
-    application: boolean;
-    image: boolean;
-    excel: boolean;
-    previewData: string;
-    downloadUrl: string;
+    text?: boolean;
+    code?: boolean;
+    archive?: boolean;
+    application?: boolean;
+    image?: boolean;
+    excel?: boolean;
+    previewData?: string;
+    downloadUrl?: string;
 }
 
-export function newResource(parent: Resource, type: string): Resource {
-    assert(type === FILE_RESOURCE || type === FOLDER_RESOURCE, `type param must be '${FILE_RESOURCE}' or '${FOLDER_RESOURCE}'`);
+export function newResource(parent: Resource, type: ResourceTypes): Resource {
     assert(parent.type === 'folder', 'resource.type must be folder');
     assert(parent.children.every(e => !e.renaming), 'cannot edit multiple resources');
     parent.expanded = true;

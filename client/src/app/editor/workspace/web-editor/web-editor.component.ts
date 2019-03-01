@@ -29,7 +29,7 @@ export class WebEditorComponent implements OnInit, OnDestroy {
     }
 
     private open(document: IEditorDocument): void {
-        this.content = document.resource.meta.previewData;
+        this.content = document.resource.content;
     }
 
 }

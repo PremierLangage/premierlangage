@@ -13,7 +13,7 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
   styleUrls: ['./navigation.component.scss'],
 })
 export class NavigationComponent implements OnInit {
-    size = 25;
+    size = 0;
     index = 0;
 
     constructor(

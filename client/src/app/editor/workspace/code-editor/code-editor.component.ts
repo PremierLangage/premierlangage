@@ -10,9 +10,10 @@ import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import IStandaloneDiffEditor = monaco.editor.IStandaloneDiffEditor;
 import { Subscription } from 'rxjs';
 import { GitService } from '../../shared/services/core/git.service';
-import { isSVG, asDocument, canBePreviewed } from '../../shared/models/filters.model';
+import { isSVG, canBePreviewed } from '../../shared/models/filters.model';
 import { EditorService } from '../../shared/services/core/editor.service';
 import { IBlame } from '../../shared/models/git.model';
+import { asDocument } from 'src/app/shared/models/paths.model';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -46,11 +47,12 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         this.subscriptions.push(this.editor.onOpened.subscribe(uri => {
             this.open(uri);
         }));
-
         this.subscriptions.push(this.editor.onPreviewCommand.subscribe((item: Resource) => {
             this.didPreview(item);
         }));
-
+        this.subscriptions.push(this.editor.onDiffCommand.subscribe(() => {
+            this.open(this.editor.document());
+        }));
         this.subscriptions.push(this.monacoService.blameChanged.subscribe(e => {
             if (e.blame && e.modelId === this.editor.codeEditor.getModel().id) {
                 this.blame = e.blame;
@@ -172,46 +174,20 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
             this.active.lastContent = this.active.content;
         }
 
-        this.readonly = (this.editor.diffEditing || !this.active.write);
+        this.readonly = this.editor.diffEditing || !this.active.write;
         this.editor.codeEditor.setModel(model);
         this.editor.codeEditor.updateOptions({ readOnly: this.readonly });
         this.editor.codeEditor.focus();
 
         await this.checkOptionOptions(document, monaco);
         await this.checkDiffOptions(monaco, language);
-        this.decorations = this.editor.codeEditor.deltaDecorations(this.decorations, [
-            {
-                range: new monaco.Range(3, 1, 3, 1),
-                options: {
-                    isWholeLine: true,
-                    className: 'myContentClass',
-                    glyphMarginClassName: 'myGlyphMarginClass',
-                    glyphMarginHoverMessage: {
-                        isTrusted: true,
-                        value: 'value'
-                    }
-                }
-            }
-        ]);
-        this.decorations = this.editor.codeEditor.deltaDecorations(this.decorations, [
-            {
-                range: new monaco.Range(3, 1, 3, 20),
-                options: {
-                    isWholeLine: true,
-                    linesDecorationsClassName: 'myLineDecoration',
-                    hoverMessage: { isTrusted: true, value: 'Hover' }
-                }
-            }
-        ]);
     }
 
     private async checkDiffOptions(monaco: any, language: string) {
         if (this.editor.diffEditing) {
             let diff = '';
             try {
-                if (this.editor.diffEditing) {
-                    diff = await this.gitService.show(this.active) || '';
-                }
+                diff = await this.gitService.show(this.active) || '';
             } catch (_) {}
             this.editor.diffEditor.setModel({
                 original: monaco.editor.createModel(diff, language),

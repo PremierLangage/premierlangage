@@ -8,9 +8,10 @@ import { GitService } from '../../shared/services/core/git.service';
 import { ResourceService } from '../../shared/services/core/resource.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { OpenerService } from '../../shared/services/core/opener.service';
-import { asURI, asURIFragment } from '../../shared/models/filters.model';
 import { EditorService } from '../../shared/services/core/editor.service';
 import { DIFF_FRAGMENT } from '../../shared/models/editor.model';
+
+import { asURI, asURIFragment } from 'src/app//shared/models/paths.model';
 
 @Component({
   // tslint:disable-next-line: component-selector

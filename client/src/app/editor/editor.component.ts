@@ -1,15 +1,17 @@
 import { Component, ViewEncapsulation, HostListener, OnInit } from '@angular/core';
-import { ResourceService } from './shared/services/core/resource.service';
+import { FormControl } from '@angular/forms';
+import { MatAutocompleteSelectedEvent } from '@angular/material';
+
+import { asURI } from 'src/app//shared/models/paths.model';
+import { TaskService } from './shared/services/core/task.service';
 import { MonacoService } from './shared/services/monaco/monaco.service';
 import { MONACO_LOADED } from './shared/models/monaco.model';
-import { TaskService } from './shared/services/core/task.service';
-import { MatAutocompleteSelectedEvent } from '@angular/material';
-import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { Resource, FILE_RESOURCE } from './shared/models/resource.model';
-import { map, startWith, debounceTime} from 'rxjs/operators';
 import { OpenerService } from './shared/services/core/opener.service';
-import { asURI } from './shared/models/filters.model';
+import { ResourceService } from './shared/services/core/resource.service';
+import { Resource, ResourceTypes } from './shared/models/resource.model';
+
+import { Observable } from 'rxjs';
+import { map, startWith, debounceTime} from 'rxjs/operators';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/map';
 
@@ -82,7 +84,7 @@ export class EditorComponent implements OnInit {
     }
 
     private quickOpenData() {
-        return this.resources.findAll(r => r.type === FILE_RESOURCE);
+        return this.resources.findAll(r => r.type === ResourceTypes.FILE);
     }
 
 }
