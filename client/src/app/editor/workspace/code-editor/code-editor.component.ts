@@ -1,9 +1,8 @@
 import { ViewEncapsulation, Component, Input, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CodeEditor } from '../../shared/models/editor.model';
-import { Resource } from '../../shared/models/resource.model';
+import { IResource } from '../../shared/models/resource.model';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { ResourceService } from '../../shared/services/core/resource.service';
-import { IEditorDocument } from '../../shared/services/core/opener.service';
 import { PL, MonacoService } from '../../shared/services/monaco/monaco.service';
 
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
@@ -13,7 +12,8 @@ import { GitService } from '../../shared/services/core/git.service';
 import { isSVG, canBePreviewed } from '../../shared/models/filters.model';
 import { EditorService } from '../../shared/services/core/editor.service';
 import { IBlame } from '../../shared/models/git.model';
-import { asDocument } from 'src/app/shared/models/paths.model';
+import { PreviewService } from '../../shared/services/core/preview.service';
+import { IOpenOptions } from '../../shared/services/core/opener.service';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -23,7 +23,7 @@ import { asDocument } from 'src/app/shared/models/paths.model';
   })
 export class CodeEditorComponent implements OnInit, OnDestroy {
 
-    private active: Resource;
+    private active: IResource;
     private readonly: boolean;
     private subscriptions: Subscription[] = [];
     private editorChanges: monaco.IDisposable;
@@ -34,12 +34,12 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     editor: CodeEditor;
     blame: IBlame;
 
-
     constructor(
+        private readonly git: GitService,
+        private readonly preview: PreviewService,
         private readonly resources: ResourceService,
-        private readonly gitService: GitService,
-        private readonly editorService: EditorService,
         private readonly notification: NotificationService,
+        private readonly editorService: EditorService,
         private readonly monacoService: MonacoService,
     ) {}
 
@@ -47,11 +47,11 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         this.subscriptions.push(this.editor.onOpened.subscribe(uri => {
             this.open(uri);
         }));
-        this.subscriptions.push(this.editor.onPreviewCommand.subscribe((item: Resource) => {
+        this.subscriptions.push(this.editor.onPreviewCommand.subscribe((item: IResource) => {
             this.didPreview(item);
         }));
         this.subscriptions.push(this.editor.onDiffCommand.subscribe(() => {
-            this.open(this.editor.document());
+            this.open(this.editor.resource());
         }));
         this.subscriptions.push(this.monacoService.blameChanged.subscribe(e => {
             if (e.blame && e.modelId === this.editor.codeEditor.getModel().id) {
@@ -61,9 +61,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        for (const item of this.subscriptions) {
-            item.unsubscribe();
-        }
+        this.subscriptions.forEach(item => item.unsubscribe());
         this.editorChanges.dispose();
         this.monacoService.disposeEditor(this.editor.codeEditor);
     }
@@ -72,14 +70,14 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         this.monacoService.registerEditor(codeEditor);
         this.editor.codeEditor = codeEditor;
         this.addCommands(codeEditor);
-        this.open(this.editor.document());
+        this.open(this.editor.resource());
     }
 
     diffEditorLoaded(diffEditor: IStandaloneDiffEditor) {
         this.monacoService.registerEditor(diffEditor.getModifiedEditor());
         this.editor.diffEditor = diffEditor;
         this.addCommands(this.editor.diffEditor.getModifiedEditor());
-        this.open(this.editor.document());
+        this.open(this.editor.resource());
     }
 
     private addCommands(editor: IStandaloneCodeEditor) {
@@ -99,7 +97,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         }, empty);
 
         editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_K, () => {
-            this.editor.group().close(this.editor.document(), true).catch(error => {
+            this.editor.group().close(this.editor.resource(), true).catch(error => {
                 this.notification.logError(error);
             });
         }, empty);
@@ -133,9 +131,9 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     }
 
     private didSave() {
-        this.editor.group().save(this.editor.document()).then(success => {
+        this.editor.group().save(this.editor.resource()).then(success => {
             if (success) {
-                this.monacoService.provideBlames(this.active);
+                this.monacoService.provideBlames(this.active, this.editor.codeEditor.getModel());
             }
         }).catch(error => {
             this.notification.logError(error);
@@ -146,48 +144,52 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         if (!this.readonly) {
             const model = editor.getModel();
             this.active.content = model.getValue();
-            this.active.changed = this.active.lastContent !== this.active.content;
+            this.active.changed = this.active.savedContent !== this.active.content;
         }
     }
 
-    private didPreview(item: Resource) {
-        this.resources.preview(item).then(() => {
-            this.editorService.open(asDocument(item));
+    private didPreview(item: IResource) {
+        this.preview.preview(item).then(() => {
+            this.editorService.open(item);
         }).catch(error => {
             this.notification.logError(error);
         });
     }
 
-    private async open(document: IEditorDocument) {
+    private async open(resource: IResource, options?: IOpenOptions) {
         this.blame = null;
-        this.active = document.resource;
-        this.monacoService.provideBlames(this.active);
+        this.active = resource;
 
         const monaco = (<any>window).monaco;
+        const uri = monaco.Uri.parse(resource.path);
         const meta = this.active.meta;
+
         const language = this.monacoService.findLanguage(this.active);
-        const model = monaco.editor.getModel(document.uri) || monaco.editor.createModel(this.active.content, language, document.uri);
+        const model = monaco.editor.getModel(uri) || monaco.editor.createModel(this.active.content, language, uri);
 
         if (model.getValue() !== this.active.content) {
             model.setValue(this.active.content);
             this.active.changed = false;
-            this.active.lastContent = this.active.content;
+            this.active.savedContent = this.active.content;
         }
 
         this.readonly = this.editor.diffEditing || !this.active.write;
+
         this.editor.codeEditor.setModel(model);
         this.editor.codeEditor.updateOptions({ readOnly: this.readonly });
         this.editor.codeEditor.focus();
 
-        await this.checkOptionOptions(document, monaco);
+        await this.checkOptions(monaco, resource, options);
         await this.checkDiffOptions(monaco, language);
+
+        this.monacoService.provideBlames(this.active, model);
     }
 
     private async checkDiffOptions(monaco: any, language: string) {
         if (this.editor.diffEditing) {
             let diff = '';
             try {
-                diff = await this.gitService.show(this.active) || '';
+                diff = await this.git.show(this.active) || '';
             } catch (_) {}
             this.editor.diffEditor.setModel({
                 original: monaco.editor.createModel(diff, language),
@@ -198,12 +200,14 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         }
     }
 
-    private async checkOptionOptions(document: IEditorDocument, monaco: any) {
-        if (document.position) {
-            this.editor.codeEditor.setPosition({
-                lineNumber: document.position.line, column: document.position.line
-            });
-            this.editor.codeEditor.revealLineInCenter(document.position.line, monaco.editor.ScrollType.Smooth);
+    private async checkOptions(monaco: any, resource: IResource, options?: IOpenOptions) {
+        if (options) {
+            if (options.position) {
+                this.editor.codeEditor.setPosition({
+                    lineNumber: options.position.line, column: options.position.line
+                });
+                this.editor.codeEditor.revealLineInCenter(options.position.line, monaco.editor.ScrollType.Smooth);
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ResourceService } from '../../shared/services/core/resource.service';
-import { Resource, ResourceTypes } from '../../shared/models/resource.model';
+import { IResource, ResourceTypes } from '../../shared/models/resource.model';
 
 
 @Component({
@@ -12,8 +12,8 @@ import { Resource, ResourceTypes } from '../../shared/models/resource.model';
 export class SearchComponent implements OnInit {
 
     @Input()
-    resources: Resource[] = [];
-    entries: Resource[] = [];
+    items: IResource[] = [];
+    entries: IResource[] = [];
     runningTask: boolean;
     searchValue = '';
     size = 0;
@@ -32,7 +32,7 @@ export class SearchComponent implements OnInit {
             this.searchValue = this.searchValue.trim().toLocaleLowerCase();
             if (this.searchValue) {
                 this.entries = this.editor.findAll((e => {
-                    return e.type === ResourceTypes.FILE && e.path.toLocaleLowerCase().includes(this.searchValue);
+                    return e.type === ResourceTypes.File && e.path.toLocaleLowerCase().includes(this.searchValue);
                 }));
                 this.size = this.entries.length;
                 this.empty = this.size === 0;

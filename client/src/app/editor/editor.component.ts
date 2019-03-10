@@ -1,19 +1,19 @@
-import { Component, ViewEncapsulation, HostListener, OnInit } from '@angular/core';
+import { Component, ViewEncapsulation, HostListener, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material';
 
-import { asURI } from 'src/app//shared/models/paths.model';
+import { MONACO_LOADED } from './shared/models/monaco.model';
+import { IResource, ResourceTypes } from './shared/models/resource.model';
+
 import { TaskService } from './shared/services/core/task.service';
 import { MonacoService } from './shared/services/monaco/monaco.service';
-import { MONACO_LOADED } from './shared/models/monaco.model';
 import { OpenerService } from './shared/services/core/opener.service';
 import { ResourceService } from './shared/services/core/resource.service';
-import { Resource, ResourceTypes } from './shared/models/resource.model';
+import { NotificationService } from '../shared/services/notification.service';
 
-import { Observable } from 'rxjs';
-import { map, startWith, debounceTime} from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { map, startWith, debounceTime } from 'rxjs/operators';
 import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/map';
 
 @Component({
   selector: 'app-editor',
@@ -21,28 +21,43 @@ import 'rxjs/add/operator/map';
   styleUrls: ['./editor.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class EditorComponent implements OnInit {
+export class EditorComponent implements OnInit, OnDestroy {
+    private readonly subscriptions: Subscription[] = [];
+    readonly quickOpenForm = new FormControl();
+    readonly quickOpenEntries: Observable<IResource[]>;
 
-    quickOpenForm = new FormControl();
     showQuickOpen: boolean;
-    quickOpenEntries: Observable<Resource[]>;
 
     constructor(
         private readonly task: TaskService,
         private readonly opener: OpenerService,
         private readonly monaco: MonacoService,
-        private readonly resources: ResourceService
+        private readonly resources: ResourceService,
+        private readonly notification: NotificationService,
+        private readonly changesDetector: ChangeDetectorRef,
     ) {
-        this.quickOpenEntries = this.quickOpenForm.valueChanges
-        .debounceTime(400)
-        .pipe(
-            startWith(''),
-            map(r => r ? this.filterQuickOpen(r) : this.quickOpenData().slice())
-        );
+        this.quickOpenEntries = this.quickOpenForm
+            .valueChanges
+            .debounceTime(400)
+            .pipe(
+                startWith(''),
+                map(r => r ? this.filterQuickOpen(r) : this.quickOpenData().slice())
+            );
     }
 
     ngOnInit(): void {
-        MONACO_LOADED.subscribe(monaco => this.monaco.register(monaco));
+        this.subscriptions.push(MONACO_LOADED.subscribe(monaco => this.monaco.register(monaco)));
+        this.resources.refresh().catch(error => {
+            this.notification.logError(error);
+        });
+    }
+
+    ngOnDestroy(): void {
+        this.subscriptions.forEach(item => item.unsubscribe());
+    }
+
+    items(): IResource[] {
+        return this.resources.resources;
     }
 
     runningTask() {
@@ -58,7 +73,8 @@ export class EditorComponent implements OnInit {
 
     quickOpenItemSelected(e: MatAutocompleteSelectedEvent) {
         this.showQuickOpen = false;
-        this.opener.openURI(asURI(e.option.value));
+        const resource = e.option.value as IResource;
+        this.opener.open(resource.path);
     }
 
     @HostListener('window:beforeunload', ['$event'])
@@ -78,13 +94,13 @@ export class EditorComponent implements OnInit {
         }
     }
 
-    private filterQuickOpen(value: string): Resource[] {
+    private filterQuickOpen(value: string): IResource[] {
         const filterValue = value.toLowerCase();
         return this.quickOpenData().filter(r => r.name.toLowerCase().indexOf(filterValue) === 0);
     }
 
     private quickOpenData() {
-        return this.resources.findAll(r => r.type === ResourceTypes.FILE);
+        return this.resources.findAll(r => r.type === ResourceTypes.File);
     }
 
 }

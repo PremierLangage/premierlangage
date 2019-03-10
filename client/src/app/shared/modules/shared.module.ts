@@ -25,6 +25,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatTableModule } from '@angular/material';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { MatTreeModule } from '@angular/material/tree';
 
 
 import { ToastrModule } from 'ngx-toastr';
@@ -85,6 +87,8 @@ import { SanitizeResourceUrlPipe } from '../pipes/sanitize-url.pipe';
         MatDividerModule,
         MatBadgeModule,
         MatAutocompleteModule,
+        ScrollingModule,
+        MatTreeModule
     ],
     exports: [
         BrowserModule,
@@ -114,6 +118,8 @@ import { SanitizeResourceUrlPipe } from '../pipes/sanitize-url.pipe';
         MatBadgeModule,
         MatAutocompleteModule,
         MatTableModule,
+        ScrollingModule,
+        MatTreeModule,
 
         PromptComponent,
         ConfirmComponent,

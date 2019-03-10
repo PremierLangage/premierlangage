@@ -35,11 +35,9 @@ import { SettingsComponent } from './navigation/settings/settings.component';
 
 /* WORKSPACE COMPONENTS */
 import { WorkspaceComponent } from './workspace/workspace.component';
-import { MONACO_CONFIG } from './shared/models/monaco.model';
 import { CodeEditorComponent } from './workspace/code-editor/code-editor.component';
 import { ImageEditorComponent } from './workspace/image-editor/image-editor.component';
 import { PreviewEditorComponent } from './workspace/preview-editor/preview-editor.component';
-import { WebEditorComponent } from './workspace/web-editor/web-editor.component';
 
 @NgModule({
     declarations: [
@@ -57,13 +55,12 @@ import { WebEditorComponent } from './workspace/web-editor/web-editor.component'
         CodeEditorComponent,
         ImageEditorComponent,
         PreviewEditorComponent,
-        WebEditorComponent,
     ],
     imports: [
         EditorRoutingModule,
         SharedModule,
         AngularSplitModule.forRoot(),
-        MonacoEditorModule.forRoot(MONACO_CONFIG),
+        MonacoEditorModule,
         MarkdownModule.forRoot()
     ],
     exports: [

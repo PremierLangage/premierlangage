@@ -1,23 +1,22 @@
 import { Subject, Subscription } from 'rxjs';
 import { IEditor, CodeEditor, openAsPreview } from '../../models/editor.model';
 import { IEditorGroup, EditorGroup } from '../../models/editor-group.model';
-import { Resource } from '../../models/resource.model';
+import { IResource } from '../../models/resource.model';
 import { Injectable } from '@angular/core';
 import { ResourceService } from './resource.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { ConfirmOptions } from 'src/app/shared/components/confirm/confirm.component';
-import { IEditorDocument } from './opener.service';
-import { compareDocument, compareGroup } from '../../models/filters.model';
-import { asDocument } from 'src/app/shared/models/paths.model';
+import { compareGroup } from '../../models/filters.model';
+import { IOpenOptions } from './opener.service';
 
 export interface IEditorService {
     /**
-     * Opens the document with the right editor.
-     * @param document The document
-     * @pram sideBySide Open the document in a new group
-     * @returns true if the document is opened false otherwise
+     * Opens the resource with the right editor.
+     * @param resource The resource
+     * @pram options Open options
+     * @returns true if the resource is opened false otherwise
      */
-    open(document: IEditorDocument, sideBySide?: boolean): Promise<boolean>;
+    open(resource: IResource, options: IOpenOptions): Promise<boolean>;
 
     /**
      * Gets an array of the opened editor groups.
@@ -32,17 +31,17 @@ export interface IEditorService {
     findGroup(id: number): IEditorGroup;
 
     /**
-     * Finds all the groups whichs contains the document.
-     * @param document the document
+     * Finds all the groups whichs contains the resource.
+     * @param resource the resource
      * @returns an array of editor groups
      */
-    findGroups(document: IEditorDocument): IEditorGroup[];
+    findGroups(resource: IResource): IEditorGroup[];
 
     /**
      * Refreshs the editor group.
      * - focus 'group' if it's not a preview group.
-     * - open the preview group with the active document of 'group' should be previewed.
-     * - close the preview group if the active document of 'group' is not a previewed document.
+     * - open the preview group with the active resource of 'group' if needed.
+     * - close the preview group if the active resource of 'group' is not a previewed resource.
      *
      * @param group the group
      */
@@ -55,16 +54,10 @@ export interface IEditorService {
     removeGroup(group: IEditorGroup): Promise<boolean>;
 
     /**
-     * Loads the content of the resource.
-     * @param resource the resource
-     */
-    openContent(resource: Resource): Promise<boolean>;
-
-    /**
      * Saves the content of the resource.
      * @param resource the resource
      */
-    saveContent(resource: Resource): Promise<boolean>;
+    saveContent(resource: IResource): Promise<boolean>;
 
     /**
      * Opens a confirm dialog
@@ -124,9 +117,9 @@ export abstract class AbstractEditorService implements IEditorService {
         return this.groups[id];
     }
 
-    findGroups(document: IEditorDocument): IEditorGroup[] {
+    findGroups(resource: IResource): IEditorGroup[] {
         return this.listGroups().filter(group => {
-            return group.someDocument(item => compareDocument(document, item));
+            return group.someResource(item => item.path === resource.path);
         });
     }
 
@@ -164,8 +157,10 @@ export abstract class AbstractEditorService implements IEditorService {
                 }
             }
         } else {
-            if (openAsPreview(group.activeDocument())) { // open the preview of the document in a side group
-                if (!await this.open(asDocument(group.activeDocument().resource, true))) {
+            if (openAsPreview(group.activeResource())) { // open the preview of the resource in a side group
+                if (!await this.open(group.activeResource(), {
+                    openToSide: true
+                })) {
                     return false;
                 }
             }
@@ -193,9 +188,8 @@ export abstract class AbstractEditorService implements IEditorService {
     }
 
     abstract confirm(options: ConfirmOptions): Promise<boolean>;
-    abstract open(document: IEditorDocument, sideBySide?: boolean): Promise<boolean>;
-    abstract openContent(resource: Resource): Promise<boolean>;
-    abstract saveContent(resource: Resource): Promise<boolean>;
+    abstract open(resource: IResource, options: IOpenOptions): Promise<boolean>;
+    abstract saveContent(resource: IResource): Promise<boolean>;
 }
 
 /** Concretes implementation of IEditorService interface */
@@ -204,23 +198,37 @@ export abstract class AbstractEditorService implements IEditorService {
 })
 export class EditorService extends AbstractEditorService {
 
-    constructor(readonly resourceService: ResourceService, readonly notification: NotificationService) {
+    constructor(readonly resources: ResourceService, readonly notification: NotificationService) {
         super();
+        resources.renamed.subscribe(_ => {
+            this.listGroups().forEach(group => group.open(group.activeResource()));
+        });
+        resources.deleted.subscribe(item => {
+            this.findGroups(item).forEach(group => {
+                group.close(item, false);
+            });
+        });
     }
 
-    open(document: IEditorDocument, sideBySide?: boolean): Promise<boolean> {
+    async open(resource: IResource, options?: IOpenOptions): Promise<boolean> {
+        if (!await this.resources.open(resource)) {
+            return Promise.reject(new Error(`Unable to open '${resource.path}': resource content not found`));
+        }
         let group: IEditorGroup;
         let groups = this.listGroups();
-        if (sideBySide || document.preview) {
-            group = document.preview ? (groups.find(g => g.somePreview()) || new EditorGroup(this)) : new EditorGroup(this);
+        options = options || {};
+        if (options.openToSide) {
+            group = new EditorGroup(this);
+        } else if (resource.meta.previewData) {
+            group = groups.find(g => g.somePreview()) || new EditorGroup(this);
         } else {
             groups = groups.filter(g => !g.somePreview()); // remove preview group
             // tslint:disable-next-line: max-line-length
-            group =     groups.find(g => g.focused() && g.someDocument(t => compareDocument(t, document))) // find focused that contains the tab
+            group =     groups.find(g => g.focused() && g.someResource(r => r.path === resource.path)) // find focused that contains the resource
                     ||  groups.find(g => g.focused()) // find focused
                     ||  groups.find(_ => true) || new EditorGroup(this); // find any or create new group
         }
-        return group.open(document).catch(error => {
+        return group.open(resource, options).catch(error => {
             this.notification.logError(error);
             return false;
         });
@@ -230,12 +238,8 @@ export class EditorService extends AbstractEditorService {
         return this.notification.confirmAsync(options);
     }
 
-    openContent(resource: Resource): Promise<boolean> {
-        return this.resourceService.open(resource);
-    }
-
-    saveContent(resource: Resource): Promise<boolean> {
-        return this.resourceService.save(resource);
+    saveContent(resource: IResource): Promise<boolean> {
+        return this.resources.save(resource);
     }
 
 }

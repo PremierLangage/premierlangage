@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
-import { Resource } from '../shared/models/resource.model';
+import { IResource } from '../shared/models/resource.model';
 
 import { GitService } from '../shared/services/core/git.service';
 import { ResourceService } from '../shared/services/core/resource.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
+import { ThrowStmt } from '@angular/compiler';
+import { Subscription } from 'rxjs';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -12,19 +14,15 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.scss'],
 })
-export class NavigationComponent implements OnInit {
-    size = 0;
+export class NavigationComponent {
+    size = 25;
     index = 0;
 
     constructor(
         private readonly git: GitService,
-        private readonly resource: ResourceService,
+        private readonly resources: ResourceService,
         private readonly notification: NotificationService,
     ) {}
-
-    ngOnInit(): void {
-        this.resource.refresh().catch(error => this.notification.logError(error));
-    }
 
     didTapButton(index: number) {
         switch (index) {
@@ -48,7 +46,4 @@ export class NavigationComponent implements OnInit {
         return this.notification.size;
     }
 
-    resources(): Resource[] {
-        return this.resource.resources;
-    }
 }

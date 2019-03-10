@@ -114,19 +114,19 @@ export class NotificationService extends AbstractNotificationService {
     }
 
 
-    logInfo(message: any, stackTrace: boolean = true) {
+    logInfo(message: any, stackTrace: boolean = false) {
         this.log(message, 'info', stackTrace);
     }
 
-    logWarning(message: any, stackTrace: boolean = true) {
+    logWarning(message: any, stackTrace: boolean = false) {
         this.log(message, 'warning', stackTrace);
     }
 
-    logError(message: any, stackTrace: boolean = true) {
+    logError(message: any, stackTrace: boolean = false) {
         this.log(message, 'error', stackTrace);
     }
 
-    private log(message: any, type: 'info' | 'error' | 'warning', stackTrace: boolean = true) {
+    private log(message: any, type: 'info' | 'error' | 'warning', stackTrace: boolean = false) {
         const item = { message: this.parseMessage(message, stackTrace), type: type };
         this.onLogAdded.next(item);
         this.size++;
@@ -136,8 +136,7 @@ export class NotificationService extends AbstractNotificationService {
         let output = message;
         if (message instanceof HttpErrorResponse) {
             const error = message as HttpErrorResponse;
-            output = error.message;
-            console.error(message);
+            output = error.error || error.message;
         } else {
             if (typeof message !== 'string') {
                 output = message.error; // JavaScript Error Object

@@ -1,111 +1,110 @@
-import { Resource, ResourceTypes } from './resource.model';
-import { IEditorDocument } from '../services/core/opener.service';
+import { IResource, ResourceTypes } from './resource.model';
 import { IEditorGroup } from './editor-group.model';
 import { extname } from 'src/app/shared/models/paths.model';
 
 const PREVIEW_EXTENSIONS = ['pl', 'md', 'svg'];
 
 
-export function canRead(item: Resource) {
-    return item && item.read;
+export function canRead(item: IResource): boolean {
+    return !!item && item.read;
 }
 
-export function canWrite(item: Resource) {
-    return item &&  item.write;
+export function canWrite(item: IResource): boolean {
+    return !!item && item.write;
 }
 
-export function isReadonly(item: Resource) {
+export function isReadonly(item: IResource): boolean {
     return !canWrite(item);
 }
 
-export function isRepo(item: Resource) {
-    return item && item.repo;
+export function isRepo(item: IResource): boolean {
+    return !!item && !!item.repo;
 }
 
-export function isFromServer(resource: Resource) {
-    return resource.type !== ResourceTypes.LOCAL;
+export function isFromServer(item: IResource): boolean {
+    return !!item && item.type !== ResourceTypes.Local;
 }
 
-export function isHome(item: Resource) {
-    return item && item.path === 'Yggdrasil';
+export function isLoaded(item: IResource): boolean {
+    return !!item && !!item.meta;
 }
 
-export function isLib(item: Resource) {
-    return item && item.path === 'lib';
+export function isHome(item: IResource) {
+    return !item && item.path === 'Yggdrasil';
 }
 
-export function isRoot(item: Resource) {
+export function isLib(item: IResource) {
+    return !!item && item.path === 'lib';
+}
+
+export function isRoot(item: IResource) {
     return isHome(item) || isLib(item);
 }
 
-export function isNotRoot(item: Resource) {
+export function isNotRoot(item: IResource) {
     return !isRoot(item);
 }
 
-export function isFolder(item: Resource) {
-    return item &&  item.type === ResourceTypes.FOLDER;
+export function isFolder(item: IResource) {
+    return !!item && item.type === ResourceTypes.Folder;
 }
 
-export function isFile(item: Resource) {
-    return item &&  item.type === ResourceTypes.FILE;
+export function isFile(item: IResource) {
+    return !!item && item.type === ResourceTypes.File;
 }
 
-export function isPl(item: Resource) {
-    return extname(item.path) === 'pl';
+export function isPl(item: IResource) {
+    return !!item && extname(item.path) === 'pl';
 }
 
-export function isSVG(item: Resource) {
-    return extname(item.path) === 'svg';
+export function isSVG(item: IResource) {
+    return !!item && extname(item.path) === 'svg';
 }
 
-export function isPltp(item: Resource) {
-    return extname(item.path) === 'pltp';
+export function isPltp(item: IResource) {
+    return !!item && extname(item.path) === 'pltp';
 }
 
-export function isMarkdown(item: Resource) {
-    return extname(item.path) === 'md';
+export function isMarkdown(item: IResource) {
+    return !!item && extname(item.path) === 'md';
 }
 
-export function canBePreviewed(item: Resource) {
-    return PREVIEW_EXTENSIONS.includes(extname(item.path));
+export function canBePreviewed(item: IResource) {
+    return !!item && PREVIEW_EXTENSIONS.includes(extname(item.path));
 }
 
 
 
-export function canAddFile(item: Resource) {
+export function canAddFile(item: IResource) {
     return canWrite(item) && isFolder(item);
 }
 
-export function canCopy(item: Resource) {
+export function canCopy(item: IResource) {
     return canRead(item) && isNotRoot(item);
 }
 
-export function canAddFolder(item: Resource) {
+export function canAddFolder(item: IResource) {
     return canWrite(item) && isFolder(item);
 }
 
-export function canBeRenamed(item: Resource) {
-    return !item.opened && canWrite(item) && !isRoot(item);
+export function canBeRenamed(item: IResource) {
+    return canWrite(item) && !isRoot(item);
 }
 
-export function canBeDeleted(item: Resource) {
-    return !item.opened && canWrite(item) && isNotRoot(item);
+export function canBeDeleted(item: IResource) {
+    return canWrite(item) && isNotRoot(item);
 }
 
-export function canBeTested(item: Resource) {
+export function canBeTested(item: IResource) {
     return canRead(item) && isPl(item);
 }
 
-export function canBeLoaded(item: Resource) {
+export function canBeLoaded(item: IResource) {
     return canWrite(item) && isPltp(item);
 }
 
-export function canBeReloaded(item: Resource) {
+export function canBeReloaded(item: IResource) {
     return canWrite(item) && isPltp(item);
-}
-
-export function compareDocument(doc1: IEditorDocument, doc2: IEditorDocument) {
-    return doc1.resource.path === doc2.resource.path;
 }
 
 export function compareGroup(grp1: IEditorGroup, grp2: IEditorGroup) {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpParams, HttpClient, HttpHeaders } from '@angular/common/http';
 import { isHome } from '../../models/filters.model';
-import { Resource } from '../../models/resource.model';
+import { IResource } from '../../models/resource.model';
 import { IRepo, IChange, IBlame } from '../../models/git.model';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { basename } from 'src/app/shared/models/paths.model';
@@ -9,15 +9,15 @@ import { assert, requireNonNull } from 'src/app/shared/models/assert.model';
 
 export interface IGitService {
     refresh(): Promise<boolean>;
-    show(item: Resource): Promise<string>;
-    blame(item: IRepo | IChange | Resource): Promise<IBlame[]>;
-    status(item: IRepo | IChange | Resource): Promise<boolean>;
-    add(item: IRepo | IChange | Resource): Promise<boolean>;
-    checkout(item: IRepo | IChange | Resource): Promise<boolean>;
-    commit(item: IRepo | IChange | Resource, commit: string): Promise<boolean>;
-    push(item: IRepo | IChange | Resource, username?: string, password?: string): Promise<boolean>;
-    pull(item: IRepo | IChange | Resource, username?: string, password?: string): Promise<boolean>;
-    clone(home: Resource, url: string, username?: string, password?: string, destination?: string);
+    show(item: IResource): Promise<string>;
+    blame(item: IRepo | IChange | IResource): Promise<IBlame[]>;
+    status(item: IRepo | IChange | IResource): Promise<boolean>;
+    add(item: IRepo | IChange | IResource): Promise<boolean>;
+    checkout(item: IRepo | IChange | IResource): Promise<boolean>;
+    commit(item: IRepo | IChange | IResource, commit: string): Promise<boolean>;
+    push(item: IRepo | IChange | IResource, username?: string, password?: string): Promise<boolean>;
+    pull(item: IRepo | IChange | IResource, username?: string, password?: string): Promise<boolean>;
+    clone(home: IResource, url: string, username?: string, password?: string, destination?: string);
 }
 
 @Injectable({
@@ -61,7 +61,7 @@ export class GitService implements IGitService {
         return success;
     }
 
-    async show(item: Resource) {
+    async show(item: IResource) {
         let response: string;
         this.runningTask = true;
         try {
@@ -75,7 +75,7 @@ export class GitService implements IGitService {
         return response;
     }
 
-    async status(item: IRepo | IChange | Resource) {
+    async status(item: IRepo | IChange | IResource) {
         let success = false;
         this.runningTask = true;
         try {
@@ -91,7 +91,7 @@ export class GitService implements IGitService {
         return success;
     }
 
-    async add(item: IRepo | IChange | Resource) {
+    async add(item: IRepo | IChange | IResource) {
         let success = false;
         this.runningTask = true;
         try {
@@ -107,7 +107,7 @@ export class GitService implements IGitService {
         return success;
     }
 
-    async checkout(item: IRepo | IChange | Resource) {
+    async checkout(item: IRepo | IChange | IResource) {
         this.runningTask = true;
         let success = false;
         try {
@@ -123,7 +123,7 @@ export class GitService implements IGitService {
         return success;
     }
 
-    async commit(item: IRepo | IChange | Resource, commit: string) {
+    async commit(item: IRepo | IChange | IResource, commit: string) {
         let success = false;
         this.runningTask = true;
         try {
@@ -142,7 +142,7 @@ export class GitService implements IGitService {
         return success;
     }
 
-    async push(item: IRepo | IChange | Resource, username?: string, password?: string) {
+    async push(item: IRepo | IChange | IResource, username?: string, password?: string) {
         let success = false;
         this.runningTask = true;
         try {
@@ -160,7 +160,7 @@ export class GitService implements IGitService {
         return success;
     }
 
-    async pull(item: IRepo | IChange | Resource, username?: string, password?: string) {
+    async pull(item: IRepo | IChange | IResource, username?: string, password?: string) {
         let success = false;
         this.runningTask = true;
         try {
@@ -177,7 +177,7 @@ export class GitService implements IGitService {
         return success;
     }
 
-    async clone(home: Resource, url: string, username?: string, password?: string, destination?: string) {
+    async clone(home: IResource, url: string, username?: string, password?: string, destination?: string) {
         let success = false;
         this.runningTask = true;
         try {
@@ -203,7 +203,7 @@ export class GitService implements IGitService {
         return success;
     }
 
-    async blame(item: IRepo | IChange | Resource): Promise<IBlame[]> {
+    async blame(item: IRepo | IChange | IResource): Promise<IBlame[]> {
         let response: IBlame[];
         this.runningTask = true;
         try {
@@ -219,7 +219,7 @@ export class GitService implements IGitService {
         return response;
     }
 
-    private logResponse(item: IRepo | IChange | Resource, response: string) {
+    private logResponse(item: IRepo | IChange | IResource, response: string) {
         this.notification.logInfo(`${item.path}:<br/> ${response}`);
     }
 

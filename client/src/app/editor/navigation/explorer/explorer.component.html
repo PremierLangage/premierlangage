@@ -7,12 +7,12 @@
         </div>
     </div>
     <div class='navigation_content'>
-        <explorer [resources]='resources' [showHeader]='false'></explorer>
+        <explorer [items]='items' [showHeader]='false'></explorer>
     </div>
 </ng-container>
 <ng-template #tree>
     <ul class='tree'>
-        <li *ngFor='let resource of resources; trackBy:trackByFn'>
+        <li *ngFor='let resource of items; trackBy:trackByFn'>
             <div *ngIf='resource.renaming; else notEditing' class='tree__item editing'>
                 <span>
                     <i class="{{resource.icon}}"></i>&nbsp;
@@ -26,7 +26,7 @@
             </div>    
             <ng-template #notEditing>
                 <div id='{{resource.path}}' class='tree__item' [ngClass]='{selected: isSelection(resource), changed: resource.changed, opened: resource.opened}' 
-                    draggable droppable [dragCondition]='draggable(resource)' [dropCondition]='droppable(resource)' (handleDrop)='didDropData($event)'
+                draggable droppable [dragCondition]='draggable(resource)' [dropCondition]='droppable(resource)' (handleDrop)='didDropData($event)'
                     (click)='didTapOnResource(resource, $event)'>
                     <span class='tree__item-label'>
                         <i class="{{icon(resource)}}"></i>&nbsp;
@@ -42,20 +42,22 @@
                     <div class='overlay'></div>
                 </div>
             </ng-template>
-            <div *ngIf='creating && newResource.parent === resource.path'>
-                <div class='tree__item editing'>
-                    <span>
-                        <i class="{{newResource.icon}}"></i>&nbsp;
-                        <input autofocus
-                               type='text' 
-                               placeholder='Press Enter to create ESC to cancel...' 
-                               [(ngModel)]='newResource.name' 
-                               (keydown)='didEditingChanged(newResource, $event)' 
-                               (blur)='didEditingChanged(newResource, $event)'/>
-                    </span>
-                </div>   
-            </div>
-            <explorer *ngIf='resource.expanded' [resources]="resource.children" [showHeader]='false'></explorer>
+            <ul class='tree' *ngIf='creating && newResource.parent === resource.path'>
+                <li>
+                    <div class='tree__item editing'>
+                        <span>
+                            <i class="{{newResource.icon}}"></i>&nbsp;
+                            <input autofocus
+                                    type='text' 
+                                    placeholder='Press Enter to create ESC to cancel...' 
+                                    [(ngModel)]='newResource.name' 
+                                    (keydown)='didEditingChanged(newResource, $event)' 
+                                    (blur)='didEditingChanged(newResource, $event)'/>
+                        </span>
+                    </div>
+                </li>
+            </ul>
+            <explorer *ngIf='resource.expanded' [items]="resource.children" [showHeader]='false'></explorer>
         </li>
     </ul>        
 </ng-template>

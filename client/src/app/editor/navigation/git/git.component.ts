@@ -9,9 +9,6 @@ import { ResourceService } from '../../shared/services/core/resource.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { OpenerService } from '../../shared/services/core/opener.service';
 import { EditorService } from '../../shared/services/core/editor.service';
-import { DIFF_FRAGMENT } from '../../shared/models/editor.model';
-
-import { asURI, asURIFragment } from 'src/app//shared/models/paths.model';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -90,7 +87,7 @@ export class GitComponent implements OnInit, OnDestroy {
      * @param item the repository item.
     */
     canCheckout(item: IChange) {
-        return item.type !== '??' && item.type !== 'D';
+        return item.type !== '??' && !item.type.includes('D');
     }
 
     /**
@@ -108,7 +105,9 @@ export class GitComponent implements OnInit, OnDestroy {
     */
     open(item: IChange) {
         if (this.canOpen(item)) {
-            this.opener.openURI(asURIFragment(this.resources.find(item.path), DIFF_FRAGMENT));
+            this.opener.open(item.path, {
+                diffMode: true
+            });
         }
     }
 
@@ -196,7 +195,9 @@ export class GitComponent implements OnInit, OnDestroy {
                         if (refreshed) {
                             const resource = await this.resources.find(item.path);
                             if (resource) {
-                                this.opener.openURI(asURI(resource));
+                                this.opener.open(resource.path, {
+                                    diffMode: true
+                                });
                             }
                             this.refresh();
                             return true;
@@ -281,12 +282,16 @@ export class GitComponent implements OnInit, OnDestroy {
         }
     }
 
-    /** gets the repositories */
+    /**
+     * gets the repositories
+     * */
     repositories() {
         return this.git.repos;
     }
 
-    /** gets a value indicating whether a git command is running */
+    /**
+     * gets a value indicating whether a git command is running
+     * */
     runningTask() {
         return this.git.runningTask;
     }

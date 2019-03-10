@@ -1,23 +1,21 @@
-<!-- LITTLE HACK TO PRELOAD MONACO EDITOR -->
-<ngx-monaco-editor [hidden]='true' [options]='{}' [model]='{}' (onInit)='monacoLoaded()'></ngx-monaco-editor>
 <as-split class='h100' direction='horizontal' gutterSize='5' useTransition='true' cdkDropListGroup>
     <ng-container *ngFor='let group of groups'>
         <as-split-area class='editor-group h100' style='overflow: hidden;'>
             <div class='tab-bar'>
-                <div [id]='group.id()' class='tab-group' cdkDropList [cdkDropListData]="group.documents" (cdkDropListDropped)="group.drop($event)">
-                    <div *ngFor='let tab of group.documents; trackBy: group.trackDocument' [matTooltip]="tab.resource.path"
-                        [ngClass]="{'tab-item': true, active: group.isActive(tab), changed: group.isChanged(tab)}"
-                        (click)='group.open(tab, true)' cdkDragAxis='x' cdkDrag>
-                        <i class="tab-icon {{tab.icon}}"></i>
-                        <span>{{tab.title}}</span>
-                        <span class='tab-close' (click)='group.close(tab, true)'>&nbsp;&times;</span>
+                <div [id]='group.id()' class='tab-group' cdkDropList [cdkDropListData]="group.resources" (cdkDropListDropped)="group.drop($event)">
+                    <div *ngFor='let resource of group.resources; trackBy: group.trackResource' [matTooltip]="resource.path"
+                        [ngClass]="{'tab-item': true, active: group.isActive(resource), changed: group.isChanged(resource)}"
+                        (click)='group.didTapOnResource(resource)' cdkDragAxis='x' cdkDrag>
+                        <i class="tab-icon {{resource.icon}}"></i>
+                        <span>{{resource.name}}</span>
+                        <span class='tab-close' (click)='group.close(resource, true)'>&nbsp;&times;</span>
                     </div>
                 </div>
                 <div class="spacer"></div>  
                 <ng-container *ngIf='group.someAction();'>
                     <ng-container *ngIf='group.focused()'>
                         <ng-container *ngFor='let action of group.actions()'>
-                            <div class='tab-item' [matTooltip]='action.tooltip' *ngIf='action.condition(group.activeDocument().resource)' (click)='action.invoke(group.activeDocument().resource)'>
+                            <div class='tab-item' [matTooltip]='action.tooltip' *ngIf='action.condition(group.activeResource())' (click)='action.invoke(group.activeResource())'>
                                 <i class="{{action.icon}}"></i>
                             </div>
                         </ng-container>
@@ -26,9 +24,9 @@
                         <i class="fas fa-ellipsis-h"></i>
                     </div>
                     <mat-menu #editorMenu="matMenu">
-                        <button mat-menu-item (click)='group.save(group.activeDocument())'>Save ⌘S</button>
+                        <button mat-menu-item (click)='group.save(group.activeResource())'>Save ⌘S</button>
                         <button mat-menu-item (click)='group.saveAll()'>Save All ⌘Alt S</button>
-                        <button mat-menu-item (click)='group.close(group.activeDocument(), true)'>Close ⌘K</button>
+                        <button mat-menu-item (click)='group.close(group.activeResource(), true)'>Close ⌘K</button>
                         <button mat-menu-item (click)='group.closeAll(true)'>Close All ⌘Alt K</button>
                         <button mat-menu-item (click)='group.closeSaved()'>Close Saved ⌘Alt U</button>
                     </mat-menu>
@@ -39,7 +37,6 @@
                     <code-editor [hidden]='!group.activeEditorIs("code")' *ngSwitchCase="'code'" [editor]='editor'></code-editor>
                     <image-editor [hidden]='!group.activeEditorIs("image")' *ngSwitchCase="'image'" [editor]='editor'></image-editor>
                     <preview-editor [hidden]='!group.activeEditorIs("preview")' *ngSwitchCase="'preview'" [editor]='editor'></preview-editor>
-                    <web-editor [hidden]='!group.activeEditorIs("web")' *ngSwitchCase="'web'" [editor]='editor'></web-editor>
                 </ng-container>
             </ng-container>
         </as-split-area>

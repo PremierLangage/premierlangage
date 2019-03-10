@@ -2,6 +2,7 @@ import { NgxMonacoEditorConfig } from 'ngx-monaco-editor';
 import { Subject } from 'rxjs';
 import { Language } from './language.model';
 
+/** Subject that emit first time monaco editor is loaded */
 export const MONACO_LOADED = new Subject();
 export const MONACO_CONFIG: NgxMonacoEditorConfig = {
     baseUrl: '/static/filebrowser/app/assets', // configure base path for monaco editor

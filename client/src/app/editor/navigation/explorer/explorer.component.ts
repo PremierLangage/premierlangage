@@ -1,17 +1,17 @@
 import { Component, ViewEncapsulation, Input, OnInit } from '@angular/core';
 
-import { PrompOptions } from 'src/app/shared/components/prompt/prompt.component';
 import { DropData } from 'src/app/shared/directives/droppable.directive';
+import { PrompOptions } from 'src/app/shared/components/prompt/prompt.component';
 
 import { TaskService } from '../../shared/services/core/task.service';
 import { OpenerService } from '../../shared/services/core/opener.service';
 import { EditorService } from '../../shared/services/core/editor.service';
 import { ResourceService } from '../../shared/services/core/resource.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
-
-import { asURI } from 'src/app//shared/models/paths.model';
 import { basename } from 'src/app/shared/models/paths.model';
-import { Resource, ResourceTypes, newResource, } from '../../shared/models/resource.model';
+import { IResource, ResourceTypes, createResource, } from '../../shared/models/resource.model';
+import { PLService } from '../../shared/services/core/pl.service';
+
 import * as filters from '../../shared/models/filters.model';
 
 @Component({
@@ -28,7 +28,7 @@ export class ExplorerComponent {
 
     /** the tree resources */
     @Input()
-    readonly resources: Resource[];
+    readonly items: IResource[];
 
     /** shows header element if sets to true */
     @Input()
@@ -39,38 +39,39 @@ export class ExplorerComponent {
 
     /** rename input value */
     newName: string;
-    newResource: Resource;
+    newResource: IResource;
 
     constructor(
+        private readonly pl: PLService,
         private readonly task: TaskService,
+        private readonly editor: EditorService,
         private readonly opener: OpenerService,
         private readonly notification: NotificationService,
-        private readonly resourceService: ResourceService,
-        private readonly editorService: EditorService,
+        private readonly resources: ResourceService,
     ) {
         const that = this;
-        this.resources = this.resourceService.resources;
+        this.items = this.resources.resources;
         this.newName = '';
         this.options = [
-            { icon: 'fas fa-check', label: 'Test', enabled: filters.canBeTested, action: (r: Resource, e: MouseEvent) => {
+            { icon: 'fas fa-check', label: 'Test', enabled: filters.canBeTested, action: (r: IResource, e: MouseEvent) => {
                 that.optionTest(r, e);
             }},
-            { icon: 'fas fa-play', label: 'Load', enabled: filters.canBeLoaded, action: (r: Resource, e: MouseEvent) => {
+            { icon: 'fas fa-play', label: 'Load', enabled: filters.canBeLoaded, action: (r: IResource, e: MouseEvent) => {
                 that.optionLoad(r, e );
             }},
-            { icon: 'fas fa-sync', label: 'Reload', enabled: filters.canBeReloaded, action: (r: Resource, e: MouseEvent) => {
+            { icon: 'fas fa-sync', label: 'Reload', enabled: filters.canBeReloaded, action: (r: IResource, e: MouseEvent) => {
                 that.optionReload(r, e );
             }},
-            { icon: 'far fa-file', label: 'New File', enabled: filters.canAddFile, action: (r: Resource, e: MouseEvent) => {
+            { icon: 'far fa-file', label: 'New File', enabled: filters.canAddFile, action: (r: IResource, e: MouseEvent) => {
                 that.optionAddFile(r, e);
             }},
-            { icon: 'far fa-folder', label: 'New Folder', enabled: filters.canAddFile, action: (r: Resource, e: MouseEvent) => {
+            { icon: 'far fa-folder', label: 'New Folder', enabled: filters.canAddFile, action: (r: IResource, e: MouseEvent) => {
                 that.optionFolder(r, e );
             }},
-            { icon: 'far fa-edit', label: 'Rename', enabled: filters.canBeRenamed, action: (r: Resource, e: MouseEvent) => {
+            { icon: 'far fa-edit', label: 'Rename', enabled: filters.canBeRenamed, action: (r: IResource, e: MouseEvent) => {
                 that.optionRename(r, e );
             }},
-            { icon: 'far fa-trash-alt', label: 'Delete', enabled: filters.canBeDeleted, action: (r: Resource, e: MouseEvent) => {
+            { icon: 'far fa-trash-alt', label: 'Delete', enabled: filters.canBeDeleted, action: (r: IResource, e: MouseEvent) => {
                 that.optionDelete(r, e );
             }},
             { icon: 'fas fa-lock', label: 'Read Only', enabled: filters.isReadonly, action: function () { } },
@@ -79,16 +80,15 @@ export class ExplorerComponent {
 
     /** Handles refresh button click by retrieving resources from the server. */
     async didTapRefresh() {
-        const confirm = this.resourceService.findPredicate(e => e.changed && e.opened);
+        const confirm = this.resources.findPredicate(e => e.changed && e.opened);
         try {
             if (!confirm || await this.notification.confirmAsync({
                 title: 'You will lose any unsaved changes after this. Are you sure ?',
                 okTitle: 'Refresh',
                 noTitle: 'Cancel'
             })) {
-                if (await this.editorService.closeAll()) {
-                    await this.resourceService.refresh();
-                    this.notification.success('refreshed !');
+                if (await this.editor.closeAll()) {
+                    await this.resources.refresh();
                 } else {
                     this.notification.logError('an error occured while trying to close the editor groups');
                 }
@@ -103,7 +103,7 @@ export class ExplorerComponent {
      * @param resource the resource object.
      * 	@returns true only if the resource is not a root folder.
      */
-    draggable(resource: Resource) {
+    draggable(resource: IResource) {
         return !resource.opened && !filters.isRoot(resource) && resource.write;
     }
 
@@ -112,7 +112,7 @@ export class ExplorerComponent {
      * @param resource the resource object.
      * 	@returns true only if the resource is folder.
      */
-    droppable(resource: Resource) {
+    droppable(resource: IResource) {
         return filters.isFolder(resource) && resource.write;
     }
 
@@ -126,8 +126,8 @@ export class ExplorerComponent {
         const srcPath = data.src || data.file.name;
         const dstPath = data.dst;
         const srcName = basename(srcPath);
-        const src = this.resourceService.find(srcPath);
-        const dst = this.resourceService.find(dstPath);
+        const src = this.resources.find(srcPath);
+        const dst = this.resources.find(dstPath);
         if (src) {
             if (src.parent === data.dst) {
                 return;
@@ -144,10 +144,12 @@ export class ExplorerComponent {
         };
         this.notification.confirmAsync(options).then(confirmed => {
             if (confirmed) {
-                this.resourceService.move(src || data.file , dst).catch(error => {
+                this.resources.move(src || data.file , dst).catch(error => {
                     this.notification.error(error);
                 });
             }
+        }).catch(error => {
+            this.notification.logError(error);
         });
     }
 
@@ -158,7 +160,7 @@ export class ExplorerComponent {
      * @param resource the resource object.
      * @param event KeyboardEvent or Focus event.
      */
-    didEditingChanged(resource: Resource, event: any) {
+    didEditingChanged(resource: IResource, event: any) {
         if (this.renaming || this.creating) {
             if (event.keyCode === 27) { // escape key
                 if (this.renaming) {
@@ -171,20 +173,18 @@ export class ExplorerComponent {
             } else if (event.type === 'blur' || event.keyCode === 13) { // focus losed or enter key
                 let promise: Promise<boolean>;
                 if (this.renaming) {
-                    promise = this.resourceService.rename(resource, this.newName);
+                    promise = this.resources.rename(resource, this.newName);
                 } else {
-                    promise = this.resourceService.create(resource);
+                    if (!resource.name && event.type === 'blur') {
+                        this.endEdition(resource);
+                        return;
+                    }
+                    promise = this.resources.create(resource);
                 }
                 promise.then(() => {
-                    this.creating = this.renaming = false;
-                    resource.renaming = resource.creating = false;
-                    this.newName = '';
-                    this.newResource = undefined;
+                    this.endEdition(resource);
                 }).catch(error => {
-                    this.creating = this.renaming = false;
-                    resource.renaming = resource.creating = false;
-                    this.newName = '';
-                    this.newResource = undefined;
+                    this.endEdition(resource);
                     this.notification.error(error);
                 });
             }
@@ -196,13 +196,13 @@ export class ExplorerComponent {
      * @param resource the resource object.
      * @param event the mouse event.
      */
-    didTapOnResource(resource: Resource, event: MouseEvent) {
+    didTapOnResource(resource: IResource, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
         if (filters.isFolder(resource)) {
             resource.expanded = !resource.expanded;
         } else {
-            this.opener.openURI(asURI(resource));
+            this.opener.open(resource.path);
         }
     }
 
@@ -213,7 +213,7 @@ export class ExplorerComponent {
      * - fas fa-folder | fas fa-folder-open If the resource is folder
      * - resource.icon otherwise.
      */
-    icon(resource: Resource) {
+    icon(resource: IResource) {
         if (filters.isFolder(resource)) {
             return resource.expanded ? 'fas fa-folder-open' : 'fas fa-folder';
         }
@@ -224,33 +224,33 @@ export class ExplorerComponent {
      * Gets a value indicating whether the resource is the selected one in the explorer.
      * @param resource the resource object.
      */
-    isSelection(resource: Resource) {
-        return this.resourceService.isSelection(resource);
+    isSelection(resource: IResource) {
+        return this.resources.isSelection(resource);
     }
 
     /** Used in the html template with *ngFor to keep track of the resource */
-    trackByFn(_index: number, item: Resource) {
+    trackByFn(_index: number, item: IResource) {
         return item.path;
     }
 
 
-    private optionAddFile(resource: Resource, event: MouseEvent) {
+    private optionAddFile(resource: IResource, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        this.newResource = newResource(resource, ResourceTypes.FILE);
+        this.newResource = createResource(resource, ResourceTypes.File);
         this.creating = this.newResource.creating = true;
         this.renaming = false;
     }
 
-    private optionFolder(resource: Resource, event: MouseEvent) {
+    private optionFolder(resource: IResource, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        this.newResource = newResource(resource, ResourceTypes.FOLDER);
+        this.newResource = createResource(resource, ResourceTypes.Folder);
         this.creating = this.newResource.creating = true;
         this.renaming = false;
     }
 
-    private optionDelete(resource: Resource, event: MouseEvent) {
+    private optionDelete(resource: IResource, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
         this.notification.confirmAsync({
@@ -259,24 +259,24 @@ export class ExplorerComponent {
             noTitle: 'Cancel'
         }).then(confirmed => {
             if (confirmed) {
-                this.resourceService.delete(resource).catch(error => {
+                this.resources.delete(resource).catch(error => {
                     this.notification.logError(error);
                 });
             }
         });
     }
 
-    private optionLoad(resource: Resource, event: MouseEvent) {
+    private optionLoad(resource: IResource, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        this.resourceService.loadPLTP(resource).then(response => {
+        this.pl.load(resource).then(response => {
             this.notification.logInfo(response);
         }).catch(error => {
             this.notification.logError(error);
         });
     }
 
-    private optionReload(resource: Resource, event: MouseEvent) {
+    private optionReload(resource: IResource, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
         const options: PrompOptions = {
@@ -293,7 +293,7 @@ export class ExplorerComponent {
         };
         this.notification.promptAsync(options).then((data) => {
             if (data.fields) {
-                this.resourceService.reloadPLTP(resource, data.fields[0].value).then((response => {
+                this.pl.reload(resource, data.fields[0].value).then((response => {
                     this.notification.logInfo(response);
                 })).catch(error => {
                     this.notification.logError(error);
@@ -302,7 +302,7 @@ export class ExplorerComponent {
         });
     }
 
-    private optionRename(resource: Resource, event: MouseEvent) {
+    private optionRename(resource: IResource, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
         this.newName = resource.name;
@@ -310,10 +310,16 @@ export class ExplorerComponent {
         resource.creating = this.creating = false;
     }
 
-    private optionTest(resource: Resource, event: MouseEvent) {
+    private optionTest(resource: IResource, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
         this.opener.openURL('/filebrowser/option?name=test_pl&path=' + resource.path);
+    }
+
+    private endEdition(resource: IResource) {
+        this.creating = this.renaming = resource.renaming = resource.creating = false;
+        this.newName = '';
+        this.newResource = undefined;
     }
 
 }

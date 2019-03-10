@@ -5,6 +5,7 @@ export interface Language {
 
 export const LANGUAGES: Language[] = [
     { extension: 'css', id: 'css' },
+    { extension: 'scss', id: 'scss' },
     { extension: 'cs', id: 'csharp' },
     { extension: 'js', id: 'javascript'},
     { extension: 'ts', id: 'typescript'},
@@ -19,9 +20,11 @@ export const LANGUAGES: Language[] = [
     { extension: 'cpp', id: 'cpp'},
     { extension: 'h', id: 'cpp'},
     { extension: 'xml', id: 'xml'},
+    { extension: 'yaml', id: 'yaml'},
     { extension: 'bat', id: 'bat'},
     { extension: 'ini', id: 'ini'},
     { extension: 'php', id: 'php'},
     { extension: 'pl', id: 'pl' },
-    { extension: 'pltp', id: 'pl' }
+    { extension: 'pltp', id: 'pl' },
+    { extension: 'swift', id: 'swift' }
 ];

@@ -1,5 +1,4 @@
-import { Resource } from 'src/app/editor/shared/models/resource.model';
-import { IEditorDocument } from 'src/app/editor/shared/services/core/opener.service';
+import { IResource } from 'src/app/editor/shared/models/resource.model';
 
 const ICONS_MAP = {
     'js': 'fab fa-js-square',
@@ -71,33 +70,4 @@ export function findIcon(path: string, fallback: string) {
         return ICONS_MAP[ext];
     }
     return fallback;
-}
-
-export function isURI(resource: Resource, uri: monaco.Uri) {
-    return '/' + resource.path === uri.path;
-}
-
-export function asURI(resource: Resource) {
-    const monaco = (<any>window).monaco;
-    return monaco.Uri.file(resource.path);
-}
-
-export function asURIFragment(resource: Resource, fragment: string) {
-    const monaco = (<any>window).monaco;
-    return monaco.Uri.file(resource.path).with({ fragment: fragment });
-}
-
-export function asDocument(resource: Resource, preview?: boolean): IEditorDocument {
-    return {
-        resource: resource,
-        uri: asURI(resource),
-        title: preview ? 'Preview \'' + resource.name + '\'' : resource.name,
-        preview: preview,
-        icon: resource.icon
-    };
-}
-
-export function asURIGoTo(resource: Resource, line: number, column: number) {
-    const monaco = (<any>window).monaco;
-    return monaco.Uri.file(resource.path).with({ fragment: `${line},${column}`});
 }

@@ -1,87 +1,88 @@
 import { Injectable } from '@angular/core';
-import { Resource } from '../../models/resource.model';
+import { IResource } from '../../models/resource.model';
 import { EditorService } from './editor.service';
-import { NotificationService } from 'src/app/shared/services/notification.service';
-import { Schemas } from '../../models/schemas.model';
 import { ResourceService } from './resource.service';
-import { asURI } from 'src/app/shared/models/paths.model';
+import { NotificationService } from 'src/app/shared/services/notification.service';
 
-
-
-export interface IEditorDocument {
-    uri: monaco.Uri;
-    resource: Resource;
-    title: string;
-    icon: string;
-    position?: { line: number, column: number };
-    preview?: boolean;
+/** Open options */
+export interface IOpenOptions {
+    /** jumping at the given position after the resource is opened */
+    position?: { line: number; column: number; };
+    /** open the resource with diff editor */
+    diffMode?: boolean;
+    /** open the resource in a new group */
+    openToSide?: boolean;
 }
-
 export interface IOpenerService {
-    openURI(uri: monaco.Uri, openToSide?: boolean): Promise<boolean>;
-    openURL(url: string, openInNewTab: boolean): void;
-    openReference(base: monaco.Uri, target: monaco.Uri): void;
+
+    /**
+     * Opens the resource at the given path
+     * - Open a browser tab if the path is an external path 'http|https|mailto'
+     * - Open an editor if the path point to a resource.
+     * @param path the path to open
+     * @param options open options
+     */
+    open(path: string, options?: IOpenOptions): Promise<boolean>;
+
+    /**
+     * Opens the given url
+     * @param url the url to open
+     * @param openInNewTab open the url in a new tab if sets to true
+     */
+    openURL(url: string, openInNewTab: boolean);
+
+    /**
+     * Resolves and open the path 'target' relative to 'base'.
+     * @param base the path where to resolve 'target'
+     * @param target the path to resolve and open
+     */
+    openReference(base: string, target: string): Promise<boolean>;
 }
 
-@Injectable()
-export abstract class AbstractOpenerService implements IOpenerService {
-    abstract openURI(uri: monaco.Uri, openToSide?: boolean): Promise<boolean>;
-    abstract openURL(url: string, openInNewTab?: boolean): void;
-    abstract openReference(base: monaco.Uri, target: monaco.Uri): void;
-}
-
+/** Implementation of IOpenService interface */
 @Injectable({
     providedIn: 'root',
 })
-export class OpenerService extends AbstractOpenerService {
-
+export class OpenerService implements IOpenerService {
     constructor(
-        private readonly editorService: EditorService,
-        private readonly resourceService: ResourceService,
-        private readonly notificationService: NotificationService
+        private readonly editor: EditorService,
+        private readonly resources: ResourceService,
+        private readonly notification: NotificationService
     ) {
-        super();
     }
 
-    async openURI(uri: monaco.Uri, openToSide: boolean = false): Promise<boolean> {
-        const { scheme, path, query, fragment } = uri;
-        if (!scheme) {
-            return Promise.resolve(false);
+    async open(path: string, options?: IOpenOptions): Promise<boolean> {
+        if (!path) {
+            return Promise.reject(new Error('parameter "path" is required'));
         }
-
-        if (scheme === Schemas.http || scheme === Schemas.https || scheme === Schemas.mailto) {
+        path = path.trim();
+        if (path.startsWith('http') || path.startsWith('mailto')) {
             // open http or default mail application
-            console.log(scheme, path);
-            this.openURL(uri.toString(true));
+            this.openURL(path);
             return Promise.resolve(true);
         }
-
-        let position: { line: number; column: number; } | undefined;
-        const match = /^L?(\d+)(?:,(\d+))?/.exec(fragment);
-        if (match) {
-            // support file:///some/file.js#73,84
-            // support file:///some/file.js#L73
-            position = {
-                // tslint:disable-next-line: radix
-                line: parseInt(match[1]),
-                // tslint:disable-next-line: radix
-                column: match[2] ? parseInt(match[2]) : 1
-            };
-            // remove fragment
-            uri = uri.with({ fragment: '' });
-        }
-
-        const resource = this.resourceService.find(uri.path);
+        const resource = this.resources.find(path);
         if (!resource) {
-            return Promise.reject(new Error('Unable to open \'' + uri.path + '\': File not found'));
+            return Promise.reject(new Error(`Unable to open '${path}': resource not found`));
         }
-        return this.editorService.open({
-            uri: uri,
-            resource: resource,
-            position: position,
-            title: resource.name,
-            icon: resource.icon,
-        }, openToSide);
+        return this.editor.open(resource, options);
+    }
+
+    async openReference(base: string, target: string): Promise<boolean> {
+        try {
+            const resource = this.resources.find(base);
+            if (!resource) {
+                return Promise.reject(new Error(`Unable to open '${target}': '${base}' not found`));
+            }
+            const reference = await this.resources.findReference(resource, target);
+            if (!reference) {
+                return Promise.reject(new Error(`Unable to open '${base}': resource not found relative to '${base}'`));
+            }
+            return await this.editor.open(reference);
+        } catch (error) {
+            this.notification.logError(error);
+            return false;
+        }
     }
 
     openURL(url: string, openInNewTab: boolean = true) {
@@ -89,19 +90,6 @@ export class OpenerService extends AbstractOpenerService {
             window.open(url, '_blank');
         } else {
             window.open(url);
-        }
-    }
-
-    openReference(base: monaco.Uri, target: monaco.Uri) {
-        if (target.scheme === Schemas.http || target.scheme === Schemas.https || target.scheme === Schemas.mailto) {
-           this.openURL(target.toString(true));
-        } else {
-            const resource = this.resourceService.find(base.path);
-            this.resourceService.findReference(resource, target.path).then(reference => {
-                this.openURI(asURI(reference));
-            }).catch(error => {
-                this.notificationService.logError(error);
-            });
         }
     }
 }

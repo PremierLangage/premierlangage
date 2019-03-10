@@ -1,17 +1,10 @@
-import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef, Injectable, HostListener } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 
-
-import { Resource } from '../shared/models/resource.model';
 
 import { ConfirmOptions } from 'src/app/shared/components/confirm/confirm.component';
-import { GitService } from '../shared/services/core/git.service';
-import { TaskService } from '../shared/services/core/task.service';
-import { ResourceService } from '../shared/services/core/resource.service';
-import { NotificationService } from '../../shared/services/notification.service';
 import { OpenerService } from '../shared/services/core/opener.service';
 import { IEditorGroup } from '../shared/models/editor-group.model';
 import { EditorService } from '../shared/services/core/editor.service';
-import { asURI } from 'src/app/shared/models/paths.model';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -39,9 +32,9 @@ export class WorkspaceComponent implements OnInit {
     ];
 
     constructor(
-        readonly editor: EditorService,
-        readonly opener: OpenerService,
-        readonly changes: ChangeDetectorRef,
+        private readonly editor: EditorService,
+        private readonly opener: OpenerService,
+        private readonly changes: ChangeDetectorRef,
     ) {}
 
     ngOnInit() {
@@ -54,6 +47,4 @@ export class WorkspaceComponent implements OnInit {
         });
     }
 
-    monacoLoaded() {
-    }
 }

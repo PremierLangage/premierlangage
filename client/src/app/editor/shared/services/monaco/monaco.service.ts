@@ -1,22 +1,21 @@
 // tslint:disable: max-line-length
 
-import { Injectable, Inject } from '@angular/core';
-import { LANGUAGE_PROVIDERS } from '../../tokens/monaco-providers.token';
+import { Injectable } from '@angular/core';
+
+import { IBlame } from '../../models/git.model';
+import { extname } from 'src/app/shared/models/paths.model';
 import { Language } from '../../models/language.model';
-import { Resource } from '../../models/resource.model';
-import { asURI } from 'src/app/shared/models/paths.model';
+import { IResource } from '../../models/resource.model';
 import { LANGUAGES } from '../../models/language.model';
+
+import { GitService } from '../core/git.service';
 import { OpenerService } from '../core/opener.service';
 import { ResourceService } from '../core/resource.service';
-import { Schemas } from '../../models/schemas.model';
+
+import { Subject } from 'rxjs';
 
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import IStandaloneDiffEditor = monaco.editor.IStandaloneDiffEditor;
-import { GitService } from '../core/git.service';
-import { isNgContainer, isNgTemplate } from '@angular/compiler';
-import { Subject } from 'rxjs';
-import { IBlame } from '../../models/git.model';
-import { extname } from 'src/app/shared/models/paths.model';
 
 export const PL = 'pl';
 
@@ -77,9 +76,17 @@ export class MonacoService  {
         this.registerFolding(monaco);
         this.registerHover(monaco);
         this.registerCompletion(monaco);
+
+        this.resources.renamed.subscribe(data => {
+            this.disposeModel(data.before);
+        });
+
+        this.resources.deleted.subscribe(data => {
+            this.disposeModel(data.path);
+        });
     }
 
-    findLanguage(resource: Resource) {
+    findLanguage(resource: IResource) {
         const ext = extname(resource.path);
         for (const item of LANGUAGES) {
             if (item.extension === ext) {
@@ -90,24 +97,13 @@ export class MonacoService  {
     }
 
     disposeEditor(editor: IStandaloneCodeEditor) {
-        const info = this.editors.find(e => e.editor.getId() === editor.getId());
-        if (!info) {
+        const editorInfo = this.editors.find(e => e.editor.getId() === editor.getId());
+        if (!editorInfo) {
             throw new Error('unregistered editor ' + editor.getId());
         }
-        this.editors = this.editors.filter(e => e.editor.getId() !== editor.getId());
-
-        const monaco = (<any>window).monaco;
-        const models = monaco.editor.getModels();
-        for (const model of models) {
-            if (model._attachedEditorCount === 0) {
-                model.dispose();
-            }
-        }
-
-        for (const disposable of info.disposables) {
-            disposable.dispose();
-        }
+        editorInfo.disposables.forEach(item => item.dispose());
         editor.dispose();
+        this.editors = this.editors.filter(e => e.editor.getId() !== editor.getId());
     }
 
     registerEditor(editor: IStandaloneCodeEditor) {
@@ -117,7 +113,7 @@ export class MonacoService  {
         const linkDetector: any = editor.getContribution('editor.linkDetector');
 
         linkDetector.openerService.open = (uri: monaco.Uri) => {
-            this.opener.openReference(editor.getModel().uri, uri);
+            this.opener.openReference(editor.getModel().uri.path, uri.path);
         };
 
         disposables.push(linkDetector);
@@ -129,7 +125,6 @@ export class MonacoService  {
 
         disposables.push(editor.onDidChangeCursorPosition(e => {
             this.didCursorChanged(e, editor);
-            this.updateBlame(editor);
         }));
 
         disposables.push(editor.onDidChangeModelContent(() => {
@@ -138,47 +133,69 @@ export class MonacoService  {
         this.editors.push({editor: editor, disposables: disposables});
     }
 
-    provideBlames(resource: Resource) {
+    provideBlames(resource: IResource, model: monaco.editor.ITextModel) {
         return this.git.blame(resource).then(response => {
             const lines = resource.content.split('\n');
             const linesLength = lines.length;
             for (const item of response) {
                 item.text = lines[item.line - 1];
+                if (item.email === 'not.committed.yet') {
+                    item.email = 'Uncommitted changes';
+                }
             }
-            this.blames['/' + resource.path] = response;
+            this.blames[resource.path] = response;
+            this.updateBlame(model);
             return true;
         }).catch(_ => false);
     }
 
+    private disposeModel(path: string) {
+        const monaco = (<any>window).monaco;
+        const model = monaco.editor.getModel(monaco.Uri.parse(path));
+        if (model) {
+            model.dispose();
+        }
+    }
+
+    private disposeUnusedModels() {
+        const monaco = (<any>window).monaco;
+        const models = monaco.editor.getModels();
+        for (const model of models) {
+            if (model._attachedEditorCount === 0) {
+                model.dispose();
+            }
+        }
+    }
+
     private didCursorChanged(e: monaco.editor.ICursorPositionChangedEvent, editor: IStandaloneCodeEditor) {
         this.cursor = e.position;
-        this.cursorChanged.next(e.position);
         this.syncCursor(editor, e);
+        this.updateBlame(editor.getModel());
     }
 
     private syncCursor(editor: IStandaloneCodeEditor, e: monaco.editor.ICursorPositionChangedEvent) {
+        this.cursorChanged.next(e.position);
         for (const item of this.editors) {
             if (item.editor.getId() !== editor.getId()) {
                 const model = item.editor.getModel();
-                if (model.id === editor.getModel().id) {
+                if (model && model.id === editor.getModel().id) {
                     item.editor.setPosition(e.position);
                 }
             }
         }
     }
 
-    private updateBlame(editor: IStandaloneCodeEditor) {
-        let blame;
-        const model = editor.getModel();
+    private updateBlame(model: monaco.editor.ITextModel) {
         if (model) {
+            let blame;
             const blames: IBlame[] = this.blames[model.uri.path];
             if (blames) {
                 const lineNumber = this.cursor ? this.cursor.lineNumber : 0;
-                const lineContent = editor.getModel().getLineContent(lineNumber);
+                const lineContent = model.getLineContent(lineNumber);
                 blame = blames.find(item => item.text.trim() === lineContent.trim());
             }
+            this.blameChanged.next({blame: blame, modelId: model.id});
         }
-        this.blameChanged.next({blame: blame, modelId: model.id});
     }
 
     private registerMonarch(monaco: any) {
@@ -381,6 +398,7 @@ export class MonacoService  {
             }
         });
     }
+
 }
 
 interface IEditorInfo {

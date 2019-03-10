@@ -1,97 +1,97 @@
 // tslint:disable: max-line-length
 
-import { Resource } from './resource.model';
+import { IResource } from './resource.model';
 import { Subject } from 'rxjs';
-import { IEditorDocument } from '../services/core/opener.service';
 import { IEditorGroup } from './editor-group.model';
 import { canBePreviewed, isRepo, isSVG, isFromServer } from './filters.model';
-import { asURI, asDocument } from 'src/app//shared/models/paths.model';
+import { IOpenOptions } from '../services/core/opener.service';
 
-export const CODE_EDITOR = 'code';
-export const PREVIEW_EDITOR = 'preview';
-export const IMAGE_EDITOR = 'image';
-export const WEB_EDITOR = 'web';
-export const DIFF_FRAGMENT = 'diff';
-
+export enum EditorTypes {
+    Code = 'code',
+    Preview = 'preview',
+    Image = 'image'
+}
 export interface IEditorAction {
     icon: string;
     tooltip: string;
-    condition: (item: Resource) => boolean;
-    invoke: (item: Resource) => void;
+    condition: (item: IResource) => boolean;
+    invoke: (item: IResource) => void;
 }
 
 export interface IEditor {
     id(): number;
-    type(): string;
-    document(): IEditorDocument;
-    actions(): IEditorAction[];
+    type(): EditorTypes;
     group(): IEditorGroup;
+    actions(): IEditorAction[];
+    resource(): IResource;
     focus(focused: boolean): void;
     hasFocus(): boolean;
-    open(document: IEditorDocument): void;
-    canOpen(document: IEditorDocument): boolean;
+    open(resource: IResource, options?: IOpenOptions): void;
+    canOpen(resource: IResource): boolean;
 }
 
 export abstract class AbstractEditor implements IEditor {
     private static ID_COUNTER = 0;
+
     private readonly _id: number;
     private readonly _group: IEditorGroup;
+
     private _focused: boolean;
-    private _document: IEditorDocument;
+    private _resource: IResource;
 
-    readonly onOpened: Subject<IEditorDocument> = new Subject();
+    readonly onOpened: Subject<IResource> = new Subject();
 
-    constructor(group: IEditorGroup, document: IEditorDocument) {
+    constructor(group: IEditorGroup, resource: IResource) {
         this._id = ++AbstractEditor.ID_COUNTER;
-        this._document = document;
+        this._resource = resource;
         this._group = group;
     }
 
-    abstract type(): string;
-    abstract canOpen(document: IEditorDocument): boolean;
+    abstract type(): EditorTypes;
+    abstract canOpen(resource: IResource): boolean;
     abstract actions(): IEditorAction[];
 
     id(): number {
         return this._id;
     }
 
-    document(): IEditorDocument {
-        return this._document;
-    }
-
     group(): IEditorGroup {
         return this._group;
-    }
-
-    open(document: IEditorDocument): void {
-        this._document = document;
-        this.onOpened.next(document);
     }
 
     focus(focused: boolean): void {
         this._focused = focused;
     }
 
+    open(resource: IResource, options?: IOpenOptions): void {
+        this._resource = resource;
+        this.onOpened.next(resource);
+    }
+
     hasFocus(): boolean {
         return this._focused;
+    }
+
+    resource(): IResource {
+        return this._resource;
     }
 }
 
 export class CodeEditor extends AbstractEditor {
 
     readonly onDiffCommand: Subject<boolean> = new Subject();
-    readonly onPreviewCommand: Subject<Resource> = new Subject();
+    readonly onPreviewCommand: Subject<IResource> = new Subject();
 
     diffEditing: boolean;
     codeEditor: monaco.editor.IStandaloneCodeEditor;
     diffEditor: monaco.editor.IStandaloneDiffEditor;
 
-    constructor(group: IEditorGroup, document: IEditorDocument) {
-        super(group, document);
+    constructor(group: IEditorGroup, resource: IResource) {
+        super(group, resource);
     }
 
-    type(): string {
-        return CODE_EDITOR;
+    type(): EditorTypes {
+        return EditorTypes.Code;
     }
 
     actions(): IEditorAction[] {
@@ -103,20 +103,19 @@ export class CodeEditor extends AbstractEditor {
         ];
     }
 
-    canOpen(document: IEditorDocument): boolean {
-        return openAsCode(document);
-    }
-
-    open(document: IEditorDocument): void {
-        if (document.uri.fragment === DIFF_FRAGMENT) {
-            this.diffEditing = true;
-        }
-        document.uri = document.uri.with({ fragment: ''});
-        super.open(document);
+    open(resource: IResource, options?: IOpenOptions): void {
+        this.diffEditing = options && options.diffMode;
+        super.open(resource, options);
     }
 
     split() {
-        this.group().openSide(this.document());
+        this.group().editorService().open(this.resource(), {
+            openToSide: true
+        });
+    }
+
+    canOpen(resource: IResource): boolean {
+        return openAsCode(resource);
     }
 
     private preview() {
@@ -128,7 +127,7 @@ export class CodeEditor extends AbstractEditor {
     private diffMode() {
         const that = this;
         return {
-            icon: 'fas fa-eye', tooltip: 'Open Changes', condition: (item: Resource) => isRepo(item) && !that.diffEditing, invoke: _ => {
+            icon: 'fas fa-eye', tooltip: 'Open Changes', condition: (item: IResource) => isRepo(item) && !that.diffEditing, invoke: _ => {
                 that.diffEditing = true;
                 that.onDiffCommand.next(that.diffEditing);
             }
@@ -138,7 +137,7 @@ export class CodeEditor extends AbstractEditor {
     private codeMode() {
         const that = this;
         return {
-            icon: 'fas fa-eye-slash', tooltip: 'Close Changes', condition: (item: Resource) => that.diffEditing, invoke: _ => {
+            icon: 'fas fa-eye-slash', tooltip: 'Close Changes', condition: (item: IResource) => that.diffEditing, invoke: _ => {
                 that.diffEditing = false;
                 that.onDiffCommand.next(that.diffEditing);
             }
@@ -148,8 +147,8 @@ export class CodeEditor extends AbstractEditor {
     private splitRight() {
         const that = this;
         return {
-            icon: 'fas fa-columns', tooltip: 'Split ⌘Right', condition: () => true, invoke: (item: Resource) => {
-                that.group().openSide(asDocument(item));
+            icon: 'fas fa-columns', tooltip: 'Split ⌘Right', condition: () => true, invoke: _ => {
+                that.split();
             }
         };
     }
@@ -159,31 +158,31 @@ export class ImageEditor extends AbstractEditor {
 
     zoom = 0.7;
 
-    constructor(group: IEditorGroup, document: IEditorDocument) {
-        super(group, document);
+    constructor(group: IEditorGroup, resource: IResource) {
+        super(group, resource);
     }
 
-    type(): string {
-        return IMAGE_EDITOR;
+    type(): EditorTypes {
+        return EditorTypes.Image;
     }
 
     actions(): IEditorAction[] {
         return [
             {
-                icon: 'fas fa-plus', tooltip: 'Zoom In', condition: (item: Resource) => true, invoke: (item: Resource) => {
+                icon: 'fas fa-plus', tooltip: 'Zoom In', condition: (item: IResource) => true, invoke: (item: IResource) => {
                     this.zoomIn();
                 }
             },
             {
-                icon: 'fas fa-minus', tooltip: 'Zoom Out', condition: (item: Resource) => true, invoke: (item: Resource) => {
+                icon: 'fas fa-minus', tooltip: 'Zoom Out', condition: (item: IResource) => true, invoke: (item: IResource) => {
                     this.zoomOut();
                 }
             }
         ];
     }
 
-    canOpen(document: IEditorDocument): boolean {
-        return openAsImage(document);
+    canOpen(resource: IResource): boolean {
+        return openAsImage(resource);
     }
 
     zoomIn() {
@@ -197,67 +196,46 @@ export class ImageEditor extends AbstractEditor {
 }
 export class PreviewEditor extends AbstractEditor {
 
-    constructor(group: IEditorGroup, document: IEditorDocument) {
+    constructor(group: IEditorGroup, document: IResource) {
         super(group, document);
     }
 
-    type(): string {
-        return PREVIEW_EDITOR;
+    type(): EditorTypes {
+        return EditorTypes.Preview;
     }
 
     actions(): IEditorAction[] {
         return [
             {
-                icon: 'fas fa-refresh', tooltip: 'Refresh', condition: (item: Resource) => true, invoke: (item: Resource) => {
+                icon: 'fas fa-refresh', tooltip: 'Refresh', condition: (item: IResource) => true, invoke: (item: IResource) => {
                 }
             }
         ];
     }
 
-    canOpen(document: IEditorDocument): boolean {
-        return openAsPreview(document);
-    }
-
-}
-export class WebEditor extends AbstractEditor {
-
-    constructor(group: IEditorGroup, document: IEditorDocument) {
-        super(group, document);
-    }
-
-    type(): string {
-        return WEB_EDITOR;
-    }
-
-    actions(): IEditorAction[] {
-        return [];
-    }
-
-    canOpen(document: IEditorDocument): boolean {
-        return openAsWeb(document);
+    canOpen(resource: IResource): boolean {
+        return openAsPreview(resource);
     }
 
 }
 
-export function openAsCode(doc: IEditorDocument) {
-    return !openAsImage(doc);
+
+export function openAsCode(resource: IResource) {
+    return !openAsImage(resource);
 }
 
-export function openAsImage(doc: IEditorDocument) {
-    return !openAsPreview(doc) && doc.resource.meta && doc.resource.meta.image && !isSVG(doc.resource);
+export function openAsImage(resource: IResource) {
+    return !openAsPreview(resource) && resource.meta && resource.meta.image && !isSVG(resource);
 }
 
-export function openAsPreview(doc: IEditorDocument) {
-    return isFromServer(doc.resource) && doc.resource.meta && doc.resource.meta.previewData !== undefined;
+export function openAsPreview(resource: IResource) {
+    return isFromServer(resource) && resource.meta && resource.meta.previewData !== undefined;
 }
 
-export function openAsWeb(doc: IEditorDocument) {
-    return  !isFromServer(doc.resource);
-}
 
-export const INSTANTIATORS: {condition: (doc: IEditorDocument) => boolean, create: (group: IEditorGroup, doc: IEditorDocument) => IEditor }[] = [
-    { condition: openAsImage, create: (group: IEditorGroup, doc: IEditorDocument) => new ImageEditor(group, doc) },
-    { condition: openAsWeb, create: (group: IEditorGroup, doc: IEditorDocument) => new WebEditor(group, doc) },
-    { condition: openAsPreview, create: (group: IEditorGroup, doc: IEditorDocument) => new PreviewEditor(group, doc) },
-    { condition: openAsCode,  create: (group: IEditorGroup, doc: IEditorDocument) => new CodeEditor(group, doc) }
+
+export const INSTANTIATORS: {condition: (r: IResource) => boolean, create: (group: IEditorGroup, r: IResource) => IEditor }[] = [
+    { condition: openAsImage, create: (group: IEditorGroup, r: IResource) => new ImageEditor(group, r) },
+    { condition: openAsPreview, create: (group: IEditorGroup, r: IResource) => new PreviewEditor(group, r) },
+    { condition: openAsCode,  create: (group: IEditorGroup, r: IResource) => new CodeEditor(group, r) }
 ];

@@ -1,5 +1,6 @@
 import os
 
+import codecs
 import gitcmd
 import subprocess
 import magic
@@ -110,6 +111,35 @@ def fa_repository_host(path):
     return 'fab fa-git'
 
 
+def get_meta(path):
+    """
+    Returns metadata informations about the path
+    Raises an IOError if path is not a file 
+    """
+    if os.path.isdir(path):
+        raise IOError('{0} is not a file'.format(rm_fb_root(path)))
+
+    return {
+            'text': filter.is_text(path),
+            'code': filter.is_code(path) or filter.is_pl(path) or filter.is_pltp(path),
+            'archive': filter.is_archive(path),
+            'application': filter.is_application(path),
+            'image': filter.is_image(path),
+            'excel': filter.is_excel(path),
+            'downloadUrl': to_download_url(path)
+    }
+
+def get_content(path):
+    """
+    Returns the content of the path
+    Raises an IOError if path is not a file 
+    """
+    if os.path.isdir(path):
+        raise IOError('{0} is not a file'.format(rm_fb_root(path)))
+
+    with codecs.open(path, "r", encoding='utf-8', errors='ignore') as f:
+        return f.read()
+
 
 def walkdir(path, user, parent='', write=None, read=None, repo=None, sort=False):
     """Returns the directory tree from path."""
@@ -146,7 +176,7 @@ def walkdir(path, user, parent='', write=None, read=None, repo=None, sort=False)
         ]
         if sort:
             node['children'] = sorted(node['children'], key=lambda i: i["name"])
-    
+
     return node
 
 

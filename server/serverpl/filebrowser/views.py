@@ -20,7 +20,9 @@ from django.template.loader import get_template
 
 from filebrowser.filter import is_root, is_image, in_repository
 from filebrowser.models import Directory
-from filebrowser.utils import fa_icon, join_fb_root, rm_fb_root, walkdir, walkalldirs, repository_url, repository_branch, to_download_url, missing_parameter, exec_git_cmd, HOME_DIR, LIB_DIR
+from filebrowser.utils import fa_icon, join_fb_root, rm_fb_root, walkdir, walkalldirs, repository_url, \
+                              repository_branch, to_download_url, missing_parameter, exec_git_cmd, \
+                              get_content, get_meta, HOME_DIR, LIB_DIR
 from loader.loader import load_file, reload_pltp as rp
 from loader.utils import get_location
 
@@ -72,24 +74,13 @@ def get_resource(request):
         return HttpResponseBadRequest(missing_parameter('path'))
     
     try:
-        full_path = join_fb_root(path)
-        meta = {
-                'text': filter.is_text(full_path),
-                'code': filter.is_code(full_path) or filter.is_pl(full_path) or filter.is_pltp(full_path),
-                'archive': filter.is_archive(full_path),
-                'application': filter.is_application(full_path),
-                'image': filter.is_image(full_path),
-                'excel': filter.is_excel(full_path),
-                'downloadUrl': to_download_url(path)
-        }
-        with codecs.open(full_path, "r", encoding='utf-8', errors='ignore') as f:
-            content = f.read()
+        path = join_fb_root(path)
         return JsonResponse({
-            'content': content,
-            'meta': meta
+            'content': get_content(path),
+            'meta': get_meta(path)
         })
     except Exception as e:  # pragma: no cover
-        msg = "Impossible to open '" + path + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
+        msg = "Impossible to open '" + rm_fb_root(path) + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)

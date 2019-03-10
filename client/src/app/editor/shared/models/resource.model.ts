@@ -1,12 +1,13 @@
 import { assert } from 'src/app/shared/models/assert.model';
 
 export enum ResourceTypes {
-    FILE = 'file',
-    FOLDER = 'folder',
-    LOCAL = 'local'
+    File = 'file',
+    Folder = 'folder',
+    Local = 'local'
 }
 
-export interface Resource {
+
+export interface IResource {
     name: string;
     path: string;
     parent: string;
@@ -15,27 +16,40 @@ export interface Resource {
     write: boolean;
     read: boolean;
     expanded: boolean;
-    children: Resource[];
+    children: IResource[];
 
+
+    /** the local content of the resource */
     content: string;
-    lastContent: string;
-    meta: ResourceMeta;
+    /** the server content of the resource */
+    savedContent: string;
     /** opened in any editor */
     opened: boolean;
+    /** being renamed */
     renaming: boolean;
+    /** being created */
     creating: boolean;
+    /** local content changed  */
     changed: boolean;
-    /** changed on the server */
+    /** server content changed */
     dirty: boolean;
 
-    repo: {
+    /** metadata informations about the resource */
+    meta?: IResourceMeta;
+
+    /** informations about the git repository of the resource */
+    repo?: {
+        /** url of the git repository */
         url: string,
+        /** branch of the git repository */
         branch: string,
+        /** host of the git repository */
         host: string
     };
+
 }
 
-export interface ResourceMeta {
+export interface IResourceMeta {
     text?: boolean;
     code?: boolean;
     archive?: boolean;
@@ -46,7 +60,7 @@ export interface ResourceMeta {
     downloadUrl?: string;
 }
 
-export function newResource(parent: Resource, type: ResourceTypes): Resource {
+export function createResource(parent: IResource, type: ResourceTypes): IResource {
     assert(parent.type === 'folder', 'resource.type must be folder');
     assert(parent.children.every(e => !e.renaming), 'cannot edit multiple resources');
     parent.expanded = true;
@@ -61,7 +75,7 @@ export function newResource(parent: Resource, type: ResourceTypes): Resource {
         read: parent.read,
         children: [],
         content: undefined,
-        lastContent: undefined,
+        savedContent: undefined,
         creating: true,
         renaming: false,
         expanded: false,

@@ -1,9 +1,9 @@
 import { ViewEncapsulation, Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ImageEditor, PreviewEditor } from '../../shared/models/editor.model';
-import { IEditorDocument } from '../../shared/services/core/opener.service';
 import { Subscription } from 'rxjs';
 import { RunScriptsDirective } from 'src/app/shared/directives/run-scripts.directive';
 import { isMarkdown, isSVG, isPl } from '../../shared/models/filters.model';
+import { IResource } from '../../shared/models/resource.model';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -29,7 +29,7 @@ export class PreviewEditorComponent implements OnInit, OnDestroy {
     constructor() { }
 
     ngOnInit() {
-        this.open(this.editor.document());
+        this.open(this.editor.resource());
         this.openSubscription = this.editor.onOpened.subscribe(document => {
             this.open(document);
         });
@@ -45,11 +45,11 @@ export class PreviewEditorComponent implements OnInit, OnDestroy {
         this.loading = this.counter % 2 === 0;
     }
 
-    private open(document: IEditorDocument): void {
-        this.content = document.resource.meta.previewData;
-        this.isMarkdown = isMarkdown(document.resource);
-        this.isHTML = isSVG(document.resource);
-        this.isURL = isPl(document.resource);
+    private open(resource: IResource): void {
+        this.content = resource.meta.previewData;
+        this.isMarkdown = isMarkdown(resource);
+        this.isHTML = isSVG(resource);
+        this.isURL = isPl(resource);
 
         this.loading = this.isURL;
 
