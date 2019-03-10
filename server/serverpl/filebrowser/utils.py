@@ -126,7 +126,7 @@ def get_meta(path):
             'application': filter.is_application(path),
             'image': filter.is_image(path),
             'excel': filter.is_excel(path),
-            'downloadUrl': to_download_url(path)
+            'downloadUrl': to_download_url(rm_fb_root(path))
     }
 
 def get_content(path):

@@ -37,7 +37,6 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
         this.svg = resource.content;
         this.url = resource.meta.downloadUrl;
         this.isSVG = isSVG(resource);
-        console.log(resource);
     }
 
 }
