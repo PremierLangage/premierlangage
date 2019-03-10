@@ -3,7 +3,8 @@
 {% load static %}
 
 {% block css %}
-<link rel="stylesheet" href="{% static 'css/block_chart.css' %}" />
+<link rel="stylesheet" href="{% static 'css/block_chart.css' %}"
+      xmlns:playexo="http://www.w3.org/1999/xhtml"/>
 <link rel="stylesheet" href="{% static 'css/course.css' %}" />
 {% endblock %}
 
@@ -34,41 +35,35 @@
     <section>
         <h5>Activités</h5><hr/>
         <div class="mdl-grid grid-activities">
-            {% for item in activity %}  
-                <div class="{% if not item.open %}disabled{% endif%} mdl-card card-activity mdl-shadow--2dp mdl-cell mdl-cell--3-col mdl-cell--6-col-phone mdl-cell--6-col-tablet"
+            {% for item in activity %}
+                <div {% if item.open %}style="cursor: pointer;"{% endif %} class="{% if not item.open %}disabled{% endif%} mdl-card card-activity mdl-shadow--2dp mdl-cell mdl-cell--3-col mdl-cell--6-col-phone mdl-cell--6-col-tablet"
                     {% if item.open %} onclick='window.location = "{% url 'playexo:activity' item.id %}";' {% endif %}>
                     <div class="mdl-card__title">
-                        <span class="mdl-card__title-text">{{ item.title }}</span>       
-                    </div>          
+                        <span class="mdl-card__title-text">{{ item.title }}</span>
+                    </div>
                     <div class="mdl-card__supporting-text">
                         <div class="grid-exos">
                             {% for elem in item.pl %}
                             <div class="block block-chart {{elem.state.template}}"><p>{{ elem.name }}</p></div>
                             {% endfor %}
                         </div>
-                    </div>            
+                    </div>
                     <div class="mdl-card__actions mdl-card--border">
                         <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" href="/courses/course/{{course_id}}/{{item.id}}/summary/">
                             Statistiques
                         </a>
                         <div class="mdl-layout-spacer"></div>
-                        <span class='toggle-activity'>
-                            {% if not item.open %}
-                                {% if instructor %}
-                                    &emsp;<a href="{{ request.path }}?action=toggle_activity&id={{item.id}}"><i class="fas fa-toggle-off"></i></a>
+                        {% if instructor %}
+                            <span class='toggle-activity'>
+                                {% if not item.open %}
+                                    <a href="{{ request.path }}?action=toggle_activity&id={{item.id}}"><i class="fas fa-toggle-off"></i></a>
                                 {% else %}
-                                    <i class="fas fa-toggle-off">
+                                    <a href="{{ request.path }}?action=toggle_activity&id={{item.id}}"><i class="fas fa-toggle-on"></i></a>
                                 {% endif %}
-                            {% elif item.open and instructor %}
-                                {% if instructor or request.user.profile.is_admin %}
-                                    &emsp;<a href="{{ request.path }}?action=toggle_activity&id={{item.id}}"><i class="fas fa-toggle-on"></i></a>
-                                {% else %}
-                                    <i class="fas fa-toggle-on">
-                                {% endif %}
-                            {% endif %}
-                        </span>             
+                            </span>
+                        {% endif %}
                     </div>
-                </div>   
+                </div>
             {% endfor %}
         </div>
     </section>
