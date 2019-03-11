@@ -67,6 +67,7 @@ def course(request, pk):
                             + "'open' attribute to '"+str(act.open)+"' in '"+course.name+"'.")
             except Activity.DoesNotExist:
                 raise Http404("L'activité d'ID '"+str(request.GET.get("id", None))+"' introuvable.")
+            return redirect(reverse("classmanagement:course", args=[pk]))
     
     activity = list()
     for item in course.activity_set.all().order_by("id"):
