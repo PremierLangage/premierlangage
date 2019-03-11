@@ -9,8 +9,5 @@ fi
 
 mkdir -p documentation/static/documentation
 
-cp -r documentation/mkdocs/custom/css documentation/static/documentation/css
-cp -r documentation/mkdocs/custom/js documentation/static/documentation/js
-cp -r documentation/mkdocs/custom/fonts documentation/static/documentation/fonts
-cp -r documentation/mkdocs/custom/img documentation/static/documentation/img
+cp -r documentation/mkdocs/custom/* documentation/static/documentation/
 cp -r documentation/mkdocs/docs/images/* documentation/static/documentation/img/
