@@ -41,7 +41,7 @@ en place pour ceci: `raise StopBeforeExec`.
       noms utilisés. Il est pour cette raison recommandé de ne pas importer `*`
       (`from x import *`).
 
-***Attention:*** Le script doit être indenté à l'aide de 4 espaces ou de tabulations.
+***Attention:*** Le script doit être indenté à l'aide de 4 espaces ou de tabulations. Pas de d'indentation de 1 2 ou 3 espaces.
 
 ___
 
@@ -53,18 +53,20 @@ la seed du context de l'exercice:
 ```python
 import random
 random.seed(seed)
+d6=random.randint(1,6)
 ```
-Si Sympy est utilisé, il faut instancier Random :
+Si Sympy est utilisé, il faut instancier un générateur pour l'exercice car le générateur par défaut de Random est manipulé par sympy :
 ```python
 import random
 rd = random.Random()
 rd.seed(seed)
+d6=rd.randint(1,6)
+d12=rd.randint(1,12)
 ```
 
 
 ## Débugage
-Il est possible de *print* dans *sys.stderr* à des fins de débugage. Ces prints
-ne seront affiché qu'en cas d'erreur, et seulement aux professeurs:
+Il est possible de *print* dans *sys.stderr* à des fins de débugage (les autres syntaxes pour écrire sur la sortie erreur standard sont acceptables. Cet textes ne seront affichés qu'en cas d'erreur, et seulement aux professeurs:
 ```python
 import sys
 print("debug", file=sys.stderr)
@@ -74,9 +76,12 @@ ___
 
 
 ## Exemple
+
+un exercice de calcul ou il faut calculer la somme de deux nombres entre 1 et 1000 tirés aléatoirements. 
+
 ```
 @ /builder/before.py [builder.py]
-
+title= Une somme aléatoire
 before==
 import random
 random.seed(seed)
@@ -95,19 +100,11 @@ Combien <i>font</i> ***{{ op1 }} + {{ op2 }}*** ?
 ==
 
 form =  <input id="form_answer" type="number" value="{{ answers__.answer }}" required/>
+
+# pour l'évaluation de cet exercice voir evaluator.
+
 ```
 
 Affichera :
 ![text_editor_example]({% static 'documentation/img/before_build_example.png' %})
-
-
-
-
-
-
-
-
-
-
-
 
