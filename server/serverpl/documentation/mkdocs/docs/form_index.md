@@ -19,4 +19,14 @@ Exemple:
 ![text_editor_example]({% static 'documentation/img/text_editor_example.png' %})
 ___
 
+## Valeur Numérique 
+
+* [Documentation du formulaire](../numeric/)
+
+* mot-clés : `numerique, simple`
+
+___
+
+
+
 
