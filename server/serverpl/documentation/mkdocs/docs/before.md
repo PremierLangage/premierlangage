@@ -96,10 +96,10 @@ while(not (op1 % 10 and op2 % 10)):
 ==
 
 text==
-Combien <i>font</i> ***{{ op1 }} + {{ op2 }}*** ?
+Combien <i>font</i> ***{% templatetag openvariable %} op1 {% templatetag closevariable %} + {% templatetag openvariable %} op2 {% templatetag closevariable %}*** ? 
 ==
 
-form =  <input id="form_answer" type="number" value="{{ answers__.answer }}" required/>
+form =  <input id="form_answer" type="number" value="{% templatetag openvariable %} answers__.answer {% templatetag closevariable %}" required/>
 
 # pour l'évaluation de cet exercice voir evaluator.
 
