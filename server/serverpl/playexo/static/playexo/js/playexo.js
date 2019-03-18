@@ -1,3 +1,5 @@
+'use strict';
+
 function getInputs(){
     let inputs = {};
     $( "[id^='form_']" ).each(function() {
@@ -61,6 +63,20 @@ function emitOnAfterPL() {
     }
 }
 
+function emitOnReadyPL() {
+    if (window.onReadyPL) {
+        window.onReadyPL();
+    }
+}
+
+function disableSubmitPL() {
+    $("#submit_button").prop('disabled', true);
+}
+
+function enableSubmitPL() {
+    $("#submit_button").prop('disabled', false);
+}
+
 function previewPL(activityId, sessionId) {
     let submitButton = $("#submit_button");
     const downloadButton = $( "#download_env_button" );
@@ -111,12 +127,9 @@ function previewPL(activityId, sessionId) {
         window.onbeforeunload = function () {}
     });
 
-   // MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub]); // fix #198
     
-    if(window.top != window.self) {
-        $('#home-link').remove();
-    }
-
+    emitOnReadyPL();
 }
 
 function evaluatePL(url) {
@@ -162,4 +175,8 @@ function evaluatePL(url) {
             }
         });
     }
+
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub]); // fix #198
+
+    emitOnReadyPL();
 }
