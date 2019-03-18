@@ -9,10 +9,10 @@
         </as-split-area>
         <as-split-area class='h100' style='position: relative; overflow: hidden;' [size]="100 - navigation.size">
             <as-split class='workspace' direction='vertical' gutterSize='5' useTransition='true' (dragEnd)='debugging.dragEnd($event)'>
-                <as-split-area class='h100 overflow-hidden' [size]='100 - debugging.size'>
+                <as-split-area class='h100' style='position: relative; overflow: hidden;' [size]='100 - debugging.size'>
                     <workspace></workspace>
                 </as-split-area>
-                <as-split-area class='debugging overflow-hidden' [size]='debugging.size'>
+                <as-split-area class='debugging' style='position: relative; overflow: hidden;' [size]='debugging.size'>
                     <debugging #debugging></debugging>
                 </as-split-area>
             </as-split>
