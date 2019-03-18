@@ -49,7 +49,6 @@ PROJECT_APPS = [
     'user_profile',
     'loader',
     'classmanagement',
-    'documentation',
     'lti_app',
     'qa'
 ]
