@@ -33,7 +33,8 @@ export class FooterComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.cursorSubscription.unsubscribe();
     }
-    runningTask() {
+
+    querying() {
         return this.task.running;
     }
 
