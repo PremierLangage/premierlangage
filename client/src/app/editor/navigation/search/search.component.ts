@@ -14,8 +14,8 @@ export class SearchComponent implements OnInit {
     @Input()
     items: IResource[] = [];
     entries: IResource[] = [];
-    runningTask: boolean;
-    searchValue = '';
+    querying: boolean;
+    query = '';
     size = 0;
     empty = false;
 
@@ -24,20 +24,23 @@ export class SearchComponent implements OnInit {
     ngOnInit() {
     }
 
-
     search(event: KeyboardEvent) {
         // tslint:disable-next-line: deprecation
         if (event.keyCode === 13) {
-            this.runningTask = true;
-            this.searchValue = this.searchValue.trim().toLocaleLowerCase();
-            if (this.searchValue) {
+            this.querying = true;
+            this.query = this.query.trim().toLocaleLowerCase();
+            if (this.query) {
                 this.entries = this.editor.findAll((e => {
-                    return e.type === ResourceTypes.File && e.path.toLocaleLowerCase().includes(this.searchValue);
+                    return e.type === ResourceTypes.File && e.path.toLocaleLowerCase().includes(this.query);
                 }));
                 this.size = this.entries.length;
                 this.empty = this.size === 0;
+            } else {
+                this.size = 0;
+                this.empty = true;
+                this.entries = [];
             }
-            this.runningTask = false;
+            this.querying = false;
         }
     }
 }

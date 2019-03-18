@@ -9,8 +9,8 @@ import { Component } from '@angular/core';
 export class WelcomeComponent {
     readonly displayedColumns: string[] = ['command', 'action'];
     readonly shorcuts = [
-        {command: 'F2', action: 'Quick open a file'},
         {command: 'F1', action: 'Show all commands'},
+        {command: 'Ctrl + O', action: 'Quick open a file'},
         {command: 'Ctrl|⌘ + Space', action: 'Trigger suggestion'},
         {command: 'Ctrl|⌘ Right Arrow', action: 'Split editor'},
         {command: 'Ctrl|⌘ + Enter', action: 'Open preview'},

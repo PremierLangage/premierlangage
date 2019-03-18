@@ -73,8 +73,6 @@ export function canBePreviewed(item: IResource) {
     return !!item && PREVIEW_EXTENSIONS.includes(extname(item.path));
 }
 
-
-
 export function canAddFile(item: IResource) {
     return canWrite(item) && isFolder(item);
 }

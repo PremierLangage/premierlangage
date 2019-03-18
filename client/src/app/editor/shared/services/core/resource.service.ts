@@ -280,7 +280,7 @@ export class ResourceService {
 
     /**
      * Reloads the resources from the server.
-     * @returns Promise<boolean> resolved with true or rejected with an error.
+     * @returns A promise that resolves with true
      */
     async refresh() {
         try {
