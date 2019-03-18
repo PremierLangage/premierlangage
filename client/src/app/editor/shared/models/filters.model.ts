@@ -30,7 +30,7 @@ export function isLoaded(item: IResource): boolean {
 }
 
 export function isHome(item: IResource) {
-    return !item && item.path === 'Yggdrasil';
+    return !!item && item.path === 'Yggdrasil';
 }
 
 export function isLib(item: IResource) {
