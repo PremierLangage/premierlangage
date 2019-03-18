@@ -39,7 +39,7 @@
       </mat-form-field>
         <ng-template #uptodate> <span>nothing to commit, working tree clean</span> </ng-template>
         <ng-container *ngFor="let change of selection.changes; trackBy trackChange">
-            <div class='line' [ngClass]='{clickable: canOpen(change)}' [matTooltip]="change.path"> 
+            <div class='line' [ngClass]='{clickable: canOpen(change)}' [matTooltip]="change.path|path"> 
                 <span class='line-title' [matBadge]="change.type" matBadgePosition="after" (click)='open(change)'>{{change.name}}</span>
                 <div class='spacer'></div>
                 <ng-container *ngIf='hasOption(change)'>
