@@ -82,11 +82,7 @@ export function createResource(parent: IResource, type: ResourceTypes): IResourc
         changed: false,
         opened: false,
         dirty: false,
-        repo: {
-            url: parent.repo.url,
-            host: parent.repo.host,
-            branch: parent.repo.branch,
-        },
+        repo: parent.repo,
         meta: undefined,
     };
 }
