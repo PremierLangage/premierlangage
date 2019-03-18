@@ -8,8 +8,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable()
 export abstract class AbstractNotificationService {
-    readonly onLogAdded: Subject<LogItem> = new Subject();
-    readonly onToggleDebuggingArea: Subject<any> = new Subject();
+    readonly logAdded: Subject<LogItem> = new Subject();
 
     size = 0;
 
@@ -128,7 +127,7 @@ export class NotificationService extends AbstractNotificationService {
 
     private log(message: any, type: 'info' | 'error' | 'warning', stackTrace: boolean = false) {
         const item = { message: this.parseMessage(message, stackTrace), type: type };
-        this.onLogAdded.next(item);
+        this.logAdded.next(item);
         this.size++;
     }
 

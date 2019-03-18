@@ -1,13 +1,12 @@
-<img class='navigation-icon' src='static/filebrowser/app/assets/icons/explorer.svg' matTooltip="Explorer" (click)='didTapButton(0)'/>
-<img class='navigation-icon' src='static/filebrowser/app/assets/icons/search.svg' matTooltip="Search" (click)='didTapButton(1)'/>
+<img class='navigation-icon' src='static/filebrowser/app/assets/icons/explorer.svg' matTooltip="Explorer" (click)='didTapExplorer()'/>
+<img class='navigation-icon' src='static/filebrowser/app/assets/icons/search.svg' matTooltip="Search" (click)='didTapSearch()'/>
 <div [matBadge]="gitBadge()" matTooltip="Git">
-    <img class='navigation-icon' src='static/filebrowser/app/assets/icons/git.svg' (click)='didTapButton(2)'/>
+    <img class='navigation-icon' src='static/filebrowser/app/assets/icons/git.svg' (click)='didTapGit()'/>
 </div>
 <div [matBadge]="consoleBadge()" matTooltip="Console">
-    <div class='navigation-icon'(click)='didTapButton(3)'>
+    <div class='navigation-icon'(click)='didTapConsole()'>
         <i class='fas fa-info'></i>
     </div>
 </div>
 <div class='spacer'></div>
-<!-- <img class='navigation-icon' src='static/filebrowser/app/assets/icons/settings.svg'  matTooltip="Settings" (click)='didTapButton(4)'/>
- -->
+<img class='navigation-icon' src='static/filebrowser/app/assets/icons/settings.svg'  matTooltip="Settings" (click)='didTapSettings()'/>

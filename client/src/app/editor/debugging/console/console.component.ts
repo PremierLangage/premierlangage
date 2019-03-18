@@ -1,5 +1,6 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { LogItem, NotificationService } from 'src/app/shared/services/notification.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -7,7 +8,9 @@ import { LogItem, NotificationService } from 'src/app/shared/services/notificati
   templateUrl: './console.component.html',
   styleUrls: ['./console.component.scss']
 })
-export class ConsoleComponent implements OnInit {
+export class ConsoleComponent implements OnInit, OnDestroy {
+    private readonly subscriptions: Subscription[] = [];
+
     @ViewChild('container')
     container: ElementRef;
     items: LogItem[] = [];
@@ -18,11 +21,15 @@ export class ConsoleComponent implements OnInit {
 
     ngOnInit() {
         this.empty = true;
-        this.notification.onLogAdded.subscribe(message => {
+        this.subscriptions.push(this.notification.logAdded.subscribe(message => {
             this.empty = false;
             this.items.push(message);
             this.scrollBottom();
-        });
+        }));
+    }
+
+    ngOnDestroy() {
+        this.subscriptions.forEach(item => item.unsubscribe());
     }
 
     didTapClear(event: MouseEvent) {

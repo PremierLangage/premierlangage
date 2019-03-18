@@ -914,9 +914,13 @@ MIT
 angular2-markdown
 MIT
 
-@angular/material/table
-
 @angular/material/list
+
+@angular/material/checkbox
+
+@angular/material/select
+
+@angular/material/table
 
 @angular/material/icon
 

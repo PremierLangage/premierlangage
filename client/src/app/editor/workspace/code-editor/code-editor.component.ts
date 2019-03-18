@@ -44,7 +44,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        this.subscriptions.push(this.editor.onOpened.subscribe(uri => {
+        this.subscriptions.push(this.editor.opened.subscribe(uri => {
             this.open(uri);
         }));
         this.subscriptions.push(this.editor.onPreviewCommand.subscribe((item: IResource) => {

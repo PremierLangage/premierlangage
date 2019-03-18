@@ -6,6 +6,9 @@ export interface Language {
 export const LANGUAGES: Language[] = [
     { extension: 'css', id: 'css' },
     { extension: 'scss', id: 'scss' },
+    { extension: 'less', id: 'less' },
+    { extension: 'scss', id: 'scss' },
+    { extension: 'dockerfile', id: 'dockerfile' },
     { extension: 'cs', id: 'csharp' },
     { extension: 'js', id: 'javascript'},
     { extension: 'ts', id: 'typescript'},
@@ -22,6 +25,7 @@ export const LANGUAGES: Language[] = [
     { extension: 'xml', id: 'xml'},
     { extension: 'yaml', id: 'yaml'},
     { extension: 'bat', id: 'bat'},
+    { extension: 'sh', id: 'bat'},
     { extension: 'ini', id: 'ini'},
     { extension: 'php', id: 'php'},
     { extension: 'pl', id: 'pl' },

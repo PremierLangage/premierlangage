@@ -16,6 +16,7 @@ import { Subject } from 'rxjs';
 
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import IStandaloneDiffEditor = monaco.editor.IStandaloneDiffEditor;
+import { settingGroup, loadSettings, EDITOR_GROUP, Setting } from '../../models/setting.model';
 
 export const PL = 'pl';
 
@@ -39,9 +40,10 @@ export class MonacoService  {
     private static readonly OPEN_PATTERN = /^[a-zA-Z_](\.?\w+)*(==)|(%=)/;
     private static readonly CLOSE_PATTERN = /^==\s*$/;
 
-    private editors: IEditorInfo[] = [];
     private readonly codeLens = {};
     private readonly blames = {};
+    private options: monaco.editor.IEditorOptions;
+    private editors: IEditorInfo[] = [];
     private cursor: monaco.IPosition;
 
     readonly cursorChanged: Subject<monaco.IPosition> = new Subject();
@@ -52,7 +54,10 @@ export class MonacoService  {
         private readonly opener: OpenerService,
         private readonly resources: ResourceService,
     ) {
+        this.updateOptions(settingGroup(loadSettings(), EDITOR_GROUP));
     }
+
+
 
     register(monaco) {
         const that = this;
@@ -72,9 +77,9 @@ export class MonacoService  {
         });
 
         this.registerMonarch(monaco);
+        this.registerHover(monaco);
         this.registerLinks(monaco);
         this.registerFolding(monaco);
-        this.registerHover(monaco);
         this.registerCompletion(monaco);
 
         this.resources.renamed.subscribe(data => {
@@ -87,7 +92,10 @@ export class MonacoService  {
     }
 
     findLanguage(resource: IResource) {
-        const ext = extname(resource.path);
+        let ext = extname(resource.path);
+        if (!ext) {
+            ext = resource.path;
+        }
         for (const item of LANGUAGES) {
             if (item.extension === ext) {
                 return item.id;
@@ -104,6 +112,16 @@ export class MonacoService  {
         editorInfo.disposables.forEach(item => item.dispose());
         editor.dispose();
         this.editors = this.editors.filter(e => e.editor.getId() !== editor.getId());
+    }
+
+    updateOptions(options: monaco.editor.IEditorOptions) {
+        this.options = options;
+        const monaco = (<any>window).monaco;
+        if (monaco) {
+            this.editors.forEach(item => {
+                item.editor.updateOptions(this.options);
+            });
+        }
     }
 
     registerEditor(editor: IStandaloneCodeEditor) {
@@ -131,6 +149,8 @@ export class MonacoService  {
         }));
 
         this.editors.push({editor: editor, disposables: disposables});
+
+        this.updateOptions(this.options);
     }
 
     provideBlames(resource: IResource, model: monaco.editor.ITextModel) {

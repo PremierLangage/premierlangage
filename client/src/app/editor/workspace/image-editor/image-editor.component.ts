@@ -24,7 +24,7 @@ export class ImageEditorComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.open(this.editor.resource());
-        this.openSubscription =  this.editor.onOpened.subscribe(document => {
+        this.openSubscription =  this.editor.opened.subscribe(document => {
             this.open(document);
         });
     }

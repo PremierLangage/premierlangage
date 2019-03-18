@@ -6,7 +6,6 @@
             <explorer *ngSwitchCase="0" [items]='items()' [showHeader]='true'></explorer>
             <search *ngSwitchCase="1" [items]='items()'></search>
             <git *ngSwitchCase="2"></git>
-            <settings *ngSwitchCase="3"></settings>
         </as-split-area>
         <as-split-area class='h100' style='position: relative; overflow: hidden;' [size]="100 - navigation.size">
             <as-split class='workspace' direction='vertical' gutterSize='5' useTransition='true' (dragEnd)='debugging.dragEnd($event)'>

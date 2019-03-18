@@ -30,7 +30,6 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { ExplorerComponent } from './navigation/explorer/explorer.component';
 import { SearchComponent } from './navigation/search/search.component';
 import { GitComponent } from './navigation/git/git.component';
-import { SettingsComponent } from './navigation/settings/settings.component';
 
 
 /* WORKSPACE COMPONENTS */
@@ -38,16 +37,21 @@ import { WorkspaceComponent } from './workspace/workspace.component';
 import { CodeEditorComponent } from './workspace/code-editor/code-editor.component';
 import { ImageEditorComponent } from './workspace/image-editor/image-editor.component';
 import { PreviewEditorComponent } from './workspace/preview-editor/preview-editor.component';
+import { WelcomeComponent } from './workspace/welcome/welcome.component';
+import { PathPipe } from './shared/pipes/path.pipe';
+import { SettingEditorComponent } from './workspace/setting-editor/setting-editor.component';
+import { NicifyNamePipe } from './shared/pipes/nicify-name.pipe';
 
 @NgModule({
     declarations: [
+        PathPipe,
         TimeAgoPipe,
+        NicifyNamePipe,
         EditorComponent,
         NavigationComponent,
         ExplorerComponent,
         SearchComponent,
         GitComponent,
-        SettingsComponent,
         FooterComponent,
         DebuggingComponent,
         ConsoleComponent,
@@ -55,6 +59,8 @@ import { PreviewEditorComponent } from './workspace/preview-editor/preview-edito
         CodeEditorComponent,
         ImageEditorComponent,
         PreviewEditorComponent,
+        SettingEditorComponent,
+        WelcomeComponent,
     ],
     imports: [
         EditorRoutingModule,

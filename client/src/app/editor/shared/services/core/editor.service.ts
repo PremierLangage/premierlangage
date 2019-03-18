@@ -38,6 +38,13 @@ export interface IEditorService {
     findGroups(resource: IResource): IEditorGroup[];
 
     /**
+     * Finds all the groups whichs meets the predicate.
+     * @param predicate the predicate to test
+     * @returns an array of editor groups
+     */
+    findGroupsPredicate(predicate: (group: IEditorGroup) => boolean): IEditorGroup[];
+
+    /**
      * Refreshs the editor group.
      * - focus 'group' if it's not a preview group.
      * - open the preview group with the active resource of 'group' if needed.
@@ -45,13 +52,13 @@ export interface IEditorService {
      *
      * @param group the group
      */
-    updateGroup(group: IEditorGroup): Promise<boolean>;
+    focusGroup(group: IEditorGroup): Promise<boolean>;
 
     /**
      * Disposes the editor group and focus a random group.
      * @param group the group
      */
-    removeGroup(group: IEditorGroup): Promise<boolean>;
+    disposeGroup(group: IEditorGroup): Promise<boolean>;
 
     /**
      * Saves the content of the resource.
@@ -75,17 +82,6 @@ export interface IEditorService {
      */
     closePreview(): Promise<boolean>;
 
-    /**
-     * Focus the editor group and unfocus all the others.
-     * @param group the editor group
-     */
-    focus(group: IEditorGroup): void;
-
-    /**
-     * Invokes 'completion' after each group change.
-     * @param completion function to invoke.
-     */
-    subscribeChange(completion: (groups: IEditorGroup[]) => void): Subscription;
 }
 
 @Injectable()
@@ -97,17 +93,11 @@ export abstract class AbstractEditorService implements IEditorService {
     private previewGroup: IEditorGroup;
 
     /** invoked each time a (focus | open | close) event is raised */
-    readonly onGroupChanged: Subject<any> = new Subject();
+    readonly changed: Subject<any> = new Subject();
 
     constructor() {
     }
 
-    focus(group: IEditorGroup): void {
-        this.listGroups().forEach(item => {
-            item.focus(false);
-        });
-        group.focus(true);
-    }
 
     listGroups(): IEditorGroup[] {
         return Object.keys(this.groups).map(id => this.groups[id]);
@@ -118,13 +108,13 @@ export abstract class AbstractEditorService implements IEditorService {
     }
 
     findGroups(resource: IResource): IEditorGroup[] {
-        return this.listGroups().filter(group => {
+        return this.findGroupsPredicate(group => {
             return group.someResource(item => item.path === resource.path);
         });
     }
 
-    subscribeChange(completion: (groups: IEditorGroup[]) => void): Subscription {
-        return this.onGroupChanged.subscribe(completion);
+    findGroupsPredicate(predicate: (group: IEditorGroup) => boolean): IEditorGroup[] {
+        return this.listGroups().filter(predicate);
     }
 
     async closeAll(): Promise<boolean> {
@@ -145,51 +135,58 @@ export abstract class AbstractEditorService implements IEditorService {
         return this.previewGroup.closeAll();
     }
 
-    async updateGroup(group: IEditorGroup): Promise<boolean> {
-        this.groups[group.id()] = group;
-        if (this.previewGroup) {
-            this.previewGroup.closeAll();
-        }
-        if (this.previewGroup = group.somePreview() ? group : undefined) {
-            if (!compareGroup(this.previewGroup, group)) {
-                if (!await this.previewGroup.closeAll()) {
-                    return false;
-                }
-            }
-        } else {
-            if (openAsPreview(group.activeResource())) { // open the preview of the resource in a side group
-                if (!await this.open(group.activeResource(), {
+    async focusGroup(group: IEditorGroup): Promise<boolean> {
+        let result = true;
+        this.disposePreview();
+        const active = group.activeResource();
+        if (active) {
+            if (group.isPreviewGroup()) {
+                this.previewGroup = group;
+            } else if (active.meta.previewData) {
+                result = await this.open(active, {
                     openToSide: true
-                })) {
-                    return false;
-                }
+                });
             }
-            this.focus(group);
         }
-        this.onGroupChanged.next(this.listGroups());
-        return true;
+
+        this.groups[group.id()] = group;
+        if (!group.isPreviewGroup()) {
+            this.listGroups().forEach(item => {
+                item.focus(false);
+            });
+            group.focus(true);
+        }
+        this.changed.next(this.listGroups());
+        return result;
     }
 
-    async removeGroup(group: IEditorGroup): Promise<boolean> {
+    async disposeGroup(group: IEditorGroup): Promise<boolean> {
         if (!this.findGroup(group.id())) {
             throw new Error(`The group '${group.id()}' is not found`);
         }
-
+        this.disposePreview();
         if (group.focused()) {
-            const newFocused = this.listGroups().find(g => !compareGroup(g, group));
-            if (newFocused) {
-                await this.updateGroup(newFocused);
+            const next = this.listGroups().find(g => !compareGroup(g, group));
+            if (next) {
+                await this.focusGroup(next);
             }
         }
 
         delete this.groups[group.id()];
-        this.onGroupChanged.next(this.listGroups());
+        this.changed.next(this.listGroups());
         return true;
     }
 
     abstract confirm(options: ConfirmOptions): Promise<boolean>;
     abstract open(resource: IResource, options: IOpenOptions): Promise<boolean>;
     abstract saveContent(resource: IResource): Promise<boolean>;
+
+    private disposePreview() {
+        if (this.previewGroup) {
+            this.previewGroup.closeAll();
+            this.previewGroup = undefined;
+        }
+    }
 }
 
 /** Concretes implementation of IEditorService interface */
@@ -219,10 +216,8 @@ export class EditorService extends AbstractEditorService {
         options = options || {};
         if (options.openToSide) {
             group = new EditorGroup(this);
-        } else if (resource.meta.previewData) {
-            group = groups.find(g => g.somePreview()) || new EditorGroup(this);
         } else {
-            groups = groups.filter(g => !g.somePreview()); // remove preview group
+            groups = groups.filter(g => !g.isPreviewGroup()); // remove preview group
             // tslint:disable-next-line: max-line-length
             group =     groups.find(g => g.focused() && g.someResource(r => r.path === resource.path)) // find focused that contains the resource
                     ||  groups.find(g => g.focused()) // find focused

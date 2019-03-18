@@ -39,7 +39,7 @@ export abstract class AbstractEditor implements IEditor {
     private _focused: boolean;
     private _resource: IResource;
 
-    readonly onOpened: Subject<IResource> = new Subject();
+    readonly opened: Subject<IResource> = new Subject();
 
     constructor(group: IEditorGroup, resource: IResource) {
         this._id = ++AbstractEditor.ID_COUNTER;
@@ -65,7 +65,7 @@ export abstract class AbstractEditor implements IEditor {
 
     open(resource: IResource, options?: IOpenOptions): void {
         this._resource = resource;
-        this.onOpened.next(resource);
+        this.opened.next(resource);
     }
 
     hasFocus(): boolean {
@@ -229,7 +229,7 @@ export function openAsImage(resource: IResource) {
 }
 
 export function openAsPreview(resource: IResource) {
-    return isFromServer(resource) && resource.meta && resource.meta.previewData !== undefined;
+    return isFromServer(resource) && !!resource.meta && !!resource.meta.previewData;
 }
 
 

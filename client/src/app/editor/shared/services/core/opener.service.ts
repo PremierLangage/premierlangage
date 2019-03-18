@@ -17,7 +17,7 @@ export interface IOpenerService {
 
     /**
      * Opens the resource at the given path
-     * - Open a browser tab if the path is an external path 'http|https|mailto'
+     * - Open a browser tab if the path is an url 'http|https|mailto'
      * - Open an editor if the path point to a resource.
      * @param path the path to open
      * @param options open options

@@ -5,6 +5,7 @@ const ICONS_MAP = {
     'py': 'fab fa-python',
     'pdf': 'fas fa-file-pdf',
     'css': 'fab fa-css3',
+    'less': 'fab fa-css3',
     'scss': 'fab fa-css3',
     'html': 'fab fa-html5',
     'csv': 'fas fa-file-csv',
