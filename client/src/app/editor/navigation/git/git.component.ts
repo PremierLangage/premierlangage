@@ -128,7 +128,21 @@ export class GitComponent implements OnInit, OnDestroy {
      *	@param item the repository item.
      */
     async push(item: IRepo | IChange) {
-        return this.git.push(item);
+        const fields: PrompField[] = [
+            { type: 'text', placeholder: 'Login', required: false, value: '' },
+            { type: 'password', placeholder: 'Passsword', required: false, value: '' },
+        ];
+        const options: PrompOptions = {
+            title: 'Push',
+            fields: fields
+        };
+        const response = await this.notification.promptAsync(options);
+        if (response) {
+            const login = response.fields[0].value;
+            const password = response.fields[1].value;
+            return this.git.push(item, login, password);
+        }
+        return false;
     }
 
     /**
