@@ -16,9 +16,26 @@ export class ResourceService {
 
     private cache: IResource[] = [];
 
+    /**
+     * event that emits after a resource is renamed 
+     * with an object
+     *
+     * {
+     * before: string,
+     * after: string
+     * }
+     *
+     * where `before` is the path before the renaming and `after` the path after the renaming
+    */
     readonly renamed: Subject<{ before: string, after: string }> = new Subject();
+
+    /** event that emits after a resource is created */
     readonly created: Subject<IResource> = new Subject();
+
+    /** event that emits after a resource is deleted */
     readonly deleted: Subject<IResource> = new Subject();
+
+    /** event that emits after the resources are loaded/reloaded from the server */
     readonly refreshed: Subject<IResource[]> = new Subject();
 
     /** the resources from the server */
@@ -34,11 +51,11 @@ export class ResourceService {
     ) { }
 
     /**
-     * Gets a value indicating whether the property 'changed' is sets to true for any
+     * Gets a value indicating whether the property `changed` is sets to true for any
      * resource.
      * */
     changed() {
-        return this.findPredicate(item => item.changed) !== undefined;
+        return !!this.findPredicate(item => item.changed);
     }
 
     /**
@@ -62,7 +79,7 @@ export class ResourceService {
     }
 
     /**
-     * Finds the resources which meets the given predicate.
+     * Finds all the resources which meets the given predicate.
      *
      * If the predicate makes a path comparison be sure to remove '/' from the starts
      * of the path.
@@ -84,12 +101,12 @@ export class ResourceService {
     }
 
     /**
-     * Gets a value indicating whether the given resource is the selected one inside the explorer
-     * @param resource the resource
+     * Gets a value indicating whether the given resource is the selected one.
+     * @param resource the resource to test
      * @returns true if the resource is the selected one false otherwise
      */
     isSelection(resource: IResource) {
-        return this.selection && resource.path === this.selection.path;
+        return !!this.selection && resource.path === this.selection.path;
     }
 
     /**
@@ -99,12 +116,11 @@ export class ResourceService {
      */
     async create(resource: IResource) {
         checkName(resource.name);
-        assert(filters.canWrite(resource), 'permission denied');
-        assert(filters.canWrite(this.find(resource.parent)), 'permission denied on parent directory');
-        this.task.emitTaskEvent(true, 'create resource');
+        assert(filters.canWrite(resource), 'permission denied: write access not granted for ' + resource.path);
+        assert(filters.canWrite(this.find(resource.parent)), 'permission denied: write access not granted for ' + resource.parent);
+
+        this.task.emitTaskEvent(true, 'creating resource');
         try {
-            checkName(resource.name);
-            assert(filters.canWrite(this.find(resource.parent)), 'permission denied');
             const data = {
                 name: 'create_resource',
                 path: resource.parent + '/' + resource.name,
