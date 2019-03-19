@@ -38,8 +38,11 @@ import { CodeEditorComponent } from './workspace/code-editor/code-editor.compone
 import { ImageEditorComponent } from './workspace/image-editor/image-editor.component';
 import { PreviewEditorComponent } from './workspace/preview-editor/preview-editor.component';
 import { WelcomeComponent } from './workspace/welcome/welcome.component';
-import { PathPipe } from './shared/pipes/path.pipe';
 import { SettingEditorComponent } from './workspace/setting-editor/setting-editor.component';
+import { QuickOpenComponent } from './quick-open/quick-open.component';
+
+/* PIPES */
+import { PathPipe } from './shared/pipes/path.pipe';
 import { NicifyNamePipe } from './shared/pipes/nicify-name.pipe';
 
 @NgModule({
@@ -61,6 +64,7 @@ import { NicifyNamePipe } from './shared/pipes/nicify-name.pipe';
         PreviewEditorComponent,
         SettingEditorComponent,
         WelcomeComponent,
+        QuickOpenComponent,
     ],
     imports: [
         EditorRoutingModule,

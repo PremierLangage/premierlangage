@@ -201,6 +201,7 @@ export class ExplorerComponent {
         event.stopPropagation();
         if (filters.isFolder(resource)) {
             resource.expanded = !resource.expanded;
+            this.resources.selection = resource;
         } else {
             this.opener.open(resource.path);
         }

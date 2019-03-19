@@ -1,7 +1,7 @@
 $header-height: 64px;
 $tab-height: 36px;
 
-.host {
+.editor-host {
     position: relative;
     padding: 0;
     margin: 0;
@@ -9,20 +9,31 @@ $tab-height: 36px;
     flex-flow: column;
     height: calc(100vh - #{$header-height});
     color: #5a5a5a;
-    .host-container {
-        display: flex;
-        position: relative;
-        overflow: hidden;
-        height: 100%;
-        flex: 1;
-    }
 }
 
+.editor-host-container {
+    display: flex;
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    flex: 1;
+    background-color:#F6F6F6;
+}
+
+.split {
+    position: relative;
+    height: 100%;
+}
+
+.split-area {
+    height: 100%;
+    position: relative; 
+    overflow: hidden;
+}
 
 .navigation {
-    height: 100%;
-    overflow: hidden; 
-    background-color: #F6F6F6;
+    background: #212121DD;
+    width: 50px;
 }
 
 .tab-bar {
@@ -32,7 +43,6 @@ $tab-height: 36px;
     height: $tab-height;
     align-items: center;
     overflow: hidden;
-    background-color: #F5F5F5;
     border-bottom: 1px solid #dee2e6!important;
     padding: 0px;
 
@@ -49,57 +59,13 @@ $tab-height: 36px;
     }
 }
 
-.workspace {
-    position: relative;
-    height: 100%;
-}
-
-.spacer {
-    flex-grow: 1;
-}
-
-.h100 {
-    height: 100%;
-}
-
-#editor-overlay-quickOpenWidget {
-    z-index: 100000;
-    left: 0;
-    right: 0;
-    width: 40%;
-    margin: auto;
-    position: absolute;
-    top: 36px;
-    background-color: white;
-    padding: 0 4px;
-    mat-form-field {
-        width: 100%;
-    }
-}
-
-.entry-icon {
-    font-size: 14px;
-}
-
-.entry-name {
-    font-size: 14px;
-}
-
-.entry-path {
-    font-size: 10px;
-}
-
-div.mat-autocomplete-panel {
-    height: auto;
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-/* .fab.fa-css3 {
+/* FILE ICONS */
+.fab.fa-css3 {
     color: #e91e63;
 }
+
 .fab.fa-js-square {
-    color: #ffea00;
+    color: #ffd900;
 }
 
 .fab.fa-html5 {
@@ -132,4 +98,15 @@ div.mat-autocomplete-panel {
 
 .fas.fa-code {
     color: #03a9f4
-} */
+} 
+ 
+/* UTILS */
+.spacer {
+    flex-grow: 1;
+}
+
+.h100 {
+    height: 100%;
+}
+
+

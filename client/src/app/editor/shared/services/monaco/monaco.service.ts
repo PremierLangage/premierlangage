@@ -57,11 +57,9 @@ export class MonacoService  {
         this.updateOptions(settingGroup(loadSettings(), EDITOR_GROUP));
     }
 
-
-
     register(monaco) {
         const that = this;
-        monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
+        // monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
 
         monaco.languages.register({
             id: PL,

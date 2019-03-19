@@ -1,0 +1,32 @@
+#editor-overlay-quickOpenWidget {
+    z-index: 100000;
+    left: 0;
+    right: 0;
+    width: 40%;
+    margin: auto;
+    position: absolute;
+    top: 36px;
+    background-color: white;
+    padding: 0 4px;
+    mat-form-field {
+        width: 100%;
+    }
+}
+
+.entry-icon {
+    font-size: 14px;
+}
+
+.entry-name {
+    font-size: 14px;
+}
+
+.entry-path {
+    font-size: 10px;
+}
+
+div.mat-autocomplete-panel {
+    height: auto;
+    max-height: 400px;
+    overflow-y: auto;
+}
