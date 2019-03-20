@@ -1,0 +1,25 @@
+<div class='editor-host'>
+  <div class='editor-host-container'>
+    <navigation class='navigation' #navigation></navigation>
+    <as-split direction="horizontal" gutterSize='2' useTransition='true'>    
+        <as-split-area class='split-area' style='position: relative; overflow: hidden;' [size]="navigation.size" [ngSwitch]="navigation.index">
+            <explorer *ngSwitchCase="0" [items]='items()' [showHeader]='true'></explorer>
+            <search *ngSwitchCase="1" [items]='items()'></search>
+            <git *ngSwitchCase="2"></git>
+        </as-split-area>
+        <as-split-area class='split-area' style='position: relative; overflow: hidden;' [size]="100 - navigation.size">
+            <as-split class='split' direction='vertical' gutterSize='2' useTransition='true' (dragEnd)='debugging.dragEnd($event)'>
+                <as-split-area class='split-area' style='position: relative; overflow: hidden;' [size]='100 - debugging.size'>
+                    <workspace class='workspace' #workspace></workspace>
+                </as-split-area>
+                <as-split-area class='split-area' style='position: relative; overflow: hidden;' [size]='debugging.size'>
+                    <debugging class='debugging' #debugging></debugging>
+                </as-split-area>
+            </as-split>
+            <quick-open (closed)='showQuickOpen = false' *ngIf='showQuickOpen'></quick-open>
+        </as-split-area>
+    </as-split>
+  </div>
+  <mat-progress-bar mode='indeterminate' color='warn' *ngIf='querying()'></mat-progress-bar>
+  <footer></footer>
+</div>

@@ -2,19 +2,19 @@
 
 <div class="card">
     <div class="card-header">
-        <div class="introduction-center"><h1>{% if 'title'%}{{ title }}{% endif %}</h1></div>
+        <div class="introduction-center"><h2>{% if 'title'%}{{ title }}{% endif %}</h2></div>
         <div class="introduction-left">{% if 'author' %}{{ author }}{% endif %}</div>
     </div>
     
     <div class="card-body">
-        {% if request.user.pluser.can_load and teacher %}
-            <pre>
+        {% if request.user.profile.can_load %}
+            <div style="background-color:#CCC">
                 <u>Note de l'enseignant (visible seulement par les enseignant):</u>
                 <br>
                 {% with teacherh__=teacher|markdown %}
                     {{ teacherh__|safe }}
                 {% endwith %}
-            </pre>
+            </div>
         {% endif %}
         {% if 'introduction'%}
             {% with introductionh__=introduction|markdown %}

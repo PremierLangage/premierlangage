@@ -1,0 +1,37 @@
+.console__content {
+    height: 100%;
+}
+
+.log {
+    position: relative;
+    list-style-type: none;
+    list-style-type: none;
+    display: flex;
+    align-items: baseline;
+    padding: 8px;
+    .log-icon {
+        position: absolute;
+    }
+}
+
+.log--info {
+    .log-icon {
+        color: #009688;
+    }
+}
+
+.log--warning {
+    .log-icon {
+        color: #FFEB3B;
+    }
+}
+
+.log--error {
+      .log-icon {
+        color:#F44336;
+    }
+}
+
+.log-content {
+    padding: 0 32px;
+}

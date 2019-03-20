@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block topbar %}{% endblock topbar %}
+
+{% block content %}
+<style type='text/css'>
+#exercice, .page-content {
+    padding: 0;
+}
+</style>
+<div id="exercise">{{ preview|safe }}</div>
+{% endblock %}

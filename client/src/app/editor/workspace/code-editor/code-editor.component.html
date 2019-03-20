@@ -1,0 +1,9 @@
+<span class='blame' *ngIf='blame'>
+    {{blame.email}}, 
+    {{blame.day | timeAgo}} 
+    <ng-container *ngIf='blame.commit'>- {{blame.commit}}</ng-container>
+ </span>
+<ngx-monaco-editor [hidden]='editor.diffEditing' class='code-editor' [ngClass]='{"with-blame": blame}' [options]="{}" [model]='{}' (onInit)="codeEditorLoaded($event)"></ngx-monaco-editor>
+<ngx-monaco-diff-editor [hidden]='!editor.diffEditing' class='code-editor' [ngClass]='{"with-blame": blame}' [options]="{}" [originalModel]="{}" [modifiedModel]="{}" (onInit)="diffEditorLoaded($event)"></ngx-monaco-diff-editor>
+
+

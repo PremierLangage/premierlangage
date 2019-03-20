@@ -3,7 +3,7 @@ import logging
 from django.db import models
 from django.contrib.auth.models import User
 
-from lti.models import LTIModel
+from lti_app.models import LTIModel
 from user_profile.enums import Role
 
 
@@ -57,7 +57,7 @@ class Course(LTIModel):
     
     def is_teacher(self, user):
         """Return True if the user is a teacher of the course."""
-        return user in self.teacher.all() and user.profile.role <= Role.INSTRUCTOR
+        return user in self.teacher.all() or user.profile.role < Role.INSTRUCTOR
     
     
     def __str__(self):

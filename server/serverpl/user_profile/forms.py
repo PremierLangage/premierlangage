@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 #
 #  forms.py
-#  
+#
 #  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
-#  
+#
 
 from enumfields import EnumIntegerField
 
@@ -21,12 +21,12 @@ class ProfileForm(forms.Form):
     role = forms.CharField(disabled=True, required=False)
     
     color_blindness = EnumIntegerField(ColorBlindness).formfield(
-        label='Daltonisme ', 
-        help_text='<a target="_blank" href="/profile/color_blindness_preview/">prévisualisation</a>'
+        label='Daltonisme ',
+        help_text='<a target="_blank">prévisualisation</a>'  # href="/profile/color_blindness_preview/"
     )
 
     editor_theme = EnumIntegerField(EditorTheme).formfield(
-        label='Thème de l\'éditeur ', 
+        label='Thème de l\'éditeur ',
         help_text='<a target="_blank" href="/profile/editor_preview/">prévisualisation</a>'
     )
 

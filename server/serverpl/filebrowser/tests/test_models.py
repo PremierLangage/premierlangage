@@ -1,23 +1,15 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-#
-#  test_parsers.py
-#  
-#  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
-#  
-
+import os
 import shutil
 
-from os.path import join, isdir
-
-from django.test import TestCase, override_settings
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.test import TestCase, override_settings
 
 from filebrowser.models import Directory
 
 
-FAKE_FB_ROOT = join(settings.BASE_DIR, 'filebrowser/tests/ressources')
+FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'filebrowser/tests/tmp')
+
 
 
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
@@ -25,19 +17,26 @@ class ModelTestCase(TestCase):
     
     @classmethod
     def setUpTestData(cls):
+        if os.path.isdir(FAKE_FB_ROOT):
+            shutil.rmtree(FAKE_FB_ROOT)
+        
         cls.user = User.objects.create_user(username='user', password='12345', id=100)
         cls.user2 = User.objects.create_user(username='user2', password='12345', id=200)
         cls.user3 = User.objects.create_user(username='user3', password='12345', id=300)
         cls.user4 = User.objects.create_user(username='user4', password='12345', id=400)
         cls.user5 = User.objects.create_user(username='user5', password='12345', id=500)
         
-        dir_path = join(FAKE_FB_ROOT, '100/')
-        if isdir(dir_path):
-            shutil.rmtree(dir_path)
-        cls.d = Directory.objects.get(name='100', owner=cls.user)
+        cls.d = Directory.objects.create(name="Yggdrasil", owner=cls.user)
+        if os.path.isdir(cls.d.root):
+            shutil.rmtree(cls.d.root)
         cls.d.add_write_auth(cls.user2)
         cls.d.add_read_auth(cls.user3)
     
+    
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(FAKE_FB_ROOT)
+        super().tearDownClass()
     
     def test_add_remove_write(self):
         self.assertTrue(self.user5 not in self.d.write_auth.all())
@@ -63,7 +62,7 @@ class ModelTestCase(TestCase):
     
     
     def test_str(self):
-        self.assertEqual(str(self.d), '100')
+        self.assertEqual(str(self.d), 'Yggdrasil')
     
     
     def test_can_read(self):

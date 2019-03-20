@@ -1,6 +1,6 @@
 
 
-{% extends "classmanagement/base.html" %}
+{% extends "base.html" %}
 
 {% load static %}
 
@@ -9,24 +9,20 @@
 <link rel="stylesheet" href="{% static 'css/classmanagement.css' %}" />
 {% endblock %}
 
-{% block header_script %}
-<script src="{% static 'js/block_chart.js' %}"></script> 
-{% endblock %}
-
 {% block content %}
 <div class="container">
     <div class="panel panel-default">
         
         <div class="panel-body">
-            <h1>{{name}}</h1><br>
+            <h4>{{name}}</h4><hr>
             <div class="course-instructor-action">
                 <a href="/courses/course/{{course_id}}/">Retour</a>
             </div>
             <table class="table">
                 <thead>
-                    <tr>
+                    <tr style='display: flex;'>
                         {% for item in state %}
-                            <th><div class="block course-block {{item.template}}" style="width: 20px; height: 20px;"></div>&emsp;{{item}}</th>
+                            <th style='display: flex;'><div class="block course-block {{item.template}}" style="width: 20px; height: 20px;"></div>&emsp;{{item}}</th>
                         {% endfor %}
                     </tr>
                 </thead>
@@ -36,7 +32,7 @@
                     <thead>
                         <tr>
                             <th class="border border-0"></th>
-                            <th class="border"><center>Activity N°</center></th>
+                            <th colspan="100" class="border"><center>Activity N°</center></th>
                         </tr>
                         <tr>
                             <th class="student-th">Élève</th>
@@ -48,7 +44,18 @@
                     <tbody>
                         {% for stud in student %}
                             <tr>
-                                <td class="summary-td"><a href="/courses/course/{{course_id}}/student/{{stud.id}}/summary/">{% firstof stud.object.get_full_name stud.object.username%}</a></td>
+                                <td class="summary-td">  
+                                    <span class="mdl-chip mdl-chip--contact">
+                                        <span class="mdl-chip__contact mdl-color--blue mdl-color-text--white">
+                                            {% firstof stud.object.get_full_name|capfirst|make_list|first stud.object.username|capfirst|make_list|first%}
+                                        </span>
+                                        <span class="mdl-chip__text">
+                                         <a class='text-dark' href="/courses/course/{{course_id}}/student/{{stud.id}}/summary/">
+                                            {% firstof stud.object.get_full_name stud.object.username %}
+                                         </a>
+                                        </span>
+                                    </span>
+                                </td>
                                 {% for activity in stud.activities %}
                                     <center>
                                         <td class="summary-td">
