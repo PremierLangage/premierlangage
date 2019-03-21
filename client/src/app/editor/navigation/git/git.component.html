@@ -18,10 +18,10 @@
           </div>
           <mat-menu #options="matMenu">
               <button mat-menu-item (click)='add(repo)' matTooltip='Add to git index'>Git Add</button>
-              <button mat-menu-item (click)='push(repo)'>Git Push</button>
-              <button mat-menu-item (click)='pull(repo)'>Git Pull</button>
-              <button mat-menu-item (click)='status(repo)'>Git Status</button>
-              <button mat-menu-item (click)='checkout(repo)'>Git Checkout</button>
+              <button mat-menu-item (click)='push(repo)' matTooltip='Push local changes to remote'>Git Push</button>
+              <button mat-menu-item (click)='pull(repo)' matTooltip='Pull changes from remote'>Git Pull</button>
+              <button mat-menu-item (click)='status(repo)' matTooltip='Show changes'>Git Status</button>
+              <button mat-menu-item (click)='checkout(repo)' matTooltip='Reset the repository to the last commit'>Git Checkout</button>
           </mat-menu>
       </ng-container>
       <br/>

@@ -37,7 +37,7 @@
             <p>Click on a file in the Explorer.</p>
         </mat-list-item>
         <mat-list-item>
-            <p>Press <b>⌘Enter</b> (<b>Ctrl+Enter</b> on Windows/Linux) inside a code editor will split the editor.</p>
+            <p>Press <b> ⌘ →</b> (<b>Ctrl →</b> on Windows/Linux) inside a code editor will split the editor.</p>
         </mat-list-item>
         <mat-list-item>
             <p>Click the <b>Split Editor</b> button in the upper right of an editor.</p>
@@ -77,33 +77,16 @@
     <p>
         Opened files are locked you cannot rename or delete them. 
     </p>
-    <p>Tip: You can open quickly a file with <b>Ctrl + O</b></p>
-    <p>Tip: You can drag and drop files (Single file) into the Explorer from outside to copy them</p>
+    <p class='welcome-tip'>Tip: You can open quickly a file with <b>Ctrl + O</b></p>
+    <p class='welcome-tip'>Tip: You can drag and drop files (Single file) into the Explorer from outside to copy them</p>
 </div>
 
 <div class='welcome-section'>
-    <h3>PL code colorization</h3>
+    <h3>Code colorization</h3>
     <mat-divider></mat-divider>
-    <p>The editor provides a syntax colorization for the following languages:</p>
+    <p>The editor provides a syntax colorization for the following extensions:</p>
     <mat-list>
-        <mat-list-item> css </mat-list-item> 
-        <mat-list-item> csharp </mat-list-item> 
-        <mat-list-item> javascript </mat-list-item> 
-        <mat-list-item> typescript </mat-list-item> 
-        <mat-list-item> html </mat-list-item> 
-        <mat-list-item> markdown </mat-list-item> 
-        <mat-list-item> python </mat-list-item> 
-        <mat-list-item> r </mat-list-item> 
-        <mat-list-item> sql </mat-list-item> 
-        <mat-list-item> mysql </mat-list-item> 
-        <mat-list-item> java </mat-list-item> 
-        <mat-list-item> c </mat-list-item> 
-        <mat-list-item> cpp </mat-list-item> 
-        <mat-list-item> cpp </mat-list-item> 
-        <mat-list-item> xml </mat-list-item> 
-        <mat-list-item> bat </mat-list-item> 
-        <mat-list-item> ini </mat-list-item> 
-        <mat-list-item> php </mat-list-item> 
+        <mat-list-item *ngFor='let language of languages'> {{language}} </mat-list-item>
     </mat-list>
     <p>
         There is also a special feature for files with <b>.pl</b> and <b>.pltp</b> extensions that allow you to embed a colorization of all the other languages inside a multiline key like in the following image. <br/>

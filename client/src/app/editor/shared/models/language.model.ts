@@ -19,7 +19,7 @@ export const LANGUAGES: Language[] = [
     { extension: 'sql', id: 'sql'},
     { extension: 'mysql', id: 'mysql'},
     { extension: 'java', id: 'java'},
-    { extension: 'c', id: 'cpp'},
+    { extension: 'c', id: 'c'},
     { extension: 'cpp', id: 'cpp'},
     { extension: 'h', id: 'cpp'},
     { extension: 'xml', id: 'xml'},
