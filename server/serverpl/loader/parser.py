@@ -24,6 +24,28 @@ PL_MANDATORY_KEY = ['title', 'text', 'form']
 PLTP_MANDATORY_KEY = ['title', '__pl', 'introduction']
 MUST_BE_STRING = ['text', 'introduction', 'form', 'evaluator', 'before', 'author', 'title']
 
+NONE_BUILDER = r"""
+import sys, json, jsonpickle
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 3:
+        msg = ("Sandbox did not call builder properly:\n"
+               +"Usage: python3 builder.py [input_json] [output_json]")
+        print(msg, file=sys.stderr)
+        sys.exit(1)
+    input_json = sys.argv[1]
+    output_json = sys.argv[2]
+    
+    with open(input_json, "r") as f:
+        dic = json.load(f)
+        
+    with open(output_json, "w+") as f:
+        f.write(jsonpickle.encode(dic, unpicklable=False))
+    
+    sys.exit(0)
+
+"""
 
 
 def get_parsers():
@@ -153,8 +175,7 @@ def parse_file(directory, path, extending=False):
                     raise MissingKey(join(directory.root, path), 'grader or grader.py',
                                      message="One of the following key must be present: ")
                 if not ('builder' in dic or ('__files' in dic and 'builder.py' in dic['__files'])):
-                    raise MissingKey(join(directory.root, path), 'builder or builder.py',
-                                     message="One of the following key must be present: ")
+                    dic['builder'] = NONE_BUILDER
         
         for key in MUST_BE_STRING:
             if key in dic and type(dic[key]) != str:

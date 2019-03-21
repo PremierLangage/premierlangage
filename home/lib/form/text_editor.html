@@ -13,7 +13,7 @@
     <input id="{% if editor.id %}form_{{ editor.id }}{% else %}form_answer{% endif %}"
            type="hidden"
            style="display: none;"
-           value="{{ answer_editor__ }}"
+           value="{{ answer_editor__ | escape }}"
     >
 {% endwith %}
 
@@ -67,6 +67,7 @@
         input.val(editor.getSession().getValue());
     });
 </script>
+
 
 
 

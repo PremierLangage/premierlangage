@@ -3,7 +3,7 @@ import shutil
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.test import TestCase, override_settings
+from django.test import override_settings, TestCase
 
 from filebrowser.models import Directory
 
@@ -37,6 +37,7 @@ class ModelTestCase(TestCase):
     def tearDownClass(cls):
         shutil.rmtree(FAKE_FB_ROOT)
         super().tearDownClass()
+    
     
     def test_add_remove_write(self):
         self.assertTrue(self.user5 not in self.d.write_auth.all())
