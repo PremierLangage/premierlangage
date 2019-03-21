@@ -25,7 +25,8 @@ export function basename(path: string) {
     if (!path) {
         return path;
     }
-    return path.replace(/\\/g, '/').replace( /.*\//, '');
+    path = path.replace(/\\/g, '/');
+    return path.slice(path.lastIndexOf('/') + 1, path.length);
 }
 
 /**
@@ -36,7 +37,12 @@ export function dirname(path: string) {
     if (!path) {
         return path;
     }
-    return path.replace(/\\/g, '/').replace(/\/[^\/]*$/, '');
+    path = path.replace(/\\/g, '/');
+    let head = path.slice(0, path.lastIndexOf('/') + 1);
+    if (head && !head.match(/^\/*$/g)) {
+      head = head.replace(/\/*$/g, '');
+    }
+    return head;
 }
 
 /**

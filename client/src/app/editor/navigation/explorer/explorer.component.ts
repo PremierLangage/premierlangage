@@ -136,16 +136,15 @@ export class ExplorerComponent {
                 throw new Error('Cannot move an opened resource');
             }
         }
-
         const options = {
-            title: 'Are you sure you want to move \'' + srcName + '\'?',
+            title: `Are you sure you want to move '${srcName}' to '${dst.name}'?`,
             okTitle: 'Move',
             noTitle: 'Cancel'
         };
         this.notification.confirmAsync(options).then(confirmed => {
             if (confirmed) {
                 this.resources.move(src || data.file , dst).catch(error => {
-                    this.notification.error(error);
+                    this.notification.logError(error);
                 });
             }
         }).catch(error => {

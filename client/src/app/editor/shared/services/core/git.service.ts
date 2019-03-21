@@ -42,8 +42,9 @@ export class GitService implements IGitService {
             this.repos = [];
             Object.keys(response).forEach(key => {
                 const data = response[key];
+                const name = basename(key.endsWith('/') ? key.slice(0, key.length - 1) : key);
                 this.repos.push({
-                    name: basename(key),
+                    name: name,
                     url: key,
                     path: data.path,
                     branch: data.branch,
@@ -194,7 +195,8 @@ export class GitService implements IGitService {
                 destination: destination
             };
             await this.http.post('/filebrowser/option', data, { headers: headers , responseType: 'text'}).toPromise();
-            this.notification.logInfo(`${url} cloned into the directory ${basename(url)}`);
+            const name = basename(url.endsWith('/') ? url.slice(0, url.length - 1) : url);
+            this.notification.logInfo(`${url} cloned into the directory ${name}`);
             success = true;
         } catch (error) {
             this.notification.logError(error);
