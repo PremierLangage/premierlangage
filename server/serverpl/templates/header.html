@@ -9,7 +9,7 @@
             <a class="mdl-navigation__link" href="/"><i class="fas fa-graduation-cap"></i>&nbsp;Mes Cours</a></a>
             <a class="mdl-navigation__link" href="/filebrowser/"><i class="fas fa-cloud"></i>&nbsp;Editeur</a>
             <a class="mdl-navigation__link" href="/ask/"><i class="fas fa-question"></i>&nbsp;FAQ</a>
-            <a class="mdl-navigation__link" href="/documentation/"><i class="fas fa-book"></i>&nbsp;Documentation</a>
+            <a class="mdl-navigation__link" href="https://documentationpl.readthedocs.io/fr/latest/" target="_blank"><i class="fas fa-book"></i>&nbsp;Documentation</a>
             {% endif %}
             {% if request.user.profile.is_admin or request.user.is_superuser %}
                 <a class="mdl-navigation__link" href="/admin/"><i class="fas fa-cog"></i>&nbsp;Administration</a>
@@ -36,7 +36,7 @@
         <a class="mdl-navigation__link" href="/"><i class="fas fa-graduation-cap"></i>&nbsp;Mes Cours</a></a>
         <a class="mdl-navigation__link" href="/filebrowser/"><i class="fas fa-cloud"></i>&nbsp;Editeur</a>
         <a class="mdl-navigation__link" href="/ask/"><i class="fas fa-question"></i>&nbsp;FAQ</a>
-        <a class="mdl-navigation__link" href="/documentation/"><i class="fas fa-book"></i>&nbsp;Documentation</a>
+        <a class="mdl-navigation__link" href="https://documentationpl.readthedocs.io/fr/latest/" target="_blank"><i class="fas fa-book"></i>&nbsp;Documentation</a>
         {% endif %}
         {% if request.user.profile.is_admin or request.user.is_superuser %}
             <a class="mdl-navigation__link" href="/admin/"><i class="fas fa-cog"></i>&nbsp;Administration</a>
