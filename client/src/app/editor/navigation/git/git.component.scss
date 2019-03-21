@@ -25,8 +25,12 @@
 .line-title {
     font-size: 1em;
     margin-right: 8px;
-    .mat-badge-content {
-        right: -24px;
+    
+    &.mat-badge-medium.mat-badge-overlap.mat-badge-after .mat-badge-content {
+        right: -30px;
+    }
+
+    &.mat-badge-medium.mat-badge-above .mat-badge-content {
         top: 0;
     }
 }
@@ -38,3 +42,4 @@
 .commit, .clone {
     width: 100%;
 }
+

@@ -6,7 +6,9 @@ export const MONACO_LOADED = new Subject();
 
 export const MONACO_CONFIG: NgxMonacoEditorConfig = {
     baseUrl: '/static/filebrowser/app/assets', // configure base path for monaco editor
-    defaultOptions: {},
+    defaultOptions: {
+        automaticLayout: true
+    },
     onMonacoLoad: onMonacoLoad
 };
 

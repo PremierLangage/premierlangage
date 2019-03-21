@@ -18,9 +18,14 @@ describe('Paths', () => {
         expect(dirname('Yggdrasil/Cbank/fake.example.pl')).toBe('Yggdrasil/Cbank');
         expect(dirname('Yggdrasil/Cbank/fake.example.pl')).toBe('Yggdrasil/Cbank');
         expect(dirname('Yggdrasil/Cbank/example')).toBe('Yggdrasil/Cbank');
-        expect(dirname('fake.example')).toBe('fake.example');
-        expect(dirname('example.pl')).toBe('example.pl');
-        expect(dirname('example')).toBe('example');
+        expect(dirname('fake.example')).toBe('');
+        expect(dirname('fake.example/')).toBe('fake.example');
+        expect(dirname('example.pl')).toBe('');
+        expect(dirname('example')).toBe('');
+        expect(dirname('example/')).toBe('example');
+        expect(dirname('example////')).toBe('example');
+        expect(dirname('/example////')).toBe('/example');
+        expect(dirname('/example')).toBe('/');
         expect(dirname('')).toBe('');
         expect(dirname(undefined)).toBe(undefined);
     });

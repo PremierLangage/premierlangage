@@ -20,3 +20,4 @@ filebrowser/tests/tmp/
 media/
 serverpl/config.py
 loader/tests/tmp
+!filebrowser/static/filebrowser/**
