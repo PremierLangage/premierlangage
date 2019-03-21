@@ -7,7 +7,7 @@
     </div>
     
     <div class="card-body">
-        {% if request.user.profile.can_load %}
+        {% if request.user.profile.can_load and teacher %}
             <div style="background-color:#CCC">
                 <u>Note de l'enseignant (visible seulement par les enseignant):</u>
                 <br>
