@@ -9,7 +9,7 @@ export const DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&'];
 export function requireNonNull<T>(obj: T, message?: string): T {
     if  (!obj && typeof(obj) !== 'boolean' && typeof(obj) !== 'number') {
         message = message ? message : 'should not be null or empty';
-        throw new TypeError(message);
+        throw new ReferenceError(message);
     }
     return obj;
 }
@@ -34,7 +34,7 @@ export function assert(condition: any, message?: string): boolean {
  */
 export function checkName(name: string): boolean {
     if (!name) {
-        throw new TypeError('a non empty name should be provided');
+        throw new ReferenceError('name should not be null or empty');
     }
     if (!DISALLOWED_CHAR.every(e => !name.includes(e))) {
         throw new Error(name + 'should not contains any of ' + DISALLOWED_CHAR);

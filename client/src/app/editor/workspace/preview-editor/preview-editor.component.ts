@@ -2,7 +2,7 @@ import { ViewEncapsulation, Component, Input, OnInit, ViewChild, OnDestroy } fro
 import { ImageEditor, PreviewEditor } from '../../shared/models/editor.model';
 import { Subscription } from 'rxjs';
 import { RunScriptsDirective } from 'src/app/shared/directives/run-scripts.directive';
-import { isMarkdown, isSVG, isPl } from '../../shared/models/filters.model';
+import { isMarkdown, isSVG, isPL } from '../../shared/models/filters.model';
 import { IResource } from '../../shared/models/resource.model';
 
 @Component({
@@ -49,7 +49,7 @@ export class PreviewEditorComponent implements OnInit, OnDestroy {
         this.content = resource.meta.previewData;
         this.isMarkdown = isMarkdown(resource);
         this.isHTML = isSVG(resource);
-        this.isURL = isPl(resource);
+        this.isURL = isPL(resource);
 
         this.loading = this.isURL;
 

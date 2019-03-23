@@ -43,18 +43,22 @@ export class FooterComponent implements OnInit, OnDestroy {
     }
 
     inRepo() {
-        return filters.isRepo(this.resources.selection);
+        const s = this.resources.selection;
+        return !!s && filters.isRepo(s);
     }
 
     repoHost() {
-        return this.resources.selection.repo.host;
+        const s = this.resources.selection;
+        return !!s && s.repo.host;
     }
 
     repoUrl() {
-        return this.resources.selection.repo.url;
+        const s = this.resources.selection;
+        return !!s && s.repo.url;
     }
 
     repoBranch() {
-        return this.resources.selection.repo.branch;
+        const s = this.resources.selection;
+        return !!s && s.repo.branch;
     }
 }

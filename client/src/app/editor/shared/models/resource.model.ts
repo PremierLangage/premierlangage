@@ -8,31 +8,47 @@ export enum ResourceTypes {
 
 
 export interface IResource {
+    /** the name of the resource */
     name: string;
+
+    /** the full path of the resource */
     path: string;
+
+    /** the full path of the resource parent */
     parent: string;
+
+    /** the type of the resource */
     type: ResourceTypes;
+
+    /** the icon representing the resource */
     icon: string;
+
+    /** write permission */
     write: boolean;
+
+    /** read permission */
     read: boolean;
-    expanded: boolean;
+
     children: IResource[];
 
+    // optional properties
 
     /** the local content of the resource */
-    content: string;
+    content?: string;
     /** the server content of the resource */
-    savedContent: string;
+    savedContent?: string;
+    /** is the resource expanded or not? */
+    expanded?: boolean;
     /** opened in any editor */
-    opened: boolean;
+    opened?: boolean;
     /** being renamed */
-    renaming: boolean;
+    renaming?: boolean;
     /** being created */
-    creating: boolean;
+    creating?: boolean;
     /** local content changed  */
-    changed: boolean;
+    changed?: boolean;
     /** server content changed */
-    dirty: boolean;
+    dirty?: boolean;
 
     /** metadata informations about the resource */
     meta?: IResourceMeta;

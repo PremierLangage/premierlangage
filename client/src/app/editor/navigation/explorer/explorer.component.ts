@@ -62,10 +62,10 @@ export class ExplorerComponent {
             { icon: 'fas fa-sync', label: 'Reload', enabled: filters.canBeReloaded, action: (r: IResource, e: MouseEvent) => {
                 that.optionReload(r, e );
             }},
-            { icon: 'far fa-file', label: 'New File', enabled: filters.canAddFile, action: (r: IResource, e: MouseEvent) => {
+            { icon: 'far fa-file', label: 'New File', enabled: filters.canAddChild, action: (r: IResource, e: MouseEvent) => {
                 that.optionAddFile(r, e);
             }},
-            { icon: 'far fa-folder', label: 'New Folder', enabled: filters.canAddFile, action: (r: IResource, e: MouseEvent) => {
+            { icon: 'far fa-folder', label: 'New Folder', enabled: filters.canAddChild, action: (r: IResource, e: MouseEvent) => {
                 that.optionFolder(r, e );
             }},
             { icon: 'far fa-edit', label: 'Rename', enabled: filters.canBeRenamed, action: (r: IResource, e: MouseEvent) => {
@@ -74,7 +74,7 @@ export class ExplorerComponent {
             { icon: 'far fa-trash-alt', label: 'Delete', enabled: filters.canBeDeleted, action: (r: IResource, e: MouseEvent) => {
                 that.optionDelete(r, e );
             }},
-            { icon: 'fas fa-lock', label: 'Read Only', enabled: filters.isReadonly, action: function () { } },
+            { icon: 'fas fa-lock', label: 'Read Only', enabled: filters.isReadOnly, action: function () { } },
         ];
     }
 

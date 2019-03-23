@@ -17,7 +17,7 @@ export class ResourceService {
     private cache: IResource[] = [];
 
     /**
-     * event that emits after a resource is renamed 
+     * event that emits after a resource is renamed
      * with an object
      *
      * {
@@ -103,7 +103,6 @@ export class ResourceService {
     /**
      * Gets a value indicating whether the given resource is the selected one.
      * @param resource the resource to test
-     * @returns true if the resource is the selected one false otherwise
      */
     isSelection(resource: IResource) {
         return !!this.selection && resource.path === this.selection.path;
@@ -145,7 +144,7 @@ export class ResourceService {
     async rename(resource: IResource, name: string) {
         checkName(name);
         assert(filters.canWrite(resource), 'permission denied');
-        assert(filters.isNotRoot(resource), 'cannot rename root directory');
+        assert(!filters.isRoot(resource), 'cannot rename root directory');
 
         if (name === resource.name) {
             return Promise.resolve(true);
