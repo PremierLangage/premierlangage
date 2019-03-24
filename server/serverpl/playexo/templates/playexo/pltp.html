@@ -5,7 +5,6 @@
         <div class="introduction-center"><h2>{% if 'title'%}{{ title }}{% endif %}</h2></div>
         <div class="introduction-left">{% if 'author' %}{{ author }}{% endif %}</div>
     </div>
-    
     <div class="card-body">
         {% if request.user.profile.can_load and teacher %}
             <div style="background-color:#CCC">
@@ -21,10 +20,11 @@
                 {{ introductionh__|safe }}
             {% endwith %}
         {% endif %}
-        
         <br>
-        <center><a style="white-space: normal;" href="{% url 'playexo:activity' activity_id__ %}?action=pl&pl_id={{first_pl__}}" type="button" class="btn btn-success btn-lg">
-            Commencer
-        </a></center>
+        <center>
+            <a style="white-space: normal;" href="{% url 'playexo:activity' activity_id__ %}?action=pl&pl_id={{first_pl__}}" type="button" class="btn btn-success btn-lg">
+                Commencer
+            </a>
+        </center>
     </div>
 </div>

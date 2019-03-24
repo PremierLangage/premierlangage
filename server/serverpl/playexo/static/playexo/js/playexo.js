@@ -81,7 +81,7 @@ function previewPL(activityId, sessionId) {
     let submitButton = $("#submit_button");
     const downloadButton = $( "#download_env_button" );
     const loadingIndicator = $("#loading-indicator");
-    loadingIndicator.hide();
+    //loadingIndicator.hide();
     
     function toggleButtons(disable) {
         submitButton.prop('disabled', disable);
@@ -89,7 +89,6 @@ function previewPL(activityId, sessionId) {
         if (disable) {
             loadingIndicator.show();
         }
-        componentHandler.upgradeDom();
     }
 
     submitButton.click(function() {
@@ -146,7 +145,6 @@ function evaluatePL(url) {
         if (disable) {
             loadingIndicator.show();
         }
-        componentHandler.upgradeDom();
     }
       
     submitButton.click(() => submitForm('submit'));
