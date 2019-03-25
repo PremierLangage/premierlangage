@@ -36,7 +36,7 @@ export class MonacoService  {
         template: 'Définie template comme étant la base de ce fichier',
     };
 
-    private static readonly REFERENCE_PATTERN = /(@|(template|grader|builder|extends|builder|grader)\s*=)\s*(\w+:)?([~a-zA-Z0-9_\.\/]+)/;
+    private static readonly REFERENCE_PATTERN = /(@|(template|grader|builder|extends|builder|grader)\s*=)\s*(\w+:)?([~a-zA-Z0-9_\.\/-]+)/;
     private static readonly OPEN_PATTERN = /^[a-zA-Z_](\.?\w+)*(==)|(%=)/;
     private static readonly CLOSE_PATTERN = /^==\s*$/;
 
@@ -262,6 +262,7 @@ export class MonacoService  {
                 ],
             },
         });
+    
     }
 
     private registerCompletion(monaco: any) {

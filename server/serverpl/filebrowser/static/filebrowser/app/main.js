@@ -5312,7 +5312,7 @@ var MonacoService = /** @class */ (function () {
         form: 'Formulaire HTML permettant à l\'élève de répondre',
         template: 'Définie template comme étant la base de ce fichier',
     };
-    MonacoService.REFERENCE_PATTERN = /(@|(template|grader|builder|extends|builder|grader)\s*=)\s*(\w+:)?([~a-zA-Z0-9_\.\/]+)/;
+    MonacoService.REFERENCE_PATTERN = /(@|(template|grader|builder|extends|builder|grader)\s*=)\s*(\w+:)?([~a-zA-Z0-9_\.\/-]+)/;
     MonacoService.OPEN_PATTERN = /^[a-zA-Z_](\.?\w+)*(==)|(%=)/;
     MonacoService.CLOSE_PATTERN = /^==\s*$/;
     MonacoService = MonacoService_1 = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
