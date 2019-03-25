@@ -34,6 +34,8 @@ export class MonacoService  {
         before: 'Code python permettant de modifier l\'exercice avant sont exécution sur le navigateur',
         form: 'Formulaire HTML permettant à l\'élève de répondre',
         template: 'Définie template comme étant la base de ce fichier',
+        extracss: 'Ajoute des feuilles de styles supplémentaires à la page HTML',
+        extrajs: 'Ajoute des scripts supplémentaires à la page HTML'
     };
 
     private static readonly REFERENCE_PATTERN = /(@|(template|grader|builder|extends|builder|grader)\s*=)\s*(\w+:)?([~a-zA-Z0-9_\.\/-]+)/;
@@ -59,8 +61,6 @@ export class MonacoService  {
 
     register(monaco) {
         const that = this;
-        // monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
-
         monaco.languages.register({
             id: PL,
             extensions: ['.pl', '.pltp'],
@@ -209,7 +209,7 @@ export class MonacoService  {
             const blames: IBlame[] = this.blames[model.uri.path];
             if (blames) {
                 const lineNumber = this.cursor ? this.cursor.lineNumber : 0;
-                const lineContent = model.getLineContent(lineNumber);
+                const content = model.getLineContent(lineNumber);
                 blame = blames.find(item => item.text.trim() === lineContent.trim());
             }
             this.blameChanged.next({blame: blame, modelId: model.id});
@@ -221,7 +221,8 @@ export class MonacoService  {
             // Set defaultToken to invalid to see what you do not tokenize yet
             // defaultToken: 'invalid',
             keywords: [
-                'title', 'author', 'introduction', 'teacher', 'text', 'build', 'before', 'form', 'template'
+                'title', 'author', 'introduction', 'teacher', 'text', 'build', 'before', 'form', 'template',
+                'extracss', 'extrajs'
             ],
             operators: [
                 '=', '+', '@', '%', '==', '+=', '=@', '+=@',
@@ -232,6 +233,7 @@ export class MonacoService  {
                         // (?=\s*(=|\+|\@|\%|(==)|(\+=)|(=\@)|(\+=\@)))
                         /^[a-zA-Z_](\.?\w+)*/, {
                             cases: {
+                                '@keywords': 'keyword',
                                 '@default': 'key'
                             }
                         }
@@ -262,7 +264,6 @@ export class MonacoService  {
                 ],
             },
         });
-    
     }
 
     private registerCompletion(monaco: any) {
@@ -280,31 +281,6 @@ export class MonacoService  {
                 }));
             },
         });
-
-
-    /*  monaco.languages.registerCompletionItemProvider(PREMIER_LANGAGE, {
-            triggerCharacters: ['{{'],
-            provideCompletionItems: function(model, position) {
-                const line = model.getLineContent(position.lineNumber);
-                if (!line.includes('{{')) {
-                    return [];
-                }
-                const items: monaco.languages.CompletionItem[] = [];
-                const keys = self.getKeys();
-                if (keys.length > 0) {
-                    keys.forEach(k => {
-                        items.push({
-                            label: k,
-                            detail: '{{' + k + '}}',
-                            insertText: k + '}}',
-                            kind: monaco.languages.CompletionItemKind.Reference
-                        });
-                    });
-                }
-                return items;
-            }
-        });
-        */
     }
 
     private registerLinks(monaco: any) {
@@ -313,16 +289,22 @@ export class MonacoService  {
                 const links = [];
                 const lines: string[] = model.getValue().split('\n');
                 let match: RegExpExecArray;
-                for (let i = 0; i < lines.length; i++) {
+                let i = 0;
+                const length = lines.length;
+                while (i < length) {
                     if (lines[i].match(MonacoService.OPEN_PATTERN)) {
                         i++;
-                        while (i < lines.length) {
+                        while (i < length) {
                             if (lines[i].match(MonacoService.CLOSE_PATTERN)) {
                                 break;
                             }
                             i++;
                         }
+                        if (i >= length) {
+                            break;
+                        }
                     }
+
                     match = MonacoService.REFERENCE_PATTERN.exec(lines[i]);
                     if (match) {
                         let comment = false;
@@ -348,6 +330,7 @@ export class MonacoService  {
                             });
                         }
                     }
+                    i++;
                 }
                 return links;
             },
@@ -360,25 +343,12 @@ export class MonacoService  {
     private registerHover(monaco: any) {
          monaco.languages.registerHoverProvider(PL, {
             provideHover: function (model, position) {
-                const lineContent = model.getLineContent(position.lineNumber);
+                const content = model.getLineContent(position.lineNumber);
                 const token = model.getWordAtPosition(position);
                 if (token) {
-                    /*const keys = self.getKeys();
-                    const k = keys.find(e => e === token.word);
-                    if (k) {
-                        const i = token.startColumn - 2;
-                        if (i > 0 && lineContent[i] === '{' && i - 1 >= 0 && lineContent[i - 1] === '{') {
-                            return {
-                                range: new monaco.Range(1, 1, 3, 10),
-                                contents: [
-                                    { value: k },
-                                    { value: self.getValue(k) }
-                                ]
-                            };
-                        }
-                    }
-                    */
-                    if (token.word in MonacoService.BUILT_IN_WORDS) {
+                    // TODO checks if the word is not inside == == and is followed by and operator
+                    const starts = content.startsWith(token.word);
+                    if (starts && token.word in MonacoService.BUILT_IN_WORDS) {
                         const lineCount = model.getLineCount();
                         return {
                             range: new monaco.Range(1, 1, 3, model.getLineMaxColumn(lineCount)),

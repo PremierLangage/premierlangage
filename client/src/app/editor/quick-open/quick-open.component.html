@@ -1,5 +1,5 @@
 <div id='editor-overlay-quickOpenWidget' #quickOpen>
-    <mat-form-field class='mat-elevation-z2'>
+    <mat-form-field>
         <input type="text" placeholder="Quick Open" matInput [matAutocomplete]="auto" autoFocus (blur)='didClose()' [formControl]="form">
     </mat-form-field>
     <mat-autocomplete autoFocus #auto="matAutocomplete" (optionSelected)='didItemSelected($event)' >

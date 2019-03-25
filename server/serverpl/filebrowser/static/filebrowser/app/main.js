@@ -1790,7 +1790,7 @@ var SearchComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div id='editor-overlay-quickOpenWidget' #quickOpen>\n    <mat-form-field class='mat-elevation-z2'>\n        <input type=\"text\" placeholder=\"Quick Open\" matInput [matAutocomplete]=\"auto\" autoFocus (blur)='didClose()' [formControl]=\"form\">\n    </mat-form-field>\n    <mat-autocomplete autoFocus #auto=\"matAutocomplete\" (optionSelected)='didItemSelected($event)' >\n        <mat-option *ngFor=\"let entry of $entries | async\" [value]=\"entry\">\n            <i class='{{entry.icon}} entry-icon'></i>&nbsp;<span class='entry-name'>{{entry.name}}</span> - <span class='entry-path'>{{entry.path|path}}</span>\n        </mat-option>\n    </mat-autocomplete>\n</div>"
+module.exports = "<div id='editor-overlay-quickOpenWidget' #quickOpen>\n    <mat-form-field>\n        <input type=\"text\" placeholder=\"Quick Open\" matInput [matAutocomplete]=\"auto\" autoFocus (blur)='didClose()' [formControl]=\"form\">\n    </mat-form-field>\n    <mat-autocomplete autoFocus #auto=\"matAutocomplete\" (optionSelected)='didItemSelected($event)' >\n        <mat-option *ngFor=\"let entry of $entries | async\" [value]=\"entry\">\n            <i class='{{entry.icon}} entry-icon'></i>&nbsp;<span class='entry-name'>{{entry.name}}</span> - <span class='entry-path'>{{entry.path|path}}</span>\n        </mat-option>\n    </mat-autocomplete>\n</div>"
 
 /***/ }),
 
@@ -4963,7 +4963,6 @@ var MonacoService = /** @class */ (function () {
     MonacoService.prototype.register = function (monaco) {
         var _this = this;
         var that = this;
-        // monaco.languages.typescript.javascriptDefaults.setEagerModelSync(true);
         monaco.languages.register({
             id: PL,
             extensions: ['.pl', '.pltp'],
@@ -5098,8 +5097,8 @@ var MonacoService = /** @class */ (function () {
             var blames = this.blames[model.uri.path];
             if (blames) {
                 var lineNumber = this.cursor ? this.cursor.lineNumber : 0;
-                var lineContent_1 = model.getLineContent(lineNumber);
-                blame = blames.find(function (item) { return item.text.trim() === lineContent_1.trim(); });
+                var content = model.getLineContent(lineNumber);
+                blame = blames.find(function (item) { return item.text.trim() === lineContent.trim(); });
             }
             this.blameChanged.next({ blame: blame, modelId: model.id });
         }
@@ -5109,7 +5108,8 @@ var MonacoService = /** @class */ (function () {
             // Set defaultToken to invalid to see what you do not tokenize yet
             // defaultToken: 'invalid',
             keywords: [
-                'title', 'author', 'introduction', 'teacher', 'text', 'build', 'before', 'form', 'template'
+                'title', 'author', 'introduction', 'teacher', 'text', 'build', 'before', 'form', 'template',
+                'extracss', 'extrajs'
             ],
             operators: [
                 '=', '+', '@', '%', '==', '+=', '=@', '+=@',
@@ -5120,6 +5120,7 @@ var MonacoService = /** @class */ (function () {
                         // (?=\s*(=|\+|\@|\%|(==)|(\+=)|(=\@)|(\+=\@)))
                         /^[a-zA-Z_](\.?\w+)*/, {
                             cases: {
+                                '@keywords': 'keyword',
                                 '@default': 'key'
                             }
                         }
@@ -5166,29 +5167,6 @@ var MonacoService = /** @class */ (function () {
                 }); });
             },
         });
-        /*  monaco.languages.registerCompletionItemProvider(PREMIER_LANGAGE, {
-                triggerCharacters: ['{{'],
-                provideCompletionItems: function(model, position) {
-                    const line = model.getLineContent(position.lineNumber);
-                    if (!line.includes('{{')) {
-                        return [];
-                    }
-                    const items: monaco.languages.CompletionItem[] = [];
-                    const keys = self.getKeys();
-                    if (keys.length > 0) {
-                        keys.forEach(k => {
-                            items.push({
-                                label: k,
-                                detail: '{{' + k + '}}',
-                                insertText: k + '}}',
-                                kind: monaco.languages.CompletionItemKind.Reference
-                            });
-                        });
-                    }
-                    return items;
-                }
-            });
-            */
     };
     MonacoService.prototype.registerLinks = function (monaco) {
         monaco.languages.registerLinkProvider(PL, {
@@ -5196,14 +5174,19 @@ var MonacoService = /** @class */ (function () {
                 var links = [];
                 var lines = model.getValue().split('\n');
                 var match;
-                for (var i = 0; i < lines.length; i++) {
+                var i = 0;
+                var length = lines.length;
+                while (i < length) {
                     if (lines[i].match(MonacoService_1.OPEN_PATTERN)) {
                         i++;
-                        while (i < lines.length) {
+                        while (i < length) {
                             if (lines[i].match(MonacoService_1.CLOSE_PATTERN)) {
                                 break;
                             }
                             i++;
+                        }
+                        if (i >= length) {
+                            break;
                         }
                     }
                     match = MonacoService_1.REFERENCE_PATTERN.exec(lines[i]);
@@ -5231,6 +5214,7 @@ var MonacoService = /** @class */ (function () {
                             });
                         }
                     }
+                    i++;
                 }
                 return links;
             },
@@ -5242,25 +5226,12 @@ var MonacoService = /** @class */ (function () {
     MonacoService.prototype.registerHover = function (monaco) {
         monaco.languages.registerHoverProvider(PL, {
             provideHover: function (model, position) {
-                var lineContent = model.getLineContent(position.lineNumber);
+                var content = model.getLineContent(position.lineNumber);
                 var token = model.getWordAtPosition(position);
                 if (token) {
-                    /*const keys = self.getKeys();
-                    const k = keys.find(e => e === token.word);
-                    if (k) {
-                        const i = token.startColumn - 2;
-                        if (i > 0 && lineContent[i] === '{' && i - 1 >= 0 && lineContent[i - 1] === '{') {
-                            return {
-                                range: new monaco.Range(1, 1, 3, 10),
-                                contents: [
-                                    { value: k },
-                                    { value: self.getValue(k) }
-                                ]
-                            };
-                        }
-                    }
-                    */
-                    if (token.word in MonacoService_1.BUILT_IN_WORDS) {
+                    // TODO checks if the word is not inside == == and is followed by and operator
+                    var starts = content.startsWith(token.word);
+                    if (starts && token.word in MonacoService_1.BUILT_IN_WORDS) {
                         var lineCount = model.getLineCount();
                         return {
                             range: new monaco.Range(1, 1, 3, model.getLineMaxColumn(lineCount)),
@@ -5311,6 +5282,8 @@ var MonacoService = /** @class */ (function () {
         before: 'Code python permettant de modifier l\'exercice avant sont exécution sur le navigateur',
         form: 'Formulaire HTML permettant à l\'élève de répondre',
         template: 'Définie template comme étant la base de ce fichier',
+        extracss: 'Ajoute des feuilles de styles supplémentaires à la page HTML',
+        extrajs: 'Ajoute des scripts supplémentaires à la page HTML'
     };
     MonacoService.REFERENCE_PATTERN = /(@|(template|grader|builder|extends|builder|grader)\s*=)\s*(\w+:)?([~a-zA-Z0-9_\.\/-]+)/;
     MonacoService.OPEN_PATTERN = /^[a-zA-Z_](\.?\w+)*(==)|(%=)/;
