@@ -210,7 +210,7 @@ export class MonacoService  {
             if (blames) {
                 const lineNumber = this.cursor ? this.cursor.lineNumber : 0;
                 const content = model.getLineContent(lineNumber);
-                blame = blames.find(item => item.text.trim() === lineContent.trim());
+                blame = blames.find(item => item.text.trim() === content.trim());
             }
             this.blameChanged.next({blame: blame, modelId: model.id});
         }
