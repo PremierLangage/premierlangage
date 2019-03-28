@@ -31,19 +31,21 @@ export class MonacoService  {
         text: 'Énoncé de l\'exercice, le contenu de cette clé est interprété comme du markdown.',
         build: 'Clé contenant une fonction build (ancienne syntaxe: utiliser de préférence before), '
              + 'à utiliser avec le builder /builder/build.py',
-        before: 'Code python permettant de modifier l\'exercice avant sont exécution sur le navigateur',
+        before: 'Code python permettant de modifier l\'exercice avant son exécution sur le navigateur',
         form: 'Formulaire HTML permettant à l\'élève de répondre',
         template: 'Définie template comme étant la base de ce fichier',
         extracss: 'Ajoute des feuilles de styles supplémentaires à la page HTML',
         extrajs: 'Ajoute des scripts supplémentaires à la page HTML'
     };
 
-    private static readonly REFERENCE_PATTERN = /(@|(template|grader|builder|extends|builder|grader)\s*=)\s*(\w+:)?([~a-zA-Z0-9_\.\/-]+)/;
-    private static readonly OPEN_PATTERN = /^[a-zA-Z_](\.?\w+)*(==)|(%=)/;
+    private static readonly REFERENCE_PATTERN = /(@|(?:template|grader|builder|extends|builder|grader)\s*=)\s*(\w+:)?([~a-zA-Z0-9_\.\/-]+)/;
+    private static readonly OPEN_PATTERN = /^[a-zA-Z_](\.?\w+)*(==)|(%=)|(\+=(?!@))/;
     private static readonly CLOSE_PATTERN = /^==\s*$/;
 
     private readonly codeLens = {};
     private readonly blames = {};
+    private readonly states = {};
+
     private options: monaco.editor.IEditorOptions;
     private editors: IEditorInfo[] = [];
     private cursor: monaco.IPosition;
@@ -222,7 +224,7 @@ export class MonacoService  {
             // defaultToken: 'invalid',
             keywords: [
                 'title', 'author', 'introduction', 'teacher', 'text', 'build', 'before', 'form', 'template',
-                'extracss', 'extrajs'
+                'extracss', 'extrajs', 'evaluator', 'extends'
             ],
             operators: [
                 '=', '+', '@', '%', '==', '+=', '=@', '+=@',
@@ -240,6 +242,7 @@ export class MonacoService  {
                     ],
                     [/#.*/, 'comment'],
                     [/==/, { token: 'open', next: '@embedded' }],
+                    [/\+=(?!@)/, { token: 'open', next: '@embedded' }],
                     [/%=/, { token: 'open', next: '@predefined', nextEmbedded: 'javascript' }],
                     [/\{\{[a-zA-Z_](\.?\w+)\}\}/, 'key'],
                     // numbers

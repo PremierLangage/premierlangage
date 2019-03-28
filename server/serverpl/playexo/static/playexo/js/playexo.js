@@ -189,6 +189,8 @@ class Activity {
             this.nodes.feedback.html(response.feedback);
         }
 
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]); // fix #198
+
         if (window.onAfterSubmitPL) {
             window.onAfterSubmitPL(this.nodes);
         }
