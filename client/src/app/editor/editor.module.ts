@@ -44,6 +44,8 @@ import { QuickOpenComponent } from './quick-open/quick-open.component';
 /* PIPES */
 import { PathPipe } from './shared/pipes/path.pipe';
 import { NicifyNamePipe } from './shared/pipes/nicify-name.pipe';
+import { LANGUAGE_PROVIDERS } from './shared/tokens/monaco-providers.token';
+import { PremierLanguage } from './shared/models/language-definition.model';
 
 @NgModule({
     declarations: [
@@ -77,7 +79,7 @@ import { NicifyNamePipe } from './shared/pipes/nicify-name.pipe';
         EditorComponent,
     ],
     providers: [
-
+        { provide: LANGUAGE_PROVIDERS, multi: true, useClass: PremierLanguage }
     ]
 })
 export class EditorModule { }

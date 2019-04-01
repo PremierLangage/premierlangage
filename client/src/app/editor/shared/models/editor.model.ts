@@ -1,4 +1,6 @@
 // tslint:disable: max-line-length
+// next line required for unit-tests
+/// <reference path="../../../../../node_modules/ngx-monaco-editor/monaco.d.ts" />
 
 import { IResource } from './resource.model';
 import { Subject } from 'rxjs';

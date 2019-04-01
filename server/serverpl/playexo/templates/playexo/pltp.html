@@ -1,12 +1,13 @@
 {% load django_markdown %}
+{% load static %}
+<link rel="stylesheet" href="{% static '/playexo/css/playexo.css' %}" />
 
-<div class="card">
-    <div class="card-header">
-        <div class="introduction-center"><h2>{% if 'title'%}{{ title }}{% endif %}</h2></div>
-        <div class="introduction-left">{% if 'author' %}{{ author }}{% endif %}</div>
+<div class="card exercise">
+    <div class="card-header exercise__header">
+        <div class="introduction-center"><h2 class='exercise__title'>{% if 'title'%}{{ title }}{% endif %}</h2></div>
+        <div class="introduction-left"><span class='exercise__author'>{% if 'author' %}{{ author }}{% endif %}</span></div>
     </div>
-    
-    <div class="card-body">
+    <div class="card-body exercise__body">
         {% if request.user.profile.can_load and teacher %}
             <div style="background-color:#CCC">
                 <u>Note de l'enseignant (visible seulement par les enseignant):</u>
@@ -21,10 +22,11 @@
                 {{ introductionh__|safe }}
             {% endwith %}
         {% endif %}
-        
         <br>
-        <center><a style="white-space: normal;" href="{% url 'playexo:activity' activity_id__ %}?action=pl&pl_id={{first_pl__}}" type="button" class="btn btn-success btn-lg">
-            Commencer
-        </a></center>
+        <center>
+            <a style="white-space: normal;" href="{% url 'playexo:activity' activity_id__ %}?action=pl&pl_id={{first_pl__}}" type="button" class="btn btn-success btn-lg">
+                Commencer
+            </a>
+        </center>
     </div>
 </div>

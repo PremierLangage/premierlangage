@@ -10,13 +10,13 @@ describe('Assert', () => {
         for (const e of DISALLOWED_CHAR) {
             expect(() => checkName('example.pl' + e)).toThrowError(Error);
         }
-        expect(() => checkName('')).toThrowError(TypeError);
-        expect(() => checkName(undefined)).toThrowError(TypeError);
+        expect(() => checkName('')).toThrowError(ReferenceError);
+        expect(() => checkName(undefined)).toThrowError(ReferenceError);
     });
 
     it('should requireNonNull throw exception', () => {
         expect(() => requireNonNull('', 'message')).toThrowError('message');
-        expect(() => requireNonNull(undefined)).toThrowError(TypeError);
+        expect(() => requireNonNull(undefined)).toThrowError(ReferenceError);
         expect(requireNonNull(false)).toBeFalsy();
         expect(requireNonNull(0)).toBe(0);
     });

@@ -34,7 +34,7 @@ describe('Paths', () => {
     it('should get extension of a path', () => {
         expect(extname('Yggdrasil/Cbank/example.pl')).toBe('pl');
         expect(extname('Yggdrasil/Cbank/fake.example.pl')).toBe('pl');
-        expect(extname('Yggdrasil/Cbank/fake.example.pl')).toBe('pl');
+        expect(extname('Yggdrasil/Cbank/fake.example.PL')).toBe('pl');
         expect(extname('Yggdrasil/Cbank/example')).toBe('');
         expect(extname('fake.example')).toBe('example');
         expect(extname('example.pl')).toBe('pl');

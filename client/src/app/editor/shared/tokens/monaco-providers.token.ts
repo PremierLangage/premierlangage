@@ -1,7 +1,4 @@
-import {InjectionToken} from '@angular/core';
-import { Language } from '../models/language.model';
+import { InjectionToken } from '@angular/core';
+import { ILanguageDefinition } from '../models/language-definition.model';
 
-
-export const LANGUAGE_PROVIDERS = new InjectionToken<Language[]>('Language Provider');
-export const LANGUAGE_REGISTERS = new InjectionToken('Language Register');
-export const COMPLETION_PROVIDERS = new InjectionToken('Completion Provider');
+export const LANGUAGE_PROVIDERS = new InjectionToken<ILanguageDefinition[]>('Language Provider');

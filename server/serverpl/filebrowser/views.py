@@ -423,6 +423,8 @@ def git_blame(request): # TODO ADD TEST
             })
         return HttpResponse(json.dumps(response), content_type='application/json')
     else:  # pragma: no cover
+        if "fatal: no such path" in err:
+            return HttpResponse(json.dumps([]), content_type='application/json')
         return HttpResponseNotFound(htmlprint.code(out + err))
 
 @require_GET

@@ -1,182 +1,209 @@
 'use strict';
 
-function getInputs(){
-    let inputs = {};
-    $( "[id^='form_']" ).each(function() {
-        let id = this.id.slice(5); // name of the variable
-        let value = $(this).val();
-        if ($(this).is(':radio')) {
-            if($(this).is(':checked')) {
-                inputs[id]=value;
-            }
+class Nodes {
+
+    constructor() {
+        this._save = $('.action-save');
+        this._submit = $('.action-submit');
+
+        this._container = $(".exercise-container");
+        this._header = $('.exercise__header');
+        this._title = $('.exercise__title');
+        this._author = $('.exercise__author');
+        this._body =  $('.exercise__body');
+        this._instructions = $('.exercise__instructions');
+        this._form = $('.exercise__form');
+        this._actions = $('.exercise__actions');
+        this._spinner = $('.exercise__spinner');
+        this._feedback = $('.exercise__feedback');
+    }
+
+    get save() { return this._save; }
+    get submit() { return this._submit; }
+    get title() { return this._title; }
+    get author() { return this._author; }
+    get container() { return this._container; }
+    get header() { return this._header; }
+    get body() { return this._body; }
+    get instructions() { return this._instructions; }
+    get form() { return this._form; }
+    get actions() { return this._actions; }
+    get spinner() { return this._spinner; }
+    get feedback() { return this._feedback; }
+
+}
+
+class Activity {
+
+    constructor(options) {
+        this.options = options;
+        this.nodes.spinner.slideUp();
+        this.nodes.actions.slideDown();
+
+        this.addListeners();
+
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]); // fix #198
+
+        if (window.onReadyPL) {
+            window.onReadyPL(this.nodes);
         }
-        else if ($(this).is(':checkbox')) {
-            if($(this).is(':checked')) {
-                if (id in inputs) {
-                    inputs[id].push(value);
+    }
+
+    /**
+     * Creates new instance of Activity for test activity.
+     * @param {string} activityId the id of the activity
+     * @param {string} sessionId  the id of the session
+     * @returns {Activity} new Activity object
+     */
+    static withTest(activityId, sessionId) {
+        return new Activity({
+            activityId: activityId,
+            sessionId: sessionId
+        });
+    }
+
+    /**
+     * Creates new instance of Activity for eval activity.
+     * @param {*} url the url of the activity
+     * @returns {Activity} new Activity object
+     */
+    static withEval(url) {
+        return new Activity({
+            url: url
+        });
+    }
+
+    get nodes() {
+        return this._nodes || (this._nodes = new Nodes());
+    }
+
+    get inputs() {
+        const inputs = {};
+        $( "[id^='form_']" ).each(function() {
+            const id = this.id.slice(5); // name of the variable
+            const value = $(this).val();
+            if ($(this).is(':radio')) {
+                if($(this).is(':checked')) {
+                    inputs[id] = value;
                 }
-                else {
-                    inputs[id] = [value]
+            }
+            else if ($(this).is(':checkbox')) {
+                if($(this).is(':checked')) {
+                    if (id in inputs) {
+                        inputs[id].push(value);
+                    }
+                    else {
+                        inputs[id] = [value]
+                    }
                 }
             }
-        }
-        else {
-            inputs[id]=value;
-        }
-    });
-    return inputs;
-}
-
-function onEvaluatedPL(response) {
-    if (response.exercise) {
-        $("#exercise").html(response.exercise);
-    }
-    if (response.feedback) {
-        const node = $("#feedback");
-        node.hide();
-        setTimeout(function () {
-            node.html(response.feedback);
-            node.show();
-        }, 100);
-    }
-    emitOnAfterPL();
-}
-
-function onFailedPL(error) {
-    const node = $("#feedback");
-    node.hide();
-    setTimeout(function () {
-        node.html(JSON.stringify(error));
-        node.show();
-    }, 100);
-}
-
-function emitOnBeforePL() {
-    if (window.onBeforeSubmitPL) {
-        window.onBeforeSubmitPL();
-    }
-}
-
-function emitOnAfterPL() {
-    if (window.onAfterSubmitPL) {
-        window.onAfterSubmitPL();
-    }
-}
-
-function emitOnReadyPL() {
-    if (window.onReadyPL) {
-        window.onReadyPL();
-    }
-}
-
-function disableSubmitPL() {
-    $("#submit_button").prop('disabled', true);
-}
-
-function enableSubmitPL() {
-    $("#submit_button").prop('disabled', false);
-}
-
-function previewPL(activityId, sessionId) {
-    let submitButton = $("#submit_button");
-    const downloadButton = $( "#download_env_button" );
-    const loadingIndicator = $("#loading-indicator");
-    loadingIndicator.hide();
-    
-    function toggleButtons(disable) {
-        submitButton.prop('disabled', disable);
-        loadingIndicator.hide();
-        if (disable) {
-            loadingIndicator.show();
-        }
-        componentHandler.upgradeDom();
-    }
-
-    submitButton.click(function() {
-        emitOnBeforePL();
-        toggleButtons(true);
-        
-        const postData = {
-            name: "evaluate_pl",
-            data: {
-                answers: getInputs(),
-                id: activityId,
-                session_id: sessionId,
-                other: [],
-            },
-        };
-
-        $.ajax({
-            type : "POST",
-            url : "/filebrowser/option",
-            data: JSON.stringify(postData, null, '\t'),
-            contentType: 'application/json;charset=UTF-8',
-            success: function(response) {
-                onEvaluatedPL(response);
-                toggleButtons(false);
-        
-            },
-            error: function(error) {
-                onFailedPL(error);
-                toggleButtons(false);
+            else {
+                inputs[id] = value;
             }
         });
-    });
-    
-    downloadButton.click(function() {
-        window.onbeforeunload = function () {}
-    });
-
-    MathJax.Hub.Queue(["Typeset", MathJax.Hub]); // fix #198
-    
-    emitOnReadyPL();
-}
-
-function evaluatePL(url) {
-    const submitButton = $("#submit_button");
-    const saveButton = $("#save_button");
-    const loadingIndicator = $("#loading-indicator");
-
-    loadingIndicator.hide();
-
-    function toggleButtons(disable) {
-        submitButton.prop('disabled', disable);
-        saveButton.prop('disabled', disable);
-        loadingIndicator.hide();
-        if (disable) {
-            loadingIndicator.show();
-        }
-        componentHandler.upgradeDom();
+        return inputs;
     }
-      
-    submitButton.click(() => submitForm('submit'));
-    saveButton.click(() => submitForm('save'));
 
-    function submitForm(action) {
-        emitOnBeforePL();
-        toggleButtons(true);
-        const postData = {
-            requested_action: action, 
-            inputs: getInputs()
-        };
+    /** Adds listeners to buttons */
+    addListeners() {
+        if (this.nodes.save) {
+            this.nodes.save.click(() => this.didTapSave());
+        }
 
+        if (this.nodes.submit) {
+            this.nodes.submit.click(() => this.didTapSubmit());
+        }
+    }
+
+    /** Handles save button click */
+    didTapSave() {
+        this.nodes.actions.slideUp();
+        this.nodes.spinner.slideDown();
+        this.evaluate(this.options.url, {
+            requested_action: 'save', 
+            inputs: this.inputs
+        });
+    }
+
+    /** Handles submit button click */
+    didTapSubmit() {
+        if (!window.onBeforeSubmitPL || window.onBeforeSubmitPL(this.nodes) === true) {
+            this.nodes.actions.slideUp();
+            this.nodes.spinner.slideDown();
+
+            if (this.options.url) {
+                this.evaluate(this.options.url, {
+                    requested_action: 'submit', 
+                    inputs: this.inputs
+                });
+            } else {
+                this.evaluate("/filebrowser/option", {
+                    name: "evaluate_pl",
+                    data: {
+                        answers: this.inputs,
+                        id: this.options.activityId,
+                        session_id: this.options.sessionId,
+                        other: [],
+                    },
+                });
+            }
+        }
+    }
+
+    /**
+     * Sends a post request to the server to evaluate the answers
+     * @param {*} url the request url
+     * @param {*} data the post data
+     */
+    evaluate(url, data) {
+        const that = this;
         $.ajax({
             type: "POST",
             url: url,
-            data: JSON.stringify(postData, null, '\t'),
+            data: JSON.stringify(data, null, '\t'),
             contentType: 'application/json;charset=UTF-8',
-            success: function (response) {
-                onEvaluatedPL(response);
-                toggleButtons(false);
+            success: function(response) {
+                that.onSuccess(response);
+                that.nodes.spinner.slideUp();
+                that.nodes.actions.slideDown();
             },
-            error: function (error) {
-                onFailedPL(error);
-                toggleButtons(false);
+            error: function(error) {
+                that.onFailed(error);
+                that.nodes.spinner.slideUp();
+                that.nodes.actions.slideDown();
             }
         });
     }
 
-    MathJax.Hub.Queue(["Typeset", MathJax.Hub]); // fix #198
+    /**
+     * Handles ajax success response
+     * @param {*} response the response of the ajax request
+     */
+    onSuccess(response) {
+        if (response.exercise) {
+            this.nodes.container.html(response.exercise);
+            this._nodes = new Nodes();
+        }
 
-    emitOnReadyPL();
+        if (response.feedback) {
+            this.nodes.feedback.html(response.feedback);
+        }
+
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]); // fix #198
+
+        if (window.onAfterSubmitPL) {
+            window.onAfterSubmitPL(this.nodes);
+        }
+
+    }
+
+    /**
+     * Handles ajax error response
+     * @param {*} error the error of the ajax request
+     */
+    onFailed(error) {
+        this.nodes.feedback.hide();
+        this.nodes.feedback.html(JSON.stringify(error));
+    }
+
 }
