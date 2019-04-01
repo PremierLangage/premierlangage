@@ -42,35 +42,20 @@ def get_location(directory, path, current="", parser=None):
             top = gitcmd.top_level(absolute)[1]
             absolute = os.path.join(os.path.basename(top), path)
             if not os.path.isfile(
-                os.path.join(settings.FILEBROWSER_ROOT, directory.name, absolute)):
-                # raise FileNotFoundError("File '%s' does not exists in repository '%s'"
-                #                         % (path, os.path.basename(top)))
-                
-                # /!\ DEPRECATED (del in 0.7.0): defaulting to lib when file not found (use ':'
-                # instead)
-                for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if not l.isdigit()]:  # pragma: no cover 
+                    os.path.join(settings.FILEBROWSER_ROOT, directory.name, absolute)):
+                for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if l != settings.HOME]:  # pragma: no cover
                     absolute = os.path.join(settings.FILEBROWSER_ROOT, lib, path)
                     if os.path.isfile(absolute):
-                        if parser:
-                            parser.add_warning("DEPRECATED: Absolute path '/' will not default to "
-                                               "libraries anymore on version 0.7.0. Use 'lib:/' "
-                                               "instead.")
                         return lib, path
                 
                 raise FileNotFoundError("File '%s' does not exists in repository '%s'"
                                         % (path, os.path.basename(top)))
             
             return directory.name, os.path.normpath(absolute)
-
-        # /!\ DEPRECATED (del in 0.7.0): defaulting to lib when file not found (use ':'
-        # instead)
-        for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if not l.isdigit()]:
+        
+        for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if l != settings.HOME]:
             absolute = os.path.join(settings.FILEBROWSER_ROOT, lib, path)
             if os.path.isfile(absolute):
-                if parser:
-                    parser.add_warning("DEPRECATED: Absolute path '/' will not default to "
-                                       "libraries anymore on version 0.7.0. Use 'lib:/' "
-                                       "instead.")
                 return lib, path
         
         raise SyntaxError("'/' was used but current file is not in a repository")

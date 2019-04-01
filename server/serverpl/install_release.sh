@@ -69,13 +69,6 @@ echo "Done !"
 cp -f serverpl/install/settings_local.py serverpl/settings.py
 
 
-#Creating documentation
-echo ""
-echo "Creating documentation..."
-./serverpl/install/make_doc.sh || { echo>&2 "ERROR: ./serverpl/install/make_doc.sh failed" ; exit 1; }
-echo "Done !"
-
-
 #Creating static files
 echo ""
 echo "Creating static files..."

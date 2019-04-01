@@ -1,0 +1,27 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 0 0 0;
+    min-width: 50px;
+}
+
+.navigation-icon {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 24px;
+    cursor: pointer;
+    overflow: visible;
+}
+
+.fas {
+    width: 36px;
+    height: 36px;
+    color: white;
+    font-size: 36px;
+    text-align: center;
+}
+
+.mat-badge-content  {
+    z-index: 1;
+}

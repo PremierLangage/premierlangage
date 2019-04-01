@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class EditorAppConfig(AppConfig):
-    name = 'editor'
+class FilebrowserAppConfig(AppConfig):
+    name = 'filebrowser'

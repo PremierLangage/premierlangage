@@ -8,6 +8,8 @@ from django.test import Client, override_settings, TestCase
 from django.urls import reverse
 
 from filebrowser.models import Directory
+from filebrowser.utils import missing_parameter
+
 from loader.loader import load_file
 from playexo.request import SandboxBuild
 
@@ -61,4 +63,4 @@ class MiscViewTestCase(TestCase):
     
     def test_option_no_name(self):
         response = self.c.post(reverse("filebrowser:option"), {}, content_type='application/json')
-        self.assertContains(response, "'name' parameter is missing", status_code=400)
+        self.assertContains(response, missing_parameter('name'), status_code=400)

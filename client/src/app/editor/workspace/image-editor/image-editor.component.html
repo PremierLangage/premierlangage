@@ -1,0 +1,15 @@
+<div class='image-editor'>
+    <div *ngIf='isSVG; else notSVG' [innerHTML]='svg | sanitizeHtml' [ngStyle]='{zoom: editor.zoom}'></div> 
+    <ng-template #notSVG>
+        <img [src]='url'  [ngStyle]='{zoom: editor.zoom}' />
+    </ng-template>
+    <div class='image-editor__btn-group'>
+        <div class='image-editor__btn'>{{editor.zoom | number:'1.1-1'}}</div>
+        <div class='image-editor__btn' matTooltip='Zoom In' (click)='editor.zoomIn()'>
+            <i class="fas fa-plus"></i>
+        </div>
+        <div class='image-editor__btn' matTooltip='Zoom Out' (click)='editor.zoomOut()'>
+            <i class="fas fa-minus"></i>
+        </div>
+    </div>
+</div>

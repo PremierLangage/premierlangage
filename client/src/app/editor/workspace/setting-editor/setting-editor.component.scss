@@ -1,0 +1,56 @@
+.setting-editor {
+    height: calc(100% - 36px);
+    display: flex;
+}
+
+
+.mat-form-field {
+    width: 75%;
+}
+
+.tab-bar {
+    padding: 0;
+}
+
+.tab-item {
+    &.active {
+        background-color: #FFF;
+    }
+
+    .tab-icon {
+        margin-right: 4px;
+    }
+
+    .tab-close {
+        font-size: 18px;
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    &.changed {
+        border-bottom: 1px solid salmon;
+    }
+}
+
+.mat-list {
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    &.mat-list-base {
+        margin-bottom: 8px;
+    }
+}
+
+.mat-list.list-groups {
+    width: 180px;
+    padding: 0 12px;
+    overflow: auto;
+}
+
+.setting-item {
+    cursor: pointer;
+    &.active, &:hover {
+        color: #007bff;
+    }
+}

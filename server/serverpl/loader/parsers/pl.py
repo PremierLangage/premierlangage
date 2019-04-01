@@ -7,13 +7,14 @@
 
 import json
 import re
+import os
 from os.path import basename, dirname, join
 
 from django.conf import settings
 
 from loader.exceptions import FileNotFound, SemanticError, SyntaxErrorPL
 from loader.utils import get_location
-
+from filebrowser.utils import to_download_url
 
 BAD_CHAR = r''.join(settings.FILEBROWSER_DISALLOWED_CHAR)
 
@@ -23,6 +24,7 @@ class Parser:
     """Parser used to parse pl files with .pl extension"""
     
     KEY = r'^(?P<key>[a-zA-Z_][a-zA-Z0-9_\.]*)\s*'
+    SRC = r'(img.+?(?=src)src\s*=(?:\"|\')(?!\/filebrowser)(?P<src>[^\"|\']+)(?:\"|\'))'
     COMMENT = r'(?P<comment>#.*)'
     VALUE = r'(?P<value>[^=@%#][^#]*?)\s*'
     FILE = r'(?P<file>([a-zA-Z0-9_]*:)?((\/)?[^' + BAD_CHAR + r']+)(\/[^' + BAD_CHAR + r']+)*)\s*'
@@ -36,7 +38,7 @@ class Parser:
     END_MULTI_LINE = re.compile(r'==\s*$')
     COMMENT_LINE = re.compile(r'\s*' + COMMENT + r'$')
     EMPTY_LINE = re.compile(r'\s*$')
-    
+    HTML_KEYS = ['title', 'teacher', 'introductionh', 'text', 'form']
     
     def __init__(self, directory, rel_path):
         self.directory = directory
@@ -65,6 +67,20 @@ class Parser:
         """Add the value to the key in the dictionnary, parse the key to create sub dictionnaries.
          Append the value if append is set to True.
          Does not generate a warning when the key already exists if replace is set to True """
+        if key in self.HTML_KEYS:
+            src_match = ''
+            try:
+                matches = re.findall(self.SRC, value)
+                for match in matches:
+                    src_match = match[-1]
+                    directory, path = get_location(self.directory, src_match, current=dirname(self.path), parser=self)
+                    src = os.path.join(directory, path)
+                    value = value.replace(match[-1], to_download_url(src))
+            except SyntaxError as e:
+                raise SyntaxErrorPL(self.path, self.lines[self.lineno-1], self.lineno, str(e))
+            except FileNotFoundError as e:
+                raise FileNotFound(self.path, self.lines[self.lineno-1], src_match, self.lineno, str(e))
+            
         current_dic = self.dic
         sub_keys = key.split(".")
         for k in sub_keys:
@@ -117,13 +133,11 @@ class Parser:
                 - DirectoryNotFound if the directory indicated by the pl couldn't be found"""
         
         try:
-            directory, path = get_location(self.directory, match.group('file'),
-                                           current=dirname(self.path), parser=self)
+            directory, path = get_location(self.directory, match.group('file'), current=dirname(self.path), parser=self)
         except SyntaxError as e:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
         except FileNotFoundError as e:
-            raise FileNotFound(self.path_parsed_file, line, match.group('file'), self.lineno,
-                               str(e))
+            raise FileNotFound(self.path_parsed_file, line, match.group('file'), self.lineno, str(e))
         
         self.dic['__extends'].append({
             'path'          : path,
@@ -145,7 +159,7 @@ class Parser:
         
         key = match.group('key')
         op = match.group('operator')
-        
+
         try:
             directory, path = get_location(self.directory, match.group('file'),
                                            current=dirname(self.path), parser=self)
@@ -297,7 +311,13 @@ class Parser:
         self.fill_meta()
         
         for line in self.lines:
-            self.parse_line(line)
+            try:
+                self.parse_line(line)
+            except UnicodeDecodeError as e:
+                raise SyntaxErrorPL(join(self.directory.root, self.path), 
+                                    self.lines[self.lineno-1], 
+                                    self.lineno,
+                                    message="Cannot reference a binary file")
             self.lineno += 1
         
         if self._multiline_key:  # If a multiline value is still open at the end of the parsing

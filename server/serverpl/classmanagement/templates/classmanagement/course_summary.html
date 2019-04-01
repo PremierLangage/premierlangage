@@ -47,7 +47,7 @@
                                 <td class="summary-td">  
                                     <span class="mdl-chip mdl-chip--contact">
                                         <span class="mdl-chip__contact mdl-color--blue mdl-color-text--white">
-                                            {% firstof stud.object.get_full_name stud.object.username|capfirst|make_list|first%}
+                                            {% firstof stud.object.get_full_name|capfirst|make_list|first stud.object.username|capfirst|make_list|first%}
                                         </span>
                                         <span class="mdl-chip__text">
                                          <a class='text-dark' href="/courses/course/{{course_id}}/student/{{stud.id}}/summary/">

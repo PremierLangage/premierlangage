@@ -2,7 +2,7 @@ import os
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.test import override_settings, TestCase
 
 from filebrowser import filter
 from filebrowser.models import Directory
@@ -10,8 +10,11 @@ from filebrowser.models import Directory
 
 RES_DIR = os.path.join(settings.BASE_DIR, "filebrowser/tests/ressources/filter/")
 
+FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'filebrowser/tests/tmp')
 
 
+
+@override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
 class FilterTestCase(TestCase):
     """Tests filters defined in filebrowser.filter"""
     
