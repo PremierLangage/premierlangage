@@ -56,7 +56,8 @@ export class MonacoService {
      */
     findLanguage(resource: IResource): string {
         const ext = extname(resource.path) || resource.path;
-        return LANGUAGES.find(item => item.extension === ext).id || '';
+        const language = LANGUAGES.find(item => item.extension === ext);
+        return !!language ? language.id : '';
     }
 
     /**
