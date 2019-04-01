@@ -483,10 +483,9 @@ class Answer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     pl = models.ForeignKey(PL, on_delete=models.CASCADE)
     activity = models.ForeignKey(Activity, null=True, on_delete=models.CASCADE)
-    seed = models.CharField(max_length=100, default=time.time)
+    seed = models.CharField(max_length=100, default=time.time % 1000)
     date = models.DateTimeField(default=timezone.now)
     grade = models.IntegerField(null=True)
-    
     
     @staticmethod
     def highest_grade(pl, user):
