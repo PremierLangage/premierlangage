@@ -90,8 +90,8 @@ class ParserTestCase(TestCase):
             parser.parse_file(self.dir, "test_missing_key.pltp")
         with self.assertRaises(MissingKey):
             parser.parse_file(self.dir, "test_no_grader.pl")
-        with self.assertRaises(MissingKey):
-            parser.parse_file(self.dir, "test_no_builder.pl")
+        # should not raised anything
+        parser.parse_file(self.dir, "test_no_builder.pl")
         # testing .pl concatenation
         with self.assertRaises(MissingKey):
             parser.parse_file(self.dir, "test_missing_key")
