@@ -1,8 +1,8 @@
 // tslint:disable: max-line-length
 import { Component, ViewEncapsulation, OnInit} from '@angular/core';
-import { Setting, SettingTypes, loadSettings, saveSettings, settingGroup, EDITOR_GROUP } from '../../shared/models/setting.model';
-import { NavigationService } from '../../navigation/navigation.service';
+import { Settings } from '../../shared/models/setting.model';
 import { MonacoService } from '../../shared/services/monaco/monaco.service';
+import { NavigationService } from '../../navigation/navigation.service';
 
 
 @Component({
@@ -13,13 +13,17 @@ import { MonacoService } from '../../shared/services/monaco/monaco.service';
   })
 export class SettingEditorComponent implements OnInit {
 
-    readonly settings: Setting[];
+    /** the settings */
+    readonly settings: Settings.Setting[];
 
-    groups: IModel[] = [];
-    selection: IModel;
+    /** setting groups */
+    groups: Settings.Group[] = [];
+
+    /** selected group */
+    selection: Settings.Group;
 
     constructor(private readonly navigation: NavigationService, private readonly monaco: MonacoService) {
-        this.settings = loadSettings().filter(setting => !setting.hidden);
+        this.settings = Settings.getAll().filter(setting => !setting.hidden);
     }
 
     ngOnInit() {
@@ -27,8 +31,8 @@ export class SettingEditorComponent implements OnInit {
             return e.group;
         }).sort((a, b) => {
              return a.split('.').pop().toLowerCase() < b.split('.').pop().toLowerCase() ? -1 : 1;
-        }).reduce((acc: IModel[], current, index, array) => {
-            if (!acc.some(group => group.title === current)) {
+        }).reduce((acc: Settings.Group[], current, index, array) => {
+            if (!acc.some(item => item.title === current)) {
                 acc.push({
                     title: current,
                     settings: this.settings.filter(setting => setting.group === current)
@@ -39,22 +43,22 @@ export class SettingEditorComponent implements OnInit {
         this.selection = this.groups[0];
     }
 
+    /** Handles close button click event */
     didClose() {
         this.navigation.settings.next();
     }
 
+    /** Handles settings change event */
     didChange() {
-        this.monaco.updateOptions(settingGroup(this.settings, EDITOR_GROUP));
-        saveSettings(this.settings);
+        Settings.save(this.settings);
     }
 
-    didSelect(model: IModel) {
-        this.selection = model;
+    /**
+     * Handles click event on setting group inside the template.
+     * @param group the selected group.
+     */
+    didSelect(group: Settings.Group) {
+        this.selection = group;
     }
 
-}
-
-export interface IModel {
-    title: string;
-    settings?: Setting[];
 }

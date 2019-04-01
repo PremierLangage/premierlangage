@@ -1,7 +1,6 @@
-import { Component, ViewEncapsulation, HostListener, OnInit, OnDestroy } from '@angular/core';
+import { Component, ViewEncapsulation, HostListener, OnInit } from '@angular/core';
 
 import { IResource } from './shared/models/resource.model';
-import { MONACO_LOADED } from './shared/models/monaco.model';
 
 import { TaskService } from './shared/services/core/task.service';
 import { MonacoService } from './shared/services/monaco/monaco.service';
@@ -16,8 +15,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./editor.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class EditorComponent implements OnInit, OnDestroy {
-    private readonly subscriptions: Subscription[] = [];
+export class EditorComponent implements OnInit {
 
     showQuickOpen: boolean;
 
@@ -30,15 +28,11 @@ export class EditorComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        this.subscriptions.push(MONACO_LOADED.subscribe(monaco => this.monaco.register(monaco)));
         this.resources.refresh().catch(error => {
             this.notification.logError(error);
         });
     }
 
-    ngOnDestroy(): void {
-        this.subscriptions.forEach(item => item.unsubscribe());
-    }
 
     items(): IResource[] {
         return this.resources.resources;

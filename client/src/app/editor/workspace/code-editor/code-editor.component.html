@@ -1,4 +1,4 @@
-<span class='blame' *ngIf='blame'>
+<span class='blame' *ngIf='enabledBlames()'>
     {{blame.email}}, 
     {{blame.day | timeAgo}} 
     <ng-container *ngIf='blame.commit'>- {{blame.commit}}</ng-container>

@@ -10,6 +10,8 @@ import { compareGroup } from '../../models/filters.model';
 import { IOpenOptions } from './opener.service';
 
 export interface IEditorService {
+
+
     /**
      * Opens the resource with the right editor.
      * @param resource The resource
@@ -82,11 +84,19 @@ export interface IEditorService {
      */
     closePreview(): Promise<boolean>;
 
+    /**
+     * Adds `subscription` to the list of Subscription objects to dispose.
+     * @param subscription the subscription object
+     */
+    addSubscription(subscription: Subscription);
+
+    /** Disposes all subscriptions */
+    removeSubscriptions();
 }
 
 @Injectable()
 export abstract class AbstractEditorService implements IEditorService {
-
+    private readonly subscriptions: Subscription[] = [];
     private readonly groups: { [groupId: number]: IEditorGroup; } = Object.create(null);
 
     /** the current preview group of the editor */
@@ -98,6 +108,13 @@ export abstract class AbstractEditorService implements IEditorService {
     constructor() {
     }
 
+    addSubscription(subscription: Subscription) {
+        this.subscriptions.push(subscription);
+    }
+
+    removeSubscriptions() {
+        this.subscriptions.forEach(item => item.unsubscribe());
+    }
 
     listGroups(): IEditorGroup[] {
         return Object.keys(this.groups).map(id => this.groups[id]);

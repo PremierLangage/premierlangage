@@ -32,3 +32,4 @@ export const LANGUAGES: Language[] = [
     { extension: 'pltp', id: 'pl' },
     { extension: 'swift', id: 'swift' }
 ];
+

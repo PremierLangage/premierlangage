@@ -194,6 +194,7 @@ class Activity {
         if (window.onAfterSubmitPL) {
             window.onAfterSubmitPL(this.nodes);
         }
+
     }
 
     /**
