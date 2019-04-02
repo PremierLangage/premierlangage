@@ -159,7 +159,7 @@ export abstract class AbstractEditorService implements IEditorService {
         if (active) {
             if (group.isPreviewGroup()) {
                 this.previewGroup = group;
-            } else if (active.meta.previewData) {
+            } else if (active.meta && active.meta.previewData) {
                 result = await this.open(active, {
                     openToSide: true
                 });
