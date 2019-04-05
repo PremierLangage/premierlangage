@@ -11,6 +11,8 @@ urlpatterns = [
     path('tags', views.tags),
     path('grid', views.grid),
     path('plstats/<int:plid>/', views.plstats),
+    path('work', views.work),
+    path('where/<int:userid>', views.where),
 
 ]
 

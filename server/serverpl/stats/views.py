@@ -33,6 +33,28 @@ def user(request):
     x = mpld3.fig_to_html(plt.gcf())
     return render(request, "stats/stats.html", {  "show": "The show<br/>"+x,})
 
+def work(request):
+    lt = list()
+    lvalue = list()
+    for user in  User.objects.all():
+        v=Answer.objects.filter(user=user).exclude(grade=-1).exclude(grade=0).count()
+        if v>660:
+            lt.append((user.id, user.first_name+user.last_name,v))
+        lvalue .append(v)
+    mean= sum(lvalue)/len(lvalue)
+    plt.plot(lvalue)
+    x = mpld3.fig_to_html(plt.gcf())
+    return render(request, "stats/stats.html", {  "show": "Number of answers by users <br/>"+x+"<br/>"+str(mean)+"<br/>"+str(lt)})
+
+
+def where(request,userid=509):
+    plp=list()
+    for pl in PL.objects.all():
+        c= Answer.objects.filter(user=userid, pl=pl).exclude(grade=-1).exclude(grade=0).count()
+        plp.append(c)
+    plt.plot(plp)
+    x = mpld3.fig_to_html(plt.gcf())
+    return render(request, "stats/stats.html", {  "show": "Number of answers for each pl for user "+str(userid)+" <br/>"+x+"<br/>"})
 
 
 from django.contrib.auth.models import User
