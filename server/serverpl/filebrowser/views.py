@@ -2,32 +2,31 @@ import json
 import os
 import re
 import shutil
-import traceback
 import subprocess
+
 import gitcmd
 import htmlprint
 import requests
-import codecs
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import (HttpResponse, HttpResponseBadRequest, HttpResponseNotFound, JsonResponse)
+from django.http import (HttpResponse, HttpResponseBadRequest, HttpResponseNotFound, JsonResponse,
+                         HttpResponseNotAllowed)
 from django.shortcuts import render
+from django.template.loader import get_template
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
-from django.template.loader import get_template
 
-from filebrowser.filter import is_root, is_image, in_repository
+from filebrowser.filter import in_repository, is_root
 from filebrowser.models import Directory
-from filebrowser.utils import fa_icon, join_fb_root, rm_fb_root, walkdir, walkalldirs, repository_url, \
-                              repository_branch, to_download_url, missing_parameter, exec_git_cmd, \
-                              get_content, get_meta, HOME_DIR, LIB_DIR
+from filebrowser.utils import (exec_git_cmd, fa_icon, get_content, get_meta, HOME_DIR, join_fb_root,
+                               LIB_DIR, missing_parameter, repository_branch, repository_url,
+                               rm_fb_root, walkalldirs)
 from loader.loader import load_file, reload_pltp as rp
 from loader.utils import get_location
-
 from playexo.models import Activity, SessionTest
-import filebrowser.filter as filter
+
 
 
 @login_required
@@ -35,10 +34,12 @@ def index(request):
     """ Used by the editor module to navigate """
     return render(request, 'filebrowser/index.html')
 
+
+
 @login_required
 @require_POST
 @csrf_exempt
-def upload_resource(request):  #TODO ADD TEST
+def upload_resource(request):  # TODO ADD TEST
     """ Allow the user to upload a file in the filebrowser """
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
@@ -59,12 +60,15 @@ def upload_resource(request):  #TODO ADD TEST
                 for chunk in f.chunks():
                     dest.write(chunk)
             return HttpResponse()
-
+    
     except Exception as e:  # pragma: no cover
-        msg = "Impossible to upload '" + path + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
+        msg = "Impossible to upload '" + path + "' : " + htmlprint.code(
+            str(type(e)) + ' - ' + str(e))
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
+
+
 
 @require_GET
 def get_resource(request):
@@ -76,14 +80,17 @@ def get_resource(request):
     try:
         path = join_fb_root(path)
         return JsonResponse({
-            'content': get_content(path),
-            'meta': get_meta(path)
+                'content': get_content(path),
+                'meta':    get_meta(path)
         })
     except Exception as e:  # pragma: no cover
-        msg = "Impossible to open '" + rm_fb_root(path) + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
+        msg = "Impossible to open '" + rm_fb_root(path) + "' : " + htmlprint.code(
+            str(type(e)) + ' - ' + str(e))
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
+
+
 
 @require_GET
 def get_resources(request):
@@ -92,6 +99,8 @@ def get_resources(request):
         return HttpResponse(json.dumps(walkalldirs(request)), content_type='application/json')
     except Exception as e:  # pragma: no cover
         return HttpResponseNotFound(str(e))
+
+
 
 @require_POST
 def update_resource(request):
@@ -108,6 +117,8 @@ def update_resource(request):
         return JsonResponse({'success': True})
     except Exception as e:  # pragma: no cover
         return HttpResponseNotFound(str(e))
+
+
 
 @require_POST
 def create_resource(request):
@@ -144,6 +155,8 @@ def create_resource(request):
             msg += ("DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
 
+
+
 @require_POST
 def delete_resource(request):
     """Delete a file or folder """
@@ -152,7 +165,7 @@ def delete_resource(request):
     path = post.get('path')
     if not path:
         return HttpResponseBadRequest(missing_parameter('path'))
-
+    
     if is_root(path):
         return HttpResponseBadRequest('cannot delete a root folder')
     
@@ -167,6 +180,8 @@ def delete_resource(request):
         if settings.DEBUG:
             msg += ("DEBUG: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
+
+
 
 @require_POST
 def rename_resource(request):
@@ -183,7 +198,7 @@ def rename_resource(request):
     path = join_fb_root(path)
     name = os.path.basename(path)
     new_path = os.path.join(os.path.dirname(path), target)
-   
+    
     try:
         if any(c in target for c in settings.FILEBROWSER_DISALLOWED_CHAR):
             msg = "Can't rename '{0}' to '{1}': name should not contain any of {2}." \
@@ -202,6 +217,8 @@ def rename_resource(request):
         if settings.DEBUG:
             msg += ("DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
+
+
 
 @require_POST
 def move_resource(request):
@@ -228,7 +245,8 @@ def move_resource(request):
         else:
             destination = os.path.join(dst_path, os.path.basename(src))
             if os.path.exists(destination):
-                return HttpResponseNotFound("{0} already exists inside {1}".format(os.path.basename(src), dst))
+                return HttpResponseNotFound(
+                    "{0} already exists inside {1}".format(os.path.basename(src), dst))
             else:
                 os.rename(src_path, destination)
                 return JsonResponse({'path': os.path.join(dst, os.path.basename(src))})
@@ -237,6 +255,8 @@ def move_resource(request):
         msg = "Impossible to copy '" + os.path.basename(src) + "' : " + htmlprint.code(
                 str(type(e)) + ' - ' + str(e))
         return HttpResponseNotFound(msg)
+
+
 
 @require_GET
 def download_resource(request):
@@ -248,58 +268,71 @@ def download_resource(request):
         data = fp.read()
     filename = os.path.basename(path)
     response = HttpResponse(content_type="application/ms-excel")
-    response['Content-Disposition'] = 'attachment; filename=%s' % filename # force browser to download file
+    response[
+        'Content-Disposition'] = 'attachment; filename=%s' % filename  # force browser to
+    # download file
     response.write(data)
     return response
 
+
+
 @require_GET
 def git_changes(request):
-    
     error = ''
     response = {}
+    
     
     def extract_changes(path):
         roots = os.listdir(join_fb_root(path))
         directory = Directory.objects.get(name=path)
         if not directory.can_write(request.user):
             return True
-
-        for root in roots:    
+        
+        for root in roots:
             full_path = join_fb_root(os.path.join(path, root))
             if not in_repository(full_path):
                 continue
             
+            
             def parse_change(change):
                 tmp = change.strip().split(' ')
                 ftype = tmp[0]
-                fpath =  os.path.join(path, root, tmp[-1]) # Yggdrasil + Repo + File
+                fpath = os.path.join(path, root, tmp[-1])  # Yggdrasil + Repo + File
                 isdir = fpath.endswith('/')
                 name = fpath.split('/')[-2] if isdir else os.path.basename(fpath)
-                return { 'name': name, 'type': ftype, 'path': fpath, 'isdir': isdir }
+                return {'name': name, 'type': ftype, 'path': fpath, 'isdir': isdir}
+            
             
             ret, out, err = exec_git_cmd(full_path, 'git status --short')
-
+            
             if not ret:
                 changes = out.split("\n")
-                changes = [parse_change(x) for x in changes if x and not '..' in x] # only result in home/
-                changes = [x for x in changes if x['type'] != 'A'] # remove added entries
+                changes = [parse_change(x) for x in changes if
+                           x and not '..' in x]  # only result in home/
+                changes = [x for x in changes if x['type'] != 'A']  # remove added entries
                 key = repository_url(full_path)
                 value = response.get(key)
                 if value:
-                    value['changes'] = value['changes'] + changes if value.get('changes') else changes
+                    value['changes'] = value['changes'] + changes if value.get(
+                        'changes') else changes
                 else:
-                    value = { 'path': os.path.join(path, root), 'branch': repository_branch(full_path), 'changes': changes }
+                    value = {'path':   os.path.join(path, root),
+                             'branch': repository_branch(full_path), 'changes': changes
+                    }
                 response[key] = value
             else:  # pragma: no cover
                 error = htmlprint.code(out + err)
                 return False
         return True
-
+    
+    
     for e in ['Yggdrasil', 'lib']:
         if not extract_changes(e):
             return HttpResponseNotFound(error)
-
+    
     return HttpResponse(json.dumps(response), content_type='application/json')
+
+
 
 @require_POST
 def git_clone(request):
@@ -311,7 +344,7 @@ def git_clone(request):
     path = post.get('path')
     if not path:
         return HttpResponseBadRequest(missing_parameter('path'))
-
+    
     url = post.get('url')
     if not url:
         return HttpResponseBadRequest(missing_parameter('url'))
@@ -339,6 +372,8 @@ def git_clone(request):
     except Exception as e:  # pragma: no cover
         return HttpResponseNotFound(str(e))
 
+
+
 @require_POST
 def git_pull(request):
     """ Execute a git pull on the targeted entry with the informations of POST."""
@@ -349,13 +384,15 @@ def git_pull(request):
     path = post.get('path')
     if not path:
         return HttpResponseBadRequest(missing_parameter('path'))
-
+    
     ret, out, err = gitcmd.pull(join_fb_root(path), username=username, password=password, url=url)
     
     if not ret:
         return HttpResponse(htmlprint.code(out + err))
     else:  # pragma: no cover
         return HttpResponseNotFound(htmlprint.code(err + out))
+
+
 
 @require_POST
 def git_push(request):
@@ -374,6 +411,8 @@ def git_push(request):
     else:  # pragma: no cover
         return HttpResponseNotFound(htmlprint.code(err + out))
 
+
+
 @require_GET
 def git_status(request):
     """ Execute a git status on the targeted entry."""
@@ -387,8 +426,10 @@ def git_status(request):
     else:  # pragma: no cover
         return HttpResponseNotFound(htmlprint.code(out + err))
 
+
+
 @require_GET
-def git_blame(request): # TODO ADD TEST
+def git_blame(request):  # TODO ADD TEST
     """ Execute a git blame on the targeted entry."""
     path = request.GET.get('path')
     if not path:
@@ -397,35 +438,38 @@ def git_blame(request): # TODO ADD TEST
     path = join_fb_root(path)
     base = os.path.basename(path)
     command = 'git blame {0} --root -w --show-email --contents {1}'.format(base, path)
-
+    
     ret, out, err = exec_git_cmd(path, command)
     response = []
     if not ret:
-        regex = r'(?P<sha1>[^\s]+)\s+(?P<filename>[^\s]+)\s+\(<(?P<email>[^>]+)>\s+(?P<day>[^\s]+)\s+(?P<hour>[^\s]+)\s+(?P<gmt>[^\s]+)\s+(?P<line>[^\)]+)\)(?P<text>[^\n]+)'
+        regex = r'(?P<sha1>[^\s]+)\s+(?P<filename>[^\s]+)\s+\(<(?P<email>[^>]+)>\s+(?P<day>[' \
+                r'^\s]+)\s+(?P<hour>[^\s]+)\s+(?P<gmt>[^\s]+)\s+(?P<line>[^\)]+)\)(?P<text>[^\n]+)'
         matches = re.findall(regex, out)
         for match in matches:
             sha1 = match[1]
             command = 'git show --no-patch --oneline {0}'.format(sha1)
-            ret, out, err =  exec_git_cmd(path, command)
+            ret, out, err = exec_git_cmd(path, command)
             if not ret:
                 commit = ' '.join(out.split()[1:])
             else:
                 commit = ''
             response.append({
-                "sha1": sha1,
-                "email": match[2],
-                "day": match[3],
-                "hour": match[4],
-                "gmt": match[5],
-                "line": int(match[6]),
-                "commit": commit,
-                "text": match[0]
+                    "sha1":   sha1,
+                    "email":  match[2],
+                    "day":    match[3],
+                    "hour":   match[4],
+                    "gmt":    match[5],
+                    "line":   int(match[6]),
+                    "commit": commit,
+                    "text":   match[0]
             })
         return HttpResponse(json.dumps(response), content_type='application/json')
     else:  # pragma: no cover
         if "fatal: no such path" in err:
             return HttpResponse(json.dumps([]), content_type='application/json')
         return HttpResponseNotFound(htmlprint.code(out + err))
+
+
 
 @require_GET
 def git_show(request):
@@ -443,19 +487,24 @@ def git_show(request):
         error = htmlprint.code(str(type(e)) + ' - ' + str(e))
         return HttpResponseNotFound(error)
 
+
+
 @require_GET
 def git_checkout(request):
     """ Execute a checkout of the targeted entry with the informations of POST. """
     path = request.GET.get('path')
     if not path:
         return HttpResponseBadRequest(missing_parameter('path'))
-
+    
     ret, out, err = gitcmd.checkout(join_fb_root(path))
     
     if not ret:
         return HttpResponse("Entry successfully checked out.")
     else:  # pragma: no cover
-        return HttpResponseNotFound("Nothing to checked out." if not err else htmlprint.code(err + out))
+        return HttpResponseNotFound(
+            "Nothing to checked out." if not err else htmlprint.code(err + out))
+
+
 
 @require_GET
 def git_add(request):
@@ -468,6 +517,8 @@ def git_add(request):
         return HttpResponse("Entry successfully added to the index.")
     else:  # pragma: no cover
         return HttpResponseNotFound("Nothing to add." if not err else htmlprint.code(err + out))
+
+
 
 @require_POST
 def git_commit(request):
@@ -492,6 +543,8 @@ def git_commit(request):
         return HttpResponse(htmlprint.code(out + err))
     else:  # pragma: no cover
         return HttpResponseNotFound(htmlprint.code(err + out))
+
+
 
 @login_required
 @require_GET
@@ -532,6 +585,8 @@ def load_pltp(request):
             msg += ("DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseBadRequest(msg)
 
+
+
 @require_POST
 def reload_pltp(request):
     """Reload a given activity with the targeted PLTP."""
@@ -568,6 +623,8 @@ def reload_pltp(request):
             msg += ("DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
 
+
+
 @login_required
 @require_GET
 def test_pl(request):
@@ -596,6 +653,8 @@ def test_pl(request):
                 str(type(e)) + ' - ' + str(e)))
         return HttpResponseBadRequest(msg.replace(settings.FILEBROWSER_ROOT, ""))
 
+
+
 @csrf_exempt
 @require_POST
 def compile_pl(request):
@@ -618,7 +677,7 @@ def compile_pl(request):
         directory = Directory.objects.get(name=directory)
         file_path = os.path.join(*(path_components[1:]))
         pl, warnings = load_file(directory, file_path)
-        response = { 'compiled' : True}
+        response = {'compiled': True}
         if not pl:
             response['compiled'] = False
         else:
@@ -636,6 +695,8 @@ def compile_pl(request):
     
     return HttpResponseBadRequest(content="Couldn't resolve ajax request")
 
+
+
 @login_required
 @csrf_exempt
 @require_POST
@@ -645,9 +706,9 @@ def preview_pl(request):
     path = post.get('path')
     if not path:
         return HttpResponseBadRequest(missing_parameter('path'))
-
+    
     content = post.get('content', '')
-
+    
     path_components = path.split('/')
     directory = path_components[0]
     try:
@@ -661,7 +722,7 @@ def preview_pl(request):
         pl, warnings = load_file(directory, file_path)
         if not pl:
             preview = '<div class="alert alert-danger" role="alert"> 1 Failed to load \'' \
-                        + os.path.basename(file_path) + "': \n" + warnings + "</div>"
+                      + os.path.basename(file_path) + "': \n" + warnings + "</div>"
         else:
             if warnings:
                 [messages.warning(request, warning) for warning in warnings]
@@ -670,8 +731,8 @@ def preview_pl(request):
             preview = exercise.get_exercise(request)
     except Exception as e:  # pragma: no cover
         preview = ('<div class="alert alert-danger" role="alert"> 3 Failed to load \''
-                    + os.path.basename(file_path) + "': \n\n"
-                    + htmlprint.code(str(e)))
+                   + os.path.basename(file_path) + "': \n\n"
+                   + htmlprint.code(str(e)))
         if settings.DEBUG:
             preview += "\n\nDEBUG set to True:\n" + htmlprint.html_exc()
         preview += "</div>"
@@ -679,10 +740,12 @@ def preview_pl(request):
         shutil.move(path + ".bk", path)
         preview = get_template("filebrowser/preview.html").render({'preview': preview}, request)
         return HttpResponse(
-                json.dumps({ 'preview': preview }),
+                json.dumps({'preview': preview}),
                 content_type='application/json',
                 status=200
         )
+
+
 
 @login_required
 @csrf_exempt
@@ -700,45 +763,51 @@ def evaluate_pl(request):
     return HttpResponse(
             json.dumps({
                     "navigation": None,
-                    "exercise"  : exercise.get_exercise(request, answer=answer),
-                    "feedback"  : feedback,
+                    "exercise":   exercise.get_exercise(request, answer=answer),
+                    "feedback":   feedback,
             }),
             content_type='application/json'
     )
 
+
+
 @login_required
 @require_GET
-def resolve_path(request): #TODO ADD TEST
+def resolve_path(request):  # TODO ADD TEST
     path = request.GET.get('path')
     if not path:
         return HttpResponseBadRequest(missing_parameter('path'))
     target = request.GET.get('target')
     if not target:
         return HttpResponseBadRequest(missing_parameter('target'))
-
+    
     try:
         path_components = path.split('/')
         directory = Directory.objects.get(name=path_components[0])
-        directory, path = get_location(directory, target, current=os.path.join(*path_components[1:-1]))
+        directory, path = get_location(directory, target,
+                                       current=os.path.join(*path_components[1:-1]))
         return HttpResponse(os.path.join(directory, path))
-
+    
     except Exception as e:
-        msg = "Impossible to resolve the path '" + request.GET.get('target') + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
+        msg = "Impossible to resolve the path '" + request.GET.get(
+            'target') + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
 
+
+
 @login_required
 @require_GET
-def search_in_files(request): #TODO ADD TEST
+def search_in_files(request):  # TODO ADD TEST
     path = request.GET.get('path')
     if not path:
         return HttpResponseBadRequest(missing_parameter('path'))
     query = request.GET.get('query')
     if not query:
         return HttpResponseBadRequest(missing_parameter('query'))
-
-    cwd = os.getcwd()   
+    
+    cwd = os.getcwd()
     try:
         if (not path.startswith(HOME_DIR) and not path.startswith(LIB_DIR)):
             return HttpResponseBadRequest('cannot search outside of root directories')
@@ -746,7 +815,8 @@ def search_in_files(request): #TODO ADD TEST
         if not os.path.isdir(path):
             return HttpResponseBadRequest('path should point to a directory')
         os.chdir(path)
-        p = subprocess.Popen("grep -nr '{0}' .".format(query), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        p = subprocess.Popen("grep -nr '{0}' .".format(query), stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE, shell=True)
         out, err = p.communicate()
     finally:
         os.chdir(cwd)
@@ -757,6 +827,8 @@ def search_in_files(request): #TODO ADD TEST
     else:  # pragma: no cover
         return HttpResponseNotFound(htmlprint.code(out + err))
 
+
+
 @login_required
 @require_GET
 def download_env(request, envid):
@@ -765,6 +837,8 @@ def download_env(request, envid):
     response['Content-Type'] = "application/gzip"
     response['Content-Disposition'] = r.headers['Content-Disposition']
     return response
+
+
 
 @login_required
 @csrf_exempt
