@@ -276,6 +276,9 @@ PARSERS_MODULE = 'loader.parsers'
 # Default home directory name for pl users
 HOME = "Yggdrasil"
 
+# Callbacks that will be called after an answer is saved in the DB
+ANSWER_CALLBACKS = []
+
 # Allow a file '[PL_ROOT]/server/serverpl/serverpl/config.py' to override any of the settings above.
 try:
     from serverpl.config import *

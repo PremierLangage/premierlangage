@@ -2,6 +2,7 @@ import logging
 import time
 
 import htmlprint
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import IntegrityError, models
 from django.db.models.signals import post_save
@@ -499,6 +500,14 @@ class Answer(models.Model):
     date = models.DateTimeField(default=timezone.now)
     grade = models.IntegerField(null=True)
     
+    @receiver(post_save, sender="playexo.Answer")
+    def answer_callback(sender, instance, created, **kwargs):
+        for l in settings.ANSWER_CALLBACKS:
+            l(Answer.anonymization(instance))
+    
+    @staticmethod
+    def anonymization(answer):
+        pass # TODO
     
     @staticmethod
     def highest_grade(pl, user):
