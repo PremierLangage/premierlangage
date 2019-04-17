@@ -83,6 +83,15 @@ if [ ! -d ../../home/Yggdrasil ]; then
     mkdir ../../home/Yggdrasil || { echo>&2 "ERROR: Can't create ../../home/Yggdrasil" ; exit 1; }
 fi
 
+# cloning the lib in it's place 
+echo ""
+echo "Creating needed directories..."
+if [ ! -d ../../lib ]; then
+    mkdir ../../lib || { echo>&2 "ERROR: Can't create ../../lib" ; exit 1; }
+fi
+git -C ../../lib/ clone http://github.com/premierlangage/pl-standard-lib || { echo>&2 "ERROR: Can't clone pl-standard-lib" ; exit 1; }
+
+
 
 #Building database
 echo ""
