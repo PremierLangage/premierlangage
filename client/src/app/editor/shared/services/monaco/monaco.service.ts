@@ -6,21 +6,26 @@ import { IBlame } from '../../models/git.model';
 import { extname } from 'src/app/shared/models/paths.model';
 import { Language } from '../../models/language.model';
 import { IResource } from '../../models/resource.model';
-import { LANGUAGES } from '../../models/language.model';
+import { LANGUAGES, ILanguageDefinition, LANGUAGE_PROVIDERS } from '../../models/language.model';
 
 import { GitService } from '../core/git.service';
 import { OpenerService } from '../core/opener.service';
 import { ResourceService } from '../core/resource.service';
 
 import { Subject } from 'rxjs';
+import { Settings } from '../../models/setting.model';
+import { MONACO_LOADED } from '../../models/monaco.model';
+import { EditorService } from '../core/editor.service';
+
 
 import IStandaloneCodeEditor = monaco.editor.IStandaloneCodeEditor;
 import IStandaloneDiffEditor = monaco.editor.IStandaloneDiffEditor;
-import { Settings } from '../../models/setting.model';
-import { MONACO_LOADED } from '../../models/monaco.model';
-import { ILanguageDefinition } from '../../models/language-definition.model';
-import { LANGUAGE_PROVIDERS } from '../../tokens/monaco-providers.token';
-import { EditorService } from '../core/editor.service';
+
+interface IEditorHolder {
+    editor: IStandaloneCodeEditor;
+    disposables: monaco.IDisposable[];
+}
+
 
 @Injectable({ providedIn: 'root' })
 export class MonacoService {
@@ -163,7 +168,7 @@ export class MonacoService {
 
 
     private onMonacoLoaded(monaco) {
-        this.languages.forEach(item => item.register(this));
+        this.languages.forEach(item => item.register());
         this.editor.addSubscription(this.resources.deleted.subscribe(e => {
             this.disposeModel(e.path);
         }));
@@ -230,10 +235,4 @@ export class MonacoService {
             this.blameChanged.next({blame: blame, modelId: model.id});
         }
     }
-
-}
-
-interface IEditorHolder {
-    editor: IStandaloneCodeEditor;
-    disposables: monaco.IDisposable[];
 }

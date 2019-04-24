@@ -6,9 +6,9 @@
 title= Image
 
 author = Mamadou Cisse
-
+img $= dir/image.png
 text==
-<img src='dir/image.png'/>
+<img src='{{img}}'/>
 ==
 
 

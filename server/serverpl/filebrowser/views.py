@@ -1,33 +1,37 @@
+import codecs
 import json
 import os
 import re
 import shutil
-import traceback
 import subprocess
-import gitcmd
-import htmlprint
+import traceback
+
 import requests
-import codecs
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import (HttpResponse, HttpResponseBadRequest, HttpResponseNotFound, JsonResponse)
+from django.http import (HttpResponse, HttpResponseBadRequest,
+                         HttpResponseNotFound, JsonResponse)
 from django.shortcuts import render
+from django.template.loader import get_template
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
-from django.template.loader import get_template
 
-from filebrowser.filter import is_root, is_image, in_repository
-from filebrowser.models import Directory
-from filebrowser.utils import fa_icon, join_fb_root, rm_fb_root, walkdir, walkalldirs, repository_url, \
-                              repository_branch, to_download_url, missing_parameter, exec_git_cmd, \
-                              get_content, get_meta, HOME_DIR, LIB_DIR
-from loader.loader import load_file, reload_pltp as rp
-from loader.utils import get_location
-
-from playexo.models import Activity, SessionTest
 import filebrowser.filter as filter
+import gitcmd
+import htmlprint
+from filebrowser.filter import in_repository, is_image, is_root
+from filebrowser.models import Directory
+from filebrowser.utils import (HOME_DIR, LIB_DIR, exec_git_cmd, fa_icon,
+                               get_content, get_meta, join_fb_root,
+                               missing_parameter, repository_branch,
+                               repository_url, rm_fb_root, to_download_url,
+                               walkalldirs, walkdir)
+from loader.loader import load_file
+from loader.loader import reload_pltp as rp
+from loader.utils import get_location
+from playexo.models import Activity, SessionTest
 
 
 @login_required
@@ -237,7 +241,7 @@ def move_resource(request):
         msg = "Impossible to copy '" + os.path.basename(src) + "' : " + htmlprint.code(
                 str(type(e)) + ' - ' + str(e))
         return HttpResponseNotFound(msg)
-
+ 
 @require_GET
 def download_resource(request):
     path = request.GET.get('path')
@@ -737,7 +741,6 @@ def search_in_files(request): #TODO ADD TEST
     query = request.GET.get('query')
     if not query:
         return HttpResponseBadRequest(missing_parameter('query'))
-
     cwd = os.getcwd()   
     try:
         if (not path.startswith(HOME_DIR) and not path.startswith(LIB_DIR)):
@@ -780,4 +783,4 @@ def option(request):
     try:
         return globals()[opt](request)
     except Exception as e:
-        return HttpResponseBadRequest("Cannot use apply option %s: %s" % (opt, str(e)))
+        return HttpResponseBadRequest("Cannot use option %s: %s" % (opt, str(e)))

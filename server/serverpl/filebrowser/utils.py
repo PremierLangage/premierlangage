@@ -12,7 +12,7 @@ from filebrowser.models import Directory
 HOME_DIR = 'Yggdrasil'
 LIB_DIR = 'lib'
 
-def exec_git_cmd(path, command):
+def exec_git_cmd(path, command): #TODO add test or move to gitcmd
     if not gitcmd.in_repository(path):
         raise gitcmd.NotInRepositoryError("'" + path + "' is not inside a repository")
     cwd = os.getcwd()   

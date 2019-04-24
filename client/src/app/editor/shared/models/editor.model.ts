@@ -221,7 +221,6 @@ export class PreviewEditor extends AbstractEditor {
 
 }
 
-
 export function openAsCode(resource: IResource) {
     return !openAsImage(resource);
 }
@@ -233,8 +232,6 @@ export function openAsImage(resource: IResource) {
 export function openAsPreview(resource: IResource) {
     return isFromServer(resource) && !!resource.meta && !!resource.meta.previewData;
 }
-
-
 
 export const INSTANTIATORS: {condition: (r: IResource) => boolean, create: (group: IEditorGroup, r: IResource) => IEditor }[] = [
     { condition: openAsImage, create: (group: IEditorGroup, r: IResource) => new ImageEditor(group, r) },
