@@ -1,11 +1,42 @@
 import os
 
+import codecs
 import gitcmd
+import subprocess
 import magic
 from django.conf import settings
 
 from filebrowser import filter
 from filebrowser.models import Directory
+
+HOME_DIR = 'Yggdrasil'
+LIB_DIR = 'lib'
+
+def exec_git_cmd(path, command): #TODO add test or move to gitcmd
+    if not gitcmd.in_repository(path):
+        raise gitcmd.NotInRepositoryError("'" + path + "' is not inside a repository")
+    cwd = os.getcwd()   
+    try:
+        if os.path.isdir(path):
+            os.chdir(path)
+        else:
+            os.chdir(os.path.dirname(path))
+        cmd = "LANGUAGE=" + gitcmd.GIT_LANG + ' ' + command
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        out, err = p.communicate()
+    finally:
+        os.chdir(cwd)
+    return p.returncode, out.decode().strip("\n"), err.decode()
+
+
+def missing_parameter(name):
+    return "parameter '" + name + "' is missing"
+
+
+
+def to_download_url(path):
+    """Returns an to filebrowser views.py download function """
+    return '/filebrowser/option?name=download_resource&path=' + path
 
 
 
@@ -14,11 +45,13 @@ def join_fb_root(path):
     return os.path.abspath(os.path.join(settings.FILEBROWSER_ROOT, path))
 
 
+
 def rm_fb_root(path):
     """Returns path stripped of settings.FILEBROWSER_ROOT."""
     if path.startswith(settings.FILEBROWSER_ROOT):
         return path[len(settings.FILEBROWSER_ROOT) + 1:]
     return path
+
 
 
 def repository_url(path):
@@ -49,7 +82,7 @@ def fa_icon(path):
         return "fas fa-file-powerpoint"
     if ext in filter.WORD_EXT:
         return "fas fa-file-word"
-
+    
     mime = magic.from_file(path, True).split('/')[0]
     if mime in ['zip', 'x-xz', 'gzip'] or ext in filter.ARCHIVE_EXT:
         return "fas fa-file-archive"
@@ -78,18 +111,47 @@ def fa_repository_host(path):
     return 'fab fa-git'
 
 
+def get_meta(path):
+    """
+    Returns metadata informations about the path
+    Raises an IOError if path is not a file 
+    """
+    if os.path.isdir(path):
+        raise IOError('{0} is not a file'.format(rm_fb_root(path)))
+
+    return {
+            'text': filter.is_text(path),
+            'code': filter.is_code(path) or filter.is_pl(path) or filter.is_pltp(path),
+            'archive': filter.is_archive(path),
+            'application': filter.is_application(path),
+            'image': filter.is_image(path),
+            'excel': filter.is_excel(path),
+            'downloadUrl': to_download_url(rm_fb_root(path))
+    }
+
+def get_content(path):
+    """
+    Returns the content of the path
+    Raises an IOError if path is not a file 
+    """
+    if os.path.isdir(path):
+        raise IOError('{0} is not a file'.format(rm_fb_root(path)))
+
+    with codecs.open(path, "r", encoding='utf-8', errors='ignore') as f:
+        return f.read()
+
 
 def walkdir(path, user, parent='', write=None, read=None, repo=None, sort=False):
     """Returns the directory tree from path."""
     node = {
-        'parent': parent,
-        'type'  : 'folder' if os.path.isdir(path) else 'file',
-        'name'  : os.path.basename(path),
-        'path'  : rm_fb_root(path),
-        'icon'  : fa_icon(path),
-        'write' : write,
-        'read'  : read,
-        'repo'  : repo,
+            'parent': parent,
+            'type':   'folder' if os.path.isdir(path) else 'file',
+            'name':   os.path.basename(path),
+            'path':   rm_fb_root(path),
+            'icon':   fa_icon(path),
+            'write':  write,
+            'read':   read,
+            'repo':   repo,
     }
     
     if node['type'] == 'folder':
@@ -103,17 +165,24 @@ def walkdir(path, user, parent='', write=None, read=None, repo=None, sort=False)
         
         if repo is None and filter.in_repository(path):
             node['repo'] = repo = {
-                'url'   : repository_url(path),
-                'branch': repository_branch(path),
-                'host'  : fa_repository_host(path),
+                    'url':    repository_url(path),
+                    'branch': repository_branch(path),
+                    'host':   fa_repository_host(path),
             }
         node['children'] = [
-            walkdir(os.path.join(path, entry), user, node['path'], write, read, repo, sort)
-            for entry in os.listdir(path)
-            if not filter.is_hidden(entry)
+                walkdir(os.path.join(path, entry), user, node['path'], write, read, repo, sort)
+                for entry in os.listdir(path)
+                if not filter.is_hidden(entry)
         ]
         if sort:
             node['children'] = sorted(node['children'], key=lambda i: i["name"])
-            
-    
+
     return node
+
+
+
+def walkalldirs(request):
+    lib = walkdir(join_fb_root(LIB_DIR), request.user)
+    home = walkdir(join_fb_root(HOME_DIR), request.user)
+    home["name"] = 'home'
+    return [home, lib]

@@ -13,7 +13,7 @@
     <input id="{% if editor.id %}form_{{ editor.id }}{% else %}form_answer{% endif %}"
            type="hidden"
            style="display: none;"
-           value="{{ answer_editor__ }}"
+           value="{{ answer_editor__ | escape }}"
     >
 {% endwith %}
 
@@ -64,11 +64,10 @@
 
     var input = $( "#{% if editor.id %}form_{{ editor.id }}{% else %}form_answer{% endif %}" );
     editor.session.on("change", function() {
-        console.log("ON CHAGE");
-        console.log(input)
         input.val(editor.getSession().getValue());
     });
 </script>
+
 
 
 

@@ -1,0 +1,51 @@
+<as-split class='h100' direction='horizontal' gutterSize='2' useTransition='true' cdkDropListGroup>
+    <ng-container *ngFor='let group of groups'>
+        <as-split-area class='editor-group h100' style='overflow: hidden;'>
+            <div class='tab-bar'>
+                <div [id]='group.id()' class='tab-group' cdkDropList [cdkDropListData]="group.resources" (cdkDropListDropped)="group.drop($event)">
+                    <div *ngFor='let resource of group.resources; trackBy: group.trackResource' [matTooltip]="resource.path | path"
+                        [ngClass]="{'tab-item': true, active: group.isActive(resource), changed: resource.changed}"
+                        (click)='group.reopen(resource)' cdkDragAxis='x' cdkDrag>
+                        <i class="tab-icon {{resource.icon}}"></i>
+                        <ng-container *ngIf='group.isPreviewGroup()'>
+                            <span>'Preview'</span>&nbsp;
+                        </ng-container>
+                        <span>{{resource.name}}</span>
+                        <span class='tab-close' (click)='group.close(resource, true)'>&nbsp;&times;</span>
+                    </div>
+                </div>
+                <div class="spacer"></div>  
+                <ng-container *ngIf='group.hasAction();'>
+                    <ng-container *ngIf='group.focused()'>
+                        <ng-container *ngFor='let action of group.actions()'>
+                            <div class='tab-item' [matTooltip]='action.tooltip' *ngIf='action.condition(group.activeResource())' (click)='action.invoke(group.activeResource())'>
+                                <i class="{{action.icon}}"></i>
+                            </div>
+                        </ng-container>
+                    </ng-container>
+                    <div class='tab-item' matTooltip='More Options' [matMenuTriggerFor]="editorMenu">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </div>
+                    <mat-menu #editorMenu="matMenu">
+                        <button mat-menu-item (click)='group.save(group.activeResource())'>Save ⌘S</button>
+                        <button mat-menu-item (click)='group.saveAll()'>Save All ⌘Alt S</button>
+                        <button mat-menu-item (click)='group.close(group.activeResource(), true)'>Close ⌘K</button>
+                        <button mat-menu-item (click)='group.closeAll(true)'>Close All ⌘Alt K</button>
+                        <button mat-menu-item (click)='group.closeSaved()'>Close Saved ⌘Alt U</button>
+                    </mat-menu>
+                </ng-container>
+            </div>
+            <ng-container *ngFor='let editor of group.editors; trackBy group.trackEditor'>
+                <ng-container [ngSwitch]="editor.type()">
+                    <code-editor [hidden]='!group.activeEditorIs("code")' *ngSwitchCase="'code'" [editor]='editor'></code-editor>
+                    <image-editor [hidden]='!group.activeEditorIs("image")' *ngSwitchCase="'image'" [editor]='editor'></image-editor>
+                    <preview-editor [hidden]='!group.activeEditorIs("preview")' *ngSwitchCase="'preview'" [editor]='editor'></preview-editor>
+                </ng-container>
+            </ng-container>
+        </as-split-area>
+    </ng-container>
+    <as-split-area class='editor-group h100' style='overflow: hidden;' *ngIf='showSettings'>
+        <setting-editor></setting-editor>
+    </as-split-area>
+    <welcome *ngIf='!hasGroup'></welcome>
+</as-split>

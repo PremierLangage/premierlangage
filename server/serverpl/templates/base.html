@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <base href="/">
     <title>{% block title %}UPEM - PL{% endblock %}</title>
     
     {% block head %}{% endblock %}
@@ -23,11 +24,12 @@
         {% block topbar %}{% include "header.html" %}{% endblock %}
         <main class="mdl-layout__content">
             <div class="page-content">
-                {% block alert %}{% include "playexo/alert.html" %}{% endblock %}
+                {% block alert %}{% include "alert.html" %}{% endblock %}
                 {% block content %}{% endblock %}
             </div>
         </main>
     </div>
+    {% block end_script %}
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
             tex2jax: {
@@ -36,6 +38,6 @@
             }
         });
     </script>
-    {% block end_script %}{% endblock %}
+    {% endblock %}
 </body>
 </html>

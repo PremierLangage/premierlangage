@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
 
 from filebrowser.models import Directory
+from filebrowser.utils import to_download_url
 from loader.exceptions import FileNotFound, SemanticError, SyntaxErrorPL
 from loader.parsers import pl
 
@@ -64,16 +65,18 @@ class PlParserTestCase(TestCase):
         self.assertIn("Key 'e.f.h' overwritten at line", str(war))
         # = += +
         self.assertEqual(dic['title'], 'testtesttest')
+        # = -= -
+        self.assertEqual(dic['title2'], 'AABBCC.')
         # ==
         self.assertEqual(dic['text'], 'tests')
         # extends
         self.assertIn({
-            'directory_name': 'dir1', 'lineno': 10, 'line': 'extends=working.pl\n',
+            'directory_name': 'dir1', 'lineno': 18, 'line': 'extends=working.pl\n',
             'path'          : 'working.pl'
         }, dic["__extends"])
-        # =@ +=@
+        # =@ +=@ -=@
         with open(os.path.join(FAKE_FB_ROOT, "dir1/working.pl")) as f:
-            self.assertEqual(len(dic['test']), 2 * len(f.read()))
+            self.assertEqual(len(dic['test']), 3 * len(f.read()))
         # sub keys
         self.assertEqual('12', dic['e']['f']['g'])
         # % %=
@@ -82,7 +85,10 @@ class PlParserTestCase(TestCase):
         # Override % with a.a
         self.assertEqual({'a': '3', 'b': 2}, dic['a'])
     
-    
+    def test_parse_url(self):
+        dic, war = pl.Parser(self.dir, "image.pl").parse()
+        self.assertEqual(to_download_url('dir1/image.png'), dic['img'])
+      
     def test_parse_errors(self):
         with self.assertRaises(SyntaxErrorPL):
             pl.Parser(self.dir, "no_string_in_sub_key.pl").parse()
@@ -108,3 +114,9 @@ class PlParserTestCase(TestCase):
             pl.Parser(self.dir, "no_file_sandbox.pl").parse()
         with self.assertRaises(SyntaxErrorPL):
             pl.Parser(self.dir, "syntax_sandbox.pl").parse()
+        with self.assertRaises(SyntaxErrorPL):
+            pl.Parser(self.dir, "reference_binary.pl").parse()
+        with self.assertRaises(FileNotFound):
+            pl.Parser(self.dir, "no_image.pl").parse()
+        with self.assertRaises(SemanticError):
+            pl.Parser(self.dir, "prepend_no_key.pl").parse()

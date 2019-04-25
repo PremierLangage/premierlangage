@@ -57,7 +57,7 @@ class Course(LTIModel):
     
     def is_teacher(self, user):
         """Return True if the user is a teacher of the course."""
-        return user in self.teacher.all() and user.profile.role <= Role.INSTRUCTOR
+        return user in self.teacher.all() or user.profile.role < Role.INSTRUCTOR
     
     
     def __str__(self):

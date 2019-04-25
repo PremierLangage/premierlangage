@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% load static %}
+<!-- remove topbar inside the editor -->
+{% block topbar %}{% endblock topbar %}
+
+{% block content %}
+<div class="exercise-container">{{ preview|safe }}</div>
+{% endblock %}

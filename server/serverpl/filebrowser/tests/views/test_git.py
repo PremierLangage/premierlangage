@@ -10,6 +10,8 @@ from django.test import Client, override_settings, TestCase
 from django.urls import reverse
 
 from filebrowser.models import Directory
+from filebrowser.utils import missing_parameter
+
 import gitcmd
 
 
@@ -221,7 +223,7 @@ class GitTestCase(TestCase):
                         'commit': 'mycommit',
                 }, content_type='application/json'
         )
-        self.assertContains(response, "parameter 'path' is missing", status_code=400)
+        self.assertContains(response, missing_parameter('path'), status_code=400)
     
     
     def test_commit_directory(self):
@@ -250,7 +252,7 @@ class GitTestCase(TestCase):
                         'path': 'Yggdrasil/folder1/TPE/',
                 }, content_type='application/json'
         )
-        self.assertContains(response, "Missing 'commit' parameter", status_code=400)
+        self.assertContains(response, missing_parameter('commit'), status_code=400)
     
     
     def test_push(self):
@@ -277,7 +279,7 @@ class GitTestCase(TestCase):
                         'password': '',
                 }, content_type='application/json'
         )
-        self.assertContains(response, "parameter 'path' is missing", status_code=400)
+        self.assertContains(response, missing_parameter('path'), status_code=400)
     
     
     def test_status(self):
@@ -303,7 +305,7 @@ class GitTestCase(TestCase):
                         'name': 'git_status',
                 }, content_type='application/json'
         )
-        self.assertContains(response, "parameter 'path' is missing", status_code=400)
+        self.assertContains(response, missing_parameter('path'), status_code=400)
     
     
     @mock.patch("gitcmd.GIT_LANG", "en-US.UTF-8")
@@ -329,7 +331,7 @@ class GitTestCase(TestCase):
                         'name': 'git_add',
                 }, content_type='application/json'
         )
-        self.assertContains(response, "parameter 'path' is missing", status_code=400)
+        self.assertContains(response, missing_parameter('path'), status_code=400)
     
     
     def test_pull(self):
@@ -371,7 +373,7 @@ class GitTestCase(TestCase):
                         'path': 'Yggdrasil/folder1',
                 }, content_type='application/json'
         )
-        self.assertContains(response, "Missing 'url' parameter", status_code=400)
+        self.assertContains(response, missing_parameter('url'), status_code=400)
     
     
     def test_clone_at_url(self):
@@ -402,7 +404,7 @@ class GitTestCase(TestCase):
                         'name': 'git_show',
                 }, content_type='application/json'
         )
-        self.assertContains(response, "parameter 'path' is missing", status_code=400)
+        self.assertContains(response, missing_parameter('path'), status_code=400)
     
     
     def test_checkout(self):
@@ -425,4 +427,12 @@ class GitTestCase(TestCase):
                         'name': 'git_checkout',
                 }, content_type='application/json'
         )
-        self.assertContains(response, "parameter 'path' is missing", status_code=400)
+        self.assertContains(response, missing_parameter('path'), status_code=400)
+
+    def test_changes(self):
+        response = self.c.get(
+                reverse('filebrowser:option'), {
+                        'name': 'git_changes'
+                }, content_type='application/json'
+        )
+        self.assertContains(response, b"changes", status_code=200)

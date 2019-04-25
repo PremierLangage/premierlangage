@@ -1,0 +1,15 @@
+<div class='host'>
+    <div class='tab-bar' (click)='didTapOpen($event)'>
+        <h3 class='tab-item'>CONSOLE</h3>
+        <div class='spacer'></div>
+        <div class='tab-item' matTooltip='Clear' (click)='console.didTapClear($event)'>
+            <i class="fas fa-trash-alt"></i>
+        </div>
+        <div class='tab-item' matTooltip='Hide' (click)='didTapClose($event)'>
+            <i class="fas fa-times"></i>
+        </div>
+    </div>
+    <div class='debugging__content'>
+        <console #console></console>
+    </div>
+</div>

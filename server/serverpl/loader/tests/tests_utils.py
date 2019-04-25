@@ -90,6 +90,7 @@ class UtilsTestCase(TestCase):
         rel_repo = '/file2.pl'
         relative = '../dir1/file3.pl'
         ref_lib = 'lib:/dir2/file4.pl'
+        no_ref_lib = '/dir2/file4.pl'
         
         # Absolute outside of repo
         self.assertEqual((self.dir.name, 'repo1/file1.pl'),
@@ -112,6 +113,8 @@ class UtilsTestCase(TestCase):
         # Reference to a lib outside of repo
         self.assertEqual((self.lib.name, 'dir2/file4.pl'),
                          get_location(self.dir, ref_lib, current_dir))
+        self.assertEqual((self.lib.name, 'dir2/file4.pl'),
+                         get_location(self.dir, no_ref_lib, current_dir))
         # Reference to a lib in a repo
         self.assertEqual((self.lib.name, 'dir2/file4.pl'),
                          get_location(self.dir, ref_lib, current_repo))

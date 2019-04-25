@@ -65,13 +65,6 @@ pip3 install -r requirements.txt || { echo>&2 "ERROR: pip3 install -r requiremen
 echo "Done !"
 
 
-#Creating documentation
-echo ""
-echo "Creating documentation..."
-./serverpl/install/make_doc.sh || { echo>&2 "ERROR: ./serverpl/install/make_doc.sh failed" ; exit 1; }
-echo "Done !"
-
-
 #Creating needed directories
 echo ""
 echo "Creating needed directories..."

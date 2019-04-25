@@ -1,26 +1,37 @@
+import codecs
 import json
 import os
+import re
 import shutil
+import subprocess
 import traceback
 
-import gitcmd
-import htmlprint
 import requests
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import (HttpResponse, HttpResponseBadRequest, HttpResponseNotFound, JsonResponse)
+from django.http import (HttpResponse, HttpResponseBadRequest,
+                         HttpResponseNotFound, JsonResponse)
 from django.shortcuts import render
+from django.template.loader import get_template
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from filebrowser.filter import is_root
+import filebrowser.filter as filter
+import gitcmd
+import htmlprint
+from filebrowser.filter import in_repository, is_image, is_root
 from filebrowser.models import Directory
-from filebrowser.utils import fa_icon, join_fb_root, rm_fb_root, walkdir
-from loader.loader import load_file, reload_pltp as rp
+from filebrowser.utils import (HOME_DIR, LIB_DIR, exec_git_cmd, fa_icon,
+                               get_content, get_meta, join_fb_root,
+                               missing_parameter, repository_branch,
+                               repository_url, rm_fb_root, to_download_url,
+                               walkalldirs, walkdir)
+from loader.loader import load_file
+from loader.loader import reload_pltp as rp
+from loader.utils import get_location
 from playexo.models import Activity, SessionTest
-
 
 
 @login_required
@@ -28,39 +39,63 @@ def index(request):
     """ Used by the editor module to navigate """
     return render(request, 'filebrowser/index.html')
 
+@login_required
+@require_POST
+@csrf_exempt
+def upload_resource(request):  #TODO ADD TEST
+    """ Allow the user to upload a file in the filebrowser """
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+    f = request.FILES.get('file')
+    if not f:
+        return HttpResponseBadRequest(missing_parameter('file'))
+    
+    path = request.POST.get('path')
+    if not path:
+        return HttpResponseBadRequest(missing_parameter('path'))
+    name = f.name
+    try:
+        path = os.path.join(join_fb_root(path), name)
+        if os.path.exists(path):
+            return HttpResponseBadRequest("This file's name is already used : " + name)
+        else:
+            with open(path, 'wb+') as dest:
+                for chunk in f.chunks():
+                    dest.write(chunk)
+            return HttpResponse()
 
+    except Exception as e:  # pragma: no cover
+        msg = "Impossible to upload '" + path + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
+        if settings.DEBUG:
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
+        return HttpResponseNotFound(msg)
 
 @require_GET
 def get_resource(request):
     """Return the content of <path>."""
     path = request.GET.get('path')
     if not path:
-        return HttpResponseBadRequest('"path" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('path'))
     
     try:
-        with open(join_fb_root(path)) as f:
-            content = f.read()
-        return JsonResponse({'content': content})
+        path = join_fb_root(path)
+        return JsonResponse({
+            'content': get_content(path),
+            'meta': get_meta(path)
+        })
     except Exception as e:  # pragma: no cover
-        msg = "Impossible to open '" + path + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
+        msg = "Impossible to open '" + rm_fb_root(path) + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
-
-
 
 @require_GET
 def get_resources(request):
     """Returns home + lib directory structure."""
     try:
-        lib = walkdir(join_fb_root('lib'), request.user)
-        home = walkdir(join_fb_root("Yggdrasil"), request.user)
-        home["name"] = 'home'
-        return HttpResponse(json.dumps([home, lib]), content_type='application/json')
+        return HttpResponse(json.dumps(walkalldirs(request)), content_type='application/json')
     except Exception as e:  # pragma: no cover
         return HttpResponseNotFound(str(e))
-
-
 
 @require_POST
 def update_resource(request):
@@ -69,7 +104,7 @@ def update_resource(request):
     
     path = post.get("path")
     if path is None:
-        return HttpResponseBadRequest('"path" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('path'))
     
     try:
         with open(join_fb_root(path), 'w') as f:
@@ -78,15 +113,13 @@ def update_resource(request):
     except Exception as e:  # pragma: no cover
         return HttpResponseNotFound(str(e))
 
-
-
 @require_POST
 def create_resource(request):
     """Create a new file or folder """
     post = json.loads(request.body.decode())
     path = post.get('path')
     if not path:
-        return HttpResponseBadRequest('"path" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('path'))
     
     path = join_fb_root(path)
     name = os.path.basename(path)
@@ -98,10 +131,10 @@ def create_resource(request):
         
         if os.path.exists(path):
             return HttpResponseBadRequest("Can't create '%s': this name is already used." % name)
-        
         if post.get('type', '') == 'file':
             with open(path, "w") as f:
                 print(post.get('content', ''), file=f)
+            
             return JsonResponse({'icon': fa_icon(path), 'path': rm_fb_root(path)})
         
         else:
@@ -115,8 +148,6 @@ def create_resource(request):
             msg += ("DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
 
-
-
 @require_POST
 def delete_resource(request):
     """Delete a file or folder """
@@ -124,7 +155,8 @@ def delete_resource(request):
     
     path = post.get('path')
     if not path:
-        return HttpResponseBadRequest('"path" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('path'))
+
     if is_root(path):
         return HttpResponseBadRequest('cannot delete a root folder')
     
@@ -140,8 +172,6 @@ def delete_resource(request):
             msg += ("DEBUG: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
 
-
-
 @require_POST
 def rename_resource(request):
     """Rename a  file or folder """
@@ -150,14 +180,14 @@ def rename_resource(request):
     path = post.get('path')
     target = post.get('target')
     if not path:
-        return HttpResponseBadRequest('"path" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('path'))
     if not target:
-        return HttpResponseBadRequest('"target" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('target'))
     
     path = join_fb_root(path)
     name = os.path.basename(path)
     new_path = os.path.join(os.path.dirname(path), target)
-    
+   
     try:
         if any(c in target for c in settings.FILEBROWSER_DISALLOWED_CHAR):
             msg = "Can't rename '{0}' to '{1}': name should not contain any of {2}." \
@@ -177,20 +207,18 @@ def rename_resource(request):
             msg += ("DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
 
-
-
 @require_POST
 def move_resource(request):
     """ Move post.get('path'] to POST['dst')."""
     post = json.loads(request.body.decode())
     src = post.get('path')
     if not src:
-        return HttpResponseBadRequest('"path" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('path'))
     
     # TODO check write rights in dst
     dst = post.get('dst')
     if not dst:
-        return HttpResponseBadRequest('"dst" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('dst'))
     try:
         src_path = join_fb_root(src)
         dst_path = join_fb_root(dst)
@@ -204,8 +232,7 @@ def move_resource(request):
         else:
             destination = os.path.join(dst_path, os.path.basename(src))
             if os.path.exists(destination):
-                return HttpResponseNotFound(
-                        "{0} already exists inside {1}".format(os.path.basename(src), dst))
+                return HttpResponseNotFound("{0} already exists inside {1}".format(os.path.basename(src), dst))
             else:
                 os.rename(src_path, destination)
                 return JsonResponse({'path': os.path.join(dst, os.path.basename(src))})
@@ -214,8 +241,69 @@ def move_resource(request):
         msg = "Impossible to copy '" + os.path.basename(src) + "' : " + htmlprint.code(
                 str(type(e)) + ' - ' + str(e))
         return HttpResponseNotFound(msg)
+ 
+@require_GET
+def download_resource(request):
+    path = request.GET.get('path')
+    if not path:
+        return HttpResponseBadRequest(missing_parameter('path'))
+    
+    with open(join_fb_root(path), 'rb') as fp:
+        data = fp.read()
+    filename = os.path.basename(path)
+    response = HttpResponse(content_type="application/ms-excel")
+    response['Content-Disposition'] = 'attachment; filename=%s' % filename # force browser to download file
+    response.write(data)
+    return response
 
+@require_GET
+def git_changes(request):
+    
+    error = ''
+    response = {}
+    
+    def extract_changes(path):
+        roots = os.listdir(join_fb_root(path))
+        directory = Directory.objects.get(name=path)
+        if not directory.can_write(request.user):
+            return True
 
+        for root in roots:    
+            full_path = join_fb_root(os.path.join(path, root))
+            if not in_repository(full_path):
+                continue
+            
+            def parse_change(change):
+                tmp = change.strip().split(' ')
+                ftype = tmp[0]
+                fpath =  os.path.join(path, root, tmp[-1]) # Yggdrasil + Repo + File
+                isdir = fpath.endswith('/')
+                name = fpath.split('/')[-2] if isdir else os.path.basename(fpath)
+                return { 'name': name, 'type': ftype, 'path': fpath, 'isdir': isdir }
+            
+            ret, out, err = exec_git_cmd(full_path, 'git status --short')
+
+            if not ret:
+                changes = out.split("\n")
+                changes = [parse_change(x) for x in changes if x and not '..' in x] # only result in home/
+                changes = [x for x in changes if x['type'] != 'A'] # remove added entries
+                key = repository_url(full_path)
+                value = response.get(key)
+                if value:
+                    value['changes'] = value['changes'] + changes if value.get('changes') else changes
+                else:
+                    value = { 'path': os.path.join(path, root), 'branch': repository_branch(full_path), 'changes': changes }
+                response[key] = value
+            else:  # pragma: no cover
+                error = htmlprint.code(out + err)
+                return False
+        return True
+
+    for e in ['Yggdrasil', 'lib']:
+        if not extract_changes(e):
+            return HttpResponseNotFound(error)
+
+    return HttpResponse(json.dumps(response), content_type='application/json')
 
 @require_POST
 def git_clone(request):
@@ -225,9 +313,12 @@ def git_clone(request):
     password = post.get('password')
     destination = post.get('destination')
     path = post.get('path')
+    if not path:
+        return HttpResponseBadRequest(missing_parameter('path'))
+
     url = post.get('url')
     if not url:
-        return HttpResponseBadRequest("Missing 'url' parameter")
+        return HttpResponseBadRequest(missing_parameter('url'))
     
     if '@' in url:
         return HttpResponseNotFound("SSH link is not supported, please use HTTPS")
@@ -242,18 +333,15 @@ def git_clone(request):
                     os.path.join(path, destination) if destination
                     else os.path.join(path, os.path.basename(os.path.splitext(url)[0]))
             )
+            message = htmlprint.code(out + err)
             ret, out, err = gitcmd.set_url(path, url)
             if not ret:
-                request.method = 'GET'
-                request.META['REQUEST_METHOD'] = "GET"
-                return get_resources(request)
+                return HttpResponse(message + htmlprint.code(out + err))
             else:  # pragma: no cover
                 shutil.rmtree(path, ignore_errors=True)
                 raise Exception(err + out)
     except Exception as e:  # pragma: no cover
         return HttpResponseNotFound(str(e))
-
-
 
 @require_POST
 def git_pull(request):
@@ -263,16 +351,15 @@ def git_pull(request):
     password = post.get('password')
     url = post.get('url')
     path = post.get('path')
+    if not path:
+        return HttpResponseBadRequest(missing_parameter('path'))
+
     ret, out, err = gitcmd.pull(join_fb_root(path), username=username, password=password, url=url)
     
     if not ret:
-        request.method = 'GET'
-        request.META['REQUEST_METHOD'] = "GET"
-        return get_resources(request)
+        return HttpResponse(htmlprint.code(out + err))
     else:  # pragma: no cover
         return HttpResponseNotFound(htmlprint.code(err + out))
-
-
 
 @require_POST
 def git_push(request):
@@ -283,7 +370,7 @@ def git_push(request):
     password = post.get('password', None)
     path = post.get('path', None)
     if not path:
-        return HttpResponseBadRequest("parameter 'path' is missing")
+        return HttpResponseBadRequest(missing_parameter('path'))
     
     ret, out, err = gitcmd.push(join_fb_root(path), username=username, password=password)
     if not ret:
@@ -291,14 +378,12 @@ def git_push(request):
     else:  # pragma: no cover
         return HttpResponseNotFound(htmlprint.code(err + out))
 
-
-
 @require_GET
 def git_status(request):
     """ Execute a git status on the targeted entry."""
     path = request.GET.get('path')
     if not path:
-        return HttpResponseBadRequest("parameter 'path' is missing")
+        return HttpResponseBadRequest(missing_parameter('path'))
     ret, out, err = gitcmd.status(join_fb_root(path))
     
     if not ret:
@@ -306,14 +391,52 @@ def git_status(request):
     else:  # pragma: no cover
         return HttpResponseNotFound(htmlprint.code(out + err))
 
+@require_GET
+def git_blame(request): # TODO ADD TEST
+    """ Execute a git blame on the targeted entry."""
+    path = request.GET.get('path')
+    if not path:
+        return HttpResponseBadRequest(missing_parameter('path'))
+    
+    path = join_fb_root(path)
+    base = os.path.basename(path)
+    command = 'git blame {0} --root -w --show-email --contents {1}'.format(base, path)
 
+    ret, out, err = exec_git_cmd(path, command)
+    response = []
+    if not ret:
+        regex = r'(?P<sha1>[^\s]+)\s+(?P<filename>[^\s]+)\s+\(<(?P<email>[^>]+)>\s+(?P<day>[^\s]+)\s+(?P<hour>[^\s]+)\s+(?P<gmt>[^\s]+)\s+(?P<line>[^\)]+)\)(?P<text>[^\n]+)'
+        matches = re.findall(regex, out)
+        for match in matches:
+            sha1 = match[1]
+            command = 'git show --no-patch --oneline {0}'.format(sha1)
+            ret, out, err =  exec_git_cmd(path, command)
+            if not ret:
+                commit = ' '.join(out.split()[1:])
+            else:
+                commit = ''
+            response.append({
+                "sha1": sha1,
+                "email": match[2],
+                "day": match[3],
+                "hour": match[4],
+                "gmt": match[5],
+                "line": int(match[6]),
+                "commit": commit,
+                "text": match[0]
+            })
+        return HttpResponse(json.dumps(response), content_type='application/json')
+    else:  # pragma: no cover
+        if "fatal: no such path" in err:
+            return HttpResponse(json.dumps([]), content_type='application/json')
+        return HttpResponseNotFound(htmlprint.code(out + err))
 
 @require_GET
 def git_show(request):
     """ Execute a git show on the targeted entry."""
     path = request.GET.get('path')
     if not path:
-        return HttpResponseBadRequest("parameter 'path' is missing")
+        return HttpResponseBadRequest(missing_parameter('path'))
     try:
         ret, out, err = gitcmd.show_last_revision(join_fb_root(path))
         if not ret:
@@ -321,15 +444,15 @@ def git_show(request):
         else:  # pragma: no cover
             return HttpResponseNotFound(htmlprint.code(out + err))
     except Exception as e:  # pragma: no cover
-        msg = htmlprint.code(str(type(e)) + ' - ' + str(e))
-        return HttpResponseNotFound(msg)
+        error = htmlprint.code(str(type(e)) + ' - ' + str(e))
+        return HttpResponseNotFound(error)
 
 @require_GET
 def git_checkout(request):
     """ Execute a checkout of the targeted entry with the informations of POST. """
     path = request.GET.get('path')
     if not path:
-        return HttpResponseBadRequest("parameter 'path' is missing")
+        return HttpResponseBadRequest(missing_parameter('path'))
 
     ret, out, err = gitcmd.checkout(join_fb_root(path))
     
@@ -343,14 +466,12 @@ def git_add(request):
     """ Execute a git add on the targeted entry."""
     path = request.GET.get('path')
     if not path:
-        return HttpResponseBadRequest("parameter 'path' is missing")
+        return HttpResponseBadRequest(missing_parameter('path'))
     ret, out, err = gitcmd.add(join_fb_root(path))
     if not ret:
         return HttpResponse("Entry successfully added to the index.")
     else:  # pragma: no cover
         return HttpResponseNotFound("Nothing to add." if not err else htmlprint.code(err + out))
-
-
 
 @require_POST
 def git_commit(request):
@@ -359,10 +480,10 @@ def git_commit(request):
     post = json.loads(request.body.decode())
     path = post.get('path')
     if not path:
-        return HttpResponseBadRequest("parameter 'path' is missing")
+        return HttpResponseBadRequest(missing_parameter('path'))
     commit = post.get('commit')
     if not commit:
-        return HttpResponseBadRequest("Missing 'commit' parameter")
+        return HttpResponseBadRequest(missing_parameter('commit'))
     user = request.user
     if not user.email:
         return HttpResponseBadRequest("User must have an email")
@@ -376,82 +497,12 @@ def git_commit(request):
     else:  # pragma: no cover
         return HttpResponseNotFound(htmlprint.code(err + out))
 
-
-
-@login_required
-@csrf_exempt
-@require_POST
-def preview_pl(request):
-    """ Used by the PL editor to preview a PL and test the preview's answers"""
-    post = json.loads(request.body.decode())
-    if post.get('requested_action', '') == 'preview':  # Asking for preview
-        path = post.get('path')
-        if not path:
-            return HttpResponseBadRequest("Missing parameter 'path'")
-        
-        path_components = path.split('/')
-        directory = path_components[0]
-        try:
-            path = os.path.join(settings.FILEBROWSER_ROOT, path)
-            shutil.copyfile(path, path + ".bk")
-            with open(path, 'w+') as f:  # Writting editor content into the file
-                print(post.get('content', ''), file=f)
-            
-            directory = Directory.objects.get(name=directory)
-            file_path = os.path.join(*(path_components[1:]))
-            pl, warnings = load_file(directory, file_path)
-            if not pl:
-                preview = '<div class="alert alert-danger" role="alert"> Failed to load \'' \
-                          + os.path.basename(file_path) + "': \n" + warnings + "</div>"
-            else:
-                if warnings:
-                    [messages.warning(request, warning) for warning in warnings]
-                pl.save()
-                exercise = SessionTest.objects.create(pl=pl, user=request.user)
-                preview = exercise.get_exercise(request)
-        
-        except Exception as e:  # pragma: no cover
-            preview = ('<div class="alert alert-danger" role="alert"> Failed to load \''
-                       + os.path.basename(file_path) + "': \n\n"
-                       + htmlprint.code(str(e)))
-            if settings.DEBUG:
-                preview += "\n\nDEBUG set to True:\n" + htmlprint.html_exc()
-            preview += "</div>"
-        finally:
-            shutil.move(path + ".bk", path)
-            return HttpResponse(
-                    json.dumps({'preview': preview}),
-                    content_type='application/json',
-                    status=200
-            )
-    
-    elif post.get('requested_action', '') == 'submit':  # Answer from the preview
-        data = post.get('data', {})
-        if 'session_id' not in data or not data['session_id']:
-            return HttpResponseBadRequest(content="Couldn't resolve ajax request")
-        
-        exercise = SessionTest.objects.get(pk=data['session_id'])
-        answer, feedback = exercise.evaluate(request, data['answers'], test=True)
-        
-        return HttpResponse(
-                json.dumps({
-                        "navigation": None,
-                        "exercise"  : exercise.get_exercise(request, answer=answer),
-                        "feedback"  : feedback,
-                }),
-                content_type='application/json'
-        )
-    
-    return HttpResponseBadRequest(content="Couldn't resolve ajax request")
-
-
-
 @login_required
 @require_GET
 def load_pltp(request):
     path = request.GET.get('path')
     if not path:
-        return HttpResponseBadRequest('"path" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('path'))
     
     try:
         path_components = path.split('/')
@@ -485,18 +536,16 @@ def load_pltp(request):
             msg += ("DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseBadRequest(msg)
 
-
-
 @require_POST
 def reload_pltp(request):
     """Reload a given activity with the targeted PLTP."""
     post = json.loads(request.body.decode())
     path = post.get('path')
     if not path:
-        return HttpResponseBadRequest("parameter 'path' is missing")
+        return HttpResponseBadRequest(missing_parameter('path'))
     activity_id = post.get('activity_id')
     if not activity_id:
-        return HttpResponseBadRequest("Missing 'activity_id' parameter")
+        return HttpResponseBadRequest(missing_parameter('activity_id'))
     try:
         activity = Activity.objects.get(id=activity_id)
         path_components = path.split('/')
@@ -523,14 +572,12 @@ def reload_pltp(request):
             msg += ("DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
 
-
-
 @login_required
 @require_GET
 def test_pl(request):
     path = request.GET.get('path')
     if not path:
-        return HttpResponseBadRequest('"path" parameter is missing')
+        return HttpResponseBadRequest(missing_parameter('path'))
     
     try:
         path_components = path.split('/')
@@ -545,7 +592,7 @@ def test_pl(request):
         exercise = SessionTest.objects.create(pl=pl, user=request.user)
         preview = exercise.get_exercise(request)
         
-        return render(request, 'filebrowser/test_pl.html', {
+        return render(request, 'filebrowser/test.html', {
                 'preview': preview,
         })
     except Exception as e:  # pragma: no cover
@@ -553,7 +600,165 @@ def test_pl(request):
                 str(type(e)) + ' - ' + str(e)))
         return HttpResponseBadRequest(msg.replace(settings.FILEBROWSER_ROOT, ""))
 
+@csrf_exempt
+@require_POST
+def compile_pl(request):
+    """ Used by the PL editor to compile a PL"""
+    post = json.loads(request.body.decode())
+    path = post.get('path')
+    if not path:
+        return HttpResponseBadRequest(missing_parameter('path'))
+    
+    path_components = path.split('/')
+    directory = path_components[0]
+    try:
+        path = join_fb_root(path)
+        with open(path, 'r') as f:
+            content = f.read()
+        shutil.copyfile(path, path + ".bk")
+        with open(path, 'w+') as f:  # Writting editor content into the file
+            print(content, file=f)
+        
+        directory = Directory.objects.get(name=directory)
+        file_path = os.path.join(*(path_components[1:]))
+        pl, warnings = load_file(directory, file_path)
+        response = { 'compiled' : True}
+        if not pl:
+            response['compiled'] = False
+        else:
+            response['json'] = pl.json
+            response['warnings'] = warnings
+    except Exception as e:  # pragma: no cover
+        response['compiled'] = False
+    finally:
+        shutil.move(path + ".bk", path)
+        return HttpResponse(
+                json.dumps(response),
+                content_type='application/json',
+                status=200
+        )
+    
+    return HttpResponseBadRequest(content="Couldn't resolve ajax request")
 
+@login_required
+@csrf_exempt
+@require_POST
+def preview_pl(request):
+    """ Used by the PL editor to preview a PL"""
+    post = json.loads(request.body.decode())
+    path = post.get('path')
+    if not path:
+        return HttpResponseBadRequest(missing_parameter('path'))
+
+    content = post.get('content', '')
+
+    path_components = path.split('/')
+    directory = path_components[0]
+    try:
+        path = os.path.join(settings.FILEBROWSER_ROOT, path)
+        shutil.copyfile(path, path + ".bk")
+        with open(path, 'w+') as f:  # Writting editor content into the file
+            print(content, file=f)
+        
+        directory = Directory.objects.get(name=directory)
+        file_path = os.path.join(*(path_components[1:]))
+        pl, warnings = load_file(directory, file_path)
+        if not pl:
+            preview = '<div class="alert alert-danger" role="alert"> 1 Failed to load \'' \
+                        + os.path.basename(file_path) + "': \n" + warnings + "</div>"
+        else:
+            if warnings:
+                [messages.warning(request, warning) for warning in warnings]
+            pl.save()
+            exercise = SessionTest.objects.create(pl=pl, user=request.user)
+            preview = exercise.get_exercise(request)
+    except Exception as e:  # pragma: no cover
+        preview = ('<div class="alert alert-danger" role="alert"> 3 Failed to load \''
+                    + os.path.basename(file_path) + "': \n\n"
+                    + htmlprint.code(str(e)))
+        if settings.DEBUG:
+            preview += "\n\nDEBUG set to True:\n" + htmlprint.html_exc()
+        preview += "</div>"
+    finally:
+        shutil.move(path + ".bk", path)
+        preview = get_template("filebrowser/preview.html").render({'preview': preview}, request)
+        return HttpResponse(
+                json.dumps({ 'preview': preview }),
+                content_type='application/json',
+                status=200
+        )
+
+@login_required
+@csrf_exempt
+@require_POST
+def evaluate_pl(request):
+    """ Used by the PL editor to evaluate the answer from a previewed PL"""
+    post = json.loads(request.body.decode())
+    data = post.get('data', {})
+    if 'session_id' not in data or not data['session_id']:
+        return HttpResponseBadRequest(content="Couldn't resolve ajax request")
+    
+    exercise = SessionTest.objects.get(pk=data['session_id'])
+    answer, feedback = exercise.evaluate(request, data['answers'], test=True)
+    
+    return HttpResponse(
+            json.dumps({
+                    "navigation": None,
+                    "exercise"  : exercise.get_exercise(request, answer=answer),
+                    "feedback"  : feedback,
+            }),
+            content_type='application/json'
+    )
+
+@login_required
+@require_GET
+def resolve_path(request): #TODO ADD TEST
+    path = request.GET.get('path')
+    if not path:
+        return HttpResponseBadRequest(missing_parameter('path'))
+    target = request.GET.get('target')
+    if not target:
+        return HttpResponseBadRequest(missing_parameter('target'))
+
+    try:
+        path_components = path.split('/')
+        directory = Directory.objects.get(name=path_components[0])
+        directory, path = get_location(directory, target, current=os.path.join(*path_components[1:-1]))
+        return HttpResponse(os.path.join(directory, path))
+
+    except Exception as e:
+        msg = "Impossible to resolve the path '" + request.GET.get('target') + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
+        if settings.DEBUG:
+            messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
+        return HttpResponseNotFound(msg)
+
+@login_required
+@require_GET
+def search_in_files(request): #TODO ADD TEST
+    path = request.GET.get('path')
+    if not path:
+        return HttpResponseBadRequest(missing_parameter('path'))
+    query = request.GET.get('query')
+    if not query:
+        return HttpResponseBadRequest(missing_parameter('query'))
+    cwd = os.getcwd()   
+    try:
+        if (not path.startswith(HOME_DIR) and not path.startswith(LIB_DIR)):
+            return HttpResponseBadRequest('cannot search outside of root directories')
+        path = join_fb_root(path)
+        if not os.path.isdir(path):
+            return HttpResponseBadRequest('path should point to a directory')
+        os.chdir(path)
+        p = subprocess.Popen("grep -nr '{0}' .".format(query), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        out, err = p.communicate()
+    finally:
+        os.chdir(cwd)
+    
+    ret, out, err = p.returncode, out.decode().strip("\n"), err.decode()
+    if not ret:
+        return HttpResponse(out)
+    else:  # pragma: no cover
+        return HttpResponseNotFound(htmlprint.code(out + err))
 
 @login_required
 @require_GET
@@ -564,8 +769,6 @@ def download_env(request, envid):
     response['Content-Disposition'] = r.headers['Content-Disposition']
     return response
 
-
-
 @login_required
 @csrf_exempt
 def option(request):
@@ -575,9 +778,9 @@ def option(request):
         opt = post.get('name')
     
     if not opt:
-        return HttpResponseBadRequest("'name' parameter is missing")
+        return HttpResponseBadRequest(missing_parameter('name'))
     
     try:
         return globals()[opt](request)
     except Exception as e:
-        return HttpResponseBadRequest("Cannot use apply option %s: %s" % (opt, str(e)))
+        return HttpResponseBadRequest("Cannot use option %s: %s" % (opt, str(e)))

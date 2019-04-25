@@ -3,10 +3,11 @@ import shutil
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.test import Client, TestCase, override_settings
+from django.test import Client, override_settings, TestCase
 from django.urls import reverse
 
 from filebrowser.models import Directory
+from filebrowser.utils import missing_parameter
 from loader.loader import load_file
 from playexo.models import Activity
 
@@ -53,7 +54,7 @@ class LoadPLTPTestCase(TestCase):
         response = self.c.get(reverse("filebrowser:option"), {
             'name': 'load_pltp',
         }, content_type='application/json')
-        self.assertContains(response, '"path" parameter is missing', status_code=400)
+        self.assertContains(response, missing_parameter('path'), status_code=400)
     
     
     def test_reload_pltp(self):
@@ -72,7 +73,7 @@ class LoadPLTPTestCase(TestCase):
             'name'       : 'reload_pltp',
             'activity_id': 1,
         }, content_type='application/json')
-        self.assertContains(response, "parameter 'path' is missing", status_code=400)
+        self.assertContains(response, missing_parameter('path'), status_code=400)
     
     
     def test_reload_no_activity_id(self):
@@ -80,7 +81,7 @@ class LoadPLTPTestCase(TestCase):
             'name': 'reload_pltp',
             'path': 'Yggdrasil/working.pltp',
         }, content_type='application/json')
-        self.assertContains(response, "Missing 'activity_id' parameter", status_code=400)
+        self.assertContains(response, missing_parameter('activity_id'), status_code=400)
     
     
     def test_test_pl(self):
@@ -95,9 +96,10 @@ class LoadPLTPTestCase(TestCase):
         response = self.c.get(reverse("filebrowser:option"), {
             'name': 'test_pl',
         }, content_type='application/json')
-        self.assertContains(response, '"path" parameter is missing', status_code=400)
-    
-    
+        self.assertContains(response, missing_parameter('path'), status_code=400)
+        
+        
+
     def test_test_pl_unknown_path(self):
         response = self.c.get(reverse("filebrowser:option"), {
             'name': 'test_pl',

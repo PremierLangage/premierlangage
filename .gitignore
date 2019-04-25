@@ -119,6 +119,6 @@ home/*
 tmp
 .idea/
 serverpl/config.py
-
 .vscode/*
 .DS_Store
+client/node_modules
