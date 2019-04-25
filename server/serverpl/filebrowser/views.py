@@ -661,13 +661,12 @@ def pl_tuto(request):
         pl, warnings = load_file(directory, file_path)
         response = { 'compiled' : True}
         if not pl:
-            response['reason'] = 'not pl'+str(warnings)
             response['compiled'] = False
+            response['warnings'] = warnings
         else:
             response['json'] = pl.json
             response['warnings'] = warnings
     except Exception as e:  # pragma: no cover
-        response['reason'] = e
         response['compiled'] = False
     finally:
         os.remove(path)
