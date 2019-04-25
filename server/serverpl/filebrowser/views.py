@@ -640,6 +640,45 @@ def compile_pl(request):
     
     return HttpResponseBadRequest(content="Couldn't resolve ajax request")
 
+@csrf_exempt
+@require_POST
+def pl_tuto(request):
+    post = json.loads(request.body.decode())
+    content = post.get('student')
+    if not content:
+        return HttpResponseBadRequest(missing_parameter('student'))
+    
+    path = 'Yggdrasil/conceptexo/pltuto.pl'
+    path_components = path.split('/')
+    directory = path_components[0]
+    try:
+        path = join_fb_root(path)
+        with open(path, 'w') as f:
+            print(content, file=f)
+
+        directory = Directory.objects.get(name=directory)
+        file_path = os.path.join(*(path_components[1:]))
+        pl, warnings = load_file(directory, file_path)
+        response = { 'compiled' : True}
+        if not pl:
+            response['reason'] = 'not pl'+str(warnings)
+            response['compiled'] = False
+        else:
+            response['json'] = pl.json
+            response['warnings'] = warnings
+    except Exception as e:  # pragma: no cover
+        response['reason'] = e
+        response['compiled'] = False
+    finally:
+        os.remove(path)
+        return HttpResponse(
+                json.dumps(response),
+                content_type='application/json',
+                status=200
+        )
+    
+    return HttpResponseBadRequest(content="Couldn't resolve ajax request")
+
 @login_required
 @csrf_exempt
 @require_POST
