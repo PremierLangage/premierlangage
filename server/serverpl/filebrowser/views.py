@@ -648,7 +648,9 @@ def pl_tuto(request):
     if not content:
         return HttpResponseBadRequest(missing_parameter('student'))
     
-    path = 'Yggdrasil/conceptexo/pltuto.pl'
+    path =  post.get("path") 
+    if not path:
+        path = 'Yggdrasil/conceptexo/pltuto.pl'
     path_components = path.split('/')
     directory = path_components[0]
     try:
