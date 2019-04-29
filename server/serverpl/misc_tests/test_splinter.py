@@ -11,7 +11,7 @@ from filebrowser.models import Directory
 
 FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'tests/tmp')
 
-RES_DIR = os.path.join(settings.BASE_DIR, "tests/resources/fake_filebrowser_data/")
+RES_DIR = os.path.join(settings.BASE_DIR, "misc_tests/resources/fake_filebrowser_data/")
 
 
 
@@ -54,7 +54,7 @@ class SplinterTestCase(StaticLiveServerTestCase):
         self.b.visit(os.path.join(self.live_server_url, url))
     
     
-    def test_filebrowser(self):
+    def test_preview_pl(self):
         self.visit("filebrowser")
         self.assertTrue(self.b.is_text_present("home", wait_time=10))
         self.b.find_by_text("home").click()
