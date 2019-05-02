@@ -1,4 +1,4 @@
-"""serverpl URL Configuration
+"""premierlangage URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.10/topics/http/urls/
@@ -23,10 +23,10 @@ from classmanagement.views import index
 
 urlpatterns = [
     url(r'^$', index),
-    url(r'^courses/',       include('classmanagement.urls', namespace='classmanagement')),
-    url(r'^playexo/',       include('playexo.urls',         namespace="playexo")),
-    url(r'^filebrowser/',   include('filebrowser.urls',     namespace='filebrowser')),
-    url(r'^profile/',       include('user_profile.urls',    namespace="profile")),
-    url(r'^ask/',           include('qa.urls',              namespace='ask')),
+    url(r'^courses/',       include('apps.classmanagement.urls', namespace='classmanagement')),
+    url(r'^playexo/',       include('apps.playexo.urls',         namespace="playexo")),
+    url(r'^filebrowser/',   include('apps.filebrowser.urls',     namespace='filebrowser')),
+    url(r'^profile/',       include('apps.user_profile.urls',    namespace="profile")),
+    url(r'^ask/',           include('apps.qa.urls',              namespace='ask')),
     url(r'^admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+
 echo -e "\nChecking dependencies...\n"
 
 OS=$(uname -s)
@@ -56,6 +59,7 @@ if [ "$VIRTUAL_ENV" == "" ]; then
     fi
 fi
 
+cd "$DIR/.."
 
 #Getting requirement
 echo ""
@@ -68,9 +72,9 @@ echo "Done !"
 #Creating needed directories
 echo ""
 echo "Creating needed directories..."
-if [ ! -d ../../home/Yggdrasil ]
+if [ ! -d home/Yggdrasil ]
 then
-    mkdir ../../home/Yggdrasil || { echo>&2 "ERROR: Can't create ../../home/Yggdrasil" ; exit 1; }
+    mkdir home/Yggdrasil || { echo>&2 "ERROR: Can't create home/Yggdrasil" ; exit 1; }
 fi
 
 
@@ -81,5 +85,5 @@ python3 manage.py makemigrations || { echo>&2 "ERROR: python3 manage.py makemigr
 python3 manage.py migrate || { echo>&2 "ERROR: python3 manage.py migrate failed" ; exit 1; }
 
 #Filling database
-python3 serverpl/install/fill_database_local.py || { echo>&2 "ERROR: python3 serverpl/install/fill_database_local.py failed" ; exit 1; }
+python3 script/fill_database_local.py || { echo>&2 "ERROR: python3 script/fill_database_local.py failed" ; exit 1; }
 echo "Done !"

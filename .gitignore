@@ -1,21 +1,23 @@
 # Project
-DEADJOE
-home/
+home/**
 !home/lib
-migrations/
-tmp/media/
+
+tmp/
 .idea/
-serverpl/config.py
 .vscode/
-!server/serverpl/filebrowser/static/filebrowser/**
 client/node_modules
+
+apps/*/migrations/**
+!apps/*/migrations/__init__.py
+premierlangage/config.py
 staticfiles/
 static/
 documentation/templates/
 documentation/static/
 doc/
-*.db
 
+
+########################################
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

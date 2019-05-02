@@ -65,10 +65,6 @@ pip3 install -r requirements.txt || { echo>&2 "ERROR: pip3 install -r requiremen
 echo "Done !"
 
 
-#Getting release settings.py
-cp -f serverpl/install/settings_local.py serverpl/settings.py
-
-
 #Creating static files
 echo ""
 echo "Creating static files..."
@@ -91,7 +87,7 @@ SECRET_KEY=$SECRET_KEY python3 manage.py makemigrations || { echo>&2 "ERROR: pyt
 SECRET_KEY=$SECRET_KEY python3 manage.py migrate || { echo>&2 "ERROR: python3 manage.py migrate failed" ; exit 1; }
 
 #Filling database
-python3 serverpl/install/fill_database_release.py || { echo>&2 "ERROR: python3 serverpl/install/fill_database_release.py failed" ; exit 1; }
+python3 script/fill_database_release.py || { echo>&2 "ERROR: python3 script/fill_database_release.py failed" ; exit 1; }
 echo "Done !"
 
 

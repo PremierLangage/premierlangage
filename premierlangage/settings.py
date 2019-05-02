@@ -1,14 +1,17 @@
-import os, hashlib, logging
+import hashlib
+import logging
+import os
 import sys
-from django.contrib.messages import constants as messages
+
 import dj_database_url
+from django.contrib.messages import constants as messages
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ROOT_DIR = os.path.dirname(BASE_DIR)
-APPS_DIR = os.path.realpath(os.path.join(BASE_DIR, 'apps'))
-sys.path.append(APPS_DIR)
+APP_DIRNAME = "apps"
+SETTINGS_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(SETTINGS_DIR)
+APPS_DIR = os.path.realpath(os.path.join(BASE_DIR, APP_DIRNAME))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "o!m$n&s4=kcftm1de1m+7!36a=8x38wrr)m9)i@ru7j-*c7vgm"
@@ -62,7 +65,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'lti_app.middleware.LTIAuthMiddleware',
+    'apps.lti_app.middleware.LTIAuthMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -75,7 +78,7 @@ SESSION_COOKIE_AGE = 5 * 365 * 24 * 60 * 60
 LOGIN_URL = "/courses/login/"
 
 # URLs module
-ROOT_URLCONF = 'serverpl.urls'
+ROOT_URLCONF = 'premierlangage.urls'
 
 # Overriding messages.ERROR to 'danger' to correspond with the bootstrap alert class
 MESSAGE_TAGS = {
@@ -85,12 +88,12 @@ MESSAGE_TAGS = {
 # Templates engines
 TEMPLATES = [
     {
-        'BACKEND' : 'django.template.backends.django.DjangoTemplates',
-        'DIRS'    : [
+        'BACKEND':  'django.template.backends.django.DjangoTemplates',
+        'DIRS':     [
             os.path.join(BASE_DIR, 'templates')
         ],
         'APP_DIRS': True,
-        'OPTIONS' : {
+        'OPTIONS':  {
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.contrib.auth.context_processors.auth',
@@ -104,13 +107,13 @@ TEMPLATES = [
 ]
 
 # WSGI Module
-WSGI_APPLICATION = 'serverpl.wsgi.application'
+WSGI_APPLICATION = 'premierlangage.wsgi.application'
 
 # Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME'  : os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME':   os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 # Update database configuration with $DATABASE_URL.
@@ -135,7 +138,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-    'lti_app.backends.LTIAuthBackend',
+    'apps.lti_app.backends.LTIAuthBackend',
 )
 
 LTI_OAUTH_CREDENTIALS = {
@@ -146,45 +149,45 @@ LOGIN_REDIRECT_URL = '/'
 
 # Logger information
 LOGGING = {
-    'version'                 : 1,
+    'version':                  1,
     'disable_existing_loggers': False,
-    'filters'                 : {
+    'filters':                  {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse',
         },
-        'require_debug_true' : {
+        'require_debug_true':  {
             '()': 'django.utils.log.RequireDebugTrue',
         },
     },
-    'formatters'              : {
+    'formatters':               {
         'verbose': {
-            'format' : '[%(asctime)-15s] %(levelname)s -- '
+            'format':  '[%(asctime)-15s] %(levelname)s -- '
                        'File: %(pathname)s line n°%(lineno)d -- %(message)s',
             'datefmt': '%Y/%m/%d %H:%M:%S'
         },
-        'simple' : {
-            'format' : '[%(asctime)-15s] %(levelname)s -- %(message)s',
+        'simple':  {
+            'format':  '[%(asctime)-15s] %(levelname)s -- %(message)s',
             'datefmt': '%Y/%m/%d %H:%M:%S'
         },
     },
-    'handlers'                : {
-        'console'    : {
-            'level'    : 'DEBUG',
-            'filters'  : ['require_debug_true'],
-            'class'    : 'logging.StreamHandler',
+    'handlers':                 {
+        'console':     {
+            'level':     'DEBUG',
+            'filters':   ['require_debug_true'],
+            'class':     'logging.StreamHandler',
             'formatter': 'simple'
         },
         'mail_admins': {
-            'level'       : 'ERROR',
-            'class'       : 'django.utils.log.AdminEmailHandler',
+            'level':        'ERROR',
+            'class':        'django.utils.log.AdminEmailHandler',
             'include_html': True,
-            'formatter'   : 'verbose'
+            'formatter':    'verbose'
         }
     },
-    'loggers'                 : {
+    'loggers':                  {
         '': {
             'handlers': ['console', 'mail_admins'],
-            'level'   : 'INFO',
+            'level':    'INFO',
         },
     },
 }
@@ -193,31 +196,31 @@ LOGGING = {
 # Reputation contains the points awarded
 # Right contains the points needed for doing action, -1 to disable (do not apply for the owner)
 QA_SETTINGS = {
-    'qa_messages'            : True,
+    'qa_messages':             True,
     'qa_description_optional': False,
-    'reputation'             : {
-        'CREATE_QUESTION'         : 10,
-        'CREATE_ANSWER'           : 20,
-        'CREATE_ANSWER_COMMENT'   : 2,
-        'CREATE_QUESTION_COMMENT' : 2,
+    'reputation':              {
+        'CREATE_QUESTION':          10,
+        'CREATE_ANSWER':            20,
+        'CREATE_ANSWER_COMMENT':    2,
+        'CREATE_QUESTION_COMMENT':  2,
         'RECEIVE_QUESTION_COMMENT': 1,
-        'RECEIVE_ANSWER_COMMENT'  : 1,
-        'ANSWER_ACCEPTED'         : 20,  # Half for the acceptor
-        'UPVOTE_QUESTION'         : 3,
-        'UPVOTE_ANSWER'           : 3,
-        'DOWNVOTE_QUESTION'       : -3,
-        'DOWNVOTE_ANSWER'         : -3,
+        'RECEIVE_ANSWER_COMMENT':   1,
+        'ANSWER_ACCEPTED':          20,  # Half for the acceptor
+        'UPVOTE_QUESTION':          3,
+        'UPVOTE_ANSWER':            3,
+        'DOWNVOTE_QUESTION':        -3,
+        'DOWNVOTE_ANSWER':          -3,
     },
-    'right'                  : {
-        'POST_QUESTION'  : 0,
-        'POST_ANSWER'    : 0,
-        'POST_COMMENT'   : 0,
-        'EDIT_QUESTION'  : 500,
-        'EDIT_ANSWER'    : 500,
-        'EDIT_COMMENT'   : -1,
+    'right':                   {
+        'POST_QUESTION':   0,
+        'POST_ANSWER':     0,
+        'POST_COMMENT':    0,
+        'EDIT_QUESTION':   500,
+        'EDIT_ANSWER':     500,
+        'EDIT_COMMENT':    -1,
         'DELETE_QUESTION': 2000,
-        'DELETE_ANSWER'  : 2000,
-        'DELETE_COMMENT' : 2000,
+        'DELETE_ANSWER':   2000,
+        'DELETE_COMMENT':  2000,
     },
 }
 
@@ -226,8 +229,8 @@ HITCOUNT_KEEP_HIT_ACTIVE = {'days': 1}
 
 # Settings used for the creation of identicon (default avatar)
 IDENTICON_SETTINGS = {
-    'background'   : 'rgb(224,224,224)',
-    'foreground'   : [
+    'background':    'rgb(224,224,224)',
+    'foreground':    [
         'rgb(45,79,255)',
         'rgb(254,180,44)',
         'rgb(226,121,234)',
@@ -235,11 +238,11 @@ IDENTICON_SETTINGS = {
         'rgb(232,77,65)',
         'rgb(49,203,115)',
     ],
-    'row'          : 15,
-    'col'          : 15,
-    'padding'      : (20, 20, 20, 20),
-    'size'         : (300, 300),
-    'digest'       : hashlib.sha1,
+    'row':           15,
+    'col':           15,
+    'padding':       (20, 20, 20, 20),
+    'size':          (300, 300),
+    'digest':        hashlib.sha1,
     'output_format': 'png',
 }
 
@@ -254,7 +257,7 @@ USE_TZ = True
 SANDBOX = 'http://127.0.0.1:7000/sandbox'
 
 # Static files (CSS, JavaScript, Images)
-STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'serverpl/static'))
+STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'premierlangage/static'))
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
@@ -276,10 +279,11 @@ PARSERS_MODULE = 'loader.parsers'
 # Default home directory name for pl users
 HOME = "Yggdrasil"
 
-# Allow a file '[PL_ROOT]/server/serverpl/serverpl/config.py' to override any of the settings above.
+# Allow a file '[PL_ROOT]/server/premierlangage/premierlangage/config.py' to override any of the
+# settings above.
 try:
-    from serverpl.config import *
-except:
+    from premierlangage.config import *
+except Exception:
     if "VERBOSE" in os.environ:
         logger = logging.getLogger(__name__)
         logger.exception("No config file found.")
