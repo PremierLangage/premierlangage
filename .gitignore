@@ -1,3 +1,21 @@
+# Project
+DEADJOE
+home/
+!home/lib
+migrations/
+tmp/media/
+.idea/
+serverpl/config.py
+.vscode/
+!server/serverpl/filebrowser/static/filebrowser/**
+client/node_modules
+staticfiles/
+static/
+documentation/templates/
+documentation/static/
+doc/
+*.db
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -113,12 +131,44 @@ venv.bak/
 dmypy.json
 
 
-DEADJOE
-home/*
-!home/lib
-tmp
-.idea/
-serverpl/config.py
+# compiled output
+/dist
+/tmp
+/out-tsc
+
+# dependencies
+/node_modules
+
+# profiling files
+chrome-profiler-events.json
+speed-measure-plugin.json
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
 .vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
+
+# System Files
 .DS_Store
-client/node_modules
+Thumbs.db
