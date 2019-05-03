@@ -34,10 +34,10 @@
           CHANGES IN {{selection.name | uppercase}}
         </mat-panel-title>
       </mat-expansion-panel-header>
-      <mat-form-field class='commit' *ngIf='selection.count > 0; else uptodate'>
+      <mat-form-field class='commit'>
           <input matInput placeholder="Press enter to commit" (keydown)='commit($event)' [(ngModel)]='commitMessage'>
       </mat-form-field>
-        <ng-template #uptodate> <span>nothing to commit, working tree clean</span> </ng-template>
+        <span *ngIf='selection.count === 0'>nothing to commit, working tree clean</span>
         <ng-container *ngFor="let change of selection.changes; trackBy trackChange">
             <div class='line' [ngClass]='{clickable: canOpen(change)}' [matTooltip]="change.path|path"> 
                 <span class='line-title' [matBadge]="change.type" matBadgePosition="after" (click)='open(change)'>{{change.name}}</span>

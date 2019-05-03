@@ -15,30 +15,27 @@
         <div class="col-md-2"></div>
     </div>
 
-{% endblock %}
+    <script type='text/javascript'>
+    (function() {
+        const toggle = $('.navigation__toggle');
+        const container = $('.navigation-container');
+        const navigation = $('.navigation');
+        let opened = true;
+        toggle.click(function() {
+            opened = !opened;
+            if (opened) {
+                toggle.animate({ left: 250 });
+                container.animate({ width: 250 }, function() {
+                    navigation.show();
+                });
+            } else {
 
-{% block end_script %}
-<script type='text/javascript'>
-(function() {
-    const toggle = $('.navigation__toggle');
-    const container = $('.navigation-container');
-    const navigation = $('.navigation');
-    let opened = true;
-    toggle.click(function() {
-        opened = !opened;
-        if (opened) {
-            toggle.animate({ left: 250 });
-            container.animate({ width: 250 }, function() {
-                navigation.show();
-            });
-        } else {
-
-            toggle.animate({ left: 0 });
-            container.animate({ width: 0 }, function() {
-                navigation.hide();
-            });
-        }
-    });
-})();
-</script>
+                toggle.animate({ left: 0 });
+                container.animate({ width: 0 }, function() {
+                    navigation.hide();
+                });
+            }
+        });
+    })();
+    </script>
 {% endblock %}
