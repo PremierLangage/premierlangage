@@ -1,0 +1,1 @@
+[{"__symbolic":"module","version":4,"metadata":{},"exports":[{"from":"./markdown.component","export":["MarkdownComponent"]},{"from":"./markdown.module","export":["MarkdownModule"]},{"from":"./markdown.service","export":["MarkdownService"]},{"from":"./markdown.config","export":["MarkdownConfig"]}]}]

@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../src/index.ts"],"names":[],"mappings":";AACA,OAAO,EAAE,iBAAiB,EAAE,cAAc,EAAE,cAAc,EAAE,eAAe,EAAE,MAAM,YAAY,CAAC","sourcesContent":["/* tslint:disable: max-classes-per-file */\nexport { MarkdownComponent, MarkdownConfig, MarkdownModule, MarkdownService } from './markdown';\n"]}
