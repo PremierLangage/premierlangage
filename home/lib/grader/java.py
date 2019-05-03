@@ -91,7 +91,7 @@ class Grader:
         if p.returncode:
             return 0, err.decode()
         
-        cmd = "java -jar %s --class-path %s --scan-class-path" % (JUNIT, TARGET)
+        cmd = "java -jar %s --class-path %s --scan-class-path --disable-ansi-colors" % (JUNIT, TARGET)
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         out, err = p.communicate()
         
@@ -275,8 +275,7 @@ class Grader:
             grade, feedback = junit
             feedback = (
                 "<pre><code>%s</code></pre>"
-                % feedback.replace("[36m", "").replace("[34m", "").replace("[32m", "")
-                          .replace("[31m", "").replace("[0m", "")
+                % feedback
             )
             sandboxio.output(grade, feedback)
         
@@ -290,4 +289,5 @@ if __name__ == "__main__":
     answers = sandboxio.get_answers()
     context = sandboxio.get_context()
     Grader.grade(context, answers)
+
 
