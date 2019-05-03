@@ -23,13 +23,6 @@ class SplinterTestCase(StaticLiveServerTestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.b = Browser()
-        cls.u = User.objects.create_superuser("login", password="secret", email="test@test.test")
-        cls.dir = Directory.objects.create(name='Yggdrasil', owner=cls.u).root
-        cls.lib = Directory.objects.create(name='lib', owner=cls.u).root
-        shutil.rmtree(os.path.join(cls.dir))
-        shutil.copytree(HOME_DIR, cls.dir)
-        shutil.rmtree(os.path.join(cls.lib))
-        shutil.copytree(LIB_DIR, cls.lib)
     
     
     @classmethod
@@ -41,8 +34,19 @@ class SplinterTestCase(StaticLiveServerTestCase):
     
     def setUp(self):
         super().setUp()
+        self.u = User.objects.create_superuser("login", password="secret", email="test@test.test")
+        self.dir = Directory.objects.create(name='Yggdrasil', owner=self.u).root
+        self.lib = Directory.objects.create(name='lib', owner=self.u).root
+        shutil.rmtree(os.path.join(self.dir))
+        shutil.copytree(HOME_DIR, self.dir)
+        shutil.rmtree(os.path.join(self.lib))
+        shutil.copytree(LIB_DIR, self.lib)
+    
+    
+    def connect_to_filebrowser(self):
+        self.b.reload()
+        self.visit("filebrowser")
         if not self.b.is_text_present("login"):
-            self.visit("filebrowser")
             self.b.fill("username", "login")
             self.b.fill("password", "secret")
             self.b.find_by_text("Log-in").click()
@@ -69,6 +73,7 @@ class SplinterTestCase(StaticLiveServerTestCase):
     
     
     def test_file_browser_preview(self):
+        self.connect_to_filebrowser()
         self.assertTrue(self.b.is_text_present("home", wait_time=10))
         self.b.find_by_text("home").click()
         self.assertTrue(self.b.is_text_present("lib", wait_time=10))
@@ -100,7 +105,8 @@ class SplinterTestCase(StaticLiveServerTestCase):
             self.assertTrue(iframe.is_text_present("Mauvaise réponse"))
     
     
-    def ph_test_filebrowser_pl(self):
+    def test_filebrowser_pl(self):
+        self.connect_to_filebrowser()
         self.assertTrue(self.b.is_text_present("home", wait_time=10))
         self.b.find_by_text("home").click()
         self.assertTrue(self.b.is_text_present("lib", wait_time=10))
@@ -108,10 +114,11 @@ class SplinterTestCase(StaticLiveServerTestCase):
         self.assertTrue(self.b.is_text_present("demo", wait_time=10))
         self.b.find_by_text("demo").click()
         self.assertTrue(self.b.is_text_present("static_add.pl", wait_time=10))
-        self.b.find_by_text("static_add.pl").click()
-        self.b.find_by_id("lib/demo/static_add.pl").mouse_over()
+        self.b.find_by_text("lib/demo/static_add.pl").mouse_over()
         time.sleep(1)
-        self.b.find_by_css('aria-describedby="cdk-describedby-message-67"')[6].click()
+        self.assertTrue(
+            self.b.find_by_css('aria-describedby="cdk-describedby-message-67"', wait_time=50))
+        self.b.find_by_css('aria-describedby="cdk-describedby-message-67"'[6].click())
         
         self.answer_pl("1")
         self.assertTrue(self.b.is_text_present("Mauvaise réponse"))
