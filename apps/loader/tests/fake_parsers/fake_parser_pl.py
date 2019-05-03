@@ -320,7 +320,7 @@ class Parser:
         for line in self.lines:
             try:
                 self.parse_line(line)
-            except UnicodeDecodeError as e:
+            except UnicodeDecodeError:
                 raise SyntaxErrorPL(join(self.directory.root, self.path),
                                     self.lines[self.lineno - 1],
                                     self.lineno,

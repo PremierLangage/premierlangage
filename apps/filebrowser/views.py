@@ -10,7 +10,8 @@ import requests
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import (HttpResponse, HttpResponseBadRequest, HttpResponseNotFound, JsonResponse)
+from django.http import (HttpResponseNotAllowed, HttpResponse, HttpResponseBadRequest,
+                         HttpResponseNotFound, JsonResponse)
 from django.shortcuts import render
 from django.template.loader import get_template
 from django.urls import reverse
@@ -307,7 +308,7 @@ def git_changes(request):
             if not ret:
                 changes = out.split("\n")
                 changes = [parse_change(x) for x in changes if
-                           x and not '..' in x]  # only result in home/
+                           x and '..' not in x]  # only result in home/
                 changes = [x for x in changes if x['type'] != 'A']  # remove added entries
                 key = repository_url(full_path)
                 value = response.get(key)
@@ -321,7 +322,6 @@ def git_changes(request):
                     }
                 response[key] = value
             else:  # pragma: no cover
-                error = htmlprint.code(out + err)
                 return False
         return True
     
@@ -666,6 +666,7 @@ def compile_pl(request):
     
     path_components = path.split('/')
     directory = path_components[0]
+    response = {'compiled': True}
     try:
         path = join_fb_root(path)
         with open(path, 'r') as f:
@@ -677,13 +678,12 @@ def compile_pl(request):
         directory = Directory.objects.get(name=directory)
         file_path = os.path.join(*(path_components[1:]))
         pl, warnings = load_file(directory, file_path)
-        response = {'compiled': True}
         if not pl:
             response['compiled'] = False
         else:
             response['json'] = pl.json
             response['warnings'] = warnings
-    except Exception as e:  # pragma: no cover
+    except Exception:  # pragma: no cover
         response['compiled'] = False
     finally:
         shutil.move(path + ".bk", path)
@@ -692,8 +692,6 @@ def compile_pl(request):
             content_type='application/json',
             status=200
         )
-    
-    return HttpResponseBadRequest(content="Couldn't resolve ajax request")
 
 
 

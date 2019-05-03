@@ -43,8 +43,8 @@ def get_location(directory, path, current="", parser=None):
             absolute = os.path.join(os.path.basename(top), path)
             if not os.path.isfile(
                 os.path.join(settings.FILEBROWSER_ROOT, directory.name, absolute)):
-                for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if
-                            l != settings.HOME]:  # pragma: no cover
+                for lib in [i for i in os.listdir(settings.FILEBROWSER_ROOT) if
+                            i != settings.HOME]:  # pragma: no cover
                     absolute = os.path.join(settings.FILEBROWSER_ROOT, lib, path)
                     if os.path.isfile(absolute):
                         return lib, path
@@ -54,7 +54,7 @@ def get_location(directory, path, current="", parser=None):
             
             return directory.name, os.path.normpath(absolute)
         
-        for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if l != settings.HOME]:
+        for lib in [i for i in os.listdir(settings.FILEBROWSER_ROOT) if i != settings.HOME]:
             absolute = os.path.join(settings.FILEBROWSER_ROOT, lib, path)
             if os.path.isfile(absolute):
                 return lib, path

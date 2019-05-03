@@ -223,14 +223,15 @@ class AbstractCommentView(HttpMethodMixin):
     foreign_rel_name = "foreign"
     
     
-    # TODO: Use an ajax request instead of redirecting to ask:question. This would remove the
-    # necessity for question_pk
     def post(self, request, question_pk, pk):
         """Create a comment.
         
         Parameters:
             question_pk - Primary Key of the question to which the request will be redirected.
-            pk - Primary Key of the foreign model of this comment."""
+            pk - Primary Key of the foreign model of this comment.
+            
+        TODO: Use an ajax request instead of redirecting to ask:question. This would remove the
+        TODO: necessity for question_pk"""
         comment_text = request.POST.get('comment_text')
         foreign = get_object_or_404(self.foreign_model, pk=pk)
         
@@ -246,14 +247,15 @@ class AbstractCommentView(HttpMethodMixin):
         return redirect(reverse('ask:question', args=[question_pk]))
     
     
-    # TODO: Use an ajax request instead of redirecting to ask:question. This would remove the
-    # necessity for question_pk
     def patch(self, request, question_pk, pk):
         """Modify a comment.
         
         Parameters:
             question_pk - Primary Key of the question to which the request will be redirected.
-            pk - Primary Key of the comment."""
+            pk - Primary Key of the comment.
+            
+        TODO: Use an ajax request instead of redirecting to ask:question. This would remove the
+        TODO: necessity for question_pk"""
         comment = self.model.objects.filter(pk=pk)
         if not comment:
             raise Http404("Comment with ID '" + str(pk) + "' does not exists")
@@ -301,16 +303,18 @@ class AbstractVoteView:
     foreign_rel_name = "foreign"
     
     
-    # TODO: Use an ajax request instead of redirecting to ask:question. This would remove the
-    # necessity for question_pk and improve user experience.
-    # TODO: Use POST method instead of GET
     def get(self, request, question_pk, pk=None):
         """Create a vote.
         
         Parameters:
             question_pk - Primary Key of the question to which the request will be redirected.
             pk - Primary Key of the foreign model of this vote.
-                 The question_pk will be used if none is provided"""
+                 The question_pk will be used if none is provided
+        
+        # TODO: 1) Use an ajax request instead of redirecting to ask:question. This would remove the
+        # TODO: 1) necessity for question_pk and improve user experience.
+        # TODO: 2) Use POST method instead of GET
+        """
         vote = request.GET.get('vote')
         if not vote:
             return HttpResponseBadRequest()

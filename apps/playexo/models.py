@@ -196,7 +196,6 @@ class SessionExerciseAbstract(models.Model):
             answers - (dict) Answers of the student.
             test    - (bool) Whether this exercise is in a testing session or not.
         """
-        context = {}
         evaluator = SandboxEval(self.envid, answers)
         if not evaluator.check():
             self.build(request, test=test)
@@ -321,9 +320,9 @@ class SessionExercise(SessionExerciseAbstract):
         highest_grade = Answer.highest_grade(pl, self.session_activity.user)
         last = Answer.last(pl, self.session_activity.user)
         
-        seed = (last.seed if last
-                else self.context['seed'] if 'seed' in self.context
-        else None)
+        seed = (last.seed if last else
+                self.context['seed'] if 'seed' in self.context else
+                None)
         if highest_grade is not None and self.reroll(seed, highest_grade.grade):
             seed = time.time()
             self.built = False

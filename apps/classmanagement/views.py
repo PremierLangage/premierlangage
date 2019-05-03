@@ -67,9 +67,8 @@ def course(request, pk):
                 act = Activity.objects.get(id=request.GET.get("id", None))
                 act.open = not act.open
                 act.save()
-                logger.info("User '" + request.user.username + "' set activity '" + act.name + "' "
-                            + "'open' attribute to '" + str(
-                    act.open) + "' in '" + course.name + "'.")
+                logger.info("User '%s' set activity '%s' 'open' attribute to '%s' in '%s'."
+                            % (request.user.username, act.name, str(act.open), course.name))
             except Activity.DoesNotExist:
                 raise Http404(
                     "L'activité d'ID '" + str(request.GET.get("id", None)) + "' introuvable.")
