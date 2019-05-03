@@ -1,0 +1,11 @@
+title=Exercices fonctionnels sur la notions de programme
+
+introduction==
+Les exercices qui suivent fonctionnent tous le 10 octobre 2018.
+==
+
+
+@ /exercices/program/hello.pl
+@ /exercices/program/order_calls.pl
+@ /exercices/program/arguments.pl
+

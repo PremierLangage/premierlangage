@@ -65,7 +65,7 @@ class SplinterTestCase(StaticLiveServerTestCase):
     
     
     def answer_pl(self, answer):
-        self.assertTrue(self.b.is_element_present_by_name("answer", wait_time=10))
+        self.assertTrue(self.b.is_element_present_by_id("form_answer", wait_time=50))
         self.b.fill("answer", answer)
         self.assertTrue(self.b.is_element_present_by_text("Valider", wait_time=10))
         self.b.find_by_text("Valider").click()
@@ -107,18 +107,16 @@ class SplinterTestCase(StaticLiveServerTestCase):
     
     def test_filebrowser_pl(self):
         self.connect_to_filebrowser()
-        self.assertTrue(self.b.is_text_present("home", wait_time=10))
-        self.b.find_by_text("home").click()
         self.assertTrue(self.b.is_text_present("lib", wait_time=10))
         self.b.find_by_text("lib").click()
         self.assertTrue(self.b.is_text_present("demo", wait_time=10))
         self.b.find_by_text("demo").click()
         self.assertTrue(self.b.is_text_present("static_add.pl", wait_time=10))
-        self.b.find_by_text("lib/demo/static_add.pl").mouse_over()
-        time.sleep(1)
+        self.b.find_by_text("static_add.pl").first.mouse_over()
         self.assertTrue(
-            self.b.find_by_css('aria-describedby="cdk-describedby-message-67"', wait_time=50))
-        self.b.find_by_css('aria-describedby="cdk-describedby-message-67"'[6].click())
+                self.b.is_element_present_by_id("op-0-lib/demo/static_add.pl", wait_time=10))
+        self.b.find_by_id("op-0-lib/demo/static_add.pl").first.click()
+        self.b.windows[0].close()
         
         self.answer_pl("1")
         self.assertTrue(self.b.is_text_present("Mauvaise réponse"))
@@ -134,3 +132,57 @@ class SplinterTestCase(StaticLiveServerTestCase):
         self.assertTrue(self.b.is_text_present("Bonne réponse"))
         self.answer_pl("5")
         self.assertTrue(self.b.is_text_present("Mauvaise réponse"))
+    
+    
+    def test_filebrowser_activity(self):
+        self.connect_to_filebrowser()
+        self.assertTrue(self.b.is_text_present("lib", wait_time=10))
+        self.b.find_by_text("lib").click()
+        self.assertTrue(self.b.is_text_present("demo", wait_time=10))
+        self.b.find_by_text("demo").click()
+        self.assertTrue(self.b.is_text_present("static_add.pl", wait_time=10))
+        self.b.find_by_text("random_all.pltp").first.mouse_over()
+        self.assertTrue(
+                self.b.is_element_present_by_id("op-1-lib/demo/random_all.pltp", wait_time=10))
+        self.b.find_by_id("op-1-lib/demo/random_all.pltp").first.click()
+        
+        self.assertTrue(
+                self.b.is_element_present_by_text(
+                        " a bien été créée et a pour URL LTI:                     ", wait_time=10))
+        self.assertTrue(
+                self.b.is_element_present_by_text(" OPEN                    ", wait_time=10))
+        self.b.find_by_text(" OPEN                    ").click()
+        time.sleep(1)
+        self.b.windows[0].close()
+        
+        self.b.click_link_by_partial_text("Commencer")
+        self.b.fill("answer", "7")
+        self.assertTrue(self.b.is_element_present_by_text("Valider", wait_time=10))
+        self.b.find_by_text("Valider").click()
+        self.assertTrue(self.b.is_element_present_by_text("Bonne réponse", wait_time=50))
+        self.b.click_link_by_partial_text("Suivant")
+        
+        self.assertTrue(self.b.is_element_present_by_css(
+                'a[class="btn btn-secondary btn-type state-succeded btn-lg"]', wait_time=10))
+        self.assertTrue(self.b.is_element_present_by_css(
+                'a[class="btn btn-secondary btn-type state-started btn-lg active"]', wait_time=10))
+        
+        self.assertTrue(self.b.is_element_present_by_css(
+                'a[class="btn btn-secondary btn-type state-unstarted btn-lg"]', wait_time=10))
+        self.b.click_link_by_partial_text("Addition Aléatoire (using eval_func)")
+        time.sleep(1)
+        self.b.fill("answer", "-1")
+        self.assertTrue(self.b.is_element_present_by_text("Valider", wait_time=10))
+        self.b.find_by_text("Valider").click()
+        time.sleep(1)
+        self.b.find_by_text("Random add").click()
+        self.assertTrue(self.b.is_element_present_by_css(
+                'a[class="btn btn-secondary btn-type state-failed btn-lg"]', wait_time=10))
+    
+    
+    def test_filebrowser_markdown_mathjax(self):
+        self.connect_to_filebrowser()
+        self.assertTrue(self.b.is_text_present("home", wait_time=10))
+        self.b.find_by_text("home").click()
+        self.assertTrue(self.b.is_text_present("cbank", wait_time=10))
+        self.b.find_by_text("cbank").click()

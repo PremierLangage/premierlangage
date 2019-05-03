@@ -1,0 +1,18 @@
+title=Programmes aléatoires d'instructions simples
+introduction==
+# Instructions artihmétique en C
+
+Voici une série de petits jeux d'instructions arithmétique C
+
+==
+
+
+@ /exercices/program/random_instructions/set_instructions1.pl
+@ /exercices/program/random_instructions/set_instructions2.pl
+@ /exercices/program/random_instructions/set_instructions3.pl
+@ /exercices/program/random_instructions/set_instructions4.pl
+@ /exercices/program/random_instructions/set_instructions5.pl
+@ /exercices/program/random_instructions/set_instructions6.pl
+@ /exercices/program/random_instructions/set_instructions7.pl
+@ /exercices/program/random_instructions/set_instructions8.pl
+

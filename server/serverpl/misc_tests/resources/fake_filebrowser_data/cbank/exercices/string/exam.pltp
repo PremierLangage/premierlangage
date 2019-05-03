@@ -1,0 +1,104 @@
+
+
+title= Exam C --- EISC 2017/2018
+
+introduction==
+
+
+    Epreuve individuelle.
+    Pas de documents authorisés.
+    Vous avez deux Heures. 
+    les exercices sont à faire dans l'ordre (de préférence pour vous) mais vous pouvez abandoner en clickant sur le suivant.
+    l'abandon sur un exercice échoué est sanctionnée (points en moins mais pas trop).
+
+
+
+    Le texte qui suit est en rappel de cours que vous pouvez ignorer.
+
+
+Les chaines de caractères en C sont des zones de mémoires contenant une suite des caractères non nuls suivis d'un caractère nul.
+
+On définie une chaine constante en utilisant des guillemets :
+
+    "Hello World"
+
+En général ont déclare une variable de type pointeur sur char pour pouvoir utiliser notre chaine à plusieurs endrois dans le code :
+
+    char *nom="Untel";
+    printf("Le nom du personnage est %s ce qui n'est pas tres original", nom );
+
+ce code est équivalent à celui ci :
+
+    char nom[6]={'U','n','t','e','l','\0'};
+    printf("Le nom du personnage est %s ce qui n'est pas tres original", nom );
+
+Nous aurions aussi put écrire pour l'initialisation :
+
+    char nom[6]={'U','n','t','e','l',0}; // 0 est la valeur du caractère nul == '\0'
+
+
+Maintenant nous allons utiliser cette définition des chaines de caractères pour écrire une fonction **compar** de comparaison de deux chaines, la fonction doit prendre en parmètre deux chaines et renvoyer un int (le boolean du C), voici le prototype:
+
+    int compar(char *p,char *q);
+
+
+la fonction vas renvoyer <0 si la chaine pointée par **p** est plus petite  dans l'ordre lexicographique que celle pointé par **q** (dans la suite nous utiliserons par abus de langage la chaine p et la chaine q).
+Renvoyer >0 si **p** est plus grande que **q**.
+renvoyer 0 si les deux chaines sont identiques.
+
+L'ordre lexicographique est l'ordre du dictionnaire.
+
+
+Nous pouvons utiliser plusieurs syntaxe pour manipuler les chaines:
+
+    /* version tableaux */
+    int compar(char *p, char *q)
+    {
+    int i=0; /* indice dans les chaines */
+
+    /* tant que l'on n'est pas à la fin de p
+    ni à la fin de q
+    et que les deux chaines sont égales on avance sur l'indice suivant */
+    while (p[i] !=0  && q[i] !=0  && p[i] == q[i])
+        i=i+1;
+
+    /* on retourne la différence entre les deux chaines
+    soit parse que un caractère est différent soit que les deux chaines ont égales
+     */
+    return p[i]-q[i];
+    }
+
+En utilisant une syntaxe utilisant la possibilité de modifier les pointeurs:
+
+    /* version  pointeurs */
+    int compar(char *p,char *q)
+    {
+    while (*p && *q && *p==*q) { p++; q++; }
+    return *p-*q;
+    }
+
+Cette version est plus concise et utilise un entier de moins, et elle s'executera un peu plus vite :
+
+    Each sample counts as 0.01 seconds.
+      %   cumulative   self              self     total           
+     time   seconds   seconds    calls  us/call  us/call  name    
+     59.17      1.92     1.92  1000000     1.92     1.92  compart
+     41.73      3.27     1.35  1000000     1.35     1.35  comparp 
+
+
+Dans ce test compart prend 40% de temps de plus que comparp.
+
+En utilisant l'une ou l'autre des syntaxes resolvez les exercices de cette feuille.
+
+==
+
+concept==string
+@ /exercices/function/incremente.pl
+@ /exercices/function/param.pl
+@ /exercices/string/in.pl
+@ /exercices/string/countvoyelle.pl
+@ /exercices/structure/point2d.pl
+@ /exercices/structure/alloccouleur.pl
+@ /exercices/array/average.pl
+@ /exercices/function/pgcdbibi.pl
+==

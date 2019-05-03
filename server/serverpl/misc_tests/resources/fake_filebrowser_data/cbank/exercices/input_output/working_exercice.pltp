@@ -1,0 +1,9 @@
+title=Exercices fonctionnels sur la notion d'entrées/sorties
+
+introduction==
+Les exercices qui suivent fonctionnent tous le 15 octobre 2018.
+==
+
+@ /exercices/input_output/person.pl
+@ /exercices/input_output/sum_int_stdin.pl
+

@@ -1,0 +1,11 @@
+title=Démonstration de quelques capacités de PL
+
+introduction==
+Voici des mini-exemples presque minimaux de ce que PL peut gérer.
+==
+
+@ /examples/chemical_equation.pl
+@ /examples/proposition_subordonnee_relative.pl
+@ /examples/matrix_rank.pl
+
+
