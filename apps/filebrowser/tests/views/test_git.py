@@ -22,21 +22,24 @@ RES_DIR = os.path.join(settings.APPS_DIR, "filebrowser/tests/ressources/fake_fil
 
 
 def command(cmd, dir=None):
-    if dir:
-        cwd = os.getcwd()
-        os.chdir(dir)
-    p = subprocess.Popen(
-        cmd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        shell=True
-    )
-    out, err = p.communicate()
-    if p.returncode:
-        raise RuntimeError("CWD: " + os.getcwd() + "\nReturn code : " + str(p.returncode)
-                           + " - " + err.decode() + out.decode()) + "\ncmd: " + cmd
-    if dir:
-        os.chdir(cwd)
+    cwd = os.getcwd()
+    
+    try:
+        if dir:
+            os.chdir(dir)
+        p = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            shell=True
+        )
+        out, err = p.communicate()
+        if p.returncode:
+            raise RuntimeError("CWD: " + os.getcwd() + "\nReturn code : " + str(p.returncode)
+                               + " - " + err.decode() + out.decode() + "\ncmd: " + cmd)
+    finally:
+        if dir:
+            os.chdir(cwd)
     
     return out, err
 
