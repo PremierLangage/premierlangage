@@ -258,6 +258,9 @@ SANDBOX = 'http://127.0.0.1:7000/sandbox'
 # Static files (CSS, JavaScript, Images)
 STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'static'))
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "common_static"),
+]
 
 MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'media'))
 MEDIA_URL = '/media/'

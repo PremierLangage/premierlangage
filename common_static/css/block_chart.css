@@ -1,0 +1,153 @@
+.block-chart {
+  overflow:hidden;
+  margin:10px auto;
+  position:relative;
+}
+
+.block {
+  background:white;
+  display:block;
+  float:left;
+  height:9%;
+  margin:0.5%;
+  position:relative;
+  width:9%;
+  min-width: 20px;
+  min-height: 20px;
+  -webkit-animation: twistin 0.8s;
+  -moz-animation: twistin 0.8s;
+  -ms-animation: twistin 0.8s;
+  -o-animation: twistin 0.8s;
+  animation: twistin 0.8s;
+}
+
+.block:hover:before {
+  background: -moz-radial-gradient(center, ellipse cover,  rgba(0,0,0,0) 0%, rgba(0,0,0,0) 1%, rgba(0,0,0,0.65) 100%); /* FF3.6+ */
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(0,0,0,0)), color-stop(1%,rgba(0,0,0,0)), color-stop(100%,rgba(0,0,0,0.65))); /* Chrome,Safari4+ */
+  background: -webkit-radial-gradient(center, ellipse cover,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 1%,rgba(0,0,0,0.65) 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-radial-gradient(center, ellipse cover,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 1%,rgba(0,0,0,0.65) 100%); /* Opera 12+ */
+  background: -ms-radial-gradient(center, ellipse cover,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 1%,rgba(0,0,0,0.65) 100%); /* IE10+ */
+  background: radial-gradient(ellipse at center,  rgba(0,0,0,0) 0%,rgba(0,0,0,0) 1%,rgba(0,0,0,0.65) 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00000000', endColorstr='#a6000000',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+  content:"";
+  height:100%;
+  opacity:0.5;
+  position:absolute;
+    top:0;
+    left:0;
+  width:100%;
+}
+
+.block p {
+  background:black;
+  background: rgba(0,0,0,0.7);
+  color:white;
+  display:none;
+  font-family:sans-serif;
+  font-size:1em;
+  margin:-1em 0 0 -0.1em;
+  padding:0.2em;
+  position:absolute;
+    top:0;
+  text-align:center;
+  width:auto;
+  z-index:101;
+}
+
+.block:nth-child(-n+10) p{
+  top:100%;
+}
+
+.block:nth-child(-n+10) p:after{
+  border-style: solid;
+  border-width: 0 5px 5px 5px;
+  border-color: transparent transparent #000000 transparent;
+  border-color: transparent transparent rgba(0,0,0,0.7) transparent;
+  height: 0;
+  margin-top:-5px;
+  top:0;
+  width: 0;
+}
+
+.block:nth-child(10n) p, .block:nth-child(10n-1) p, .block:nth-child(10n-2) p {
+  right:0;
+  margin:-1em -0.1em 0 0;
+}
+
+.block:nth-child(10n) p:after,.block:nth-child(10n-1) p:after,.block:nth-child(10n-2) p:after { left:initial; right:0.2em; }
+
+.block:hover p { display:block; }
+
+.long-one .block:hover p { display:none; }
+
+.block p:after{
+  border-style: solid;
+  border-width: 5px 5px 0 5px;
+  border-color: #000000 transparent transparent transparent;
+  border-color: rgba(0,0,0,0.7) transparent transparent transparent;
+  content:"";
+  position:absolute;
+    top:100%; 
+    left:0.2em;
+  width: 0;
+}
+
+@keyframes twistin {
+  from {
+    transform:rotateY(90deg);
+  }
+  to {
+    transform:rotateY(0deg);
+  }
+}
+/* Firefox < 16 */
+
+@-moz-keyframes twistin {
+  from {
+    transform:rotateY(90deg);
+  }
+  to {
+    transform:rotateY(0deg);
+  }
+}
+/* Safari, Chrome and Opera > 12.1 */
+
+@-webkit-keyframes twistin {
+  from {
+    transform:rotateY(90deg);
+  }
+  to {
+    transform:rotateY(0deg);
+  }
+}
+/* Internet Explorer */
+
+@-ms-keyframes twistin {
+  from {
+    transform:rotateY(90deg);
+  }
+  to {
+    transform:rotateY(0deg);
+  }
+}
+/* Opera < 12.1 */
+
+@-o-keyframes twistin {
+  from {
+    transform:rotateY(90deg);
+  }
+  to {
+    transform:rotateY(0deg);
+  }
+}
+
+
+.state-succeded  { background-color: #28a745 !important; border-color: #28a745 !important; }
+.state-part-succ { background: linear-gradient(to right, #ffc107 -10%, #28a745 76%) !important; border-color: #28a745 !important; }
+.state-failed    { background-color: #dc3545 !important; border-color: #dc3545 !important; }
+.state-started   { background-color: #ffc107 !important; border-color: #ffc107 !important; }
+.state-unstarted { background-color: #6c757d !important; border-color: #6c757d !important; }
+
+.deuteranopia {}
+.protanopia {}
+.tritanopia {}
