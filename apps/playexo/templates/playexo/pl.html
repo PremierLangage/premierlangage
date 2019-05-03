@@ -1,29 +1,27 @@
 {% load django_markdown %}
 {% load static %}
-<link rel="stylesheet" href="{% static '/playexo/css/playexo.css' %}"/>
+<link rel="stylesheet" href="{% static '/playexo/css/playexo.css' %}" />
 {% if 'extracss' %}{{ extracss|safe }}{% endif %}
 <div class="card exercise">
     <!-- HEADER -->
     <div class="card-header exercise__header">
-        <div class="text-center"><h2 class='exercise__title'>{% if 'title' %}{{ title }}{% endif
-            %}</h2></div>
-        <div class="float-left"><span class='exercise__author'>{% if 'author' %}{{ author }}{% endif %}</span>
-        </div>
+        <div class="text-center"><h2 class='exercise__title'>{% if 'title' %}{{ title }}{% endif %}</h2></div>
+        <div class="float-left"> <span class='exercise__author'>{% if 'author' %}{{ author }}{% endif %}</span></div>
     </div>
     <!-- BODY -->
     <div class="card-body exercise__body">
         <!-- INSTRUCTIONS -->
         <div class="exercise__instructions">
             {% if 'text' %}
-            {% with texth__=text|markdown %}
-            {{ texth__|safe }}
-            {% endwith %}
+                {% with texth__=text|markdown %}
+                    {{ texth__|safe }}
+                {% endwith %}
             {% endif %}
         </div>
         <!-- FEEDBACK -->
         <div class="exercise__feedback">
             {% with feedbackh__=feedback__|markdown %}
-            {{ feedbackh__|safe }}
+                {{ feedbackh__|safe }}
             {% endwith %}
         </div>
         <!-- FORM -->
@@ -35,16 +33,14 @@
         <!-- ACTIONS -->
         <div class="exercise__actions text-center">
             <div class="btn-group" role="group" aria-label="actions">
-                <a type="button" class="btn btn-warning action-reset"
-                   href="{% url 'playexo:activity' activity_id__ %}?action=reset">
+                <a type="button" class="btn btn-warning action-reset" href="{% url 'playexo:activity' activity_id__ %}?action=reset">
                     <i class="fas fa-undo"></i> Réinitialiser
                 </a>
                 {% firstof settings.reroll_threshold 100 as reroll_limit__ %}
                 {% if settings.allow_reroll and grade__|add:"0" >= reroll_limit__|add:"0" %}
-                <a type="button" class="btn btn-warning action-reroll"
-                   href="{% url 'playexo:activity' activity_id__ %}?action=reroll">
-                    <i class="fas fa-dice"></i> Nouveau tirage
-                </a>
+                    <a type="button" class="btn btn-warning action-reroll" href="{% url 'playexo:activity' activity_id__ %}?action=reroll">
+                        <i class="fas fa-dice"></i> Nouveau tirage
+                    </a>
                 {% endif %}
                 <button class="btn btn-info action-save">
                     <i class="fas fa-save"></i> Sauvegarder
@@ -54,11 +50,10 @@
                 </button>
             </div>
             {% if grade__|add:"0" > 0 %}
-            <br/> <br/>
-            <a type="button" class="btn btn-success action-next"
-               href="{% url 'playexo:activity' activity_id__ %}?action=next">
-                Suivant<span class="glyphicon glyphicon-arrow-right"></span>
-            </a>
+                <br/> <br/>
+                <a type="button" class="btn btn-success action-next" href="{% url 'playexo:activity' activity_id__ %}?action=next">
+                    Suivant<span class="glyphicon glyphicon-arrow-right"></span>
+                </a>
             {% endif %}
         </div>
         <!-- SPINNER -->
@@ -73,7 +68,7 @@
 <script type='text/javascript' src="{% static '/playexo/js/playexo.js' %}"></script>
 {% if 'extrajs' %}{{ extrajs|safe }}{% endif %}
 <script type='text/javascript'>
-    $(function () {
+    $(function() {
         Activity.withEval("{% url 'playexo:evaluate' activity_id__ pl_id__%}");
     });
 </script>

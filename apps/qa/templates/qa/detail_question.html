@@ -234,8 +234,7 @@
                 </div>
             </div>
             <hr>
-            {% if user.is_authenticated and answer.question.user == user and not
-            answer.question.closed %}
+            {% if user.is_authenticated and answer.question.user == user and not answer.question.closed %}
             <form action="{% url 'ask:answer' answer.pk %}" method="post">
                 {% csrf_token %}
                 {% http_patch %}

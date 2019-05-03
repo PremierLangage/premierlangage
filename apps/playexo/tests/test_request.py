@@ -2,6 +2,7 @@ import os
 import shutil
 import uuid
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
 
@@ -29,7 +30,7 @@ class RequestTestCase(TestCase):
             shutil.rmtree(dir_name)
         cls.dir = Directory.objects.create(name='dir1', owner=cls.user)
         shutil.rmtree(cls.dir.root)
-        shutil.copytree(os.path.join(FAKE_FB_ROOT, '../fake_pl'), cls.dir.root)
+        shutil.copytree(os.path.join(settings.APPS_DIR, 'playexo/tests/fake_pl'), cls.dir.root)
         cls.pl = load_file(cls.dir, "working.pl")[0]
         cls.pl.json['seed'] = 2
     

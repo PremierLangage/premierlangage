@@ -108,7 +108,7 @@ class PreviewTestCase(TestCase):
     def test_evaluate_pl_invalid_session_id(self):
         response = self.c.post(reverse("filebrowser:option"), {
             'name': 'evaluate_pl',
-            'path': 'Yggdrasil/working.pl',
+            'path': 'Yggdrasil/ working.pl',
             'data': {
                 'session_id': 100
             }

@@ -1,15 +1,15 @@
 import os
 import shutil
 
-
+from django.conf import settings
 
 def copy_parser():
-    path = "loader/tests/fake_parsers/fake_parser_pl.py"
+    path = os.path.join(settings.APPS_DIR, "loader/tests/fake_parsers/fake_parser_pl.py")
     if os.path.isfile(path):
         os.remove(path)
-    shutil.copyfile("loader/parsers/pl.py", path)
+    shutil.copyfile(os.path.join(settings.APPS_DIR, "loader/parsers/pl.py"), path)
     
-    path = "loader/tests/fake_parser_pltp.py"
+    path = os.path.join(settings.APPS_DIR, "loader/tests/fake_parser_pltp.py")
     if os.path.isfile(path):
         os.remove(path)
-    shutil.copyfile("loader/parsers/pltp.py", path)
+    shutil.copyfile(os.path.join(settings.APPS_DIR, "loader/parsers/pltp.py"), path)

@@ -35,7 +35,7 @@ class LoaderTestCase(TestCase):
         cls.user = User.objects.create_user(username='user', password='12345')
         cls.dir = Directory.objects.create(name='dir1', owner=cls.user)
         shutil.rmtree(cls.dir.root)
-        shutil.copytree(os.path.join(FAKE_FB_ROOT, '../fake_pl'), cls.dir.root)
+        shutil.copytree(os.path.join(settings.APPS_DIR, 'loader/tests/fake_pl'), cls.dir.root)
     
     
     @classmethod
