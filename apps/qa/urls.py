@@ -1,5 +1,7 @@
 from django.urls import path
+
 from qa import views
+
 
 app_name = 'ask'
 

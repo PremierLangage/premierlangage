@@ -1,6 +1,7 @@
 import oauth2
 
 
+
 class Python3SignatureMethodHMACSHA1(oauth2.SignatureMethod_HMAC_SHA1):
     
     def check(self, request, consumer, token, signature):
@@ -11,6 +12,7 @@ class Python3SignatureMethodHMACSHA1(oauth2.SignatureMethod_HMAC_SHA1):
         if isinstance(built, bytes):
             built = built.decode()
         return built == signature
+
 
 
 def is_valid_request(consumer_key, consumer_secret, request):

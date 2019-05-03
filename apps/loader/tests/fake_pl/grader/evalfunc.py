@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-import sys, json, jsonpickle, time
+import sys
 
-from sandboxio import output, get_context, get_answers
+from sandboxio import get_answers, get_context, output
 
 
 missing_evaluator_stderr = """\
 The key 'evalfunc' was not found in the context.
 When using this grader, the PL must declare a script inside a key 'evalfunc'.
 This scrit must declare a function with the prototype 'valfunc(dic, answers)' where 'dic'\
-is the dictionnary containins every variables of the PL and 'answers' a dictionnary containing every\
-answer of the student. The function should return a tuple (int, feedback) where int is the grade between [0, 100]."""
+is the dictionnary containins every variables of the PL and 'answers' a dictionnary containing
+every\
+answer of the student. The function should return a tuple (int, feedback) where int is the grade
+between [0, 100]."""
 
 missing_grade_stderr = """\
 'evalfunc' did not return a tuple (int, feedback) where int is the grade between [0, 100]."""
@@ -19,7 +21,8 @@ missing_grade_stderr = """\
 if __name__ == "__main__":
     if len(sys.argv) < 5:
         msg = ("Sandbox did not call grader properly:\n"
-               +"Usage: python3 grader.py [input_json] [output_json] [answer_file] [feedback_file]")
+               + "Usage: python3 grader.py [input_json] [output_json] [answer_file] ["
+                 "feedback_file]")
         print(msg, file=sys.stderr)
         sys.exit(1)
     

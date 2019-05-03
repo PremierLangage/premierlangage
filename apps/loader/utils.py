@@ -42,8 +42,9 @@ def get_location(directory, path, current="", parser=None):
             top = gitcmd.top_level(absolute)[1]
             absolute = os.path.join(os.path.basename(top), path)
             if not os.path.isfile(
-                    os.path.join(settings.FILEBROWSER_ROOT, directory.name, absolute)):
-                for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if l != settings.HOME]:  # pragma: no cover
+                os.path.join(settings.FILEBROWSER_ROOT, directory.name, absolute)):
+                for lib in [l for l in os.listdir(settings.FILEBROWSER_ROOT) if
+                            l != settings.HOME]:  # pragma: no cover
                     absolute = os.path.join(settings.FILEBROWSER_ROOT, lib, path)
                     if os.path.isfile(absolute):
                         return lib, path

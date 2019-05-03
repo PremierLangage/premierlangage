@@ -1,8 +1,10 @@
 # coding: utf-8
 
-import tempfile, tarfile, os
+import os
+import tarfile
+import tempfile
 
-from django.template import Template, Context
+from django.template import Context, Template
 
 
 
@@ -29,5 +31,5 @@ def render_feedback(feedback):
     """Returns the given markdown string as an html string
     """
     return Template(
-            "{% load django_markdown %}{% with fh=f|markdown %}{{fh|safe}}{% endwith %}"
+        "{% load django_markdown %}{% with fh=f|markdown %}{{fh|safe}}{% endwith %}"
     ).render(Context({'f': feedback}))

@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-import sys, json, jsonpickle
+import json
+import jsonpickle
+import sys
 
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
         msg = ("Sandbox did not call builder properly:\n"
-               +"Usage: python3 builder.py [input_json] [output_json]")
+               + "Usage: python3 builder.py [input_json] [output_json]")
         print(msg, file=sys.stderr)
         sys.exit(1)
     input_json = sys.argv[1]
@@ -15,7 +17,7 @@ if __name__ == "__main__":
     
     with open(input_json, "r") as f:
         dic = json.load(f)
-            
+    
     with open(output_json, "w+") as f:
         f.write(jsonpickle.encode(dic, unpicklable=False))
     

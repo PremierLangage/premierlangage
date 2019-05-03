@@ -1,22 +1,22 @@
 import os
 import shutil
+import uuid
 from tarfile import is_tarfile
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.test import Client, override_settings, TestCase
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from filebrowser.models import Directory
 from filebrowser.utils import missing_parameter
-
 from loader.loader import load_file
 from playexo.request import SandboxBuild
 
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'filebrowser/tests/tmp')
+FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
 
-RES_DIR = os.path.join(settings.BASE_DIR, "filebrowser/tests/ressources/fake_filebrowser_data/")
+RES_DIR = os.path.join(settings.APPS_DIR, "filebrowser/tests/ressources/fake_filebrowser_data/")
 
 
 

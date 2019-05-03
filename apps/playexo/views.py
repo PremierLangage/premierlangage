@@ -2,11 +2,12 @@ import json
 import logging
 
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-from django.core.exceptions import PermissionDenied
+
 from loader.models import PL
 from playexo.models import Activity, Answer, SessionActivity
 from playexo.utils import render_feedback
@@ -28,15 +29,15 @@ def evaluate(request, activity_id, pl_id):
     if 'requested_action' in status:
         if status['requested_action'] == 'save':
             Answer.objects.create(
-                    answers=status['inputs'],
-                    user=request.user,
-                    pl=pl,
-                    seed=exercise.context['seed']
+                answers=status['inputs'],
+                user=request.user,
+                pl=pl,
+                seed=exercise.context['seed']
             )
             return HttpResponse(json.dumps({
-                    "exercise"  : None,
-                    "navigation": None,
-                    "feedback"  : "Réponse(s) sauvegardé.",
+                "exercise":   None,
+                "navigation": None,
+                "feedback":   "Réponse(s) sauvegardé.",
             }), content_type='application/json')
         
         elif status['requested_action'] == 'submit':  # Validate
@@ -44,12 +45,12 @@ def evaluate(request, activity_id, pl_id):
             answer['activity'] = session.activity
             Answer.objects.create(**answer)
             return HttpResponse(
-                    json.dumps({
-                            "navigation": exercise.get_navigation(request),
-                            "exercise"  : exercise.get_exercise(request),
-                            "feedback"  : render_feedback(feedback),
-                    }),
-                    content_type='application/json'
+                json.dumps({
+                    "navigation": exercise.get_navigation(request),
+                    "exercise":   exercise.get_exercise(request),
+                    "feedback":   render_feedback(feedback),
+                }),
+                content_type='application/json'
             )
         return HttpResponseBadRequest("Unknown action")
     else:
@@ -106,8 +107,8 @@ def activity_view(request, activity_id):
     if session.current_pl:
         last = Answer.last(session.current_pl, request.user)
         Answer.objects.create(
-                user=request.user,
-                pl=session.current_pl,
-                answers=last.answers if last else {}
+            user=request.user,
+            pl=session.current_pl,
+            answers=last.answers if last else {}
         )
     return render(request, 'playexo/exercise.html', session.exercise().get_context(request))

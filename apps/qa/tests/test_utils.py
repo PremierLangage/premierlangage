@@ -2,12 +2,14 @@
 # -*- coding: utf-8 -*-
 #
 #  test_model.py
-#  
-#  
+#
+#
 
 from django.test import TestCase
 
 from qa.utils import parse_query
+
+
 
 class UtilsTestCase(TestCase):
     
@@ -19,5 +21,3 @@ class UtilsTestCase(TestCase):
         self.assertEqual(["include", "include2", "include expression", "include expression2"],
                          include)
         self.assertEqual(["exclude", "exclude expression"], exclude)
-        
-

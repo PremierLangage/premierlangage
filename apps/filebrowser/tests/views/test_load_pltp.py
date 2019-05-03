@@ -1,9 +1,10 @@
 import os
 import shutil
+import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.test import Client, override_settings, TestCase
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from filebrowser.models import Directory
@@ -12,9 +13,9 @@ from loader.loader import load_file
 from playexo.models import Activity
 
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'filebrowser/tests/tmp')
+FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
 
-RES_DIR = os.path.join(settings.BASE_DIR, "filebrowser/tests/ressources/fake_filebrowser_data/")
+RES_DIR = os.path.join(settings.APPS_DIR, "filebrowser/tests/ressources/fake_filebrowser_data/")
 
 
 
@@ -61,8 +62,8 @@ class LoadPLTPTestCase(TestCase):
         pltp = load_file(self.dir, "working.pltp")[0]
         a = Activity.objects.create(name=pltp.name, pltp=pltp)
         response = self.c.post(reverse("filebrowser:option"), {
-            'name'       : 'reload_pltp',
-            'path'       : 'Yggdrasil/working.pltp',
+            'name':        'reload_pltp',
+            'path':        'Yggdrasil/working.pltp',
             'activity_id': a.pk,
         }, content_type='application/json')
         self.assertContains(response, "recharg", status_code=200)
@@ -70,7 +71,7 @@ class LoadPLTPTestCase(TestCase):
     
     def test_reload_no_path(self):
         response = self.c.post(reverse("filebrowser:option"), {
-            'name'       : 'reload_pltp',
+            'name':        'reload_pltp',
             'activity_id': 1,
         }, content_type='application/json')
         self.assertContains(response, missing_parameter('path'), status_code=400)
@@ -97,9 +98,8 @@ class LoadPLTPTestCase(TestCase):
             'name': 'test_pl',
         }, content_type='application/json')
         self.assertContains(response, missing_parameter('path'), status_code=400)
-        
-        
-
+    
+    
     def test_test_pl_unknown_path(self):
         response = self.c.get(reverse("filebrowser:option"), {
             'name': 'test_pl',

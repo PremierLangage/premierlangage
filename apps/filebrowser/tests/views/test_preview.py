@@ -1,22 +1,22 @@
 import os
 import shutil
+import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.messages import constants as messages
-from django.test import Client, override_settings, TestCase
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from filebrowser.models import Directory
 from filebrowser.utils import missing_parameter
-
 from loader.loader import load_file
 from playexo.models import SessionTest
 
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'filebrowser/tests/tmp')
+FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
 
-RES_DIR = os.path.join(settings.BASE_DIR, "filebrowser/tests/ressources/fake_filebrowser_data/")
+RES_DIR = os.path.join(settings.APPS_DIR, "filebrowser/tests/ressources/fake_filebrowser_data/")
 
 
 
@@ -48,42 +48,42 @@ class PreviewTestCase(TestCase):
         with open(os.path.join(self.dir.root, "working.pl"), "r") as f:
             c = f.read()
         response = self.c.post(reverse("filebrowser:option"), {
-                'name'            : 'preview_pl',
-                'path'            : 'Yggdrasil/working.pl',
-                'requested_action': 'preview',
-                'content'         : c,
+            'name':             'preview_pl',
+            'path':             'Yggdrasil/working.pl',
+            'requested_action': 'preview',
+            'content':          c,
         }, content_type='application/json')
-        self.assertContains(response, "Quentin Coumes", status_code=200)
+        self.assertContains(response, "Quentin Coumes")
     
     
     def test_preview_warnings(self):
         with open(os.path.join(self.dir.root, "warning.pl"), "r") as f:
             c = f.read()
         response = self.c.post(reverse("filebrowser:option"), {
-                'name'            : 'preview_pl',
-                'path'            : 'Yggdrasil/warning.pl',
-                'requested_action': 'preview',
-                'content'         : c,
+            'name':             'preview_pl',
+            'path':             'Yggdrasil/warning.pl',
+            'requested_action': 'preview',
+            'content':          c,
         }, content_type='application/json')
         m = list(response.context['messages'])
         self.assertEqual(len(m), 1)
         self.assertEqual(m[0].level, messages.WARNING)
-        self.assertContains(response, "Christophe Call", status_code=200)
+        self.assertContains(response, "Christophe Call")
     
     
     def test_preview_warning_no_content(self):
         response = self.c.post(reverse("filebrowser:option"), {
-                'name'            : 'preview_pl',
-                'path'            : 'Yggdrasil/working.pl',
-                'requested_action': 'preview',
+            'name':             'preview_pl',
+            'path':             'Yggdrasil/working.pl',
+            'requested_action': 'preview',
         }, content_type='application/json')
-        self.assertContains(response, "Failed to load", status_code=200)
+        self.assertContains(response, "Failed to load")
     
     
     def test_preview_no_path(self):
         response = self.c.post(reverse("filebrowser:option"), {
-                'name'            : 'preview_pl',
-                'requested_action': 'preview',
+            'name':             'preview_pl',
+            'requested_action': 'preview',
         }, content_type='application/json')
         self.assertContains(response, missing_parameter('path'), status_code=400)
     
@@ -93,39 +93,41 @@ class PreviewTestCase(TestCase):
         pl.save()
         s_test = SessionTest.objects.create(user=self.user, pl=pl)
         response = self.c.post(reverse("filebrowser:option"), {
-                'name'            : 'evaluate_pl',
-                'path'            : 'Yggdrasil/working.pl',
-                'data'            : {
-                        'session_id': s_test.id,
-                        'answers'   : {},
-                }
+            'name': 'evaluate_pl',
+            'path': 'Yggdrasil/working.pl',
+            'data': {
+                'session_id': s_test.id,
+                'answers':    {},
+            }
         }, content_type='application/json')
-        self.assertContains(response, "navigation", status_code=200)
-        self.assertContains(response, "Merci de rentrer un entier", status_code=200)
-        self.assertContains(response, "Quentin Coumes<", status_code=200)
+        self.assertContains(response, "navigation")
+        self.assertContains(response, "Merci de rentrer un entier")
+        self.assertContains(response, "Quentin Coumes")
     
     
     def test_evaluate_pl_invalid_session_id(self):
         response = self.c.post(reverse("filebrowser:option"), {
-                'name'            : 'evaluate_pl',
-                'path'            : 'Yggdrasil/working.pl',
-                'data'            : {
-                        'session_id': 100
-                }
+            'name': 'evaluate_pl',
+            'path': 'Yggdrasil/working.pl',
+            'data': {
+                'session_id': 100
+            }
         }, content_type='application/json')
         self.assertContains(response, "SessionTest matching query does not exist.", status_code=400)
     
     
     def test_evaluate_pl_empty_data(self):
         response = self.c.post(reverse("filebrowser:option"), {
-                'name'            : 'evaluate_pl',
-                'path'            : 'Yggdrasil/working.pl',
-                'data'            : {}
+            'name': 'evaluate_pl',
+            'path': 'Yggdrasil/working.pl',
+            'data': {}
         }, content_type='application/json')
         self.assertContains(response, "Couldn't resolve ajax request", status_code=400)
-    
+
+
+
 # not used anymore because preview_pl
-"""     def test_preview_no_requested_action(self): 
+"""     def test_preview_no_requested_action(self):
         response = self.c.post(reverse("filebrowser:option"), {
                 'name': 'preview_pl',
                 'path': 'Yggdrasil/working.pl',

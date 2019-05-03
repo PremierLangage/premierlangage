@@ -7,10 +7,11 @@ For more information on this file, see
 https://docs.djangoproject.com/en/2.0/howto/deployment/wsgi/
 """
 
-import os, sys
+import os
+import sys
 
-from django.core.wsgi import get_wsgi_application
 from django.conf import settings
+from django.core.wsgi import get_wsgi_application
 
 
 if settings.SETTINGS_DIR not in sys.path:
@@ -18,9 +19,6 @@ if settings.SETTINGS_DIR not in sys.path:
 if settings.APPS_DIR not in sys.path:
     sys.path.append(settings.APPS_DIR)
 
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
 
 application = get_wsgi_application()
-
-

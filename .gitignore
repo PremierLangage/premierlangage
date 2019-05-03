@@ -12,6 +12,7 @@ apps/*/migrations/**
 premierlangage/config.py
 staticfiles/
 static/
+media/
 documentation/templates/
 documentation/static/
 doc/

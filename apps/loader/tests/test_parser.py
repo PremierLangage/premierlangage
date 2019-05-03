@@ -2,6 +2,7 @@
 
 import os
 import shutil
+import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -14,9 +15,9 @@ from loader.exceptions import DirectoryNotFound, FileNotFound, MissingKey, Unkno
 from .utils import copy_parser
 
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'loader/tests/tmp')
-FAKE_PL = os.path.join(settings.BASE_DIR, 'loader/tests/fake_pl')
-FAKE_PARSER = os.path.join(settings.BASE_DIR, 'loader/tests/fake_parsers/')
+FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
+FAKE_PL = os.path.join(settings.APPS_DIR, 'loader/tests/fake_pl')
+FAKE_PARSER = os.path.join(settings.APPS_DIR, 'loader/tests/fake_parsers/')
 
 
 
@@ -106,10 +107,10 @@ class ParserTestCase(TestCase):
         
         dic = {
             '__rel_path': "unknown.pl",
-            '__extends' : [{
-                'path'          : 'unknown.pl',
-                'line'          : "0",
-                'lineno'        : 0,
+            '__extends':  [{
+                'path':           'unknown.pl',
+                'line':           "0",
+                'lineno':         0,
                 'directory_name': self.dir.name
             }]
         }

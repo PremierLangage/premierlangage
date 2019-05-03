@@ -2,20 +2,18 @@ import operator
 from functools import reduce
 
 from django.conf import settings
-from django.http import HttpResponseBadRequest, Http404
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
-from django.urls import reverse
-from django.utils import timezone
 from django.db import models
 from django.db.models import Count, Q
+from django.http import Http404, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils import timezone
 from django.views.generic import View
-
+from django_http_method import HttpMethodMixin
 from hitcount.models import HitCount
 from hitcount.views import HitCountMixin
-
-from django_http_method import HttpMethodMixin
 
 from qa.models import (QAAnswer, QAAnswerComment, QAAnswerVote, QAQuestion, QAQuestionComment,
                        QAQuestionVote)
@@ -31,6 +29,7 @@ class IndexView(View):
     
     template_name = 'qa/index.html'
     question_per_page = 20
+    
     
     def get(self, request):
         tag = request.GET.get('tag')
@@ -57,7 +56,7 @@ class IndexView(View):
             popular = popular.filter(tags__name__contains=tag)
             if request.user.is_authenticated:
                 usersq = usersq.filter(tags__name__contains=tag)
-            
+        
         if query:
             include, exclude = parse_query(query)
             include = ((reduce(operator.or_, (Q(title__icontains=i) for i in include))
@@ -82,13 +81,13 @@ class IndexView(View):
         
         return render(request, self.template_name, {
             "questions": Paginator(questions, self.question_per_page).get_page(page if page else 1),
-            "noans": Paginator(noans, self.question_per_page).get_page(page if page else 1),
-            "usersq": Paginator(usersq, self.question_per_page).get_page(page if page else 1),
-            "popular": Paginator(popular, self.question_per_page).get_page(page if page else 1),
-            "query": query if query else "",
-            'rights': settings.QA_SETTINGS['right'],
-            'active': active,
-            'tag_q': tag,
+            "noans":     Paginator(noans, self.question_per_page).get_page(page if page else 1),
+            "usersq":    Paginator(usersq, self.question_per_page).get_page(page if page else 1),
+            "popular":   Paginator(popular, self.question_per_page).get_page(page if page else 1),
+            "query":     query if query else "",
+            'rights':    settings.QA_SETTINGS['right'],
+            'active':    active,
+            'tag_q':     tag,
         })
 
 
@@ -97,6 +96,7 @@ class QuestionView(HttpMethodMixin, View):
     """Handle requests interacting with Question."""
     
     template_name = 'qa/detail_question.html'
+    
     
     def post(self, request):
         """Create a question."""
@@ -150,10 +150,10 @@ class QuestionView(HttpMethodMixin, View):
         answers = question.qaanswer_set.all().order_by('-points')
         
         return render(request, self.template_name, {
-            'question': question,
-            'answers': answers,
+            'question':   question,
+            'answers':    answers,
             'num_answer': len(answers),
-            'rights': settings.QA_SETTINGS['right'],
+            'rights':     settings.QA_SETTINGS['right'],
         })
 
 
@@ -194,12 +194,12 @@ class AnswerView(HttpMethodMixin, View):
             params['update_user'] = request.user
         answer.update(**params)
         
-        if 'answer' in params: # Updating reps if an answer was (un)chosen
+        if 'answer' in params:  # Updating reps if an answer was (un)chosen
             if params['answer']:
-                answer[0].question.user.profile.mod_rep(REPUTATION['ANSWER_ACCEPTED']//2)
+                answer[0].question.user.profile.mod_rep(REPUTATION['ANSWER_ACCEPTED'] // 2)
                 answer[0].user.profile.mod_rep(REPUTATION['ANSWER_ACCEPTED'])
             else:
-                answer[0].question.user.profile.mod_rep(-REPUTATION['ANSWER_ACCEPTED']//2)
+                answer[0].question.user.profile.mod_rep(-REPUTATION['ANSWER_ACCEPTED'] // 2)
                 answer[0].user.profile.mod_rep(-REPUTATION['ANSWER_ACCEPTED'])
         
         return redirect(reverse('ask:question', args=[answer[0].question.pk]))
@@ -222,6 +222,7 @@ class AbstractCommentView(HttpMethodMixin):
     foreign_model = models.Model
     foreign_rel_name = "foreign"
     
+    
     # TODO: Use an ajax request instead of redirecting to ask:question. This would remove the
     # necessity for question_pk
     def post(self, request, question_pk, pk):
@@ -237,12 +238,13 @@ class AbstractCommentView(HttpMethodMixin):
             return HttpResponseBadRequest()
         
         self.model(**{
-            'user': request.user,
-            'comment_text': comment_text,
+            'user':                request.user,
+            'comment_text':        comment_text,
             self.foreign_rel_name: foreign,
         }).save()
         
         return redirect(reverse('ask:question', args=[question_pk]))
+    
     
     # TODO: Use an ajax request instead of redirecting to ask:question. This would remove the
     # necessity for question_pk
@@ -298,6 +300,7 @@ class AbstractVoteView:
     foreign_model = models.Model
     foreign_rel_name = "foreign"
     
+    
     # TODO: Use an ajax request instead of redirecting to ask:question. This would remove the
     # necessity for question_pk and improve user experience.
     # TODO: Use POST method instead of GET
@@ -323,9 +326,9 @@ class AbstractVoteView:
                 vote.delete()
         except ObjectDoesNotExist:
             self.model.objects.create(**{
-                'user': request.user,
+                'user':                request.user,
                 self.foreign_rel_name: foreign,
-                'value': value,
+                'value':               value,
             })
         
         return redirect(reverse('ask:question', args=[question_pk]))

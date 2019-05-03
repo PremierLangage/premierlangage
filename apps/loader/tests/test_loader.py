@@ -2,6 +2,7 @@
 
 import os
 import shutil
+import uuid
 from unittest.mock import patch
 
 from django.conf import settings
@@ -13,12 +14,12 @@ from loader import loader, models
 from .utils import copy_parser
 
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'loader/tests/tmp')
+FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
 
 
 
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
-@override_settings(PARSERS_ROOT=os.path.join(settings.BASE_DIR, 'loader/tests/fake_parsers/'))
+@override_settings(PARSERS_ROOT=os.path.join(settings.APPS_DIR, 'loader/tests/fake_parsers/'))
 @override_settings(PARSERS_MODULE="loader.tests.fake_parsers")
 class LoaderTestCase(TestCase):
     """ Test functions of loader.loader """

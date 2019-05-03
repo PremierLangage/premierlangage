@@ -2,7 +2,6 @@ import os
 import shutil
 import uuid
 
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.test import TestCase, override_settings
 
@@ -12,7 +11,7 @@ from playexo.exception import SandboxUnavailable
 from playexo.request import SandboxBuild, SandboxEval
 
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'playexo/tests/tmp')
+FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
 
 
 

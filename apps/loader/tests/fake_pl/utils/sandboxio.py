@@ -1,6 +1,9 @@
 # coding: utf-8
 
-import sys, json, jsonpickle
+import json
+import jsonpickle
+import sys
+
 
 
 def get_answers():
@@ -10,11 +13,13 @@ def get_answers():
     return answers
 
 
+
 def get_context():
     """Return the dictionnary containing the context of the exercise."""
     with open(sys.argv[1], "r") as f:
         context = json.load(f)
     return context
+
 
 
 def output(grade, feedback, context=None):
@@ -33,4 +38,3 @@ def output(grade, feedback, context=None):
     print(int(grade))
     
     sys.exit(0)
-

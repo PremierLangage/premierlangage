@@ -1,7 +1,7 @@
 import logging
 
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 
 from lti_app.models import LTIModel
 from user_profile.enums import Role
@@ -10,11 +10,13 @@ from user_profile.enums import Role
 logger = logging.getLogger(__name__)
 
 
+
 class Course(LTIModel):
     teacher = models.ManyToManyField(User, related_name="teaches", blank=True)
     student = models.ManyToManyField(User, blank=True)
     name = models.CharField(max_length=200)
     label = models.CharField(max_length=20)
+    
     
     @classmethod
     def get_or_create_from_lti(cls, user, lti_launch):
@@ -30,7 +32,7 @@ class Course(LTIModel):
         consumer = lti_launch['oauth_consumer_key']
         if not (course_id and course_name and course_label and consumer):
             return None, False
-
+        
         try:
             course = cls.objects.get(consumer_id=course_id, consumer=consumer)
             created = True
@@ -40,7 +42,7 @@ class Course(LTIModel):
             logger.info("New course created: %d - '%s' (%s:%s)"
                         % (course.pk, course.name, consumer, course_id))
             created = False
-            
+        
         course.student.add(user)
         for role in lti_launch["roles"]:
             if role in ["urn:lti:role:ims/lis/Instructor", "Instructor"]:

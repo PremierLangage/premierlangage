@@ -1,17 +1,19 @@
 import os
 import shutil
+import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.test import Client, override_settings, TestCase
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from filebrowser.models import Directory
 from filebrowser.utils import missing_parameter
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'filebrowser/tests/tmp')
 
-RES_DIR = os.path.join(settings.BASE_DIR, "filebrowser/tests/ressources/fake_filebrowser_data/")
+FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
+
+RES_DIR = os.path.join(settings.APPS_DIR, "filebrowser/tests/ressources/fake_filebrowser_data/")
 
 
 
@@ -40,23 +42,23 @@ class MoveTestCase(TestCase):
     
     def test_delete(self):
         response = self.c.post(reverse("filebrowser:option"), {
-                'name': 'delete_resource',
-                'path': 'Yggdrasil/TPE/function001.pl',
+            'name': 'delete_resource',
+            'path': 'Yggdrasil/TPE/function001.pl',
         }, content_type='application/json')
         self.assertEqual(response.status_code, 200)
         self.assertFalse(os.path.isfile(os.path.join(self.dir, 'TPE/function001.pl')))
-
-
+    
+    
     def test_delete_no_path(self):
         response = self.c.post(reverse("filebrowser:option"), {
-                'name': 'delete_resource',
+            'name': 'delete_resource',
         }, content_type='application/json')
         self.assertContains(response, missing_parameter('path'), status_code=400)
     
     
     def test_delete_path_root(self):
         response = self.c.post(reverse("filebrowser:option"), {
-                'name': 'delete_resource',
-                'path': 'Yggdrasil',
+            'name': 'delete_resource',
+            'path': 'Yggdrasil',
         }, content_type='application/json')
         self.assertContains(response, 'cannot delete a root folder', status_code=400)

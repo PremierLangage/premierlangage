@@ -1,6 +1,7 @@
 import os
 import shutil
 import subprocess
+import uuid
 
 import gitcmd
 from django.conf import settings
@@ -11,19 +12,19 @@ from filebrowser import utils
 from filebrowser.models import Directory
 
 
-RES_DIR = os.path.join(settings.BASE_DIR, "filebrowser/tests/ressources/filter/")
-WALK_DIR = os.path.join(settings.BASE_DIR, "filebrowser/tests/ressources/walkdir/")
+RES_DIR = os.path.join(settings.APPS_DIR, "filebrowser/tests/ressources/filter/")
+WALK_DIR = os.path.join(settings.APPS_DIR, "filebrowser/tests/ressources/walkdir/")
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'filebrowser/tests/tmp')
+FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
 
 
 
 def command(cmd):
     p = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            shell=True
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=True
     )
     out, err = p.communicate()
     if p.returncode:
@@ -127,57 +128,57 @@ class UtilsTestCase(TestCase):
         command('git init ' + os.path.join(d, "repo"))
         self.maxDiff = None
         expected = {
-            'parent'  : '',
-            'type'    : 'folder',
-            'name'    : 'Yggdrasil',
-            'path'    : 'Yggdrasil',
-            'icon'    : 'fas fa-folder',
-            'write'   : True,
-            'read'    : True,
-            'repo'    : None,
+            'parent':   '',
+            'type':     'folder',
+            'name':     'Yggdrasil',
+            'path':     'Yggdrasil',
+            'icon':     'fas fa-folder',
+            'write':    True,
+            'read':     True,
+            'repo':     None,
             'children': [{
-                'parent'  : 'Yggdrasil',
-                'type'    : 'folder',
-                'name'    : 'directory',
-                'path'    : 'Yggdrasil/directory',
-                'icon'    : 'fas fa-folder',
-                'write'   : True,
-                'read'    : True,
-                'repo'    : None,
+                'parent':   'Yggdrasil',
+                'type':     'folder',
+                'name':     'directory',
+                'path':     'Yggdrasil/directory',
+                'icon':     'fas fa-folder',
+                'write':    True,
+                'read':     True,
+                'repo':     None,
                 'children': [
                     {
                         'parent': 'Yggdrasil/directory',
-                        'type'  : 'file',
-                        'name'  : 'file',
-                        'path'  : 'Yggdrasil/directory/file',
-                        'icon'  : 'fas fa-file-alt',
-                        'write' : True,
-                        'read'  : True,
-                        'repo'  : None
+                        'type':   'file',
+                        'name':   'file',
+                        'path':   'Yggdrasil/directory/file',
+                        'icon':   'fas fa-file-alt',
+                        'write':  True,
+                        'read':   True,
+                        'repo':   None
                     }]
             }, {
-                'parent'  : 'Yggdrasil',
-                'type'    : 'folder',
-                'name'    : 'repo',
-                'path'    : 'Yggdrasil/repo',
-                'icon'    : 'fas fa-folder',
-                'write'   : True,
-                'read'    : True,
-                'repo'    : {
-                    'url'   : '',
+                'parent':   'Yggdrasil',
+                'type':     'folder',
+                'name':     'repo',
+                'path':     'Yggdrasil/repo',
+                'icon':     'fas fa-folder',
+                'write':    True,
+                'read':     True,
+                'repo':     {
+                    'url':    '',
                     'branch': 'HEAD',
-                    'host'  : 'fab fa-git'
+                    'host':   'fab fa-git'
                 },
                 'children': []
             }, {
                 'parent': 'Yggdrasil',
-                'type'  : 'file',
-                'name'  : 'text.txt',
-                'path'  : 'Yggdrasil/text.txt',
-                'icon'  : 'fas fa-file-alt',
-                'write' : True,
-                'read'  : True,
-                'repo'  : None
+                'type':   'file',
+                'name':   'text.txt',
+                'path':   'Yggdrasil/text.txt',
+                'icon':   'fas fa-file-alt',
+                'write':  True,
+                'read':   True,
+                'repo':   None
             }]
         }
         

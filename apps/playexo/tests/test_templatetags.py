@@ -1,4 +1,5 @@
 from django.test import TestCase
+
 from playexo.templatetags.playexo_tags import dict_value
 
 

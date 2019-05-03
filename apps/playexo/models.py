@@ -13,12 +13,12 @@ from django.template.loader import get_template
 from django.urls import resolve
 from django.utils import timezone
 from jsonfield import JSONField
-from playexo.exception import SandboxError, BuildScriptError
 
 from classmanagement.models import Course
 from loader.models import PL, PLTP
 from lti_app.models import LTIModel
 from playexo.enums import State
+from playexo.exception import BuildScriptError, SandboxError
 from playexo.request import SandboxBuild, SandboxEval
 
 
@@ -101,10 +101,8 @@ class SessionActivity(models.Model):
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
     current_pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=True)
     
-    
     class Meta:
         unique_together = ('user', 'activity')
-    
     
     def exercise(self, pl=...):
         """Return the SessionExercice corresponding to self.current_pl.
@@ -115,8 +113,8 @@ class SessionActivity(models.Model):
         Raise IntegrityError if no session for either self.current_pl or pl (if given) was found."""
         try:
             return next(
-                    i for i in self.sessionexercise_set.all()
-                    if i.pl == (self.current_pl if pl is ... else pl)
+                i for i in self.sessionexercise_set.all()
+                if i.pl == (self.current_pl if pl is ... else pl)
             )
         except StopIteration:
             raise IntegrityError("'current_pl' of SessionActivity does not have a corresponding "
@@ -138,10 +136,8 @@ class SessionExerciseAbstract(models.Model):
     envid = models.CharField(max_length=300, null=True)
     context = JSONField(null=True)
     
-    
     class Meta:
         abstract = True
-    
     
     def add_to_context(self, key, value):
         """Add value corresponding to key in the context."""
@@ -208,10 +204,10 @@ class SessionExerciseAbstract(models.Model):
         
         response = evaluator.call()
         answer = {
-                "answers": answers,
-                "user":    request.user,
-                "pl":      self.pl,
-                "grade":   response['grade'],
+            "answers": answers,
+            "user":    request.user,
+            "pl":      self.pl,
+            "grade":   response['grade'],
         }
         
         if response['status'] < 0:  # Sandbox Error
@@ -293,10 +289,8 @@ class SessionExercise(SessionExerciseAbstract):
         session_activity - SessionActivity to which this SessionExercise belong."""
     session_activity = models.ForeignKey(SessionActivity, on_delete=models.CASCADE)
     
-    
     class Meta:
         unique_together = ('pl', 'session_activity')
-    
     
     @receiver(post_save, sender=SessionActivity)
     def create_session_exercise(sender, instance, created, **kwargs):
@@ -339,14 +333,14 @@ class SessionExercise(SessionExerciseAbstract):
             self.build(request)
         
         dic = {
-                **self.context,
-                **{
-                        'user_settings__': self.session_activity.user.profile,
-                        'user__':          self.session_activity.user,
-                        'pl_id__':         pl.id,
-                        'answers__':       last.answers if last else {},
-                        'grade__':         highest_grade.grade if highest_grade else None,
-                },
+            **self.context,
+            **{
+                'user_settings__': self.session_activity.user.profile,
+                'user__':          self.session_activity.user,
+                'pl_id__':         pl.id,
+                'answers__':       last.answers if last else {},
+                'grade__':         highest_grade.grade if highest_grade else None,
+            },
         }
         if context:
             dic = {**context, **dic}
@@ -385,28 +379,28 @@ class SessionExercise(SessionExerciseAbstract):
     
     def get_navigation(self, request):
         pl_list = [{
-                'id':    None,
-                'state': None,
-                'title': self.session_activity.activity.pltp.json['title'],
+            'id':    None,
+            'state': None,
+            'title': self.session_activity.activity.pltp.json['title'],
         }]
         for pl in self.session_activity.activity.pltp.indexed_pl():
             pl_list.append({
-                    'id':    pl.id,
-                    'state': Answer.pl_state(pl, self.session_activity.user),
-                    'title': pl.json['title'],
+                'id':    pl.id,
+                'state': Answer.pl_state(pl, self.session_activity.user),
+                'title': pl.json['title'],
             })
         context = dict(self.context)
         context.update({
-                "pl_list__": pl_list,
-                'pl_id__':   self.pl.id if self.pl else None
+            "pl_list__": pl_list,
+            'pl_id__':   self.pl.id if self.pl else None
         })
         return get_template("playexo/navigation.html").render(context, request)
     
     
     def get_context(self, request):
         return {
-                "navigation": self.get_navigation(request),
-                "exercise":   self.get_exercise(request),
+            "navigation": self.get_navigation(request),
+            "exercise":   self.get_exercise(request),
         }
 
 
@@ -459,13 +453,13 @@ class SessionTest(SessionExerciseAbstract):
             self.build(request, test=True)
         
         dic = {
-                **self.context,
-                **{
-                        'user_settings__': self.user.profile,
-                        'session__':       self,
-                        'user__':          self.user,
-                        'pl_id__':         pl.id,
-                },
+            **self.context,
+            **{
+                'user_settings__': self.user.profile,
+                'session__':       self,
+                'user__':          self.user,
+                'pl_id__':         pl.id,
+            },
         }
         
         for key in dic:
@@ -542,12 +536,12 @@ class Answer(models.Model):
             
             All data are strings."""
         state = {
-                State.SUCCEEDED:   [0.0, 0],
-                State.PART_SUCC:   [0.0, 0],
-                State.FAILED:      [0.0, 0],
-                State.STARTED:     [0.0, 0],
-                State.NOT_STARTED: [0.0, 0],
-                State.ERROR:       [0.0, 0],
+            State.SUCCEEDED:   [0.0, 0],
+            State.PART_SUCC:   [0.0, 0],
+            State.FAILED:      [0.0, 0],
+            State.STARTED:     [0.0, 0],
+            State.NOT_STARTED: [0.0, 0],
+            State.ERROR:       [0.0, 0],
         }
         
         for pl in pltp.indexed_pl():
@@ -599,12 +593,12 @@ class Answer(models.Model):
             
             All data are strings."""
         state = {
-                State.SUCCEEDED:   [0.0, 0],
-                State.PART_SUCC:   [0.0, 0],
-                State.FAILED:      [0.0, 0],
-                State.STARTED:     [0.0, 0],
-                State.NOT_STARTED: [0.0, 0],
-                State.ERROR:       [0.0, 0],
+            State.SUCCEEDED:   [0.0, 0],
+            State.PART_SUCC:   [0.0, 0],
+            State.FAILED:      [0.0, 0],
+            State.STARTED:     [0.0, 0],
+            State.NOT_STARTED: [0.0, 0],
+            State.ERROR:       [0.0, 0],
         }
         
         for activity in course.activity_set.all():

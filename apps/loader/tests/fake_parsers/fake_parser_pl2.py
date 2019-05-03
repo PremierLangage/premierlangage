@@ -126,9 +126,9 @@ class Parser:
                                str(e))
         
         self.dic['__extends'].append({
-            'path'          : path,
-            'line'          : line,
-            'lineno'        : self.lineno,
+            'path':           path,
+            'line':           line,
+            'lineno':         self.lineno,
             'directory_name': directory
         })
     
@@ -184,7 +184,8 @@ class Parser:
                                     self.lineno,
                                     message="Invalid JSON syntax starting ")
         elif op == '+':
-            self.dic_add_key(key, value, append=True)    
+            self.dic_add_key(key, value, append=True)
+    
     
     def multi_line_match(self, match, line):
         """ Set self._multiline_key and self._multiline_opened_lineno.
@@ -248,7 +249,8 @@ class Parser:
                 self.dic['__files'][name] = f.read()
         
         except FileNotFoundError as e:
-            raise FileNotFound(self.path_parsed_file, line, match.group('file'), self.lineno, str(e))
+            raise FileNotFound(self.path_parsed_file, line, match.group('file'), self.lineno,
+                               str(e))
         except SyntaxError as e:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
     
@@ -316,7 +318,7 @@ def get_parser():
             - the type parsed ('pl' or 'pltp')."""
     
     return {
-        'ext'   : ['.pl'],
+        'ext':    ['.pl'],
         'parser': Parser,
-        'type'  : 'pl'
+        'type':   'pl'
     }

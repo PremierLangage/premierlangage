@@ -6,15 +6,17 @@
 #  Copyright 2018 Coumes Quentin
 
 
-import os, importlib, logging
-from os.path import basename, splitext, join
-
-from django.core.exceptions import ObjectDoesNotExist
+import importlib
+import logging
+import os
+from os.path import basename, join, splitext
 
 from django.conf import settings
-from loader.utils import extends_dict
-from loader.exceptions import UnknownExtension, DirectoryNotFound, FileNotFound, MissingKey
+from django.core.exceptions import ObjectDoesNotExist
+
 from filebrowser.models import Directory
+from loader.exceptions import DirectoryNotFound, FileNotFound, MissingKey, UnknownExtension
+from loader.utils import extends_dict
 
 
 logger = logging.getLogger(__name__)
@@ -48,6 +50,7 @@ if __name__ == "__main__":
 """
 
 
+
 def get_parsers():
     """ Return a dict containing extension:(type, parser) key:value pair for every parser.
     
@@ -63,11 +66,11 @@ def get_parsers():
         if file_name.endswith(".py") and "__" not in file_name:
             try:
                 module = importlib.import_module(
-                        settings.PARSERS_MODULE + "." + splitext(file_name)[0])
+                    settings.PARSERS_MODULE + "." + splitext(file_name)[0])
                 parser = module.get_parser()
                 if type(parser) != dict \
-                        or set(parser.keys()) != {'ext', 'type', 'parser'} \
-                        or parser['type'] not in FILE_TYPE:
+                    or set(parser.keys()) != {'ext', 'type', 'parser'} \
+                    or parser['type'] not in FILE_TYPE:
                     raise ValueError
                 for ext in parser['ext']:
                     if ext not in parsers:

@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from loader.models import PL, PLTP, Index
+from loader.models import Index, PL, PLTP
 
 
 

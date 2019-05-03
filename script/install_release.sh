@@ -65,19 +65,25 @@ pip3 install -r requirements.txt || { echo>&2 "ERROR: pip3 install -r requiremen
 echo "Done !"
 
 
+#Creating needed directories
+echo ""
+echo "Creating needed directories..."
+if [ ! -d home/Yggdrasil ]; then
+    mkdir home/Yggdrasil || { echo>&2 "ERROR: Can't create home/Yggdrasil" ; exit 1; }
+fi
+if [ ! -d static ]; then
+    mkdir static || { echo>&2 "ERROR: Can't create static/" ; exit 1; }
+fi
+if [ ! -d media ]; then
+    mkdir media || { echo>&2 "ERROR: Can't create media/" ; exit 1; }
+fi
+
+
 #Creating static files
 echo ""
 echo "Creating static files..."
 python3 manage.py collectstatic --noinput || { echo>&2 "ERROR: python3 manage.py collectstatic failed" ; exit 1; }
 echo "Done !"
-
-
-#Creating needed directories
-echo ""
-echo "Creating needed directories..."
-if [ ! -d ../../home/Yggdrasil ]; then
-    mkdir ../../home/Yggdrasil || { echo>&2 "ERROR: Can't create ../../home/Yggdrasil" ; exit 1; }
-fi
 
 
 #Building database
@@ -87,7 +93,7 @@ SECRET_KEY=$SECRET_KEY python3 manage.py makemigrations || { echo>&2 "ERROR: pyt
 SECRET_KEY=$SECRET_KEY python3 manage.py migrate || { echo>&2 "ERROR: python3 manage.py migrate failed" ; exit 1; }
 
 #Filling database
-python3 script/fill_database_release.py || { echo>&2 "ERROR: python3 script/fill_database_release.py failed" ; exit 1; }
+SECRET_KEY=$SECRET_KEY python3 manage.py shell < script/fill_database_release.py || { echo>&2 "ERROR: python3 manage.py shell < script/fill_database_release.py failed" ; exit 1; }
 echo "Done !"
 
 

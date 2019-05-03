@@ -1,17 +1,19 @@
 import os
 import shutil
+import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.test import Client, override_settings, TestCase
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from filebrowser.models import Directory
 from filebrowser.utils import missing_parameter
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'filebrowser/tests/tmp')
 
-RES_DIR = os.path.join(settings.BASE_DIR, "filebrowser/tests/ressources/fake_filebrowser_data/")
+FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
+
+RES_DIR = os.path.join(settings.APPS_DIR, "filebrowser/tests/ressources/fake_filebrowser_data/")
 
 
 
@@ -41,10 +43,10 @@ class CreateTestCase(TestCase):
     
     def test_create_file(self):
         response = self.c.post(reverse("filebrowser:option"), {
-                'name'   : 'create_resource',
-                'path'   : 'Yggdrasil/TPE/Dir_test/test.pl',
-                'type'   : 'file',
-                'content': 'test',
+            'name':    'create_resource',
+            'path':    'Yggdrasil/TPE/Dir_test/test.pl',
+            'type':    'file',
+            'content': 'test',
         }, content_type='application/json')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(os.path.isfile(os.path.join(self.dir, 'TPE/Dir_test/test.pl')))
@@ -54,8 +56,8 @@ class CreateTestCase(TestCase):
     
     def test_create_dir(self):
         response = self.c.post(reverse("filebrowser:option"), {
-                'name': 'create_resource',
-                'path': 'Yggdrasil/TPE/Dir_test/test/',
+            'name': 'create_resource',
+            'path': 'Yggdrasil/TPE/Dir_test/test/',
         }, content_type='application/json')
         self.assertEqual(response.status_code, 200)
         self.assertTrue(os.path.isdir(os.path.join(self.dir, 'TPE/Dir_test/test/')))
@@ -63,28 +65,28 @@ class CreateTestCase(TestCase):
     
     def test_create_no_path(self):
         response = self.c.post(reverse("filebrowser:option"), {
-                'name': 'create_resource',
+            'name': 'create_resource',
         }, content_type='application/json')
         self.assertContains(response, missing_parameter('path'), status_code=400)
     
     
     def test_create_disallowed_char(self):
         response = self.c.post(reverse("filebrowser:option"), {
-                'name': 'create_resource',
-                'path': 'Yggdrasil/TPE/Dir_test/+/',
+            'name': 'create_resource',
+            'path': 'Yggdrasil/TPE/Dir_test/+/',
         }, content_type='application/json')
         self.assertContains(response, 'contain', status_code=400)
     
     
     def test_create_already_exists(self):
         response = self.c.post(reverse("filebrowser:option"), {
-                'name': 'create_resource',
-                'path': 'Yggdrasil/TPE/Dir_test/already/',
+            'name': 'create_resource',
+            'path': 'Yggdrasil/TPE/Dir_test/already/',
         }, content_type='application/json')
         self.assertEqual(response.status_code, 200)
         
         response = self.c.post(reverse("filebrowser:option"), {
-                'name': 'create_resource',
-                'path': 'Yggdrasil/TPE/Dir_test/already/',
+            'name': 'create_resource',
+            'path': 'Yggdrasil/TPE/Dir_test/already/',
         }, content_type='application/json')
         self.assertContains(response, 'this name is already used.', status_code=400)

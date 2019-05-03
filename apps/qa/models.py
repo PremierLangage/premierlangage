@@ -3,16 +3,15 @@ import math
 from django.conf import settings
 from django.db import models
 from django.db.models import F
-from django.utils.text import slugify
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
+from django.utils.text import slugify
 from django_markdown.models import MarkdownField
 from hitcount.models import HitCountMixin
 from taggit.managers import TaggableManager
 
 from qa.mixins import DateMixin
 from qa.utils import epoch_seconds
-from user_profile.models import Profile
 
 
 REPUTATION = settings.QA_SETTINGS['reputation']

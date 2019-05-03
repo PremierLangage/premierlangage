@@ -3,24 +3,29 @@
 {% load static %}
 
 {% block css %}
-<link rel="stylesheet" href="{% static 'css/block_chart.css' %}" />
-<link rel="stylesheet" href="{% static 'css/classmanagement.css' %}" />
+<link rel="stylesheet" href="{% static 'css/block_chart.css' %}"/>
+<link rel="stylesheet" href="{% static 'css/classmanagement.css' %}"/>
 {% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="panel panel-default">
         <div class="panel-body">
-            <h4>{{course_name}}: {% firstof student.get_full_name student.username %}</h4><hr>
+            <h4>{{course_name}}: {% firstof student.get_full_name student.username %}</h4>
+            <hr>
             <div class="course-instructor-action">
                 <a href="/courses/course/{{course_id}}/">Retour</a><br><br>
-                <a href="/courses/course/{{course_id}}/summary/">Voir l'avancement des élèves pour le cours</a>
+                <a href="/courses/course/{{course_id}}/summary/">Voir l'avancement des élèves pour
+                    le cours</a>
             </div>
             <table class="table">
                 <thead>
                     <tr style='display: flex;'>
                         {% for item in state %}
-                            <th style='display: flex;'><div class="block course-block {{item.template}}" style="width: 20px; height: 20px;"></div>&emsp;{{item}}</th>
+                        <th style='display: flex;'>
+                            <div class="block course-block {{item.template}}"
+                                 style="width: 20px; height: 20px;"></div>&emsp;{{item}}
+                        </th>
                         {% endfor %}
                     </tr>
                 </thead>
@@ -30,27 +35,32 @@
                     <thead>
                         <tr>
                             <th class="student-th">Activité</th>
-                            <th colspan='100'><center>Questions</center></th>
+                            <th colspan='100'>
+                                <center>Questions</center>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for elem in activities %}
-                            <tr>
-                                <td class="summary-td"><a href="/courses/course/{{course_id}}/{{elem.id}}/summary/">{{ elem.name }}</a></td>
-                                {% for item in elem.pl %}
-                                    <center>
-                                        <td class="summary-pl">
-                                            <div class="block course-block {{item.state.template}}" ><p>{{ item.name }}</p></div>
-                                        </td> 
-                                    </center>
-                                {% endfor %}
-                            </tr>
+                        <tr>
+                            <td class="summary-td"><a
+                                    href="/courses/course/{{course_id}}/{{elem.id}}/summary/">{{
+                                elem.name }}</a></td>
+                            {% for item in elem.pl %}
+                            <center>
+                                <td class="summary-pl">
+                                    <div class="block course-block {{item.state.template}}"><p>{{
+                                        item.name }}</p></div>
+                                </td>
+                            </center>
+                            {% endfor %}
+                        </tr>
                         {% endfor %}
-                      <tr>
+                        <tr>
                     </tbody>
                 </table>
-            </div> 
-        </div>    
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

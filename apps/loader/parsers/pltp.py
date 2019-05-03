@@ -2,7 +2,7 @@ import hashlib
 import re
 from os.path import dirname
 
-from loader.exceptions import SyntaxErrorPL, FileNotFound
+from loader.exceptions import FileNotFound, SyntaxErrorPL
 from loader.parsers.pl import Parser as ParserPL
 from loader.utils import get_location
 
@@ -43,9 +43,9 @@ class Parser(ParserPL):
                                str(e))
         
         self.dic['__pl'].append({
-            'path'          : path,
-            'line'          : line,
-            'lineno'        : self.lineno,
+            'path':           path,
+            'line':           line,
+            'lineno':         self.lineno,
             'directory_name': directory
         })
     
@@ -89,7 +89,7 @@ def get_parser():
             - the type parsed ('pl' or 'pltp')."""
     
     return {
-        'ext'   : ['.pltp'],
+        'ext':    ['.pltp'],
         'parser': Parser,
-        'type'  : 'pltp'
+        'type':   'pltp'
     }

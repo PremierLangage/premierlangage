@@ -6,20 +6,42 @@
 
 {% block content %}
 {% csrf_token %}
-<app-root-><app-root>
-{% endblock %}
-
-{% block end_script %}
-<!-- if prod -->
-<link rel="stylesheet" href="{% static "/filebrowser/app/styles.css" %}"/>
-<script type="text/javascript" src="{% static "/filebrowser/app/runtime.js" %}"></script>
-<script type="text/javascript" src="{% static "/filebrowser/app/polyfills.js" %}"></script>
-<script type="text/javascript" src="{% static "/filebrowser/app/main.js" %}"></script>
- 
-<!-- if dev -->
-<!-- <script type="text/javascript" src="{% static "/filebrowser/app/runtime.js" %}"></script>
-<script type="text/javascript" src="{% static "/filebrowser/app/polyfills.js" %}"></script>
-<script type="text/javascript" src="{% static "/filebrowser/app/styles.js" %}"></script>
-<script type="text/javascript" src="{% static "/filebrowser/app/vendor.js" %}"></script>
-<script type="text/javascript" src="{% static "/filebrowser/app/main.js" %}"></script> -->
-{% endblock %}
+<app-root->
+    <app-root>
+        {% endblock %}
+        
+        {% block end_script %}
+        <!-- if prod -->
+        <link rel="stylesheet" href="{% static "
+        /filebrowser/app/styles.css" %}"/>
+        <script type="text/javascript" src="{% static "
+        /filebrowser/app/runtime.js" %}"></script>
+        <
+        script;
+        type = "text/javascript";
+        src = "{% static " / filebrowser / app / polyfills.js;
+        " %}" ></script>
+        <script type="text/javascript" src="{% static "
+        /filebrowser/app/main.js" %}"></script>
+        
+        <!-- if dev -->
+        <
+        !-- < script;
+        type = "text/javascript";
+        src = "{% static " / filebrowser / app / runtime.js;
+        " %}" ></script>
+        <script type="text/javascript" src="{% static "
+        /filebrowser/app/polyfills.js" %}"></script>
+        <
+        script;
+        type = "text/javascript";
+        src = "{% static " / filebrowser / app / styles.js;
+        " %}" ></script>
+        <script type="text/javascript" src="{% static "
+        /filebrowser/app/vendor.js" %}"></script>
+        <
+        script;
+        type = "text/javascript";
+        src = "{% static " / filebrowser / app / main.js;
+        " %}" ></script> -->
+        {% endblock %}

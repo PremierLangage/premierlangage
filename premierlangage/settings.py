@@ -1,7 +1,6 @@
 import hashlib
 import logging
 import os
-import sys
 
 import dj_database_url
 from django.contrib.messages import constants as messages
@@ -257,11 +256,8 @@ USE_TZ = True
 SANDBOX = 'http://127.0.0.1:7000/sandbox'
 
 # Static files (CSS, JavaScript, Images)
-STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'premierlangage/static'))
+STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'static'))
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
 
 MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'media'))
 MEDIA_URL = '/media/'
@@ -273,7 +269,7 @@ FILEBROWSER_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../home/'))
 FILEBROWSER_DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&']
 
 # Path to directory containing parsers
-PARSERS_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'loader/parsers/'))
+PARSERS_ROOT = os.path.abspath(os.path.join(APPS_DIR, 'loader/parsers/'))
 PARSERS_MODULE = 'loader.parsers'
 
 # Default home directory name for pl users

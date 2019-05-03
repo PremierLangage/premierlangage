@@ -72,11 +72,12 @@ echo "Done !"
 #Creating needed directories
 echo ""
 echo "Creating needed directories..."
-if [ ! -d home/Yggdrasil ]
-then
+if [ ! -d home/Yggdrasil ]; then
     mkdir home/Yggdrasil || { echo>&2 "ERROR: Can't create home/Yggdrasil" ; exit 1; }
 fi
-
+if [ ! -d media ]; then
+    mkdir media || { echo>&2 "ERROR: Can't create media/" ; exit 1; }
+fi
 
 #Building database
 echo ""
@@ -85,5 +86,5 @@ python3 manage.py makemigrations || { echo>&2 "ERROR: python3 manage.py makemigr
 python3 manage.py migrate || { echo>&2 "ERROR: python3 manage.py migrate failed" ; exit 1; }
 
 #Filling database
-python3 script/fill_database_local.py || { echo>&2 "ERROR: python3 script/fill_database_local.py failed" ; exit 1; }
+python3 manage.py shell < script/fill_database_local.py || { echo>&2 "ERROR: python3 manage.py shell < script/fill_database_local.py failed" ; exit 1; }
 echo "Done !"

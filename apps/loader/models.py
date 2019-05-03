@@ -3,9 +3,9 @@
 
 import logging
 
-from jsonfield import JSONField
 from django.db import models
 from django.db.models import F
+from jsonfield import JSONField
 
 from filebrowser.models import Directory
 
@@ -69,7 +69,7 @@ class Index(models.Model):
     
     def __str__(self):  # pragma: no cover
         return "PLTP - (" + str(self.pltp) + ") | PL - (" + str(self.pl) + ") | Pos - " + str(
-                self.index)
+            self.index)
     
     
     def save(self, *args, **kwargs):

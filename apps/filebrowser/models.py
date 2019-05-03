@@ -24,7 +24,7 @@ class Directory(models.Model):
     
     def save(self, *args, **kwargs):
         self.root = os.path.join(settings.FILEBROWSER_ROOT, self.name)
-
+        
         if not isdir(self.root):
             os.makedirs(self.root)
         

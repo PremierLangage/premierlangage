@@ -2,24 +2,27 @@
 # -*- coding: utf-8 -*-
 #
 #  test_model.py
-#  
-#  
+#
+#
 
-import mock
 from datetime import datetime
 
+import mock
 import pytz
 from django.conf import settings
 from django.test import TestCase
 
 from qa.mixins import DateMixin
 
+
 TZ = settings.TIME_ZONE
+
 
 
 # This is the function that replaces django.utils.timezone.now()
 def mocked_now():
     return pytz.timezone(TZ).localize(datetime(2000, 6, 1))
+
 
 
 class MixinsTestCase(TestCase):

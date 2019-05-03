@@ -7,9 +7,9 @@
 #
 
 from enum import unique
-from enumfields import Enum
-
 from functools import total_ordering
+
+from enumfields import Enum
 
 
 
@@ -18,21 +18,21 @@ class ColorBlindness(Enum):
     """Used by .models.Profile to define the user's color blindness."""
     
     NONE = 0
-    PROTANOPIA   = 1
+    PROTANOPIA = 1
     DEUTERANOPIA = 2
-    TRITANOPIA   = 3
+    TRITANOPIA = 3
     
     class Label:
         NONE = 'Aucun'
-        PROTANOPIA   = 'Protanope'
+        PROTANOPIA = 'Protanope'
         DEUTERANOPIA = 'Deuteranope'
-        TRITANOPIA   = 'Tritanope'
+        TRITANOPIA = 'Tritanope'
     
     class Template:
         NONE = ''
         DEUTERANOPIA = 'deuteranopia'
-        PROTANOPIA   = 'protanopia'
-        TRITANOPIA   = 'tritanopia'
+        PROTANOPIA = 'protanopia'
+        TRITANOPIA = 'tritanopia'
 
 
 
@@ -57,6 +57,7 @@ class Role(Enum):
         if self.__class__ is other.__class__:
             return self.value < other.value
         return NotImplemented  # pragma: no cover
+    
     
     def __eq__(self, other):
         if self.__class__ is other.__class__:

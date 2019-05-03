@@ -1,15 +1,18 @@
-import re, pytz
+import re
 from datetime import datetime
 
+import pytz
 from django.conf import settings
 
 
 EPOCH = pytz.timezone(settings.TIME_ZONE).localize(datetime(1970, 1, 1))
 
 
+
 def epoch_seconds(date):
     td = date - EPOCH
     return td.days * 86400 + td.seconds + (float(td.microseconds) / 1000000)
+
 
 
 def parse_query(query):

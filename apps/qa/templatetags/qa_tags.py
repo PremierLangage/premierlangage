@@ -14,9 +14,11 @@ RIGHTS = settings.QA_SETTINGS['right']
 register = template.Library()
 
 
+
 @register.filter
 def urlencode_q(s):
     return quote(s).replace('%20', '+')
+
 
 
 @register.filter
@@ -30,6 +32,7 @@ def voted_up_question(user, question):
         return False
 
 
+
 @register.filter
 def voted_down_question(user, question):
     if user.is_anonymous:
@@ -39,6 +42,7 @@ def voted_down_question(user, question):
         return not vote.value
     except ObjectDoesNotExist:
         return False
+
 
 
 @register.filter
@@ -52,6 +56,7 @@ def voted_up_answer(user, answer):
         return False
 
 
+
 @register.filter
 def voted_down_answer(user, answer):
     if user.is_anonymous:
@@ -63,6 +68,7 @@ def voted_down_answer(user, answer):
         return False
 
 
+
 @register.filter
 def can_edit_question(user, question):
     if user.is_anonymous:
@@ -70,6 +76,7 @@ def can_edit_question(user, question):
     return (question.user == user
             or user.profile.is_admin
             or (0 <= RIGHTS['EDIT_QUESTION'] <= max(user.profile.rep, 0)))
+
 
 
 @register.filter
@@ -81,12 +88,14 @@ def can_edit_answer(user, answer):
             or (0 <= RIGHTS['EDIT_ANSWER'] <= max(user.profile.rep, 0)))
 
 
+
 @register.filter
 def can_edit_comment(user, comment):
     if user.is_anonymous:
         return False
     return (comment.user == user
             or user.profile.is_admin or (0 <= RIGHTS['EDIT_COMMENT'] <= max(user.profile.rep, 0)))
+
 
 
 @register.filter
@@ -96,6 +105,7 @@ def can_post_question(user):
     return user.profile.is_admin or (0 <= RIGHTS['POST_QUESTION'] <= max(user.profile.rep, 0))
 
 
+
 @register.filter
 def can_post_answer(user):
     if user.is_anonymous:
@@ -103,11 +113,13 @@ def can_post_answer(user):
     return user.profile.is_admin or (0 <= RIGHTS['POST_ANSWER'] <= max(user.profile.rep, 0))
 
 
+
 @register.filter
 def can_post_comment(user):
     if user.is_anonymous:
         return False
     return user.profile.is_admin or (0 <= RIGHTS['POST_COMMENT'] <= max(user.profile.rep, 0))
+
 
 
 @register.filter
@@ -119,6 +131,7 @@ def can_delete_question(user, question):
             or (0 <= RIGHTS['DELETE_QUESTION'] <= max(user.profile.rep, 0)))
 
 
+
 @register.filter
 def can_delete_answer(user, answer):
     if user.is_anonymous:
@@ -126,6 +139,7 @@ def can_delete_answer(user, answer):
     return (answer.user == user
             or user.profile.is_admin
             or (0 <= RIGHTS['DELETE_ANSWER'] <= max(user.profile.rep, 0)))
+
 
 
 @register.filter

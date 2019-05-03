@@ -1,9 +1,12 @@
 class Parser:
+    
     def __init__(self, directory, rel_path):
         pass
-        
+    
+    
     def parse(self):
         return {}, []
 
-def get_parser(): return {'ext': ['.pltp'], 'resrap': Parser, 'type': 'pltp'}
 
+
+def get_parser(): return {'ext': ['.pltp'], 'resrap': Parser, 'type': 'pltp'}

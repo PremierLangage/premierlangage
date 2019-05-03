@@ -1,16 +1,15 @@
-from enumfields import EnumIntegerField
+from django.contrib.auth.models import User
 from django.core.files import File
 from django.db import models
-from django.contrib.auth.models import User
 from django.db.models import F
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from enumfields import EnumIntegerField
 
-from user_profile.utils import avatar_path, generate_identicon
-from user_profile.enums import Role, EditorTheme, ColorBlindness
 from lti_app.models import LTIModel
-from filebrowser.models import Directory
 from playexo.models import Activity
+from user_profile.enums import ColorBlindness, EditorTheme, Role
+from user_profile.utils import avatar_path, generate_identicon
 
 
 
@@ -60,8 +59,8 @@ class Profile(LTIModel):
     def can_load(self):
         """Returns True if the user is at least an Instructor, False if not."""
         return self.role <= Role.INSTRUCTOR or self.is_admin()
-
-     
+    
+    
     @receiver(post_save, sender=User)
     def create_user_profile(sender, instance, created, **kwargs):
         """When a new user is created, create a corresponding profile."""
@@ -75,8 +74,8 @@ class Profile(LTIModel):
     def save_user_profile(sender, instance, **kwargs):
         """Save the profile when its corresponding user is saved."""
         instance.profile.save()
-
-
+    
+    
     def save(self, *args, **kwargs):
         """Fix the IntegrityError when creating a new user and modifying default profile."""
         if self.pk is None:
@@ -86,7 +85,7 @@ class Profile(LTIModel):
             self.avatar.save(self.user.username, File(generate_identicon(self.user)))
         else:
             super(Profile, self).save(*args, **kwargs)
-
+    
     
     def __str__(self):
         return self.user.username + "'s Profile"

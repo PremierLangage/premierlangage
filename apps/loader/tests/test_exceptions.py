@@ -2,19 +2,20 @@
 # -*- coding: utf-8 -*-
 #
 #  test_utils.py
-#  
-#  
+#
+#
 
 
 from django.test import TestCase
 
+from loader.exceptions import (DirectoryNotFound, FileNotFound, MissingKey, SemanticError,
+                               SyntaxErrorPL, UnknownExtension, UnknownType)
 
-from loader.exceptions import (SyntaxErrorPL, SemanticError, DirectoryNotFound, FileNotFound,
-                               UnknownType, UnknownExtension, MissingKey)
 
 
 class ExceptionsTestCase(TestCase):
     """ Test functions of loader.exceptions modules. """
+    
     
     def test_syntax_error_pl_str(self):
         path = 'first1/second1'
@@ -58,13 +59,13 @@ class ExceptionsTestCase(TestCase):
         
         self.assertEqual(str(FileNotFound(path, line, path_not_found, lineno, message)),
                          str_message)
-
-
+    
+    
     def test_unknown_extension_str(self):
         path = 'first1/second1'
         name = 'name.pl'
         message = "Unknown Extension"
-        str_message = path + " -- " + message + " : '.pl' of file '" + name + "'" 
+        str_message = path + " -- " + message + " : '.pl' of file '" + name + "'"
         
         self.assertEqual(str(UnknownExtension(path, name, message)), str_message)
     
@@ -73,7 +74,7 @@ class ExceptionsTestCase(TestCase):
         typ = 'directory'
         parser = '3'
         message = "Unknown Type"
-        str_message = message + " : '" + typ + "' of parser '" + parser + "'" 
+        str_message = message + " : '" + typ + "' of parser '" + parser + "'"
         
         self.assertEqual(str(UnknownType(typ, parser, message)), str_message)
     

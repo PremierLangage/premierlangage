@@ -1,5 +1,6 @@
 import os
 import shutil
+import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -18,7 +19,7 @@ from playexo.models import Activity, Answer, SessionActivity, SessionExercise, S
 from user_profile.enums import Role
 
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'playexo/tests/tmp')
+FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
 
 
 
@@ -42,7 +43,7 @@ class ModelTestCase(TestCase):
             shutil.rmtree(dir_name)
         cls.dir = Directory.objects.create(name='dir1', owner=cls.user)
         shutil.rmtree(cls.dir.root)
-        shutil.copytree(os.path.join(FAKE_FB_ROOT, '../fake_pl'), cls.dir.root)
+        shutil.copytree(os.path.join(settings.APPS_DIR, 'playexo/tests/fake_pl'), cls.dir.root)
         cls.pl = load_file(cls.dir, "random_add.pl")[0]
         cls.pl.json['seed'] = 2
         cls.pl.save()
@@ -60,10 +61,10 @@ class ModelTestCase(TestCase):
         course = Course.objects.create(name="test", label="bidon", consumer="bidon",
                                        consumer_id="bidon")
         params = {
-                'resource_link_id': 1,
-                'resource_link_title': "An Activity",
-                'oauth_consumer_key': course.consumer,
-                'context_id': course.consumer_id,
+            'resource_link_id':    1,
+            'resource_link_title': "An Activity",
+            'oauth_consumer_key':  course.consumer,
+            'context_id':          course.consumer_id,
         }
         with self.assertRaises(Http404):
             Activity.get_or_create_from_lti(R(), params)
@@ -184,7 +185,7 @@ class ModelTestCase(TestCase):
         s_activity = SessionActivity.objects.create(user=self.user, activity=activity)
         s_exercice = SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         Answer.objects.create(pl=self.pl, user=self.user, grade=10)
-
+        
         res = s_exercice.get_pl(self.factory.get(""), {"test": "test"})
         self.assertIn("Quentin Coumes", res)
     
@@ -193,12 +194,12 @@ class ModelTestCase(TestCase):
         activity = Activity.objects.create(name="test", pltp=self.pltp)
         s_activity = SessionActivity.objects.create(user=self.user, activity=activity)
         s_exercice = SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
-
+        
         res = s_exercice.get_exercise(self.factory.get(""))
         self.assertIn("Quentin Coumes", res)
         
         s_exercice = SessionExercise.objects.create(session_activity=s_activity)
-
+        
         res = s_exercice.get_exercise(self.factory.get(""))
         self.assertIn("Random add", res)
     
@@ -216,7 +217,7 @@ class ModelTestCase(TestCase):
         activity = Activity.objects.create(name="test", pltp=self.pltp)
         s_activity = SessionActivity.objects.create(user=self.user, activity=activity)
         s_exercice = SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
-
+        
         res = s_exercice.get_context(self.factory.get(""))
         self.assertIn("exercise", res)
         self.assertIs(type(res), dict)
@@ -275,6 +276,7 @@ class ModelTestCase(TestCase):
         self.assertEqual(Answer.user_course_summary(course, self.user)[State.NOT_STARTED],
                          ['100.0', '2'])
     
+    
     # Test SessionTest
     
     def test_sessiontest_save(self):
@@ -284,13 +286,14 @@ class ModelTestCase(TestCase):
         self.assertEquals(len(SessionTest.objects.filter(user=self.user)),
                           SessionTest.MAX_SESSION_PER_USER)
         self.assertEquals(dict(self.pl.json), s_test.context)
-
-
+    
+    
     def test_sessiontest_get_pl(self):
         s_test = SessionTest.objects.create(user=self.user, pl=self.pl)
         res = s_test.get_pl(self.factory.get(""), answer={"grade": 50})
         self.assertIn("Quentin Coumes", res)
-        
+    
+    
     def test_sessiontest_get_exercise(self):
         s_test = SessionTest.objects.create(user=self.user, pl=self.pl)
         res = s_test.get_exercise(self.factory.get(""))

@@ -1,16 +1,19 @@
-import logging, oauth2, sys
+import logging
+import sys
 
+import oauth2
 from django.conf import settings
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, logout
 from django.contrib.auth.backends import ModelBackend
-from django.contrib.auth import logout
-from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.db import IntegrityError
 
 from lti_app.request_validator import is_valid_request
 from user_profile.models import Profile
 
+
 logger = logging.getLogger(__name__)
+
 
 
 class LTIAuthBackend(ModelBackend):
@@ -23,6 +26,7 @@ class LTIAuthBackend(ModelBackend):
     
     # Username prefix for users without an sis source id
     unknown_user_prefix = "cuid:"
+    
     
     def authenticate(self, request, username=None, password=None, **kwargs):
         logout(request)
@@ -52,11 +56,11 @@ class LTIAuthBackend(ModelBackend):
         except oauth2.Error:
             logger.exception(u'error attempting to validate LTI launch %s', postparams)
             request_is_valid = False
-
+        
         if not request_is_valid:
             logger.warning("LTI Authentification aborted: signature check failed.")
             raise PermissionDenied("Invalid request: signature check failed.")
-
+        
         email = request.POST.get("lis_person_contact_email_primary")
         first_name = request.POST.get("lis_person_name_given")
         last_name = request.POST.get("lis_person_name_family")
@@ -88,7 +92,7 @@ class LTIAuthBackend(ModelBackend):
                 break
             user.profile.consumer = request_key
             user.profile.consumer_id = user_id
-            
+        
         # update the user
         if email:
             user.email = email
@@ -98,5 +102,5 @@ class LTIAuthBackend(ModelBackend):
             user.last_name = last_name
         user.save()
         
-        logger.info("User '"+username+"' has been autenticated")
+        logger.info("User '" + username + "' has been autenticated")
         return user

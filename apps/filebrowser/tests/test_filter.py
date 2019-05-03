@@ -1,16 +1,17 @@
 import os
+import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.test import override_settings, TestCase
+from django.test import TestCase, override_settings
 
 from filebrowser import filter
 from filebrowser.models import Directory
 
 
-RES_DIR = os.path.join(settings.BASE_DIR, "filebrowser/tests/ressources/filter/")
+RES_DIR = os.path.join(settings.APPS_DIR, "filebrowser/tests/ressources/filter/")
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'filebrowser/tests/tmp')
+FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
 
 
 

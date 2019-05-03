@@ -2,6 +2,7 @@
 
 import os
 import shutil
+import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -12,8 +13,8 @@ from loader.exceptions import FileNotFound, SemanticError, SyntaxErrorPL
 from loader.parsers import pl
 
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'loader/tests/tmp')
-FAKE_PL = os.path.join(settings.BASE_DIR, 'loader/tests/fake_pl')
+FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
+FAKE_PL = os.path.join(settings.APPS_DIR, 'loader/tests/fake_pl')
 
 
 
@@ -52,9 +53,9 @@ class PlParserTestCase(TestCase):
     
     def test_get_parser(self):
         self.assertEqual({
-            'ext'   : ['.pl'],
+            'ext':    ['.pl'],
             'parser': pl.Parser,
-            'type'  : 'pl'
+            'type':   'pl'
         }, pl.get_parser())
     
     
@@ -69,7 +70,7 @@ class PlParserTestCase(TestCase):
         # extends
         self.assertIn({
             'directory_name': 'dir1', 'lineno': 10, 'line': 'extends=working.pl\n',
-            'path'          : 'working.pl'
+            'path':           'working.pl'
         }, dic["__extends"])
         # =@ +=@
         with open(os.path.join(FAKE_FB_ROOT, "dir1/working.pl")) as f:
@@ -82,10 +83,14 @@ class PlParserTestCase(TestCase):
         # Override % with a.a
         self.assertEqual({'a': '3', 'b': 2}, dic['a'])
     
+    
     def test_parse_image(self):
         dic, war = pl.Parser(self.dir, "image.pl").parse()
-        self.assertEqual("<img src='/filebrowser/option?name=download_resource&path=dir1/image.png'/>", dic['text'])
-      
+        self.assertEqual(
+            "<img src='/filebrowser/option?name=download_resource&path=dir1/image.png'/>",
+            dic['text'])
+    
+    
     def test_parse_errors(self):
         with self.assertRaises(SyntaxErrorPL):
             pl.Parser(self.dir, "no_string_in_sub_key.pl").parse()

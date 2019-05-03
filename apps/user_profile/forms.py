@@ -6,11 +6,10 @@
 #  Copyright 2018 Coumes Quentin <qcoumes@etud.u-pem.fr>
 #
 
+from django import forms
 from enumfields import EnumIntegerField
 
-from django import forms
-
-from user_profile.enums import EditorTheme, ColorBlindness
+from user_profile.enums import ColorBlindness, EditorTheme
 
 
 
@@ -22,13 +21,14 @@ class ProfileForm(forms.Form):
     
     color_blindness = EnumIntegerField(ColorBlindness).formfield(
         label='Daltonisme ',
-        help_text='<a target="_blank">prévisualisation</a>'  # href="/profile/color_blindness_preview/"
+        help_text='<a target="_blank">prévisualisation</a>'
+        # href="/profile/color_blindness_preview/"
     )
-
+    
     editor_theme = EnumIntegerField(EditorTheme).formfield(
         label='Thème de l\'éditeur ',
         help_text='<a target="_blank" href="/profile/editor_preview/">prévisualisation</a>'
     )
-
+    
     confirm = forms.BooleanField(required=False, label="Confirmation exercice :",
                                  help_text="Confirmer avant de quitter un exercice")

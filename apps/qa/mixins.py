@@ -10,13 +10,14 @@ class DateMixin:
     """Provide a method indicating how much time ago something was created according to pub_date
     field."""
     
+    
     @staticmethod
     def verbose_date(date):
         now = timezone.now()
         delta = now - date
         seconds = delta.seconds
-        minutes = seconds//60
-        hours = minutes//60
+        minutes = seconds // 60
+        hours = minutes // 60
         if delta.days == 0:
             if hours == 0:
                 if minutes == 0:

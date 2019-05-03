@@ -2,6 +2,7 @@
 
 import os
 import shutil
+import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -12,8 +13,9 @@ from loader.exceptions import FileNotFound, SyntaxErrorPL
 from loader.parsers import pltp
 
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'loader/tests/tmp')
-FAKE_PLTP = os.path.join(settings.BASE_DIR, 'loader/tests/fake_pltp')
+FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
+FAKE_PLTP = os.path.join(settings.APPS_DIR, 'loader/tests/fake_pltp')
+
 
 
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
@@ -44,9 +46,9 @@ class PlParserTestCase(TestCase):
     
     def test_get_parser(self):
         self.assertEqual({
-            'ext'   : ['.pltp'],
+            'ext':    ['.pltp'],
             'parser': pltp.Parser,
-            'type'  : 'pltp'
+            'type':   'pltp'
         }, pltp.get_parser())
     
     

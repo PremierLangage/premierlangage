@@ -9,6 +9,7 @@
 import os
 import shutil
 import subprocess
+import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -33,7 +34,7 @@ def command(cmd):
 
 
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'loader/tests/tmp')
+FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
 
 
 
@@ -146,31 +147,31 @@ class UtilsTestCase(TestCase):
     
     def test_extends_dic(self):
         target = {
-            'in_both'    : 'test',
-            'in_target'  : 'test',
-            'list_both'  : [1],
+            'in_both':     'test',
+            'in_target':   'test',
+            'list_both':   [1],
             'list_target': [1],
-            'dic_target' : {"1": 1},
-            'dic_both'   : {"1": 1},
+            'dic_target':  {"1": 1},
+            'dic_both':    {"1": 1},
         }
         source = {
-            'in_both'    : 'test2',
-            'in_source'  : 'test2',
-            'list_both'  : [2],
+            'in_both':     'test2',
+            'in_source':   'test2',
+            'list_both':   [2],
             'list_source': [2],
-            'dic_source' : {"2": 2},
-            'dic_both'   : {"2": 2},
+            'dic_source':  {"2": 2},
+            'dic_both':    {"2": 2},
         }
         result = {
-            'in_both'    : 'test',
-            'in_target'  : 'test',
-            'in_source'  : 'test2',
-            'list_both'  : [1, 2],
+            'in_both':     'test',
+            'in_target':   'test',
+            'in_source':   'test2',
+            'list_both':   [1, 2],
             'list_target': [1],
             'list_source': [2],
-            'dic_target' : {"1": 1},
-            'dic_source' : {"2": 2},
-            'dic_both'   : {"1": 1, "2": 2}
+            'dic_target':  {"1": 1},
+            'dic_source':  {"2": 2},
+            'dic_both':    {"1": 1, "2": 2}
         }
         
         self.assertEqual(extends_dict(target, source), result)

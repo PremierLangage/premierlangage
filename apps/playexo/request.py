@@ -7,12 +7,15 @@
 #
 
 
-import logging, json, requests, os
+import json
+import logging
+import os
 
+import requests
 from django.conf import settings
 
-from playexo.utils import tar_from_dic
 from playexo.exception import SandboxUnavailable
+from playexo.utils import tar_from_dic
 
 
 logger = logging.getLogger(__name__)

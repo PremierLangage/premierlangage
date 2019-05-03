@@ -6,15 +6,16 @@
 #  Copyright 2018 Coumes Quentin
 
 import json
-import re
 import os
+import re
 from os.path import basename, dirname, join
 
 from django.conf import settings
 
+from filebrowser.utils import to_download_url
 from loader.exceptions import FileNotFound, SemanticError, SyntaxErrorPL
 from loader.utils import get_location
-from filebrowser.utils import to_download_url
+
 
 BAD_CHAR = r''.join(settings.FILEBROWSER_DISALLOWED_CHAR)
 
@@ -39,6 +40,7 @@ class Parser:
     COMMENT_LINE = re.compile(r'\s*' + COMMENT + r'$')
     EMPTY_LINE = re.compile(r'\s*$')
     HTML_KEYS = ['title', 'teacher', 'introductionh', 'text', 'form']
+    
     
     def __init__(self, directory, rel_path):
         self.directory = directory
@@ -73,14 +75,16 @@ class Parser:
                 matches = re.findall(self.SRC, value)
                 for match in matches:
                     src_match = match[-1]
-                    directory, path = get_location(self.directory, src_match, current=dirname(self.path), parser=self)
+                    directory, path = get_location(self.directory, src_match,
+                                                   current=dirname(self.path), parser=self)
                     src = os.path.join(directory, path)
                     value = value.replace(match[-1], to_download_url(src))
             except SyntaxError as e:
-                raise SyntaxErrorPL(self.path, self.lines[self.lineno-1], self.lineno, str(e))
+                raise SyntaxErrorPL(self.path, self.lines[self.lineno - 1], self.lineno, str(e))
             except FileNotFoundError as e:
-                raise FileNotFound(self.path, self.lines[self.lineno-1], src_match, self.lineno, str(e))
-            
+                raise FileNotFound(self.path, self.lines[self.lineno - 1], src_match, self.lineno,
+                                   str(e))
+        
         current_dic = self.dic
         sub_keys = key.split(".")
         for k in sub_keys:
@@ -133,16 +137,18 @@ class Parser:
                 - DirectoryNotFound if the directory indicated by the pl couldn't be found"""
         
         try:
-            directory, path = get_location(self.directory, match.group('file'), current=dirname(self.path), parser=self)
+            directory, path = get_location(self.directory, match.group('file'),
+                                           current=dirname(self.path), parser=self)
         except SyntaxError as e:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
         except FileNotFoundError as e:
-            raise FileNotFound(self.path_parsed_file, line, match.group('file'), self.lineno, str(e))
+            raise FileNotFound(self.path_parsed_file, line, match.group('file'), self.lineno,
+                               str(e))
         
         self.dic['__extends'].append({
-            'path'          : path,
-            'line'          : line,
-            'lineno'        : self.lineno,
+            'path':           path,
+            'line':           line,
+            'lineno':         self.lineno,
             'directory_name': directory
         })
     
@@ -159,7 +165,7 @@ class Parser:
         
         key = match.group('key')
         op = match.group('operator')
-
+        
         try:
             directory, path = get_location(self.directory, match.group('file'),
                                            current=dirname(self.path), parser=self)
@@ -264,7 +270,8 @@ class Parser:
                 self.dic['__files'][name] = f.read()
         
         except FileNotFoundError as e:
-            raise FileNotFound(self.path_parsed_file, line, match.group('file'), self.lineno, str(e))
+            raise FileNotFound(self.path_parsed_file, line, match.group('file'), self.lineno,
+                               str(e))
         except SyntaxError as e:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
     
@@ -314,8 +321,8 @@ class Parser:
             try:
                 self.parse_line(line)
             except UnicodeDecodeError as e:
-                raise SyntaxErrorPL(join(self.directory.root, self.path), 
-                                    self.lines[self.lineno-1], 
+                raise SyntaxErrorPL(join(self.directory.root, self.path),
+                                    self.lines[self.lineno - 1],
                                     self.lineno,
                                     message="Cannot reference a binary file")
             self.lineno += 1
@@ -338,7 +345,7 @@ def get_parser():
             - the type parsed ('pl' or 'pltp')."""
     
     return {
-        'ext'   : ['.pl'],
+        'ext':    ['.pl'],
         'parser': Parser,
-        'type'  : 'pl'
+        'type':   'pl'
     }

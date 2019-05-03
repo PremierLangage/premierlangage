@@ -127,15 +127,15 @@ def reload_pltp(directory, rel_path, original):
         original.pl.clear()
         for pl in pl_list:
             correspond = list(
-                    filter(lambda i: i.directory == pl.directory and i.rel_path == pl.rel_path,
-                           originals))
+                filter(lambda i: i.directory == pl.directory and i.rel_path == pl.rel_path,
+                       originals))
             if correspond:
                 correspond = correspond[0]
                 correspond.json = pl.json
                 correspond.save()
                 logger.info(
-                        "PL '" + str(
-                            correspond.id) + " (" + correspond.name + ")' has been updated.")
+                    "PL '" + str(
+                        correspond.id) + " (" + correspond.name + ")' has been updated.")
                 Index.objects.create(pltp=original, pl=correspond)
             else:
                 pl.save()

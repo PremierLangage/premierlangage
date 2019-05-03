@@ -1,23 +1,23 @@
 import os
 import shutil
 import subprocess
+import uuid
 from os.path import join
 
+import gitcmd
 import mock
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.test import Client, override_settings, TestCase
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from filebrowser.models import Directory
 from filebrowser.utils import missing_parameter
 
-import gitcmd
 
+FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
 
-FAKE_FB_ROOT = join(settings.BASE_DIR, 'filebrowser/tests/tmp')
-
-RES_DIR = os.path.join(settings.BASE_DIR, "filebrowser/tests/ressources/fake_filebrowser_data/")
+RES_DIR = os.path.join(settings.APPS_DIR, "filebrowser/tests/ressources/fake_filebrowser_data/")
 
 
 
@@ -26,10 +26,10 @@ def command(cmd, dir=None):
         cwd = os.getcwd()
         os.chdir(dir)
     p = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            shell=True
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=True
     )
     out, err = p.communicate()
     if p.returncode:
@@ -97,70 +97,70 @@ class GitTestCase(TestCase):
     
     def test_commit_method_not_allowed(self):
         response = self.c.get(
-                reverse("filebrowser:option"),
-                {
-                        'name': 'git_commit',
-                }, content_type='application/json'
+            reverse("filebrowser:option"),
+            {
+                'name': 'git_commit',
+            }, content_type='application/json'
         )
         self.assertEqual(response.status_code, 405)
     
     
     def test_status_method_not_allowed(self):
         response = self.c.post(
-                reverse("filebrowser:option"),
-                {
-                        'name': 'git_status',
-                }, content_type='application/json'
+            reverse("filebrowser:option"),
+            {
+                'name': 'git_status',
+            }, content_type='application/json'
         )
         self.assertEqual(response.status_code, 405)
     
     
     def test_add_method_not_allowed(self):
         response = self.c.post(
-                reverse("filebrowser:option"),
-                {
-                        'name': 'git_add',
-                }, content_type='application/json'
+            reverse("filebrowser:option"),
+            {
+                'name': 'git_add',
+            }, content_type='application/json'
         )
         self.assertEqual(response.status_code, 405)
     
     
     def test_show_method_not_allowed(self):
         response = self.c.post(
-                reverse("filebrowser:option"),
-                {
-                        'name': 'git_show',
-                }, content_type='application/json'
+            reverse("filebrowser:option"),
+            {
+                'name': 'git_show',
+            }, content_type='application/json'
         )
         self.assertEqual(response.status_code, 405)
     
     
     def test_clone_method_not_allowed(self):
         response = self.c.get(
-                reverse("filebrowser:option"),
-                {
-                        'name': 'git_clone',
-                }, content_type='application/json'
+            reverse("filebrowser:option"),
+            {
+                'name': 'git_clone',
+            }, content_type='application/json'
         )
         self.assertEqual(response.status_code, 405)
     
     
     def test_push_method_not_allowed(self):
         response = self.c.get(
-                reverse("filebrowser:option"),
-                {
-                        'name': 'git_push',
-                }, content_type='application/json'
+            reverse("filebrowser:option"),
+            {
+                'name': 'git_push',
+            }, content_type='application/json'
         )
         self.assertEqual(response.status_code, 405)
     
     
     def test_pull_method_not_allowed(self):
         response = self.c.get(
-                reverse("filebrowser:option"),
-                {
-                        'name': 'git_pull',
-                }, content_type='application/json'
+            reverse("filebrowser:option"),
+            {
+                'name': 'git_pull',
+            }, content_type='application/json'
         )
         self.assertEqual(response.status_code, 405)
     
@@ -169,12 +169,12 @@ class GitTestCase(TestCase):
         with open(join(FAKE_FB_ROOT, 'Yggdrasil/folder1/TPE/function001.pl'), 'w') as f:
             print("test", file=f)
         response = self.c.post(
-                reverse("filebrowser:option"),
-                {
-                        'name'  : 'git_commit',
-                        'commit': 'mycommit',
-                        'path'  : 'Yggdrasil/folder1/TPE/function001.pl',
-                }, content_type='application/json'
+            reverse("filebrowser:option"),
+            {
+                'name':   'git_commit',
+                'commit': 'mycommit',
+                'path':   'Yggdrasil/folder1/TPE/function001.pl',
+            }, content_type='application/json'
         )
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"mycommit",
@@ -185,12 +185,12 @@ class GitTestCase(TestCase):
     
     def test_commit_no_mail(self):
         response = self.c2.post(
-                reverse("filebrowser:option"),
-                {
-                        'name'  : 'git_commit',
-                        'commit': 'mycommit',
-                        'path'  : 'Yggdrasil/folder1/TPE/function001.pl',
-                }, content_type='application/json'
+            reverse("filebrowser:option"),
+            {
+                'name':   'git_commit',
+                'commit': 'mycommit',
+                'path':   'Yggdrasil/folder1/TPE/function001.pl',
+            }, content_type='application/json'
         )
         self.assertContains(response, "User must have an email", status_code=400)
     
@@ -199,12 +199,12 @@ class GitTestCase(TestCase):
         with open(join(FAKE_FB_ROOT, 'Yggdrasil/folder1/TPE/function001.pl'), 'w') as f:
             print("test", file=f)
         response = self.c3.post(
-                reverse("filebrowser:option"),
-                {
-                        'name'  : 'git_commit',
-                        'commit': 'mycommit',
-                        'path'  : 'Yggdrasil/folder1/TPE/function001.pl',
-                }, content_type='application/json'
+            reverse("filebrowser:option"),
+            {
+                'name':   'git_commit',
+                'commit': 'mycommit',
+                'path':   'Yggdrasil/folder1/TPE/function001.pl',
+            }, content_type='application/json'
         )
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"mycommit",
@@ -217,27 +217,27 @@ class GitTestCase(TestCase):
         with open(join(FAKE_FB_ROOT, 'Yggdrasil/folder1/TPE/function001.pl'), 'w') as f:
             print("test", file=f)
         response = self.c.post(
-                reverse("filebrowser:option"),
-                {
-                        'name'  : 'git_commit',
-                        'commit': 'mycommit',
-                }, content_type='application/json'
+            reverse("filebrowser:option"),
+            {
+                'name':   'git_commit',
+                'commit': 'mycommit',
+            }, content_type='application/json'
         )
         self.assertContains(response, missing_parameter('path'), status_code=400)
     
     
     def test_commit_directory(self):
         with open(join(FAKE_FB_ROOT, 'Yggdrasil/folder1/TPE/operator001.pl'), 'w+') as f1, \
-                open(join(FAKE_FB_ROOT, 'Yggdrasil/folder1/TPE/function001.pl'), 'w+') as f2:
+            open(join(FAKE_FB_ROOT, 'Yggdrasil/folder1/TPE/function001.pl'), 'w+') as f2:
             print("test1", file=f1)
             print("test2", file=f2)
         response = self.c.post(
-                reverse("filebrowser:option"),
-                {
-                        'name'  : 'git_commit',
-                        'commit': 'mycommit2',
-                        'path'  : 'Yggdrasil/folder1/TPE/',
-                }, content_type='application/json'
+            reverse("filebrowser:option"),
+            {
+                'name':   'git_commit',
+                'commit': 'mycommit2',
+                'path':   'Yggdrasil/folder1/TPE/',
+            }, content_type='application/json'
         )
         self.assertContains(response, "", status_code=200)
         self.assertIn(b"mycommit2",
@@ -246,11 +246,11 @@ class GitTestCase(TestCase):
     
     def test_commit_without_message(self):
         response = self.c.post(
-                reverse("filebrowser:option"),
-                {
-                        'name': 'git_commit',
-                        'path': 'Yggdrasil/folder1/TPE/',
-                }, content_type='application/json'
+            reverse("filebrowser:option"),
+            {
+                'name': 'git_commit',
+                'path': 'Yggdrasil/folder1/TPE/',
+            }, content_type='application/json'
         )
         self.assertContains(response, missing_parameter('commit'), status_code=400)
     
@@ -258,13 +258,13 @@ class GitTestCase(TestCase):
     def test_push(self):
         open(join(FAKE_FB_ROOT, 'Yggdrasil/folder1/TPE/function001.pl'), 'w+').close()
         response = self.c.post(
-                reverse("filebrowser:option"),
-                {
-                        'name'    : 'git_push',
-                        'username': '',
-                        'password': '',
-                        'path'    : 'Yggdrasil/folder1/TPE/',
-                }, content_type='application/json'
+            reverse("filebrowser:option"),
+            {
+                'name':     'git_push',
+                'username': '',
+                'password': '',
+                'path':     'Yggdrasil/folder1/TPE/',
+            }, content_type='application/json'
         )
         self.assertContains(response, "master -> master", status_code=200)
     
@@ -272,12 +272,12 @@ class GitTestCase(TestCase):
     def test_push_no_path(self):
         open(join(FAKE_FB_ROOT, 'Yggdrasil/folder1/TPE/function001.pl'), 'w+').close()
         response = self.c.post(
-                reverse("filebrowser:option"),
-                {
-                        'name'    : 'git_push',
-                        'username': '',
-                        'password': '',
-                }, content_type='application/json'
+            reverse("filebrowser:option"),
+            {
+                'name':     'git_push',
+                'username': '',
+                'password': '',
+            }, content_type='application/json'
         )
         self.assertContains(response, missing_parameter('path'), status_code=400)
     
@@ -287,11 +287,11 @@ class GitTestCase(TestCase):
         with open(join(FAKE_FB_ROOT, 'Yggdrasil/folder1/TPE/function001.pl'), 'w+') as f:
             print("abcdefghijklmnopqrstuvwxyz", file=f)
         response = self.c.get(
-                reverse("filebrowser:option"),
-                {
-                        'name': 'git_status',
-                        'path': 'Yggdrasil/folder1/',
-                }, content_type='application/json'
+            reverse("filebrowser:option"),
+            {
+                'name': 'git_status',
+                'path': 'Yggdrasil/folder1/',
+            }, content_type='application/json'
         )
         self.assertContains(response, "modif", status_code=200)
     
@@ -300,10 +300,10 @@ class GitTestCase(TestCase):
         with open(join(FAKE_FB_ROOT, 'Yggdrasil/folder1/TPE/function001.pl'), 'w+') as f:
             print("abcdefghijklmnopqrstuvwxyz", file=f)
         response = self.c.get(
-                reverse("filebrowser:option"),
-                {
-                        'name': 'git_status',
-                }, content_type='application/json'
+            reverse("filebrowser:option"),
+            {
+                'name': 'git_status',
+            }, content_type='application/json'
         )
         self.assertContains(response, missing_parameter('path'), status_code=400)
     
@@ -313,11 +313,11 @@ class GitTestCase(TestCase):
         with open(join(FAKE_FB_ROOT, 'Yggdrasil/folder1/TPE/function001.pl'), 'w+') as f:
             print("abcdefghijklmnopqrstuvwxyz", file=f)
         response = self.c.get(
-                reverse("filebrowser:option"),
-                {
-                        'name': 'git_add',
-                        'path': 'Yggdrasil/folder1/TPE/function001.pl',
-                }, content_type='application/json'
+            reverse("filebrowser:option"),
+            {
+                'name': 'git_add',
+                'path': 'Yggdrasil/folder1/TPE/function001.pl',
+            }, content_type='application/json'
         )
         self.assertContains(response, "Entry successfully added to the index.")
         self.assertIn(b"TPE/function001.pl",
@@ -326,10 +326,10 @@ class GitTestCase(TestCase):
     
     def test_add_no_path(self):
         response = self.c.get(
-                reverse("filebrowser:option"),
-                {
-                        'name': 'git_add',
-                }, content_type='application/json'
+            reverse("filebrowser:option"),
+            {
+                'name': 'git_add',
+            }, content_type='application/json'
         )
         self.assertContains(response, missing_parameter('path'), status_code=400)
     
@@ -341,11 +341,11 @@ class GitTestCase(TestCase):
         command('git commit -m "pull"', dir=os.path.join(self.folder.root, "folder2"))
         command("git push", dir=os.path.join(self.folder.root, "folder2"))
         response = self.c.post(
-                reverse('filebrowser:option'), {
-                        'path': 'Yggdrasil/folder1',
-                        'name': 'git_pull',
-                        'url' : 'file://' + self.host.root
-                }, content_type='application/json'
+            reverse('filebrowser:option'), {
+                'path': 'Yggdrasil/folder1',
+                'name': 'git_pull',
+                'url':  'file://' + self.host.root
+            }, content_type='application/json'
         )
         self.assertEqual(response.status_code, 200)
         with open(os.path.join(self.folder.root, "folder1/test_pull.txt"), "r") as f:
@@ -355,11 +355,11 @@ class GitTestCase(TestCase):
     def test_clone(self):
         command("mkdir folder3", dir=self.folder.root)
         response = self.c.post(
-                reverse('filebrowser:option'), {
-                        'name': 'git_clone',
-                        'path': 'Yggdrasil/folder3',
-                        'url' : 'file://' + self.host.root,
-                }, content_type='application/json'
+            reverse('filebrowser:option'), {
+                'name': 'git_clone',
+                'path': 'Yggdrasil/folder3',
+                'url':  'file://' + self.host.root,
+            }, content_type='application/json'
         )
         self.assertEqual(response.status_code, 200)
         self.assertTrue(os.path.isfile(os.path.join(self.folder.root, "folder3/host/carre.pl")))
@@ -368,21 +368,21 @@ class GitTestCase(TestCase):
     
     def test_clone_no_url(self):
         response = self.c.post(
-                reverse('filebrowser:option'), {
-                        'name': 'git_clone',
-                        'path': 'Yggdrasil/folder1',
-                }, content_type='application/json'
+            reverse('filebrowser:option'), {
+                'name': 'git_clone',
+                'path': 'Yggdrasil/folder1',
+            }, content_type='application/json'
         )
         self.assertContains(response, missing_parameter('url'), status_code=400)
     
     
     def test_clone_at_url(self):
         response = self.c.post(
-                reverse('filebrowser:option'), {
-                        'name': 'git_clone',
-                        'path': 'Yggdrasil/folder1',
-                        'url' : 'me@pl',
-                }, content_type='application/json'
+            reverse('filebrowser:option'), {
+                'name': 'git_clone',
+                'path': 'Yggdrasil/folder1',
+                'url':  'me@pl',
+            }, content_type='application/json'
         )
         self.assertContains(response, "SSH link is not supported, please use HTTPS",
                             status_code=404)
@@ -390,19 +390,19 @@ class GitTestCase(TestCase):
     
     def test_show(self):
         response = self.c.get(
-                reverse('filebrowser:option'), {
-                        'name': 'git_show',
-                        'path': 'Yggdrasil/folder1/TPE/function001.pl',
-                }, content_type='application/json'
+            reverse('filebrowser:option'), {
+                'name': 'git_show',
+                'path': 'Yggdrasil/folder1/TPE/function001.pl',
+            }, content_type='application/json'
         )
         self.assertContains(response, "test2\ntest", status_code=200)
     
     
     def test_show_no_path(self):
         response = self.c.get(
-                reverse('filebrowser:option'), {
-                        'name': 'git_show',
-                }, content_type='application/json'
+            reverse('filebrowser:option'), {
+                'name': 'git_show',
+            }, content_type='application/json'
         )
         self.assertContains(response, missing_parameter('path'), status_code=400)
     
@@ -411,10 +411,10 @@ class GitTestCase(TestCase):
         with open(join(FAKE_FB_ROOT, 'Yggdrasil/folder1/TPE/function001.pl'), 'w') as f:
             print("test_checkout", file=f)
         response = self.c.get(
-                reverse('filebrowser:option'), {
-                        'name': 'git_checkout',
-                        'path': 'Yggdrasil/folder1/TPE/function001.pl',
-                }, content_type='application/json'
+            reverse('filebrowser:option'), {
+                'name': 'git_checkout',
+                'path': 'Yggdrasil/folder1/TPE/function001.pl',
+            }, content_type='application/json'
         )
         self.assertContains(response, "success", status_code=200)
         with open(join(FAKE_FB_ROOT, 'Yggdrasil/folder1/TPE/function001.pl'), "r") as f:
@@ -423,16 +423,17 @@ class GitTestCase(TestCase):
     
     def test_checkout_no_path(self):
         response = self.c.get(
-                reverse('filebrowser:option'), {
-                        'name': 'git_checkout',
-                }, content_type='application/json'
+            reverse('filebrowser:option'), {
+                'name': 'git_checkout',
+            }, content_type='application/json'
         )
         self.assertContains(response, missing_parameter('path'), status_code=400)
-
+    
+    
     def test_changes(self):
         response = self.c.get(
-                reverse('filebrowser:option'), {
-                        'name': 'git_changes'
-                }, content_type='application/json'
+            reverse('filebrowser:option'), {
+                'name': 'git_changes'
+            }, content_type='application/json'
         )
         self.assertContains(response, b"changes", status_code=200)

@@ -6,7 +6,10 @@
 
 
 from django.urls import path
+
 from filebrowser import views
+
+
 app_name = 'filebrowser'
 
 urlpatterns = [

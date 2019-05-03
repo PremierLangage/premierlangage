@@ -1,13 +1,11 @@
-import unittest
-
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.test import TestCase, Client
+from django.test import Client, TestCase
 from django.urls import resolve, reverse
 
 from qa import views as qaviews
-from qa.models import (QAQuestion, QAAnswer, QAQuestionComment, QAAnswerComment, QAQuestionVote,
-                       QAAnswerVote)
+from qa.models import (QAAnswer, QAAnswerComment, QAAnswerVote, QAQuestion, QAQuestionComment,
+                       QAQuestionVote)
 
 
 reputation = settings.QA_SETTINGS['reputation']
@@ -26,14 +24,14 @@ class IndexViewTestCase(TestCase):
     
     def test_get_index(self):
         response = self.c.get(
-                reverse("ask:index"),
-                {
-                    "tag"   : "tag",
-                    "page"  : "page",
-                    "query" : "query",
-                    "active": "active",
-                },
-                follow=True
+            reverse("ask:index"),
+            {
+                "tag":    "tag",
+                "page":   "page",
+                "query":  "query",
+                "active": "active",
+            },
+            follow=True
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed("qa/index.html")
@@ -46,14 +44,14 @@ class IndexViewTestCase(TestCase):
     
     def test_get_index_anonymous(self):
         response = self.c2.get(
-                reverse("ask:index"),
-                {
-                    "tag"   : "tag",
-                    "page"  : "page",
-                    "query" : "query",
-                    "active": "active",
-                },
-                follow=True
+            reverse("ask:index"),
+            {
+                "tag":    "tag",
+                "page":   "page",
+                "query":  "query",
+                "active": "active",
+            },
+            follow=True
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed("qa/index.html")
@@ -77,13 +75,13 @@ class QuestionViewTestCase(TestCase):
     
     def test_post_question(self):
         response = self.c.post(
-                reverse("ask:create_question"),
-                {
-                    "title"      : "title",
-                    "description": "desc",
-                    "tags"       : "tags",
-                },
-                follow=True
+            reverse("ask:create_question"),
+            {
+                "title":       "title",
+                "description": "desc",
+                "tags":        "tags",
+            },
+            follow=True
         )
         self.assertEqual(response.status_code, 200)
         
@@ -97,12 +95,12 @@ class QuestionViewTestCase(TestCase):
     
     def test_post_question_400(self):
         response = self.c.post(
-                reverse("ask:create_question"),
-                {
-                    "title"      : "title",
-                    "description": "desc",
-                },
-                follow=True
+            reverse("ask:create_question"),
+            {
+                "title":       "title",
+                "description": "desc",
+            },
+            follow=True
         )
         self.assertEqual(response.status_code, 400)
     
@@ -112,8 +110,8 @@ class QuestionViewTestCase(TestCase):
         self.assertNotEqual(list(QAQuestion.objects.filter(pk=q.pk)), list())
         
         response = self.c.delete(
-                reverse("ask:question", args=[q.pk]),
-                follow=True
+            reverse("ask:question", args=[q.pk]),
+            follow=True
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(list(QAQuestion.objects.filter(pk=q.pk)), list())
@@ -124,8 +122,8 @@ class QuestionViewTestCase(TestCase):
     
     def test_delete_question_404(self):
         response = self.c.delete(
-                reverse("ask:question", args=[999]),
-                follow=True
+            reverse("ask:question", args=[999]),
+            follow=True
         )
         self.assertEqual(response.status_code, 404)
     
@@ -137,13 +135,13 @@ class QuestionViewTestCase(TestCase):
         self.assertEqual(q.description, "desc")
         
         response = self.c.patch(
-                reverse("ask:question", args=[q.pk]),
-                {
-                    "csrfmiddlewaretoken": 1,
-                    "title"              : "Modified Title",
-                    "tags": "tags,new",
-                },
-                follow=True
+            reverse("ask:question", args=[q.pk]),
+            {
+                "csrfmiddlewaretoken": 1,
+                "title":               "Modified Title",
+                "tags":                "tags,new",
+            },
+            follow=True
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed("qa/detail_question.html")
@@ -156,8 +154,8 @@ class QuestionViewTestCase(TestCase):
     
     def test_patch_question_404(self):
         response = self.c.patch(
-                reverse("ask:question", args=[999]),
-                follow=True
+            reverse("ask:question", args=[999]),
+            follow=True
         )
         
         self.assertContains(response, "Question with ID &#39;999&#39; does not exists",
@@ -167,8 +165,8 @@ class QuestionViewTestCase(TestCase):
     def test_get_question(self):
         q = QAQuestion.objects.create(title="title", description="desc", tags="tag", user=self.user)
         response = self.c.get(
-                reverse("ask:question", args=[q.pk]),
-                follow=True
+            reverse("ask:question", args=[q.pk]),
+            follow=True
         )
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed("qa/detail_question.html")
@@ -179,8 +177,8 @@ class QuestionViewTestCase(TestCase):
     
     def test_get_question_404(self):
         response = self.c.get(
-                reverse("ask:question", args=[999]),
-                follow=True
+            reverse("ask:question", args=[999]),
+            follow=True
         )
         self.assertEqual(response.status_code, 404)
 
@@ -200,9 +198,9 @@ class AnswerViewTestCase(TestCase):
         self.assertEqual(list(q.qaanswer_set.all()), list())
         
         response = self.c.post(
-                reverse("ask:answer", args=[q.pk]),
-                {"answer_text": "answer"},
-                follow=True
+            reverse("ask:answer", args=[q.pk]),
+            {"answer_text": "answer"},
+            follow=True
         )
         self.assertEqual(response.status_code, 200)
         
@@ -216,18 +214,18 @@ class AnswerViewTestCase(TestCase):
     def test_post_answer_400(self):
         q = QAQuestion.objects.create(title="title", description="desc", tags="tag", user=self.user)
         response = self.c.post(
-                reverse("ask:answer", args=[q.pk]),
-                {},
-                follow=True
+            reverse("ask:answer", args=[q.pk]),
+            {},
+            follow=True
         )
         self.assertEqual(response.status_code, 400)
     
     
     def test_post_answer_404(self):
         response = self.c.post(
-                reverse("ask:answer", args=[9999]),
-                {},
-                follow=True
+            reverse("ask:answer", args=[9999]),
+            {},
+            follow=True
         )
         self.assertEqual(response.status_code, 404)
     
@@ -238,8 +236,8 @@ class AnswerViewTestCase(TestCase):
         self.assertNotEqual(list(q.qaanswer_set.all()), list())
         
         response = self.c.delete(
-                reverse("ask:answer", args=[a.pk]),
-                follow=True
+            reverse("ask:answer", args=[a.pk]),
+            follow=True
         )
         self.assertEqual(response.status_code, 200)
         q.refresh_from_db()
@@ -251,8 +249,8 @@ class AnswerViewTestCase(TestCase):
     
     def test_delete_answer_404(self):
         response = self.c.delete(
-                reverse("ask:answer", args=[999]),
-                follow=True
+            reverse("ask:answer", args=[999]),
+            follow=True
         )
         self.assertEqual(response.status_code, 404)
     
@@ -266,13 +264,13 @@ class AnswerViewTestCase(TestCase):
         self.assertEqual(a.answer, False)
         
         response = self.c.patch(
-                reverse("ask:answer", args=[a.pk]),
-                {
-                    "answer"             : 1,
-                    "answer_text"        : "Modified answer",
-                    "csrfmiddlewaretoken": 1,
-                },
-                follow=True
+            reverse("ask:answer", args=[a.pk]),
+            {
+                "answer":              1,
+                "answer_text":         "Modified answer",
+                "csrfmiddlewaretoken": 1,
+            },
+            follow=True
         )
         
         a.refresh_from_db()
@@ -286,12 +284,12 @@ class AnswerViewTestCase(TestCase):
                          qaviews.QuestionView.as_view().__name__)
         
         response = self.c.patch(
-                reverse("ask:answer", args=[a.pk]),
-                {
-                    "answer"             : 0,
-                    "csrfmiddlewaretoken": 1,
-                },
-                follow=True
+            reverse("ask:answer", args=[a.pk]),
+            {
+                "answer":              0,
+                "csrfmiddlewaretoken": 1,
+            },
+            follow=True
         )
         a.refresh_from_db()
         self.assertEqual(a.answer, False)
@@ -304,8 +302,8 @@ class AnswerViewTestCase(TestCase):
     
     def test_patch_answer_404(self):
         response = self.c.patch(
-                '/ask/answer/' + str(999) + '/',
-                follow=True
+            '/ask/answer/' + str(999) + '/',
+            follow=True
         )
         
         self.assertEqual(response.status_code, 404)
@@ -328,9 +326,9 @@ class CommentViewTestCase(TestCase):
         a = QAAnswer.objects.create(answer_text="answer", question=q, user=self.user)
         
         response = self.c.post(
-                reverse("ask:question_comment", args=[q.pk, q.pk]),
-                {"comment_text": "A comment"},
-                follow=True
+            reverse("ask:question_comment", args=[q.pk, q.pk]),
+            {"comment_text": "A comment"},
+            follow=True
         )
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(list(q.qaquestioncomment_set.all()), list())
@@ -339,9 +337,9 @@ class CommentViewTestCase(TestCase):
                          qaviews.QuestionView.as_view().__name__)
         
         response = self.c.post(
-                reverse("ask:answer_comment", args=[q.pk, a.pk]),
-                {"comment_text": "A comment"},
-                follow=True
+            reverse("ask:answer_comment", args=[q.pk, a.pk]),
+            {"comment_text": "A comment"},
+            follow=True
         )
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(list(a.qaanswercomment_set.all()), list())
@@ -352,16 +350,16 @@ class CommentViewTestCase(TestCase):
     
     def test_post_comment_404(self):
         response = self.c.post(
-                reverse("ask:question_comment", args=[999, 999]),
-                {"comment_text": "A comment"},
-                follow=True
+            reverse("ask:question_comment", args=[999, 999]),
+            {"comment_text": "A comment"},
+            follow=True
         )
         self.assertEqual(response.status_code, 404)
         
         response = self.c.post(
-                reverse("ask:answer_comment", args=[999, 999]),
-                {"comment_text": "A comment"},
-                follow=True
+            reverse("ask:answer_comment", args=[999, 999]),
+            {"comment_text": "A comment"},
+            follow=True
         )
         self.assertEqual(response.status_code, 404)
     
@@ -371,16 +369,16 @@ class CommentViewTestCase(TestCase):
         a = QAAnswer.objects.create(answer_text="answer", question=q, user=self.user)
         
         response = self.c.post(
-                reverse("ask:question_comment", args=[q.pk, q.pk]),
-                {},
-                follow=True
+            reverse("ask:question_comment", args=[q.pk, q.pk]),
+            {},
+            follow=True
         )
         self.assertEqual(response.status_code, 400)
         
         response = self.c.post(
-                reverse("ask:answer_comment", args=[q.pk, a.pk]),
-                {},
-                follow=True
+            reverse("ask:answer_comment", args=[q.pk, a.pk]),
+            {},
+            follow=True
         )
         self.assertEqual(response.status_code, 400)
     
@@ -392,9 +390,9 @@ class CommentViewTestCase(TestCase):
         ca = QAAnswerComment.objects.create(user=self.user, comment_text="A comment", answer=a)
         
         response = self.c.patch(
-                reverse("ask:question_comment", args=[q.pk, cq.pk]),
-                {"comment_text": "A modified comment", "csrfmiddlewaretoken": 1, },
-                follow=True
+            reverse("ask:question_comment", args=[q.pk, cq.pk]),
+            {"comment_text": "A modified comment", "csrfmiddlewaretoken": 1, },
+            follow=True
         )
         cq.refresh_from_db()
         self.assertEqual(response.status_code, 200)
@@ -404,9 +402,9 @@ class CommentViewTestCase(TestCase):
                          qaviews.QuestionView.as_view().__name__)
         
         response = self.c.patch(
-                reverse("ask:answer_comment", args=[q.pk, ca.pk]),
-                {"comment_text": "A modified comment", "csrfmiddlewaretoken": 1, },
-                follow=True
+            reverse("ask:answer_comment", args=[q.pk, ca.pk]),
+            {"comment_text": "A modified comment", "csrfmiddlewaretoken": 1, },
+            follow=True
         )
         ca.refresh_from_db()
         self.assertEqual(response.status_code, 200)
@@ -420,16 +418,16 @@ class CommentViewTestCase(TestCase):
         q = QAQuestion.objects.create(title="title", description="desc", tags="tag", user=self.user)
         
         response = self.c.patch(
-                reverse("ask:question_comment", args=[q.pk, 999]),
-                {"comment_text": "A modified comment"},
-                follow=True
+            reverse("ask:question_comment", args=[q.pk, 999]),
+            {"comment_text": "A modified comment"},
+            follow=True
         )
         self.assertEqual(response.status_code, 404)
         
         response = self.c.patch(
-                reverse("ask:answer_comment", args=[q.pk, 999]),
-                {"comment_text": "A modified comment"},
-                follow=True
+            reverse("ask:answer_comment", args=[q.pk, 999]),
+            {"comment_text": "A modified comment"},
+            follow=True
         )
         self.assertEqual(response.status_code, 404)
     
@@ -441,8 +439,8 @@ class CommentViewTestCase(TestCase):
         ca = QAAnswerComment.objects.create(user=self.user, comment_text="A comment", answer=a)
         
         response = self.c.delete(
-                reverse("ask:question_comment", args=[q.pk, cq.pk]),
-                follow=True
+            reverse("ask:question_comment", args=[q.pk, cq.pk]),
+            follow=True
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(list(QAQuestionComment.objects.filter(pk=cq.pk)), list())
@@ -451,8 +449,8 @@ class CommentViewTestCase(TestCase):
                          qaviews.QuestionView.as_view().__name__)
         
         response = self.c.delete(
-                reverse("ask:answer_comment", args=[q.pk, ca.pk]),
-                follow=True
+            reverse("ask:answer_comment", args=[q.pk, ca.pk]),
+            follow=True
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(list(QAQuestionComment.objects.filter(pk=ca.pk)), list())
@@ -465,14 +463,14 @@ class CommentViewTestCase(TestCase):
         q = QAQuestion.objects.create(title="title", description="desc", tags="tag", user=self.user)
         
         response = self.c.delete(
-                reverse("ask:question_comment", args=[q.pk, 999]),
-                follow=True
+            reverse("ask:question_comment", args=[q.pk, 999]),
+            follow=True
         )
         self.assertEqual(response.status_code, 404)
         
         response = self.c.delete(
-                reverse("ask:answer_comment", args=[q.pk, 999]),
-                follow=True
+            reverse("ask:answer_comment", args=[q.pk, 999]),
+            follow=True
         )
         self.assertEqual(response.status_code, 404)
 
@@ -493,9 +491,9 @@ class VoteViewTestCase(TestCase):
         a = QAAnswer.objects.create(answer_text="answer", question=q, user=self.user)
         
         response = self.c.get(
-                reverse("ask:question_vote", args=[q.pk]),
-                {"vote": "up"},
-                follow=True
+            reverse("ask:question_vote", args=[q.pk]),
+            {"vote": "up"},
+            follow=True
         )
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(q.qaquestionvote_set, list())
@@ -504,9 +502,9 @@ class VoteViewTestCase(TestCase):
                          qaviews.QuestionView.as_view().__name__)
         
         response = self.c.get(
-                reverse("ask:answer_vote", args=[q.pk, a.pk]),
-                {"vote": "up"},
-                follow=True
+            reverse("ask:answer_vote", args=[q.pk, a.pk]),
+            {"vote": "up"},
+            follow=True
         )
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(a.qaanswervote_set, list())
@@ -525,9 +523,9 @@ class VoteViewTestCase(TestCase):
         self.assertEqual(va.value, True)
         
         response = self.c.get(
-                reverse("ask:question_vote", args=[q.pk]),
-                {"vote": "down"},
-                follow=True
+            reverse("ask:question_vote", args=[q.pk]),
+            {"vote": "down"},
+            follow=True
         )
         vq.refresh_from_db()
         self.assertEqual(response.status_code, 200)
@@ -538,9 +536,9 @@ class VoteViewTestCase(TestCase):
                          qaviews.QuestionView.as_view().__name__)
         
         response = self.c.get(
-                reverse("ask:answer_vote", args=[q.pk, a.pk]),
-                {"vote": "down"},
-                follow=True
+            reverse("ask:answer_vote", args=[q.pk, a.pk]),
+            {"vote": "down"},
+            follow=True
         )
         va.refresh_from_db()
         self.assertEqual(response.status_code, 200)
@@ -558,9 +556,9 @@ class VoteViewTestCase(TestCase):
         QAAnswerVote.objects.create(user=self.user, value=True, answer=a)
         
         response = self.c.get(
-                reverse("ask:question_vote", args=[q.pk]),
-                {"vote": "up"},
-                follow=True
+            reverse("ask:question_vote", args=[q.pk]),
+            {"vote": "up"},
+            follow=True
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(list(q.qaquestionvote_set.all()), list())
@@ -569,9 +567,9 @@ class VoteViewTestCase(TestCase):
                          qaviews.QuestionView.as_view().__name__)
         
         response = self.c.get(
-                reverse("ask:answer_vote", args=[q.pk, a.pk]),
-                {"vote": "up"},
-                follow=True
+            reverse("ask:answer_vote", args=[q.pk, a.pk]),
+            {"vote": "up"},
+            follow=True
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(list(a.qaanswervote_set.all()), list())
@@ -582,16 +580,16 @@ class VoteViewTestCase(TestCase):
     
     def test_get_vote_404(self):
         response = self.c.get(
-                reverse("ask:question_vote", args=[999]),
-                {"vote": "up"},
-                follow=True
+            reverse("ask:question_vote", args=[999]),
+            {"vote": "up"},
+            follow=True
         )
         self.assertEqual(response.status_code, 404)
         
         response = self.c.get(
-                reverse("ask:answer_vote", args=[999, 999]),
-                {"vote": "up"},
-                follow=True
+            reverse("ask:answer_vote", args=[999, 999]),
+            {"vote": "up"},
+            follow=True
         )
         self.assertEqual(response.status_code, 404)
     
@@ -601,15 +599,15 @@ class VoteViewTestCase(TestCase):
         a = QAAnswer.objects.create(answer_text="answer", question=q, user=self.user)
         
         response = self.c.get(
-                reverse("ask:question_vote", args=[q.pk]),
-                {},
-                follow=True
+            reverse("ask:question_vote", args=[q.pk]),
+            {},
+            follow=True
         )
         self.assertEqual(response.status_code, 400)
         
         response = self.c.get(
-                reverse("ask:answer_vote", args=[q.pk, a.pk]),
-                {},
-                follow=True
+            reverse("ask:answer_vote", args=[q.pk, a.pk]),
+            {},
+            follow=True
         )
         self.assertEqual(response.status_code, 400)

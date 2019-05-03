@@ -1,11 +1,13 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
- <center>
+<center>
     <h2>Page Introuvable (404)</h2>
     <p class="lead">{{ exception }}</p>
     <p>
-        <button class="mdl-button mdl-js-button mdl-js-ripple-effect" onclick="window.history.go(-1)">Retour</button>
+        <button class="mdl-button mdl-js-button mdl-js-ripple-effect"
+                onclick="window.history.go(-1)">Retour
+        </button>
     </p>
 </center>
 

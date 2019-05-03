@@ -2,6 +2,7 @@ import os
 import shutil
 
 
+
 def copy_parser():
     path = "loader/tests/fake_parsers/fake_parser_pl.py"
     if os.path.isfile(path):
