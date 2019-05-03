@@ -17,7 +17,7 @@ before_install:
   - ./install.sh
   - python3 manage.py runserver 7000 &
   - cd ..
-  - ./script/install_release.sh
+  - yes n | ./script/install_release.sh
 install:
   - pip install -U wheel setuptools
   - pip install tox-travis
