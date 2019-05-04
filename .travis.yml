@@ -12,14 +12,14 @@ python:
   - '3.7'
 
 before_install:
+  - git config --global user.name "Travis CI"
+  - git config --global user.email "user@example.com"
   - git clone https://github.com/plgitlogin/sandbox.git
   - cd sandbox/
   - ./install.sh
   - python3 manage.py runserver 7000 &> /dev/null &
   - cd ..
   - yes n | ./script/install_release.sh
-  - git config --global user.email "travis@test.com"
-  - git config --global user.name "Travis"
 
 install:
   - pip install -U wheel setuptools
