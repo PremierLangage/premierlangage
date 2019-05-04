@@ -80,13 +80,13 @@ class GitTestCase(TestCase):
         os.chdir(cls.folder.root + "/folder1")
         command('git remote add origin ' + cls.host.root)
         command('git add .')
-        command('git commit -m "Initial commit"')
+        command('git commit -m "Initial commit" --author="Test <test@test.com>"')
         command('git push --set-upstream origin master')
         os.chdir(cls.folder.root + "/folder2")
         command('git remote add origin ' + cls.host.root)
         command('touch to_be_pull')
         command('git add .')
-        command('git commit -m "Initial commit"')
+        command('git commit -m "Initial commit" --author="Test <test@test.com>"')
         command('git pull origin master --allow-unrelated-histories')
         command('git push --set-upstream origin master')
         os.chdir(cwd)
@@ -341,7 +341,7 @@ class GitTestCase(TestCase):
         with open(os.path.join(self.folder.root, "folder2/test_pull.txt"), "w") as f:
             print("test", file=f)
         command('git add test_pull.txt', dir=os.path.join(self.folder.root, "folder2"))
-        command('git commit -m "pull"', dir=os.path.join(self.folder.root, "folder2"))
+        command('git commit -m "pull" -author="Test <test@test.com>"', dir=os.path.join(self.folder.root, "folder2"))
         command("git push", dir=os.path.join(self.folder.root, "folder2"))
         response = self.c.post(
             reverse('filebrowser:option'), {
