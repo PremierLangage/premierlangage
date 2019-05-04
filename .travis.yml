@@ -18,8 +18,8 @@ before_install:
   - python3 manage.py runserver 7000 &> /dev/null &
   - cd ..
   - yes n | ./script/install_release.sh
-  - git config --global user.email "you@example.com"
-  - git config --global user.name "Your Name"
+  - git config --global user.email "travis@test.com"
+  - git config --global user.name "Travis"
 
 install:
   - pip install -U wheel setuptools
