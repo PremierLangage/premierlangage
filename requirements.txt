@@ -1,0 +1,31 @@
+wheel
+django
+django-annoying
+django-celery-results
+django-hitcount
+django-http-method
+django-markdown-deux
+django-markdown-app
+django-taggit
+dj-database-url
+gunicorn
+jinja2
+jsonfield
+markdown
+mkdocs
+mock
+oauth2
+pydenticon
+pytest
+pytest-django
+python-magic
+pytz
+recommonmark
+requests
+sympy
+whitenoise
+yattag
+-e git://github.com/qcoumes/django-enumfields.git#egg=django-enumfields
+-e git://github.com/qcoumes/htmlprint.git#egg=htmlprint
+-e git://github.com/qcoumes/gitcmd.git#egg=gitcmd
+-e git://github.com/qcoumes/django-markdown.git#egg=django-markdown
