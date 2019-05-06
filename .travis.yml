@@ -2,7 +2,9 @@ dist: xenial
 
 sudo: false
 
-services: docker
+services:
+  - docker
+  - postgresql
 
 language: python
 
@@ -18,6 +20,8 @@ before_install:
   - python3 manage.py runserver 7000 &> /dev/null &
   - cd ..
   - yes n | ./script/install_release.sh
+  - cp test/config_test_pgsql.py premierlangage/config.py
+  - cat premierlangage/config.py
 
 install:
   - pip install -U wheel setuptools
@@ -27,3 +31,7 @@ install:
 script: tox
 
 after_success: codecov
+
+env:
+  global:
+    - PGPORT=5432
