@@ -1,4 +1,6 @@
-import os, shutil, time
+import os
+import shutil
+import time
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -9,10 +11,10 @@ from splinter import Browser
 from filebrowser.models import Directory
 
 
-FAKE_FB_ROOT = os.path.join(settings.BASE_DIR, 'tests/tmp')
+FAKE_FB_ROOT = os.path.join(settings.APPS_DIR, 'tests/tmp')
 
-HOME_DIR = os.path.join(settings.BASE_DIR, "misc_tests/resources/fake_filebrowser_data/")
-LIB_DIR = os.path.join(settings.BASE_DIR, "misc_tests/resources/lib/")
+HOME_DIR = os.path.join(settings.APPS_DIR, "misc_tests/resources/fake_filebrowser_data/")
+LIB_DIR = os.path.join(settings.APPS_DIR, "misc_tests/resources/lib/")
 
 
 
