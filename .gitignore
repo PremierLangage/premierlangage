@@ -11,7 +11,7 @@ apps/*/migrations/**
 !apps/*/migrations/__init__.py
 premierlangage/config.py
 staticfiles/
-./static/
+static/*
 media/
 documentation/templates/
 documentation/static/
