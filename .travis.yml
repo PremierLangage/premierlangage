@@ -15,13 +15,13 @@ python:
 
 before_install:
   - git clone https://github.com/plgitlogin/sandbox.git
+  - cp test/config_test_pgsql.py premierlangage/config.py
+  - pip3 psycopg2
   - cd sandbox/
   - ./install.sh
   - python3 manage.py runserver 7000 &> /dev/null &
   - cd ..
   - yes n | ./script/install_release.sh
-  - cp test/config_test_pgsql.py premierlangage/config.py
-  - cat premierlangage/config.py
 
 install:
   - pip install -U wheel setuptools
