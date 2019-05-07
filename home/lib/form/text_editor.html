@@ -1,4 +1,4 @@
-{% load static %}
+
 {% load playexo_tags %}
 
 {% with editorid__=editor.id %}
@@ -17,8 +17,8 @@
     >
 {% endwith %}
 
-<script src="{% static 'js/ace/ace.js' %}" type="text/javascript" charset="utf-8"></script>
-<script src="{% static 'js/ace/ext-modelist.js' %}"></script>
+<script src="{{ static('js/ace/ace.js') }}" type="text/javascript" charset="utf-8"></script>
+<script src="{{ static('js/ace/ext-modelist.js') }}"></script>
 <script>
     window.define = window.define || ace.define;
     var editor = ace.edit('editor');

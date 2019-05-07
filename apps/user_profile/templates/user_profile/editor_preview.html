@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% load static %}
+
 
 {% block topbar %}{% endblock %}
 
 {% block content %}
-<script src="{% static 'js/ace/ace.js' %}"></script>
+<script src="{{ static('js/ace/ace.js') }}"></script>
 <div class="container">
     <br>
     <h1>Prévisualisation des colorisation syntaxique de l'éditeur de texte</h1>

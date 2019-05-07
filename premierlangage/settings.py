@@ -88,6 +88,16 @@ MESSAGE_TAGS = {
 # Templates engines
 TEMPLATES = [
     {
+        'BACKEND':  'django.template.backends.jinja2.Jinja2',
+        'DIRS':     [
+            os.path.join(BASE_DIR, 'jinja2')
+        ],
+        'APP_DIRS': True,
+        'OPTIONS':  {
+            'environment': 'premierlangage.jinja2.environment',
+        },
+    },
+    {
         'BACKEND':  'django.template.backends.django.DjangoTemplates',
         'DIRS':     [
             os.path.join(BASE_DIR, 'templates')
@@ -101,9 +111,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
             ],
         },
-        
     },
-
 ]
 
 # WSGI Module
@@ -267,7 +275,7 @@ MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'media'))
 MEDIA_URL = '/media/'
 
 # Default Filebrowser's path
-FILEBROWSER_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../../home/'))
+FILEBROWSER_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'home/'))
 
 # Filebrowser settings
 FILEBROWSER_DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&']
