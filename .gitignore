@@ -7,6 +7,7 @@ tmp/
 .vscode/
 client/node_modules
 
+
 apps/*/migrations/**
 !apps/*/migrations/__init__.py
 premierlangage/config.py
@@ -16,6 +17,8 @@ media/
 documentation/templates/
 documentation/static/
 doc/
+static/*
+apps/filebrowser/client/node_modules/*
 
 
 ########################################
