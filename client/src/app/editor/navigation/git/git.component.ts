@@ -9,6 +9,7 @@ import { ResourceService } from '../../shared/services/core/resource.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { OpenerService } from '../../shared/services/core/opener.service';
 import { EditorService } from '../../shared/services/core/editor.service';
+import { isFile } from '../../shared/models/filters.model';
 
 @Component({
   // tslint:disable-next-line: component-selector
@@ -208,7 +209,7 @@ export class GitComponent implements OnInit, OnDestroy {
                         const refreshed = await this.resources.refresh();
                         if (refreshed) {
                             const resource = await this.resources.find(item.path);
-                            if (resource) {
+                            if (resource && isFile(resource)) {
                                 this.opener.open(resource.path, {
                                     diffMode: true
                                 });
@@ -287,11 +288,11 @@ export class GitComponent implements OnInit, OnDestroy {
                 this.git.commit(this.selection, this.commitMessage).then((success) => {
                     if (success) {
                         this.commitMessage = '';
-                        this.selection.changes = this.selection.changes.filter(e => e.type !== 'M');
+                        this.selection.changes = this.selection.changes.filter(e => !e.type.includes('M'));
                     }
                 });
             } else {
-                this.notification.error('commit message is required');
+                this.notification.logError('commit message is required');
             }
         }
     }
