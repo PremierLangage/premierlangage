@@ -1,0 +1,22 @@
+author=DR 2016
+
+title= Premier TP Premier langage 
+
+
+
+introduction==
+
+TODO 
+
+==
+
+tag=print|input|variables|identifieurs
+
+
+concept==debug
+@ /python/IUT/TP1/printbonjour.pl
+@ /python/exemple/debugtrue.pl
+@ /python/exemple/allwayscorrect.pl
+==
+
+

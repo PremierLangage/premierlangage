@@ -1,0 +1,37 @@
+
+author=DR 2016
+
+title= TP 02 L1 Math Info 2017-2018
+
+
+
+introduction==
+
+# Conditionnelle
+
+
+FIXME
+TODO
+
+==
+
+tag=bool|if|else|elif
+
+
+concept==bool
+@ /python/bool/bonlcond.pl
+@ /python/bool/sisi01.pl
+@ /python/bool/sisi02.pl
+@ /python/bool/sisi03.pl
+@ /python/bool/sisi04.pl
+
+==
+
+
+
+
+
+
+
+
+
