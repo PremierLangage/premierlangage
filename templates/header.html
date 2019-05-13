@@ -5,7 +5,7 @@
             <span style='font-size: 10px;'>0.6.0</span>
         </div>
         <nav class="mdl-navigation mdl-layout--large-screen-only">
-            {% if request.user.profile.can_load %}
+            {% if request.user.is_authenticated and request.user.profile.can_load %}
             <a class="mdl-navigation__link" href="/"><i class="fas fa-graduation-cap"></i>&nbsp;Mes
                 Cours</a></a>
             <a class="mdl-navigation__link" href="/filebrowser/"><i class="fas fa-cloud"></i>&nbsp;Editeur</a>
@@ -14,7 +14,7 @@
             <a class="mdl-navigation__link" href="https://documentationpl.readthedocs.io/fr/latest/"
                target="_blank"><i class="fas fa-book"></i>&nbsp;Documentation</a>
             {% endif %}
-            {% if request.user.profile.is_admin or request.user.is_superuser %}
+            {% if request.user.is_authenticated and request.user.profile.is_admin or request.user.is_superuser %}
             <a class="mdl-navigation__link" href="/admin/"><i class="fas fa-cog"></i>&nbsp;Administration</a>
             {% endif %}
         </nav>
@@ -36,7 +36,7 @@
 <div class="mdl-layout__drawer mdl-layout--small-screen-only">
     <span class="mdl-layout-title">Premier Langage</span>
     <nav class="mdl-navigation">
-        {% if request.user.profile.can_load %}
+        {% if request.user.is_authenticated and request.user.profile.can_load %}
         <a class="mdl-navigation__link" href="/"><i class="fas fa-graduation-cap"></i>&nbsp;Mes
             Cours</a></a>
         <a class="mdl-navigation__link" href="/filebrowser/"><i class="fas fa-cloud"></i>&nbsp;Editeur</a>
@@ -44,7 +44,7 @@
         <a class="mdl-navigation__link" href="https://documentationpl.readthedocs.io/fr/latest/"
            target="_blank"><i class="fas fa-book"></i>&nbsp;Documentation</a>
         {% endif %}
-        {% if request.user.profile.is_admin or request.user.is_superuser %}
+        {% if request.user.is_authenticated and request.user.profile.is_admin or request.user.is_superuser %}
         <a class="mdl-navigation__link" href="/admin/"><i class="fas fa-cog"></i>&nbsp;Administration</a>
         {% endif %}
     </nav>

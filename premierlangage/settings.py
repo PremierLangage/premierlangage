@@ -57,6 +57,8 @@ PROJECT_APPS = [
 
 INSTALLED_APPS = PROJECT_APPS + PREREQ_APPS
 
+INSTALLED_APPS += ('django_jinja',)
+
 # Middleware definition
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -88,13 +90,40 @@ MESSAGE_TAGS = {
 # Templates engines
 TEMPLATES = [
     {
-        'BACKEND':  'django.template.backends.jinja2.Jinja2',
+        'BACKEND':  'django_jinja.backend.Jinja2',
         'DIRS':     [
-            os.path.join(BASE_DIR, 'jinja2')
+            os.path.join(BASE_DIR, 'templates')
         ],
         'APP_DIRS': True,
         'OPTIONS':  {
-            'environment': 'premierlangage.jinja2.environment',
+            "autoescape": True,
+            "app_dirname": "templates",
+            "auto_reload": DEBUG,
+            "match_extension": ".html",
+            "match_regex": r"^(?!admin)",
+            "environment": "premierlangage.jinja2.environment",
+            "filters": {
+                "markdown": "markdown.markdown",
+            },
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+            "extensions": [
+                "jinja2.ext.do",
+                "jinja2.ext.loopcontrols",
+                "jinja2.ext.with_",
+                "jinja2.ext.i18n",
+                "jinja2.ext.autoescape",
+                "django_jinja.builtins.extensions.CsrfExtension",
+                "django_jinja.builtins.extensions.CacheExtension",
+                "django_jinja.builtins.extensions.TimezoneExtension",
+                "django_jinja.builtins.extensions.UrlsExtension",
+                "django_jinja.builtins.extensions.StaticFilesExtension",
+                "django_jinja.builtins.extensions.DjangoFiltersExtension",
+            ]
         },
     },
     {
@@ -106,9 +135,9 @@ TEMPLATES = [
         'OPTIONS':  {
             'context_processors': [
                 'django.template.context_processors.debug',
+                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.request',
             ],
         },
     },

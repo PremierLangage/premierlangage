@@ -1,6 +1,3 @@
-{% load django_markdown %}
-
-
 <link rel="stylesheet" href="{{ static('/playexo/css/playexo.css') }}" />
 {% if 'extracss' %}{{ extracss|safe }}{% endif %}
 <div class="card exercise">
@@ -35,7 +32,7 @@
         <div class="exercise__actions text-center">
             <div class="btn-group" role="group" aria-label="actions">
                 <button class="btn btn-primary action-submit"><i class="fas fa-check"></i>Valider</button>
-                <a type="button" class="btn btn-secondary action-download-env" href="{% url 'filebrowser:dlenv' id__ %}" download>
+                <a type="button" class="btn btn-secondary action-download-env" href="{{ url('filebrowser:dlenv', id__) }}" download>
                     <i class="fas fa-download"></i> Télécharger l'Environnement
                 </a>
             </div>

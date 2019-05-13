@@ -4,7 +4,7 @@
 
 {% block css %}
 <link rel="stylesheet" href="{{ static('css/block_chart.css') }}"
-      xmlns:playexo="http://www.w3.org/1999/xhtml"/>
+      xmlns:playexo="http://www.w3.org/1999/xhtml" xmlns:playexo="http://www.w3.org/1999/xhtml"/>
 <link rel="stylesheet" href="{{ static('css/course.css') }}"/>
 {% endblock %}
 
@@ -26,9 +26,9 @@
         <div>
                 <span class="mdl-chip mdl-chip--contact">
                     <span class="mdl-chip__contact mdl-color--blue mdl-color-text--white">
-                    {{ firstof(item.get_full_name(), capfirst(), make_list(), first item.username(), capfirst(), make_list(), first()) }}
+                    {{ firstof(item.get_full_name()|capfirst|make_list|first, item.username|capfirst|make_list|first) }}
                     </span>
-                    <span class="mdl-chip__text">{{ firstof(item.get_full_name(), item.username()) }} - &lt;{{item.email}}&gt;</span>
+                    <span class="mdl-chip__text">{{ firstof(item.get_full_name(), item.username) }} - &lt;{{item.email}}&gt;</span>
                 </span>
         </div>
         {% endfor %}
@@ -42,8 +42,8 @@
         {% for item in activity %}
         <div {% if item.open %}style="cursor: pointer;" {% endif %}
              class="{% if not item.open %}disabled{% endif%} mdl-card card-activity mdl-shadow--2dp mdl-cell mdl-cell--3-col mdl-cell--6-col-phone mdl-cell--6-col-tablet"
-             {% if item.open %} onclick='window.location = "{% url ' playexo:activity
-        ' item.id %}";' {% endif %}>
+             {% if item.open %} onclick='window.location = "{{ url('playexo:activity', item.id) }}";'
+             {% endif %}>
         <div class="mdl-card__title">
             <span class="mdl-card__title-text">{{ item.title }}</span>
         </div>
