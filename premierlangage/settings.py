@@ -103,7 +103,7 @@ TEMPLATES = [
             "match_regex": r"^(?!admin)",
             "environment": "premierlangage.jinja2.environment",
             "filters": {
-                "markdown": "markdown.markdown",
+                "markdown": "django_markdown.templatetags.django_markdown.markdown",
             },
             'context_processors': [
                 'django.template.context_processors.debug',
