@@ -640,6 +640,7 @@ def compile_pl(request):
     
     return HttpResponseBadRequest(content="Couldn't resolve ajax request")
 
+
 @csrf_exempt
 @require_POST
 def pl_tuto(request):
