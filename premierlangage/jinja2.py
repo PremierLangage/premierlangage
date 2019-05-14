@@ -1,7 +1,6 @@
 import jinja2
-from django.templatetags.static import static
-from django.urls import reverse
-from markdown import markdown
+from django_http_method.templatetags import http_method
+from html import unescape
 
 
 
@@ -25,21 +24,20 @@ def first(l):
 
 
 
-def custom_markdown(text, *args, **kwargs):
-    return markdown(text, *args, **kwargs)
-
-
-
 def environment(**options):
     env = jinja2.Environment(**options)
     env.globals.update({
-            'static':    static,
-            'url':       reverse,
-            'firstof':   firstof,
-            'capfirst':  capfirst,
-            'make_list': make_list,
-            'first':     first,
-            'markdown':  custom_markdown,
+            'firstof':      firstof,
+            'capfirst':     capfirst,
+            'make_list':    make_list,
+            'first':        first,
+            "http_get":     http_method.http_get,
+            "http_post":    http_method.http_post,
+            "http_head":    http_method.http_put,
+            "http_delete":  http_method.http_delete,
+            "http_patch":   http_method.http_patch,
+            "http_options": http_method.http_options,
+            "http_trace":   http_method.http_trace,
+            'print': print,
     })
-    env.extensions.update()
     return env

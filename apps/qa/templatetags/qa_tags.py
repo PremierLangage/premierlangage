@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from urllib.parse import quote
 
-from django import template
+from django_jinja import library
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -11,17 +11,15 @@ from qa.models import QAAnswerVote, QAQuestionVote
 
 RIGHTS = settings.QA_SETTINGS['right']
 
-register = template.Library()
 
 
-
-@register.filter
+@library.filter
 def urlencode_q(s):
     return quote(s).replace('%20', '+')
 
 
 
-@register.filter
+@library.filter
 def voted_up_question(user, question):
     if user.is_anonymous:
         return False
@@ -33,7 +31,7 @@ def voted_up_question(user, question):
 
 
 
-@register.filter
+@library.filter
 def voted_down_question(user, question):
     if user.is_anonymous:
         return False
@@ -45,7 +43,7 @@ def voted_down_question(user, question):
 
 
 
-@register.filter
+@library.filter
 def voted_up_answer(user, answer):
     if user.is_anonymous:
         return False
@@ -57,7 +55,7 @@ def voted_up_answer(user, answer):
 
 
 
-@register.filter
+@library.filter
 def voted_down_answer(user, answer):
     if user.is_anonymous:
         return False
@@ -69,7 +67,7 @@ def voted_down_answer(user, answer):
 
 
 
-@register.filter
+@library.filter
 def can_edit_question(user, question):
     if user.is_anonymous:
         return False
@@ -79,7 +77,7 @@ def can_edit_question(user, question):
 
 
 
-@register.filter
+@library.filter
 def can_edit_answer(user, answer):
     if user.is_anonymous:
         return False
@@ -89,7 +87,7 @@ def can_edit_answer(user, answer):
 
 
 
-@register.filter
+@library.filter
 def can_edit_comment(user, comment):
     if user.is_anonymous:
         return False
@@ -98,7 +96,7 @@ def can_edit_comment(user, comment):
 
 
 
-@register.filter
+@library.filter
 def can_post_question(user):
     if user.is_anonymous:
         return False
@@ -106,7 +104,7 @@ def can_post_question(user):
 
 
 
-@register.filter
+@library.filter
 def can_post_answer(user):
     if user.is_anonymous:
         return False
@@ -114,7 +112,7 @@ def can_post_answer(user):
 
 
 
-@register.filter
+@library.filter
 def can_post_comment(user):
     if user.is_anonymous:
         return False
@@ -122,7 +120,7 @@ def can_post_comment(user):
 
 
 
-@register.filter
+@library.filter
 def can_delete_question(user, question):
     if user.is_anonymous:
         return False
@@ -132,7 +130,7 @@ def can_delete_question(user, question):
 
 
 
-@register.filter
+@library.filter
 def can_delete_answer(user, answer):
     if user.is_anonymous:
         return False
@@ -142,7 +140,7 @@ def can_delete_answer(user, answer):
 
 
 
-@register.filter
+@library.filter
 def can_delete_comment(user, comment):
     if user.is_anonymous:
         return False

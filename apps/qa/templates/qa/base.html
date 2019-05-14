@@ -21,8 +21,10 @@
         {% endif %}
         <form method="get" class="form-group form-inline float-right ml-5"
               action="{{ url('ask:index') }}">
-            <input type="text" class="form-control" name="query" placeholder="Search..."
-                   value="{{ query }}"/>
+            <input type="text" class="form-control" name="query"
+                {% if not query %} placeholder="Search..."
+                {% else %} value="{{ query }}"
+                {% endif %}}/>
             <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
         </form>
     </div>
