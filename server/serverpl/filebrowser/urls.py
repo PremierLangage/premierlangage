@@ -9,6 +9,9 @@ from django.urls import path
 from filebrowser import views
 app_name = 'filebrowser'
 
+
+
+
 urlpatterns = [
     path(r'', views.index, name='index'),
     path(r'option', views.option, name='option'),
