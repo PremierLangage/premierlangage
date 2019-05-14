@@ -1,0 +1,50 @@
+
+author=DR 2016
+
+title= TP 01 Math Info 2016
+
+
+
+introduction==
+
+# BIENVENUE
+
+Bonjour,
+bienvenue sur la plateforme Premier Langage.
+
+Cette plateforme développée à Marne la Vallée vous permet de valider l'avancement de vos compétences en python.
+
+A chaque TP est associée une PL Activité que vous devez réussir.
+
+Si vous avez des difficultés avec un exercice demandez à votre chargé(e) de TP de vous aider.
+
+Cordialement
+
+L'Equipe Premier langage.
+
+
+==
+
+tag=print|input|variables|identifier|error|operator
+
+
+concept==debug
+@ /python/IUT/TP1/constantestypes.pl
+@ /python/IUT/TP1/printbonjour.pl
+@ /python/IUT/TP1/printinput.pl
+@ /python/IUT/TP1/identificateurs.pl
+@ /python/IUT/TP1/operator001.pl
+@ /python/IUT/TP1/operator002.pl
+@ /python/IUT/TP1/errorindent.pl
+@ /python/IUT/TP1/errorsyntax.pl
+@ /python/IUT/TP1/errortype.pl
+==
+
+
+
+
+
+
+
+
+

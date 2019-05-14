@@ -72,6 +72,7 @@ coverage.xml
 .pytest_cache/
 media/
 migrations/0*
+!apps/misc_tests/resources/lib
 
 # Translations
 *.mo

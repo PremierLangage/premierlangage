@@ -1,0 +1,23 @@
+author=Dominique Revuz
+
+title=TestF1
+
+introduction==
+
+Bonjour,
+ceci permet de faire des tests de la plateforme de préprod.
+
+Si le fichier test/test1.pl n'existe pas le message d'erreur est correct.
+
+le test1 est pour tester les affichages en format markdown des énoncés.
+
+==
+
+tag=function|root|variable|test
+
+concept==test
+@ python/function/simplefunc1.pl
+@ python/exemple/allwayscorrect.pl
+@ python/exemple/exemple1.pl
+
+==

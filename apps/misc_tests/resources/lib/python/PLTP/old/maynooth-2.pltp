@@ -1,0 +1,24 @@
+author=Dominique Revuz
+
+title=Demo 21 Juin 
+
+introduction==
+
+# Feuille TP1
+Cette feuille de TP vous permettra de d'apprendre l'utilisation des deux fonction de communication du programme avec l'utilisateur.
+
+La fonction **print** qui permet d'afficher une information sur l'écran.
+
+La fonction **input** qui permet de demander une saisie au clavier. 
+
+
+
+==
+
+tag=function|parameter|return
+
+concept==return
+@ python/function/carre.pl
+
+==
+

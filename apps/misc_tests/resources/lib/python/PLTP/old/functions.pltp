@@ -1,0 +1,19 @@
+
+author=Dominique Revuz
+
+
+introduction==
+
+Les fonctions en python. 
+Cette page d'exercice vous propose quelques fonctions.
+
+==
+
+concept==function
+
+@ python/function/autosubsets.pl
+@ python/function/carre.pl
+
+@ python/function/histogramme1.pl
+@ python/function/randomcolor1.pl
+==
