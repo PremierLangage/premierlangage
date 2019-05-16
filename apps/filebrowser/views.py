@@ -696,6 +696,7 @@ def compile_pl(request):
 
 
 
+
 @csrf_exempt
 @require_POST
 def pl_tuto(request):
