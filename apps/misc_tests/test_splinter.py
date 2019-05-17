@@ -142,7 +142,7 @@ class SplinterTestCase(StaticLiveServerTestCase):
         self.b.find_by_text("lib").click()
         self.assertTrue(self.b.is_text_present("demo", wait_time=10))
         self.b.find_by_text("demo").click()
-        self.assertTrue(self.b.is_text_present("static_add.pl", wait_time=10))
+        self.assertTrue(self.b.is_text_present("random_all.pl", wait_time=10))
         self.b.find_by_text("random_all.pltp").first.mouse_over()
         self.assertTrue(
                 self.b.is_element_present_by_id("op-1-lib/demo/random_all.pltp", wait_time=10))
@@ -188,3 +188,24 @@ class SplinterTestCase(StaticLiveServerTestCase):
         self.b.find_by_text("home").click()
         self.assertTrue(self.b.is_text_present("cbank", wait_time=10))
         self.b.find_by_text("cbank").click()
+        self.assertTrue(self.b.is_text_present("recursion", wait_time=10))
+        self.b.find_by_text("recursion").click()
+        self.assertTrue(self.b.is_text_present("working_exercice.pltp", wait_time=10))
+        self.b.find_by_text("working_exercice.pltp").click()
+        self.b.find_by_text("working_exercice.pltp").first.mouse_over()
+        self.assertTrue(
+                self.b.is_element_present_by_id(
+                        "op-1-Yggdrasil/cbank/recursion/working_exercice.pltp",
+                        wait_time=100))
+        self.b.find_by_id(
+                "op-1-Yggdrasil/cbank/recursion/working_exercice.pltp").first.click()
+        
+        self.assertTrue(
+                self.b.is_element_present_by_text(
+                        " a bien été créée et a pour URL LTI:                     ", wait_time=10))
+        self.assertTrue(
+                self.b.is_element_present_by_text(" OPEN                    ", wait_time=10))
+        self.b.find_by_text(" OPEN                    ").click()
+        time.sleep(1)
+        self.b.windows[0].close()
+        time.sleep(5)  # TODO
