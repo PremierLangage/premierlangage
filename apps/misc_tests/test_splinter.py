@@ -63,7 +63,7 @@ class SplinterTestCase(StaticLiveServerTestCase):
         web_driver.fill("answer", answer)
         self.assertTrue(web_driver.is_element_present_by_text("Valider", wait_time=10))
         web_driver.find_by_text("Valider").click()
-        time.sleep(0.5)
+        time.sleep(0.7)
     
     
     def answer_pl(self, answer):
@@ -71,7 +71,7 @@ class SplinterTestCase(StaticLiveServerTestCase):
         self.b.fill("answer", answer)
         self.assertTrue(self.b.is_element_present_by_text("Valider", wait_time=10))
         self.b.find_by_text("Valider").click()
-        time.sleep(1)
+        time.sleep(0.7)
     
     
     def test_file_browser_preview(self):

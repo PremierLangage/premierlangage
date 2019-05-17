@@ -343,9 +343,10 @@ class SessionExercise(SessionExerciseAbstract):
         if context:
             dic = {**context, **dic}
         
+        env = Jinja2.get_default()
         for key in dic:
-            if type(dic[key]) is str:dic[key] = \
-                dic[key] = Jinja2.get_default().from_string(dic[key]).render(context=dic, request=request)
+            if type(dic[key]) is str:
+                dic[key] = env.from_string(dic[key]).render(context=dic, request=request)
         
         return get_template("playexo/pl.html").render(dic, request)
     
@@ -363,9 +364,10 @@ class SessionExercise(SessionExerciseAbstract):
                 dic['user_settings__'] = self.session_activity.user.profile
                 dic['user__'] = self.session_activity.user
                 dic['first_pl__'] = self.session_activity.activity.pltp.indexed_pl()[0].id
+                env = Jinja2.get_default()
                 for key in dic:
                     if type(dic[key]) is str:
-                        dic[key] = Jinja2.get_default().from_string(dic[key]).render(context=dic, request=request)
+                        dic[key] = env.from_string(dic[key]).render(context=dic, request=request)
                 return get_template("playexo/pltp.html").render(dic, request)
         
         except Exception as e:  # pragma: no cover
@@ -459,10 +461,10 @@ class SessionTest(SessionExerciseAbstract):
                 'pl_id__':         pl.id,
             },
         }
-        
+        env = Jinja2.get_default()
         for key in dic:
             if type(dic[key]) is str:
-                dic[key] = Jinja2.get_default().from_string(dic[key]).render(context=dic, request=request)
+                dic[key] = env.from_string(dic[key]).render(context=dic, request=request)
         
         return get_template("playexo/preview.html").render(dic, request)
     
