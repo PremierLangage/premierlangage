@@ -58,20 +58,20 @@ class SplinterTestCase(StaticLiveServerTestCase):
         self.b.visit(os.path.join(self.live_server_url, url))
     
     
-    def answer_preview(self, web_driver, answer):
+    def answer_driver(self, web_driver, answer):
+        time.sleep(1)
         self.assertTrue(web_driver.is_element_present_by_name("answer", wait_time=10))
         web_driver.fill("answer", answer)
         self.assertTrue(web_driver.is_element_present_by_text("Valider", wait_time=10))
         web_driver.find_by_text("Valider").click()
-        time.sleep(0.7)
     
     
     def answer_pl(self, answer):
+        time.sleep(1)
         self.assertTrue(self.b.is_element_present_by_id("form_answer", wait_time=50))
         self.b.fill("answer", answer)
         self.assertTrue(self.b.is_element_present_by_text("Valider", wait_time=10))
         self.b.find_by_text("Valider").click()
-        time.sleep(0.7)
     
     
     def test_file_browser_preview(self):
@@ -91,20 +91,20 @@ class SplinterTestCase(StaticLiveServerTestCase):
         self.assertTrue(self.b.is_element_present_by_tag("iframe", wait_time=10))
         self.b.is_element_present_by_text("Valider", wait_time=2)
         with self.b.get_iframe(0) as iframe:
-            self.answer_preview(iframe, "1")
-            self.assertTrue(iframe.is_text_present("Mauvaise réponse"))
-            self.answer_preview(iframe, "2")
-            self.assertTrue(iframe.is_text_present("Mauvaise réponse"))
-            self.answer_preview(iframe, "7")
-            self.assertTrue(iframe.is_text_present("Bonne réponse"))
-            self.answer_preview(iframe, "3")
-            self.assertTrue(iframe.is_text_present("Mauvaise réponse"))
-            self.answer_preview(iframe, "4")
-            self.assertTrue(iframe.is_text_present("Mauvaise réponse"))
-            self.answer_preview(iframe, "7")
-            self.assertTrue(iframe.is_text_present("Bonne réponse"))
-            self.answer_preview(iframe, "5")
-            self.assertTrue(iframe.is_text_present("Mauvaise réponse"))
+            self.answer_driver(iframe, "1")
+            self.assertTrue(iframe.is_text_present("Mauvaise réponse", wait_time=5))
+            self.answer_driver(iframe, "2")
+            self.assertTrue(iframe.is_text_present("Mauvaise réponse", wait_time=5))
+            self.answer_driver(iframe, "7")
+            self.assertTrue(iframe.is_text_present("Bonne réponse", wait_time=5))
+            self.answer_driver(iframe, "3")
+            self.assertTrue(iframe.is_text_present("Mauvaise réponse", wait_time=5))
+            self.answer_driver(iframe, "4")
+            self.assertTrue(iframe.is_text_present("Mauvaise réponse", wait_time=5))
+            self.answer_driver(iframe, "7")
+            self.assertTrue(iframe.is_text_present("Bonne réponse", wait_time=5))
+            self.answer_driver(iframe, "5")
+            self.assertTrue(iframe.is_text_present("Mauvaise réponse", wait_time=5))
     
     
     def test_filebrowser_pl(self):
@@ -121,19 +121,19 @@ class SplinterTestCase(StaticLiveServerTestCase):
         self.b.windows[0].close()
         
         self.answer_pl("1")
-        self.assertTrue(self.b.is_text_present("Mauvaise réponse"))
+        self.assertTrue(self.b.is_text_present("Mauvaise réponse", wait_time=5))
         self.answer_pl("2")
-        self.assertTrue(self.b.is_text_present("Mauvaise réponse"))
+        self.assertTrue(self.b.is_text_present("Mauvaise réponse", wait_time=5))
         self.answer_pl("7")
-        self.assertTrue(self.b.is_text_present("Bonne réponse"))
+        self.assertTrue(self.b.is_text_present("Bonne réponse", wait_time=5))
         self.answer_pl("3")
-        self.assertTrue(self.b.is_text_present("Mauvaise réponse"))
+        self.assertTrue(self.b.is_text_present("Mauvaise réponse", wait_time=5))
         self.answer_pl("4")
-        self.assertTrue(self.b.is_text_present("Mauvaise réponse"))
+        self.assertTrue(self.b.is_text_present("Mauvaise réponse", wait_time=5))
         self.answer_pl("7")
-        self.assertTrue(self.b.is_text_present("Bonne réponse"))
+        self.assertTrue(self.b.is_text_present("Bonne réponse", wait_time=5))
         self.answer_pl("5")
-        self.assertTrue(self.b.is_text_present("Mauvaise réponse"))
+        self.assertTrue(self.b.is_text_present("Mauvaise réponse", wait_time=5))
     
     
     def test_filebrowser_activity(self):
