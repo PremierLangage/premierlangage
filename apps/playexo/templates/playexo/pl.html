@@ -1,11 +1,11 @@
 <link rel="stylesheet" href="{{ static('/playexo/css/playexo.css') }}"/>
-{% if 'extracss' %}{{ extracss|safe }}{% endif %}
+{% if extracss %}{{ extracss|safe }}{% endif %}
 <div class="card exercise">
     <!-- HEADER -->
     <div class="card-header exercise__header">
-        <div class="text-center"><h2 class='exercise__title'>{% if 'title' %}{{ title }}{% endif
+        <div class="text-center"><h2 class='exercise__title'>{% if title %}{{ title }}{% endif
             %}</h2></div>
-        <div class="float-left"><span class='exercise__author'>{% if 'author' %}{{ author }}{% endif %}</span>
+        <div class="float-left"><span class='exercise__author'>{% if author %}{{ author }}{% endif %}</span>
         </div>
     </div>
     <!-- BODY -->
@@ -20,8 +20,8 @@
         </div>
         <!-- FEEDBACK -->
         <div class="exercise__feedback">
-            {% with feedbackh__=feedback__|markdown %}
-            {{ feedbackh__|safe }}
+            {% with feedbackh__=(feedback__|markdown) %}
+            {{ feedbackh__|safe if feedback__ else "" }}
             {% endwith %}
         </div>
         <!-- FORM -->
@@ -37,20 +37,20 @@
                    href="{{ url('playexo:activity', activity_id__) }}?action=reset">
                     <i class="fas fa-undo"></i> Réinitialiser
                 </a>
-                {{ firstof(settings.reroll,_threshold, 100, as, reroll_limit__) }}
-                {% if settings.allow_reroll and grade__|add("0") >= reroll_limit__|add("0") %}
+                {% with reroll_limit__=(firstof(settings.reroll,_threshold, 100)) %}
+                {% if settings.allow_reroll and grade__|int >= reroll_limit__|int %}
                 <a type="button" class="btn btn-warning action-reroll"
                    href="{{ url('playexo:activity', activity_id__) }}?action=reroll">
                     <i class="fas fa-dice"></i> Nouveau tirage
                 </a>
                 {% endif %}
+                {% endwith %}
                 <button class="btn btn-info action-save">
                     <i class="fas fa-save"></i> Sauvegarder
                 </button>
-                <button class="btn btn-primary action-submit"><i class="fas fa-check"></i>Valider
-                </button>
+                <button class="btn btn-primary action-submit"><i class="fas fa-check"></i>Valider</button>
             </div>
-            {% if grade__|add("0") > 0 %}
+            {% if grade__|int > 0 %}
             <br/> <br/>
             <a type="button" class="btn btn-success action-next"
                href="{{ url('playexo:activity', activity_id__) }}?action=next">
@@ -68,7 +68,7 @@
     </div>
 </div>
 <script type='text/javascript' src="{{ static('/playexo/js/playexo.js') }}"></script>
-{% if 'extrajs' %}{{ extrajs|safe }}{% endif %}
+{% if extrajs %}{{ extrajs|safe }}{% endif %}
 <script type='text/javascript'>
     $(function () {
         Activity.withEval("{{ url('playexo:evaluate', activity_id__, pl_id__) }}");

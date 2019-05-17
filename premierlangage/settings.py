@@ -102,8 +102,11 @@ TEMPLATES = [
             "match_extension": ".html",
             "match_regex": r"^(?!admin)",
             "environment": "premierlangage.jinja2.environment",
+            "undefined": "premierlangage.jinja2.CustomUndefined",
+            "debug": True,
             "filters": {
                 "markdown": "django_markdown.templatetags.django_markdown.markdown",
+                "dict_value": "apps.playexo.templatetags.playexo_tags.dict_value",
             },
             'context_processors': [
                 'django.template.context_processors.debug',

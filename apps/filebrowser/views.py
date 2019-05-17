@@ -709,7 +709,6 @@ def preview_pl(request):
     
     path_components = path.split('/')
     directory = path_components[0]
-    print(directory)
     try:
         path = os.path.join(settings.FILEBROWSER_ROOT, path)
         shutil.copyfile(path, path + ".bk")
@@ -717,7 +716,6 @@ def preview_pl(request):
             print(content, file=f)
         
         directory = Directory.objects.get(name=directory)
-        print(directory.root)
         file_path = os.path.join(*(path_components[1:]))
         pl, warnings = load_file(directory, file_path)
         if not pl:

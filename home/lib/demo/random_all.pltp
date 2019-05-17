@@ -1,5 +1,9 @@
 title=Random add
+author=Christophe Callé
 
+teacher== #|python| 
+test
+==
 @ static_add.pl
 @ /demo/random_add.pl
 @ random_add_eval_func.pl
@@ -7,5 +11,6 @@ title=Random add
 introduction==
 Des <i>additions</i> **aléatoires**
 ==
+
 
 

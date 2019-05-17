@@ -3,12 +3,12 @@
 
 
 
-title= Addition Aléatoire
+title= Addition statique
 
-author = Quentin Coumes
+author = Christophe Callé
 
 text==
-Combien <i>font</i> ***{{ 3 }} + {{ 4 }}*** ?
+Combien <i>font</i> ***3 + 4*** ?
 ==
 
 form==
@@ -37,6 +37,7 @@ except:
 
 @ ~/utils/sandboxio.py
 @ ~/grader/evaluator.py [grader.py]
+
 
 
 

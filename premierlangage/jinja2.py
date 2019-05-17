@@ -1,11 +1,11 @@
 import jinja2
 from django_http_method.templatetags import http_method
 from html import unescape
-
+from jinja2 import Undefined
 
 
 def firstof(*args):
-    return next(iter([i for i in args if i]), None)
+    return next(iter([i for i in args if i]), "")
 
 
 
@@ -38,6 +38,18 @@ def environment(**options):
             "http_patch":   http_method.http_patch,
             "http_options": http_method.http_options,
             "http_trace":   http_method.http_trace,
-            'print': print,
+            "int": int,
     })
     return env
+
+
+class CustomUndefined(Undefined):
+    def _fail_with_undefined_error(self, *args, **kwargs):
+        return ''
+
+    __add__ = __radd__ = __mul__ = __rmul__ = __div__ = __rdiv__ = \
+        __truediv__ = __rtruediv__ = __floordiv__ = __rfloordiv__ = \
+        __mod__ = __rmod__ = __pos__ = __neg__ = __call__ = \
+        __getitem__ = __lt__ = __le__ = __gt__ = __ge__ = __int__ = \
+        __float__ = __complex__ = __pow__ = __rpow__ = \
+        _fail_with_undefined_error

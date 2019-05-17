@@ -200,7 +200,9 @@ class ModelTestCase(TestCase):
         
         s_exercice = SessionExercise.objects.create(session_activity=s_activity)
         
-        res = s_exercice.get_exercise(self.factory.get(""))
+        req = self.factory.get("")
+        req.user = self.user
+        res = s_exercice.get_exercise(req)
         self.assertIn("Random add", res)
     
     

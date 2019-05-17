@@ -8,7 +8,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from django.template import RequestContext, Template
+from jinja2 import Template, Undefined
+from django_jinja.backend import Jinja2
 from django.template.loader import get_template
 from django.urls import resolve
 from django.utils import timezone
@@ -346,7 +347,7 @@ class SessionExercise(SessionExerciseAbstract):
         
         for key in dic:
             if type(dic[key]) is str:
-                dic[key] = Template(dic[key]).render(RequestContext(request, dic))
+                dic[key] = Template(dic[key], undefined=Undefined).render(dic)
         
         return get_template("playexo/pl.html").render(dic, request)
     
@@ -366,7 +367,7 @@ class SessionExercise(SessionExerciseAbstract):
                 dic['first_pl__'] = self.session_activity.activity.pltp.indexed_pl()[0].id
                 for key in dic:
                     if type(dic[key]) is str:
-                        dic[key] = Template(dic[key]).render(RequestContext(request, dic))
+                        dic[key] = Template(dic[key], undefined=Undefined).render(dic)
                 return get_template("playexo/pltp.html").render(dic, request)
         
         except Exception as e:  # pragma: no cover
@@ -463,7 +464,7 @@ class SessionTest(SessionExerciseAbstract):
         
         for key in dic:
             if type(dic[key]) is str:
-                dic[key] = Template(dic[key]).render(RequestContext(request, dic))
+                dic[key] = Jinja2.get_default().from_string(dic[key]).render(context=dic, request=request)
         
         return get_template("playexo/preview.html").render(dic, request)
     
