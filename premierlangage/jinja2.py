@@ -1,6 +1,5 @@
 import jinja2
 from django_http_method.templatetags import http_method
-from html import unescape
 from jinja2 import Undefined
 
 

@@ -2,20 +2,18 @@ import logging
 import time
 
 import htmlprint
+from classmanagement.models import Course
 from django.contrib.auth.models import User
 from django.db import IntegrityError, models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from jinja2 import Template, Undefined
-from django_jinja.backend import Jinja2
 from django.template.loader import get_template
 from django.urls import resolve
 from django.utils import timezone
+from django_jinja.backend import Jinja2
 from jsonfield import JSONField
-
-from classmanagement.models import Course
 from loader.models import PL, PLTP
 from lti_app.models import LTIModel
 from playexo.enums import State
@@ -346,8 +344,8 @@ class SessionExercise(SessionExerciseAbstract):
             dic = {**context, **dic}
         
         for key in dic:
-            if type(dic[key]) is str:
-                dic[key] = Template(dic[key], undefined=Undefined).render(dic)
+            if type(dic[key]) is str:dic[key] = \
+                dic[key] = Jinja2.get_default().from_string(dic[key]).render(context=dic, request=request)
         
         return get_template("playexo/pl.html").render(dic, request)
     
@@ -367,7 +365,7 @@ class SessionExercise(SessionExerciseAbstract):
                 dic['first_pl__'] = self.session_activity.activity.pltp.indexed_pl()[0].id
                 for key in dic:
                     if type(dic[key]) is str:
-                        dic[key] = Template(dic[key], undefined=Undefined).render(dic)
+                        dic[key] = Jinja2.get_default().from_string(dic[key]).render(context=dic, request=request)
                 return get_template("playexo/pltp.html").render(dic, request)
         
         except Exception as e:  # pragma: no cover
