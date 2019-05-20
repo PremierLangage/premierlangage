@@ -153,6 +153,7 @@ class SplinterTestCase(StaticLiveServerTestCase):
                         " a bien été créée et a pour URL LTI:                     ", wait_time=10))
         self.assertTrue(
                 self.b.is_element_present_by_text(" OPEN                    ", wait_time=10))
+        time.sleep(1)
         self.b.find_by_text(" OPEN                    ").click()
         time.sleep(1)
         self.b.windows[0].close()
@@ -205,7 +206,11 @@ class SplinterTestCase(StaticLiveServerTestCase):
                         " a bien été créée et a pour URL LTI:                     ", wait_time=10))
         self.assertTrue(
                 self.b.is_element_present_by_text(" OPEN                    ", wait_time=10))
+        time.sleep(1)
         self.b.find_by_text(" OPEN                    ").click()
         time.sleep(1)
         self.b.windows[0].close()
-        time.sleep(5)  # TODO
+        
+        self.b.click_link_by_partial_text("Commencer")
+        self.assertTrue(
+            self.b.is_element_present_by_css("span[class='MathJax_Preview']", wait_time=10))

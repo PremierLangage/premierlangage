@@ -1,8 +1,5 @@
-
-{% load playexo_tags %}
-
 {% with editorid__=editor.id %}
-    {% firstof answers__|dict_value:editorid__ answers__.answer editor.code as answer_editor__ %}
+    {% with answer_editor__=firstof(answers__|dict_value(editorid__answers__.answer), editor.code) %}
 
     <!-- Do not tabulate this div as the tabulation will appear in the editor -->
     <div id="editor" style="resize: both; overflow: auto; border: 1px #E7E7E7 solid; border-width: 1px; border-color: #BBB; border-radius: 4px; height: {% if editor.height %}{{ editor.height}}{% else %}400{% endif %}px; #E7E7E7 solid;"
@@ -15,6 +12,7 @@
            style="display: none;"
            value="{{ answer_editor__ | escape }}"
     >
+    {% endwith %}
 {% endwith %}
 
 <script src="{{ static('js/ace/ace.js') }}" type="text/javascript" charset="utf-8"></script>
@@ -67,7 +65,4 @@
         input.val(editor.getSession().getValue());
     });
 </script>
-
-
-
 
