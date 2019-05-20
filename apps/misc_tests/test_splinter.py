@@ -76,8 +76,6 @@ class SplinterTestCase(StaticLiveServerTestCase):
     
     def test_file_browser_preview(self):
         self.connect_to_filebrowser()
-        self.assertTrue(self.b.is_text_present("home", wait_time=10))
-        self.b.find_by_text("home").click()
         self.assertTrue(self.b.is_text_present("lib", wait_time=10))
         self.b.find_by_text("lib").click()
         self.assertTrue(self.b.is_text_present("demo", wait_time=10))
@@ -192,7 +190,6 @@ class SplinterTestCase(StaticLiveServerTestCase):
         self.assertTrue(self.b.is_text_present("recursion", wait_time=10))
         self.b.find_by_text("recursion").click()
         self.assertTrue(self.b.is_text_present("working_exercice.pltp", wait_time=10))
-        self.b.find_by_text("working_exercice.pltp").click()
         self.b.find_by_text("working_exercice.pltp").first.mouse_over()
         self.assertTrue(
                 self.b.is_element_present_by_id(
