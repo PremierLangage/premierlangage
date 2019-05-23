@@ -438,7 +438,7 @@ class SessionTest(SessionExerciseAbstract):
         super().save(*args, **kwargs)
     
     
-    def get_pl(self, request, answer=None):
+    def get_pl(self, request, answer=None, template="playexo/preview.html"):
         """Return a template of the PL rendered with context.
         
         If answer is given, will determine if the seed must be reroll base on its grade."""
@@ -466,7 +466,7 @@ class SessionTest(SessionExerciseAbstract):
             if type(dic[key]) is str:
                 dic[key] = env.from_string(dic[key]).render(context=dic, request=request)
         
-        return get_template("playexo/preview.html").render(dic, request)
+        return get_template(template).render(dic, request)
     
     
     def get_exercise(self, request, answer=None):
