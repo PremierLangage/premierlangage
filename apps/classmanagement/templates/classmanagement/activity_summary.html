@@ -37,8 +37,8 @@
                             <th class="student-th">Élève</th>
                             {% for i in range_tp %}
                             <th>
-                                <center>{% if forloop.counter < 10 %}&nbsp;{% endif %}{{
-                                    forloop.counter }}{% if forloop.counter < 10 %}&nbsp;{% endif %}
+                                <center>{% if loop.counter < 10 %}&nbsp;{% endif %}{{
+                                    loop.counter }}{% if loop.counter < 10 %}&nbsp;{% endif %}
                                 </center>
                             </th>
                             {% endfor %}
@@ -50,12 +50,12 @@
                             <td class="summary-td">
                                     <span class="mdl-chip mdl-chip--contact">
                                         <span class="mdl-chip__contact mdl-color--blue mdl-color-text--white">
-                                        {% firstof elem.object.get_full_name|capfirst|make_list|first elem.object.username|capfirst|make_list|first%}
+                                        {{ firstof(elem.object.get_full_name()|capfirst|make_list|first, elem.object.username|capfirst|make_list|first) }}
                                         </span>
                                         <span class="mdl-chip__text">
                                          <a class='text-dark'
                                             href="/courses/course/{{course_id}}/student/{{elem.id}}/summary/">
-                                            {% firstof elem.object.get_full_name elem.object.username %}
+                                            {{ firstof(elem.object.get_full_name(), elem.object.username) }}
                                          </a>
                                         </span>
                                     </span>
