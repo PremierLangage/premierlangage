@@ -5,11 +5,12 @@ import logging
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core.exceptions import PermissionDenied
-from django.http import Http404, HttpResponseRedirect
+from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
+from django.http import Http404, HttpResponse, HttpResponseForbidden, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET
 
 from classmanagement.models import Course
 from playexo.enums import State
@@ -244,6 +245,39 @@ def redirect_activity(request, activity_id):
     request.session['current_pl'] = None
     request.session['testing'] = False
     return HttpResponseRedirect(reverse("playexo:activity"))
+
+
+
+@login_required
+@require_GET
+def notes(request, course_id, activity_id):
+    try :
+        course = Course.objects.get(pk=course_id)
+        users = course.student.all()
+        activity = Activity.objects.get(pk=activity_id)
+        pl = activity.pltp.pl.all()
+    except ObjectDoesNotExist:
+        return HttpResponseForbidden("You are not a teacher of this class")
+    
+    if not request.user or not course.is_teacher(request.user):
+        return HttpResponseForbidden("Not authorized")
+    
+    csv = "username,firstname,lastname,email," + ''.join(
+            [str(i+1) + ": " + p.name+"," for i, p in enumerate(pl)]) + "total\n"
+    for u in users:
+        grades = []
+        
+        for i in pl:
+            answer = Answer.highest_grade(i, u)
+            grades.append(0 if answer is None else max(answer.grade, 0) if answer.grade is not None else 0)
+        
+        csv += ("%s,%s,%s,%s," % (u.username, u.first_name, u.last_name, u.email)
+                + ''.join([str(i) + "," for i in grades])
+                + str(sum(grades)) + "\n")
+    
+    response = HttpResponse(csv, content_type="text/csv")
+    response['Content-Disposition'] = 'attachment;filename=notes.csv'
+    return response
 
 
 
