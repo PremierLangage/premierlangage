@@ -9,9 +9,13 @@ from filebrowser.models import Directory
 
 globals().update(locals())
 
+# Create anonymous and premierlangage
 try:
     passwd = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
     user = User.objects.create_user(username='PremierLangage', password=passwd)
+    user.save()
+    passwd = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10))
+    user = User.objects.create_user(username='Anonymous', password=passwd)
     user.save()
 except django.db.utils.IntegrityError:
     user = User.objects.get(username='PremierLangage')
