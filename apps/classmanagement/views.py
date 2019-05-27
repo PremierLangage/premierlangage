@@ -251,7 +251,7 @@ def redirect_activity(request, activity_id):
 @login_required
 @require_GET
 def notes(request, course_id, activity_id):
-    try :
+    try:
         course = Course.objects.get(pk=course_id)
         users = course.student.all()
         activity = Activity.objects.get(pk=activity_id)
@@ -263,13 +263,14 @@ def notes(request, course_id, activity_id):
         return HttpResponseForbidden("Not authorized")
     
     csv = "username,firstname,lastname,email," + ''.join(
-            [str(i+1) + ": " + p.name+"," for i, p in enumerate(pl)]) + "total\n"
+        [str(i + 1) + ": " + p.name + "," for i, p in enumerate(pl)]) + "total\n"
     for u in users:
         grades = []
         
         for i in pl:
             answer = Answer.highest_grade(i, u)
-            grades.append(0 if answer is None else max(answer.grade, 0) if answer.grade is not None else 0)
+            grades.append(
+                0 if answer is None else max(answer.grade, 0) if answer.grade is not None else 0)
         
         csv += ("%s,%s,%s,%s," % (u.username, u.first_name, u.last_name, u.email)
                 + ''.join([str(i) + "," for i in grades])
