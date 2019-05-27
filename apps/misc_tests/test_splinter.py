@@ -146,8 +146,8 @@ class SplinterTestCase(StaticLiveServerTestCase):
         self.b.find_by_text("random_all.pltp").first.mouse_over()
         self.assertTrue(
             self.b.is_element_present_by_id("op-1-lib/demo/random_all.pltp", wait_time=WAIT_TIME))
+        time.sleep(3)
         self.b.find_by_id("op-1-lib/demo/random_all.pltp").first.click()
-        
         self.assertTrue(
             self.b.is_element_present_by_text(
                 " a bien été créée et a pour URL LTI:                     ", wait_time=WAIT_TIME))
@@ -198,9 +198,9 @@ class SplinterTestCase(StaticLiveServerTestCase):
             self.b.is_element_present_by_id(
                 "op-1-Yggdrasil/cbank/recursion/working_exercice.pltp",
                 wait_time=WAIT_TIME))
+        time.sleep(3)
         self.b.find_by_id(
             "op-1-Yggdrasil/cbank/recursion/working_exercice.pltp").first.click()
-        
         self.assertTrue(
             self.b.is_element_present_by_text(
                 " a bien été créée et a pour URL LTI:                     ", wait_time=WAIT_TIME))
