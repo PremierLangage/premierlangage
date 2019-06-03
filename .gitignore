@@ -18,7 +18,7 @@ documentation/templates/
 documentation/static/
 doc/
 static/*
-apps/filebrowser/client/node_modules/*
+apps/filebrowser/client/node_modules
 
 
 ########################################
