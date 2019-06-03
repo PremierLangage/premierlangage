@@ -1,0 +1,25 @@
+
+author=Dominique dot Revuz dot u-pem dot fr 
+title=test.pltp 
+
+introduction==
+
+# Ceci est une feuille de test pour vérifier le fonctionnement de la plateforme
+
+<p color="red">
+Vous ne devriez pas voir ce texte si vous êtes etudiant.
+
+un mail à votre administrateur pour lui signaler le problème 
+</p>
+
+Le premier fichier de test est testok qui vérifie les choses suivantes:
+- que le grader.py est executé 
+- que les fichiers indiqués dans le template sont correctement installés dans le repertoire d'execution de l'exercice se sont les fichiers utils.py plutils.py pldoctest.py
+- que le fichier student.py existe.
+
+
+==
+
+concept==function
+@ /python/test/testok.pl
+==

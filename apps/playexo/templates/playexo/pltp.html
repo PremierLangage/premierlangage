@@ -1,11 +1,12 @@
-{% load django_markdown %}
-{% load static %}
-<link rel="stylesheet" href="{% static '/playexo/css/playexo.css' %}"/>
+<link rel="stylesheet" href="{{ static('/playexo/css/playexo.css') }}"/>
 
 <div class="card exercise">
     <div class="card-header exercise__header">
-        <div class="introduction-center"><h2 class='exercise__title'>{% if 'title'%}{{ title }}{%endif %}</h2></div>
-        <div class="introduction-left"><span class='exercise__author'>{% if 'author' %}{{ author }}{% endif %}</span>
+        <div class="introduction-center">
+            <h2 class='exercise__title'>{% if title %}{{ title }}{%endif %}</h2>
+        </div>
+        <div class="introduction-left">
+            <span class='exercise__author'>{% if author %}{{ author }}{% endif %}</span>
         </div>
     </div>
     <div class="card-body exercise__body">
@@ -26,7 +27,7 @@
         <br>
         <center>
             <a style="white-space: normal;"
-               href="{% url 'playexo:activity' activity_id__ %}?action=pl&pl_id={{first_pl__}}"
+               href="{{ url('playexo:activity', activity_id__) }}?action=pl&pl_id={{first_pl__}}"
                type="button" class="btn btn-success btn-lg">
                 Commencer
             </a>

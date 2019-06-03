@@ -1,0 +1,10 @@
+
+introduction==
+
+test du message d'erreur d'un file dans un fichier pl
+
+==
+tag=function|parameter|return
+concept==call
+@ python/exemple/errorinclude.pl
+==

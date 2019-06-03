@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% load static %}
+
 
 {% block topbar %}{% endblock %}
 
 {% block content %}
-<script src="{% static 'js/ace/ace.js' %}"></script>
+<script src="{{ static('js/ace/ace.js') }}"></script>
 <div class="container">
     <br>
     <h1>Prévisualisation des colorisation syntaxique de l'éditeur de texte</h1>
@@ -20,25 +20,13 @@
             <div id="editor{{elem.value}}py" style="height: 400px;">{{ sample_python }}</div>
             <script defer>
                 var editor;
-                {
-                    {
-                        elem.value
-                    }
-                }
+                {{ elem.value }}
                 py = ace.edit('editor{{elem.value}}py');
                 editor;
-                {
-                    {
-                        elem.value
-                    }
-                }
+                {{ elem.value }}
                 py.session.setMode("ace/mode/python");
                 editor;
-                {
-                    {
-                        elem.value
-                    }
-                }
+                {{ elem.value }}
                 py.setTheme("{{ elem.template }}");
             </script>
         </div>
@@ -47,25 +35,13 @@
             <div id="editor{{elem.value}}C" style="height: 400px;">{{ sample_c }}</div>
             <script defer>
                 var editor;
-                {
-                    {
-                        elem.value
-                    }
-                }
+                {{ elem.value }}
                 C = ace.edit('editor{{elem.value}}C');
                 editor;
-                {
-                    {
-                        elem.value
-                    }
-                }
+                {{ elem.value }}
                 C.session.setMode("ace/mode/c_cpp");
                 editor;
-                {
-                    {
-                        elem.value
-                    }
-                }
+                {{ elem.value }}
                 C.setTheme("{{ elem.template }}");
             </script>
         </div>

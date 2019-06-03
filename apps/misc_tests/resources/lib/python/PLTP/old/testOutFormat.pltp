@@ -1,0 +1,20 @@
+author=Dominique Revuz
+
+title=Test Out Format
+
+introduction==
+
+Bonjour,
+ceci permet de faire des tests de la plateforme de préprod.
+
+Le fichier d'exercice est testFormat.pl
+
+==
+
+tag=function|root|variable|test
+
+concept==test
+
+@ python/exemple/testFormat.pl
+
+==

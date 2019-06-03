@@ -1,0 +1,24 @@
+author=DR 2016
+
+title=Debugs 
+
+
+
+introduction==
+
+Exercice de debugage de la plateforme
+
+
+
+==
+
+tag=identifier|conversion|types
+
+
+concept==debug
+@ /python/exemple/debugfalse.pl
+@ /python/exemple/debugtrue.pl
+@ /python/exemple/allwayscorrect.pl
+==
+
+

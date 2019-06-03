@@ -12,13 +12,13 @@ apps/*/migrations/**
 !apps/*/migrations/__init__.py
 premierlangage/config.py
 staticfiles/
-./static/
+static/*
 media/
 documentation/templates/
 documentation/static/
 doc/
 static/*
-apps/filebrowser/client/node_modules/*
+apps/filebrowser/client/node_modules
 
 
 ########################################
@@ -72,6 +72,7 @@ coverage.xml
 .pytest_cache/
 media/
 migrations/0*
+!apps/misc_tests/resources/lib
 
 # Translations
 *.mo

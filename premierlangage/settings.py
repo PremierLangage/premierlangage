@@ -57,6 +57,8 @@ PROJECT_APPS = [
 
 INSTALLED_APPS = PROJECT_APPS + PREREQ_APPS
 
+INSTALLED_APPS += ('django_jinja',)
+
 # Middleware definition
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -88,6 +90,46 @@ MESSAGE_TAGS = {
 # Templates engines
 TEMPLATES = [
     {
+        'BACKEND':  'django_jinja.backend.Jinja2',
+        'DIRS':     [
+            os.path.join(BASE_DIR, 'templates')
+        ],
+        'APP_DIRS': True,
+        'OPTIONS':  {
+            "autoescape": True,
+            "app_dirname": "templates",
+            "auto_reload": DEBUG,
+            "match_extension": ".html",
+            "match_regex": r"^(?!admin)",
+            "environment": "premierlangage.jinja2.environment",
+            "undefined": "premierlangage.jinja2.CustomUndefined",
+            "debug": True,
+            "filters": {
+                "markdown": "django_markdown.templatetags.django_markdown.markdown",
+                "dict_value": "apps.playexo.templatetags.playexo_tags.dict_value",
+            },
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+            "extensions": [
+                "jinja2.ext.do",
+                "jinja2.ext.loopcontrols",
+                "jinja2.ext.with_",
+                "jinja2.ext.i18n",
+                "jinja2.ext.autoescape",
+                "django_jinja.builtins.extensions.CsrfExtension",
+                "django_jinja.builtins.extensions.CacheExtension",
+                "django_jinja.builtins.extensions.TimezoneExtension",
+                "django_jinja.builtins.extensions.UrlsExtension",
+                "django_jinja.builtins.extensions.StaticFilesExtension",
+                "django_jinja.builtins.extensions.DjangoFiltersExtension",
+            ]
+        },
+    },
+    {
         'BACKEND':  'django.template.backends.django.DjangoTemplates',
         'DIRS':     [
             os.path.join(BASE_DIR, 'templates')
@@ -96,14 +138,12 @@ TEMPLATES = [
         'OPTIONS':  {
             'context_processors': [
                 'django.template.context_processors.debug',
+                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.request',
             ],
         },
-        
     },
-
 ]
 
 # WSGI Module
@@ -267,7 +307,7 @@ MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'media'))
 MEDIA_URL = '/media/'
 
 # Default Filebrowser's path
-FILEBROWSER_ROOT = os.path.abspath(os.path.join(BASE_DIR, './home/'))
+FILEBROWSER_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'home/'))
 
 # Filebrowser settings
 FILEBROWSER_DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&']

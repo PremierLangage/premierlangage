@@ -1,0 +1,29 @@
+
+author=DR 2016
+
+title= Premier TP Premier langage 
+
+
+
+introduction==
+
+TODO 
+
+==
+
+tag=print|input|variables|identifieurs
+
+
+concept==debug
+@ /python/IUT/TP1/printbonjour.pl
+@ /python/IUT/TP1/identificateurs.pl
+==
+
+
+
+
+
+
+
+
+

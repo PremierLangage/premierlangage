@@ -1,20 +1,18 @@
-{% load django_markdown %}
-{% load static %}
-
-<link rel="stylesheet" href="{% static '/playexo/css/playexo.css' %}"/>
-{% if 'extracss' %}{{ extracss|safe }}{% endif %}
+<link rel="stylesheet" href="{{ static('/playexo/css/playexo.css') }}"/>
+{% if extracss %}{{ extracss|safe }}{% endif %}
 <div class="card exercise">
     <!-- HEADER -->
     <div class="card-header exercise__header">
-        <div class="text-center"><h2 class='exercise__title'>{% if 'title'%}{{ title }}{% endif %}</h2></div>
-        <div class="text-left"><span class='exercise__author'>{% if 'author' %}{{ author }}{% endif %}</span>
+        <div class="text-center"><h2 class='exercise__title'>{% if title %}{{ title }}{% endif
+            %}</h2></div>
+        <div class="text-left"><span class='exercise__author'>{% if author %}{{ author }}{% endif %}</span>
         </div>
     </div>
     <!-- BODY -->
     <div class="card-body exercise__body">
         <!-- INSTRUCTIONS -->
         <div class="exercise__instructions">
-            {% if 'text'%}
+            {% if text %}
             {% with texth__=text|markdown %}
             {{ texth__|safe }}
             {% endwith %}
@@ -23,7 +21,7 @@
         <!-- FEEDBACK -->
         <div class="exercise__feedback">
             {% with feedbackh__=feedback__|markdown %}
-            {{ feedbackh__|safe }}
+            {{ feedbackh__|safe if feedback else "" }}
             {% endwith %}
         </div>
         <!-- FORM -->
@@ -35,11 +33,9 @@
         <!-- ACTIONS -->
         <div class="exercise__actions text-center">
             <div class="btn-group" role="group" aria-label="actions">
-                <button class="btn btn-primary action-submit">
-                    <i class="fas fa-check"></i> Valider
-                </button>
+                <button class="btn btn-primary action-submit"><i class="fas fa-check"></i>Valider</button>
                 <a type="button" class="btn btn-secondary action-download-env"
-                   href="{% url 'filebrowser:dlenv' id__ %}" download>
+                   href="{{ url('filebrowser:dlenv', id__) }}" download>
                     <i class="fas fa-download"></i> Télécharger l'Environnement
                 </a>
             </div>
@@ -53,8 +49,8 @@
         <br/>
     </div>
 </div>
-<script type='text/javascript' src="{% static '/playexo/js/playexo.js' %}"></script>
-{% if 'extrajs' %}{{ extrajs|safe }}{% endif %}
+<script type='text/javascript' src="{{ static('/playexo/js/playexo.js') }}"></script>
+{% if extrajs %}{{ extrajs|safe }}{% endif %}
 <script type='text/javascript'>
     $(function () {
         Activity.withTest("{{id__}}", "{{session__.id}}");

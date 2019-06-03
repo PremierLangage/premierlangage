@@ -1,21 +1,18 @@
 {% extends "base.html" %}
 
-{% load static %}
-{% load qa_tags %}
-
 {% block css %}
-<link rel="stylesheet" href="{% static 'css/qa.css' %}"/>
-<link rel="stylesheet" href="{% static 'css/tagsinput.css' %}">
+<link rel="stylesheet" href="{{ static('css/qa.css') }}"/>
+<link rel="stylesheet" href="{{ static('css/tagsinput.css') }}">
 {% endblock %}
 
 {% block js %}
-<script src="{% static 'js/tagsinput.js' %}"></script>
+<script src="{{ static('js/tagsinput.js') }}"></script>
 {% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="p-3 pl-5 mb-2 bg-secondary text-white qa-title">
-        <a class="text-white qa-title" href="{% url 'ask:index' %}">Frequently Ask Questions</a>
+        <a class="text-white qa-title" href="{{ url('ask:index') }}">Frequently Ask Questions</a>
         {% if user|can_post_question %}
         <button class="btn btn-primary float-right ml-5" data-toggle="modal"
                 data-target="#newQuestion">
@@ -23,9 +20,11 @@
         </button>
         {% endif %}
         <form method="get" class="form-group form-inline float-right ml-5"
-              action="{% url 'ask:index' %}">
-            <input type="text" class="form-control" name="query" placeholder="Search..."
-                   value="{{ query }}"/>
+              action="{{ url('ask:index') }}">
+            <input type="text" class="form-control" name="query"
+                {% if not query %} placeholder="Search..."
+                {% else %} value="{{ query }}"
+                {% endif %}}/>
             <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i></button>
         </form>
     </div>
@@ -43,8 +42,8 @@
                 </button>
             </div>
             <div class="modal-body p-2">
-                <form method="post" action="{% url 'ask:create_question' %}">
-                    {% csrf_token %}
+                <form method="post" action="{{ url('ask:create_question') }}">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
                     <div class="form-group">
                         <label for="title">Title</label>
                         <input name="title" type="text" class="form-control" id="title" value=""

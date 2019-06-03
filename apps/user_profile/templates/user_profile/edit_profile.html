@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load static %}
+
 
 {% block head_elements %}
 <style>
@@ -20,13 +20,13 @@
 <div class="container">
     <div class="card">
         <div class="card-header">
-            Paramètres - {% firstof request.user.get_full_name request.user.username %}
+            Paramètres - {{ firstof(request.user.get_full_name(), request.user.username) }}
         </div>
         <div class="card-body">
             <form method="POST" action="/profile/">
                 {% csrf_token %}
                 <table>
-                    {{ form.as_table }}
+                    {{ form.as_table() }}
                 </table>
                 <br>
                 <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i>

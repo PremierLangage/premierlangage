@@ -2,19 +2,18 @@ import logging
 import time
 
 import htmlprint
+from classmanagement.models import Course
 from django.contrib.auth.models import User
 from django.db import IntegrityError, models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.http import Http404
 from django.shortcuts import get_object_or_404
-from django.template import RequestContext, Template
 from django.template.loader import get_template
 from django.urls import resolve
 from django.utils import timezone
+from django_jinja.backend import Jinja2
 from jsonfield import JSONField
-
-from classmanagement.models import Course
 from loader.models import PL, PLTP
 from lti_app.models import LTIModel
 from playexo.enums import State
@@ -344,9 +343,10 @@ class SessionExercise(SessionExerciseAbstract):
         if context:
             dic = {**context, **dic}
         
+        env = Jinja2.get_default()
         for key in dic:
             if type(dic[key]) is str:
-                dic[key] = Template(dic[key]).render(RequestContext(request, dic))
+                dic[key] = env.from_string(dic[key]).render(context=dic, request=request)
         
         return get_template("playexo/pl.html").render(dic, request)
     
@@ -364,9 +364,10 @@ class SessionExercise(SessionExerciseAbstract):
                 dic['user_settings__'] = self.session_activity.user.profile
                 dic['user__'] = self.session_activity.user
                 dic['first_pl__'] = self.session_activity.activity.pltp.indexed_pl()[0].id
+                env = Jinja2.get_default()
                 for key in dic:
                     if type(dic[key]) is str:
-                        dic[key] = Template(dic[key]).render(RequestContext(request, dic))
+                        dic[key] = env.from_string(dic[key]).render(context=dic, request=request)
                 return get_template("playexo/pltp.html").render(dic, request)
         
         except Exception as e:  # pragma: no cover
@@ -437,7 +438,7 @@ class SessionTest(SessionExerciseAbstract):
         super().save(*args, **kwargs)
     
     
-    def get_pl(self, request, answer=None):
+    def get_pl(self, request, answer=None, template="playexo/preview.html"):
         """Return a template of the PL rendered with context.
         
         If answer is given, will determine if the seed must be reroll base on its grade."""
@@ -460,12 +461,12 @@ class SessionTest(SessionExerciseAbstract):
                 'pl_id__':         pl.id,
             },
         }
-        
+        env = Jinja2.get_default()
         for key in dic:
             if type(dic[key]) is str:
-                dic[key] = Template(dic[key]).render(RequestContext(request, dic))
+                dic[key] = env.from_string(dic[key]).render(context=dic, request=request)
         
-        return get_template("playexo/preview.html").render(dic, request)
+        return get_template(template).render(dic, request)
     
     
     def get_exercise(self, request, answer=None):

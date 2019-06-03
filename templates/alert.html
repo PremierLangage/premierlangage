@@ -1,4 +1,4 @@
-{% comment "Info" %}
+{#
 A inclure dans la plupart des template après la top barre.
 Permet d'afficher des message d'alerte (petit pop up fermable juste en dessous de la top barre) afin
 d'avertir/donner des informations à l'utilisateurs.
@@ -9,7 +9,7 @@ Pour créer une alerte, simplement faire un:
 - messages.warning(request, msg) ou
 - messages.error(request, msg)
 dans la vue correspondante.
-{% endcomment %}
+#}
 
 <div class="container">
     {% for message in messages %}

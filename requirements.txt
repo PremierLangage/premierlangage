@@ -4,6 +4,7 @@ django-annoying
 django-celery-results
 django-hitcount
 django-http-method
+django-jinja
 django-markdown-deux
 django-markdown-app
 django-taggit
@@ -22,6 +23,7 @@ python-magic
 pytz
 recommonmark
 requests
+splinter
 sympy
 whitenoise
 yattag

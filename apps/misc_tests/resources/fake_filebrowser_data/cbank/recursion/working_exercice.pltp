@@ -1,0 +1,21 @@
+title=Exercices fonctionnels sur la notions de récursivité
+
+introduction==
+Les exercices qui suivent fonctionnent tous le 17 octobre 2018.
+==
+
+
+@ /recursion/ackermann.pl
+@ /recursion/area_matrix.pl
+@ /recursion/div_by_seven.pl
+@ /recursion/down_up_number.pl
+@ /recursion/exp_by_squaring.pl
+@ /recursion/factorial.pl
+@ /recursion/fibonacci_rec.pl
+@ /recursion/knapsack.pl
+@ /recursion/pascal_rec.pl
+@ /recursion/pgcd_soustrac.pl
+@ /recursion/pied_nickeles_sort.pl
+@ /recursion/sum_number.pl
+
+

@@ -1,0 +1,43 @@
+author:
+    DR 2016-2017
+
+name:
+    LE NOM DU PLTP
+
+introduction:
+    "Bonjour,
+    bienvenue sur la plateforme Premier Langage.
+
+    Cette plateforme développée à Marne la Vallée vous permet de valider l'avancement de vos compétences en python.
+
+    A chaque TP est associée une PL Activité que vous devez réussir.
+
+    Si vous avez des difficultés avec un exercice demandez à votre chargé(e) de TP de vous aider.
+
+    Cordialement
+
+    L'Equipe Premier langage. "
+
+
+tag:
+    "print"
+    "input"
+    "variables"
+    "identifieurs"
+
+
+groupe==exofunction|2
+@ /python/0PLG/TPE/error.pl
+@ /python/0PLG/TPE/function001.pl
+@ /python/0PLG/TPE/operator001.pl
+@ /python/0PLG/TPE/identificateurs.pl
+==
+
+
+
+
+
+title= Tests de plgrader
+
+
+

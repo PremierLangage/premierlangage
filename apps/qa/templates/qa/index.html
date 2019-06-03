@@ -1,7 +1,5 @@
 {% extends "qa/base.html" %}
 
-{% load static %}
-
 {% block content_qa %}
 <ul class="nav nav-tabs nav-justified" id="tabs" role="tablist">
     <li class="nav-item">
@@ -40,7 +38,7 @@
             No questions asked yet.
         </div>
         {% endif %}
-        {% with paginator=questions active_q='questions' %}
+        {% with paginator=questions, active_q='questions' %}
         {% include 'qa/paginator.html' %}
         {% endwith %}
     </div>
@@ -56,7 +54,7 @@
             No unanswered question yet.
         </div>
         {% endif %}
-        {% with paginator=noans active_q='noans' %}
+        {% with paginator=noans, active_q='noans' %}
         {% include 'qa/paginator.html' %}
         {% endwith %}
     </div>
@@ -72,7 +70,7 @@
             No questions asked yet.
         </div>
         {% endif %}
-        {% with paginator=popular active_q='popular' %}
+        {% with paginator=popular, active_q='popular' %}
         {% include 'qa/paginator.html' %}
         {% endwith %}
     </div>
@@ -88,7 +86,7 @@
             No questions asked yet.
         </div>
         {% endif %}
-        {% with paginator=usersq active_q='usersq' %}
+        {% with paginator=usersq, active_q='usersq' %}
         {% include 'qa/paginator.html' %}
         {% endwith %}
     </div>

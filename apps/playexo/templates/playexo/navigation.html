@@ -2,21 +2,21 @@
     {% for item in pl_list__ %}
         {% if item.id == None %}
             {% if pl_id__ %}
-                <a style="white-space: normal;" href="{% url 'playexo:activity' activity_id__ %}?action=pltp"
+                <a style="white-space: normal;" href="{{ url('playexo:activity', activity_id__) }}?action=pltp"
                    type="button" class="btn btn-secondary  btn-lg">{{ item.title }}</a>
             {% else %}
-                <a style="white-space: normal;" href="{% url 'playexo:activity' activity_id__ %}?action=pltp"
+                <a style="white-space: normal;" href="{{ url('playexo:activity', activity_id__) }}?action=pltp"
                    type="button" class="btn btn-secondary  btn-lg active">{{ item.title }}</a>
             {% endif %}
         {% elif pl_id__ == item.id %}
             <a style="white-space: normal;"
-               href="{% url 'playexo:activity' activity_id__ %}?action=pl&pl_id={{item.id}}" type="button"
+               href="{{ url('playexo:activity', activity_id__) }}?action=pl&pl_id={{item.id}}" type="button"
                class="btn btn-secondary btn-type {{ item.state.template }} btn-lg active">
                 {{ item.title }}
             </a>
         {% else %}
             <a style="white-space: normal;"
-               href="{% url 'playexo:activity' activity_id__ %}?action=pl&pl_id={{item.id}}" type="button"
+               href="{{ url('playexo:activity', activity_id__) }}?action=pl&pl_id={{item.id}}" type="button"
                class="btn btn-secondary btn-type {{ item.state.template }} btn-lg">
                 {{ item.title }}
             </a>

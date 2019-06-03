@@ -49,7 +49,7 @@ class Parser:
         self.lineno = 1
         self.dic = dict()
         self.warning = list()
-        
+
         with open(self.path_parsed_file) as f:
             self.lines = f.readlines()
         

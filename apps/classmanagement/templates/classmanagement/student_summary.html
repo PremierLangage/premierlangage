@@ -1,17 +1,17 @@
 {% extends "base.html" %}
 
-{% load static %}
+
 
 {% block css %}
-<link rel="stylesheet" href="{% static 'css/block_chart.css' %}"/>
-<link rel="stylesheet" href="{% static 'css/classmanagement.css' %}"/>
+<link rel="stylesheet" href="{{ static('css/block_chart.css') }}"/>
+<link rel="stylesheet" href="{{ static('css/classmanagement.css') }}"/>
 {% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="panel panel-default">
         <div class="panel-body">
-            <h4>{{course_name}}: {% firstof student.get_full_name student.username %}</h4>
+            <h4>{{course_name}}: {{ firstof(student.get_full_name, student.username) }}</h4>
             <hr>
             <div class="course-instructor-action">
                 <a href="/courses/course/{{course_id}}/">Retour</a><br><br>
