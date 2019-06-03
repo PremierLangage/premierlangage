@@ -23,7 +23,7 @@ python-magic
 pytz
 recommonmark
 requests
-splinter
+selenium
 sympy
 whitenoise
 yattag

@@ -6,7 +6,11 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test import override_settings
-from splinter import Browser
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from filebrowser.models import Directory
 
@@ -21,17 +25,18 @@ WAIT_TIME = 30
 
 
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
-class SplinterTestCase(StaticLiveServerTestCase):
+class SeleniumTestCase(StaticLiveServerTestCase):
     
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.b = Browser()
+        cls.b = webdriver.Firefox()
+        cls.b.implicitly_wait(5)
     
     
     @classmethod
     def tearDownClass(cls):
-        cls.b.quit()
+        cls.b.close()
         shutil.rmtree(FAKE_FB_ROOT)
         super().tearDownClass()
     
@@ -48,16 +53,19 @@ class SplinterTestCase(StaticLiveServerTestCase):
     
     
     def connect_to_filebrowser(self):
-        self.b.reload()
+        self.b.refresh()
         self.visit("filebrowser")
-        if not self.b.is_text_present("login"):
-            self.b.fill("username", "login")
-            self.b.fill("password", "secret")
-            self.b.find_by_text("Log-in").click()
+        e = self.b.find_elements_by_xpath("//*[contains(text(), 'login')]")
+        if e is not None:
+            e = self.b.find_element_by_name("username")
+            e.send_keys("login")
+            e = self.b.find_element_by_name("password")
+            e.send_keys("secret")
+            self.b.find_element_by_xpath("//*[contains(text(), 'Log-in')]").click()
     
     
     def visit(self, url):
-        self.b.visit(os.path.join(self.live_server_url, url))
+        self.b.get(os.path.join(self.live_server_url, url))
     
     
     def answer_driver(self, web_driver, answer):
@@ -70,23 +78,20 @@ class SplinterTestCase(StaticLiveServerTestCase):
     
     def answer_pl(self, answer):
         time.sleep(1)
-        self.assertTrue(self.b.is_element_present_by_id("form_answer", wait_time=WAIT_TIME))
-        self.b.fill("answer", answer)
-        self.assertTrue(self.b.is_element_present_by_text("Valider", wait_time=WAIT_TIME))
-        self.b.find_by_text("Valider").click()
+        e = self.b.find_element_by_id("form_answer")
+        self.assertTrue(e is not None)
+        e = self.b.find_element_by_name("answer")
+        e.send_keys(answer)
+        e = self.b.find_element_by_xpath("//*[contains(text(), 'Valider')]")
+        e.click()
     
     
     def test_file_browser_preview(self):
         self.connect_to_filebrowser()
-        self.assertTrue(self.b.is_text_present("lib", wait_time=WAIT_TIME))
-        self.b.find_by_text("lib").click()
-        self.assertTrue(self.b.is_text_present("demo", wait_time=WAIT_TIME))
-        self.b.find_by_text("demo").click()
-        self.assertTrue(self.b.is_text_present("static_add.pl", wait_time=WAIT_TIME))
-        self.b.find_by_text("static_add.pl").click()
-        self.assertTrue(self.b.is_element_present_by_css('div[class="tab-item ng-star-inserted"]',
-                                                         wait_time=WAIT_TIME))
-        self.b.find_by_css('div[class="tab-item ng-star-inserted"]').click()
+        self.b.find_element_by_xpath("//*[contains(text(), 'lib')]").click()
+        self.b.find_element_by_xpath("//*[contains(text(), 'demo')]").click()
+        self.b.find_element_by_xpath("//*[contains(text(), 'static_add.pl')]").click()
+        self.b.find_element_by_css_selector('div[class="tab-item ng-star-inserted"]').click()
         
         self.assertTrue(self.b.is_element_present_by_tag("iframe", wait_time=WAIT_TIME))
         self.b.is_element_present_by_text("Valider", wait_time=WAIT_TIME)
@@ -146,7 +151,6 @@ class SplinterTestCase(StaticLiveServerTestCase):
         self.b.find_by_text("random_all.pltp").first.mouse_over()
         self.assertTrue(
             self.b.is_element_present_by_id("op-1-lib/demo/random_all.pltp", wait_time=WAIT_TIME))
-        time.sleep(3)
         self.b.find_by_id("op-1-lib/demo/random_all.pltp").first.click()
         self.assertTrue(
             self.b.is_element_present_by_text(
@@ -198,7 +202,6 @@ class SplinterTestCase(StaticLiveServerTestCase):
             self.b.is_element_present_by_id(
                 "op-1-Yggdrasil/cbank/recursion/working_exercice.pltp",
                 wait_time=WAIT_TIME))
-        time.sleep(3)
         self.b.find_by_id(
             "op-1-Yggdrasil/cbank/recursion/working_exercice.pltp").first.click()
         self.assertTrue(
