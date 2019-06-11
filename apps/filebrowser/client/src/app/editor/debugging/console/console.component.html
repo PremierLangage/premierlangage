@@ -7,7 +7,7 @@
             <mat-icon *ngSwitchCase="'warning'" mat-list-icon class='log-icon'>warning</mat-icon>
             <mat-icon *ngSwitchDefault mat-list-icon class='log-icon'>error</mat-icon>
         </ng-container>
-        <p class='log-content' [innerHTML]='item.message | sanitizeHtml'></p>
+        <p class='log-content' [innerHTML]='item.message | trustHtml'></p>
         </li>
         <mat-divider *ngIf='!last'></mat-divider>
     </ng-container>

@@ -1,14 +1,23 @@
 import { AfterContentInit, Directive, ElementRef, EventEmitter, Output, Input } from '@angular/core';
 
+/**
+ * Element that can accept a data shared by a `DraggableDirective` element or from the filesystem.
+ *
+ * - the class `dnd-over` is added to the element when a dragged data hover it.
+ */
 @Directive({
 // tslint:disable-next-line: directive-selector
   selector: '[droppable]'
 })
 export class DroppableDirective implements AfterContentInit {
-    @Input()
+
+    /**  A value indicating whether a data can be dropped to this element */
+    @Input('droppable')
     dropCondition = true;
+
+    /** emits after a data is dropped */
     @Output()
-    handleDrop: EventEmitter<DropData> = new EventEmitter();
+    dropped: EventEmitter<DndData> = new EventEmitter();
 
     public constructor(private el: ElementRef) {
     }
@@ -19,27 +28,32 @@ export class DroppableDirective implements AfterContentInit {
         }
 
         const self = this;
-        const el = this.el.nativeElement;
-        el.draggable = true;
+        const node = this.el.nativeElement;
+        node.draggable = true;
 
-        el.addEventListener('dragover', function(e: DragEvent) {
+        const dragover = (e: DragEvent) => {
             e.dataTransfer.dropEffect = 'move';
-            if (e.preventDefault) { e.preventDefault(); }
-            this.classList.add('dnd-over');
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            node.classList.add('dnd-over');
             return false;
-        }, false);
+        };
+        node.addEventListener('dragover', dragover, false);
 
-        el.addEventListener('dragenter', function(e: DragEvent) {
-            this.classList.add('dnd-over');
+        const dragenter = (e: DragEvent) => {
+            node.classList.add('dnd-over');
             return false;
-        }, false);
+        };
+        node.addEventListener('dragenter', dragenter, false);
 
-        el.addEventListener('dragleave', function(e: DragEvent) {
-            this.classList.remove('dnd-over');
+        const dragleave = (e: DragEvent) => {
+            node.classList.remove('dnd-over');
             return false;
-        }, false);
+        };
+        node.addEventListener('dragleave', dragleave, false);
 
-        el.addEventListener('drop', function(e: DragEvent) {
+        const drop = (e: DragEvent) => {
             e.preventDefault();
             let file: File;
             if (e.dataTransfer.items.length > 0) {
@@ -55,20 +69,21 @@ export class DroppableDirective implements AfterContentInit {
 
             if (e.stopPropagation) { e.stopPropagation(); }
 
-            this.classList.remove('dnd-over');
+            node.classList.remove('dnd-over');
 
-            const destination = this.id;
-            const source = e.dataTransfer.getData('Text');
+            const destination = node.id;
+            const source = e.dataTransfer.getData('dnd-data');
             if (source || file) {
-                self.handleDrop.emit({src: source, file: file, dst: destination});
+                self.dropped.emit({src: source, file: file, dst: destination});
             }
             return false;
-        }, false);
-      }
+        };
+        node.addEventListener('drop', drop, false);
+    }
 }
 
 /** Representation of a data shared with a drag and drop action.  */
-export interface DropData {
+export interface DndData {
     /** the id of the source node in the dom */
     src?: string;
     /** the id of the destination node in the dom */

@@ -1,63 +1,25 @@
- <ng-container *ngIf='showHeader; else tree'>
-    <div class='tab-bar'>
-        <span>EXPLORER</span>       
-        <div class="spacer"></div>
-        <div class='tab-item' (click)='didTapRefresh()' matTooltip='Refresh'>
-            <i class="fas fa-sync"></i>
-        </div>
+<div class='tab-bar' *ngIf="showHeader">
+    <span>EXPLORER</span>
+    <div class="spacer"></div>
+    <div class='tab-item' (click)='didRefresh()' matTooltip='Refresh'>
+        <i class="fas fa-sync"></i>
     </div>
-    <div class='navigation_content'>
-        <explorer [items]='items' [showHeader]='false'></explorer>
-    </div>
-</ng-container>
-<ng-template #tree>
-    <ul class='tree'>
-        <li *ngFor='let resource of items; trackBy:trackByFn'>
-            <div *ngIf='resource.renaming; else notEditing' class='tree__item editing'>
-                <span>
-                    <i class="{{resource.icon}}"></i>&nbsp;
-                    <input autofocus
-                           type='text' 
-                           placeholder='Press Enter to create ESC to cancel...' 
-                           [(ngModel)]='newName' 
-                           (keydown)='didEditingChanged(resource, $event)' 
-                           (blur)='didEditingChanged(resource, $event)'/>
-                </span>
-            </div>    
-            <ng-template #notEditing>
-                <div id='{{resource.path}}' class='tree__item' [ngClass]='{selected: isSelection(resource), changed: resource.changed, opened: resource.opened}' 
-                draggable droppable [dragCondition]='draggable(resource)' [dropCondition]='droppable(resource)' (handleDrop)='didDropData($event)'
-                    (click)='didTapOnResource(resource, $event)'>
-                    <span class='tree__item-label'>
-                        <i class="{{icon(resource)}}"></i>&nbsp;
-                        <span>{{resource.name}}</span>
-                    </span>
-                    <span class='tree__item-option-group'>
-                        <ng-container *ngFor='let option of options; let i = index'>
-                            <span id="op-{{ i }}-{{ resource.path }}" class='tree__item-option' *ngIf='option.enabled(resource)' matTooltip='{{option.label}}' (click)='option.action(resource, $event)'>
-                                <i class="{{option.icon}}"></i>&nbsp;
-                            </span>
-                        </ng-container>
-                    </span>
-                    <div class='overlay'></div>
-                </div>
-            </ng-template>
-            <ul class='tree' *ngIf='creating && newResource.parent === resource.path'>
-                <li>
-                    <div class='tree__item editing'>
-                        <span>
-                            <i class="{{newResource.icon}}"></i>&nbsp;
-                            <input autofocus
-                                    type='text' 
-                                    placeholder='Press Enter to create ESC to cancel...' 
-                                    [(ngModel)]='newResource.name' 
-                                    (keydown)='didEditingChanged(newResource, $event)' 
-                                    (blur)='didEditingChanged(newResource, $event)'/>
-                        </span>
-                    </div>
-                </li>
-            </ul>
-            <explorer *ngIf='resource.expanded' [items]="resource.children" [showHeader]='false'></explorer>
-        </li>
-    </ul>        
-</ng-template>
+</div>
+<app-tree class="navigation__content" [nodes]="nodes" (edited)="didEdit($event)" (clicked)="didSelect($event)">
+  <ng-container *treeNode="let node">
+      <span class='node-label' [id]="node.id" [draggable]="draggable(node)" [dragData]="node.id" [droppable]="droppable(node)" (dropped)="didDropped($event)">
+          <img [resourceIcon]="node.data"/>
+          <span>{{ node.name }}</span>
+      </span>
+      <span class='node-option-group'>
+          <ng-container *ngFor='let option of options; let i = index'>
+              <span id="node-option-{{ i }}-{{ node.data.path }}"
+                  class='node-option' [matTooltip]='option.label'
+                  (click)='option.action(node, $event)'
+                  *ngIf='option.enabled(node.data)'>
+                  <i [class]="option.icon"></i>&nbsp;
+              </span>
+          </ng-container>
+      </span>
+  </ng-container>
+</app-tree>

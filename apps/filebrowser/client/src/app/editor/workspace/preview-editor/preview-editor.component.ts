@@ -1,5 +1,5 @@
-import { ViewEncapsulation, Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { ImageEditor, PreviewEditor } from '../../shared/models/editor.model';
+import { Component, Input, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { PreviewEditor } from '../../shared/models/editor.model';
 import { Subscription } from 'rxjs';
 import { RunScriptsDirective } from 'src/app/shared/directives/run-scripts.directive';
 import { isMarkdown, isSVG, isPL } from '../../shared/models/filters.model';
@@ -54,7 +54,7 @@ export class PreviewEditorComponent implements OnInit, OnDestroy {
         this.loading = this.isURL;
 
         if (this.isHTML && this.scripts) {
-            this.scripts.reinsertScripts();
+            this.scripts.runScripts();
         }
     }
 

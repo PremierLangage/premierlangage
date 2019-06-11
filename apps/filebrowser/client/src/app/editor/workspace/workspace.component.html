@@ -6,7 +6,7 @@
                     <div *ngFor='let resource of group.resources; trackBy: group.trackResource' [matTooltip]="resource.path | path"
                         [ngClass]="{'tab-item': true, active: group.isActive(resource), changed: resource.changed}"
                         (click)='group.reopen(resource)' cdkDragAxis='x' cdkDrag>
-                        <i class="tab-icon {{resource.icon}}"></i>
+                        <img [resourceIcon]="resource"/>
                         <ng-container *ngIf='group.isPreviewGroup()'>
                             <span>'Preview'</span>&nbsp;
                         </ng-container>
@@ -14,7 +14,7 @@
                         <span class='tab-close' (click)='group.close(resource, true)'>&nbsp;&times;</span>
                     </div>
                 </div>
-                <div class="spacer"></div>  
+                <div class="spacer"></div>
                 <ng-container *ngIf='group.hasAction();'>
                     <ng-container *ngIf='group.focused()'>
                         <ng-container *ngFor='let action of group.actions()'>
@@ -35,7 +35,7 @@
                     </mat-menu>
                 </ng-container>
             </div>
-            <ng-container *ngFor='let editor of group.editors; trackBy group.trackEditor'>
+            <ng-container *ngFor='let editor of group.editors; trackBy: group.trackEditor'>
                 <ng-container [ngSwitch]="editor.type()">
                     <code-editor [hidden]='!group.activeEditorIs("code")' *ngSwitchCase="'code'" [editor]='editor'></code-editor>
                     <image-editor [hidden]='!group.activeEditorIs("image")' *ngSwitchCase="'image'" [editor]='editor'></image-editor>

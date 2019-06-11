@@ -81,8 +81,8 @@ export abstract class AbstractEditor implements IEditor {
 
 export class CodeEditor extends AbstractEditor {
 
-    readonly onDiffCommand: Subject<boolean> = new Subject();
-    readonly onPreviewCommand: Subject<IResource> = new Subject();
+    readonly diffRequested: Subject<boolean> = new Subject();
+    readonly previewRequested: Subject<IResource> = new Subject();
 
     diffEditing: boolean;
     codeEditor: monaco.editor.IStandaloneCodeEditor;
@@ -122,16 +122,21 @@ export class CodeEditor extends AbstractEditor {
 
     private preview() {
         return {
-            icon: 'fas fa-play', tooltip: 'Preview ⌘Enter', condition: canBePreviewed, invoke: item => this.onPreviewCommand.next(item)
+            icon: 'fas fa-play', tooltip: 'Preview ⌘Enter', condition: canBePreviewed, invoke: (item: IResource) => {
+              this.previewRequested.next(item);
+            }
         };
     }
 
     private diffMode() {
         const that = this;
         return {
-            icon: 'fas fa-eye', tooltip: 'Open Changes', condition: (item: IResource) => isRepo(item) && !that.diffEditing, invoke: _ => {
+            icon: 'fas fa-eye', tooltip: 'Open Changes', condition: (item: IResource) => {
+              return isRepo(item) && !that.diffEditing;
+            },
+              invoke: (_: IResource) => {
                 that.diffEditing = true;
-                that.onDiffCommand.next(that.diffEditing);
+                that.diffRequested.next(that.diffEditing);
             }
         };
     }
@@ -139,9 +144,11 @@ export class CodeEditor extends AbstractEditor {
     private codeMode() {
         const that = this;
         return {
-            icon: 'fas fa-eye-slash', tooltip: 'Close Changes', condition: (item: IResource) => that.diffEditing, invoke: _ => {
+            icon: 'fas fa-eye-slash', tooltip: 'Close Changes', condition: (_: IResource) => {
+                return that.diffEditing;
+            }, invoke: (_: IResource) => {
                 that.diffEditing = false;
-                that.onDiffCommand.next(that.diffEditing);
+                that.diffRequested.next(that.diffEditing);
             }
         };
     }
@@ -149,7 +156,9 @@ export class CodeEditor extends AbstractEditor {
     private splitRight() {
         const that = this;
         return {
-            icon: 'fas fa-columns', tooltip: 'Split ⌘Right', condition: () => true, invoke: _ => {
+            icon: 'fas fa-columns', tooltip: 'Split ⌘Right', condition: () => {
+              return true;
+            }, invoke: (_: IResource) => {
                 that.split();
             }
         };
@@ -171,12 +180,12 @@ export class ImageEditor extends AbstractEditor {
     actions(): IEditorAction[] {
         return [
             {
-                icon: 'fas fa-plus', tooltip: 'Zoom In', condition: (item: IResource) => true, invoke: (item: IResource) => {
+                icon: 'fas fa-plus', tooltip: 'Zoom In', condition: (_: IResource) => true, invoke: (_: IResource) => {
                     this.zoomIn();
                 }
             },
             {
-                icon: 'fas fa-minus', tooltip: 'Zoom Out', condition: (item: IResource) => true, invoke: (item: IResource) => {
+                icon: 'fas fa-minus', tooltip: 'Zoom Out', condition: (_: IResource) => true, invoke: (_: IResource) => {
                     this.zoomOut();
                 }
             }
@@ -207,12 +216,7 @@ export class PreviewEditor extends AbstractEditor {
     }
 
     actions(): IEditorAction[] {
-        return [
-            {
-                icon: 'fas fa-refresh', tooltip: 'Refresh', condition: (item: IResource) => true, invoke: (item: IResource) => {
-                }
-            }
-        ];
+        return [];
     }
 
     canOpen(resource: IResource): boolean {

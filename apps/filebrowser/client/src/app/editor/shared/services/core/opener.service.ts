@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IResource } from '../../models/resource.model';
+import { IResource, ResourceTypes } from '../../models/resource.model';
 import { EditorService } from './editor.service';
 import { ResourceService } from './resource.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
@@ -65,7 +65,11 @@ export class OpenerService implements IOpenerService {
         if (!resource) {
             return Promise.reject(new Error(`Unable to open '${path}': resource not found`));
         }
-        return this.editor.open(resource, options);
+        if (resource.type !== ResourceTypes.Folder) {
+            return this.editor.open(resource, options);
+        }
+        this.resources.focus(resource);
+        return true;
     }
 
     async openReference(base: string, target: string): Promise<boolean> {

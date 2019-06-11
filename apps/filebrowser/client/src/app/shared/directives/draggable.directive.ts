@@ -1,43 +1,48 @@
 import { AfterContentInit, Directive, ElementRef, Input } from '@angular/core';
 
+/**
+ * Element that can share a data to a `DroppableDirective` element.
+ * - the class `dnd-drag` is added to the element when the element is dragged.
+ */
 @Directive({
 // tslint:disable-next-line: directive-selector
     selector: '[draggable]'
 })
 export class DraggableDirective implements AfterContentInit {
-    @Input()
+
+    /**
+     * A value indicating whether the element can share a data or not
+     */
+    @Input('draggable')
     dragCondition = true;
 
-    public constructor(private el: ElementRef) {
-    }
+    /** The data to share with the element */
+    @Input()
+    dragData: any;
 
-    public ngAfterContentInit() {
-        const self = this;
-        const el = this.el.nativeElement;
-        el.draggable = true;
+    constructor(private el: ElementRef) {}
 
-        el.addEventListener(
-          'dragstart',
-          function(e) {
-            if (!self.dragCondition) {
+    ngAfterContentInit() {
+        const node = this.el.nativeElement;
+        node.draggable = true;
+
+        const dragstart = (e: DragEvent) => {
+            if (!this.dragCondition) {
               e.preventDefault();
               return;
             }
             e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('Text', this.id);
-            this.classList.add('dnd-drag');
+            e.dataTransfer.setData('dnd-data', this.dragData);
+            node.classList.add('dnd-drag');
             return false;
-          },
-          false
-        );
+        };
+        node.addEventListener('dragstart', dragstart, false);
 
-        el.addEventListener(
-          'dragend',
-          function(e) {
-            this.classList.remove('dnd-drag');
+        const dragend = (e: DragEvent) => {
+            node.classList.remove('dnd-drag');
             return false;
-          },
-          false
-        );
+        };
+        node.addEventListener('dragend', dragend, false);
     }
+
 }

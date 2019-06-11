@@ -3,12 +3,12 @@ import * as filters from './filters.model';
 
 const FILE: IResource = {
     type: ResourceTypes.File, name: 'file.txt', path: 'folder/file.txt', parent: 'folder',
-    read: true, write: true, icon: '', children: []
+    read: true, write: true, children: []
 };
 
 const FOLDER: IResource = {
     type: ResourceTypes.Folder, name: 'folder', path: 'folder', parent: '',
-    read: true, write: true, icon: '', children: []
+    read: true, write: true, children: []
 };
 
 const NOT_READ: IResource = {

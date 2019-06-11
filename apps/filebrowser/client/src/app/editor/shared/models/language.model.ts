@@ -7,16 +7,17 @@ export interface Language {
     extension: string;
     /** unique identifier of the language */
     id: string;
+    /** alias for the identifier */
+    alias?: string[];
 }
 
 /** List of languages supported by the editor */
 export const LANGUAGES: Language[] = [
     { extension: 'css', id: 'css' },
-    { extension: 'scss', id: 'scss' },
-    { extension: 'less', id: 'less' },
-    { extension: 'scss', id: 'scss' },
-    { extension: 'dockerfile', id: 'dockerfile' },
-    { extension: 'cs', id: 'csharp' },
+    { extension: 'scss', id: 'scss', alias: ['sass'] },
+    { extension: 'less', id: 'less', alias: ['less'] },
+    { extension: 'dockerfile', id: 'dockerfile', alias: ['docker'] },
+    { extension: 'cs', id: 'csharp', alias: ['cs'] },
     { extension: 'js', id: 'javascript'},
     { extension: 'ts', id: 'typescript'},
     { extension: 'html', id: 'html'},

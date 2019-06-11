@@ -155,7 +155,10 @@ def walkdir(path, user, parent='', write=None, read=None, repo=None, sort=False)
         'type':   'folder' if os.path.isdir(path) else 'file',
         'name':   os.path.basename(path),
         'path':   rm_fb_root(path),
-        'icon':   fa_icon(path),
+        'icon':   { 
+            'type': 'fa',
+            'src': fa_icon(path)
+        },
         'write':  write,
         'read':   read,
         'repo':   repo,

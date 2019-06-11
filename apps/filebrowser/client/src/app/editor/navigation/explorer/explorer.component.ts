@@ -1,85 +1,124 @@
-import { Component, ViewEncapsulation, Input, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Component, ViewEncapsulation, Input, OnInit, ViewChild, OnDestroy, ViewChildren } from '@angular/core';
 
-import { DropData } from 'src/app/shared/directives/droppable.directive';
-import { PrompOptions } from 'src/app/shared/components/prompt/prompt.component';
+import { basename } from 'src/app/shared/models/paths.model';
+import { IResource, ResourceTypes, createResource, } from '../../shared/models/resource.model';
+import * as filters from '../../shared/models/filters.model';
 
-import { TaskService } from '../../shared/services/core/task.service';
+import { PLService } from '../../shared/services/core/pl.service';
 import { OpenerService } from '../../shared/services/core/opener.service';
 import { EditorService } from '../../shared/services/core/editor.service';
 import { ResourceService } from '../../shared/services/core/resource.service';
 import { NotificationService } from 'src/app/shared/services/notification.service';
-import { basename } from 'src/app/shared/models/paths.model';
-import { IResource, ResourceTypes, createResource, } from '../../shared/models/resource.model';
-import { PLService } from '../../shared/services/core/pl.service';
 
-import * as filters from '../../shared/models/filters.model';
+import { DndData } from 'src/app/shared/directives/droppable.directive';
+import { PrompOptions } from 'src/app/shared/components/prompt/prompt.component';
+import { TreeComponent, Tree, Node, NodeEvent } from 'src/app/shared/components/tree/tree.component';
+
 
 @Component({
-    // tslint:disable-next-line: component-selector
-    selector: 'explorer',
+  // tslint:disable-next-line: component-selector
+  selector: 'explorer',
   templateUrl: './explorer.component.html',
   styleUrls: ['./explorer.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class ExplorerComponent {
-
-    private renaming: boolean;
-    private creating: boolean;
+export class ExplorerComponent implements OnInit, OnDestroy {
+    private subscription: Subscription;
 
     /** the tree resources */
     @Input()
-    readonly items: IResource[];
+    set items(items: IResource[]) {
+        this.nodes = items.map(item => this.transform(item));
+    }
 
     /** shows header element if sets to true */
     @Input()
     readonly showHeader: boolean;
 
-    /** the dynamic options of the resources */
+    /** retrieves the items from the server if sets to true */
+    @Input()
+    readonly remote: boolean;
+
+    /** nodes options */
     readonly options = [];
 
-    /** rename input value */
-    newName: string;
-    newResource: IResource;
+    @ViewChild(TreeComponent)
+    tree: TreeComponent;
+    nodes: Tree[] = [];
 
     constructor(
         private readonly pl: PLService,
-        private readonly task: TaskService,
         private readonly editor: EditorService,
         private readonly opener: OpenerService,
-        private readonly notification: NotificationService,
         private readonly resources: ResourceService,
+        private readonly notification: NotificationService,
     ) {
-        const that = this;
-        this.items = this.resources.resources;
-        this.newName = '';
         this.options = [
-            { icon: 'fas fa-check', label: 'Test', enabled: filters.canBeTested, action: (r: IResource, e: MouseEvent) => {
-                that.optionTest(r, e);
-            }},
-            { icon: 'fas fa-play', label: 'Load', enabled: filters.canBeLoaded, action: (r: IResource, e: MouseEvent) => {
-                that.optionLoad(r, e );
-            }},
-            { icon: 'fas fa-sync', label: 'Reload', enabled: filters.canBeReloaded, action: (r: IResource, e: MouseEvent) => {
-                that.optionReload(r, e );
-            }},
-            { icon: 'far fa-file', label: 'New File', enabled: filters.canAddChild, action: (r: IResource, e: MouseEvent) => {
-                that.optionAddFile(r, e);
-            }},
-            { icon: 'far fa-folder', label: 'New Folder', enabled: filters.canAddChild, action: (r: IResource, e: MouseEvent) => {
-                that.optionFolder(r, e );
-            }},
-            { icon: 'far fa-edit', label: 'Rename', enabled: filters.canBeRenamed, action: (r: IResource, e: MouseEvent) => {
-                that.optionRename(r, e );
-            }},
-            { icon: 'far fa-trash-alt', label: 'Delete', enabled: filters.canBeDeleted, action: (r: IResource, e: MouseEvent) => {
-                that.optionDelete(r, e );
-            }},
-            { icon: 'fas fa-lock', label: 'Read Only', enabled: filters.isReadOnly, action: function () { } },
+          { icon: 'fas fa-check', label: 'Test', enabled: filters.canBeTested, action: (n: Node, e: MouseEvent) => {
+              this.optionTest(n, e);
+          }},
+          { icon: 'fas fa-play', label: 'Load', enabled: filters.canBeLoaded, action: (n: Node, e: MouseEvent) => {
+              this.optionLoad(n, e );
+          }},
+          { icon: 'fas fa-sync', label: 'Reload', enabled: filters.canBeReloaded, action: (n: Node, e: MouseEvent) => {
+              this.optionReload(n, e );
+          }},
+          { icon: 'far fa-file', label: 'New File', enabled: filters.canAddChild, action: (n: Node, e: MouseEvent) => {
+              this.optionAddFile(n, e);
+          }},
+          { icon: 'far fa-folder', label: 'New Folder', enabled: filters.canAddChild, action: (n: Node, e: MouseEvent) => {
+              this.optionAddFolder(n, e );
+          }},
+          { icon: 'far fa-edit', label: 'Rename', enabled: filters.canBeRenamed, action: (n: Node, e: MouseEvent) => {
+              this.optionRename(n, e );
+          }},
+          { icon: 'far fa-trash-alt', label: 'Delete', enabled: filters.canBeDeleted, action: (n: Node, e: MouseEvent) => {
+              this.optionDelete(n, e );
+          }},
+          { icon: 'fas fa-lock', label: 'Read Only', enabled: filters.isReadOnly, action: function () { } },
         ];
     }
 
-    /** Handles refresh button click by retrieving resources from the server. */
-    async didTapRefresh() {
+    ngOnInit() {
+        if (this.remote) {
+            this.items = this.resources.getAll();
+            this.subscription = this.resources.changed.subscribe(data => {
+                this.items = data;
+            });
+        }
+    }
+
+    ngOnDestroy() {
+        if (this.subscription) {
+            this.subscription.unsubscribe();
+        }
+    }
+
+    /**
+     * Gets a value indicating whether the resource is draggrable
+     * @param node the node.
+     * 	@returns true only if the resource is not a root folder.
+     */
+    draggable(node: Node) {
+        const resource = node.data as IResource;
+        return !resource.opened && !filters.isRoot(resource) && resource.write;
+    }
+
+    /**
+     * Gets a value indicating a resource is droppable into the given 'resource'
+     * @param node the node.
+     * 	@returns true only if the resource is a folder.
+     */
+    droppable(node: Node) {
+        const resource = node.data as IResource;
+        return filters.isFolder(resource) && resource.write;
+    }
+
+    /**
+     * Handles refresh button click by retrieving resources from the server.
+     */
+    async didRefresh() {
         const confirm = this.resources.findPredicate(e => e.changed && e.opened);
         try {
             if (!confirm || await this.notification.confirmAsync({
@@ -99,176 +138,115 @@ export class ExplorerComponent {
     }
 
     /**
-     * Gets a value indicating whether the resource is draggrable
-     * @param resource the resource object.
-     * 	@returns true only if the resource is not a root folder.
+     * Handles focus and keyboard event while the resource is in edition mode.
+     * - If the event is a escapse keydown event, the function will cancel the edition of the resource
+     * - If the event is a blur of enter keydown event, the function will rename or creates the resource on the server.
+     * @param e the node.
      */
-    draggable(resource: IResource) {
-        return !resource.opened && !filters.isRoot(resource) && resource.write;
+    async didEdit(e: NodeEvent) {
+        const { node, event } = e;
+        const resource = node.data as IResource;
+        if (event.keyCode === 27) { // escape key
+            this.tree.endEditing(false);
+        } else if (event.type === 'blur' || event.keyCode === 13) { // focus losed or enter key
+            if (!node.name) {
+                this.tree.endEditing(false);
+                return;
+            }
+            try {
+              if (node.isRenaming) {
+                  await this.resources.rename(resource, node.name);
+                  this.tree.endEditing(true);
+              } else {
+                  resource.name = node.name;
+                  await this.resources.create(resource);
+                  this.tree.endEditing(true);
+              }
+            } catch (error) {
+                this.tree.endEditing(false);
+                this.notification.logError(error);
+            }
+        }
     }
 
     /**
-     * Gets a value indicating a resource is droppable into the given 'resource'
-     * @param resource the resource object.
-     * 	@returns true only if the resource is folder.
+     * Handles click on a tree node.
+     * @param e the node.
      */
-    droppable(resource: IResource) {
-        return filters.isFolder(resource) && resource.write;
+    async didSelect(e: NodeEvent) {
+        const resource = e.node.data as IResource;
+        await this.opener.open(resource.path);
     }
 
     /**
      * Handles drag and drop event by asking a confirmation to the user then :
-     * - If 'data.file' exists, the function will saved the file on the server to the directory 'data.dst'.
+     * - If 'data.file' exists, the function will save the file on the server to the directory 'data.dst'.
      * - If data.src exists, the function will move the resource 'data.src' to the directory 'data.dst'.
-     * @param data the data shared using the dragNdrop move.
+     * @param e the dropped data.
      */
-    didDropData(data: DropData) {
-        const srcPath = data.src || data.file.name;
-        const dstPath = data.dst;
+    async didDropped(e: DndData) {
+        const srcPath = e.src || e.file.name;
+        const dstPath = e.dst;
+        if (srcPath === dstPath) {
+            return;
+        }
         const srcName = basename(srcPath);
         const src = this.resources.find(srcPath);
         const dst = this.resources.find(dstPath);
-        if (src) {
-            if (src.parent === data.dst) {
-                return;
-            }
-            if (src.opened) {
-                throw new Error('Cannot move an opened resource');
-            }
-        }
-        const options = {
-            title: `Are you sure you want to move '${srcName}' to '${dst.name}'?`,
-            okTitle: 'Move',
-            noTitle: 'Cancel'
-        };
-        this.notification.confirmAsync(options).then(confirmed => {
-            if (confirmed) {
-                this.resources.move(src || data.file , dst).catch(error => {
-                    this.notification.logError(error);
-                });
-            }
-        }).catch(error => {
-            this.notification.logError(error);
-        });
-    }
-
-    /**
-     * Handles focus and keyboard event while the resource is in edition mode.
-     * - If the event is a escapse keydown event, the function will cancel the edition of the resource
-     * - If the event is a blur of enter keydown event, the function will rename or creates the resource on the server.
-     * @param resource the resource object.
-     * @param event KeyboardEvent or Focus event.
-     */
-    didEditingChanged(resource: IResource, event: any) {
-        if (this.renaming || this.creating) {
-            if (event.keyCode === 27) { // escape key
-                if (this.renaming) {
-                    resource.renaming = this.renaming = false;
-                    this.newName = '';
-                } else {
-                    this.creating = false;
-                    this.newResource = undefined;
+        if (src && src.parent !== e.dst) {
+            const options = {
+                title: `Are you sure you want to move '${srcName}' to '${dst.name}'?`,
+                okTitle: 'Move',
+                noTitle: 'Cancel'
+            };
+            try {
+                const confirmed = await this.notification.confirmAsync(options);
+                if (confirmed) {
+                    await this.resources.move(src || e.file , dst);
                 }
-            } else if (event.type === 'blur' || event.keyCode === 13) { // focus losed or enter key
-                let promise: Promise<boolean>;
-                if (this.renaming) {
-                    promise = this.resources.rename(resource, this.newName);
-                } else {
-                    if (!resource.name && event.type === 'blur') {
-                        this.endEdition(resource);
-                        return;
-                    }
-                    promise = this.resources.create(resource);
-                }
-                promise.then(() => {
-                    this.endEdition(resource);
-                }).catch(error => {
-                    this.endEdition(resource);
-                    this.notification.error(error);
-                });
+            } catch (error) {
+                this.notification.logError(error);
             }
         }
     }
 
-    /**
-     * Emits resource selection event.
-     * @param resource the resource object.
-     * @param event the mouse event.
-     */
-    didTapOnResource(resource: IResource, event: MouseEvent) {
+    private async optionDelete(node: Node, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        if (filters.isFolder(resource)) {
-            resource.expanded = !resource.expanded;
-            this.resources.selection = resource;
-        } else {
-            this.opener.open(resource.path);
+        const resource = node.data as IResource;
+        try {
+          const confirmed = await this.notification.confirmAsync({
+              title: 'Are you sure you want to delete \'' + resource.name + '\'?',
+              okTitle: 'Delete',
+              noTitle: 'Cancel'
+          });
+          if (confirmed) {
+              await this.resources.delete(resource);
+          }
+        } catch (error) {
+          this.notification.logError(error);
         }
+
     }
 
-    /**
-     * Gets the font awesome class representing the resource
-     *
-     * @returns
-     * - fas fa-folder | fas fa-folder-open If the resource is folder
-     * - resource.icon otherwise.
-     */
-    icon(resource: IResource) {
-        if (filters.isFolder(resource)) {
-            return resource.expanded ? 'fas fa-folder-open' : 'fas fa-folder';
-        }
-        return resource.icon;
-    }
-
-    /**
-     * Gets a value indicating whether the resource is the selected one in the explorer.
-     * @param resource the resource object.
-     */
-    isSelection(resource: IResource) {
-        return this.resources.isSelection(resource);
-    }
-
-    /** Used in the html template with *ngFor to keep track of the resource */
-    trackByFn(_index: number, item: IResource) {
-        return item.path;
-    }
-
-
-    private optionAddFile(resource: IResource, event: MouseEvent) {
+    private optionAddFile(node: Node, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        this.newResource = createResource(resource, ResourceTypes.File);
-        this.creating = this.newResource.creating = true;
-        this.renaming = false;
+        const resource = node.data as IResource;
+        this.tree.createNode(node, this.transform(createResource(resource, ResourceTypes.File)));
     }
 
-    private optionFolder(resource: IResource, event: MouseEvent) {
+    private optionAddFolder(node: Node, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        this.newResource = createResource(resource, ResourceTypes.Folder);
-        this.creating = this.newResource.creating = true;
-        this.renaming = false;
+        const resource = node.data as IResource;
+        this.tree.createNode(node, this.transform(createResource(resource, ResourceTypes.Folder)));
     }
 
-    private optionDelete(resource: IResource, event: MouseEvent) {
+    private optionLoad(node: Node, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        this.notification.confirmAsync({
-            title: 'Are you sure you want to delete \'' + resource.name + '\'?',
-            okTitle: 'Delete',
-            noTitle: 'Cancel'
-        }).then(confirmed => {
-            if (confirmed) {
-                this.resources.delete(resource).catch(error => {
-                    this.notification.logError(error);
-                });
-            }
-        });
-    }
-
-    private optionLoad(resource: IResource, event: MouseEvent) {
-        event.preventDefault();
-        event.stopPropagation();
+        const resource = node.data as IResource;
         this.pl.load(resource).then(response => {
             this.notification.logInfo(response);
         }).catch(error => {
@@ -276,9 +254,10 @@ export class ExplorerComponent {
         });
     }
 
-    private optionReload(resource: IResource, event: MouseEvent) {
+    private optionReload(node: Node, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
+        const resource = node.data as IResource;
         const options: PrompOptions = {
             title: 'Reload Activity',
             message: 'ID of the activity which should be reloaded with this PLTP.'
@@ -302,24 +281,32 @@ export class ExplorerComponent {
         });
     }
 
-    private optionRename(resource: IResource, event: MouseEvent) {
+    private optionRename(node: Node, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        this.newName = resource.name;
-        resource.renaming = this.renaming = true;
-        resource.creating = this.creating = false;
+
+        const resource = node.data as IResource;
+        resource.renaming = true;
+        resource.creating = false;
+        this.tree.renameNode(node);
     }
 
-    private optionTest(resource: IResource, event: MouseEvent) {
+    private optionTest(node: Node, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
+        const resource = node.data as IResource;
         this.opener.openURL('/filebrowser/option?name=test_pl&path=' + resource.path);
     }
 
-    private endEdition(resource: IResource) {
-        this.creating = this.renaming = resource.renaming = resource.creating = false;
-        this.newName = '';
-        this.newResource = undefined;
+    private transform(item: IResource): Tree {
+        const node: Tree = {
+            data: item,
+            id: item.path,
+            name: item.name,
+            isExpanded: item.expanded,
+            children: (item.children || []).map(data => this.transform(data))
+        };
+        return node;
     }
 
 }

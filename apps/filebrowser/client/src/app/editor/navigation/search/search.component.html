@@ -6,11 +6,11 @@
     <mat-progress-bar mode='indeterminate' color='warn' *ngIf='querying'></mat-progress-bar>
     <div class="navigation__content">
         <mat-form-field class='search'>
-            <input autoFocus matInput placeholder="Press Enter to search" (keydown)='search($event)' [(ngModel)]='query'>
+          <input autoFocus autocomplete="off" matInput placeholder="Press Enter to search" (keydown)='search($event)' [(ngModel)]='query'>
         </mat-form-field>
         <ng-container>
             <span class='result'>{{size}} result(s)</span>
-        </ng-container>       
+        </ng-container>
         <explorer [items]='entries'></explorer>
     </div>
 </ng-container>

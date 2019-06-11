@@ -14,9 +14,8 @@ import { MarkdownModule } from 'angular2-markdown';
 import 'rxjs-compat/Observable';
 
 import { SharedModule } from '../shared/modules/shared.module';
-import { EditorRoutingModule } from './editor-routing.module';
-
 import { EditorComponent } from './editor.component';
+import { EditorRoutingModule } from './editor-routing.module';
 
 /* DEBUGGING COMPONENTS */
 import { DebuggingComponent } from './debugging/debugging.component';
@@ -47,6 +46,7 @@ import { NicifyNamePipe } from './shared/pipes/nicify-name.pipe';
 
 import { LANGUAGE_PROVIDERS } from './shared/models/language.model';
 import { PremierLangage } from './shared/models/language.model';
+import { ResourceIconDirective } from './shared/directives/resource-icon.directive';
 
 @NgModule({
     declarations: [
@@ -68,13 +68,15 @@ import { PremierLangage } from './shared/models/language.model';
         SettingEditorComponent,
         WelcomeComponent,
         QuickOpenComponent,
+
+        ResourceIconDirective,
     ],
     imports: [
         EditorRoutingModule,
         SharedModule,
         AngularSplitModule.forRoot(),
         MonacoEditorModule,
-        MarkdownModule.forRoot()
+        MarkdownModule.forRoot(),
     ],
     exports: [
         EditorComponent,

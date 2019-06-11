@@ -1,4 +1,4 @@
-/* angular core  */
+/* CORE  */
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule} from '@angular/common';
@@ -6,7 +6,7 @@ import { FormsModule,  ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClientXsrfModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-/* material design  */
+/* MATERIAL  */
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatRippleModule } from '@angular/material/core';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -30,33 +30,49 @@ import { MatTreeModule } from '@angular/material/tree';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 
-
+// TOASTR
 import { ToastrModule } from 'ngx-toastr';
 
+// PIPES
+import { TrustHtmlPipe } from '../pipes/trust-html.pipe';
+import { TrustUrlPipe } from '../pipes/trust-url.pipe';
+import { TrustScriptPipe } from '../pipes/trust-script.pipe';
+import { TrustStylePipe } from '../pipes/trust-style.pipe';
+
+// DIRECTIVES
 import { AutofocusDirective } from '../directives/autofocus.directive';
-import { SanitizeHtmlPipe } from '../pipes/sanitize-html.pipe';
 import { RunScriptsDirective } from '../directives/run-scripts.directive';
 import { DraggableDirective } from '../directives/draggable.directive';
 import { DroppableDirective } from '../directives/droppable.directive';
+import { TreeNodeDirective } from '../directives/tree-node.directive';
 
+// COMPONENT
 import { PromptComponent } from '../components/prompt/prompt.component';
 import { ConfirmComponent } from '../components/confirm/confirm.component';
-import { EmptyStateComponent } from '../components/empty-state/empty-state.component';
-import { SanitizeResourceUrlPipe } from '../pipes/sanitize-url.pipe';
+import { TreeComponent } from '../components/tree/tree.component';
 
 @NgModule({
     declarations: [
+        // COMPONENTS
+        TreeComponent,
         PromptComponent,
         ConfirmComponent,
-        EmptyStateComponent,
+
+        // DIRECTIVES
         DraggableDirective,
         DroppableDirective,
         AutofocusDirective,
-        SanitizeHtmlPipe,
-        SanitizeResourceUrlPipe,
         RunScriptsDirective,
+        TreeNodeDirective,
+
+        // PIPES
+        TrustHtmlPipe,
+        TrustUrlPipe,
+        TrustScriptPipe,
+        TrustStylePipe,
     ],
     imports: [
+        // CORE
         BrowserModule,
         CommonModule,
         FormsModule,
@@ -68,10 +84,7 @@ import { SanitizeResourceUrlPipe } from '../pipes/sanitize-url.pipe';
           headerName: 'X-CSRFToken'
         }),
 
-        ToastrModule.forRoot({
-            preventDuplicates: true,
-        }),
-
+        // MATERIAL
         MatDialogModule,
         MatTooltipModule,
         MatButtonModule,
@@ -93,8 +106,15 @@ import { SanitizeResourceUrlPipe } from '../pipes/sanitize-url.pipe';
         MatTreeModule,
         MatCheckboxModule,
         MatSelectModule,
+
+        // TOASTR
+        ToastrModule.forRoot({
+            preventDuplicates: true,
+        }),
+
     ],
     exports: [
+        // CORE
         BrowserModule,
         CommonModule,
         FormsModule,
@@ -102,8 +122,7 @@ import { SanitizeResourceUrlPipe } from '../pipes/sanitize-url.pipe';
         BrowserAnimationsModule,
         HttpClientModule,
 
-        ToastrModule,
-
+        // MATERIAL
         MatDialogModule,
         MatTooltipModule,
         MatButtonModule,
@@ -127,15 +146,26 @@ import { SanitizeResourceUrlPipe } from '../pipes/sanitize-url.pipe';
         MatCheckboxModule,
         MatSelectModule,
 
+        // TOAST
+        ToastrModule,
+
+        // COMPONENTS
+        TreeComponent,
         PromptComponent,
         ConfirmComponent,
-        EmptyStateComponent,
+
+        // DIRECTIVES
+        AutofocusDirective,
         DraggableDirective,
         DroppableDirective,
-        AutofocusDirective,
-        SanitizeHtmlPipe,
-        SanitizeResourceUrlPipe,
         RunScriptsDirective,
+        TreeNodeDirective,
+
+        // PIPES
+        TrustHtmlPipe,
+        TrustUrlPipe,
+        TrustScriptPipe,
+        TrustStylePipe,
     ],
     entryComponents: [
         PromptComponent,

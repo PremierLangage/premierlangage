@@ -823,11 +823,13 @@ def resolve_path(request):  # TODO ADD TEST
     try:
         path_components = path.split('/')
         directory = Directory.objects.get(name=path_components[0])
-        directory, path = get_location(directory, target,
-                                       current=os.path.join(*path_components[1:-1]))
+        current = path_components[1] if len(path_components) == 2 else \
+             os.path.join(*path_components[1:-1])
+        directory, path = get_location(directory, target, current=current)
         return HttpResponse(os.path.join(directory, path))
     
     except Exception as e:
+        print(e)
         msg = "Impossible to resolve the path '" + request.GET.get(
             'target') + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.DEBUG:

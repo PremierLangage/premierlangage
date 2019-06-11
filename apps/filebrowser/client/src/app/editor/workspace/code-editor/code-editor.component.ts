@@ -1,13 +1,12 @@
-import { ViewEncapsulation, Component, Input, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { CodeEditor } from '../../shared/models/editor.model';
 import { IResource } from '../../shared/models/resource.model';
 import { NotificationService } from 'src/app/shared/services/notification.service';
-import { ResourceService } from '../../shared/services/core/resource.service';
 import { MonacoService } from '../../shared/services/monaco/monaco.service';
 
 import { Subscription } from 'rxjs';
 import { GitService } from '../../shared/services/core/git.service';
-import { isSVG, canBePreviewed } from '../../shared/models/filters.model';
+import { canBePreviewed } from '../../shared/models/filters.model';
 import { EditorService } from '../../shared/services/core/editor.service';
 import { IBlame } from '../../shared/models/git.model';
 import { PreviewService } from '../../shared/services/core/preview.service';
@@ -28,8 +27,6 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     private readonly: boolean;
     private subscriptions: Subscription[] = [];
     private editorChanges: monaco.IDisposable;
-    private decorations: string[] = [];
-    private previewCondtion: monaco.editor.IContextKey<boolean>;
 
     @Input()
     editor: CodeEditor;
@@ -38,7 +35,6 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
     constructor(
         private readonly git: GitService,
         private readonly preview: PreviewService,
-        private readonly resources: ResourceService,
         private readonly notification: NotificationService,
         private readonly editorService: EditorService,
         private readonly monacoService: MonacoService,
@@ -48,10 +44,10 @@ export class CodeEditorComponent implements OnInit, OnDestroy {
         this.subscriptions.push(this.editor.opened.subscribe(uri => {
             this.open(uri);
         }));
-        this.subscriptions.push(this.editor.onPreviewCommand.subscribe((item: IResource) => {
+        this.subscriptions.push(this.editor.previewRequested.subscribe((item: IResource) => {
             this.didPreview(item);
         }));
-        this.subscriptions.push(this.editor.onDiffCommand.subscribe(() => {
+        this.subscriptions.push(this.editor.diffRequested.subscribe(() => {
             this.open(this.editor.resource());
         }));
         this.subscriptions.push(this.monacoService.blameChanged.subscribe(e => {

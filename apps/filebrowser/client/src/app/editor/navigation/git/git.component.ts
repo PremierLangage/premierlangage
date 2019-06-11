@@ -246,7 +246,7 @@ export class GitComponent implements OnInit, OnDestroy {
         const response = await this.notification.promptAsync(options);
         try {
             if (response) {
-                if (this.resources.changed()) {
+                if (!!this.resources.findPredicate(item => item.changed)) {
                     const confirmOptions = {
                         title: 'Please confirm your action',
                         message: 'This action will create new directory and close the opened editors!',
@@ -260,7 +260,7 @@ export class GitComponent implements OnInit, OnDestroy {
                 const url = response.fields[0].value;
                 const username = response.fields[1].value;
                 const password = response.fields[2].value;
-                const success = await this.git.clone(this.resources.resources[0], url,  username, password);
+                const success = await this.git.clone(this.resources.home, url,  username, password);
                 if (success) {
                     if (await this.editor.closeAll() && await this.resources.refresh()) {
                         this.refresh();

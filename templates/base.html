@@ -6,21 +6,15 @@
         <base href="/">
         <title>{% block title %}UPEM - PL{% endblock %}</title>
 
-        {% block head %}{% endblock %}
-
-        {% block head_elements %}{% endblock %}
-
-        {% block tag %}{% endblock %}
-
         {% include "head.html" %}
 
+        {% block head %}{% endblock %}
         {% block css %}{% endblock %}
-
-        {% block header_script %}{% endblock %}
+        {% block js %}{% endblock %}
     </head>
     <body>
         <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-            {% block topbar %}{% include "header.html" %}{% endblock %}
+            {% block header %}{% include "header.html" %}{% endblock %}
             <main class="mdl-layout__content">
                 <div class="page-content">
                     {% block alert %}{% include "alert.html" %}{% endblock %}
@@ -28,16 +22,6 @@
                 </div>
             </main>
         </div>
-        {% block end_script %}
-        <script type="text/x-mathjax-config">
-        MathJax.Hub.Config({
-            tex2jax: {
-                inlineMath: [['$%','%$'],],
-                skipTags: ["script","noscript","style"],
-            }
-        });
-
-        </script>
-        {% endblock %}
+        {% block end_script %}{% endblock %}
     </body>
 </html>

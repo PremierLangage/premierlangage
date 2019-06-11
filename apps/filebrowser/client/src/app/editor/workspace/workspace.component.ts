@@ -1,8 +1,5 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 
-
-import { ConfirmOptions } from 'src/app/shared/components/confirm/confirm.component';
-import { OpenerService } from '../shared/services/core/opener.service';
 import { IEditorGroup } from '../shared/models/editor-group.model';
 import { EditorService } from '../shared/services/core/editor.service';
 import { Subscription } from 'rxjs';
@@ -22,7 +19,6 @@ export class WorkspaceComponent implements OnInit, OnDestroy {
 
     constructor(
         private readonly editor: EditorService,
-        private readonly opener: OpenerService,
         private readonly changes: ChangeDetectorRef,
         private readonly navigation: NavigationService,
     ) {}

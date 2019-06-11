@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { IResource, ResourceTypes, createResource } from '../../models/resource.model';
+import { IResource, ResourceTypes, createResource, } from '../../models/resource.model';
 import { Subscription, Subject } from 'rxjs';
 import { GitService } from './git.service';
 import { TaskService } from './task.service';
-import { basename, extname, findIcon, dirname } from 'src/app/shared/models/paths.model';
+import { basename, extname, dirname } from 'src/app/shared/models/paths.model';
 import { assert, checkName, requireNonNull } from 'src/app/shared/models/assert.model';
 
 import * as filters from '../../models/filters.model';
@@ -15,6 +15,9 @@ import * as filters from '../../models/filters.model';
 export class ResourceService {
 
     private cache: IResource[] = [];
+    private resources: IResource[] = [];
+   /** the focused resource */
+    private _focused: IResource;
 
     /**
      * event that emits after a resource is renamed
@@ -35,14 +38,20 @@ export class ResourceService {
     /** event that emits after a resource is deleted */
     readonly deleted: Subject<IResource> = new Subject();
 
-    /** event that emits after the resources are loaded/reloaded from the server */
-    readonly refreshed: Subject<IResource[]> = new Subject();
+    /** event that emits each time any resource is created|deleted|renamed  */
+    readonly changed: Subject<IResource[]> = new Subject();
 
-    /** the resources from the server */
-    resources: IResource[] = [];
+    /** event that emits each time the focused resource change */
+    readonly focusChanged: Subject<IResource> = new Subject();
 
-    /** the selected resource */
-    selection: IResource;
+
+    get home() {
+      return this.resources[0];
+    }
+
+    get focused(): IResource {
+      return this._focused;
+    }
 
     constructor(
         private readonly git: GitService,
@@ -50,12 +59,16 @@ export class ResourceService {
         private readonly task: TaskService,
     ) { }
 
-    /**
-     * Gets a value indicating whether the property `changed` is sets to true for any
-     * resource.
-     * */
-    changed() {
-        return !!this.findPredicate(item => item.changed);
+    focus(resource: IResource) {
+        this._focused = resource;
+        if (resource.type === ResourceTypes.Folder) {
+            resource.expanded = !resource.expanded;
+        }
+        this.focusChanged.next(resource);
+    }
+
+    getAll() {
+        return this.resources.slice();
     }
 
     /**
@@ -105,7 +118,7 @@ export class ResourceService {
      * @param resource the resource to test
      */
     isSelection(resource: IResource) {
-        return !!this.selection && resource.path === this.selection.path;
+        return !!this.focused && resource.path === this.focused.path;
     }
 
     /**
@@ -210,13 +223,14 @@ export class ResourceService {
 
             let resource: IResource;
             if ('size' in src) { // File type contains size property
-                resource = await this._drop(src as unknown as File, dst);
+                resource = await this.drop(src as unknown as File, dst);
             } else {
-                resource = await this._move(src as unknown as IResource, dst);
+                resource = await this.drag(src as unknown as IResource, dst);
             }
             this.sort(dst.children);
             dst.expanded = true;
-            this.selection = resource;
+            this.focus(resource);
+            this.changed.next(this.getAll());
             this.task.emitTaskEvent(false);
             this.git.refresh();
             return true;
@@ -266,7 +280,7 @@ export class ResourceService {
             return true;
         }
 
-        this.selection = resource;
+        this.focus(resource);
         if (resource.type === ResourceTypes.Folder) {
             resource.expanded = !resource.expanded;
             return true;
@@ -306,12 +320,12 @@ export class ResourceService {
                 this.sort(resources);
             }
             await this.build(resources);
-            this.refreshed.next(this.resources);
+            this.changed.next(this.resources.slice());
             this.task.emitTaskEvent(false);
             return true;
         } catch (error) {
             this.resources = [];
-            this.refreshed.next(this.resources);
+            this.changed.next(this.resources.slice());
             this.task.emitTaskEvent(false);
             throw error;
         }
@@ -334,11 +348,10 @@ export class ResourceService {
     }
 
     private async build(resources: IResource[]) {
-        const array = [];
         const that = this;
+        const cache = [];
         async function recursive(item: IResource) {
-            item.icon = findIcon(item.path, item.icon);
-            array.push(item);
+            cache.push(item);
             if (item.children) {
                 for (const child of item.children) {
                     await recursive(child);
@@ -348,7 +361,7 @@ export class ResourceService {
         for (const root of resources) {
             await recursive(root);
         }
-        this.cache = array;
+        this.cache = cache;
         this.resources = resources;
         this.git.refresh();
     }
@@ -361,7 +374,6 @@ export class ResourceService {
 
         const parent = this.find(resource.parent);
         parent.children = parent.children || [];
-        resource.icon = findIcon(resource.path, response['icon']);
         const after = response['path'];
         const before = resource.path;
         if (resource.renaming) {
@@ -379,10 +391,12 @@ export class ResourceService {
 
         this.git.refresh();
         this.sort(parent.children);
+
+        this.changed.next(this.getAll());
         return true;
     }
 
-    private async _drop(src: File, dst: IResource) {
+    private async drop(src: File, dst: IResource) {
         requireNonNull(src.name, 'src.name');
         requireNonNull(dst.path, 'dst.path');
         checkName(src.name);
@@ -403,7 +417,7 @@ export class ResourceService {
         return newRes;
     }
 
-    private async _move(src: IResource, dst: IResource) {
+    private async drag(src: IResource, dst: IResource) {
         requireNonNull(src.path, 'src.path');
         requireNonNull(dst.path, 'dst.path');
         assert(src.path !== dst.path, 'cannot move the resource to the same path');
@@ -429,7 +443,7 @@ export class ResourceService {
     }
 
 
-    private replace(oldPath: string, newPath) {
+    private replace(oldPath: string, newPath: string) {
         const that = this;
         function doAction(item: IResource) {
             if (item.path.startsWith(oldPath)) {
@@ -471,6 +485,7 @@ export class ResourceService {
             }
         }
         propagate(toRemove, this.deleted);
+        this.changed.next(this.resources.slice());
         return true;
     }
 
@@ -487,4 +502,5 @@ export class ResourceService {
             }
         }
     }
+
 }

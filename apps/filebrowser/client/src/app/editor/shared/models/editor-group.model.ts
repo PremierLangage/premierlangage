@@ -1,13 +1,19 @@
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 import { IResource } from './resource.model';
 import { IEditor, INSTANTIATORS, IEditorAction, EditorTypes } from './editor.model';
 import { IOpenOptions } from '../services/core/opener.service';
-import { EditorService, IEditorService } from '../services/core/editor.service';
+import { IEditorService } from '../services/core/editor.service';
 import { ConfirmOptions } from 'src/app/shared/components/confirm/confirm.component';
 
 /** Representation of an editor group in the workspace */
 export interface IEditorGroup {
+
+    /** the resource opened inside the group */
+    resources: IResource[];
+
+    /** the editors of the group */
+    editors: IEditor[];
 
     /** Gets the id of the group */
     id(): number;
@@ -99,7 +105,7 @@ export interface IEditorGroup {
     closeSaved(): Promise<boolean>;
 
     /**
-     * Finds the resource at the given index.
+     * Gets the resource at the given index.
      * @param index the index to search
      */
     findResourceAt(index: number): IResource;
@@ -113,7 +119,7 @@ export interface IEditorGroup {
     /** Gets the active resource in the group (can be undefined) */
     activeEditor(): IEditor;
 
-    /** Gets the instance of EditorService class */
+    /** Gets the instance of `EditorService` */
     editorService(): IEditorService;
 
     /**
@@ -122,26 +128,39 @@ export interface IEditorGroup {
      */
     activeEditorIs(type: string): boolean;
 
+    // FUNCTIONS CALLED INSIDE AN HTML TEMPLATE
+
+    drop(event: CdkDragDrop<IResource[]>): void;
+    reopen(resource: IResource): void;
+    trackEditor(index: number, editor: IEditor): any;
+    trackResource(index: number, resource: IResource): any;
+
 }
 
 /** Implementation of IEditorGroup interface */
 export class EditorGroup implements IEditorGroup {
-
-    private static COUNTER = 0;
+    private static NEXT_ID = 0;
 
     private readonly _id: number;
-    private readonly editors: IEditor[] = [];
+    private readonly _editors: IEditor[] = [];
     private readonly _editorService: IEditorService;
+    private readonly _resources: IResource[] = [];
 
-    private resources: IResource[] = [];
-
-    private _actions: IEditorAction[] = [];
-    private _focused: boolean;
     private _activeEditor: IEditor;
     private _activeResource: IResource;
+    private _actions: IEditorAction[] = [];
+    private _focused: boolean;
+
+    get resources(): IResource[] {
+      return this._resources;
+    }
+
+    get editors(): IEditor[] {
+        return this._editors;
+    }
 
     constructor(editorService: IEditorService) {
-        this._id = ++EditorGroup.COUNTER;
+        this._id = ++EditorGroup.NEXT_ID;
         this._editorService = editorService;
     }
 
@@ -150,7 +169,7 @@ export class EditorGroup implements IEditorGroup {
     }
 
     empty(): boolean {
-        return !this.resources.some(_ => true);
+        return !this._resources.some(_ => true);
     }
 
     focus(focused: boolean): void {
@@ -174,11 +193,11 @@ export class EditorGroup implements IEditorGroup {
     }
 
     someEditor(predicate: (editor: IEditor) => boolean): boolean {
-        return this.editors.some(predicate);
+        return this._editors.some(predicate);
     }
 
     someResource(predicate: (resource: IResource) => boolean): boolean {
-        return this.resources.some(predicate);
+        return this._resources.some(predicate);
     }
 
     containsEditor(editor: IEditor): boolean {
@@ -189,29 +208,26 @@ export class EditorGroup implements IEditorGroup {
         return this.someResource(r => r.path === resource.path);
     }
 
-
     async open(resource: IResource, options?: IOpenOptions): Promise<boolean> {
-        const editor = this.editors.find(e => e.canOpen(resource)) || this.createEditor(resource);
+        const editor = this._editors.find(e => e.canOpen(resource)) || this.createEditor(resource);
         if (!editor) {
             throw new Error('The is no registered editor to open \'' + resource.path + '\'');
         }
-
-        resource.opened = true;
-
         this._actions = editor.actions() || [];
         this._activeEditor = editor;
         this._activeResource = resource;
         this._activeEditor.open(resource, options);
 
         if (this.isPreviewGroup()) {
-            if (this.resources.length === 0) {
-                this.resources.push(resource);
+            if (this._resources.length === 0) {
+                this._resources.push(resource);
             } else {
-                this.resources[0] = resource;
+                this._resources[0] = resource;
             }
         } else if (!this.someResource(e => e.path === resource.path)) {
-            this.resources.push(resource);
+            this._resources.push(resource);
         }
+        resource.opened = true;
         return await this._editorService.focusGroup(this);
     }
 
@@ -226,7 +242,7 @@ export class EditorGroup implements IEditorGroup {
     }
 
     async saveAll(): Promise<boolean> {
-        for (const resource of this.resources) {
+        for (const resource of this._resources) {
             if (!await this.save(resource)) {
                 return false;
             }
@@ -264,8 +280,8 @@ export class EditorGroup implements IEditorGroup {
             noTitle: 'Cancel'
         };
         if (!(confirm && changed) || await this.confirm(options)) {
-            while (this.resources.length > 0) {
-                if (!await this.close(this.resources[0], false)) {
+            while (this._resources.length > 0) {
+                if (!await this.close(this._resources[0], false)) {
                     return false;
                 }
             }
@@ -275,9 +291,9 @@ export class EditorGroup implements IEditorGroup {
 
     async closeSaved(): Promise<boolean> {
         while (this.someResource(e => !e.changed)) {
-            for (let i = 0; i < this.resources.length; i++) {
-                if (!this.resources[i].changed) {
-                    if (!await this.close(this.resources[i])) {
+            for (let i = 0; i < this._resources.length; i++) {
+                if (!this._resources[i].changed) {
+                    if (!await this.close(this._resources[i])) {
                         return false;
                     }
                 }
@@ -287,11 +303,11 @@ export class EditorGroup implements IEditorGroup {
     }
 
     findResource(predicate: (resource: IResource) => boolean): IResource {
-        return this.resources.find(e => predicate(e));
+        return this._resources.find(e => predicate(e));
     }
 
     findResourceAt(index: number): IResource {
-        return this.resources[index];
+        return this._resources[index];
     }
 
     actions(): IEditorAction[] {
@@ -314,9 +330,7 @@ export class EditorGroup implements IEditorGroup {
         return this._editorService;
     }
 
-    //#region USED INSIDE THE WORKSPACE TEMPLATE
-
-    private drop(event: CdkDragDrop<IResource[]>) {
+    drop(event: CdkDragDrop<IResource[]>) {
         const source = this._editorService.findGroup(parseInt(event.previousContainer.id, 10));
         const target = this;
         if (this.isPreviewGroup() || source.isPreviewGroup()) {
@@ -331,20 +345,19 @@ export class EditorGroup implements IEditorGroup {
         }
     }
 
-    private reopen(resource: IResource) {
+    reopen(resource: IResource) {
         if (!this.isPreviewGroup()) {
             this.open(resource);
         }
     }
 
-    private trackEditor(index: number, editor: IEditor) {
+    trackEditor(_: number, editor: IEditor) {
         return editor.id();
     }
 
-    private trackResource(index: number, resource: IResource) {
+    trackResource(_: number, resource: IResource) {
         return resource.path;
     }
-    //#endregion USED INSIDE THE WORKSPACE TEMPLATE
 
     private confirm(options: ConfirmOptions): Promise<boolean> {
         return this._editorService.confirm(options);
@@ -363,7 +376,7 @@ export class EditorGroup implements IEditorGroup {
         for (const item of INSTANTIATORS) {
             if (item.condition(resource)) {
                 const editor = item.create(this, resource);
-                this.editors.push(editor);
+                this._editors.push(editor);
                 return editor;
             }
         }
@@ -371,17 +384,17 @@ export class EditorGroup implements IEditorGroup {
     }
 
     private async removeResource(resource: IResource): Promise<boolean> {
-        const indexToRemove = this.resources.findIndex(e => e.path === resource.path);
+        const indexToRemove = this._resources.findIndex(e => e.path === resource.path);
         if (indexToRemove !== -1) {
             if (this.isActive(resource)) {
                 this._activeEditor = undefined;
                 this._activeResource = undefined;
             }
             this._actions = [];
-            this.resources.splice(indexToRemove, 1);
+            this._resources.splice(indexToRemove, 1);
             const newIndex = Math.max(0, indexToRemove - 1);
-            if (!this._activeResource && newIndex < this.resources.length) {
-                await this.open(this.resources[newIndex]);
+            if (!this._activeResource && newIndex < this._resources.length) {
+                await this.open(this._resources[newIndex]);
             }
             resource.opened = this._editorService.findGroups(resource).length > 0;
             return this.empty() && await this._editorService.disposeGroup(this) || true;
