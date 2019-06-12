@@ -18,16 +18,16 @@ vous avez juste fait une erreur de clic.
 type=sandbox
 
 # chargement des fichiers utiles 
-@/template/basic.c
-@/template/graderC.py
-@/template/feedbackC.py
-@/template/__init__.py
-@/template/templateC.html
-@/template/templateConglet.html
+@basic.c
+@graderC.py
+@feedbackC.py
+@__init__.py
+@templateC.html
+@templateConglet.html
 @/utils/sandboxio.py
 
 #evaluator
-@/template/evaluatorC.py [grader.py]
+@evaluatorC.py [grader.py]
 
 # builder
 builder=@/builder/none.py

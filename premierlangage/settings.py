@@ -100,7 +100,7 @@ TEMPLATES = [
             "app_dirname": "templates",
             "auto_reload": DEBUG,
             "match_extension": ".html",
-            "match_regex": r"^(?!admin)",
+            "match_regex": r"^(?!admin*)",
             "environment": "premierlangage.jinja2.environment",
             "undefined": "premierlangage.jinja2.CustomUndefined",
             "debug": True,
