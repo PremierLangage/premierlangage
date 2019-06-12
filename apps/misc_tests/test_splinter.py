@@ -28,7 +28,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.b = webdriver.Firefox()
-        cls.b.implicitly_wait(5)
+        cls.b.implicitly_wait(10)
     
     
     @classmethod
@@ -72,10 +72,9 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     
     def answer_pl(self, answer):
         time.sleep(WAIT_TIME)
-        e = self.b.find_element_by_name("answer")
-        e.send_keys(answer)
-        e = self.b.find_element_by_xpath("//*[contains(text(), 'Valider')]")
-        e.click()
+        self.b.find_element_by_name("answer").send_keys(answer)
+        self.b.find_element_by_xpath("//*[contains(text(), 'Valider')]").click()
+        time.sleep(WAIT_TIME)
     
     
     def test_filebrowser_preview(self):
@@ -110,6 +109,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         e = self.get_e_by_text("static_add.pl")
         ActionChains(self.b).move_to_element(e).perform()
         
+        time.sleep(WAIT_TIME)
         self.b.find_element_by_id("op-0-lib/demo/static_add.pl").click()
         window_before = self.b.window_handles[0]
         window_after = self.b.window_handles[1]
@@ -141,7 +141,8 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         
         e = self.get_e_by_text("random_all.pltp")
         ActionChains(self.b).move_to_element(e).perform()
-        
+
+        time.sleep(WAIT_TIME)
         self.b.find_element_by_id("op-1-lib/demo/random_all.pltp").click()
         self.get_e_by_text(" OPEN                    ").click()
         
@@ -182,8 +183,10 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         
         e = self.get_e_by_text("ackermann.pl")
         ActionChains(self.b).move_to_element(e).perform()
-        
+
+        time.sleep(WAIT_TIME)
         self.b.find_element_by_id("op-0-Yggdrasil/cbank/recursion/ackermann.pl").click()
+        time.sleep(WAIT_TIME)
         
         window_before = self.b.window_handles[0]
         window_after = self.b.window_handles[1]
