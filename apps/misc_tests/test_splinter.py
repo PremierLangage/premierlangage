@@ -72,7 +72,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     
     def answer_pl(self, answer):
         time.sleep(WAIT_TIME)
-        self.b.find_element_by_name("answer").send_keys(answer)
+        self.b.find_element_by_css_selector('input[name="answer"]').send_keys(answer)
         self.b.find_element_by_xpath("//*[contains(text(), 'Valider')]").click()
         time.sleep(WAIT_TIME)
     
