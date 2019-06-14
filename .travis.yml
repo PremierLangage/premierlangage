@@ -41,6 +41,6 @@ script: tox
 after_success: codecov
 
 env:
-  - TRAVIS=TRAVIS
   global:
     - PGPORT=5432
+    - TRAVIS="TRAVIS"
