@@ -17,7 +17,15 @@ FAKE_FB_ROOT = os.path.join(settings.APPS_DIR, 'tests/tmp')
 HOME_DIR = os.path.join(settings.APPS_DIR, "misc_tests/resources/fake_filebrowser_data/")
 LIB_DIR = os.path.join(settings.APPS_DIR, "misc_tests/resources/lib/")
 
-WAIT_TIME = 0.5
+WAIT_TIME = 1
+
+
+
+def sleep(n):
+    if "TRAVIS" in os.environ:
+        time.sleep(n * 10)
+    else:
+        time.sleep(n)
 
 
 
@@ -71,10 +79,10 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     
     
     def answer_pl(self, answer):
-        time.sleep(WAIT_TIME)
+        sleep(WAIT_TIME)
         self.b.find_element_by_css_selector('input[name="answer"]').send_keys(answer)
         self.b.find_element_by_xpath("//*[contains(text(), 'Valider')]").click()
-        time.sleep(WAIT_TIME)
+        sleep(WAIT_TIME)
     
     
     def test_filebrowser_preview(self):
@@ -109,7 +117,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         e = self.get_e_by_text("static_add.pl")
         ActionChains(self.b).move_to_element(e).perform()
         
-        time.sleep(WAIT_TIME)
+        sleep(WAIT_TIME)
         self.b.find_element_by_id("op-0-lib/demo/static_add.pl").click()
         window_before = self.b.window_handles[0]
         window_after = self.b.window_handles[1]
@@ -141,12 +149,12 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         
         e = self.get_e_by_text("random_all.pltp")
         ActionChains(self.b).move_to_element(e).perform()
-
-        time.sleep(WAIT_TIME)
+        
+        sleep(WAIT_TIME)
         self.b.find_element_by_id("op-1-lib/demo/random_all.pltp").click()
         self.get_e_by_text(" OPEN                    ").click()
         
-        time.sleep(WAIT_TIME)
+        sleep(WAIT_TIME)
         
         window_before = self.b.window_handles[0]
         window_after = self.b.window_handles[1]
@@ -165,9 +173,9 @@ class SeleniumTestCase(StaticLiveServerTestCase):
             'a[class="btn btn-secondary btn-type state-unstarted btn-lg"]') is not None)
         
         self.get_e_by_text("Addition Aléatoire (using eval_func)").click()
-        time.sleep(WAIT_TIME)
+        sleep(WAIT_TIME)
         self.answer_pl("-1")
-        time.sleep(WAIT_TIME)
+        sleep(WAIT_TIME)
         self.get_e_by_text("Random add").click()
         self.assertTrue(self.b.find_element_by_css_selector(
             'a[class="btn btn-secondary btn-type state-failed btn-lg"]') is not None)
@@ -183,10 +191,10 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         
         e = self.get_e_by_text("ackermann.pl")
         ActionChains(self.b).move_to_element(e).perform()
-
-        time.sleep(WAIT_TIME)
+        
+        sleep(WAIT_TIME)
         self.b.find_element_by_id("op-0-Yggdrasil/cbank/recursion/ackermann.pl").click()
-        time.sleep(WAIT_TIME)
+        sleep(WAIT_TIME)
         
         window_before = self.b.window_handles[0]
         window_after = self.b.window_handles[1]
