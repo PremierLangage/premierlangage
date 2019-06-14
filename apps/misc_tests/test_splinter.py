@@ -193,7 +193,8 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         ActionChains(self.b).move_to_element(e).perform()
         
         sleep(WAIT_TIME)
-        self.b.find_element_by_id("op-0-Yggdrasil/cbank/recursion/ackermann.pl").click()
+        element = self.b.find_element_by_id("op-0-Yggdrasil/cbank/recursion/ackermann.pl")
+        self.b.execute_script("arguments[0].click();", element)
         sleep(WAIT_TIME)
         
         window_before = self.b.window_handles[0]
