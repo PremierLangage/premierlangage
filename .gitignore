@@ -19,7 +19,7 @@ documentation/static/
 doc/
 static/*
 apps/filebrowser/client/node_modules
-
+src/
 
 ########################################
 # Byte-compiled / optimized / DLL files

@@ -13,7 +13,7 @@ import sys
 from django.conf import settings
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "premierlangage.settings")
 
 if settings.SETTINGS_DIR not in sys.path:
     sys.path.append(settings.SETTINGS_DIR)
