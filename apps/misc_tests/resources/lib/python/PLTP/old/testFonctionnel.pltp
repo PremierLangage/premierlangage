@@ -1,0 +1,21 @@
+author=Dominique Revuz
+
+title=TestFonctionnel de la plateforme sur la préprode 
+
+introduction==
+
+Bonjour,
+ceci permet de faire des tests de la plateforme de préprod.
+
+	Si le fichier test/test1.pl n'existe pas le message d'erreur est correct.
+
+l'exercice allwayscorrect est pour tester les affichages en format markdown des énoncés.
+
+==
+
+tag=function|root|variable|test
+
+concept==test
+@ /python/exemple/allwayscorrect.pl
+
+==

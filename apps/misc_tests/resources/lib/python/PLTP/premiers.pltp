@@ -1,0 +1,44 @@
+
+title= Nombres premiers
+
+introduction==
+
+Ce TP est consacré aux nombres premiers et quelques trucs Gallo-Romains.
+
+
+#### Nombres Premiers 
+
+Un nombre premier est un entier naturel qui admet exactement deux diviseurs distincts entiers et positifs (qui sont alors 1 et lui-même). Ainsi, 1 n'est pas premier car il n'a qu'un seul diviseur entier positif ; 0 non plus car il est divisible par tous les entiers positifs.
+
+
+<a href="https://fr.wikipedia.org/wiki/Nombre_premier" target="_blank" alt="Wikipedia" >Nombres Premiers</a> 
+
+Ainsi pour tester si un nombre et premier il suffit (c'est parfois long) de vérifier qu'il n'a pas d'autres diviseurs que 1 et lui-même.
+
+Vous pouvez aussir vous intéresser aux Cribles qui sont des algorithùes qui permettent de trouver tout les Nombres Premiers inférieurs à une certaines valeur.
+
+
+==
+
+concept==function
+@ /python/function/estpremier.pl
+@ /python/function/estpremier2.pl
+@ /python/function/decomposition.pl
+@ /python/function/Sundaram.pl
+@ /python/function/jumeaux.pl
+@ /python/function/romains.pl
+@ /python/function/romcode.pl
+==
+
+
+coucou==
+
+@ /python/function/simplefunc1.pl
+@ /python/function/simplefunc2.pl
+@ /python/function/funcvoyelle.pl
+@ /python/function/racinecarre.pl
+==
+
+
+
+

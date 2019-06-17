@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+
+
+{% block alert %}{% endblock %}
+
+{% block content %}
+    <div class="row no-margin">
+        <div class="col-md-1"></div>
+        <div class="exercise-container" class="col-md-9">{{ preview|safe }}</div>
+        <div class="col-md-1"></div>
+    </div>
+{% endblock %}

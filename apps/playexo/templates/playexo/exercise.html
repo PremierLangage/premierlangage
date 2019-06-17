@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="navigation-container">
+    {{ navigation }}
+</div>
+<div class="navigation__toggle">
+    <object class="flip_label" style="height:18px; width:25px;" type="image/svg+xml"
+            data="data:image/svg+xml; charset=utf-8 ,&lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot;&gt;&lt;rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;25px&quot; height=&quot;18px&quot; fill=&quot;rgb(119, 119, 119)&quot; stroke=&quot;none&quot;&gt;&lt;/rect&gt;&lt;text  x=&quot;-4.5&quot; y=&quot;0&quot; font-family=&quot;arial, verdana, helvetica, sans-serif&quot;  fill=&quot;rgb(255, 255, 255)&quot; font-size=&quot;18&quot;  style=&quot;text-anchor: start; dominant-baseline: hanging&quot; transform=&quot;rotate(90, 8, 12.5)&quot; text-rendering=&quot;optimizeSpeed&quot;&gt;↑↓&lt;/text&gt;&lt;/svg&gt;"></object>
+</div>
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8 exercise-container">{{ exercise }}</div>
+    <div class="col-md-2"></div>
+</div>
+
+<script type='text/javascript'>
+    (function () {
+        const toggle = $('.navigation__toggle');
+        const container = $('.navigation-container');
+        const navigation = $('.navigation');
+        let opened = true;
+        toggle.click(function () {
+            opened = !opened;
+            if (opened) {
+                toggle.animate({left: 250});
+                container.animate({width: 250}, function () {
+                    navigation.show();
+                });
+            } else {
+
+                toggle.animate({left: 0});
+                container.animate({width: 0}, function () {
+                    navigation.hide();
+                });
+            }
+        });
+    })();
+</script>
+{% endblock %}

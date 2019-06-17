@@ -1,0 +1,19 @@
+
+author=Dominique Revuz
+name=dynamic_auto_exo
+tag=titi
+introduction==
+Quelque exercices ou l'on utilise des constantes des références et des affectations.
+==
+template=python/dynamic/direct.pl
+concept==variable
+@ python/dynamic/dyna1.pl
+@ python/dynamic/dyna2.pl
+@ python/dynamic/dyna3.pl
+@ python/dynamic/dyna4.pl
+@ python/dynamic/dyna5.pl
+@ python/dynamic/dyna6.pl
+@ python/dynamic/dyna7.pl
+@ python/dynamic/dyna8.pl
+@ python/dynamic/dyna9.pl
+==

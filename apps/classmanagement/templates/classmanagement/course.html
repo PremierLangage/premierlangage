@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+
+{% block css %}
+<link rel="stylesheet" href="{{ static('css/block_chart.css') }}"
+      xmlns:playexo="http://www.w3.org/1999/xhtml" xmlns:playexo="http://www.w3.org/1999/xhtml"/>
+<link rel="stylesheet" href="{{ static('css/course.css') }}"/>
+{% endblock %}
+
+{% block content %}
+<h4>{{name}}</h4>
+<hr/>
+{% if instructor or request.user.profile.is_admin%}
+<div class="course-instructor-action">
+    <a href="/courses/course/{{course_id}}/summary/"> Voir l'avancement des élèves pour ce
+        cours </a>
+</div>
+{% endif %}
+
+<section>
+    <h5>Professeurs</h5>
+    <hr/>
+    <div class="course-instructors">
+        {% for item in teacher %}
+        <div>
+                <span class="mdl-chip mdl-chip--contact">
+                    <span class="mdl-chip__contact mdl-color--blue mdl-color-text--white">
+                    {{ firstof(item.get_full_name()|capfirst|make_list|first, item.username|capfirst|make_list|first) }}
+                    </span>
+                    <span class="mdl-chip__text">{{ firstof(item.get_full_name(), item.username) }} - &lt;{{item.email}}&gt;</span>
+                </span>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section>
+    <h5>Activités</h5>
+    <hr/>
+    <div class="mdl-grid grid-activities">
+        {% for item in activity %}
+        <a href="{{ url('playexo:activity', item.id) }}">
+            <div class="{% if not item.open %}disabled{% endif%} mdl-card card-activity mdl-shadow--2dp mdl-cell mdl-cell--3-col mdl-cell--6-col-phone mdl-cell--6-col-tablet">
+                <div class="mdl-card__title">
+                    <span class="mdl-card__title-text">{{ item.title }}</span>
+                </div>
+                <div class="mdl-card__supporting-text">
+                    <div class="grid-exos">
+                        {% for elem in item.pl %}
+                        <div class="block block-chart {{elem.state.template}}"><p>{{ elem.name }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="mdl-card__actions mdl-card--border">
+                    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
+                       href="/courses/course/{{course_id}}/{{item.id}}/summary/">
+                        Statistiques
+                    </a>
+                    <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
+                       href="/courses/course/{{course_id}}/{{item.id}}/notes/" download target="_blank">
+                        Récupérer les notes
+                    </a>
+                    <div class="mdl-layout-spacer"></div>
+                    {% if instructor %}
+                    <span class='toggle-activity'>
+                                    {% if not item.open %}
+                                        <a href="{{ request.path }}?action=toggle_activity&id={{item.id}}"><i
+                                                class="fas fa-toggle-off"></i></a>
+                                    {% else %}
+                                        <a href="{{ request.path }}?action=toggle_activity&id={{item.id}}"><i
+                                                class="fas fa-toggle-on"></i></a>
+                                    {% endif %}
+                                </span>
+                    {% endif %}
+                </div>
+            </div>
+        </a>
+    {% endfor %}
+    </div>
+</section>
+{% endblock %}
