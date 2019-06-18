@@ -244,7 +244,7 @@ def redirect_activity(request, activity_id):
     request.session['current_activity'] = activity_id
     request.session['current_pl'] = None
     request.session['testing'] = False
-    return HttpResponseRedirect(reverse("playexo:activity"))
+    return HttpResponseRedirect(reverse("activity:play"))
 
 
 

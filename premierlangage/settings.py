@@ -55,6 +55,7 @@ PROJECT_APPS = [
     'qa',
     'editor',
     'components',
+    'activity',
 ]
 
 INSTALLED_APPS = PROJECT_APPS + PREREQ_APPS

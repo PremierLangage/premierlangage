@@ -53,7 +53,7 @@ class ViewsTestCase(TestCase):
         s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity)
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.post(
-            reverse("playexo:evaluate", args=[self.activity.id, self.pl.id]),
+            reverse("activity:evaluate", args=[self.activity.id, self.pl.id]),
             json.dumps("{}"),
             "json",
             HTTP_X_REQUESTED_WITH='XMLHttpRequest',
@@ -66,7 +66,7 @@ class ViewsTestCase(TestCase):
         s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity)
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.post(
-            reverse("playexo:evaluate", args=[self.activity.id, self.pl.id]),
+            reverse("activity:evaluate", args=[self.activity.id, self.pl.id]),
             json.dumps({
                 "requested_action": "save",
                 "inputs":           ""
@@ -83,7 +83,7 @@ class ViewsTestCase(TestCase):
         s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity)
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.post(
-            reverse("playexo:evaluate", args=[self.activity.id, self.pl.id]),
+            reverse("activity:evaluate", args=[self.activity.id, self.pl.id]),
             json.dumps({
                 "requested_action": "submit",
                 "inputs":           ""
@@ -100,7 +100,7 @@ class ViewsTestCase(TestCase):
         s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity)
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.post(
-            reverse("playexo:evaluate", args=[self.activity.id, self.pl.id]),
+            reverse("activity:evaluate", args=[self.activity.id, self.pl.id]),
             json.dumps({
                 "requested_action": "unknown",
                 "inputs":           ""
@@ -114,7 +114,7 @@ class ViewsTestCase(TestCase):
     
     def test_activity_view_redirect(self):
         response = self.c.get(
-            reverse("playexo:activity", args=[self.activity.id]),
+            reverse("activity:play", args=[self.activity.id]),
             {
                 "action": "test",
             },
@@ -129,7 +129,7 @@ class ViewsTestCase(TestCase):
         s_activity.save()
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.get(
-            reverse("playexo:activity", args=[self.activity.id]),
+            reverse("activity:play", args=[self.activity.id]),
             {
                 "action": "pl",
                 "pl_id":  str(self.pl.id),
@@ -141,7 +141,7 @@ class ViewsTestCase(TestCase):
     
     def test_activity_view_pltp(self):
         response = self.c.get(
-            reverse("playexo:activity", args=[self.activity.id]),
+            reverse("activity:play", args=[self.activity.id]),
             {
                 "action": "pltp",
             },
@@ -156,7 +156,7 @@ class ViewsTestCase(TestCase):
         s_activity.save()
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.get(
-            reverse("playexo:activity", args=[self.activity.id]),
+            reverse("activity:play", args=[self.activity.id]),
             {
                 "action": "reset",
             },
@@ -171,7 +171,7 @@ class ViewsTestCase(TestCase):
         s_activity.save()
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.get(
-            reverse("playexo:activity", args=[self.activity.id]),
+            reverse("activity:play", args=[self.activity.id]),
             {
                 "action": "reroll",
             },
@@ -187,7 +187,7 @@ class ViewsTestCase(TestCase):
         s_activity.save()
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.get(
-            reverse("playexo:activity", args=[self.activity.id]),
+            reverse("activity:play", args=[self.activity.id]),
             {
                 "action": "next",
             },
@@ -201,7 +201,7 @@ class ViewsTestCase(TestCase):
         s_activity.save()
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.get(
-            reverse("playexo:activity", args=[self.activity.id]),
+            reverse("activity:play", args=[self.activity.id]),
             {
                 "action": "next",
             },
@@ -215,7 +215,7 @@ class ViewsTestCase(TestCase):
         s_activity.save()
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.get(
-            reverse("playexo:activity", args=[self.activity.id]),
+            reverse("activity:play", args=[self.activity.id]),
             {
                 "action": "pl",
             },
