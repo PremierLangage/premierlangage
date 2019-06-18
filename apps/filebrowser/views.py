@@ -25,7 +25,8 @@ from filebrowser.utils import (HOME_DIR, LIB_DIR, exec_git_cmd, fa_icon, get_con
                                rm_fb_root, walkalldirs)
 from loader.loader import load_file, reload_pltp as rp
 from loader.utils import get_location
-from playexo.models import Activity, SessionTest
+from playexo.models import SessionTest
+from activity.models import Activity
 
 
 

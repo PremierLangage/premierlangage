@@ -11,7 +11,8 @@ from django.urls import reverse
 from filebrowser.models import Directory
 from loader.loader import load_file
 from loader.models import Index
-from playexo.models import Activity, SessionActivity, SessionExercise
+from playexo.models import SessionActivity, SessionExercise
+from activity.models import Activity
 
 
 FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))

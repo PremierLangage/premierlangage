@@ -17,7 +17,7 @@ from django.utils.deprecation import MiddlewareMixin
 
 from classmanagement.models import Course
 from lti_app.models import ActivityOutcome
-from playexo.models import Activity
+from activity.models import Activity
 
 
 logger = logging.getLogger(__name__)

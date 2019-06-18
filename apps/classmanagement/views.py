@@ -14,7 +14,8 @@ from django.views.decorators.http import require_GET
 
 from classmanagement.models import Course
 from playexo.enums import State
-from playexo.models import Activity, Answer
+from playexo.models import Answer
+from activity.models import Activity
 
 
 logger = logging.getLogger(__name__)

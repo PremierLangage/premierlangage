@@ -9,13 +9,14 @@ from django.http import Http404
 from django.test import TestCase, override_settings
 from django.test.client import RequestFactory
 
+from activity.models import Activity
 from classmanagement.models import Course
 from filebrowser.models import Directory
 from loader.loader import load_file
 from loader.models import PL, PLTP
 from playexo.enums import State
 from playexo.exception import BuildScriptError, SandboxError
-from playexo.models import Activity, Answer, SessionActivity, SessionExercise, SessionTest
+from playexo.models import Answer, SessionActivity, SessionExercise, SessionTest
 from user_profile.enums import Role
 
 
@@ -70,10 +71,10 @@ class ModelTestCase(TestCase):
             Activity.get_or_create_from_lti(R(), params)
         
         Activity.objects.create(name="test", pltp=self.pltp, id=1)
-        activity = Activity.get_or_create_from_lti(R("/playexo/activity/1/"), params)
+        activity = Activity.get_or_create_from_lti(R("/activity/play/1/"), params)
         self.assertEqual(activity, (Activity.objects.get(pk=activity[0].pk), True))
         
-        activity = Activity.get_or_create_from_lti(R("/playexo/activity/1/"), params)
+        activity = Activity.get_or_create_from_lti(R("/activity/play/1/"), params)
         self.assertEqual(activity, (Activity.objects.get(pk=activity[0].pk), False))
         
         params['context_id'] = None
