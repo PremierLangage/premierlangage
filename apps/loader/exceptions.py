@@ -132,6 +132,10 @@ class MissingKey(Exception):
         return self.message + " : '" + self.key + "' in file " + normpath(self.path)
 
 
+class MissingPL(Exception):
+    pass
+
+
 
 class ComponentNotFound(Exception):
     """Raised when a component cannot be found."""

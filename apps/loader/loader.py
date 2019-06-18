@@ -2,16 +2,16 @@
 # -*- coding: utf-8 -*-
 
 
-import hashlib
 import logging
-import time
 from os.path import basename, splitext
 
 import htmlprint
 from django.conf import settings
 
+from activity.models import Activity, Index
 from filebrowser.models import Directory
-from loader.models import Index, PL, PLTP
+from loader.exceptions import MissingPL
+from loader.models import PL
 from loader.parser import get_type, parse_file
 
 
@@ -36,55 +36,14 @@ def load_file(directory, rel_path):
             return load_pltp(directory, rel_path)
         elif typ == 'pl':
             return load_pl(directory, rel_path)
+        elif typ == 'pla':
+            return load_pla(directory, rel_path)
     except Exception as e:
         if not settings.DEBUG:
             return None, htmlprint.code(str(e))
         return (None, (htmlprint.code(str(e))
                        + '<br>DEBUG set to True - Showing Traceback :<br>'
                        + htmlprint.html_exc()))
-
-
-
-def load_pltp(directory, rel_path):
-    """ Load the given file as a PLTP. Save it and its PL in the database.
-        
-        Return:
-            - (PLTP, []) if the PLTP was loaded successfully
-            - (PLTP, warning_list) if the PLTP was loaded with warnings
-    """
-    
-    name = splitext(basename(rel_path))[0]
-    
-    sha1 = hashlib.sha1()
-    sha1.update((directory.name + ':' + rel_path + str(time.time())).encode('utf-8'))
-    sha1 = sha1.hexdigest()
-    
-    try:
-        PLTP.objects.get(sha1=sha1).delete()  # Reloading the pltp if it already exists
-    except PLTP.DoesNotExist:  # If the PLTP does not exist, keep going
-        pass
-    
-    dic, warnings = parse_file(directory, rel_path)
-    
-    pl_list = list()
-    for item in dic['__pl']:
-        pl_directory = Directory.objects.get(name=item['directory_name'])
-        pl, pl_warnings = load_pl(pl_directory, item['path'])
-        warnings += pl_warnings
-        pl_list.append(pl)
-    
-    for pl in pl_list:
-        pl.save()
-        logger.info("PL '" + str(pl.id) + " (" + pl.name + ")' has been added to the database")
-    
-    pltp = PLTP(name=name, sha1=sha1, json=dic, directory=directory, rel_path=rel_path)
-    pltp.save()
-    logger.info("PLTP '" + sha1 + " (" + name + ")' has been added to the database")
-    
-    for pl in pl_list:
-        Index.objects.create(pltp=pltp, pl=pl)
-    
-    return pltp, [htmlprint.code(warning) for warning in warnings]
 
 
 
@@ -105,6 +64,58 @@ def load_pl(directory, rel_path):
 
 
 
+def load_pltp(directory, rel_path):
+    pltp, warnings = load_pla(directory, rel_path, type="pltp")
+    if not pltp.activity_data["__pl"]:
+        raise MissingPL("Your PLTP must include at least one PL")
+    return pltp, warnings
+
+
+
+def load_pla(directory, rel_path, type=None):
+    """ Load the given path as a PL Activity (pla)
+        
+        Return:
+            - (Activity, []) if the activity was successfully loaded
+            - (Activity, warning_list) if the activity was loaded with warnings
+            
+        This function returns an Activity saved in the database
+    """
+    
+    name = splitext(basename(rel_path))[0]
+    
+    """sha1 = hashlib.sha1()
+    sha1.update((directory.name + ':' + rel_path + str(time.time())).encode('utf-8'))
+    sha1 = sha1.hexdigest()
+    
+    try:
+        Activity.objects.get(sha1=sha1).delete()  # Reloading the activity if it already exists
+    except Activity.DoesNotExist:  # If the activity does not exist, keep going
+        pass"""
+    
+    dic, warnings = parse_file(directory, rel_path)
+    pl_list = list()
+    for item in dic['__pl']:
+        pl_directory = Directory.objects.get(name=item['directory_name'])
+        pl, pl_warnings = load_pl(pl_directory, item['path'])
+        warnings += pl_warnings
+        pl_list.append(pl)
+    
+    for pl in pl_list:
+        pl.save()
+        logger.info("PL '" + str(pl.id) + " (" + pl.name + ")' has been added to the database")
+
+    activity_type = type if type else dic["type"]
+    pla = Activity.objects.create(name=name, activity_type=activity_type, activity_data=dic)
+    logger.info("PLA '" + name + "' has been added to the database")
+    
+    for pl in pl_list:
+        Index.objects.create(activity=pla, pl=pl)
+
+    return pla, [htmlprint.code(warning) for warning in warnings]
+
+
+
 def reload_pltp(directory, rel_path, original):
     """Reload the given file as a PLTP. Also reload its PL, but without modyfing their ID.
         original is a pltp returned by load_pltp or reload_pltp
@@ -122,7 +133,7 @@ def reload_pltp(directory, rel_path, original):
             pl, pl_warnings = load_pl(pl_directory, item['path'])
             warnings += pl_warnings
             pl_list.append(pl)
-        
+            
         originals = list(original.indexed_pl())
         original.pl.clear()
         for pl in pl_list:
@@ -136,15 +147,14 @@ def reload_pltp(directory, rel_path, original):
                 logger.info(
                     "PL '" + str(
                         correspond.id) + " (" + correspond.name + ")' has been updated.")
-                Index.objects.create(pltp=original, pl=correspond)
+                Index.objects.create(activity=original, pl=correspond)
             else:
                 pl.save()
                 logger.info("PL '" + str(pl.id) + " (" + pl.name + ")' has been created.")
-                Index.objects.create(pltp=original, pl=pl)
-        
+                Index.objects.create(activity=original, pl=pl)
         original.json = dic
         original.save()
-        logger.info("PLTP '" + original.sha1 + " (" + original.name + ")' has been updated.")
+        logger.info("Activity '" + original.name + "' has been reloaded.")
         
         return original, [htmlprint.code(warning) for warning in warnings]
     except Exception as e:  # pragma: no cover

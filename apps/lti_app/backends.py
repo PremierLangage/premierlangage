@@ -102,5 +102,5 @@ class LTIAuthBackend(ModelBackend):
             user.last_name = last_name
         user.save()
         
-        logger.info("User '" + username + "' has been autenticated")
+        logger.info("User '" + username + "' has been authenticated")
         return user

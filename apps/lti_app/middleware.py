@@ -11,13 +11,12 @@ import logging
 
 from django.contrib import auth
 from django.core.exceptions import ImproperlyConfigured
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import resolve, reverse
 from django.utils.deprecation import MiddlewareMixin
 
-from classmanagement.models import Course
 from lti_app.models import ActivityOutcome
-from playexo.models import Activity
+from activity.models import Activity
 
 
 logger = logging.getLogger(__name__)
@@ -47,7 +46,7 @@ class LTIAuthMiddleware(MiddlewareMixin):
     def process_request(self, request):
         # AuthenticationMiddleware is required so that request.user exists.
         if not hasattr(request, 'user'):  # pragma: no cover
-            logger.debug('improperly configured: requeset has no user attr')
+            logger.debug('improperly configured: request has no user attr')
             raise ImproperlyConfigured(
                 "The Django LTI auth middleware requires the"
                 " authentication middleware to be installed.  Edit your"
@@ -153,14 +152,18 @@ class LTIAuthMiddleware(MiddlewareMixin):
                 
                 # Creating and updating data according to lti_launch
                 user.profile.set_role_lti(lti_launch)
-                Course.get_or_create_from_lti(user, lti_launch)
                 urlmatch = resolve(request.path)
                 if not urlmatch.app_name or not urlmatch.url_name:
                     urlmatch = None
-                if urlmatch and urlmatch.app_name + ":" + urlmatch.url_name == "playexo:activity":
-                    activity, _ = Activity.get_or_create_from_lti(request, lti_launch)
-                    ActivityOutcome.get_or_create_from_lti(user, lti_launch)
-                    return redirect(reverse('playexo:activity', args=[activity.id]))
+                if urlmatch and urlmatch.app_name + ":" + urlmatch.url_name == "activity:play":
+                    activity = get_object_or_404(Activity, id=urlmatch.kwargs['activity_id'])
+                    is_course = activity.activity_type != "course"
+                    if is_course:
+                        Activity.get_or_create_course_from_lti(user, lti_launch)
+                    activity, _ = Activity.get_or_update_from_lti(request, lti_launch)
+                    if is_course:
+                        ActivityOutcome.get_or_create_from_lti(user, lti_launch)
+                    return redirect(reverse('activity:play', args=[activity.id]))
             else:
                 # User could not be authenticated!
                 logger.warning('LTI authentication failed')

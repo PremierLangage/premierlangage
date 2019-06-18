@@ -4,7 +4,7 @@ import os
 import tarfile
 import tempfile
 
-from django.template import Context, Template
+from django_jinja.backend import Jinja2
 
 
 
@@ -30,6 +30,7 @@ def tar_from_dic(files):
 def render_feedback(feedback):
     """Returns the given markdown string as an html string
     """
-    return Template(
-        "{% load django_markdown %}{% with fh=f|markdown %}{{fh|safe}}{% endwith %}"
-    ).render(Context({'f': feedback}))
+    env = Jinja2.get_default()
+    return env.from_string(
+        "{% with fh=f|markdown %}{{fh|safe}}{% endwith %}"
+    ).render(context={'f': feedback})

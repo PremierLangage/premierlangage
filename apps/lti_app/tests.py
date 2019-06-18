@@ -5,10 +5,9 @@ from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from mock import patch
 
-from classmanagement.models import Course
-from loader.models import PLTP
+from activity.models import Activity
 from lti_app.models import ActivityOutcome
-from playexo.models import Activity
+from misc_tests.activity_base_test_mixin import ActivityBaseTestMixin
 from user_profile.enums import Role
 
 
@@ -45,8 +44,14 @@ FAKE_CREDENTIALS = {
 
 
 @override_settings(LTI_OAUTH_CREDENTIALS=FAKE_CREDENTIALS)
-class LTITestCase(TestCase):
+class LTITestCase(ActivityBaseTestMixin):
     
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.activity = Activity.objects.create(name="test", activity_type="pltp")
+        
+        
     @patch('lti_app.middleware.logger')
     @patch('lti_app.backends.logger')
     def test_wrong_key(self, backends_logger, middleware_logger):
@@ -122,63 +127,6 @@ class LTITestCase(TestCase):
         self.assertEqual(user.profile.consumer_id, user_id)
         self.assertEqual(user.profile.consumer, 'provider1')
     
-    
-    def test_create_course(self):
-        user_id = str(uuid.uuid4())
-        context_id = str(uuid.uuid4())
-        params = {
-            **REQUEST_LTI_1P1, **{
-                'resource_link_id':                 str(uuid.uuid4()),
-                'oauth_consumer_key':               'provider1',
-                'oauth_consumer_secret':            'secret1',
-                'lis_person_contact_email_primary': 'test@host.com',
-                'lis_person_name_family':           'lastname',
-                'lis_person_name_given':            'firstname',
-                'roles':                            ROLES['Learner'],
-                'user_id':                          user_id,
-                'context_id':                       context_id,
-                'context_title':                    "A Course",
-                'context_label':                    "LAB",
-            }
-        }
-        c = Client()
-        response = c.post('/', data=dict(params), follow=True)
-        self.assertEqual(response.status_code, 200)
-        user = User.objects.get(username='flastname')
-        course = Course.objects.all()[0]
-        self.assertEqual(course.name, "A Course")
-        self.assertEqual(course.label, 'LAB')
-        self.assertEqual(course.consumer_id, context_id)
-        self.assertEqual(course.consumer, 'provider1')
-        self.assertTrue(course.is_member(user))
-    
-    
-    def test_add_teacher_course(self):
-        user_id = str(uuid.uuid4())
-        context_id = str(uuid.uuid4())
-        params = {
-            **REQUEST_LTI_1P1, **{
-                'resource_link_id':                 str(uuid.uuid4()),
-                'oauth_consumer_key':               'provider1',
-                'oauth_consumer_secret':            'secret1',
-                'lis_person_contact_email_primary': 'test@host.com',
-                'lis_person_name_family':           'lastname',
-                'lis_person_name_given':            'firstname',
-                'roles':                            ROLES['Instructor'],
-                'user_id':                          user_id,
-                'context_id':                       context_id,
-                'context_title':                    "A Course",
-                'context_label':                    "LAB",
-            }
-        }
-        c = Client()
-        response = c.post('/', data=dict(params), follow=True)
-        self.assertEqual(response.status_code, 200)
-        user = User.objects.get(username='flastname')
-        course = Course.objects.all()[0]
-        self.assertTrue(course.is_teacher(user))
-    
-    
     def test_add_activity(self):
         user_id = str(uuid.uuid4())
         context_id = str(uuid.uuid4())
@@ -201,18 +149,16 @@ class LTITestCase(TestCase):
                 'lis_result_sourcedid':             str(uuid.uuid4())
             }
         }
-        pltp = PLTP.objects.create(sha1="sha1", name="name", json={'title': ''})
-        activity = Activity.objects.create(name="name", pltp=pltp)
+        activity = Activity.objects.create(name="name", activity_data={'title': ''}, activity_type="pltp")
         c = Client()
-        response = c.post(reverse("playexo:activity", args=[activity.pk]), data=dict(params),
+        response = c.post(reverse("activity:play", args=[activity.pk]), data=dict(params),
                           follow=True)
         self.assertEqual(response.status_code, 200)
         
-        course = Course.objects.all()[0]
-        activity = Activity.objects.get(consumer_id=activity_id)
-        self.assertEqual(activity.name, "An Activity")
-        self.assertEqual(activity.pltp, pltp)
-        self.assertEqual(activity.course, course)
+        course = Activity.objects.all().filter(activity_type="course")[0]
+        activity = Activity.objects.get(activity_data__consumer_id=activity_id)
+        self.assertEqual(activity.name, "name")
+        self.assertEqual(activity.parent, course)
     
     
     def test_add_activity_failed_missing_lti_launch(self):
@@ -236,14 +182,13 @@ class LTITestCase(TestCase):
                 'lis_result_sourcedid':             str(uuid.uuid4())
             }
         }
-        pltp = PLTP.objects.create(sha1="sha1", name="name", json={'title': ''})
-        activity = Activity.objects.create(name="name", pltp=pltp)
+        activity = Activity.objects.create(name="name", activity_data={'title': ''}, activity_type="pltp")
         c = Client()
-        response = c.post(reverse("playexo:activity", args=[activity.pk]), data=dict(params),
+        response = c.post(reverse("activity:play", args=[activity.pk]), data=dict(params),
                           follow=True)
         self.assertEqual(response.status_code, 404)
         with self.assertRaises(Activity.DoesNotExist):
-            Activity.objects.get(consumer_id=activity_id)
+            Activity.objects.get(activity_data__consumer_id=activity_id)
     
     
     def test_add_activity_outcome(self):
@@ -269,15 +214,14 @@ class LTITestCase(TestCase):
                 'lis_result_sourcedid':             sourcedid,
             }
         }
-        pltp = PLTP.objects.create(sha1="sha1", name="name", json={'title': ''})
-        activity = Activity.objects.create(name="name", pltp=pltp)
+        activity = Activity.objects.create(name="name", activity_data={'title': ''}, activity_type="pltp")
         c = Client()
-        response = c.post(reverse("playexo:activity", args=[activity.pk]), data=dict(params),
+        response = c.post(reverse("activity:play", args=[activity.pk]), data=dict(params),
                           follow=True)
         self.assertEqual(response.status_code, 200)
         
         user = User.objects.get(username='flastname')
-        activity = Activity.objects.get(consumer_id=activity_id)
+        activity = Activity.objects.get(activity_data__consumer_id=activity_id)
         outcome = ActivityOutcome.objects.get(activity=activity, user=user)
         
         self.assertEqual(outcome.url, "url")

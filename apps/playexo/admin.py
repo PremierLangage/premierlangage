@@ -1,12 +1,6 @@
 from django.contrib import admin
 
-from playexo.models import Activity, Answer
-
-
-
-@admin.register(Activity)
-class ActivityAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'id', 'pltp', 'open')
+from playexo.models import Answer
 
 
 

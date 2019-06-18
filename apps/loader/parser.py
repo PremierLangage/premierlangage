@@ -21,9 +21,10 @@ from loader.utils import extends_dict
 
 logger = logging.getLogger(__name__)
 
-FILE_TYPE = ['pl', 'pltp']
+FILE_TYPE = ['pl', 'pltp', 'pla']
 PL_MANDATORY_KEY = ['title', 'text', 'form']
 PLTP_MANDATORY_KEY = ['title', '__pl', 'introduction']
+PLA_MANDATORY_KEY = ['title', 'type']
 MUST_BE_STRING = ['text', 'introduction', 'form', 'evaluator', 'before', 'author', 'title']
 
 NONE_BUILDER = r"""
@@ -109,7 +110,6 @@ def get_type(directory, path):
     ext = '.pl' if not ext else ext
     if ext in parsers:
         return parsers[ext]['type']
-    
     raise UnknownExtension(path, join(directory.name, path))
 
 
@@ -170,6 +170,10 @@ def parse_file(directory, path, extending=False):
                 for key in PLTP_MANDATORY_KEY:
                     if key not in dic:
                         raise MissingKey(join(directory.root, path), key)
+            elif parsers[ext]['type'] == 'pla':
+                for key in PLA_MANDATORY_KEY:
+                    if key not in dic:
+                        raise MissingKey(join(directory.root, path), key)
             else:
                 for key in PL_MANDATORY_KEY:
                     if key not in dic:
@@ -181,7 +185,7 @@ def parse_file(directory, path, extending=False):
                     dic['builder'] = NONE_BUILDER
         
         for key in MUST_BE_STRING:
-            if key in dic and type(dic[key]) != str:
+            if key in dic and not isinstance(dic[key], str):
                 raise TypeError("Key : '" + key + "' is '" + str(type(dic[key]))
                                 + "' but must be a string.")
         
