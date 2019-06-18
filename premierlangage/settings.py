@@ -50,11 +50,12 @@ PROJECT_APPS = [
     'playexo',
     'user_profile',
     'loader',
-    'classmanagement',
     'lti_app',
     'qa',
     'editor',
     'components',
+    'activity',
+    'git',
 ]
 
 INSTALLED_APPS = PROJECT_APPS + PREREQ_APPS
@@ -79,7 +80,7 @@ SESSION_SAVE_EVERY_REQUEST = True
 SESSION_COOKIE_AGE = 5 * 365 * 24 * 60 * 60
 
 # Redirect when not authenticated to
-LOGIN_URL = "/courses/login/"
+LOGIN_URL = "/activity/login/"
 
 # URLs module
 ROOT_URLCONF = 'premierlangage.urls'
@@ -154,10 +155,13 @@ WSGI_APPLICATION = 'premierlangage.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME':   os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 134217728
+
 # Update database configuration with $DATABASE_URL.
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)

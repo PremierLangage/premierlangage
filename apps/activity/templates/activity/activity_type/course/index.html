@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+
+{% block css %}
+    <link rel="stylesheet" href="{{ static('activity/css/block_chart.css') }}"
+          xmlns:playexo="http://www.w3.org/1999/xhtml"
+          xmlns:playexo="http://www.w3.org/1999/xhtml"/>
+    <link rel="stylesheet" href="{{ static('activity/css/courses.css') }}"/>
+    <link rel="stylesheet" href="{{ static('activity/css/course.css') }}"/>
+{% endblock %}
+
+{% block content %}
+    <h4>{{ activity.name }}</h4>
+    <hr/>
+    {% if instructor or request.user.profile.is_admin() %}
+        <div class="course-instructor-action">
+            <a href="/activity/dashboard/{{ course_id }}/"> Gestion du cours </a>
+        </div>
+    {% endif %}
+
+    <section>
+        <h5>Professeurs</h5>
+        <hr/>
+        <div class="course-instructors">
+            {% for item in teacher %}
+                <div>
+                <span class="mdl-chip mdl-chip--contact">
+                    <span class="mdl-chip__contact mdl-color--blue mdl-color-text--white">
+                    {{ firstof(item.get_full_name()|capfirst|make_list|first, item.username|capfirst|make_list|first) }}
+                    </span>
+                    <span class="mdl-chip__text">{{ firstof(item.get_full_name(), item.username) }} - &lt;{{ item.email }}&gt;</span>
+                </span>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section>
+        <h5>Activités</h5>
+        <hr/>
+        <div class="mdl-grid grid-activities">
+            {% for item in smalls %}
+                {{ item }}
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

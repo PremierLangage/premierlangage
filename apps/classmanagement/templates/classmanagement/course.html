@@ -39,6 +39,7 @@
     <hr/>
     <div class="mdl-grid grid-activities">
         {% for item in activity %}
+        <a href="{{ url('activity:play', item.id) }}">
             <div class="{% if not item.open %}disabled{% endif%} mdl-card card-activity mdl-shadow--2dp mdl-cell mdl-cell--3-col mdl-cell--6-col-phone mdl-cell--6-col-tablet">
                 <a href="{{ url('playexo:activity', item.id) }}">
                     <div class="mdl-card__title">

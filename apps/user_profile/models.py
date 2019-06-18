@@ -7,7 +7,7 @@ from django.dispatch import receiver
 from enumfields import EnumIntegerField
 
 from lti_app.models import LTIModel
-from playexo.models import Activity
+from activity.models import Activity
 from user_profile.enums import ColorBlindness, EditorTheme, Role
 from user_profile.utils import avatar_path, generate_identicon
 

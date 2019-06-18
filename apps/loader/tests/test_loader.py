@@ -12,6 +12,8 @@ from django.test import TestCase, override_settings
 from filebrowser.models import Directory
 from loader import loader, models
 from .utils import copy_parser
+from activity.models import Activity
+from misc_tests.activity_base_test_mixin import ActivityBaseTestMixin
 
 
 FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
@@ -21,12 +23,13 @@ FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
 @override_settings(PARSERS_ROOT=os.path.join(settings.APPS_DIR, 'loader/tests/fake_parsers/'))
 @override_settings(PARSERS_MODULE="loader.tests.fake_parsers")
-class LoaderTestCase(TestCase):
+class LoaderTestCase(ActivityBaseTestMixin):
     """ Test functions of loader.loader """
     
     
     @classmethod
     def setUpTestData(cls):
+        super().setUpTestData()
         if os.path.isdir(FAKE_FB_ROOT):
             shutil.rmtree(FAKE_FB_ROOT)
         
@@ -52,7 +55,11 @@ class LoaderTestCase(TestCase):
             self.assertEqual(res[1], [])
             
             res = loader.load_file(self.dir, "working.pltp")
-            self.assertEqual(type(res[0]), models.PLTP)
+            self.assertEqual(type(res[0]), Activity)
+            self.assertEqual(res[1], [])
+            
+            res = loader.load_file(self.dir, "working.pla")
+            self.assertEqual(type(res[0]), Activity)
             self.assertEqual(res[1], [])
             
             res = loader.load_file(self.dir, "missing_pl.pltp")
@@ -80,7 +87,7 @@ class LoaderTestCase(TestCase):
     
     def test_load_pltp(self):
         res = loader.load_pltp(self.dir, "working.pltp")
-        self.assertEqual(type(res[0]), models.PLTP)
+        self.assertEqual(type(res[0]), Activity)
         self.assertEqual(res[1], [])
     
     
