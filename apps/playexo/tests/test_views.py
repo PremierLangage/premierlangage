@@ -5,13 +5,14 @@ import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.test import Client, TestCase, override_settings
+from django.test import Client, override_settings
 from django.urls import reverse
 
+from activity.models import Index, SessionActivity
 from filebrowser.models import Directory
 from loader.loader import load_file
-from loader.models import Index
-from playexo.models import Activity, SessionActivity, SessionExercise
+from misc_tests.activity_base_test_mixin import ActivityBaseTestMixin
+from playexo.models import SessionExercise
 from user_profile.enums import Role
 
 
@@ -21,10 +22,11 @@ FAKE_PL = os.path.join(settings.APPS_DIR, 'playexo/tests/fake_pl')
 
 
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
-class ViewsTestCase(TestCase):
+class ViewsTestCase(ActivityBaseTestMixin):
     
     @classmethod
     def setUpTestData(cls):
+        super().setUpTestData()
         if os.path.isdir(FAKE_FB_ROOT):
             shutil.rmtree(FAKE_FB_ROOT)
         
@@ -38,9 +40,7 @@ class ViewsTestCase(TestCase):
         cls.pl = load_file(cls.dir, "random_add.pl")[0]
         cls.pl.json['seed'] = 2
         cls.pl.save()
-        cls.pltp = load_file(cls.dir, "random_all.pltp")[0]
-        cls.pltp.save()
-        cls.activity = Activity.objects.create(name="test", pltp=cls.pltp, id=1)
+        cls.activity = load_file(cls.dir, "random_all.pltp")[0]
     
     
     @classmethod
@@ -53,7 +53,7 @@ class ViewsTestCase(TestCase):
         s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity)
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.post(
-            reverse("playexo:evaluate", args=[self.activity.id, self.pl.id]),
+            reverse("activity:evaluate", args=[self.activity.id, self.pl.id]),
             json.dumps("{}"),
             "json",
             HTTP_X_REQUESTED_WITH='XMLHttpRequest',
@@ -66,7 +66,7 @@ class ViewsTestCase(TestCase):
         s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity)
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.post(
-            reverse("playexo:evaluate", args=[self.activity.id, self.pl.id]),
+            reverse("activity:evaluate", args=[self.activity.id, self.pl.id]),
             json.dumps({
                 "requested_action": "save",
                 "inputs":           ""
@@ -83,7 +83,7 @@ class ViewsTestCase(TestCase):
         s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity)
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.post(
-            reverse("playexo:evaluate", args=[self.activity.id, self.pl.id]),
+            reverse("activity:evaluate", args=[self.activity.id, self.pl.id]),
             json.dumps({
                 "requested_action": "submit",
                 "inputs":           ""
@@ -93,14 +93,14 @@ class ViewsTestCase(TestCase):
             follow=True
         )
         self.assertEquals(response.status_code, 200)
-        self.assertIn("Quentin Coumes", response.content.decode())
+        self.assertIn("Merci de rentrer un entier", response.content.decode())
     
     
     def test_evaluate_unknown_action(self):
         s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity)
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.post(
-            reverse("playexo:evaluate", args=[self.activity.id, self.pl.id]),
+            reverse("activity:evaluate", args=[self.activity.id, self.pl.id]),
             json.dumps({
                 "requested_action": "unknown",
                 "inputs":           ""
@@ -114,7 +114,7 @@ class ViewsTestCase(TestCase):
     
     def test_activity_view_redirect(self):
         response = self.c.get(
-            reverse("playexo:activity", args=[self.activity.id]),
+            reverse("activity:play", args=[self.activity.id]),
             {
                 "action": "test",
             },
@@ -129,7 +129,7 @@ class ViewsTestCase(TestCase):
         s_activity.save()
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.get(
-            reverse("playexo:activity", args=[self.activity.id]),
+            reverse("activity:play", args=[self.activity.id]),
             {
                 "action": "pl",
                 "pl_id":  str(self.pl.id),
@@ -141,7 +141,7 @@ class ViewsTestCase(TestCase):
     
     def test_activity_view_pltp(self):
         response = self.c.get(
-            reverse("playexo:activity", args=[self.activity.id]),
+            reverse("activity:play", args=[self.activity.id]),
             {
                 "action": "pltp",
             },
@@ -156,7 +156,7 @@ class ViewsTestCase(TestCase):
         s_activity.save()
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.get(
-            reverse("playexo:activity", args=[self.activity.id]),
+            reverse("activity:play", args=[self.activity.id]),
             {
                 "action": "reset",
             },
@@ -171,7 +171,7 @@ class ViewsTestCase(TestCase):
         s_activity.save()
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.get(
-            reverse("playexo:activity", args=[self.activity.id]),
+            reverse("activity:play", args=[self.activity.id]),
             {
                 "action": "reroll",
             },
@@ -182,12 +182,12 @@ class ViewsTestCase(TestCase):
     
     def test_activity_view_next(self):
         s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity)
-        Index.objects.create(pl=self.pl, pltp=self.pltp)
+        Index.objects.create(pl=self.pl, activity=self.activity)
         s_activity.current_pl = self.pl
         s_activity.save()
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.get(
-            reverse("playexo:activity", args=[self.activity.id]),
+            reverse("activity:play", args=[self.activity.id]),
             {
                 "action": "next",
             },
@@ -201,7 +201,7 @@ class ViewsTestCase(TestCase):
         s_activity.save()
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.get(
-            reverse("playexo:activity", args=[self.activity.id]),
+            reverse("activity:play", args=[self.activity.id]),
             {
                 "action": "next",
             },
@@ -210,12 +210,11 @@ class ViewsTestCase(TestCase):
     
     
     def test_activity_400(self):
-        s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity)
-        s_activity.current_pl = self.pl
-        s_activity.save()
+        s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity,
+                                                    current_pl=self.pl)
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.get(
-            reverse("playexo:activity", args=[self.activity.id]),
+            reverse("activity:play", args=[self.activity.id]),
             {
                 "action": "pl",
             },
@@ -229,7 +228,8 @@ class ViewsTestCase(TestCase):
         pl.save()
         response = self.c.get(reverse("playexo:test_pl", args=[pl.id]))
         self.assertEquals(response.status_code, 200)
-        
+    
+    
     def test_test_pl_not_allowed(self):
         user = User.objects.create_user(username='user_learner', password='12345')
         client = Client()
@@ -238,14 +238,16 @@ class ViewsTestCase(TestCase):
         pl.save()
         response = client.get(reverse("playexo:test_pl", args=[pl.id]))
         self.assertEquals(response.status_code, 403)
-
+    
+    
     def test_test_pl_no_tests(self):
         pl = load_file(self.dir, "working.pl")[0]
         pl.save()
         response = self.c.get(reverse("playexo:test_pl", args=[pl.id]))
         self.assertEquals(response.status_code, 200)
         self.assertIn("Error during testing", response.content.decode())
-        
+    
+    
     def test_test_pl_failing_tests(self):
         pl = load_file(self.dir, "failing_tests.pl")[0]
         pl.save()

@@ -27,7 +27,8 @@ from filebrowser.utils import (HOME_DIR, LIB_DIR, exec_git_cmd, get_content, get
                                rm_fb_root, walkalldirs)
 from loader.loader import load_file, reload_pltp as rp
 from loader.utils import get_location
-from playexo.models import Activity, SessionTest
+from playexo.models import SessionTest
+from activity.models import Activity
 
 
 
@@ -279,276 +280,6 @@ def download_resource(request):
 
 
 
-@require_GET
-def git_changes(request):
-    error = ''
-    response = {}
-    
-    
-    def extract_changes(path):
-        roots = os.listdir(join_fb_root(path))
-        directory = Directory.objects.get(name=path)
-        if not directory.can_write(request.user):
-            return True
-        
-        for root in roots:
-            full_path = join_fb_root(os.path.join(path, root))
-            if not in_repository(full_path):
-                continue
-            
-            
-            def parse_change(change):
-                tmp = change.strip().split(' ')
-                ftype = tmp[0]
-                fpath = os.path.join(path, root, tmp[-1])  # Yggdrasil + Repo + File
-                isdir = fpath.endswith('/')
-                name = fpath.split('/')[-2] if isdir else os.path.basename(fpath)
-                return {'name': name, 'type': ftype, 'path': fpath, 'isdir': isdir}
-            
-            
-            ret, out, err = exec_git_cmd(full_path, 'git status --short')
-            
-            if not ret:
-                changes = out.split("\n")
-                changes = [parse_change(x) for x in changes if
-                           x and '..' not in x]  # only result in home/
-                changes = [x for x in changes if x['type'] != 'A']  # remove added entries
-                key = repository_url(full_path)
-                value = response.get(key)
-                if value:
-                    value['changes'] = value['changes'] + changes if value.get(
-                        'changes') else changes
-                else:
-                    value = {
-                        'path':   os.path.join(path, root),
-                        'branch': repository_branch(full_path), 'changes': changes
-                    }
-                response[key] = value
-            else:  # pragma: no cover
-                return False
-        return True
-    
-    
-    for e in ['Yggdrasil', 'lib']:
-        if not extract_changes(e):
-            return HttpResponseNotFound(error)
-    
-    return HttpResponse(json.dumps(response), content_type='application/json')
-
-
-
-@require_POST
-def git_clone(request):
-    """Execute a git clone on the targeted entry with the informations of POST."""
-    post = json.loads(request.body.decode())
-    username = post.get('username')
-    password = post.get('password')
-    destination = post.get('destination')
-    path = post.get('path')
-    if not path:
-        return HttpResponseBadRequest(missing_parameter('path'))
-    
-    url = post.get('url')
-    if not url:
-        return HttpResponseBadRequest(missing_parameter('url'))
-    
-    if '@' in url:
-        return HttpResponseNotFound("SSH link is not supported, please use HTTPS")
-    
-    path = join_fb_root(path)
-    try:
-        ret, out, err = gitcmd.clone(path, url, destination, username, password)
-        if ret:  # pragma: no cover
-            raise Exception(err + out)
-        else:
-            path = (
-                os.path.join(path, destination) if destination
-                else os.path.join(path, os.path.basename(os.path.splitext(url)[0]))
-            )
-            message = htmlprint.code(out + err)
-            ret, out, err = gitcmd.set_url(path, url)
-            if not ret:
-                return HttpResponse(message + htmlprint.code(out + err))
-            else:  # pragma: no cover
-                shutil.rmtree(path, ignore_errors=True)
-                raise Exception(err + out)
-    except Exception as e:  # pragma: no cover
-        return HttpResponseNotFound(str(e))
-
-
-
-@require_POST
-def git_pull(request):
-    """ Execute a git pull on the targeted entry with the informations of POST."""
-    post = json.loads(request.body.decode())
-    username = post.get('username')
-    password = post.get('password')
-    url = post.get('url')
-    path = post.get('path')
-    if not path:
-        return HttpResponseBadRequest(missing_parameter('path'))
-    
-    ret, out, err = gitcmd.pull(join_fb_root(path), username=username, password=password, url=url)
-    
-    if not ret:
-        return HttpResponse(htmlprint.code(out + err))
-    else:  # pragma: no cover
-        return HttpResponseNotFound(htmlprint.code(err + out))
-
-
-
-@require_POST
-def git_push(request):
-    """ Execute a git push on the targeted entry with the informations of POST."""
-    post = json.loads(request.body.decode())
-    
-    username = post.get('username', None)
-    password = post.get('password', None)
-    path = post.get('path', None)
-    if not path:
-        return HttpResponseBadRequest(missing_parameter('path'))
-    
-    ret, out, err = gitcmd.push(join_fb_root(path), username=username, password=password)
-    if not ret:
-        return HttpResponse(htmlprint.code(out + err))
-    else:  # pragma: no cover
-        return HttpResponseNotFound(htmlprint.code(err + out))
-
-
-
-@require_GET
-def git_status(request):
-    """ Execute a git status on the targeted entry."""
-    path = request.GET.get('path')
-    if not path:
-        return HttpResponseBadRequest(missing_parameter('path'))
-    ret, out, err = gitcmd.status(join_fb_root(path))
-    
-    if not ret:
-        return HttpResponse(htmlprint.code(out + err))
-    else:  # pragma: no cover
-        return HttpResponseNotFound(htmlprint.code(out + err))
-
-
-
-@require_GET
-def git_blame(request):
-    """ Execute a git blame on the targeted entry."""
-    path = request.GET.get('path')
-    if not path:
-        return HttpResponseBadRequest(missing_parameter('path'))
-    
-    path = join_fb_root(path)
-    base = os.path.basename(path)
-    command = 'git blame {0} --root -w --show-email --contents {1}'.format(base, path)
-    
-    ret, out, err = exec_git_cmd(path, command)
-    response = []
-    if not ret:
-        regex = r'(?P<sha1>[^\s]+)\s+(?P<filename>[^\s]+)\s+\(<(?P<email>[^>]+)>\s+(?P<day>[' \
-                r'^\s]+)\s+(?P<hour>[^\s]+)\s+(?P<gmt>[^\s]+)\s+(?P<line>[^\)]+)\)(?P<text>[^\n]+)'
-        matches = re.findall(regex, out)
-        for match in matches:
-            sha1 = match[1]
-            command = 'git show --no-patch --oneline {0}'.format(sha1)
-            ret, out, err = exec_git_cmd(path, command)
-            if not ret:
-                commit = ' '.join(out.split()[1:])
-            else:
-                commit = ''
-            response.append({
-                "sha1":   sha1,
-                "email":  match[2],
-                "day":    match[3],
-                "hour":   match[4],
-                "gmt":    match[5],
-                "line":   int(match[6]),
-                "commit": commit,
-                "text":   match[0]
-            })
-        return HttpResponse(json.dumps(response), content_type='application/json')
-    else:  # pragma: no cover
-        if "fatal: no such path" in err:
-            return HttpResponse(json.dumps([]), content_type='application/json')
-        return HttpResponseNotFound(htmlprint.code(out + err))
-
-
-
-@require_GET
-def git_show(request):
-    """ Execute a git show on the targeted entry."""
-    path = request.GET.get('path')
-    if not path:
-        return HttpResponseBadRequest(missing_parameter('path'))
-    try:
-        ret, out, err = gitcmd.show_last_revision(join_fb_root(path))
-        if not ret:
-            return HttpResponse(out)
-        else:  # pragma: no cover
-            return HttpResponseNotFound(htmlprint.code(out + err))
-    except Exception as e:  # pragma: no cover
-        error = htmlprint.code(str(type(e)) + ' - ' + str(e))
-        return HttpResponseNotFound(error)
-
-
-
-@require_GET
-def git_checkout(request):
-    """ Execute a checkout of the targeted entry with the informations of POST. """
-    path = request.GET.get('path')
-    if not path:
-        return HttpResponseBadRequest(missing_parameter('path'))
-    
-    ret, out, err = gitcmd.checkout(join_fb_root(path))
-    
-    if not ret:
-        return HttpResponse("Entry successfully checked out.")
-    else:  # pragma: no cover
-        return HttpResponseNotFound(
-            "Nothing to checked out." if not err else htmlprint.code(err + out))
-
-
-
-@require_GET
-def git_add(request):
-    """ Execute a git add on the targeted entry."""
-    path = request.GET.get('path')
-    if not path:
-        return HttpResponseBadRequest(missing_parameter('path'))
-    ret, out, err = gitcmd.add(join_fb_root(path))
-    if not ret:
-        return HttpResponse("Entry successfully added to the index.")
-    else:  # pragma: no cover
-        return HttpResponseNotFound("Nothing to add." if not err else htmlprint.code(err + out))
-
-
-
-@require_POST
-def git_commit(request):
-    """ Execute an add and commit of the targeted entry with the informations of POST. """
-    
-    post = json.loads(request.body.decode())
-    path = post.get('path')
-    if not path:
-        return HttpResponseBadRequest(missing_parameter('path'))
-    commit = post.get('commit')
-    if not commit:
-        return HttpResponseBadRequest(missing_parameter('commit'))
-    user = request.user
-    if not user.email:
-        return HttpResponseBadRequest("User must have an email")
-    if user.first_name and user.last_name:
-        name = user.get_full_name()
-    else:
-        name = user.get_username()
-    ret, out, err = gitcmd.commit(join_fb_root(path), commit, name=name, mail=request.user.email)
-    if not ret:
-        return HttpResponse(htmlprint.code(out + err))
-    else:  # pragma: no cover
-        return HttpResponseNotFound(htmlprint.code(err + out))
-
-
-
 @login_required
 @require_GET
 def load_pltp(request):
@@ -571,8 +302,7 @@ def load_pltp(request):
             if warnings:  # pragma: no cover
                 for warning in warnings:
                     msg += str(warning)
-            activity = Activity.objects.create(name=pltp.name, pltp=pltp)
-            url_lti = request.build_absolute_uri(reverse("playexo:activity", args=[activity.pk]))
+            url_lti = request.build_absolute_uri(reverse("activity:play", args=[pltp.pk]))
             
             msg += "L'activité <b>'" + pltp.name + "'</b> a bien été créée et a pour URL LTI: \
                     <br>&emsp;&emsp;&emsp; <input id=\"copy\" style=\"width: 700px;\" value=\"" + \
@@ -605,7 +335,7 @@ def reload_pltp(request):
         path_components = path.split('/')
         directory = Directory.objects.get(name=path_components[0])
         relative = os.path.join(*(path_components[1:]))
-        pltp, warnings = rp(directory, relative, activity.pltp)
+        pltp, warnings = rp(directory, relative, activity)
         
         if not pltp and not warnings:  # pragma: no cover
             return HttpResponse("This PLTP is already loaded")
@@ -747,7 +477,7 @@ def test_pl(request):
 @require_POST
 def preview_pl(request):
     """ Used by the PL editor to preview a PL"""
-
+    
     post = json.loads(request.body.decode())
     exists = True
     path = post.get('path')
@@ -755,7 +485,7 @@ def preview_pl(request):
         exists = False
         path = os.path.join(HOME_DIR, str(uuid.uuid4()))
         path += '.pl'
-
+    
     content = post.get('content', '')
     
     path_components = path.split('/')
@@ -764,10 +494,10 @@ def preview_pl(request):
         path = os.path.join(settings.FILEBROWSER_ROOT, path)
         if exists:
             shutil.copyfile(path, path + ".bk")
-
+        
         with open(path, 'w+') as f:  # Writting editor content into the file
             print(content, file=f)
-
+        
         directory = Directory.objects.get(name=directory)
         relative = os.path.join(*(path_components[1:]))
         pl, warnings = load_file(directory, relative)
@@ -792,7 +522,7 @@ def preview_pl(request):
             shutil.move(path + ".bk", path)
         else:
             os.remove(path)
-
+        
         preview = get_template("filebrowser/preview.html").render({'preview': preview}, request)
         return HttpResponse(
             json.dumps({'preview': preview}),
@@ -845,7 +575,6 @@ def resolve_path(request):  # TODO ADD TEST
         return HttpResponse(os.path.join(directory, path))
     
     except Exception as e:
-        print(e)
         msg = "Impossible to resolve the path '" + request.GET.get(
             'target') + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.DEBUG:

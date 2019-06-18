@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from selenium.webdriver.common.action_chains import ActionChains
 
+from activity.models import Activity
 from filebrowser.models import Directory
 from misc_tests.utils import BaseSeleniumTestCase, FAKE_FB_ROOT, HOME_DIR, LIB_DIR, WAIT_TIME
 from user_profile.enums import Role
@@ -23,6 +24,7 @@ class SeleniumTestCase(BaseSeleniumTestCase):
     
     def setUp(self):
         super().setUp()
+        Activity.objects.create(id=0, name="Base", activity_type="base")
         self.u = User.objects.create_superuser("login", password="secret", email="test@test.test")
         self.teacher = User.objects.create_user(username='teacher', password='12345')
         self.teacher.profile.role = Role.INSTRUCTOR

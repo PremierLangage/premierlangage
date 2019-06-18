@@ -19,19 +19,20 @@ from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
 
-from classmanagement.views import index
+from activity.views import index
 
 
 urlpatterns = [
     url(r'^$', index),
-    url(r'^courses/',
-        include('apps.classmanagement.urls', namespace='classmanagement')),
+    url(r'^courses/', include('apps.classmanagement.urls', namespace='classmanagement')),
+    url(r'^activity/', include('apps.activity.urls', namespace="activity")),
     url(r'^playexo/', include('apps.playexo.urls', namespace="playexo")),
     url(r'^editor/', include('apps.editor.urls', namespace="editor")),
     url(r'^components/', include('apps.components.urls', namespace="components")),
     url(r'^filebrowser/', include('apps.filebrowser.urls', namespace='filebrowser')),
     url(r'^profile/', include('apps.user_profile.urls', namespace="profile")),
     url(r'^ask/', include('apps.qa.urls', namespace='ask')),
+    url(r'^api/git/', include("apps.git.urls", namespace='git')),
     url(r'^admin/', admin.site.urls),
 ]
 

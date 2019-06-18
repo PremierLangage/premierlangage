@@ -22,6 +22,7 @@ class LTIModel(models.Model):
     consumer_id = models.CharField(max_length=200, null=True, blank=True)
     consumer = models.CharField(max_length=200, choices=CONSUMER, null=True, blank=True)
     
+    
     class Meta:
         abstract = True
         unique_together = ("consumer", "consumer_id")
@@ -34,6 +35,7 @@ class LTIOutcome(models.Model):
     sourcedid = models.CharField(max_length=300)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
+    
     class Meta:
         abstract = True
         unique_together = ('url', 'sourcedid',)
@@ -41,7 +43,7 @@ class LTIOutcome(models.Model):
 
 
 class ActivityOutcome(LTIOutcome):
-    activity = models.ForeignKey('playexo.Activity', on_delete=models.CASCADE)
+    activity = models.ForeignKey('activity.Activity', on_delete=models.CASCADE)
     
     
     @classmethod
@@ -54,7 +56,7 @@ class ActivityOutcome(LTIOutcome):
         
         Returns a tuple of (object, created), where object is the retrieved or created object and
         created is a boolean specifying whether a new object was created."""
-        Activity = apps.get_model('playexo', 'Activity')
+        Activity = apps.get_model('activity', 'Activity')
         consumer = lti_launch['oauth_consumer_key']
         outcome_url = lti_launch['lis_outcome_service_url']
         sourcedid = lti_launch["lis_result_sourcedid"]
@@ -67,7 +69,8 @@ class ActivityOutcome(LTIOutcome):
         try:
             return cls.objects.get(url=outcome_url, sourcedid=sourcedid), False
         except ActivityOutcome.DoesNotExist:
-            activity = Activity.objects.get(consumer_id=activity_id, consumer=consumer)
+            activity = Activity.objects.get(activity_data__consumer_id=activity_id,
+                                            activity_data__consumer=consumer)
             outcome = cls.objects.create(url=outcome_url, sourcedid=sourcedid,
                                          activity=activity, user=user)
             return outcome, True

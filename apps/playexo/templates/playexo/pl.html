@@ -30,13 +30,13 @@
         <div class="exercise__actions text-center">
             <div class="btn-group" role="group" aria-label="actions">
                 <a type="button" class="btn btn-warning action-reset"
-                   href="{{ url('playexo:activity', activity_id__) }}?action=reset">
+                   href="{{ url('activity:play', activity_id__) }}?action=reset">
                     <i class="fas fa-undo"></i> Réinitialiser
                 </a>
                 {% with reroll_limit__=(firstof(settings.reroll,_threshold, 100)) %}
                 {% if settings.allow_reroll and grade__|int >= reroll_limit__|int %}
                 <a type="button" class="btn btn-warning action-reroll"
-                   href="{{ url('playexo:activity', activity_id__) }}?action=reroll">
+                   href="{{ url('activity:play', activity_id__) }}?action=reroll">
                     <i class="fas fa-dice"></i> Nouveau tirage
                 </a>
                 {% endif %}
@@ -49,7 +49,7 @@
             {% if grade__|int > 0 %}
             <br/> <br/>
             <a type="button" class="btn btn-success action-next"
-               href="{{ url('playexo:activity', activity_id__) }}?action=next">
+               href="{{ url('activity:next', activity_id__) }}?action=next">
                 Suivant<span class="glyphicon glyphicon-arrow-right"></span>
             </a>
             {% endif %}
@@ -69,6 +69,6 @@
 
 <script type='text/javascript'>
     $(function () {
-        Activity.withEval("{{ url('playexo:evaluate', activity_id__, pl_id__) }}", {{ __components|tojson|safe }});
+        Activity.withEval("{{ url('activity:evaluate', activity_id__, pl_id__) }}", {{ __components|tojson|safe }});
     });
 </script>

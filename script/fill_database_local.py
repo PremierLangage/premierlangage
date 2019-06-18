@@ -3,6 +3,8 @@ import string
 
 import django
 from django.contrib.auth.models import User
+
+from activity.models import Activity
 from filebrowser.models import Directory
 
 
@@ -37,3 +39,9 @@ try:
     Directory.objects.create(name="Yggdrasil", owner=user, public=True)
 except django.db.utils.IntegrityError:
     print("Directory 'Yggdrasil' already created")
+
+# Create Base activity
+try:
+    Activity.objects.create(id=0, name="Base", activity_type="base", activity_data={})
+except django.db.utils.IntegrityError:
+    print("Base activity already created")
