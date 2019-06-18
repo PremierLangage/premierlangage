@@ -569,7 +569,7 @@ def load_pltp(request):
                 for warning in warnings:
                     msg += str(warning)
             activity = Activity.objects.create(name=pltp.name, pltp=pltp)
-            url_lti = request.build_absolute_uri(reverse("playexo:activity", args=[activity.pk]))
+            url_lti = request.build_absolute_uri(reverse("activity:play", args=[activity.pk]))
             
             msg += "L'activité <b>'" + pltp.name + "'</b> a bien été créée et a pour URL LTI: \
                     <br>&emsp;&emsp;&emsp; <input id=\"copy\" style=\"width: 700px;\" value=\"" + \

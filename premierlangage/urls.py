@@ -26,6 +26,7 @@ urlpatterns = [
                   url(r'^$', index),
                   url(r'^courses/',
                       include('apps.classmanagement.urls', namespace='classmanagement')),
+                  url(r'^activity/', include('apps.activity.urls', namespace="activity")),
                   url(r'^playexo/', include('apps.playexo.urls', namespace="playexo")),
                   url(r'^filebrowser/', include('apps.filebrowser.urls', namespace='filebrowser')),
                   url(r'^profile/', include('apps.user_profile.urls', namespace="profile")),

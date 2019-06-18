@@ -52,7 +52,8 @@ PROJECT_APPS = [
     'loader',
     'classmanagement',
     'lti_app',
-    'qa'
+    'qa',
+    'activity',
 ]
 
 INSTALLED_APPS = PROJECT_APPS + PREREQ_APPS

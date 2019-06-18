@@ -204,7 +204,7 @@ class LTITestCase(TestCase):
         pltp = PLTP.objects.create(sha1="sha1", name="name", json={'title': ''})
         activity = Activity.objects.create(name="name", pltp=pltp)
         c = Client()
-        response = c.post(reverse("playexo:activity", args=[activity.pk]), data=dict(params),
+        response = c.post(reverse("activity:play", args=[activity.pk]), data=dict(params),
                           follow=True)
         self.assertEqual(response.status_code, 200)
         
@@ -239,7 +239,7 @@ class LTITestCase(TestCase):
         pltp = PLTP.objects.create(sha1="sha1", name="name", json={'title': ''})
         activity = Activity.objects.create(name="name", pltp=pltp)
         c = Client()
-        response = c.post(reverse("playexo:activity", args=[activity.pk]), data=dict(params),
+        response = c.post(reverse("activity:play", args=[activity.pk]), data=dict(params),
                           follow=True)
         self.assertEqual(response.status_code, 404)
         with self.assertRaises(Activity.DoesNotExist):
@@ -272,7 +272,7 @@ class LTITestCase(TestCase):
         pltp = PLTP.objects.create(sha1="sha1", name="name", json={'title': ''})
         activity = Activity.objects.create(name="name", pltp=pltp)
         c = Client()
-        response = c.post(reverse("playexo:activity", args=[activity.pk]), data=dict(params),
+        response = c.post(reverse("activity:play", args=[activity.pk]), data=dict(params),
                           follow=True)
         self.assertEqual(response.status_code, 200)
         

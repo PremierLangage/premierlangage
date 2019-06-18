@@ -41,7 +41,7 @@ class LTIOutcome(models.Model):
 
 
 class ActivityOutcome(LTIOutcome):
-    activity = models.ForeignKey('playexo.Activity', on_delete=models.CASCADE)
+    activity = models.ForeignKey('activity.Activity', on_delete=models.CASCADE)
     
     
     @classmethod
@@ -54,7 +54,7 @@ class ActivityOutcome(LTIOutcome):
         
         Returns a tuple of (object, created), where object is the retrieved or created object and
         created is a boolean specifying whether a new object was created."""
-        Activity = apps.get_model('playexo', 'Activity')
+        Activity = apps.get_model('activity', 'Activity')
         consumer = lti_launch['oauth_consumer_key']
         outcome_url = lti_launch['lis_outcome_service_url']
         sourcedid = lti_launch["lis_result_sourcedid"]
