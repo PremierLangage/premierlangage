@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from playexo.models import Activity, Answer
+from playexo.models import Answer
 
 
 

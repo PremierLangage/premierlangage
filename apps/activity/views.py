@@ -9,7 +9,8 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
 from loader.models import PL
-from playexo.models import Activity, Answer, SessionActivity
+from playexo.models import Answer, SessionActivity
+from activity.models import Activity
 from playexo.utils import render_feedback
 
 

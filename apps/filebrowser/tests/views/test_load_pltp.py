@@ -10,7 +10,7 @@ from django.urls import reverse
 from filebrowser.models import Directory
 from filebrowser.utils import missing_parameter
 from loader.loader import load_file
-from playexo.models import Activity
+from activity.models import Activity
 
 
 FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
@@ -48,7 +48,7 @@ class LoadPLTPTestCase(TestCase):
             'name': 'load_pltp',
             'path': 'Yggdrasil/working.pltp',
         }, content_type='application/json')
-        self.assertContains(response, "http://testserver/playexo/activity/1/", status_code=200)
+        self.assertContains(response, "http://testserver/activity/play/1/", status_code=200)
     
     
     def test_load_pltp_no_path(self):

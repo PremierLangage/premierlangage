@@ -8,7 +8,7 @@ from mock import patch
 from classmanagement.models import Course
 from loader.models import PLTP
 from lti_app.models import ActivityOutcome
-from playexo.models import Activity
+from activity.models import Activity
 from user_profile.enums import Role
 
 

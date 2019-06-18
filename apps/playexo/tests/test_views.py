@@ -8,10 +8,11 @@ from django.contrib.auth.models import User
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
+from activity.models import Activity
 from filebrowser.models import Directory
 from loader.loader import load_file
 from loader.models import Index
-from playexo.models import Activity, SessionActivity, SessionExercise
+from playexo.models import SessionActivity, SessionExercise
 from user_profile.enums import Role
 
 
