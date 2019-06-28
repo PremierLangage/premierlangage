@@ -2,6 +2,10 @@
     background-color: #343A40;
 }
 
+.pointer {
+    cursor: pointer;
+}
+
 .mdl-layout-title {
     margin-right: 16px;
 }

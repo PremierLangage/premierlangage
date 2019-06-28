@@ -2,7 +2,6 @@ import logging
 import time
 
 import htmlprint
-from classmanagement.models import Course
 from django.contrib.auth.models import User
 from django.db import IntegrityError, models
 from django.db.models.signals import post_save
@@ -14,6 +13,8 @@ from django.urls import resolve
 from django.utils import timezone
 from django_jinja.backend import Jinja2
 from jsonfield import JSONField
+
+from classmanagement.models import Course
 from loader.models import PL, PLTP
 from lti_app.models import LTIModel
 from playexo.enums import State
@@ -26,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 
 def create_seed():
-    return time.time() % 100
+    return int(time.time() % 100)
 
 
 
@@ -100,8 +101,10 @@ class SessionActivity(models.Model):
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
     current_pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=True)
     
+    
     class Meta:
         unique_together = ('user', 'activity')
+    
     
     def exercise(self, pl=...):
         """Return the SessionExercice corresponding to self.current_pl.
@@ -135,8 +138,10 @@ class SessionExerciseAbstract(models.Model):
     envid = models.CharField(max_length=300, null=True)
     context = JSONField(null=True)
     
+    
     class Meta:
         abstract = True
+    
     
     def add_to_context(self, key, value):
         """Add value corresponding to key in the context."""
@@ -187,7 +192,7 @@ class SessionExerciseAbstract(models.Model):
         return not seed or (oneshot and grade is not None and grade < oneshot_threshold)
     
     
-    def evaluate(self, request, answers, test=False):
+    def raw_evaluate(self, request, answers, test=False):
         """Evaluate the exercise with the given answers according to the current context.
         
         Parameters:
@@ -230,10 +235,22 @@ class SessionExerciseAbstract(models.Model):
         self.context['answers__'] = answers
         self.save()
         
+        return answer, feedback, response['status']
+    
+    
+    def evaluate(self, request, answers, test=False):
+        """Evaluate the exercise with the given answers according to the current context.
+        
+        Parameters:
+            request - (django.http.request) Current Django request object.
+            answers - (dict) Answers of the student.
+            test    - (bool) Whether this exercise is in a testing session or not.
+        """
+        answer, feedback, status = self.raw_evaluate(request, answers, test)
         return answer, feedback
     
     
-    def build(self, request, test=False):
+    def build(self, request, test=False, seed=None):
         """Build the exercise with the given according to the current context.
         
         Parameters:
@@ -241,7 +258,7 @@ class SessionExerciseAbstract(models.Model):
             test    - (bool) Whether this exercise is in a testing session or not.
         """
         self.context = self.pl.json
-        self.context['seed'] = time.time()
+        self.context['seed'] = seed if seed else create_seed()
         self.save()
         response = SandboxBuild(dict(self.context), test=test).call()
         
@@ -287,8 +304,10 @@ class SessionExercise(SessionExerciseAbstract):
         session_activity - SessionActivity to which this SessionExercise belong."""
     session_activity = models.ForeignKey(SessionActivity, on_delete=models.CASCADE)
     
+    
     class Meta:
         unique_together = ('pl', 'session_activity')
+    
     
     @receiver(post_save, sender=SessionActivity)
     def create_session_exercise(sender, instance, created, **kwargs):
@@ -323,7 +342,7 @@ class SessionExercise(SessionExerciseAbstract):
                 self.context['seed'] if 'seed' in self.context else
                 None)
         if highest_grade is not None and self.reroll(seed, highest_grade.grade):
-            seed = time.time()
+            seed = create_seed()
             self.built = False
         self.add_to_context('seed', seed)
         
@@ -445,7 +464,7 @@ class SessionTest(SessionExerciseAbstract):
         pl = self.pl
         seed = self.context['seed'] if 'seed' in self.context else None
         if self.reroll(seed, answer['grade'] if answer else None):
-            seed = time.time()
+            seed = create_seed()
             self.built = False
             self.add_to_context('seed', seed)
         

@@ -38,6 +38,52 @@ except:
 @ ~/utils/sandboxio.py
 @ ~/grader/evaluator.py [grader.py]
 
+tests %=
+{
+    "correct" : {
+        "response" : {
+            "answer" : 7
+        },
+        "grade" : 100,
+        "feedback" : "Bonne réponse\n"
+    },
+    "incorrect" : {
+        "response" : {
+            "answer" : 8
+        },
+        "grade" : 0,
+        "feedback" : "Mauvaise réponse\n"
+    },
+    "not working" : {
+        "response" : {
+            "answer" : 8
+        },
+        "grade" : 50,
+        "feedback" : "Bonne réponse\n",
+        "seed" : 130
+    },
+    "only grade" : {
+        "response" : {
+            "answer" : 7
+        },
+        "grade" : 100
+    },
+    "only feedback" : {
+        "response" : {
+            "answer" : 7
+        },
+        "feedback" : "Bonne réponse\n"
+    },
+    "grader failure" : {
+        "response" : {
+            "answer" : "aa"
+        },
+        "feedback" : "Bonne réponse\n"
+    }
+}
+==
+
+
 
 
 
