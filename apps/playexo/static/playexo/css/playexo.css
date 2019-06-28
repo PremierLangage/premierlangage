@@ -5,7 +5,7 @@
 .navigation-container {
     z-index: 10;
     position: fixed;
-    width: 250px;
+    width: 200px;
     height: 100%;
     border: 0;
     overflow-y: auto !important; 
@@ -17,7 +17,7 @@
 .navigation__toggle {
     z-index: 1;
     position: fixed;
-    left: 250px;
+    left: 200px;
     cursor: pointer;
     display: flex;
     justify-content: center;

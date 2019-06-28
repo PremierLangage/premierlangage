@@ -2,7 +2,7 @@ import logging
 import time
 
 import htmlprint
-from classmanagement.models import Course
+
 from django.contrib.auth.models import User
 from django.db import IntegrityError, models
 from django.db.models.signals import post_save
@@ -14,12 +14,16 @@ from django.urls import resolve
 from django.utils import timezone
 from django_jinja.backend import Jinja2
 from jsonfield import JSONField
+
+
+from classmanagement.models import Course
 from loader.models import PL, PLTP
+
 from lti_app.models import LTIModel
+
 from playexo.enums import State
 from playexo.exception import BuildScriptError, SandboxError
 from playexo.request import SandboxBuild, SandboxEval
-
 
 logger = logging.getLogger(__name__)
 
@@ -201,13 +205,14 @@ class SessionExerciseAbstract(models.Model):
             evaluator = SandboxEval(self.envid, answers)
         
         response = evaluator.call()
+
         answer = {
             "answers": answers,
             "user":    request.user,
             "pl":      self.pl,
             "grade":   response['grade'],
         }
-        
+
         if response['status'] < 0:  # Sandbox Error
             feedback = response['feedback']
             if request.user.profile.can_load() and response['sandboxerr']:
@@ -225,11 +230,10 @@ class SessionExerciseAbstract(models.Model):
             feedback = response['feedback']
             if request.user.profile.can_load() and response['stderr']:
                 feedback += "<br><br>Received on stderr:<br>" + htmlprint.code(response['stderr'])
-        
+
         self.context.update(response['context'])
         self.context['answers__'] = answers
         self.save()
-        
         return answer, feedback
     
     
@@ -275,6 +279,31 @@ class SessionExerciseAbstract(models.Model):
         self.save()
 
 
+    def render(self, template, context, request):
+        env = Jinja2.get_default()
+        components = {}
+        for k, v in context.items():
+            if isinstance(v, str):
+                context[k] = env.from_string(v).render(
+                    context=context,
+                    request=request
+                )
+            elif isinstance(v, dict) and 'cid' in v:
+                components[k] = v
+        return get_template(template).render({
+            "components": components,
+            **context
+        }, request)
+
+    def get_components(self):
+        """
+        Gets the components in the context a component.
+        """
+        components = {}
+        for key in self.context:
+            if isinstance(self.context[key], dict) and 'cid' in self.context[key]:
+                components[key] = self.context[key]
+        return components
 
 class SessionExercise(SessionExerciseAbstract):
     """Class representing the state of a PL inside of a SessionActivity.
@@ -343,12 +372,8 @@ class SessionExercise(SessionExerciseAbstract):
         if context:
             dic = {**context, **dic}
         
-        env = Jinja2.get_default()
-        for key in dic:
-            if type(dic[key]) is str:
-                dic[key] = env.from_string(dic[key]).render(context=dic, request=request)
-        
-        return get_template("playexo/pl.html").render(dic, request)
+
+        return self.render('playexo/pl.html', dic, request)
     
     
     def get_exercise(self, request, context=None):
@@ -438,7 +463,7 @@ class SessionTest(SessionExerciseAbstract):
         super().save(*args, **kwargs)
     
     
-    def get_pl(self, request, answer=None, template="playexo/preview.html"):
+    def get_pl(self, request, answer=None, template=None):
         """Return a template of the PL rendered with context.
         
         If answer is given, will determine if the seed must be reroll base on its grade."""
@@ -454,19 +479,13 @@ class SessionTest(SessionExerciseAbstract):
         
         dic = {
             **self.context,
-            **{
-                'user_settings__': self.user.profile,
-                'session__':       self,
-                'user__':          self.user,
-                'pl_id__':         pl.id,
-            },
+            'user_settings__': self.user.profile,
+            'session__':       self,
+            'user__':          self.user,
+            'pl_id__':         pl.id,
         }
-        env = Jinja2.get_default()
-        for key in dic:
-            if type(dic[key]) is str:
-                dic[key] = env.from_string(dic[key]).render(context=dic, request=request)
-        
-        return get_template(template).render(dic, request)
+        template = template if template else "playexo/preview.html"
+        return self.render(template, dic, request)
     
     
     def get_exercise(self, request, answer=None):
@@ -480,7 +499,9 @@ class SessionTest(SessionExerciseAbstract):
             error_msg = str(e)
             if request.user.profile.can_load():
                 error_msg += "<br><br>" + htmlprint.html_exc()
-            return get_template("playexo/error.html").render({"error_msg": error_msg})
+            return get_template("playexo/error.html").render({
+                "error_msg": error_msg
+            })
 
 
 

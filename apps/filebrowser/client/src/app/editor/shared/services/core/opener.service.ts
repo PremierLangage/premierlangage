@@ -44,6 +44,7 @@ export interface IOpenerService {
     providedIn: 'root',
 })
 export class OpenerService implements IOpenerService {
+
     constructor(
         private readonly editor: EditorService,
         private readonly resources: ResourceService,
@@ -78,7 +79,7 @@ export class OpenerService implements IOpenerService {
             if (!resource) {
                 return Promise.reject(new Error(`Unable to open '${target}': '${base}' not found`));
             }
-            const reference = await this.resources.findReference(resource, target);
+            const reference = await this.resources.findRelativeTo(resource, target);
             if (!reference) {
                 return Promise.reject(new Error(`Unable to open '${base}': resource not found relative to '${base}'`));
             }

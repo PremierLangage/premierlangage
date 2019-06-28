@@ -1,7 +1,7 @@
 import { IResource, ResourceTypes } from './resource.model';
 import { IEditorGroup } from './editor-group.model';
 import { extname } from 'src/app/shared/models/paths.model';
-import { requireNonNull } from 'src/app/shared/models/assert.model';
+import { Asserts } from 'src/app/shared/models/assert.model';
 
 /** extensions of files with preview option */
 export const PREVIEW_EXTENSIONS = ['pl', 'md', 'svg'];
@@ -12,7 +12,7 @@ export const PREVIEW_EXTENSIONS = ['pl', 'md', 'svg'];
  * @throws {ReferenceError} if item is null
  */
 export function canRead(item: IResource): boolean {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return !!item && item.read;
 }
 
@@ -22,7 +22,7 @@ export function canRead(item: IResource): boolean {
  * @throws {ReferenceError} if item is null
  */
 export function canWrite(item: IResource): boolean {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return !!item && item.write;
 }
 
@@ -32,7 +32,7 @@ export function canWrite(item: IResource): boolean {
  * @throws {ReferenceError} if item is null
  */
 export function isReadOnly(item: IResource): boolean {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return !canWrite(item);
 }
 
@@ -42,18 +42,8 @@ export function isReadOnly(item: IResource): boolean {
  * @throws {ReferenceError} if item is null
  */
 export function isRepo(item: IResource): boolean {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return !!item && !!item.repo;
-}
-
-/**
- * Gets a value indicating whether the resource is loaded from the server.
- * @param item the resource
- * @throws {ReferenceError} if item is null
- */
-export function isFromServer(item: IResource): boolean {
-    requireNonNull(item, 'param "item" is required');
-    return !!item && item.type !== ResourceTypes.Local;
 }
 
 /**
@@ -62,7 +52,7 @@ export function isFromServer(item: IResource): boolean {
  * @throws {ReferenceError} if item is null
  */
 export function isLoaded(item: IResource): boolean {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return !!item && !!item.meta;
 }
 
@@ -72,7 +62,7 @@ export function isLoaded(item: IResource): boolean {
  * @throws {ReferenceError} if item is null
  */
 export function isHome(item: IResource) {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return !!item && item.path === 'Yggdrasil';
 }
 
@@ -82,7 +72,7 @@ export function isHome(item: IResource) {
  * @throws {ReferenceError} if item is null
  */
 export function isLib(item: IResource) {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return !!item && item.path === 'lib';
 }
 
@@ -92,7 +82,7 @@ export function isLib(item: IResource) {
  * @throws {ReferenceError} if item is null
  */
 export function isRoot(item: IResource) {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return isHome(item) || isLib(item);
 }
 
@@ -102,7 +92,7 @@ export function isRoot(item: IResource) {
  * @throws {ReferenceError} if item is null
  */
 export function isFolder(item: IResource) {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return !!item && item.type === ResourceTypes.Folder;
 }
 
@@ -112,7 +102,7 @@ export function isFolder(item: IResource) {
  * @throws {ReferenceError} if item is null
  */
 export function isFile(item: IResource) {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return !!item && item.type === ResourceTypes.File;
 }
 
@@ -122,7 +112,7 @@ export function isFile(item: IResource) {
  * @throws {ReferenceError} if item is null
  */
 export function isPL(item: IResource) {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return !!item && isFile(item) && extname(item.path) === 'pl';
 }
 
@@ -132,7 +122,7 @@ export function isPL(item: IResource) {
  * @throws {ReferenceError} if item is null
  */
 export function isSVG(item: IResource) {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return !!item && isFile(item) && extname(item.path) === 'svg';
 }
 
@@ -142,7 +132,7 @@ export function isSVG(item: IResource) {
  * @throws {ReferenceError} if item is null
  */
 export function isPLTP(item: IResource) {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return !!item && isFile(item) && extname(item.path) === 'pltp';
 }
 
@@ -152,7 +142,7 @@ export function isPLTP(item: IResource) {
  * @throws {ReferenceError} if item is null
  */
 export function isMarkdown(item: IResource) {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return !!item && isFile(item) && extname(item.path) === 'md';
 }
 
@@ -162,7 +152,7 @@ export function isMarkdown(item: IResource) {
  * @throws {ReferenceError} if item is null
  */
 export function canBePreviewed(item: IResource) {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return !!item && isFile(item) && PREVIEW_EXTENSIONS.includes(extname(item.path));
 }
 
@@ -172,7 +162,7 @@ export function canBePreviewed(item: IResource) {
  * @throws {ReferenceError} if item is null
  */
 export function canAddChild(item: IResource) {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return canWrite(item) && isFolder(item);
 }
 
@@ -182,7 +172,7 @@ export function canAddChild(item: IResource) {
  * @throws {ReferenceError} if item is null
  */
 export function canCopy(item: IResource) {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return canRead(item) && !isRoot(item);
 }
 
@@ -192,7 +182,7 @@ export function canCopy(item: IResource) {
  * @throws {ReferenceError} if item is null
  */
 export function canBeRenamed(item: IResource) {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return canWrite(item) && !isRoot(item);
 }
 
@@ -202,7 +192,7 @@ export function canBeRenamed(item: IResource) {
  * @throws {ReferenceError} if item is null
  */
 export function canBeDeleted(item: IResource) {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return canWrite(item) && !isRoot(item);
 }
 
@@ -212,7 +202,7 @@ export function canBeDeleted(item: IResource) {
  * @throws {ReferenceError} if item is null
  */
 export function canBeTested(item: IResource) {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return canRead(item) && isFile(item) && isPL(item);
 }
 
@@ -222,7 +212,7 @@ export function canBeTested(item: IResource) {
  * @throws {ReferenceError} if item is null
  */
 export function canBeLoaded(item: IResource) {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return canWrite(item) && isFile(item) && isPLTP(item);
 }
 
@@ -232,7 +222,7 @@ export function canBeLoaded(item: IResource) {
  * @throws {ReferenceError} if item is null
  */
 export function canBeReloaded(item: IResource) {
-    requireNonNull(item, 'param "item" is required');
+    Asserts.requireNonNull(item, 'param "item" is required');
     return canWrite(item) && isFile(item) && isPLTP(item);
 }
 
@@ -243,8 +233,8 @@ export function canBeReloaded(item: IResource) {
  * @throws {ReferenceError} is grp1 or grp2 are null
  */
 export function compareGroup(grp1: IEditorGroup, grp2: IEditorGroup) {
-    requireNonNull(grp1, '"param "grp1" is required');
-    requireNonNull(grp2, '"param "grp2" is required');
+    Asserts.requireNonNull(grp1, '"param "grp1" is required');
+    Asserts.requireNonNull(grp2, '"param "grp2" is required');
     return grp1.id() === grp2.id();
 }
 

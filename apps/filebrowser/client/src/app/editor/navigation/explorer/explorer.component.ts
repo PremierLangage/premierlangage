@@ -76,7 +76,10 @@ export class ExplorerComponent implements OnInit, OnDestroy {
           { icon: 'far fa-trash-alt', label: 'Delete', enabled: filters.canBeDeleted, action: (n: Node, e: MouseEvent) => {
               this.optionDelete(n, e );
           }},
-          { icon: 'fas fa-lock', label: 'Read Only', enabled: filters.isReadOnly, action: function () { } },
+          { icon: 'fas fa-lock', label: 'Read Only', enabled: filters.isReadOnly, action: () => { } },
+          { icon: 'fas fa-download', label: 'Download', enabled: filters.isFolder, action: (n: Node, e: MouseEvent) => {
+              this.optionDownload(n, e);
+          }},
         ];
     }
 
@@ -229,6 +232,12 @@ export class ExplorerComponent implements OnInit, OnDestroy {
 
     }
 
+    private optionDownload(node: Node, event: MouseEvent) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.opener.openURL(`/filebrowser/option?name=download_resource&path=${node.id}`);
+    }
+
     private optionAddFile(node: Node, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
@@ -294,8 +303,7 @@ export class ExplorerComponent implements OnInit, OnDestroy {
     private optionTest(node: Node, event: MouseEvent) {
         event.preventDefault();
         event.stopPropagation();
-        const resource = node.data as IResource;
-        this.opener.openURL('/filebrowser/option?name=test_pl&path=' + resource.path);
+        this.opener.openURL('/filebrowser/option?name=test_pl&path=' + node.id);
     }
 
     private transform(item: IResource): Tree {

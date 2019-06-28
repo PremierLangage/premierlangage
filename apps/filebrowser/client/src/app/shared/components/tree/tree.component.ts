@@ -178,6 +178,10 @@ export class TreeComponent implements AfterViewInit {
         });
     }
 
+    didTrack(index: number, item: Node) {
+        return item.id || index;
+    }
+
     private transformer(node: Tree, level?: number): Node {
         const data = {
           id: node.id,

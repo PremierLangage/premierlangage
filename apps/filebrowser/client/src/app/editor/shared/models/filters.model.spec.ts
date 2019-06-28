@@ -43,13 +43,6 @@ describe('Filters', () => {
         expect(() => filters.isRepo(undefined)).toThrowError(ReferenceError);
     });
 
-    it('should isFromServer filters works', () => {
-        expect(filters.isFromServer(FILE)).toBeTruthy();
-        expect(filters.isFromServer({ ...FILE, type: ResourceTypes.Local})).toBeFalsy();
-        expect(() => filters.isFromServer(undefined)).toThrowError(ReferenceError);
-    });
-
-
     it('should isLoaded filters works', () => {
         expect(filters.isLoaded({...FILE, meta: { } })).toBeTruthy();
         expect(filters.isLoaded(FILE)).toBeFalsy();

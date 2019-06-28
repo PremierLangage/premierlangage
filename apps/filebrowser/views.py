@@ -10,6 +10,7 @@ import traceback
 import gitcmd
 import htmlprint
 import requests
+from wsgiref.util import FileWrapper
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -23,9 +24,9 @@ from django.views.decorators.http import require_GET, require_POST
 
 from filebrowser.filter import in_repository, is_root
 from filebrowser.models import Directory
-from filebrowser.utils import (HOME_DIR, LIB_DIR, exec_git_cmd, fa_icon, get_content, get_meta,
+from filebrowser.utils import (HOME_DIR, LIB_DIR, exec_git_cmd, get_content, get_meta,
                                join_fb_root, missing_parameter, repository_branch, repository_url,
-                               rm_fb_root, walkalldirs)
+                               rm_fb_root, walkalldirs, to_download_url)
 from loader.loader import load_file, reload_pltp as rp
 from loader.utils import get_location
 from playexo.models import Activity, SessionTest
@@ -145,11 +146,11 @@ def create_resource(request):
             with open(path, "w") as f:
                 print(post.get('content', ''), file=f)
             
-            return JsonResponse({'icon': fa_icon(path), 'path': rm_fb_root(path)})
+            return JsonResponse({'path': rm_fb_root(path)})
         
         else:
             os.mkdir(path)
-            return JsonResponse({'icon': fa_icon(path), 'path': rm_fb_root(path)})
+            return JsonResponse({'path': rm_fb_root(path)})
     except Exception as e:  # pragma: no cover
         msg = "Impossible to create '{0}' : {1}".format(name, htmlprint.code(
             str(type(e)) + ' - ' + str(e)))
@@ -213,7 +214,7 @@ def rename_resource(request):
         
         os.rename(path, new_path)
         return JsonResponse(
-            {'icon': fa_icon(new_path), 'path': rm_fb_root(new_path), 'status': 200})
+            {'path': rm_fb_root(new_path), 'status': 200})
     except Exception as e:  # pragma: no cover
         msg = "Impossible to rename '{0}' to '{1}': {2}".format(name, target, htmlprint.code(
             str(type(e)) + ' - ' + str(e)))
@@ -261,18 +262,27 @@ def move_resource(request):
  
 @require_GET
 def download_resource(request):
+    """Returns a download url to the resource at GET['path'] """
     path = request.GET.get('path')
     if not path:
         return HttpResponseBadRequest(missing_parameter('path'))
-    
-    with open(join_fb_root(path), 'rb') as fp:
-        data = fp.read()
+    path = join_fb_root(path)
     filename = os.path.basename(path)
-    response = HttpResponse(content_type="application/ms-excel")
-    response[
-        'Content-Disposition'] = 'attachment; filename=%s' % filename  # force browser to
-    # download file
-    response.write(data)
+    if os.path.isdir(path):
+        archive =  shutil.make_archive(path, 'zip', path)
+        response = HttpResponse(
+            FileWrapper(open(archive,'rb')),
+            content_type='application/zip'
+        )
+        response['Content-Disposition'] = 'attachment; filename=%s.zip' % filename
+    else:
+        with open(path, 'rb') as fp:
+            data = fp.read()
+        response = HttpResponse(content_type="application/force-download")
+        response[
+            'Content-Disposition'] = 'attachment; filename=%s' % filename # force browser to
+        # download file
+        response.write(data)
     return response
 
 
@@ -280,9 +290,7 @@ def download_resource(request):
 @require_GET
 def git_changes(request):
     error = ''
-    response = {}
-    
-    
+    response = {}  
     def extract_changes(path):
         roots = os.listdir(join_fb_root(path))
         directory = Directory.objects.get(name=path)
@@ -798,12 +806,13 @@ def evaluate_pl(request):
     
     exercise = SessionTest.objects.get(pk=data['session_id'])
     answer, feedback = exercise.evaluate(request, data['answers'], test=True)
-    
+
     return HttpResponse(
         json.dumps({
             "navigation": None,
             "exercise":   exercise.get_exercise(request, answer=answer),
             "feedback":   feedback,
+            "components": exercise.get_components()
         }),
         content_type='application/json'
     )

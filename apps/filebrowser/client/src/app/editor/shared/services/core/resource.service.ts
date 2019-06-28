@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { IResource, ResourceTypes, createResource, } from '../../models/resource.model';
-import { Subscription, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { GitService } from './git.service';
 import { TaskService } from './task.service';
-import { basename, extname, dirname } from 'src/app/shared/models/paths.model';
-import { assert, checkName, requireNonNull } from 'src/app/shared/models/assert.model';
+import { basename } from 'src/app/shared/models/paths.model';
+import { Asserts } from 'src/app/shared/models/assert.model';
 
 import * as filters from '../../models/filters.model';
 
@@ -114,11 +114,25 @@ export class ResourceService {
     }
 
     /**
-     * Gets a value indicating whether the given resource is the selected one.
-     * @param resource the resource to test
+     * Finds the resource at `path` relative to the path of the given `resource`.
+     * @param resource the resource
+     * @param path the path to find.
+     * @returns A promise that resolves with the resource.
      */
-    isSelection(resource: IResource) {
-        return !!this.focused && resource.path === this.focused.path;
+    async findRelativeTo(resource: IResource, path: string) {
+        try {
+            this.task.emitTaskEvent(true, 'resolve path');
+            const params = new HttpParams()
+                .set('name', 'resolve_path')
+                .set('path', resource.path)
+                .set('target', path);
+            const response = await this.http.get('filebrowser/option', { params: params, responseType: 'text' }).toPromise();
+            this.task.emitTaskEvent(false);
+            return this.find(response);
+        } catch (error) {
+            this.task.emitTaskEvent(false);
+            throw error;
+        }
     }
 
     /**
@@ -127,9 +141,9 @@ export class ResourceService {
      * @returns Promise<boolean> rejected with an error or resolved with true.
      */
     async create(resource: IResource) {
-        checkName(resource.name);
-        assert(filters.canWrite(resource), 'permission denied: write access not granted for ' + resource.path);
-        assert(filters.canWrite(this.find(resource.parent)), 'permission denied: write access not granted for ' + resource.parent);
+        Asserts.checkName(resource.name);
+        Asserts.assert(filters.canWrite(resource), 'permission denied: write access not granted for ' + resource.path);
+        Asserts.assert(filters.canWrite(this.find(resource.parent)), 'permission denied: write access not granted for ' + resource.parent);
 
         this.task.emitTaskEvent(true, 'creating resource');
         try {
@@ -155,9 +169,9 @@ export class ResourceService {
      * @returns Promise<boolean> resolved with true if the resource is renamed.
      */
     async rename(resource: IResource, name: string) {
-        checkName(name);
-        assert(filters.canWrite(resource), 'permission denied');
-        assert(!filters.isRoot(resource), 'cannot rename root directory');
+        Asserts.checkName(name);
+        Asserts.assert(filters.canWrite(resource), 'permission denied');
+        Asserts.assert(!filters.isRoot(resource), 'cannot rename root directory');
 
         if (name === resource.name) {
             return Promise.resolve(true);
@@ -187,9 +201,9 @@ export class ResourceService {
      */
     async delete(resource: IResource) {
         try {
-            requireNonNull(resource, 'resource');
-            assert(filters.canWrite(resource), 'permission denied');
-            assert(!filters.isRoot(resource), 'permission denied');
+            Asserts.requireNonNull(resource, 'resource');
+            Asserts.assert(filters.canWrite(resource), 'permission denied');
+            Asserts.assert(!filters.isRoot(resource), 'permission denied');
             this.task.emitTaskEvent(true, 'delete');
             const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
             await this.http.post('filebrowser/option', {
@@ -216,10 +230,10 @@ export class ResourceService {
     async move(src: IResource | File, dst: IResource) {
         try {
             this.task.emitTaskEvent(true, 'move');
-            requireNonNull(src, 'src');
-            requireNonNull(dst, 'dst');
-            assert(filters.canWrite(dst), 'permission denied');
-            assert(filters.isFolder(dst), 'destination must be a directory');
+            Asserts.requireNonNull(src, 'src');
+            Asserts.requireNonNull(dst, 'dst');
+            Asserts.assert(filters.canWrite(dst), 'permission denied');
+            Asserts.assert(filters.isFolder(dst), 'destination must be a directory');
 
             let resource: IResource;
             if ('size' in src) { // File type contains size property
@@ -246,15 +260,12 @@ export class ResourceService {
      * @returns Promise<boolean> resolved with true and rejected with an error
      */
     async save(resource: IResource) {
-        if (!filters.isFromServer(resource)) {
-            return true;
-        }
         if (!resource.changed) {
             return true;
         }
         try {
             this.task.emitTaskEvent(true, 'save');
-            requireNonNull(resource, 'resource');
+            Asserts.requireNonNull(resource, 'resource');
             const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
             await this.http.post('filebrowser/option', {
                 name: 'update_resource', path: resource.path, content: resource.content
@@ -271,15 +282,32 @@ export class ResourceService {
     }
 
     /**
+     * Downloads the folder as a zip archive
+     * @param resource the resource
+     * @throws {ReferenceError} if resource is null or undefined.
+     * @throws {TypeError} if resource is not a folder.
+     * @returns Promise<void> resolved with true and rejected with an error
+     */
+    async download(resource: IResource) {
+        Asserts.requireNonNull(resource, 'resource');
+        Asserts.assert(resource.type === ResourceTypes.Folder);
+        try {
+            this.task.emitTaskEvent(true);
+            const params = new HttpParams().set('name', 'download_resource').set('path', resource.path);
+            await this.http.get('filebrowser/option', { params: params }).toPromise();
+            this.task.emitTaskEvent(false);
+        } catch (error) {
+            this.task.emitTaskEvent(false);
+            throw error;
+        }
+    }
+
+    /**
      * Opens the content of the resource on the server (if not already opened)
      * @param resource the resource
      * @returns Promise<boolean> resolved with true or false and rejected with an error
      */
     async open(resource: IResource) {
-        if (!filters.isFromServer(resource)) {
-            return true;
-        }
-
         this.focus(resource);
         if (resource.type === ResourceTypes.Folder) {
             resource.expanded = !resource.expanded;
@@ -331,24 +359,7 @@ export class ResourceService {
         }
     }
 
-    async findReference(resource: IResource, path: string) {
-        try {
-            this.task.emitTaskEvent(true, 'resolve path');
-            const params = new HttpParams()
-                .set('name', 'resolve_path')
-                .set('path', resource.path)
-                .set('target', path);
-            const response = await this.http.get('filebrowser/option', { params: params, responseType: 'text' }).toPromise();
-            this.task.emitTaskEvent(false);
-            return this.find(response);
-        } catch (error) {
-            this.task.emitTaskEvent(false);
-            throw error;
-        }
-    }
-
     private async build(resources: IResource[]) {
-        const that = this;
         const cache = [];
         async function recursive(item: IResource) {
             cache.push(item);
@@ -397,9 +408,9 @@ export class ResourceService {
     }
 
     private async drop(src: File, dst: IResource) {
-        requireNonNull(src.name, 'src.name');
-        requireNonNull(dst.path, 'dst.path');
-        checkName(src.name);
+        Asserts.requireNonNull(src.name, 'src.name');
+        Asserts.requireNonNull(dst.path, 'dst.path');
+        Asserts.checkName(src.name);
         const formData = new FormData();
         formData.append('file', src, src.name);
         formData.append('path', dst.path);
@@ -418,10 +429,10 @@ export class ResourceService {
     }
 
     private async drag(src: IResource, dst: IResource) {
-        requireNonNull(src.path, 'src.path');
-        requireNonNull(dst.path, 'dst.path');
-        assert(src.path !== dst.path, 'cannot move the resource to the same path');
-        assert(!filters.isRoot(src), 'cannot move a root resource');
+        Asserts.requireNonNull(src.path, 'src.path');
+        Asserts.requireNonNull(dst.path, 'dst.path');
+        Asserts.assert(src.path !== dst.path, 'cannot move the resource to the same path');
+        Asserts.assert(!filters.isRoot(src), 'cannot move a root resource');
 
         const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
         const response = await this.http.post('filebrowser/option', {

@@ -51,6 +51,7 @@ export interface ILanguageDefinition {
 /** InjectionToken to provides new language to the editor */
 export const LANGUAGE_PROVIDERS = new InjectionToken<ILanguageDefinition[]>('Language Provider');
 
+// TODO fix colors
 /**
  * Provides syntax highlighter for pl and pltp files inside monaco editor.
  */

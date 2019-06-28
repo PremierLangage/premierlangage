@@ -136,7 +136,6 @@ class UtilsTestCase(TestCase):
             'type':     'folder',
             'name':     'Yggdrasil',
             'path':     'Yggdrasil',
-            'icon':     { 'type': 'fa', 'src': 'fas fa-folder' },
             'write':    True,
             'read':     True,
             'repo':     None,
@@ -145,7 +144,6 @@ class UtilsTestCase(TestCase):
                 'type':     'folder',
                 'name':     'directory',
                 'path':     'Yggdrasil/directory',
-                'icon':     { 'type': 'fa', 'src': 'fas fa-folder' },
                 'write':    True,
                 'read':     True,
                 'repo':     None,
@@ -155,7 +153,6 @@ class UtilsTestCase(TestCase):
                         'type':   'file',
                         'name':   'file',
                         'path':   'Yggdrasil/directory/file',
-                        'icon':   { 'type': 'fa', 'src': 'fas fa-file-alt' },
                         'write':  True,
                         'read':   True,
                         'repo':   None
@@ -165,7 +162,6 @@ class UtilsTestCase(TestCase):
                 'type':     'folder',
                 'name':     'repo',
                 'path':     'Yggdrasil/repo',
-                'icon':     { 'type': 'fa', 'src': 'fas fa-folder' },
                 'write':    True,
                 'read':     True,
                 'repo':     {
@@ -179,7 +175,6 @@ class UtilsTestCase(TestCase):
                 'type':   'file',
                 'name':   'text.txt',
                 'path':   'Yggdrasil/text.txt',
-                'icon':   { 'type': 'fa', 'src': 'fas fa-file-alt' },
                 'write':  True,
                 'read':   True,
                 'repo':   None

@@ -734,7 +734,7 @@ module.exports = "<div class='tab-bar' *ngIf=\"showHeader\">\n    <span>EXPLORER
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".tab-bar {\n  font-size: 1rem;\n  margin: 0;\n  padding: 0 0 0 16px; }\n\n.mat-tree {\n  background-color: transparent;\n  padding: 0; }\n\n.mat-tree-node {\n  max-height: 32px; }\n\n.node-content .node-label {\n  display: inline-flex;\n  align-items: center;\n  width: 100%;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  display: block;\n  overflow: hidden; }\n\n.node-content .node-option-group {\n  position: absolute;\n  right: 0;\n  visibility: hidden;\n  font-size: 14px; }\n\n.node-content .node-option-group .node-option {\n    cursor: pointer; }\n\n.node-content:hover .node-option-group {\n  visibility: visible; }\n\n.dnd-drag {\n  opacity: 0.5; }\n\n.dnd-over {\n  box-shadow: inset 0px 0px 0px 2px #CCC;\n  background: rgba(66, 66, 66, 0.1); }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvYXBwcy9maWxlYnJvd3Nlci9jbGllbnQvc3JjL2FwcC9lZGl0b3IvbmF2aWdhdGlvbi9leHBsb3Jlci9leHBsb3Jlci5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGdCQUFlO0VBQ2YsVUFBUztFQUNULG9CQUFtQixFQUN0Qjs7QUFFRDtFQUNFLDhCQUE2QjtFQUM3QixXQUFVLEVBQ1g7O0FBRUQ7RUFDQyxpQkFBZ0IsRUFDaEI7O0FBRUQ7RUFFTSxxQkFBb0I7RUFDcEIsb0JBQW1CO0VBQ25CLFlBQVc7RUFDWCxvQkFBbUI7RUFDbkIsd0JBQXVCO0VBQ3ZCLGVBQWM7RUFDZCxpQkFBZ0IsRUFDbkI7O0FBVEg7RUFZTSxtQkFBa0I7RUFDbEIsU0FBUTtFQUNSLG1CQUFrQjtFQUNsQixnQkFBZSxFQUlsQjs7QUFuQkg7SUFpQlUsZ0JBQWUsRUFDbEI7O0FBbEJQO0VBc0JNLG9CQUFtQixFQUNwQjs7QUFJTDtFQUNJLGFBQVksRUFDZjs7QUFFRDtFQUNJLHVDQUFzQztFQUN0QyxrQ0FBOEIsRUFDakMiLCJmaWxlIjoic3JjL2FwcC9lZGl0b3IvbmF2aWdhdGlvbi9leHBsb3Jlci9leHBsb3Jlci5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi50YWItYmFyIHtcbiAgICBmb250LXNpemU6IDFyZW07XG4gICAgbWFyZ2luOiAwO1xuICAgIHBhZGRpbmc6IDAgMCAwIDE2cHg7XG59XG5cbi5tYXQtdHJlZSB7XG4gIGJhY2tncm91bmQtY29sb3I6IHRyYW5zcGFyZW50O1xuICBwYWRkaW5nOiAwO1xufVxuXG4ubWF0LXRyZWUtbm9kZSB7XG4gbWF4LWhlaWdodDogMzJweDtcbn1cblxuLm5vZGUtY29udGVudCB7XG4gIC5ub2RlLWxhYmVsIHtcbiAgICAgIGRpc3BsYXk6IGlubGluZS1mbGV4O1xuICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgd2hpdGUtc3BhY2U6IG5vd3JhcDtcbiAgICAgIHRleHQtb3ZlcmZsb3c6IGVsbGlwc2lzO1xuICAgICAgZGlzcGxheTogYmxvY2s7XG4gICAgICBvdmVyZmxvdzogaGlkZGVuO1xuICB9XG5cbiAgLm5vZGUtb3B0aW9uLWdyb3VwIHtcbiAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICAgIHJpZ2h0OiAwO1xuICAgICAgdmlzaWJpbGl0eTogaGlkZGVuO1xuICAgICAgZm9udC1zaXplOiAxNHB4O1xuICAgICAgLm5vZGUtb3B0aW9uIHtcbiAgICAgICAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgICB9XG4gIH1cbiAgJjpob3ZlciB7XG4gICAgLm5vZGUtb3B0aW9uLWdyb3VwIHtcbiAgICAgIHZpc2liaWxpdHk6IHZpc2libGU7XG4gICAgfVxuICB9XG59XG5cbi5kbmQtZHJhZyB7XG4gICAgb3BhY2l0eTogMC41O1xufVxuXG4uZG5kLW92ZXIge1xuICAgIGJveC1zaGFkb3c6IGluc2V0IDBweCAwcHggMHB4IDJweCAjQ0NDO1xuICAgIGJhY2tncm91bmQ6IHJnYmEoNjYsNjYsNjYsMC4xKTtcbn1cbiJdfQ== */"
+module.exports = ".tab-bar {\n  font-size: 1rem;\n  margin: 0;\n  padding: 0 0 0 16px; }\n\n.tree-scroll {\n  height: 300px; }\n\n.mat-tree {\n  background-color: transparent;\n  padding: 0; }\n\n.node-content .node-label {\n  display: inline-flex;\n  align-items: center;\n  width: 100%;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  display: block;\n  overflow: hidden; }\n\n.node-content .node-option-group {\n  position: absolute;\n  right: 0;\n  visibility: hidden;\n  font-size: 14px; }\n\n.node-content .node-option-group .node-option {\n    cursor: pointer; }\n\n.node-content:hover .node-option-group {\n  visibility: visible; }\n\n.dnd-drag {\n  opacity: 0.5; }\n\n.dnd-over {\n  box-shadow: inset 0px 0px 0px 2px #CCC;\n  background: rgba(66, 66, 66, 0.1); }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvYXBwcy9maWxlYnJvd3Nlci9jbGllbnQvc3JjL2FwcC9lZGl0b3IvbmF2aWdhdGlvbi9leHBsb3Jlci9leHBsb3Jlci5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGdCQUFlO0VBQ2YsVUFBUztFQUNULG9CQUFtQixFQUN0Qjs7QUFJRDtFQUNJLGNBQWEsRUFDaEI7O0FBRUQ7RUFDRSw4QkFBNkI7RUFDN0IsV0FBVSxFQUNYOztBQUdEO0VBRU0scUJBQW9CO0VBQ3BCLG9CQUFtQjtFQUNuQixZQUFXO0VBQ1gsb0JBQW1CO0VBQ25CLHdCQUF1QjtFQUN2QixlQUFjO0VBQ2QsaUJBQWdCLEVBQ25COztBQVRIO0VBWU0sbUJBQWtCO0VBQ2xCLFNBQVE7RUFDUixtQkFBa0I7RUFDbEIsZ0JBQWUsRUFJbEI7O0FBbkJIO0lBaUJVLGdCQUFlLEVBQ2xCOztBQWxCUDtFQXNCTSxvQkFBbUIsRUFDcEI7O0FBSUw7RUFDSSxhQUFZLEVBQ2Y7O0FBRUQ7RUFDSSx1Q0FBc0M7RUFDdEMsa0NBQThCLEVBQ2pDIiwiZmlsZSI6InNyYy9hcHAvZWRpdG9yL25hdmlnYXRpb24vZXhwbG9yZXIvZXhwbG9yZXIuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIudGFiLWJhciB7XG4gICAgZm9udC1zaXplOiAxcmVtO1xuICAgIG1hcmdpbjogMDtcbiAgICBwYWRkaW5nOiAwIDAgMCAxNnB4O1xufVxuXG5cbi8vIFRPRE8gZml4XG4udHJlZS1zY3JvbGwge1xuICAgIGhlaWdodDogMzAwcHg7XG59XG5cbi5tYXQtdHJlZSB7XG4gIGJhY2tncm91bmQtY29sb3I6IHRyYW5zcGFyZW50O1xuICBwYWRkaW5nOiAwO1xufVxuXG5cbi5ub2RlLWNvbnRlbnQge1xuICAubm9kZS1sYWJlbCB7XG4gICAgICBkaXNwbGF5OiBpbmxpbmUtZmxleDtcbiAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICB3aWR0aDogMTAwJTtcbiAgICAgIHdoaXRlLXNwYWNlOiBub3dyYXA7XG4gICAgICB0ZXh0LW92ZXJmbG93OiBlbGxpcHNpcztcbiAgICAgIGRpc3BsYXk6IGJsb2NrO1xuICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgfVxuXG4gIC5ub2RlLW9wdGlvbi1ncm91cCB7XG4gICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICByaWdodDogMDtcbiAgICAgIHZpc2liaWxpdHk6IGhpZGRlbjtcbiAgICAgIGZvbnQtc2l6ZTogMTRweDtcbiAgICAgIC5ub2RlLW9wdGlvbiB7XG4gICAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgICAgfVxuICB9XG4gICY6aG92ZXIge1xuICAgIC5ub2RlLW9wdGlvbi1ncm91cCB7XG4gICAgICB2aXNpYmlsaXR5OiB2aXNpYmxlO1xuICAgIH1cbiAgfVxufVxuXG4uZG5kLWRyYWcge1xuICAgIG9wYWNpdHk6IDAuNTtcbn1cblxuLmRuZC1vdmVyIHtcbiAgICBib3gtc2hhZG93OiBpbnNldCAwcHggMHB4IDBweCAycHggI0NDQztcbiAgICBiYWNrZ3JvdW5kOiByZ2JhKDY2LDY2LDY2LDAuMSk7XG59XG4iXX0= */"
 
 /***/ }),
 
@@ -804,6 +804,9 @@ var ExplorerComponent = /** @class */ (function () {
                     _this.optionDelete(n, e);
                 } },
             { icon: 'fas fa-lock', label: 'Read Only', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_4__["isReadOnly"], action: function () { } },
+            { icon: 'fas fa-download', label: 'Download', enabled: _shared_models_filters_model__WEBPACK_IMPORTED_MODULE_4__["isFolder"], action: function (n, e) {
+                    _this.optionDownload(n, e);
+                } },
         ];
     }
     Object.defineProperty(ExplorerComponent.prototype, "items", {
@@ -1042,6 +1045,11 @@ var ExplorerComponent = /** @class */ (function () {
             });
         });
     };
+    ExplorerComponent.prototype.optionDownload = function (node, event) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.opener.openURL("/filebrowser/option?name=download_resource&path=" + node.id);
+    };
     ExplorerComponent.prototype.optionAddFile = function (node, event) {
         event.preventDefault();
         event.stopPropagation();
@@ -1103,8 +1111,7 @@ var ExplorerComponent = /** @class */ (function () {
     ExplorerComponent.prototype.optionTest = function (node, event) {
         event.preventDefault();
         event.stopPropagation();
-        var resource = node.data;
-        this.opener.openURL('/filebrowser/option?name=test_pl&path=' + resource.path);
+        this.opener.openURL('/filebrowser/option?name=test_pl&path=' + node.id);
     };
     ExplorerComponent.prototype.transform = function (item) {
         var _this = this;
@@ -2562,7 +2569,7 @@ function openAsImage(resource) {
     return !openAsPreview(resource) && resource.meta && resource.meta.image && !Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["isSVG"])(resource);
 }
 function openAsPreview(resource) {
-    return Object(_filters_model__WEBPACK_IMPORTED_MODULE_2__["isFromServer"])(resource) && !!resource.meta && !!resource.meta.previewData;
+    return !!resource.meta && !!resource.meta.previewData;
 }
 var INSTANTIATORS = [
     { condition: openAsImage, create: function (group, r) { return new ImageEditor(group, r); } },
@@ -3367,7 +3374,7 @@ var fileIcons = {
 /*!*******************************************************!*\
   !*** ./src/app/editor/shared/models/filters.model.ts ***!
   \*******************************************************/
-/*! exports provided: PREVIEW_EXTENSIONS, canRead, canWrite, isReadOnly, isRepo, isFromServer, isLoaded, isHome, isLib, isRoot, isFolder, isFile, isPL, isSVG, isPLTP, isMarkdown, canBePreviewed, canAddChild, canCopy, canBeRenamed, canBeDeleted, canBeTested, canBeLoaded, canBeReloaded, compareGroup */
+/*! exports provided: PREVIEW_EXTENSIONS, canRead, canWrite, isReadOnly, isRepo, isLoaded, isHome, isLib, isRoot, isFolder, isFile, isPL, isSVG, isPLTP, isMarkdown, canBePreviewed, canAddChild, canCopy, canBeRenamed, canBeDeleted, canBeTested, canBeLoaded, canBeReloaded, compareGroup */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3377,7 +3384,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canWrite", function() { return canWrite; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isReadOnly", function() { return isReadOnly; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isRepo", function() { return isRepo; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isFromServer", function() { return isFromServer; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isLoaded", function() { return isLoaded; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isHome", function() { return isHome; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isLib", function() { return isLib; });
@@ -3411,7 +3417,7 @@ var PREVIEW_EXTENSIONS = ['pl', 'md', 'svg'];
  * @throws {ReferenceError} if item is null
  */
 function canRead(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return !!item && item.read;
 }
 /**
@@ -3420,7 +3426,7 @@ function canRead(item) {
  * @throws {ReferenceError} if item is null
  */
 function canWrite(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return !!item && item.write;
 }
 /**
@@ -3429,7 +3435,7 @@ function canWrite(item) {
  * @throws {ReferenceError} if item is null
  */
 function isReadOnly(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return !canWrite(item);
 }
 /**
@@ -3438,17 +3444,8 @@ function isReadOnly(item) {
  * @throws {ReferenceError} if item is null
  */
 function isRepo(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return !!item && !!item.repo;
-}
-/**
- * Gets a value indicating whether the resource is loaded from the server.
- * @param item the resource
- * @throws {ReferenceError} if item is null
- */
-function isFromServer(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
-    return !!item && item.type !== _resource_model__WEBPACK_IMPORTED_MODULE_0__["ResourceTypes"].Local;
 }
 /**
  * Gets a value indicating whether the resource is loaded with it's metadata.
@@ -3456,7 +3453,7 @@ function isFromServer(item) {
  * @throws {ReferenceError} if item is null
  */
 function isLoaded(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return !!item && !!item.meta;
 }
 /**
@@ -3465,7 +3462,7 @@ function isLoaded(item) {
  * @throws {ReferenceError} if item is null
  */
 function isHome(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return !!item && item.path === 'Yggdrasil';
 }
 /**
@@ -3474,7 +3471,7 @@ function isHome(item) {
  * @throws {ReferenceError} if item is null
  */
 function isLib(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return !!item && item.path === 'lib';
 }
 /**
@@ -3483,7 +3480,7 @@ function isLib(item) {
  * @throws {ReferenceError} if item is null
  */
 function isRoot(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return isHome(item) || isLib(item);
 }
 /**
@@ -3492,7 +3489,7 @@ function isRoot(item) {
  * @throws {ReferenceError} if item is null
  */
 function isFolder(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return !!item && item.type === _resource_model__WEBPACK_IMPORTED_MODULE_0__["ResourceTypes"].Folder;
 }
 /**
@@ -3501,7 +3498,7 @@ function isFolder(item) {
  * @throws {ReferenceError} if item is null
  */
 function isFile(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return !!item && item.type === _resource_model__WEBPACK_IMPORTED_MODULE_0__["ResourceTypes"].File;
 }
 /**
@@ -3510,7 +3507,7 @@ function isFile(item) {
  * @throws {ReferenceError} if item is null
  */
 function isPL(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return !!item && isFile(item) && Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_1__["extname"])(item.path) === 'pl';
 }
 /**
@@ -3519,7 +3516,7 @@ function isPL(item) {
  * @throws {ReferenceError} if item is null
  */
 function isSVG(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return !!item && isFile(item) && Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_1__["extname"])(item.path) === 'svg';
 }
 /**
@@ -3528,7 +3525,7 @@ function isSVG(item) {
  * @throws {ReferenceError} if item is null
  */
 function isPLTP(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return !!item && isFile(item) && Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_1__["extname"])(item.path) === 'pltp';
 }
 /**
@@ -3537,7 +3534,7 @@ function isPLTP(item) {
  * @throws {ReferenceError} if item is null
  */
 function isMarkdown(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return !!item && isFile(item) && Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_1__["extname"])(item.path) === 'md';
 }
 /**
@@ -3546,7 +3543,7 @@ function isMarkdown(item) {
  * @throws {ReferenceError} if item is null
  */
 function canBePreviewed(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return !!item && isFile(item) && PREVIEW_EXTENSIONS.includes(Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_1__["extname"])(item.path));
 }
 /**
@@ -3555,7 +3552,7 @@ function canBePreviewed(item) {
  * @throws {ReferenceError} if item is null
  */
 function canAddChild(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return canWrite(item) && isFolder(item);
 }
 /**
@@ -3564,7 +3561,7 @@ function canAddChild(item) {
  * @throws {ReferenceError} if item is null
  */
 function canCopy(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return canRead(item) && !isRoot(item);
 }
 /**
@@ -3573,7 +3570,7 @@ function canCopy(item) {
  * @throws {ReferenceError} if item is null
  */
 function canBeRenamed(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return canWrite(item) && !isRoot(item);
 }
 /**
@@ -3582,7 +3579,7 @@ function canBeRenamed(item) {
  * @throws {ReferenceError} if item is null
  */
 function canBeDeleted(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return canWrite(item) && !isRoot(item);
 }
 /**
@@ -3591,7 +3588,7 @@ function canBeDeleted(item) {
  * @throws {ReferenceError} if item is null
  */
 function canBeTested(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return canRead(item) && isFile(item) && isPL(item);
 }
 /**
@@ -3600,7 +3597,7 @@ function canBeTested(item) {
  * @throws {ReferenceError} if item is null
  */
 function canBeLoaded(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return canWrite(item) && isFile(item) && isPLTP(item);
 }
 /**
@@ -3609,7 +3606,7 @@ function canBeLoaded(item) {
  * @throws {ReferenceError} if item is null
  */
 function canBeReloaded(item) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(item, 'param "item" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
     return canWrite(item) && isFile(item) && isPLTP(item);
 }
 /**
@@ -3619,8 +3616,8 @@ function canBeReloaded(item) {
  * @throws {ReferenceError} is grp1 or grp2 are null
  */
 function compareGroup(grp1, grp2) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(grp1, '"param "grp1" is required');
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["requireNonNull"])(grp2, '"param "grp2" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(grp1, '"param "grp1" is required');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(grp2, '"param "grp2" is required');
     return grp1.id() === grp2.id();
 }
 
@@ -4148,11 +4145,10 @@ var ResourceTypes;
 (function (ResourceTypes) {
     ResourceTypes["File"] = "file";
     ResourceTypes["Folder"] = "folder";
-    ResourceTypes["Local"] = "local";
 })(ResourceTypes || (ResourceTypes = {}));
 function createResource(parent, type) {
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_0__["assert"])(parent.type === 'folder', 'resource.type must be folder');
-    Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_0__["assert"])(parent.children.every(function (e) { return !e.renaming; }), 'cannot edit multiple resources');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_0__["Asserts"].assert(parent.type === 'folder', 'resource.type must be folder');
+    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_0__["Asserts"].assert(parent.children.every(function (e) { return !e.renaming; }), 'cannot edit multiple resources');
     parent.expanded = true;
     parent.children = parent.children || [];
     return {
@@ -4927,15 +4923,17 @@ var EditorService = /** @class */ (function (_super) {
     }
     EditorService.prototype.open = function (resource, options) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var group, groups;
-            var _this = this;
+            var group, groups, error_1;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.resources.open(resource)];
+                    case 0:
+                        _a.trys.push([0, 3, , 4]);
+                        return [4 /*yield*/, this.resources.open(resource)];
                     case 1:
                         if (!(_a.sent())) {
                             return [2 /*return*/, Promise.reject(new Error("Unable to open '" + resource.path + "': resource content not found"))];
                         }
+                        group = void 0;
                         groups = this.listGroups();
                         options = options || {};
                         if (options.openToSide) {
@@ -4948,10 +4946,13 @@ var EditorService = /** @class */ (function (_super) {
                                 || groups.find(function (g) { return g.focused(); }) // find focused
                                 || groups.find(function (_) { return true; }) || new _models_editor_group_model__WEBPACK_IMPORTED_MODULE_2__["EditorGroup"](this); // find any or create new group
                         }
-                        return [2 /*return*/, group.open(resource, options).catch(function (error) {
-                                _this.notification.logError(error);
-                                return false;
-                            })];
+                        return [4 /*yield*/, group.open(resource, options)];
+                    case 2: return [2 /*return*/, _a.sent()];
+                    case 3:
+                        error_1 = _a.sent();
+                        this.notification.logError(error_1);
+                        return [2 /*return*/, false];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -5060,7 +5061,7 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(item, 'item');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(item, 'item');
                         params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'git_show').set('path', item.path);
                         return [4 /*yield*/, this.http.get('/filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
                     case 2:
@@ -5088,7 +5089,7 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(item, 'item');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(item, 'item');
                         params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'git_status').set('path', item.path);
                         return [4 /*yield*/, this.http.get('/filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
                     case 2:
@@ -5118,7 +5119,7 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 4, , 5]);
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(item, 'item');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(item, 'item');
                         params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'git_add').set('path', item.path);
                         return [4 /*yield*/, this.http.get('/filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
                     case 2:
@@ -5150,7 +5151,7 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 4, , 5]);
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(item, 'item');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(item, 'item');
                         params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'git_checkout').set('path', item.path);
                         return [4 /*yield*/, this.http.get('/filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
                     case 2:
@@ -5182,8 +5183,8 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(item, 'item');
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(commit, 'commit');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(item, 'item');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(commit, 'commit');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         data = { 'name': 'git_commit', 'path': item.path, commit: commit };
                         return [4 /*yield*/, this.http.post('/filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise()];
@@ -5215,7 +5216,7 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(item, 'item');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(item, 'item');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         data = { 'name': 'git_push', 'path': item.path, username: username, password: password };
                         return [4 /*yield*/, this.http.post('/filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise()];
@@ -5247,7 +5248,7 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(item, 'item');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(item, 'item');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         data = { 'name': 'git_pull', 'path': item.path, username: username, password: password };
                         return [4 /*yield*/, this.http.post('/filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise()];
@@ -5278,9 +5279,9 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(home, 'parent');
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(url, 'url');
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["assert"])(Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["isHome"])(home), 'clone operation is applicable to home only');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(home, 'parent');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(url, 'url');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].assert(Object(_models_filters_model__WEBPACK_IMPORTED_MODULE_3__["isHome"])(home), 'clone operation is applicable to home only');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         data = {
                             'name': 'git_clone',
@@ -5318,7 +5319,7 @@ var GitService = /** @class */ (function () {
                         _b.label = 1;
                     case 1:
                         _b.trys.push([1, 3, , 4]);
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["requireNonNull"])(item, 'item');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(item, 'item');
                         params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'git_blame').set('path', item.path);
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         return [4 /*yield*/, this.http.get('/filebrowser/option', { headers: headers, params: params }).toPromise()];
@@ -5416,7 +5417,7 @@ var OpenerService = /** @class */ (function () {
                         if (!resource) {
                             return [2 /*return*/, Promise.reject(new Error("Unable to open '" + target + "': '" + base + "' not found"))];
                         }
-                        return [4 /*yield*/, this.resources.findReference(resource, target)];
+                        return [4 /*yield*/, this.resources.findRelativeTo(resource, target)];
                     case 1:
                         reference = _a.sent();
                         if (!reference) {
@@ -5757,11 +5758,36 @@ var ResourceService = /** @class */ (function () {
         return this.cache.find(function (r) { return predicate(r); });
     };
     /**
-     * Gets a value indicating whether the given resource is the selected one.
-     * @param resource the resource to test
+     * Finds the resource at `path` relative to the path of the given `resource`.
+     * @param resource the resource
+     * @param path the path to find.
+     * @returns A promise that resolves with the resource.
      */
-    ResourceService.prototype.isSelection = function (resource) {
-        return !!this.focused && resource.path === this.focused.path;
+    ResourceService.prototype.findRelativeTo = function (resource, path) {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var params, response, error_1;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        this.task.emitTaskEvent(true, 'resolve path');
+                        params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]()
+                            .set('name', 'resolve_path')
+                            .set('path', resource.path)
+                            .set('target', path);
+                        return [4 /*yield*/, this.http.get('filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
+                    case 1:
+                        response = _a.sent();
+                        this.task.emitTaskEvent(false);
+                        return [2 /*return*/, this.find(response)];
+                    case 2:
+                        error_1 = _a.sent();
+                        this.task.emitTaskEvent(false);
+                        throw error_1;
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
     };
     /**
      * creates the resource on the server.
@@ -5770,13 +5796,13 @@ var ResourceService = /** @class */ (function () {
      */
     ResourceService.prototype.create = function (resource) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var data, success, error_1;
+            var data, success, error_2;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["checkName"])(resource.name);
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["assert"])(_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["canWrite"](resource), 'permission denied: write access not granted for ' + resource.path);
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["assert"])(_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["canWrite"](this.find(resource.parent)), 'permission denied: write access not granted for ' + resource.parent);
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].checkName(resource.name);
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["canWrite"](resource), 'permission denied: write access not granted for ' + resource.path);
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["canWrite"](this.find(resource.parent)), 'permission denied: write access not granted for ' + resource.parent);
                         this.task.emitTaskEvent(true, 'creating resource');
                         _a.label = 1;
                     case 1:
@@ -5793,9 +5819,9 @@ var ResourceService = /** @class */ (function () {
                         this.task.emitTaskEvent(false);
                         return [2 /*return*/, success];
                     case 3:
-                        error_1 = _a.sent();
+                        error_2 = _a.sent();
                         this.task.emitTaskEvent(false);
-                        throw error_1;
+                        throw error_2;
                     case 4: return [2 /*return*/];
                 }
             });
@@ -5809,13 +5835,13 @@ var ResourceService = /** @class */ (function () {
      */
     ResourceService.prototype.rename = function (resource, name) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var success, data, error_2;
+            var success, data, error_3;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["checkName"])(name);
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["assert"])(_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["canWrite"](resource), 'permission denied');
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["assert"])(!_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["isRoot"](resource), 'cannot rename root directory');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].checkName(name);
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["canWrite"](resource), 'permission denied');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(!_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["isRoot"](resource), 'cannot rename root directory');
                         if (name === resource.name) {
                             return [2 /*return*/, Promise.resolve(true)];
                         }
@@ -5835,9 +5861,9 @@ var ResourceService = /** @class */ (function () {
                         this.task.emitTaskEvent(false);
                         return [2 /*return*/, success];
                     case 3:
-                        error_2 = _a.sent();
+                        error_3 = _a.sent();
                         this.task.emitTaskEvent(false);
-                        throw error_2;
+                        throw error_3;
                     case 4: return [2 /*return*/];
                 }
             });
@@ -5850,14 +5876,14 @@ var ResourceService = /** @class */ (function () {
      */
     ResourceService.prototype.delete = function (resource) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var headers, success, error_3;
+            var headers, success, error_4;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["requireNonNull"])(resource, 'resource');
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["assert"])(_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["canWrite"](resource), 'permission denied');
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["assert"])(!_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["isRoot"](resource), 'permission denied');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].requireNonNull(resource, 'resource');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["canWrite"](resource), 'permission denied');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(!_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["isRoot"](resource), 'permission denied');
                         this.task.emitTaskEvent(true, 'delete');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         return [4 /*yield*/, this.http.post('filebrowser/option', {
@@ -5871,9 +5897,9 @@ var ResourceService = /** @class */ (function () {
                         this.git.refresh();
                         return [2 /*return*/, success];
                     case 2:
-                        error_3 = _a.sent();
+                        error_4 = _a.sent();
                         this.task.emitTaskEvent(false);
-                        throw error_3;
+                        throw error_4;
                     case 3: return [2 /*return*/];
                 }
             });
@@ -5887,16 +5913,16 @@ var ResourceService = /** @class */ (function () {
      */
     ResourceService.prototype.move = function (src, dst) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var resource, error_4;
+            var resource, error_5;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 5, , 6]);
                         this.task.emitTaskEvent(true, 'move');
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["requireNonNull"])(src, 'src');
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["requireNonNull"])(dst, 'dst');
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["assert"])(_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["canWrite"](dst), 'permission denied');
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["assert"])(_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["isFolder"](dst), 'destination must be a directory');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].requireNonNull(src, 'src');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].requireNonNull(dst, 'dst');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["canWrite"](dst), 'permission denied');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["isFolder"](dst), 'destination must be a directory');
                         resource = void 0;
                         if (!('size' in src)) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.drop(src, dst)];
@@ -5916,9 +5942,9 @@ var ResourceService = /** @class */ (function () {
                         this.git.refresh();
                         return [2 /*return*/, true];
                     case 5:
-                        error_4 = _a.sent();
+                        error_5 = _a.sent();
                         this.task.emitTaskEvent(false);
-                        throw error_4;
+                        throw error_5;
                     case 6: return [2 /*return*/];
                 }
             });
@@ -5931,13 +5957,10 @@ var ResourceService = /** @class */ (function () {
      */
     ResourceService.prototype.save = function (resource) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var headers, error_5;
+            var headers, error_6;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["isFromServer"](resource)) {
-                            return [2 /*return*/, true];
-                        }
                         if (!resource.changed) {
                             return [2 /*return*/, true];
                         }
@@ -5945,7 +5968,7 @@ var ResourceService = /** @class */ (function () {
                     case 1:
                         _a.trys.push([1, 3, , 4]);
                         this.task.emitTaskEvent(true, 'save');
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["requireNonNull"])(resource, 'resource');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].requireNonNull(resource, 'resource');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         return [4 /*yield*/, this.http.post('filebrowser/option', {
                                 name: 'update_resource', path: resource.path, content: resource.content
@@ -5958,9 +5981,43 @@ var ResourceService = /** @class */ (function () {
                         this.git.refresh();
                         return [2 /*return*/, true];
                     case 3:
-                        error_5 = _a.sent();
+                        error_6 = _a.sent();
                         this.task.emitTaskEvent(false);
-                        throw error_5;
+                        throw error_6;
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    /**
+     * Downloads the folder as a zip archive
+     * @param resource the resource
+     * @throws {ReferenceError} if resource is null or undefined.
+     * @throws {TypeError} if resource is not a folder.
+     * @returns Promise<void> resolved with true and rejected with an error
+     */
+    ResourceService.prototype.download = function (resource) {
+        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+            var params, error_7;
+            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].requireNonNull(resource, 'resource');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(resource.type === _models_resource_model__WEBPACK_IMPORTED_MODULE_3__["ResourceTypes"].Folder);
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        this.task.emitTaskEvent(true);
+                        params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'download_resource').set('path', resource.path);
+                        return [4 /*yield*/, this.http.get('filebrowser/option', { params: params }).toPromise()];
+                    case 2:
+                        _a.sent();
+                        this.task.emitTaskEvent(false);
+                        return [3 /*break*/, 4];
+                    case 3:
+                        error_7 = _a.sent();
+                        this.task.emitTaskEvent(false);
+                        throw error_7;
                     case 4: return [2 /*return*/];
                 }
             });
@@ -5973,13 +6030,10 @@ var ResourceService = /** @class */ (function () {
      */
     ResourceService.prototype.open = function (resource) {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var params, response, error_6;
+            var params, response, error_8;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["isFromServer"](resource)) {
-                            return [2 /*return*/, true];
-                        }
                         this.focus(resource);
                         if (resource.type === _models_resource_model__WEBPACK_IMPORTED_MODULE_3__["ResourceTypes"].Folder) {
                             resource.expanded = !resource.expanded;
@@ -6002,9 +6056,9 @@ var ResourceService = /** @class */ (function () {
                         this.task.emitTaskEvent(false);
                         return [2 /*return*/, true];
                     case 3:
-                        error_6 = _a.sent();
+                        error_8 = _a.sent();
                         this.task.emitTaskEvent(false);
-                        throw error_6;
+                        throw error_8;
                     case 4: return [2 /*return*/];
                 }
             });
@@ -6016,7 +6070,7 @@ var ResourceService = /** @class */ (function () {
      */
     ResourceService.prototype.refresh = function () {
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var params, resources, error_7;
+            var params, resources, error_9;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -6036,38 +6090,12 @@ var ResourceService = /** @class */ (function () {
                         this.task.emitTaskEvent(false);
                         return [2 /*return*/, true];
                     case 3:
-                        error_7 = _a.sent();
+                        error_9 = _a.sent();
                         this.resources = [];
                         this.changed.next(this.resources.slice());
                         this.task.emitTaskEvent(false);
-                        throw error_7;
+                        throw error_9;
                     case 4: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    ResourceService.prototype.findReference = function (resource, path) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var params, response, error_8;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        this.task.emitTaskEvent(true, 'resolve path');
-                        params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]()
-                            .set('name', 'resolve_path')
-                            .set('path', resource.path)
-                            .set('target', path);
-                        return [4 /*yield*/, this.http.get('filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
-                    case 1:
-                        response = _a.sent();
-                        this.task.emitTaskEvent(false);
-                        return [2 /*return*/, this.find(response)];
-                    case 2:
-                        error_8 = _a.sent();
-                        this.task.emitTaskEvent(false);
-                        throw error_8;
-                    case 3: return [2 /*return*/];
                 }
             });
         });
@@ -6099,11 +6127,10 @@ var ResourceService = /** @class */ (function () {
                     });
                 });
             }
-            var that, cache, _i, resources_1, root;
+            var cache, _i, resources_1, root;
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        that = this;
                         cache = [];
                         _i = 0, resources_1 = resources;
                         _a.label = 1;
@@ -6168,9 +6195,9 @@ var ResourceService = /** @class */ (function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["requireNonNull"])(src.name, 'src.name');
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["requireNonNull"])(dst.path, 'dst.path');
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["checkName"])(src.name);
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].requireNonNull(src.name, 'src.name');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].requireNonNull(dst.path, 'dst.path');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].checkName(src.name);
                         formData = new FormData();
                         formData.append('file', src, src.name);
                         formData.append('path', dst.path);
@@ -6198,10 +6225,10 @@ var ResourceService = /** @class */ (function () {
             return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["requireNonNull"])(src.path, 'src.path');
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["requireNonNull"])(dst.path, 'dst.path');
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["assert"])(src.path !== dst.path, 'cannot move the resource to the same path');
-                        Object(src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["assert"])(!_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["isRoot"](src), 'cannot move a root resource');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].requireNonNull(src.path, 'src.path');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].requireNonNull(dst.path, 'dst.path');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(src.path !== dst.path, 'cannot move the resource to the same path');
+                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(!_models_filters_model__WEBPACK_IMPORTED_MODULE_9__["isRoot"](src), 'cannot move a root resource');
                         headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
                         return [4 /*yield*/, this.http.post('filebrowser/option', {
                                 name: 'move_resource',
@@ -7411,7 +7438,7 @@ var PromptComponent = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<cdk-virtual-scroll-viewport itemSize=\"32\" style=\"height: 100%;\">\n  <ng-container *cdkVirtualFor=\"let item of virtualSource\"></ng-container>\n  <mat-tree [dataSource]=\"dataSource\" [treeControl]=\"treeControl\">\n    <!-- DEFAULT NODE -->\n    <mat-tree-node\n      *matTreeNodeDef=\"let node\" matTreeNodePadding matTreeNodePaddingIndent=\"16\"\n      [id]=\"node.id\" [ngClass]=\"{ focused: node.isFocused, editing: node.isEditing }\">\n      <ng-container *ngTemplateOutlet=\"defaultNodeTemplate; context: { $implicit: node }\"></ng-container>\n      <ng-container *ngIf=\"node.isCreating\">\n        <ng-container *ngTemplateOutlet=\"editingState\"></ng-container>\n      </ng-container>\n    </mat-tree-node>\n    <!-- EXPANDABLE NODE -->\n    <mat-tree-node\n      *matTreeNodeDef=\"let node; when: isExpandableNode\" matTreeNodePadding matTreeNodePaddingIndent=\"16\" matTreeNodeToggle\n      [id]=\"node.id\" [ngClass]=\"{ focused: node.isFocused, editing: node.isEditing }\">\n      <ng-container *ngTemplateOutlet=\"defaultNodeTemplate; context: { $implicit: node }\"></ng-container>\n      <ng-container *ngIf=\"node.isCreating\">\n        <ng-container *ngTemplateOutlet=\"editingState\"></ng-container>\n      </ng-container>\n    </mat-tree-node>\n  </mat-tree>\n</cdk-virtual-scroll-viewport>\n<!-- DEFAULT TEMPLATE -->\n<ng-template #defaultNodeTemplate let-node>\n  <ng-container *ngIf=\"!node.isRenaming; else renaming\">\n    <div class=\"node-content\" (click)=\"didNodeClicked(node, $event)\">\n        <ng-container *ngIf=\"template; else default\">\n          <ng-container *ngTemplateOutlet=\"template; context: { $implicit: node }\"></ng-container>\n        </ng-container>\n        <ng-template #default>\n          {{node.name}}\n        </ng-template>\n    </div>\n  </ng-container>\n  <ng-template #renaming>\n    <ng-container *ngTemplateOutlet=\"editingState\"></ng-container>\n  </ng-template>\n</ng-template>\n<!-- EDITING STATE -->\n<ng-template #editingState>\n      <div class=\"node-content\">\n        <span class=\"input-wrapper\">\n            <input autofocus\n                   type='text'\n                   placeholder='Press Enter to create ESC to cancel...'\n                   [(ngModel)]=\"editing.name\"\n                   (keydown)='didEditingChanged($event)'\n                   (blur)='didEditingChanged($event)'/>\n          </span>\n      </div>\n</ng-template>\n"
+module.exports = "<cdk-virtual-scroll-viewport class=\"tree-scroll\" itemSize=\"32\">\n  <ng-container *cdkVirtualFor=\"let item of virtualSource; trackBy: didTrack\"></ng-container>\n  <mat-tree [dataSource]=\"dataSource\" [treeControl]=\"treeControl\">\n    <!-- DEFAULT NODE -->\n    <mat-tree-node\n      *matTreeNodeDef=\"let node\" matTreeNodePadding matTreeNodePaddingIndent=\"16\"\n      [id]=\"node.id\" [ngClass]=\"{ focused: node.isFocused, editing: node.isEditing }\">\n      <ng-container *ngTemplateOutlet=\"defaultNodeTemplate; context: { $implicit: node }\"></ng-container>\n      <ng-container *ngIf=\"node.isCreating\">\n        <ng-container *ngTemplateOutlet=\"editingState\"></ng-container>\n      </ng-container>\n    </mat-tree-node>\n    <!-- EXPANDABLE NODE -->\n    <mat-tree-node\n      *matTreeNodeDef=\"let node; when: isExpandableNode\" matTreeNodePadding matTreeNodePaddingIndent=\"16\" matTreeNodeToggle\n      [id]=\"node.id\" [ngClass]=\"{ focused: node.isFocused, editing: node.isEditing }\">\n      <ng-container *ngTemplateOutlet=\"defaultNodeTemplate; context: { $implicit: node }\"></ng-container>\n      <ng-container *ngIf=\"node.isCreating\">\n        <ng-container *ngTemplateOutlet=\"editingState\"></ng-container>\n      </ng-container>\n    </mat-tree-node>\n  </mat-tree>\n</cdk-virtual-scroll-viewport>\n<!-- DEFAULT TEMPLATE -->\n<ng-template #defaultNodeTemplate let-node>\n  <ng-container *ngIf=\"!node.isRenaming; else renaming\">\n    <div class=\"node-content\" (click)=\"didNodeClicked(node, $event)\">\n      <ng-container *ngIf=\"template; else default\">\n        <ng-container *ngTemplateOutlet=\"template; context: { $implicit: node }\"></ng-container>\n      </ng-container>\n      <ng-template #default>\n        {{node.name}}\n      </ng-template>\n    </div>\n  </ng-container>\n  <ng-template #renaming>\n    <ng-container *ngTemplateOutlet=\"editingState\"></ng-container>\n  </ng-template>\n</ng-template>\n<!-- EDITING STATE -->\n<ng-template #editingState>\n  <div class=\"node-content\">\n    <span class=\"input-wrapper\">\n      <input autofocus\n              type='text'\n              placeholder='Press Enter to create ESC to cancel...'\n              [(ngModel)]=\"editing.name\"\n              (keydown)='didEditingChanged($event)'\n              (blur)='didEditingChanged($event)'/>\n      </span>\n  </div>\n</ng-template>\n"
 
 /***/ }),
 
@@ -7422,7 +7449,7 @@ module.exports = "<cdk-virtual-scroll-viewport itemSize=\"32\" style=\"height: 1
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ".mat-tree-node {\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  min-height: 32px;\n  overflow: hidden; }\n  .mat-tree-node:hover, .mat-tree-node.focused {\n    background: rgba(66, 66, 66, 0.1); }\n  .mat-tree-node .node-content {\n    cursor: pointer;\n    display: flex;\n    position: relative;\n    align-items: center;\n    justify-content: space-between;\n    width: 100%;\n    min-height: 32px;\n    padding: 0 16px;\n    overflow: hidden; }\n  .mat-tree-node .input-wrapper {\n    display: flex;\n    align-items: center;\n    width: 100%;\n    margin-right: 4px; }\n  .mat-tree-node input {\n    width: 100%;\n    margin: 0 0 0 16px;\n    padding: 0.1rem 0.3rem;\n    font-size: 1rem;\n    line-height: 1.5;\n    color: #495057;\n    background-color: #fff;\n    background-clip: padding-box;\n    border: 1px solid #ced4da;\n    border-radius: 0.15rem;\n    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }\n  .mat-tree-node input:focus {\n      color: #495057;\n      background-color: #fff;\n      border-color: #80bdff;\n      outline: 0;\n      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); }\n  .dnd-drag {\n  opacity: 0.5; }\n  .dnd-over {\n  box-shadow: inset 0px 0px 0px 2px #CCC;\n  background: rgba(66, 66, 66, 0.1); }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvYXBwcy9maWxlYnJvd3Nlci9jbGllbnQvc3JjL2FwcC9zaGFyZWQvY29tcG9uZW50cy90cmVlL3RyZWUuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxjQUFhO0VBQ2IsdUJBQXNCO0VBQ3RCLFlBQVc7RUFDWCxpQkFBZ0I7RUFDaEIsaUJBQWdCLEVBOENqQjtFQW5ERDtJQVFJLGtDQUE4QixFQUMvQjtFQVRIO0lBWUksZ0JBQWU7SUFDZixjQUFhO0lBQ2IsbUJBQWtCO0lBQ2xCLG9CQUFtQjtJQUNuQiwrQkFBOEI7SUFDOUIsWUFBVztJQUNYLGlCQUFnQjtJQUNoQixnQkFBZTtJQUNmLGlCQUFnQixFQUNqQjtFQXJCSDtJQXdCSSxjQUFhO0lBQ2Isb0JBQW1CO0lBQ25CLFlBQVc7SUFDWCxrQkFBaUIsRUFDbEI7RUE1Qkg7SUErQkksWUFBVztJQUNYLG1CQUFrQjtJQUNsQix1QkFBc0I7SUFDdEIsZ0JBQWU7SUFDZixpQkFBZ0I7SUFDaEIsZUFBYztJQUNkLHVCQUFzQjtJQUN0Qiw2QkFBNEI7SUFDNUIsMEJBQXlCO0lBQ3pCLHVCQUFzQjtJQUN0Qix5RUFBd0UsRUFRekU7RUFqREg7TUEyQ1EsZUFBYztNQUNkLHVCQUFzQjtNQUN0QixzQkFBcUI7TUFDckIsV0FBVTtNQUNWLGlEQUFnRCxFQUNuRDtFQUtMO0VBQ0ksYUFBWSxFQUNmO0VBRUQ7RUFDSSx1Q0FBc0M7RUFDdEMsa0NBQThCLEVBQ2pDIiwiZmlsZSI6InNyYy9hcHAvc2hhcmVkL2NvbXBvbmVudHMvdHJlZS90cmVlLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLm1hdC10cmVlLW5vZGUge1xuICBkaXNwbGF5OiBmbGV4O1xuICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuICB3aWR0aDogMTAwJTtcbiAgbWluLWhlaWdodDogMzJweDtcbiAgb3ZlcmZsb3c6IGhpZGRlbjtcblxuICAmOmhvdmVyLCAmLmZvY3VzZWQge1xuICAgIGJhY2tncm91bmQ6IHJnYmEoNjYsNjYsNjYsMC4xKTtcbiAgfVxuXG4gIC5ub2RlLWNvbnRlbnQge1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgIGp1c3RpZnktY29udGVudDogc3BhY2UtYmV0d2VlbjtcbiAgICB3aWR0aDogMTAwJTtcbiAgICBtaW4taGVpZ2h0OiAzMnB4O1xuICAgIHBhZGRpbmc6IDAgMTZweDtcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xuICB9XG5cbiAgLmlucHV0LXdyYXBwZXIgIHtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgbWFyZ2luLXJpZ2h0OiA0cHg7XG4gIH1cblxuICBpbnB1dCB7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgbWFyZ2luOiAwIDAgMCAxNnB4O1xuICAgIHBhZGRpbmc6IDAuMXJlbSAwLjNyZW07XG4gICAgZm9udC1zaXplOiAxcmVtO1xuICAgIGxpbmUtaGVpZ2h0OiAxLjU7XG4gICAgY29sb3I6ICM0OTUwNTc7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogI2ZmZjtcbiAgICBiYWNrZ3JvdW5kLWNsaXA6IHBhZGRpbmctYm94O1xuICAgIGJvcmRlcjogMXB4IHNvbGlkICNjZWQ0ZGE7XG4gICAgYm9yZGVyLXJhZGl1czogMC4xNXJlbTtcbiAgICB0cmFuc2l0aW9uOiBib3JkZXItY29sb3IgMC4xNXMgZWFzZS1pbi1vdXQsIGJveC1zaGFkb3cgMC4xNXMgZWFzZS1pbi1vdXQ7XG4gICAgJjpmb2N1cyB7XG4gICAgICAgIGNvbG9yOiAjNDk1MDU3O1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjZmZmO1xuICAgICAgICBib3JkZXItY29sb3I6ICM4MGJkZmY7XG4gICAgICAgIG91dGxpbmU6IDA7XG4gICAgICAgIGJveC1zaGFkb3c6IDAgMCAwIDAuMnJlbSByZ2JhKDAsIDEyMywgMjU1LCAwLjI1KTtcbiAgICB9XG4gIH1cblxufVxuXG4uZG5kLWRyYWcge1xuICAgIG9wYWNpdHk6IDAuNTtcbn1cblxuLmRuZC1vdmVyIHtcbiAgICBib3gtc2hhZG93OiBpbnNldCAwcHggMHB4IDBweCAycHggI0NDQztcbiAgICBiYWNrZ3JvdW5kOiByZ2JhKDY2LDY2LDY2LDAuMSk7XG59XG5cblxuIl19 */"
+module.exports = ".tree-scroll {\n  height: 100%; }\n\n.mat-tree-node {\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  min-height: 32px;\n  overflow: hidden; }\n\n.mat-tree-node:hover, .mat-tree-node.focused {\n    background: rgba(66, 66, 66, 0.1); }\n\n.mat-tree-node .node-content {\n    cursor: pointer;\n    display: flex;\n    position: relative;\n    align-items: center;\n    justify-content: space-between;\n    width: 100%;\n    min-height: 32px;\n    padding: 0 16px;\n    overflow: hidden; }\n\n.mat-tree-node .input-wrapper {\n    display: flex;\n    align-items: center;\n    width: 100%;\n    margin-right: 4px; }\n\n.mat-tree-node input {\n    width: 100%;\n    margin: 0 0 0 16px;\n    padding: 0.1rem 0.3rem;\n    font-size: 1rem;\n    line-height: 1.5;\n    color: #495057;\n    background-color: #fff;\n    background-clip: padding-box;\n    border: 1px solid #ced4da;\n    border-radius: 0.15rem;\n    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }\n\n.mat-tree-node input:focus {\n      color: #495057;\n      background-color: #fff;\n      border-color: #80bdff;\n      outline: 0;\n      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); }\n\n.dnd-drag {\n  opacity: 0.5; }\n\n.dnd-over {\n  box-shadow: inset 0px 0px 0px 2px #CCC;\n  background: rgba(66, 66, 66, 0.1); }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9tYW1hZG91L0Rlc2t0b3AvUEwvcHJlbWllcmxhbmdhZ2UvYXBwcy9maWxlYnJvd3Nlci9jbGllbnQvc3JjL2FwcC9zaGFyZWQvY29tcG9uZW50cy90cmVlL3RyZWUuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDRSxhQUFZLEVBQ2I7O0FBRUQ7RUFDRSxjQUFhO0VBQ2IsdUJBQXNCO0VBQ3RCLFlBQVc7RUFDWCxpQkFBZ0I7RUFDaEIsaUJBQWdCLEVBOENqQjs7QUFuREQ7SUFRSSxrQ0FBOEIsRUFDL0I7O0FBVEg7SUFZSSxnQkFBZTtJQUNmLGNBQWE7SUFDYixtQkFBa0I7SUFDbEIsb0JBQW1CO0lBQ25CLCtCQUE4QjtJQUM5QixZQUFXO0lBQ1gsaUJBQWdCO0lBQ2hCLGdCQUFlO0lBQ2YsaUJBQWdCLEVBQ2pCOztBQXJCSDtJQXdCSSxjQUFhO0lBQ2Isb0JBQW1CO0lBQ25CLFlBQVc7SUFDWCxrQkFBaUIsRUFDbEI7O0FBNUJIO0lBK0JJLFlBQVc7SUFDWCxtQkFBa0I7SUFDbEIsdUJBQXNCO0lBQ3RCLGdCQUFlO0lBQ2YsaUJBQWdCO0lBQ2hCLGVBQWM7SUFDZCx1QkFBc0I7SUFDdEIsNkJBQTRCO0lBQzVCLDBCQUF5QjtJQUN6Qix1QkFBc0I7SUFDdEIseUVBQXdFLEVBUXpFOztBQWpESDtNQTJDUSxlQUFjO01BQ2QsdUJBQXNCO01BQ3RCLHNCQUFxQjtNQUNyQixXQUFVO01BQ1YsaURBQWdELEVBQ25EOztBQUtMO0VBQ0ksYUFBWSxFQUNmOztBQUVEO0VBQ0ksdUNBQXNDO0VBQ3RDLGtDQUE4QixFQUNqQyIsImZpbGUiOiJzcmMvYXBwL3NoYXJlZC9jb21wb25lbnRzL3RyZWUvdHJlZS5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi50cmVlLXNjcm9sbCB7XG4gIGhlaWdodDogMTAwJTtcbn1cblxuLm1hdC10cmVlLW5vZGUge1xuICBkaXNwbGF5OiBmbGV4O1xuICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuICB3aWR0aDogMTAwJTtcbiAgbWluLWhlaWdodDogMzJweDtcbiAgb3ZlcmZsb3c6IGhpZGRlbjtcblxuICAmOmhvdmVyLCAmLmZvY3VzZWQge1xuICAgIGJhY2tncm91bmQ6IHJnYmEoNjYsNjYsNjYsMC4xKTtcbiAgfVxuXG4gIC5ub2RlLWNvbnRlbnQge1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgIGp1c3RpZnktY29udGVudDogc3BhY2UtYmV0d2VlbjtcbiAgICB3aWR0aDogMTAwJTtcbiAgICBtaW4taGVpZ2h0OiAzMnB4O1xuICAgIHBhZGRpbmc6IDAgMTZweDtcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xuICB9XG5cbiAgLmlucHV0LXdyYXBwZXIgIHtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgbWFyZ2luLXJpZ2h0OiA0cHg7XG4gIH1cblxuICBpbnB1dCB7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgbWFyZ2luOiAwIDAgMCAxNnB4O1xuICAgIHBhZGRpbmc6IDAuMXJlbSAwLjNyZW07XG4gICAgZm9udC1zaXplOiAxcmVtO1xuICAgIGxpbmUtaGVpZ2h0OiAxLjU7XG4gICAgY29sb3I6ICM0OTUwNTc7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogI2ZmZjtcbiAgICBiYWNrZ3JvdW5kLWNsaXA6IHBhZGRpbmctYm94O1xuICAgIGJvcmRlcjogMXB4IHNvbGlkICNjZWQ0ZGE7XG4gICAgYm9yZGVyLXJhZGl1czogMC4xNXJlbTtcbiAgICB0cmFuc2l0aW9uOiBib3JkZXItY29sb3IgMC4xNXMgZWFzZS1pbi1vdXQsIGJveC1zaGFkb3cgMC4xNXMgZWFzZS1pbi1vdXQ7XG4gICAgJjpmb2N1cyB7XG4gICAgICAgIGNvbG9yOiAjNDk1MDU3O1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjZmZmO1xuICAgICAgICBib3JkZXItY29sb3I6ICM4MGJkZmY7XG4gICAgICAgIG91dGxpbmU6IDA7XG4gICAgICAgIGJveC1zaGFkb3c6IDAgMCAwIDAuMnJlbSByZ2JhKDAsIDEyMywgMjU1LCAwLjI1KTtcbiAgICB9XG4gIH1cblxufVxuXG4uZG5kLWRyYWcge1xuICAgIG9wYWNpdHk6IDAuNTtcbn1cblxuLmRuZC1vdmVyIHtcbiAgICBib3gtc2hhZG93OiBpbnNldCAwcHggMHB4IDBweCAycHggI0NDQztcbiAgICBiYWNrZ3JvdW5kOiByZ2JhKDY2LDY2LDY2LDAuMSk7XG59XG5cblxuIl19 */"
 
 /***/ }),
 
@@ -7529,6 +7556,9 @@ var TreeComponent = /** @class */ (function () {
             node: this.editing,
             event: event,
         });
+    };
+    TreeComponent.prototype.didTrack = function (index, item) {
+        return item.id || index;
     };
     TreeComponent.prototype.transformer = function (node, level) {
         var data = {
@@ -7895,55 +7925,72 @@ var TreeNodeDirective = /** @class */ (function () {
 /*!***********************************************!*\
   !*** ./src/app/shared/models/assert.model.ts ***!
   \***********************************************/
-/*! exports provided: DISALLOWED_CHAR, requireNonNull, assert, checkName */
+/*! exports provided: Asserts */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DISALLOWED_CHAR", function() { return DISALLOWED_CHAR; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "requireNonNull", function() { return requireNonNull; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "assert", function() { return assert; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "checkName", function() { return checkName; });
-var DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&'];
-/**
- * Throws an exception if obj is null or empty (expected for boolean and number)
- * @param obj - the object to evaluate
- * @param message - an optional error message
- * @return the object itself.
- */
-function requireNonNull(obj, message) {
-    if (!obj && typeof (obj) !== 'boolean' && typeof (obj) !== 'number') {
-        message = message ? message : 'should not be null or empty';
-        throw new ReferenceError(message);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Asserts", function() { return Asserts; });
+var Asserts;
+(function (Asserts) {
+    Asserts.DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&'];
+    /**
+     * Throws an exception if obj is null or empty (expected for boolean and number)
+     * @param obj - the object to evaluate
+     * @param message - an optional error message
+     * @throws {ReferenceError} if obj is null or undefined
+     * @return the object itself.
+     */
+    function requireNonNull(obj, message) {
+        if (obj == null) {
+            message = message || 'require non null';
+            throw new ReferenceError(message);
+        }
+        return obj;
     }
-    return obj;
-}
-/**
- * Throws an exception if condition if false.
- * @param condition - the condition
- * @param message - an optional error message
- * @return true if ther
- */
-function assert(condition, message) {
-    if (!condition) {
-        throw new Error(message);
+    Asserts.requireNonNull = requireNonNull;
+    function requireNonNullArray(array, message) {
+        var _this = this;
+        this.requireNonNull(array, message);
+        array.forEach(function (item) { return _this.requireNonNull(item); }, message);
+        return array;
     }
-    return true;
-}
-/**
- * Checks if name can be used a file name.
- * @param name the name to evaluate
- * @return true else throw an exception
- */
-function checkName(name) {
-    if (!name) {
-        throw new ReferenceError('name should not be null or empty');
+    Asserts.requireNonNullArray = requireNonNullArray;
+    function requireNonNullString(input, message) {
+        if (input == null || input.trim().length === 0) {
+            message = message || "'require non null or empty";
+            throw new ReferenceError(message);
+        }
+        return input;
     }
-    if (!DISALLOWED_CHAR.every(function (e) { return !name.includes(e); })) {
-        throw new Error(name + 'should not contains any of ' + DISALLOWED_CHAR);
+    Asserts.requireNonNullString = requireNonNullString;
+    /**
+     * Throws an exception if condition if false.
+     * @param condition - the condition
+     * @param message - an optional error message
+     * @throws {Error} if condition is false
+     */
+    function assert(condition, message) {
+        if (!condition) {
+            throw new Error(message);
+        }
     }
-    return true;
-}
+    Asserts.assert = assert;
+    /**
+     * Checks if name can be used a file name.
+     * @param name the name to evaluate
+     * @return true else throw an exception
+     */
+    function checkName(name) {
+        if (!name) {
+            throw new ReferenceError('name should not be null or empty');
+        }
+        if (!Asserts.DISALLOWED_CHAR.every(function (e) { return !name.includes(e); })) {
+            throw new Error(name + 'should not contains any of ' + Asserts.DISALLOWED_CHAR);
+        }
+    }
+    Asserts.checkName = checkName;
+})(Asserts || (Asserts = {}));
 
 
 /***/ }),

@@ -1,6 +1,4 @@
 {% extends "base.html" %}
-
-
 {% block content %}
 <div class="navigation-container">
     {{ navigation }}
@@ -14,7 +12,7 @@
     <div class="col-md-8 exercise-container">{{ exercise }}</div>
     <div class="col-md-2"></div>
 </div>
-
+{% include 'playexo/resources.html' %}
 <script type='text/javascript'>
     (function () {
         const toggle = $('.navigation__toggle');

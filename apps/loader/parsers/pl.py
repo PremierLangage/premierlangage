@@ -8,7 +8,10 @@
 import json
 import os
 import re
+import glob
+
 from os.path import basename, dirname, join
+from pathlib import Path
 
 from django.conf import settings
 
@@ -20,7 +23,6 @@ from loader.utils import get_location
 BAD_CHAR = r''.join(settings.FILEBROWSER_DISALLOWED_CHAR)
 
 
-
 class Parser:
     """Parser used to parse pl files with .pl extension"""
     
@@ -29,7 +31,8 @@ class Parser:
     VALUE = r'(?P<value>[^=@%#][^#]*?)\s*'
     FILE = r'(?P<file>([a-zA-Z0-9_]*:)?((\/)?[^' + BAD_CHAR + r']+)(\/[^' + BAD_CHAR + r']+)*)\s*'
     ALIAS = r'((\[\s*(?P<alias>[a-zA-Z_.][a-zA-Z0-9_.]*)\s*\])\s*?)?'
-    
+    COMPONENT = r'(?P<component>\w+)(Component)\(\s*\)\s*'
+
     URL_LINE = re.compile(KEY + r'(?P<operator>\$=)\s*' + FILE + COMMENT + r'?$')
     ONE_LINE = re.compile(KEY + r'(?P<operator>=|\%|\+|\-)\s*' + VALUE + COMMENT + r'?$')
     FROM_FILE_LINE = re.compile(KEY + r'(?P<operator>=@|\+=@|\-=@)\s*' + FILE + COMMENT + r'?$')
@@ -59,7 +62,8 @@ class Parser:
         self._multiline_value = None
         self._multiline_opened_lineno = None
         self._multiline_json = False
-    
+        self.components = {}
+
     
     def add_warning(self, message):
         """Append a warning the self.warning list according to message."""
@@ -70,6 +74,7 @@ class Parser:
     def dic_add_key(self, key, value, append=False, prepend=False, replace=False):
         """Add the value to the key in the dictionnary, parse the key to create sub dictionnaries.
          Append the value if append is set to True.
+         Prepend the value if prepend is set to True.
          Does not generate a warning when the key already exists if replace is set to True """
         current_dic = self.dic
         sub_keys = key.split(".")
@@ -252,6 +257,7 @@ class Parser:
         else:
             self._multiline_value += line
 
+
     def sandbox_file_line_match(self, match, line):
         """ Map content of file to self.dic['__files'][name].
 
@@ -280,12 +286,12 @@ class Parser:
         """ Map value to a download url of a resource.
 
             Raise from loader.exceptions:
-                - SyntaxErrorPL if no group 'file' was found
+                - SyntaxErrorPL if no group 'key' or 'file' was found
                 - DirectoryNotFound if trying to load from a nonexistent directory
                 - FileNotFound if the given file do not exists."""
 
         key = match.group('key')
-    
+
         try:
             directory, path = get_location(self.directory, match.group('file'),
                                             current=dirname(self.path), parser=self)
@@ -296,15 +302,15 @@ class Parser:
         except SyntaxError as e:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
 
-
+  
     def parse_line(self, line):
         """ Parse the given line by calling the appropriate function according to regex match.
 
             Raise loader.exceptions.SyntaxErrorPL if the line wasn't match by any regex."""
-        
+
         if self._multiline_key:
             self.while_multi_line(line)
-        
+
         elif self.EXTENDS_LINE.match(line):
             self.extends_line_match(self.EXTENDS_LINE.match(line), line)
         
@@ -325,7 +331,7 @@ class Parser:
         
         elif self.URL_LINE.match(line):
             self.url_line_match(self.URL_LINE.match(line), line)
-        
+
         elif not self.EMPTY_LINE.match(line):
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)
     

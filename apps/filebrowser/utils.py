@@ -37,7 +37,7 @@ def missing_parameter(name):
 
 
 def to_download_url(path):
-    """Returns an to filebrowser views.py download function """
+    """Returns an url to filebrowser views.py download function """
     return '/filebrowser/option?name=download_resource&path=' + path
 
 
@@ -140,6 +140,7 @@ def get_content(path):
     Returns the content of the path
     Raises an IOError if path is not a file
     """
+    path = join_fb_root(rm_fb_root(path))
     if os.path.isdir(path):
         raise IOError('{0} is not a file'.format(rm_fb_root(path)))
     
@@ -155,10 +156,6 @@ def walkdir(path, user, parent='', write=None, read=None, repo=None, sort=False)
         'type':   'folder' if os.path.isdir(path) else 'file',
         'name':   os.path.basename(path),
         'path':   rm_fb_root(path),
-        'icon':   { 
-            'type': 'fa',
-            'src': fa_icon(path)
-        },
         'write':  write,
         'read':   read,
         'repo':   repo,

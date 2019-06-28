@@ -5,7 +5,7 @@
 import { IResource } from './resource.model';
 import { Subject } from 'rxjs';
 import { IEditorGroup } from './editor-group.model';
-import { canBePreviewed, isRepo, isSVG, isFromServer } from './filters.model';
+import { canBePreviewed, isRepo, isSVG } from './filters.model';
 import { IOpenOptions } from '../services/core/opener.service';
 
 export enum EditorTypes {
@@ -234,7 +234,7 @@ export function openAsImage(resource: IResource) {
 }
 
 export function openAsPreview(resource: IResource) {
-    return isFromServer(resource) && !!resource.meta && !!resource.meta.previewData;
+    return !!resource.meta && !!resource.meta.previewData;
 }
 
 export const INSTANTIATORS: {condition: (r: IResource) => boolean, create: (group: IEditorGroup, r: IResource) => IEditor }[] = [

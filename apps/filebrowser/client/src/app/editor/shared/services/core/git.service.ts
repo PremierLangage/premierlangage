@@ -5,7 +5,7 @@ import { IResource } from '../../models/resource.model';
 import { IRepo, IChange, IBlame } from '../../models/git.model';
 import { NotificationService } from 'src/app/shared/services/notification.service';
 import { basename } from 'src/app/shared/models/paths.model';
-import { assert, requireNonNull } from 'src/app/shared/models/assert.model';
+import { Asserts } from 'src/app/shared/models/assert.model';
 
 export interface IGitService {
     refresh(): Promise<boolean>;
@@ -66,7 +66,7 @@ export class GitService implements IGitService {
         let response: string;
         this.runningTask = true;
         try {
-            requireNonNull(item, 'item');
+            Asserts.requireNonNull(item, 'item');
             const params = new HttpParams().set('name', 'git_show').set('path', item.path);
             response = await this.http.get('/filebrowser/option', { params: params , responseType: 'text'}).toPromise();
         } catch (error) {
@@ -80,7 +80,7 @@ export class GitService implements IGitService {
         let success = false;
         this.runningTask = true;
         try {
-            requireNonNull(item, 'item');
+            Asserts.requireNonNull(item, 'item');
             const params = new HttpParams().set('name', 'git_status').set('path', item.path);
             const response = await this.http.get('/filebrowser/option', { params: params , responseType: 'text'}).toPromise();
             this.logResponse(item, response);
@@ -96,7 +96,7 @@ export class GitService implements IGitService {
         let success = false;
         this.runningTask = true;
         try {
-            requireNonNull(item, 'item');
+            Asserts.requireNonNull(item, 'item');
             const params = new HttpParams().set('name', 'git_add').set('path', item.path);
             const response = await this.http.get('/filebrowser/option', { params: params , responseType: 'text'}).toPromise();
             this.logResponse(item, response);
@@ -112,7 +112,7 @@ export class GitService implements IGitService {
         this.runningTask = true;
         let success = false;
         try {
-            requireNonNull(item, 'item');
+            Asserts.requireNonNull(item, 'item');
             const params = new HttpParams().set('name', 'git_checkout').set('path', item.path);
             const response = await this.http.get('/filebrowser/option', { params: params , responseType: 'text'}).toPromise();
             this.logResponse(item, response);
@@ -128,8 +128,8 @@ export class GitService implements IGitService {
         let success = false;
         this.runningTask = true;
         try {
-            requireNonNull(item, 'item');
-            requireNonNull(commit, 'commit');
+            Asserts.requireNonNull(item, 'item');
+            Asserts.requireNonNull(commit, 'commit');
             const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
             const data = {'name': 'git_commit', 'path': item.path, commit: commit};
             const response = await this.http.post('/filebrowser/option', data, { headers: headers , responseType: 'text'}).toPromise();
@@ -147,7 +147,7 @@ export class GitService implements IGitService {
         let success = false;
         this.runningTask = true;
         try {
-            requireNonNull(item, 'item');
+            Asserts.requireNonNull(item, 'item');
             const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
             const data = {'name': 'git_push', 'path': item.path, username: username, password: password};
             const response = await this.http.post('/filebrowser/option', data, { headers: headers , responseType: 'text'}).toPromise();
@@ -165,7 +165,7 @@ export class GitService implements IGitService {
         let success = false;
         this.runningTask = true;
         try {
-            requireNonNull(item, 'item');
+            Asserts.requireNonNull(item, 'item');
             const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
             const data = {'name': 'git_pull', 'path': item.path, username: username, password: password};
             const response = await this.http.post('/filebrowser/option', data, { headers: headers , responseType: 'text'}).toPromise();
@@ -182,9 +182,9 @@ export class GitService implements IGitService {
         let success = false;
         this.runningTask = true;
         try {
-            requireNonNull(home, 'parent');
-            requireNonNull(url, 'url');
-            assert(isHome(home), 'clone operation is applicable to home only');
+            Asserts.requireNonNull(home, 'parent');
+            Asserts.requireNonNull(url, 'url');
+            Asserts.assert(isHome(home), 'clone operation is applicable to home only');
             const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
             const data = {
                 'name': 'git_clone',
@@ -209,7 +209,7 @@ export class GitService implements IGitService {
         let response: IBlame[];
         this.runningTask = true;
         try {
-            requireNonNull(item, 'item');
+            Asserts.requireNonNull(item, 'item');
             const params = new HttpParams().set('name', 'git_blame').set('path', item.path);
             const headers = new HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
             response = await this.http.get('/filebrowser/option', { headers: headers, params: params }).toPromise() as IBlame[];

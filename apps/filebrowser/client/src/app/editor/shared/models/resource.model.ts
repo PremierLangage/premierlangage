@@ -1,9 +1,8 @@
-import { assert } from 'src/app/shared/models/assert.model';
+import { Asserts } from 'src/app/shared/models/assert.model';
 
 export enum ResourceTypes {
     File = 'file',
     Folder = 'folder',
-    Local = 'local'
 }
 
 export interface IResource {
@@ -82,8 +81,8 @@ export interface IResourceMeta {
 }
 
 export function createResource(parent: IResource, type: ResourceTypes): IResource {
-    assert(parent.type === 'folder', 'resource.type must be folder');
-    assert(parent.children.every(e => !e.renaming), 'cannot edit multiple resources');
+    Asserts.assert(parent.type === 'folder', 'resource.type must be folder');
+    Asserts.assert(parent.children.every(e => !e.renaming), 'cannot edit multiple resources');
     parent.expanded = true;
     parent.children = parent.children || [];
     return {

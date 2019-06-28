@@ -225,25 +225,27 @@ export class EditorService extends AbstractEditorService {
     }
 
     async open(resource: IResource, options?: IOpenOptions): Promise<boolean> {
-        if (!await this.resources.open(resource)) {
-            return Promise.reject(new Error(`Unable to open '${resource.path}': resource content not found`));
-        }
-        let group: IEditorGroup;
-        let groups = this.listGroups();
-        options = options || {};
-        if (options.openToSide) {
-            group = new EditorGroup(this);
-        } else {
-            groups = groups.filter(g => !g.isPreviewGroup()); // remove preview group
-            // tslint:disable-next-line: max-line-length
-            group =     groups.find(g => g.focused() && g.someResource(r => r.path === resource.path)) // find focused that contains the resource
-                    ||  groups.find(g => g.focused()) // find focused
-                    ||  groups.find(_ => true) || new EditorGroup(this); // find any or create new group
-        }
-        return group.open(resource, options).catch(error => {
+        try {
+            if (!await this.resources.open(resource)) {
+                return Promise.reject(new Error(`Unable to open '${resource.path}': resource content not found`));
+            }
+            let group: IEditorGroup;
+            let groups = this.listGroups();
+            options = options || {};
+            if (options.openToSide) {
+                group = new EditorGroup(this);
+            } else {
+                groups = groups.filter(g => !g.isPreviewGroup()); // remove preview group
+                // tslint:disable-next-line: max-line-length
+                group =     groups.find(g => g.focused() && g.someResource(r => r.path === resource.path)) // find focused that contains the resource
+                        ||  groups.find(g => g.focused()) // find focused
+                        ||  groups.find(_ => true) || new EditorGroup(this); // find any or create new group
+            }
+            return await group.open(resource, options);
+        } catch (error) {
             this.notification.logError(error);
             return false;
-        });
+        }
     }
 
     confirm(options: ConfirmOptions): Promise<boolean> {

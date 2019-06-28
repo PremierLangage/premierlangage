@@ -39,14 +39,27 @@ class Activity {
         this.options = options;
         this.nodes.spinner.slideUp();
         this.nodes.actions.slideDown();
+        this.components = options.components || {};
 
+        this.render();
         this.addListeners();
 
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub]); // fix #198
+        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
 
         if (window.onReadyPL) {
             window.onReadyPL(this.nodes);
         }
+    }
+
+    render() {
+        const nodes = document.querySelectorAll('[cid]');
+        nodes.forEach(node => {
+            const cid = node.getAttribute('cid');
+            const component = this.components[cid];
+            if (component && node.deserialize) {
+                node.deserialize(component);
+            }
+        });
     }
 
     /**
@@ -55,10 +68,11 @@ class Activity {
      * @param {string} sessionId  the id of the session
      * @returns {Activity} new Activity object
      */
-    static withTest(activityId, sessionId) {
+    static withTest(activityId, sessionId, components) {
         return new Activity({
-            activityId: activityId,
-            sessionId: sessionId
+            activityId,
+            sessionId,
+            components
         });
     }
 
@@ -69,7 +83,7 @@ class Activity {
      */
     static withEval(url) {
         return new Activity({
-            url: url
+            url
         });
     }
 
@@ -78,30 +92,33 @@ class Activity {
     }
 
     get inputs() {
-        const inputs = {};
+        const result = {};
         $( "[id^='form_']" ).each(function() {
             const id = this.id.slice(5); // name of the variable
             const value = $(this).val();
             if ($(this).is(':radio')) {
                 if($(this).is(':checked')) {
-                    inputs[id] = value;
+                    result[id] = value;
                 }
             }
             else if ($(this).is(':checkbox')) {
                 if($(this).is(':checked')) {
-                    if (id in inputs) {
-                        inputs[id].push(value);
+                    if (id in result) {
+                        result[id].push(value);
                     }
                     else {
-                        inputs[id] = [value]
+                        result[id] = [value]
                     }
                 }
             }
             else {
-                inputs[id] = value;
+                result[id] = value;
             }
         });
-        return inputs;
+        document.querySelectorAll('[cid]').forEach(node => {
+            result[node.getAttribute('cid')] = node.serialize() || {};
+        });
+        return result;
     }
 
     /** Adds listeners to buttons */
@@ -130,7 +147,6 @@ class Activity {
         if (!window.onBeforeSubmitPL || window.onBeforeSubmitPL(this.nodes) === true) {
             this.nodes.actions.slideUp();
             this.nodes.spinner.slideDown();
-
             if (this.options.url) {
                 this.evaluate(this.options.url, {
                     requested_action: 'submit', 
@@ -156,21 +172,20 @@ class Activity {
      * @param {*} data the post data
      */
     evaluate(url, data) {
-        const that = this;
         $.ajax({
             type: "POST",
             url: url,
             data: JSON.stringify(data, null, '\t'),
             contentType: 'application/json;charset=UTF-8',
-            success: function(response) {
-                that.onSuccess(response);
-                that.nodes.spinner.slideUp();
-                that.nodes.actions.slideDown();
+            success: (response) => {
+                this.onSuccess(response);
+                this.nodes.spinner.slideUp();
+                this.nodes.actions.slideDown();
             },
-            error: function(error) {
-                that.onFailed(error);
-                that.nodes.spinner.slideUp();
-                that.nodes.actions.slideDown();
+            error: (error) => {
+                this.onFailed(error);
+                this.nodes.spinner.slideUp();
+                this.nodes.actions.slideDown();
             }
         });
     }
@@ -194,7 +209,6 @@ class Activity {
         if (window.onAfterSubmitPL) {
             window.onAfterSubmitPL(this.nodes);
         }
-
     }
 
     /**

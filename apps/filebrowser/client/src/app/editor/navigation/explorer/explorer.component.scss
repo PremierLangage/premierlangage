@@ -4,14 +4,17 @@
     padding: 0 0 0 16px;
 }
 
+
+// TODO fix
+.tree-scroll {
+    height: 300px;
+}
+
 .mat-tree {
   background-color: transparent;
   padding: 0;
 }
 
-.mat-tree-node {
- max-height: 32px;
-}
 
 .node-content {
   .node-label {

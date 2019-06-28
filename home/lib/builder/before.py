@@ -2,7 +2,7 @@
 # coding: utf-8
 
 import sys, json, jsonpickle
-
+from sandboxio import get_context
 
 class StopBeforeExec(Exception):
     pass
@@ -21,12 +21,10 @@ if __name__ == "__main__":
                +"Usage: python3 builder.py [input_json] [output_json]")
         print(msg, file=sys.stderr)
         sys.exit(1)
-    input_json = sys.argv[1]
     output_json = sys.argv[2]
     
-    with open(input_json, "r") as f:
-        dic = json.load(f)
-    
+    dic = get_context()
+
     if 'before' in dic:
         glob = {}
         dic['StopBeforeExec'] = StopBeforeExec
@@ -46,6 +44,8 @@ if __name__ == "__main__":
         f.write(jsonpickle.encode(dic, unpicklable=False))
     
     sys.exit(0)
+
+
 
 
 
