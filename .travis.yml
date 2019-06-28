@@ -43,3 +43,4 @@ after_success: codecov
 env:
   global:
     - PGPORT=5432
+    - TRAVIS="TRAVIS"

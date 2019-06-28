@@ -101,9 +101,9 @@ TEMPLATES = [
             "app_dirname": "templates",
             "auto_reload": DEBUG,
             "match_extension": ".html",
-            "match_regex": r"^(?!admin)",
-            "environment": "premierlangage.jinja2.environment",
-            "undefined": "premierlangage.jinja2.CustomUndefined",
+            "match_regex": r"^(?!admin*)",
+            "environment": "premierlangage.jinja2_custom.environment",
+            "undefined": "premierlangage.jinja2_custom.CustomUndefined",
             "debug": True,
             "filters": {
                 "markdown": "django_markdown.templatetags.django_markdown.markdown",
