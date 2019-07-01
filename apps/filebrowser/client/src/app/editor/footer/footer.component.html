@@ -1,9 +1,0 @@
-<ng-container *ngIf="inRepo()">
-    <i class='repo-icon {{repoHost()}} fa-1x'></i> 
-    <a class='repo-url' href="{{repoUrl()}}" target="_blank">{{repoUrl()}}</a> <i class='repo-branch'> - {{repoBranch()}} </i>
-</ng-container>
-<div class="spacer"></div>
-<span *ngIf='cursor'>Ln {{cursor.lineNumber}}, Col {{cursor.column}}</span>
-<ng-container *ngIf='querying()'>
-    <mat-progress-spinner mode='indeterminate' color='warn' strokeWidth='2' diameter='16'></mat-progress-spinner> 
-</ng-container>

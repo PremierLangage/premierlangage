@@ -3,9 +3,6 @@ home/**
 !home/lib
 
 tmp/
-.idea/
-.vscode/
-client/node_modules
 
 
 apps/*/migrations/**
@@ -151,6 +148,7 @@ chrome-profiler-events.json
 speed-measure-plugin.json
 
 # IDEs and editors
+.idea/
 /.idea
 .project
 .classpath
@@ -160,6 +158,7 @@ speed-measure-plugin.json
 *.sublime-workspace
 
 # IDE - VSCode
+.vscode/
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
