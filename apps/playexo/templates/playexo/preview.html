@@ -51,7 +51,7 @@
 
 <script type='text/javascript'>
     $(function () {
-        Activity.withTest("{{id__}}", "{{session__.id}}", {{ components|safe }});
+        Activity.withTest("{{id__}}", "{{session__.id}}", {{ components|tojson|safe }});
     });
 </script>
 
