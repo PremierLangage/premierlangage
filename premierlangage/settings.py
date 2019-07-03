@@ -17,6 +17,7 @@ SECRET_KEY = "o!m$n&s4=kcftm1de1m+7!36a=8x38wrr)m9)i@ru7j-*c7vgm"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
+TASTYPIE_FULL_DEBUG = False
 
 # List of Allowed Hosts
 ALLOWED_HOSTS = ['127.0.0.1']
@@ -35,6 +36,7 @@ if DEBUG:
 PREREQ_APPS = [
     'taggit',
     'hitcount',
+    'tastypie',
     'django_http_method',
     'django_markdown',
     'django.contrib.admin',
@@ -52,7 +54,8 @@ PROJECT_APPS = [
     'loader',
     'classmanagement',
     'lti_app',
-    'qa'
+    'qa',
+    'notifs'
 ]
 
 INSTALLED_APPS = PROJECT_APPS + PREREQ_APPS

@@ -16,19 +16,29 @@ Including another URLconf
 
 from django.conf import settings
 from django.conf.urls import include, url
+from tastypie.api import Api
+from notifs.api.ressources import NotificationsResource
 from django.conf.urls.static import static
 from django.contrib import admin
 
 from classmanagement.views import index
 
 
+v1_api = Api(api_name='v1')
+v1_api.register(NotificationsResource())
+notifs_resource = NotificationsResource()
+
 urlpatterns = [
-                  url(r'^$', index),
-                  url(r'^courses/',
-                      include('apps.classmanagement.urls', namespace='classmanagement')),
-                  url(r'^playexo/', include('apps.playexo.urls', namespace="playexo")),
-                  url(r'^filebrowser/', include('apps.filebrowser.urls', namespace='filebrowser')),
-                  url(r'^profile/', include('apps.user_profile.urls', namespace="profile")),
-                  url(r'^ask/', include('apps.qa.urls', namespace='ask')),
-                  url(r'^admin/', admin.site.urls),
-              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    url(r'^$', index),
+    url(r'^courses/',
+        include('apps.classmanagement.urls', namespace='classmanagement')),
+    url(r'^playexo/', include('apps.playexo.urls', namespace="playexo")),
+    url(r'^filebrowser/', include('apps.filebrowser.urls', namespace='filebrowser')),
+    url(r'^profile/', include('apps.user_profile.urls', namespace="profile")),
+    url(r'^ask/', include('apps.qa.urls', namespace='ask')),
+    url(r'^admin/', admin.site.urls),
+    url(r'^notifs/', include('notifs.urls')),
+    url(r'^api/', include(notifs_resource.urls)),
+]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
