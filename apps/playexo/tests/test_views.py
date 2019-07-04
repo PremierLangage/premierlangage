@@ -12,6 +12,7 @@ from filebrowser.models import Directory
 from loader.loader import load_file
 from loader.models import Index
 from playexo.models import Activity, SessionActivity, SessionExercise
+from user_profile.enums import Role
 
 
 FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
@@ -28,6 +29,7 @@ class ViewsTestCase(TestCase):
             shutil.rmtree(FAKE_FB_ROOT)
         
         cls.user = User.objects.create_user(username='user', password='12345')
+        cls.user.profile.role = Role.INSTRUCTOR
         cls.c = Client()
         cls.c.force_login(cls.user, backend=settings.AUTHENTICATION_BACKENDS[0])
         cls.dir = Directory.objects.create(name='dir1', owner=cls.user)
@@ -220,3 +222,35 @@ class ViewsTestCase(TestCase):
             follow=True
         )
         self.assertEquals(response.status_code, 400)
+    
+    
+    def test_test_pl(self):
+        pl = load_file(self.dir, "static_add.pl")[0]
+        pl.save()
+        response = self.c.get(reverse("playexo:test_pl", args=[pl.id]))
+        self.assertEquals(response.status_code, 200)
+        
+    def test_test_pl_not_allowed(self):
+        user = User.objects.create_user(username='user_learner', password='12345')
+        client = Client()
+        client.force_login(user, backend=settings.AUTHENTICATION_BACKENDS[0])
+        pl = load_file(self.dir, "static_add.pl")[0]
+        pl.save()
+        response = client.get(reverse("playexo:test_pl", args=[pl.id]))
+        self.assertEquals(response.status_code, 403)
+
+    def test_test_pl_no_tests(self):
+        pl = load_file(self.dir, "working.pl")[0]
+        pl.save()
+        response = self.c.get(reverse("playexo:test_pl", args=[pl.id]))
+        self.assertEquals(response.status_code, 200)
+        self.assertIn("Error during testing", response.content.decode())
+        
+    def test_test_pl_failing_tests(self):
+        pl = load_file(self.dir, "failing_tests.pl")[0]
+        pl.save()
+        response = self.c.get(reverse("playexo:test_pl", args=[pl.id]))
+        self.assertEquals(response.status_code, 200)
+        self.assertIn("Builder failed:", response.content.decode())
+        self.assertIn("Une erreur", response.content.decode())
+        self.assertIn("Invalid test format", response.content.decode())

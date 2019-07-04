@@ -179,7 +179,7 @@ def test_pl(request, pl_id):
             test["status__"] = ("feedback" not in test or test["feedback_status__"]) and (
                 "grade" not in test or test["grade_status__"])
             dic["tests"][test_name] = test
-        
+            
         return render(request, 'playexo/test_pl.html', dic)
     
     except Exception:

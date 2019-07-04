@@ -28,16 +28,9 @@
         {% for test_name, test in tests.items() %}
             {% if test.error %}
                 <table class="mdl-data-table mdl-js-data-table mdl-data-table-default-non-numeric" style="width: 100%;">
-                    <tr {% if test.status__ %}
-                            class="alert alert-success"
-                        {% else %}
-                            class="alert alert-danger"
-                        {% endif %}>
-                        <th style="width: 50%;"> {{ test_name }}
-                        </th>
-                        <th>
-                            {{ item.error_message}}
-                        </th>
+                    <tr class="alert alert-danger"}>
+                        <th style="width: 50%;"> {{ test_name }}</th>
+                        <th>{{ test.error_message|safe }}</th>
                     </tr>
                 </table>
             {% else %}
