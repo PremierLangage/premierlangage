@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+
 {% block content %}
 <div class="navigation-container">
     {{ navigation }}
@@ -12,28 +13,11 @@
     <div class="col-md-8 exercise-container">{{ exercise }}</div>
     <div class="col-md-2"></div>
 </div>
-{% include 'playexo/resources.html' %}
+
+{% include 'playexo/statics.html' %}
 <script type='text/javascript'>
     (function () {
-        const toggle = $('.navigation__toggle');
-        const container = $('.navigation-container');
-        const navigation = $('.navigation');
-        let opened = true;
-        toggle.click(function () {
-            opened = !opened;
-            if (opened) {
-                toggle.animate({left: 250});
-                container.animate({width: 250}, function () {
-                    navigation.show();
-                });
-            } else {
-
-                toggle.animate({left: 0});
-                container.animate({width: 0}, function () {
-                    navigation.hide();
-                });
-            }
-        });
+        navigationToggle();
     })();
 </script>
 {% endblock %}

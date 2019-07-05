@@ -34,13 +34,6 @@ from playexo.models import Activity, SessionTest
 
 
 @login_required
-def index(request):
-    """ Used by the editor module to navigate """
-    return render(request, 'filebrowser/index.html')
-
-
-
-@login_required
 @require_POST
 @csrf_exempt
 def upload_resource(request):  # TODO ADD TEST
@@ -231,8 +224,7 @@ def move_resource(request):
     src = post.get('path')
     if not src:
         return HttpResponseBadRequest(missing_parameter('path'))
-    
-    # TODO check write rights in dst
+
     dst = post.get('dst')
     if not dst:
         return HttpResponseBadRequest(missing_parameter('dst'))
@@ -438,7 +430,7 @@ def git_status(request):
 
 
 @require_GET
-def git_blame(request):  # TODO ADD TEST
+def git_blame(request):
     """ Execute a git blame on the targeted entry."""
     path = request.GET.get('path')
     if not path:
@@ -633,37 +625,7 @@ def reload_pltp(request):
         return HttpResponseNotFound(msg)
 
 
-
-@login_required
-@require_GET
-def test_pl(request):
-    path = request.GET.get('path')
-    if not path:
-        return HttpResponseBadRequest(missing_parameter('path'))
-    
-    try:
-        path_components = path.split('/')
-        directory = Directory.objects.get(name=path_components[0])
-        file_path = os.path.join(*(path_components[1:]))
-        pl, warnings = load_file(directory, file_path)
-        
-        if not pl:
-            return HttpResponseBadRequest(warnings.replace(settings.FILEBROWSER_ROOT, ""))
-        
-        pl.save()
-        exercise = SessionTest.objects.create(pl=pl, user=request.user)
-        preview = exercise.get_exercise(request)
-        
-        return render(request, 'filebrowser/test.html', {
-            'preview': preview,
-        })
-    except Exception as e:  # pragma: no cover
-        msg = ("Impossible to test '" + os.path.basename(path) + "' : " + htmlprint.code(
-            str(type(e)) + ' - ' + str(e)))
-        return HttpResponseBadRequest(msg.replace(settings.FILEBROWSER_ROOT, ""))
-
-
-
+# TODO TO REMOVE
 @csrf_exempt
 @require_POST
 def compile_pl(request):
@@ -704,7 +666,7 @@ def compile_pl(request):
 
 
 
-
+# TODO TO REMOVE
 @csrf_exempt
 @require_POST
 def pl_tuto(request):
@@ -744,6 +706,36 @@ def pl_tuto(request):
         )
     
     return HttpResponseBadRequest(content="Couldn't resolve ajax request")
+
+
+@login_required
+@require_GET
+def test_pl(request):
+    path = request.GET.get('path')
+    if not path:
+        return HttpResponseBadRequest(missing_parameter('path'))
+    
+    try:
+        path_components = path.split('/')
+        directory = Directory.objects.get(name=path_components[0])
+        file_path = os.path.join(*(path_components[1:]))
+        pl, warnings = load_file(directory, file_path)
+        
+        if not pl:
+            return HttpResponseBadRequest(warnings.replace(settings.FILEBROWSER_ROOT, ""))
+        
+        pl.save()
+        exercise = SessionTest.objects.create(pl=pl, user=request.user)
+        preview = exercise.get_exercise(request)
+        
+        return render(request, 'filebrowser/test.html', {
+            'preview': preview,
+        })
+    except Exception as e:  # pragma: no cover
+        msg = ("Impossible to test '" + os.path.basename(path) + "' : " + htmlprint.code(
+            str(type(e)) + ' - ' + str(e)))
+        return HttpResponseBadRequest(msg.replace(settings.FILEBROWSER_ROOT, ""))
+
 
 @login_required
 @csrf_exempt

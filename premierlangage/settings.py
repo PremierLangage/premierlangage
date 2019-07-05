@@ -53,7 +53,8 @@ PROJECT_APPS = [
     'classmanagement',
     'lti_app',
     'qa',
-    'components'
+    'editor',
+    'components',
 ]
 
 INSTALLED_APPS = PROJECT_APPS + PREREQ_APPS

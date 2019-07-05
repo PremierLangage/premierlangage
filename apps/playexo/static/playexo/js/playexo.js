@@ -79,11 +79,13 @@ class Activity {
     /**
      * Creates new instance of Activity for eval activity.
      * @param {*} url the url of the activity
+     * @param {any} components pl components
      * @returns {Activity} new Activity object
      */
-    static withEval(url) {
+    static withEval(url, components) {
         return new Activity({
-            url
+            url,
+            components,
         });
     }
 
@@ -220,4 +222,26 @@ class Activity {
         this.nodes.feedback.html(JSON.stringify(error));
     }
 
+}
+
+function navigationToggle() {
+    const toggle = $('.navigation__toggle');
+    const container = $('.navigation-container');
+    const navigation = $('.navigation');
+    let opened = true;
+    toggle.click(function () {
+        opened = !opened;
+        if (opened) {
+            toggle.animate({left: 200});
+            container.animate({width: 200}, function () {
+                navigation.show();
+            });
+        } else {
+
+            toggle.animate({left: 0});
+            container.animate({width: 0}, function () {
+                navigation.hide();
+            });
+        }
+    });
 }

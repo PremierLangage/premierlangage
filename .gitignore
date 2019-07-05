@@ -67,7 +67,6 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
-media/
 migrations/0*
 !apps/misc_tests/resources/lib
 
@@ -148,7 +147,6 @@ chrome-profiler-events.json
 speed-measure-plugin.json
 
 # IDEs and editors
-.idea/
 /.idea
 .project
 .classpath
@@ -158,7 +156,7 @@ speed-measure-plugin.json
 *.sublime-workspace
 
 # IDE - VSCode
-.vscode/
+.vscode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json

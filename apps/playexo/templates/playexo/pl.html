@@ -63,12 +63,12 @@
         <br/>
     </div>
 </div>
-<link rel="stylesheet" href="{{ static('/playexo/css/playexo.css') }}"/>
+
 {% if extracss %}{{ extracss|safe }}{% endif %}
-<script type='text/javascript' src="{{ static('/playexo/js/playexo.js') }}"></script>
 {% if extrajs %}{{ extrajs|safe }}{% endif %}
+
 <script type='text/javascript'>
     $(function () {
-        Activity.withEval("{{ url('playexo:evaluate', activity_id__, pl_id__) }}");
+        Activity.withEval("{{ url('playexo:evaluate', activity_id__, pl_id__) }}", {{ components|tojson|safe }});
     });
 </script>
