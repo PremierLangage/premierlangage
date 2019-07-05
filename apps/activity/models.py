@@ -1,6 +1,7 @@
 import logging
 
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import JSONField
 from django.db import IntegrityError, models
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -18,47 +19,10 @@ logger = logging.getLogger(__name__)
 class Activity(LTIModel):
     name = models.CharField(max_length=200, null=False)
     open = models.BooleanField(default=True)
-    pltp = models.ForeignKey(PLTP, on_delete=models.CASCADE)
+    activity_type = models.CharField(max_length=20, null=False)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
-    parent = models.ForeignKey("self", on_delete=models.SET_NULL, null=True, blank=True)
-    
-    
-    @classmethod
-    def get_or_create_from_lti(cls, request, lti_launch):
-        """Creates an Activity corresponding to ID in the url and sets
-        its course according to the LTI request..
-
-        The corresponding Course must have already been created,
-        Course.DoesNotExists will be raised otherwise.
-
-        Returns a tuple of (object, created), where object is the
-        retrieved or created object and created is a boolean specifying
-        whether a new object was created."""
-        course_id = lti_launch.get("context_id")
-        consumer = lti_launch.get('oauth_consumer_key')
-        activity_id = lti_launch.get('resource_link_id')
-        activity_name = lti_launch.get('resource_link_title')
-        if not all([course_id, activity_id, activity_name, consumer]):
-            raise Http404("Could not create Activity: on of these parameters are missing:"
-                          + "[context_id, resource_link_id, resource_link_title, "
-                            "oauth_consumer_key]")
-        
-        course = Course.objects.get(consumer_id=course_id, consumer=consumer)
-        try:
-            return cls.objects.get(consumer_id=activity_id, consumer=consumer), False
-        except Activity.DoesNotExist:
-            match = resolve(request.path)
-            if not match.app_name or not match.url_name:
-                match = None
-            if not match or (match and match.app_name + ":" + match.url_name != "activity:play"):
-                logger.warning(request.path + " does not correspond to 'activity:play' in "
-                                              "Activity.get_or_create_from_lti")
-                raise Http404("Activity could not be found.")
-            parent = get_object_or_404(Activity, id=match.kwargs['activity_id'])
-            new = Activity.objects.create(consumer_id=activity_id, consumer=consumer,
-                                          name=activity_name, pltp=parent.pltp, course=course,
-                                          parent=parent)
-            return new, True
+    parent = models.ForeignKey("self", on_delete=models.SET_NULL, null=False)
+    children = models.ManyToManyField("self")
     
     
     def reload(self):
@@ -83,7 +47,7 @@ class SessionActivity(models.Model):
     
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
-    current_pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=True)
+    activity_data = JSONField(null=True)
     
     
     class Meta:
