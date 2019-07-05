@@ -6,34 +6,74 @@ class AbstractActivityType(ABC):
     
     @abstractmethod
     def student_dashboard(self):
-        return None
+        pass
     
     
     @abstractmethod
     def teacher_dashboard(self):
-        return None
+        pass
     
     
     @abstractmethod
     def small_sd(self):
-        return None
+        pass
     
     
     @abstractmethod
     def small_td(self):
-        return None
+        pass
     
     
     @abstractmethod
-    def barem(self):
-        return None
+    def grading(self):
+        pass
     
     
     @abstractmethod
     def template(self):
-        return None
+        pass
     
     
     @abstractmethod
     def fetch(self):
-        return None
+        pass
+    
+    
+    @abstractmethod
+    def install(self):
+        pass
+    
+    
+    @abstractmethod
+    def init(self):
+        pass
+    
+    
+    @abstractmethod
+    def launch(self):
+        pass
+    
+    
+    @abstractmethod
+    def display(self):
+        pass
+    
+    
+    @abstractmethod
+    def validate(self):
+        pass
+    
+    
+    @abstractmethod
+    def next(self):
+        pass
+    
+    
+    @abstractmethod
+    def pop(self):
+        pass
+    
+    
+    @abstractmethod
+    def end(self):
+        pass
