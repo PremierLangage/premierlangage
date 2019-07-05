@@ -1,20 +1,17 @@
-import codecs
 import json
 import os
 import re
 import shutil
 import subprocess
-import traceback
-
+from wsgiref.util import FileWrapper
 
 import gitcmd
 import htmlprint
 import requests
-from wsgiref.util import FileWrapper
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import (HttpResponseNotAllowed, HttpResponse, HttpResponseBadRequest,
+from django.http import (HttpResponse, HttpResponseBadRequest, HttpResponseNotAllowed,
                          HttpResponseNotFound, JsonResponse)
 from django.shortcuts import render
 from django.template.loader import get_template
@@ -26,7 +23,7 @@ from filebrowser.filter import in_repository, is_root
 from filebrowser.models import Directory
 from filebrowser.utils import (HOME_DIR, LIB_DIR, exec_git_cmd, get_content, get_meta,
                                join_fb_root, missing_parameter, repository_branch, repository_url,
-                               rm_fb_root, walkalldirs, to_download_url)
+                               rm_fb_root, walkalldirs)
 from loader.loader import load_file, reload_pltp as rp
 from loader.utils import get_location
 from playexo.models import Activity, SessionTest
@@ -224,7 +221,7 @@ def move_resource(request):
     src = post.get('path')
     if not src:
         return HttpResponseBadRequest(missing_parameter('path'))
-
+    
     dst = post.get('dst')
     if not dst:
         return HttpResponseBadRequest(missing_parameter('dst'))
@@ -251,7 +248,9 @@ def move_resource(request):
         msg = "Impossible to copy '" + os.path.basename(src) + "' : " + htmlprint.code(
             str(type(e)) + ' - ' + str(e))
         return HttpResponseNotFound(msg)
- 
+
+
+
 @require_GET
 def download_resource(request):
     """Returns a download url to the resource at GET['path'] """
@@ -261,9 +260,9 @@ def download_resource(request):
     path = join_fb_root(path)
     filename = os.path.basename(path)
     if os.path.isdir(path):
-        archive =  shutil.make_archive(path, 'zip', path)
+        archive = shutil.make_archive(path, 'zip', path)
         response = HttpResponse(
-            FileWrapper(open(archive,'rb')),
+            FileWrapper(open(archive, 'rb')),
             content_type='application/zip'
         )
         response['Content-Disposition'] = 'attachment; filename=%s.zip' % filename
@@ -272,7 +271,7 @@ def download_resource(request):
             data = fp.read()
         response = HttpResponse(content_type="application/force-download")
         response[
-            'Content-Disposition'] = 'attachment; filename=%s' % filename # force browser to
+            'Content-Disposition'] = 'attachment; filename=%s' % filename  # force browser to
         # download file
         response.write(data)
     return response
@@ -282,7 +281,9 @@ def download_resource(request):
 @require_GET
 def git_changes(request):
     error = ''
-    response = {}  
+    response = {}
+    
+    
     def extract_changes(path):
         roots = os.listdir(join_fb_root(path))
         directory = Directory.objects.get(name=path)
@@ -625,6 +626,7 @@ def reload_pltp(request):
         return HttpResponseNotFound(msg)
 
 
+
 # TODO TO REMOVE
 @csrf_exempt
 @require_POST
@@ -675,7 +677,7 @@ def pl_tuto(request):
     if not content:
         return HttpResponseBadRequest(missing_parameter('student'))
     
-    path =  post.get("path") 
+    path = post.get("path")
     if not path:
         path = 'Yggdrasil/conceptexo/pltuto.pl'
     path_components = path.split('/')
@@ -684,28 +686,29 @@ def pl_tuto(request):
         path = join_fb_root(path)
         with open(path, 'w') as f:
             print(content, file=f)
-
+        
         directory = Directory.objects.get(name=directory)
         file_path = os.path.join(*(path_components[1:]))
         pl, warnings = load_file(directory, file_path)
-        response = { 'compiled' : True}
+        response = {'compiled': True}
         if not pl:
             response['compiled'] = False
             response['warnings'] = warnings
         else:
             response['json'] = pl.json
             response['warnings'] = warnings
-    except Exception as e:  # pragma: no cover
+    except Exception:  # pragma: no cover
         response['compiled'] = False
     finally:
         os.remove(path)
         return HttpResponse(
-                json.dumps(response),
-                content_type='application/json',
-                status=200
+            json.dumps(response),
+            content_type='application/json',
+            status=200
         )
     
     return HttpResponseBadRequest(content="Couldn't resolve ajax request")
+
 
 
 @login_required
@@ -735,6 +738,7 @@ def test_pl(request):
         msg = ("Impossible to test '" + os.path.basename(path) + "' : " + htmlprint.code(
             str(type(e)) + ' - ' + str(e)))
         return HttpResponseBadRequest(msg.replace(settings.FILEBROWSER_ROOT, ""))
+
 
 
 @login_required
@@ -798,7 +802,7 @@ def evaluate_pl(request):
     
     exercise = SessionTest.objects.get(pk=data['session_id'])
     answer, feedback = exercise.evaluate(request, data['answers'], test=True)
-
+    
     return HttpResponse(
         json.dumps({
             "navigation": None,
@@ -825,7 +829,7 @@ def resolve_path(request):  # TODO ADD TEST
         path_components = path.split('/')
         directory = Directory.objects.get(name=path_components[0])
         current = path_components[1] if len(path_components) == 2 else \
-             os.path.join(*path_components[1:-1])
+            os.path.join(*path_components[1:-1])
         directory, path = get_location(directory, target, current=current)
         return HttpResponse(os.path.join(directory, path))
     

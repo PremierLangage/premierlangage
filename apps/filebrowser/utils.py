@@ -13,7 +13,9 @@ from filebrowser.models import Directory
 HOME_DIR = 'Yggdrasil'
 LIB_DIR = 'lib'
 
-def exec_git_cmd(path, command): #TODO add test or move to gitcmd
+
+
+def exec_git_cmd(path, command):  # TODO add test or move to gitcmd
     if not gitcmd.in_repository(path):
         raise gitcmd.NotInRepositoryError("'" + path + "' is not inside a repository")
     cwd = os.getcwd()
@@ -44,7 +46,7 @@ def to_download_url(path):
 
 def join_fb_root(path):
     """Returns an absolute path, joining <path> to FILEBROWSER_ROOT."""
-
+    
     return os.path.abspath(os.path.join(settings.FILEBROWSER_ROOT, path))
 
 

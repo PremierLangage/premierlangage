@@ -29,6 +29,7 @@ class Parser:
     VALUE = r'(?P<value>[^=@%#][^#]*?)\s*'
     FILE = r'(?P<file>([a-zA-Z0-9_]*:)?((\/)?[^' + BAD_CHAR + r']+)(\/[^' + BAD_CHAR + r']+)*)\s*'
     ALIAS = r'((\[\s*(?P<alias>[a-zA-Z_.][a-zA-Z0-9_.]*)\s*\])\s*?)?'
+    COMPONENT = r'(?P<component>\w+)(Component)\(\s*\)\s*'
     
     URL_LINE = re.compile(KEY + r'(?P<operator>\$=)\s*' + FILE + COMMENT + r'?$')
     ONE_LINE = re.compile(KEY + r'(?P<operator>=|\%|\+|\-)\s*' + VALUE + COMMENT + r'?$')
@@ -49,7 +50,7 @@ class Parser:
         self.lineno = 1
         self.dic = dict()
         self.warning = list()
-
+        
         with open(self.path_parsed_file) as f:
             self.lines = f.readlines()
         
@@ -59,6 +60,7 @@ class Parser:
         self._multiline_value = None
         self._multiline_opened_lineno = None
         self._multiline_json = False
+        self.components = {}
     
     
     def add_warning(self, message):
@@ -70,6 +72,7 @@ class Parser:
     def dic_add_key(self, key, value, append=False, prepend=False, replace=False):
         """Add the value to the key in the dictionnary, parse the key to create sub dictionnaries.
          Append the value if append is set to True.
+         Prepend the value if prepend is set to True.
          Does not generate a warning when the key already exists if replace is set to True """
         current_dic = self.dic
         sub_keys = key.split(".")
@@ -201,8 +204,8 @@ class Parser:
             self.dic_add_key(key, value, append=True)
         elif op == '-':
             self.dic_add_key(key, value, prepend=True)
-
-
+    
+    
     def multi_line_match(self, match, line):
         """ Set self._multiline_key and self._multiline_opened_lineno.
             Also set self._multiline_json if operator is '=%'"""
@@ -219,8 +222,8 @@ class Parser:
         
         if op != '+=' and op != '-=':  # Allow next lines to be concatenated
             self.dic_add_key(key, '')
-
-
+    
+    
     def while_multi_line(self, line):
         """ Append line to self.dic[self._multiline_key] if line does
             not match END_MULTI_LINE.
@@ -234,7 +237,7 @@ class Parser:
                 self.dic_add_key(self._multiline_key, self._multiline_value[:-1], prepend=True)
             else:
                 self.dic_add_key(self._multiline_key, self._multiline_value[:-1], append=True)
-
+            
             if self._multiline_json:
                 try:
                     self.dic_add_key(self._multiline_key, json.loads(self.dic[self._multiline_key]),
@@ -244,14 +247,15 @@ class Parser:
                                         self.lines[self._multiline_opened_lineno - 1],
                                         self._multiline_opened_lineno,
                                         message="Invalid JSON syntax starting ")
-
+            
             self._multiline_key = None
             self._multiline_op = None
             self._multiline_value = None
             self._multiline_json = False
         else:
             self._multiline_value += line
-
+    
+    
     def sandbox_file_line_match(self, match, line):
         """ Map content of file to self.dic['__files'][name].
 
@@ -274,29 +278,30 @@ class Parser:
                                str(e))
         except SyntaxError as e:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
-
-
+    
+    
     def url_line_match(self, match, line):
         """ Map value to a download url of a resource.
 
             Raise from loader.exceptions:
-                - SyntaxErrorPL if no group 'file' was found
+                - SyntaxErrorPL if no group 'key' or 'file' was found
                 - DirectoryNotFound if trying to load from a nonexistent directory
                 - FileNotFound if the given file do not exists."""
-
+        
         key = match.group('key')
-    
+        
         try:
             directory, path = get_location(self.directory, match.group('file'),
-                                            current=dirname(self.path), parser=self)
+                                           current=dirname(self.path), parser=self)
             url = to_download_url(os.path.join(directory, path))
             self.dic_add_key(key, url)
         except FileNotFoundError as e:
-            raise FileNotFound(self.path_parsed_file, line, match.group('file'), self.lineno, str(e))
+            raise FileNotFound(self.path_parsed_file, line, match.group('file'), self.lineno,
+                               str(e))
         except SyntaxError as e:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
-
-
+    
+    
     def parse_line(self, line):
         """ Parse the given line by calling the appropriate function according to regex match.
 

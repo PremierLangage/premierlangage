@@ -2,7 +2,6 @@ import logging
 import time
 
 import htmlprint
-
 from django.contrib.auth.models import User
 from django.db import IntegrityError, models
 from django.db.models.signals import post_save
@@ -15,15 +14,13 @@ from django.utils import timezone
 from django_jinja.backend import Jinja2
 from jsonfield import JSONField
 
-
 from classmanagement.models import Course
 from loader.models import PL, PLTP
-
 from lti_app.models import LTIModel
-
 from playexo.enums import State
 from playexo.exception import BuildScriptError, SandboxError
 from playexo.request import SandboxBuild, SandboxEval
+
 
 logger = logging.getLogger(__name__)
 
@@ -104,8 +101,10 @@ class SessionActivity(models.Model):
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
     current_pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=True)
     
+    
     class Meta:
         unique_together = ('user', 'activity')
+    
     
     def exercise(self, pl=...):
         """Return the SessionExercice corresponding to self.current_pl.
@@ -139,8 +138,10 @@ class SessionExerciseAbstract(models.Model):
     envid = models.CharField(max_length=300, null=True)
     context = JSONField(null=True)
     
+    
     class Meta:
         abstract = True
+    
     
     def add_to_context(self, key, value):
         """Add value corresponding to key in the context."""
@@ -205,14 +206,14 @@ class SessionExerciseAbstract(models.Model):
             evaluator = SandboxEval(self.envid, answers)
         
         response = evaluator.call()
-
+        
         answer = {
             "answers": answers,
             "user":    request.user,
             "pl":      self.pl,
             "grade":   response['grade'],
         }
-
+        
         if response['status'] < 0:  # Sandbox Error
             feedback = response['feedback']
             if request.user.profile.can_load() and response['sandboxerr']:
@@ -230,7 +231,7 @@ class SessionExerciseAbstract(models.Model):
             feedback = response['feedback']
             if request.user.profile.can_load() and response['stderr']:
                 feedback += "<br><br>Received on stderr:<br>" + htmlprint.code(response['stderr'])
-
+        
         self.context.update(response['context'])
         self.context['answers__'] = answers
         self.save()
@@ -277,8 +278,8 @@ class SessionExerciseAbstract(models.Model):
         self.context.update(context)
         self.built = True
         self.save()
-
-
+    
+    
     def render(self, template, context, request):
         env = Jinja2.get_default()
         components = {}
@@ -294,7 +295,8 @@ class SessionExerciseAbstract(models.Model):
             "components": components,
             **context
         }, request)
-
+    
+    
     def get_components(self):
         """
         Gets the components in the context a component.
@@ -304,6 +306,8 @@ class SessionExerciseAbstract(models.Model):
             if isinstance(self.context[key], dict) and 'cid' in self.context[key]:
                 components[key] = self.context[key]
         return components
+
+
 
 class SessionExercise(SessionExerciseAbstract):
     """Class representing the state of a PL inside of a SessionActivity.
@@ -316,8 +320,10 @@ class SessionExercise(SessionExerciseAbstract):
         session_activity - SessionActivity to which this SessionExercise belong."""
     session_activity = models.ForeignKey(SessionActivity, on_delete=models.CASCADE)
     
+    
     class Meta:
         unique_together = ('pl', 'session_activity')
+    
     
     @receiver(post_save, sender=SessionActivity)
     def create_session_exercise(sender, instance, created, **kwargs):
@@ -372,7 +378,6 @@ class SessionExercise(SessionExerciseAbstract):
         if context:
             dic = {**context, **dic}
         
-
         return self.render('playexo/pl.html', dic, request)
     
     
