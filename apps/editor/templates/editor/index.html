@@ -3,17 +3,5 @@
 {% block content %}
 {% csrf_token %}
 <app-root></app-root>
-
-<!-- if prod -->
-<link rel="stylesheet" href="{{ static('/editor/styles.css') }}"/>
-<script type="text/javascript" src="{{ static('/editor/runtime.js') }}"></script>
-<script type="text/javascript" src="{{ static('/editor/polyfills.js') }}"></script>
-<script type="text/javascript" src="{{ static('/editor/main.js') }}"></script>
-
-<!-- if dev -->
-<!-- <script type="text/javascript" src="{{ static('/editor/runtime.js') }}"></script>
-<script type="text/javascript" src="{{ static('/editor/polyfills.js') }}"></script>
-<script type="text/javascript" src="{{ static('/editor/styles.js') }}"></script>
-<script type="text/javascript" src="{{ static('/editor/vendor.js') }}"></script>
-<script type="text/javascript" src="{{ static('/editor/main.js') }}"></script> -->
+{% include 'editor/statics.html' %}
 {% endblock %}
