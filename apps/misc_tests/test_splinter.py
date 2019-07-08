@@ -94,6 +94,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         
         self.b.find_element_by_css_selector('div[class="tab-item ng-star-inserted"]').click()
         self.b.switch_to.frame(self.b.find_element_by_tag_name("iframe"))
+        sleep(WAIT_TIME)
         self.answer_pl("1")
         self.assertTrue(self.get_e_by_text("Mauvaise réponse") is not None)
         self.answer_pl("2")
@@ -119,7 +120,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         ActionChains(self.b).move_to_element(e).perform()
         
         sleep(WAIT_TIME)
-        self.b.find_element_by_id("op-0-lib/demo/static_add.pl").click()
+        self.b.find_element_by_id("node-option-1-lib/demo/static_add.pl").click()
         window_before = self.b.window_handles[0]
         window_after = self.b.window_handles[1]
         self.b.switch_to.window(window_after)
@@ -152,7 +153,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         ActionChains(self.b).move_to_element(e).perform()
         
         sleep(WAIT_TIME)
-        self.b.find_element_by_id("op-1-lib/demo/random_all.pltp").click()
+        self.b.find_element_by_id("node-option-2-lib/demo/random_all.pltp").click()
         self.get_e_by_text(" OPEN                    ").click()
         
         sleep(WAIT_TIME)
@@ -194,7 +195,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         ActionChains(self.b).move_to_element(e).perform()
         
         sleep(WAIT_TIME)
-        element = self.b.find_element_by_id("op-0-Yggdrasil/cbank/recursion/ackermann.pl")
+        element = self.b.find_element_by_id("node-option-1-Yggdrasil/cbank/recursion/ackermann.pl")
         self.b.execute_script("arguments[0].click();", element)
         sleep(WAIT_TIME)
         
