@@ -72,7 +72,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
             e = self.b.find_element_by_name("password")
             e.send_keys("secret")
             self.get_e_by_text('Log-in').click()
-            sleep(2*WAIT_TIME)
+            sleep(3*WAIT_TIME)
     
     
     def visit(self, url):
@@ -212,7 +212,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
 
     def test_filebrowser_theme(self):
         self.connect_to_filebrowser()
-        e = self.b.find_elements_by_css_selector(".navigation-icon")[-2]
+        e = self.b.find_element_by_css_selector(".fa-palette")
         self.assertTrue(self.b.find_element_by_css_selector(".light-theme"))
         self.assertFalse(self.b.find_elements_by_css_selector(".dark-theme"))
         e.click()
