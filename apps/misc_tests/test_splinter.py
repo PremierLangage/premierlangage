@@ -64,7 +64,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     
     def connect_to_filebrowser(self):
         self.b.refresh()
-        self.visit("filebrowser")
+        self.visit("editor")
         e = self.get_e_by_text("Se connecter")
         if e is not None:
             e = self.b.find_element_by_name("username")
@@ -72,6 +72,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
             e = self.b.find_element_by_name("password")
             e.send_keys("secret")
             self.get_e_by_text('Log-in').click()
+            sleep(3*WAIT_TIME)
     
     
     def visit(self, url):
@@ -93,6 +94,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         
         self.b.find_element_by_css_selector('div[class="tab-item ng-star-inserted"]').click()
         self.b.switch_to.frame(self.b.find_element_by_tag_name("iframe"))
+        sleep(WAIT_TIME)
         self.answer_pl("1")
         self.assertTrue(self.get_e_by_text("Mauvaise réponse") is not None)
         self.answer_pl("2")
@@ -118,7 +120,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         ActionChains(self.b).move_to_element(e).perform()
         
         sleep(WAIT_TIME)
-        self.b.find_element_by_id("op-0-lib/demo/static_add.pl").click()
+        self.b.find_element_by_id("node-option-test-lib/demo/static_add.pl").click()
         window_before = self.b.window_handles[0]
         window_after = self.b.window_handles[1]
         self.b.switch_to.window(window_after)
@@ -151,7 +153,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         ActionChains(self.b).move_to_element(e).perform()
         
         sleep(WAIT_TIME)
-        self.b.find_element_by_id("op-1-lib/demo/random_all.pltp").click()
+        self.b.find_element_by_id("node-option-load-pl-lib/demo/random_all.pltp").click()
         self.get_e_by_text(" OPEN                    ").click()
         
         sleep(WAIT_TIME)
@@ -193,8 +195,8 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         ActionChains(self.b).move_to_element(e).perform()
         
         sleep(WAIT_TIME)
-        element = self.b.find_element_by_id("op-0-Yggdrasil/cbank/recursion/ackermann.pl")
-        self.b.execute_script("arguments[0].click();", element)
+        e = self.b.find_element_by_id("node-option-test-Yggdrasil/cbank/recursion/ackermann.pl")
+        self.b.execute_script("arguments[0].click();", e)
         sleep(WAIT_TIME)
         
         window_before = self.b.window_handles[0]
@@ -206,3 +208,13 @@ class SeleniumTestCase(StaticLiveServerTestCase):
             self.b.find_element_by_css_selector("span[class='MathJax_Preview']") is not None)
         self.b.close()
         self.b.switch_to.window(window_before)
+
+
+    def test_filebrowser_theme(self):
+        self.connect_to_filebrowser()
+        e = self.b.find_element_by_css_selector(".fa-palette")
+        self.assertTrue(self.b.find_element_by_css_selector(".light-theme"))
+        self.assertFalse(self.b.find_elements_by_css_selector(".dark-theme"))
+        e.click()
+        self.assertFalse(self.b.find_elements_by_css_selector(".light-theme"))
+        self.assertTrue(self.b.find_element_by_css_selector(".dark-theme"))

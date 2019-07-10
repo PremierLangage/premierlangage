@@ -231,6 +231,10 @@ LOGGING = {
             'handlers': ['console', 'mail_admins'],
             'level':    'INFO',
         },
+        'django.request': {
+            'handlers': ['console', 'mail_admins'],
+            'level':    'ERROR',
+        },
     },
 }
 
