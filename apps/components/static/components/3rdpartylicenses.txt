@@ -93,9 +93,9 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-d3-path
+d3-dispatch
 BSD-3-Clause
-Copyright 2015-2016 Mike Bostock
+Copyright 2010-2016 Mike Bostock
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
@@ -457,28 +457,33 @@ THE SOFTWARE.
 @angular/platform-browser
 MIT
 
+@angular/router
+MIT
+
+@angular/forms
+MIT
+
+@angular/material/card
+
 @angular/material/dialog
 
 @angular/material/tooltip
 
 @angular/material/form-field
 
-@angular/forms
-MIT
-
 @angular/material/button
-
-@angular/material/expansion
-
-@angular/material/radio
-
-@angular/material/checkbox
 
 @angular/material/core
 
 @angular/material/list
 
 @angular/material/divider
+
+@angular/material/sidenav
+
+@angular/material/radio
+
+@angular/material/checkbox
 
 angular-resizable-element
 MIT
@@ -810,9 +815,9 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-d3-dispatch
+d3-path
 BSD-3-Clause
-Copyright 2010-2016 Mike Bostock
+Copyright 2015-2016 Mike Bostock
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,

@@ -31,7 +31,7 @@ def deserialize_components(context):
     for k, v in response.items():
         if isinstance(v, dict) and 'cid' in v:
             context[k] = Component(**response[k])
-            # TODO del context["response"][k]
+            del context["response"][k]
 
 def get_answers():
     """Return a dictionnary containing every answer."""
@@ -64,6 +64,7 @@ def output(grade, feedback, context=None):
     print(int(grade))
     
     sys.exit(0)
+
 
 
 
