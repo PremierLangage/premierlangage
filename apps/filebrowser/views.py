@@ -747,12 +747,14 @@ def test_pl(request):
 @require_POST
 def preview_pl(request):
     """ Used by the PL editor to preview a PL"""
+
     post = json.loads(request.body.decode())
     exists = True
     path = post.get('path')
     if not path:
         exists = False
         path = os.path.join(HOME_DIR, str(uuid.uuid4()))
+        path += '.pl'
 
     content = post.get('content', '')
     

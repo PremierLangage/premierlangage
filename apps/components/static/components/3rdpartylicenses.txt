@@ -473,6 +473,10 @@ MIT
 
 @angular/material/button
 
+@angular/material/grid-list
+
+@angular/material/icon
+
 @angular/material/dialog
 
 @angular/material/tooltip
