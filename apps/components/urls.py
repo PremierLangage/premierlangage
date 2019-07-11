@@ -5,13 +5,12 @@
 #
 
 
-from django.urls import path
-
+from django.conf.urls import url
 from components import views
 
 app_name = 'components'
 
 
 urlpatterns = [
-    path(r'', views.index, name='index'),
+    url(r'.*', views.index, name='index'),
 ]

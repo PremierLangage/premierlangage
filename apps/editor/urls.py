@@ -5,13 +5,12 @@
 #
 
 
-from django.urls import path
-
+from django.conf.urls import url
 from editor import views
 
 app_name = 'editor'
 
 
 urlpatterns = [
-    path(r'', views.index, name='index'),
+    url(r'.*', views.index, name='index'),
 ]

@@ -24,13 +24,16 @@ def components_to_class(context):
 
 def deserialize_components(context):
     """
-    Moves the components in 'context["response"]'  to context[k]
-    where k is the cid of a component.
+    Sets the state of the components in context according to
+    the states of the components in 'context["response"]'
     """
     response = dict(context["response"])
     for k, v in response.items():
-        if isinstance(v, dict) and 'cid' in v:
-            context[k] = Component(**response[k])
+        if isinstance(v, dict) and "cid" in v:
+            for k2, component in context.items():
+                if isinstance(component, Component) and component.cid == v["cid"]:
+                    context[k2] = Component(**v)
+                    break
             del context["response"][k]
 
 def get_answers():
@@ -64,6 +67,7 @@ def output(grade, feedback, context=None):
     print(int(grade))
     
     sys.exit(0)
+
 
 
 

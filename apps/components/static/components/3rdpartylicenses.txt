@@ -460,24 +460,24 @@ MIT
 @angular/router
 MIT
 
+@angular/material/card
+
+@angular/material/divider
+
 @angular/forms
 MIT
 
-@angular/material/card
+@angular/material/core
+
+@angular/material/list
+
+@angular/material/button
 
 @angular/material/dialog
 
 @angular/material/tooltip
 
 @angular/material/form-field
-
-@angular/material/button
-
-@angular/material/core
-
-@angular/material/list
-
-@angular/material/divider
 
 @angular/material/sidenav
 

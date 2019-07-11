@@ -50,7 +50,6 @@ class PreviewTestCase(TestCase):
         response = self.c.post(reverse("filebrowser:option"), {
             'name':             'preview_pl',
             'path':             'Yggdrasil/working.pl',
-            'requested_action': 'preview',
             'content':          c,
         }, content_type='application/json')
         self.assertContains(response, "Quentin Coumes")
@@ -62,7 +61,6 @@ class PreviewTestCase(TestCase):
         response = self.c.post(reverse("filebrowser:option"), {
             'name':             'preview_pl',
             'path':             'Yggdrasil/warning.pl',
-            'requested_action': 'preview',
             'content':          c,
         }, content_type='application/json')
         m = list(response.context['messages'])
@@ -75,15 +73,16 @@ class PreviewTestCase(TestCase):
         response = self.c.post(reverse("filebrowser:option"), {
             'name':             'preview_pl',
             'path':             'Yggdrasil/working.pl',
-            'requested_action': 'preview',
         }, content_type='application/json')
         self.assertContains(response, "Failed to load")
     
-    
+
     def test_preview_no_path(self):
+        with open(os.path.join(self.dir.root, "working.pl"), "r") as f:
+            c = f.read()
         response = self.c.post(reverse("filebrowser:option"), {
             'name':             'preview_pl',
-            'requested_action': 'preview',
+            'content':          c,
         }, content_type='application/json')
         self.assertContains(response, missing_parameter('path'), status_code=400)
     
@@ -124,13 +123,3 @@ class PreviewTestCase(TestCase):
         }, content_type='application/json')
         self.assertContains(response, "Couldn't resolve ajax request", status_code=400)
 
-
-
-# not used anymore because preview_pl
-"""     def test_preview_no_requested_action(self):
-        response = self.c.post(reverse("filebrowser:option"), {
-                'name': 'preview_pl',
-                'path': 'Yggdrasil/working.pl',
-        }, content_type='application/json')
-        self.assertContains(response, "Couldn't resolve ajax request", status_code=400)
- """

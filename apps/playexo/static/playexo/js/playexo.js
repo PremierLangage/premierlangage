@@ -53,9 +53,14 @@ class Activity {
 
     render() {
         const nodes = document.querySelectorAll('[cid]');
+        const components = Object.keys(this.components).map(k => {
+            return this.components[k];
+        });
         nodes.forEach(node => {
             const cid = node.getAttribute('cid');
-            const component = this.components[cid];
+            const component = components.find(c => {
+                return c.cid === cid;
+            });
             if (component && node.deserialize) {
                 node.deserialize(component);
             }
