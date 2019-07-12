@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+
+{% block alert %}{% endblock %}
+
+{% block content %}
+    {% if notifications_list %}
+        {% for notif in notifications_list %}
+            <table class="mdl-data-table mdl-data-table__cell--non-numeric">
+                <tr>
+                    <th>{{ notif.title }}</th>
+                </tr>
+
+                <tr>
+                    <td>{{ notif.id }}</td>
+                    <td>{{ notif.body }}</td>
+                    <td>{{ notif.pub_date_verbose() }}</td>
+                </tr>
+            </table>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

@@ -1,1 +1,1 @@
-from .ressources import NotificationsResource
+from .ressources import NotificationsResource, UserResource
