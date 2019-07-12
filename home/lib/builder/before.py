@@ -2,7 +2,7 @@
 # coding: utf-8
 
 import sys, json, jsonpickle
-from sandboxio import get_context
+from sandboxio import get_context, Component
 
 class StopBeforeExec(Exception):
     pass
@@ -24,6 +24,7 @@ if __name__ == "__main__":
     output_json = sys.argv[2]
     
     dic = get_context()
+    dic['Component'] = Component
 
     if 'before' in dic:
         glob = {}
@@ -44,6 +45,7 @@ if __name__ == "__main__":
         f.write(jsonpickle.encode(dic, unpicklable=False))
     
     sys.exit(0)
+
 
 
 

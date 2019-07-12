@@ -2,43 +2,34 @@
 grader  =@ /grader/evaluator.py
 builder =@ /builder/before.py
 
-mycomponent % {}
-mycomponent.cid = myselector
-mycomponent.text = The quick brown fox jumps over the lazy dog.
-mycomponent.selectable % true
-mycomponent.debug % true
+component1 %=
+{
+    "cid": "c1",
+    "text": "The quick brown fox jumps over the lazy dog.",
+    "selectable": true
+}
+==
+
+component2.cid = c2
+component2.selector = pl-input
+component2.type = number
+component2.value % 10
 
 before==
+component2.value = 100
 ==
 
-title==
-Text Component
-==
+title = Components
 
 text==
-Selectionnez les mots contenant la lettre **o**
 ==
 
 form==
-<pl-text cid="myselector"></pl-text>
+<pl-text cid="c1"></pl-text>
+{{ component2|component }}
 ==
 
 evaluator==
-score = 100
-indices = [2, 3, 5, 8]
-for e in mycomponent.selections
-    e['state'] = "error-state"
-    if e['index'] in indices:
-        e['state'] = "success-state"
-        indices = [i for i in indices if i != e['index']]
-    else:
-        indices.append(e['state'])
-
-if len(indices) == 0:
-    score = 100
-    msg = 'Bonne réponse'
-else:
-    score = 0
-    msg = 'Mauvaise réponse'
-grade = (score, msg)
+feedback = "c1 selections: %s, c2 value: %s" % (component1.selections, component2.value)
+grade = (100, feedback)
 ==

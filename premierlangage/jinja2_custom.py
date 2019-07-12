@@ -1,6 +1,6 @@
 import jinja2
 from django_http_method.templatetags import http_method
-
+from django.utils.safestring import SafeString
 
 def firstof(*args):
     return next(iter([i for i in args if i]), "")
@@ -20,7 +20,10 @@ def make_list(s):
 def first(l):
     return l[0] if l else None
 
-
+def component(l):
+    selector = l["selector"]
+    cid = l["cid"]
+    return SafeString("<%s cid='%s'></%s>" % (selector, cid, selector))
 
 def environment(**options):
     env = jinja2.Environment(**options)
@@ -37,7 +40,9 @@ def environment(**options):
             "http_options": http_method.http_options,
             "http_trace":   http_method.http_trace,
             "int": int,
+            "component": component
     })
+    env.filters["component"] = component
     return env
 
 

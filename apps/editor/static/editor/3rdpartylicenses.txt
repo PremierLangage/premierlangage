@@ -703,9 +703,6 @@ MIT
 @angular/router
 MIT
 
-@angular/animations
-MIT
-
 @angular/cdk
 MIT
 The MIT License
@@ -756,6 +753,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 
+@angular/animations
+MIT
+
+@angular/material/progress-bar
+
 ngx-toastr
 MIT
 The MIT License (MIT)
@@ -787,8 +789,6 @@ SOFTWARE.
 MIT
 
 @angular/material/tree
-
-@angular/material/progress-bar
 
 @angular/material/form-field
 
