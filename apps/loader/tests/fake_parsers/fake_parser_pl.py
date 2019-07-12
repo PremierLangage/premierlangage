@@ -240,8 +240,10 @@ class Parser:
             
             if self._multiline_json:
                 try:
-                    self.dic_add_key(self._multiline_key, json.loads(self.dic[self._multiline_key]),
-                                     replace=True)
+                    d = self.dic
+                    for k in self._multiline_key.split("."):
+                        d = d[k]
+                    self.dic_add_key(self._multiline_key, json.loads(d), replace=True)
                 except json.decoder.JSONDecodeError:
                     raise SyntaxErrorPL(join(self.directory.root, self.path),
                                         self.lines[self._multiline_opened_lineno - 1],
