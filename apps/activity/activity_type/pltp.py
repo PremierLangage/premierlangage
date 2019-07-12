@@ -2,7 +2,7 @@ from activity.activity_type.activity_type import AbstractActivityType
 
 
 
-class Base(AbstractActivityType):
+class Pltp(AbstractActivityType):
     
     def student_dashboard(self):
         pass

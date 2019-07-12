@@ -5,4 +5,4 @@ from activity.models import Activity
 
 @admin.register(Activity)
 class ActivityAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'id', 'pltp', 'open')
+    list_display = ('__str__', 'id', 'name', 'open', 'activity_type', 'parent')

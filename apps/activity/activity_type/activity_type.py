@@ -1,27 +1,56 @@
 from abc import ABC, abstractmethod
 
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect, render
+from django.urls import reverse
+
 
 
 class AbstractActivityType(ABC):
     
     @abstractmethod
-    def student_dashboard(self):
-        pass
+    def student_dashboard(self, activity, session):
+        """
+        This method is called when the dashboard of an activity is requested for a student.
+        :return: A rendered template of the student dashboard
+        """
+        return None
     
     
     @abstractmethod
-    def teacher_dashboard(self):
-        pass
+    def teacher_dashboard(self, activity, session):
+        """
+        This method is called when the dashboard of an activity is requested for a teacher.
+        :return: A rendered template of the teacher dashboard
+        """
+        return None
     
     
     @abstractmethod
-    def small_sd(self):
-        pass
+    def small(self, activity, session_activity):
+        """
+        This method is called when the dashboard of an activity is requested for a teacher.
+        :return: A rendered template of the teacher dashboard
+        """
+        return None
     
     
     @abstractmethod
-    def small_td(self):
-        pass
+    def small_sd(self, activity, session_activity):
+        """
+        This method is called when the dashboard of an activity is requested for a teacher.
+        :return: A rendered template of the teacher dashboard
+        """
+        return None
+    
+    
+    @abstractmethod
+    def small_td(self, activity, session_activity):
+        """
+        This method is called when the dashboard of an activity is requested for a teacher.
+        :return: A rendered template of the teacher dashboard
+        """
+        return None
     
     
     @abstractmethod
@@ -30,22 +59,43 @@ class AbstractActivityType(ABC):
     
     
     @abstractmethod
-    def template(self):
+    def template(self, request, activity, session, get_options):
+        """
+        This method is called when the play view is called.
+        :return: A rendered template of the main page of the activity.
+        """
+        return render(request, "base.html", {})
+    
+    
+    @abstractmethod
+    def fetch(self, activity):
+        """
+        This method is called when the play view is called.
+        :return: (PLs, Activities): a tuple of a list of pls and a list of activities.
+        """
+        return None, None
+    
+    
+    @abstractmethod
+    def install(self, activity):
+        """
+        This method is called only the first time when the activity is created.
+        :return: A new dictionnary to initialize the activity_data of an activity
+        """
         pass
     
     
     @abstractmethod
-    def fetch(self):
+    def init(self, activity):
+        """
+        This method is called when a new instance of an activity is created.
+        :return: A new dictionnary to initialize the session_data of a session_activity
+        """
         pass
     
     
     @abstractmethod
-    def install(self):
-        pass
-    
-    
-    @abstractmethod
-    def init(self):
+    def push(self):
         pass
     
     
@@ -55,25 +105,28 @@ class AbstractActivityType(ABC):
     
     
     @abstractmethod
-    def display(self):
+    def validate(self, activity, session, answer, action=""):
         pass
     
     
     @abstractmethod
-    def validate(self):
+    def next(self, activity, session):
+        """
+        This method is called when the next button is clicked on an activity.
+        :return: A redirection to the main page of the activity accordingly to the function.
+        """
+        return redirect(reverse("activity:play", args=[activity.id]))
+    
+    
+    @abstractmethod
+    def pop(self, activity, session):
         pass
     
     
     @abstractmethod
-    def next(self):
-        pass
-    
-    
-    @abstractmethod
-    def pop(self):
-        pass
-    
-    
-    @abstractmethod
-    def end(self):
-        pass
+    def end(self, activity, session):
+        """
+        This method is called when the activity is closed.
+        :return: A rendered template of the closed activity
+        """
+        raise PermissionDenied("Cette activité est fermé.")
