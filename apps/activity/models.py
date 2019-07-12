@@ -17,12 +17,12 @@ logger = logging.getLogger(__name__)
 class Activity(LTIModel):
     name = models.CharField(max_length=200, null=False)
     open = models.BooleanField(default=False)
-    activity_type = models.CharField(max_length=30, null=False, choices=type_dict.keys())
+    activity_type = models.CharField(max_length=30, null=False, choices=zip(type_dict.keys(), type_dict.keys()))
     activity_data = JSONField(null=True)
     parent = models.ForeignKey("self", on_delete=models.CASCADE, null=True)
-    children = models.ManyToManyField("self", on_delete=models.SET_NULL, null=True)
-    teacher = models.ManyToManyField(User, related_name="teaches", blank=True)
-    student = models.ManyToManyField(User, blank=True)
+    children = models.ManyToManyField("self", null=True)
+    teachers = models.ManyToManyField(User, related_name="teaches", blank=True)
+    students = models.ManyToManyField(User, blank=True)
     pls = models.ManyToManyField(PL, blank=True)
     
     
