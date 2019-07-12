@@ -48,9 +48,9 @@ class PreviewTestCase(TestCase):
         with open(os.path.join(self.dir.root, "working.pl"), "r") as f:
             c = f.read()
         response = self.c.post(reverse("filebrowser:option"), {
-            'name':             'preview_pl',
-            'path':             'Yggdrasil/working.pl',
-            'content':          c,
+            'name':    'preview_pl',
+            'path':    'Yggdrasil/working.pl',
+            'content': c,
         }, content_type='application/json')
         self.assertContains(response, "Quentin Coumes")
     
@@ -59,9 +59,9 @@ class PreviewTestCase(TestCase):
         with open(os.path.join(self.dir.root, "warning.pl"), "r") as f:
             c = f.read()
         response = self.c.post(reverse("filebrowser:option"), {
-            'name':             'preview_pl',
-            'path':             'Yggdrasil/warning.pl',
-            'content':          c,
+            'name':    'preview_pl',
+            'path':    'Yggdrasil/warning.pl',
+            'content': c,
         }, content_type='application/json')
         m = list(response.context['messages'])
         self.assertEqual(len(m), 1)
@@ -71,20 +71,10 @@ class PreviewTestCase(TestCase):
     
     def test_preview_warning_no_content(self):
         response = self.c.post(reverse("filebrowser:option"), {
-            'name':             'preview_pl',
-            'path':             'Yggdrasil/working.pl',
+            'name': 'preview_pl',
+            'path': 'Yggdrasil/working.pl',
         }, content_type='application/json')
         self.assertContains(response, "Failed to load")
-    
-
-    def test_preview_no_path(self):
-        with open(os.path.join(self.dir.root, "working.pl"), "r") as f:
-            c = f.read()
-        response = self.c.post(reverse("filebrowser:option"), {
-            'name':             'preview_pl',
-            'content':          c,
-        }, content_type='application/json')
-        self.assertContains(response, missing_parameter('path'), status_code=400)
     
     
     def test_evaluate_pl(self):
@@ -122,4 +112,3 @@ class PreviewTestCase(TestCase):
             'data': {}
         }, content_type='application/json')
         self.assertContains(response, "Couldn't resolve ajax request", status_code=400)
-
