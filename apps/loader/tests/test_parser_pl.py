@@ -89,7 +89,10 @@ class PlParserTestCase(TestCase):
     def test_parse_url(self):
         dic, war = pl.Parser(self.dir, "image.pl").parse()
         self.assertEqual(to_download_url('dir1/image.png'), dic['img'])
-      
+    
+    def test_parse_component(self):
+        pass # TODO
+
     def test_parse_errors(self):
         with self.assertRaises(SyntaxErrorPL):
             pl.Parser(self.dir, "no_string_in_sub_key.pl").parse()

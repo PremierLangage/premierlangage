@@ -8,14 +8,15 @@
 import json
 import os
 import re
+import uuid
 from os.path import basename, dirname, join
 
 from django.conf import settings
 
 from filebrowser.utils import to_download_url
-from loader.exceptions import FileNotFound, SemanticError, SyntaxErrorPL
+from loader.exceptions import FileNotFound, SemanticError, SyntaxErrorPL, ComponentNotFound
 from loader.utils import get_location
-
+from components.utils import SELECTORS
 
 BAD_CHAR = r''.join(settings.FILEBROWSER_DISALLOWED_CHAR)
 
@@ -29,9 +30,10 @@ class Parser:
     VALUE = r'(?P<value>[^=@%#][^#]*?)\s*'
     FILE = r'(?P<file>([a-zA-Z0-9_]*:)?((\/)?[^' + BAD_CHAR + r']+)(\/[^' + BAD_CHAR + r']+)*)\s*'
     ALIAS = r'((\[\s*(?P<alias>[a-zA-Z_.][a-zA-Z0-9_.]*)\s*\])\s*?)?'
-    COMPONENT = r'(?P<component>\w+)(Component)\(\s*\)\s*'
-    
-    URL_LINE = re.compile(KEY + r'(?P<operator>\$=)\s*' + FILE + COMMENT + r'?$')
+ 
+
+    COMPONENT_LINE = re.compile(KEY + r'\s*(?P<operator>=:)\s*(?P<component>\w+)\s*' + COMMENT + r'?$')
+    URL_LINE = re.compile(KEY + r'(?P<operator>=\$)\s*' + FILE + COMMENT + r'?$')
     ONE_LINE = re.compile(KEY + r'(?P<operator>=|\%|\+|\-)\s*' + VALUE + COMMENT + r'?$')
     FROM_FILE_LINE = re.compile(KEY + r'(?P<operator>=@|\+=@|\-=@)\s*' + FILE + COMMENT + r'?$')
     EXTENDS_LINE = re.compile(r'(extends|template)\s*=\s*' + FILE + COMMENT + r'?$')
@@ -60,7 +62,6 @@ class Parser:
         self._multiline_value = None
         self._multiline_opened_lineno = None
         self._multiline_json = False
-        self.components = {}
     
     
     def add_warning(self, message):
@@ -304,6 +305,27 @@ class Parser:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
     
     
+    def component_line_match(self, match, line):
+        """ Map value to a component.
+
+            Raise from loader.exceptions:
+                - SyntaxErrorPL if no group 'key' or 'component' was found
+                - DirectoryNotFound if trying to load from a nonexistent directory
+                - ComponentNotFound if component match.group("component") is not defined."""
+        key = match.group('key')
+        com = match.group('component')
+        try:
+            selector = SELECTORS[com]
+            self.dic_add_key(key, {
+                "cid": str(uuid.uuid4()),
+                "selector": selector
+            })
+        except KeyError:
+            raise ComponentNotFound(com)
+        except SyntaxError as e:
+            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
+    
+
     def parse_line(self, line):
         """ Parse the given line by calling the appropriate function according to regex match.
 
@@ -317,7 +339,13 @@ class Parser:
         
         elif self.FROM_FILE_LINE.match(line):
             self.from_file_line_match(self.FROM_FILE_LINE.match(line), line)
+          
+        elif self.URL_LINE.match(line):
+            self.url_line_match(self.URL_LINE.match(line), line)
         
+        elif self.COMPONENT_LINE.match(line):
+            self.component_line_match(self.COMPONENT_LINE.match(line), line)
+           
         elif self.ONE_LINE.match(line):
             self.one_line_match(self.ONE_LINE.match(line), line)
         
@@ -329,10 +357,7 @@ class Parser:
         
         elif self.COMMENT_LINE.match(line):
             self.dic['__comment'] += '\n' + self.COMMENT_LINE.match(line).group('comment')
-        
-        elif self.URL_LINE.match(line):
-            self.url_line_match(self.URL_LINE.match(line), line)
-        
+   
         elif not self.EMPTY_LINE.match(line):
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)
     

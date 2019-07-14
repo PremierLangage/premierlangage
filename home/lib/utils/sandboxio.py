@@ -1,40 +1,7 @@
 # coding: utf-8
 
 import sys, json, jsonpickle
-import importlib
-
-class Component:
-
-    def __init__(self, **kwargs):
-        for k, v in kwargs.items():
-            setattr(self, k, v)
-
-    def __str__(self):
-        return str(vars(self))
-
-
-def components_to_class(context):
-    """
-    Converts every dict object in 'context' 
-    with the key 'cid' to an instance of Component class
-    """
-    for k, v in context.items():
-        if isinstance(v, dict) and 'cid' in v:
-            context[k] = Component(**v)
-
-def deserialize_components(context):
-    """
-    Sets the state of the components in context according to
-    the states of the components in 'context["response"]'
-    """
-    response = dict(context["response"])
-    for k, v in response.items():
-        if isinstance(v, dict) and "cid" in v:
-            for k2, component in context.items():
-                if isinstance(component, Component) and component.cid == v["cid"]:
-                    context[k2] = Component(**v)
-                    break
-            del context["response"][k]
+from components import Component
 
 def get_answers():
     """Return a dictionnary containing every answer."""
@@ -47,7 +14,7 @@ def get_context():
     """Return the dictionnary containing the context of the exercise."""
     with open(sys.argv[1], "r") as f:
         context = json.load(f)
-    components_to_class(context)
+    Component.sync_context(context)
     return context
 
 
@@ -67,6 +34,8 @@ def output(grade, feedback, context=None):
     print(int(grade))
     
     sys.exit(0)
+
+
 
 
 

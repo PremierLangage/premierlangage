@@ -6,7 +6,7 @@
 title= Image
 
 author = Mamadou Cisse
-img $= dir/image.png
+img =$ dir/image.png
 text==
 <img src='{{img}}'/>
 ==

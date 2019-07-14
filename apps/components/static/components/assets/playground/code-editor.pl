@@ -9,7 +9,7 @@ import os
 ==
 component.theme = dark
 component.language = python
-==
+
 
 before==
 ==

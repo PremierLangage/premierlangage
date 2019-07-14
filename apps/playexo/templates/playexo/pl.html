@@ -69,6 +69,6 @@
 
 <script type='text/javascript'>
     $(function () {
-        Activity.withEval("{{ url('playexo:evaluate', activity_id__, pl_id__) }}", {{ components|tojson|safe }});
+        Activity.withEval("{{ url('playexo:evaluate', activity_id__, pl_id__) }}", {{ __components|tojson|safe }});
     });
 </script>

@@ -820,7 +820,6 @@ def evaluate_pl(request):
             "navigation": None,
             "exercise":   exercise.get_exercise(request, answer=answer),
             "feedback":   feedback,
-            "components": exercise.get_components()
         }),
         content_type='application/json'
     )

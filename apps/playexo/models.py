@@ -1,7 +1,8 @@
 import logging
 import time
-
+import inspect
 import htmlprint
+
 from django.contrib.auth.models import User
 from django.db import IntegrityError, models
 from django.db.models.signals import post_save
@@ -20,7 +21,7 @@ from lti_app.models import LTIModel
 from playexo.enums import State
 from playexo.exception import BuildScriptError, SandboxError
 from playexo.request import SandboxBuild, SandboxEval
-
+from components.utils import Component, components_source
 
 logger = logging.getLogger(__name__)
 
@@ -246,8 +247,13 @@ class SessionExerciseAbstract(models.Model):
             test    - (bool) Whether this exercise is in a testing session or not.
         """
         self.context = self.pl.json
+        
+        if not 'components.py' in self.context:
+            self.context['__files']['components.py'] = components_source()
+
         self.context['seed'] = time.time()
         self.save()
+
         response = SandboxBuild(dict(self.context), test=test).call()
         
         if response['status'] < 0:
@@ -282,31 +288,18 @@ class SessionExerciseAbstract(models.Model):
     
     def render(self, template, context, request):
         env = Jinja2.get_default()
-        components = {}
         for k, v in context.items():
             if isinstance(v, str):
                 context[k] = env.from_string(v).render(
                     context=context,
                     request=request
                 )
-            elif isinstance(v, dict) and 'cid' in v:
-                components[k] = v
+
         return get_template(template).render({
-            "components": components,
+            "__components": Component.from_context(context),
             **context
         }, request)
     
-    
-    def get_components(self):
-        """
-        Gets the components in the context a component.
-        """
-        components = {}
-        for key in self.context:
-            if isinstance(self.context[key], dict) and 'cid' in self.context[key]:
-                components[key] = self.context[key]
-        return components
-
 
 
 class SessionExercise(SessionExerciseAbstract):

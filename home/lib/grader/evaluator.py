@@ -3,7 +3,7 @@
 
 import sys, json, jsonpickle, time
 
-from sandboxio import output, get_context, get_answers, deserialize_components
+from sandboxio import output, get_context, get_answers
 
 
 class StopEvaluatorExec(Exception):
@@ -37,7 +37,6 @@ if __name__ == "__main__":
     
     dic = get_context()
     dic['response'] = get_answers()
-    deserialize_components(dic)
 
     if 'evaluator' in dic:
         glob = {}
@@ -56,4 +55,5 @@ if __name__ == "__main__":
         sys.exit(1)
     
     output(dic['grade'][0], dic['grade'][1], dic)
+
 

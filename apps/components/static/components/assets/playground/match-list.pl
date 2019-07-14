@@ -4,9 +4,8 @@ builder =@ /builder/before.py
 
 component.cid = radio
 component.selector = pl-match-list
-
-before==
-component.items = [
+component.items %=
+[
     { "id": "P1", "content": "P1", "target": false, "source": true },
     { "id": "P2", "content": "P2", "target": false, "source": true },
     { "id": "P3", "content": "P3", "target": false, "source": true },
@@ -14,13 +13,13 @@ component.items = [
         "id": "P4",
         "content": '<img src="https://htpratique.com/wp-content/uploads/2018/06/Les-meilleurs-outils-pour-créer-un-quiz-et-questionnaires-en-ligne.jpg"/>',
         "target": true,
-        "source": false,
+        "source": false
     },
     {
         "id": "P5",
         "content": '<img src="https://htpratique.com/wp-content/uploads/2018/06/Les-meilleurs-outils-pour-créer-un-quiz-et-questionnaires-en-ligne.jpg"/>',
         "target": true,
-        "source": false,
+        "source": false
     },
     {
         "id": "P6",
@@ -29,6 +28,8 @@ component.items = [
         "source": false
     }
 ]
+==
+before==
 ==
 
 title = Match List Component

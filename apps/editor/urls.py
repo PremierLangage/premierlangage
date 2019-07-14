@@ -12,5 +12,6 @@ app_name = 'editor'
 
 
 urlpatterns = [
+    url(r'compile', views.compile, name='compile'),
     url(r'.*', views.index, name='index'),
 ]

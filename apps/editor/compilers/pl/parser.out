@@ -1,0 +1,216 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    COMMENT
+
+Grammar
+
+Rule 0     S' -> start
+Rule 1     start -> instructions
+Rule 2     instructions -> instructions assign_single
+Rule 3     instructions -> instructions assign_multi
+Rule 4     instructions -> instructions assign_file
+Rule 5     instructions -> instructions sandbox
+Rule 6     instructions -> empty
+Rule 7     assign_single -> ID OP_ASSIGN_SINGLE
+Rule 8     assign_single -> ID OP_ASSIGN_SINGLE TEXT
+Rule 9     assign_multi -> ID OP_ASSIGN_MULTI TEXT
+Rule 10    assign_file -> ID OP_ASSIGN_FILE TEXT
+Rule 11    sandbox -> OP_SANDBOX TEXT
+Rule 12    empty -> <empty>
+
+Terminals, with rules where they appear
+
+COMMENT              : 
+ID                   : 7 8 9 10
+OP_ASSIGN_FILE       : 10
+OP_ASSIGN_MULTI      : 9
+OP_ASSIGN_SINGLE     : 7 8
+OP_SANDBOX           : 11
+TEXT                 : 8 9 10 11
+error                : 
+
+Nonterminals, with rules where they appear
+
+assign_file          : 4
+assign_multi         : 3
+assign_single        : 2
+empty                : 6
+instructions         : 1 2 3 4 5
+sandbox              : 5
+start                : 0
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . start
+    (1) start -> . instructions
+    (2) instructions -> . instructions assign_single
+    (3) instructions -> . instructions assign_multi
+    (4) instructions -> . instructions assign_file
+    (5) instructions -> . instructions sandbox
+    (6) instructions -> . empty
+    (12) empty -> .
+
+    ID              reduce using rule 12 (empty -> .)
+    OP_SANDBOX      reduce using rule 12 (empty -> .)
+    $end            reduce using rule 12 (empty -> .)
+
+    start                          shift and go to state 1
+    instructions                   shift and go to state 2
+    empty                          shift and go to state 3
+
+state 1
+
+    (0) S' -> start .
+
+
+
+state 2
+
+    (1) start -> instructions .
+    (2) instructions -> instructions . assign_single
+    (3) instructions -> instructions . assign_multi
+    (4) instructions -> instructions . assign_file
+    (5) instructions -> instructions . sandbox
+    (7) assign_single -> . ID OP_ASSIGN_SINGLE
+    (8) assign_single -> . ID OP_ASSIGN_SINGLE TEXT
+    (9) assign_multi -> . ID OP_ASSIGN_MULTI TEXT
+    (10) assign_file -> . ID OP_ASSIGN_FILE TEXT
+    (11) sandbox -> . OP_SANDBOX TEXT
+
+    $end            reduce using rule 1 (start -> instructions .)
+    ID              shift and go to state 8
+    OP_SANDBOX      shift and go to state 9
+
+    assign_single                  shift and go to state 4
+    assign_multi                   shift and go to state 5
+    assign_file                    shift and go to state 6
+    sandbox                        shift and go to state 7
+
+state 3
+
+    (6) instructions -> empty .
+
+    ID              reduce using rule 6 (instructions -> empty .)
+    OP_SANDBOX      reduce using rule 6 (instructions -> empty .)
+    $end            reduce using rule 6 (instructions -> empty .)
+
+
+state 4
+
+    (2) instructions -> instructions assign_single .
+
+    ID              reduce using rule 2 (instructions -> instructions assign_single .)
+    OP_SANDBOX      reduce using rule 2 (instructions -> instructions assign_single .)
+    $end            reduce using rule 2 (instructions -> instructions assign_single .)
+
+
+state 5
+
+    (3) instructions -> instructions assign_multi .
+
+    ID              reduce using rule 3 (instructions -> instructions assign_multi .)
+    OP_SANDBOX      reduce using rule 3 (instructions -> instructions assign_multi .)
+    $end            reduce using rule 3 (instructions -> instructions assign_multi .)
+
+
+state 6
+
+    (4) instructions -> instructions assign_file .
+
+    ID              reduce using rule 4 (instructions -> instructions assign_file .)
+    OP_SANDBOX      reduce using rule 4 (instructions -> instructions assign_file .)
+    $end            reduce using rule 4 (instructions -> instructions assign_file .)
+
+
+state 7
+
+    (5) instructions -> instructions sandbox .
+
+    ID              reduce using rule 5 (instructions -> instructions sandbox .)
+    OP_SANDBOX      reduce using rule 5 (instructions -> instructions sandbox .)
+    $end            reduce using rule 5 (instructions -> instructions sandbox .)
+
+
+state 8
+
+    (7) assign_single -> ID . OP_ASSIGN_SINGLE
+    (8) assign_single -> ID . OP_ASSIGN_SINGLE TEXT
+    (9) assign_multi -> ID . OP_ASSIGN_MULTI TEXT
+    (10) assign_file -> ID . OP_ASSIGN_FILE TEXT
+
+    OP_ASSIGN_SINGLE shift and go to state 10
+    OP_ASSIGN_MULTI shift and go to state 11
+    OP_ASSIGN_FILE  shift and go to state 12
+
+
+state 9
+
+    (11) sandbox -> OP_SANDBOX . TEXT
+
+    TEXT            shift and go to state 13
+
+
+state 10
+
+    (7) assign_single -> ID OP_ASSIGN_SINGLE .
+    (8) assign_single -> ID OP_ASSIGN_SINGLE . TEXT
+
+    ID              reduce using rule 7 (assign_single -> ID OP_ASSIGN_SINGLE .)
+    OP_SANDBOX      reduce using rule 7 (assign_single -> ID OP_ASSIGN_SINGLE .)
+    $end            reduce using rule 7 (assign_single -> ID OP_ASSIGN_SINGLE .)
+    TEXT            shift and go to state 14
+
+
+state 11
+
+    (9) assign_multi -> ID OP_ASSIGN_MULTI . TEXT
+
+    TEXT            shift and go to state 15
+
+
+state 12
+
+    (10) assign_file -> ID OP_ASSIGN_FILE . TEXT
+
+    TEXT            shift and go to state 16
+
+
+state 13
+
+    (11) sandbox -> OP_SANDBOX TEXT .
+
+    ID              reduce using rule 11 (sandbox -> OP_SANDBOX TEXT .)
+    OP_SANDBOX      reduce using rule 11 (sandbox -> OP_SANDBOX TEXT .)
+    $end            reduce using rule 11 (sandbox -> OP_SANDBOX TEXT .)
+
+
+state 14
+
+    (8) assign_single -> ID OP_ASSIGN_SINGLE TEXT .
+
+    ID              reduce using rule 8 (assign_single -> ID OP_ASSIGN_SINGLE TEXT .)
+    OP_SANDBOX      reduce using rule 8 (assign_single -> ID OP_ASSIGN_SINGLE TEXT .)
+    $end            reduce using rule 8 (assign_single -> ID OP_ASSIGN_SINGLE TEXT .)
+
+
+state 15
+
+    (9) assign_multi -> ID OP_ASSIGN_MULTI TEXT .
+
+    ID              reduce using rule 9 (assign_multi -> ID OP_ASSIGN_MULTI TEXT .)
+    OP_SANDBOX      reduce using rule 9 (assign_multi -> ID OP_ASSIGN_MULTI TEXT .)
+    $end            reduce using rule 9 (assign_multi -> ID OP_ASSIGN_MULTI TEXT .)
+
+
+state 16
+
+    (10) assign_file -> ID OP_ASSIGN_FILE TEXT .
+
+    ID              reduce using rule 10 (assign_file -> ID OP_ASSIGN_FILE TEXT .)
+    OP_SANDBOX      reduce using rule 10 (assign_file -> ID OP_ASSIGN_FILE TEXT .)
+    $end            reduce using rule 10 (assign_file -> ID OP_ASSIGN_FILE TEXT .)
+
