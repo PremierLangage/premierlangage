@@ -6,11 +6,20 @@ test
 
 title+test
 
+title2 = CC.
+
+title2 -=
+BB
+==
+
+title2 - AA
+
 #comment
 extends=working.pl
 
 test=@working.pl
 test+=@working.pl
+test-=@working.pl
 
 text==
 tests

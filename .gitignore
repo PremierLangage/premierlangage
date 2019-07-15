@@ -3,9 +3,6 @@ home/**
 !home/lib
 
 tmp/
-.idea/
-.vscode/
-client/node_modules
 
 
 apps/*/migrations/**
@@ -70,7 +67,6 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
-media/
 migrations/0*
 !apps/misc_tests/resources/lib
 
@@ -160,6 +156,7 @@ speed-measure-plugin.json
 *.sublime-workspace
 
 # IDE - VSCode
+.vscode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json

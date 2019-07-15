@@ -75,7 +75,10 @@ class Parser(ParserPL):
         
         elif self.COMMENT_LINE.match(line):
             self.dic['__comment'] += '\n' + self.COMMENT_LINE.match(line).group('comment')
-        
+
+        elif self.URL_LINE.match(line):
+            self.url_line_match(self.URL_LINE.match(line), line)
+                
         elif not self.EMPTY_LINE.match(line):
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)
 

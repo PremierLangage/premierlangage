@@ -8,13 +8,15 @@
 import json
 import os
 import re
+import uuid
 from os.path import basename, dirname, join
 
 from django.conf import settings
 
 from filebrowser.utils import to_download_url
-from loader.exceptions import FileNotFound, SemanticError, SyntaxErrorPL
+from loader.exceptions import FileNotFound, SemanticError, SyntaxErrorPL, ComponentNotFound
 from loader.utils import get_location
+from components.utils import SELECTORS
 
 
 BAD_CHAR = r''.join(settings.FILEBROWSER_DISALLOWED_CHAR)
@@ -25,16 +27,18 @@ class Parser:
     """Parser used to parse pl files with .pl extension"""
     
     KEY = r'^(?P<key>[a-zA-Z_][a-zA-Z0-9_\.]*)\s*'
-    SRC = r'(img.+?(?=src)src\s*=(?:\"|\')(?!\/filebrowser)(?P<src>[^\"|\']+)(?:\"|\'))'
     COMMENT = r'(?P<comment>#.*)'
     VALUE = r'(?P<value>[^=@%#][^#]*?)\s*'
     FILE = r'(?P<file>([a-zA-Z0-9_]*:)?((\/)?[^' + BAD_CHAR + r']+)(\/[^' + BAD_CHAR + r']+)*)\s*'
     ALIAS = r'((\[\s*(?P<alias>[a-zA-Z_.][a-zA-Z0-9_.]*)\s*\])\s*?)?'
     
-    ONE_LINE = re.compile(KEY + r'(?P<operator>=|\%|\+)\s*' + VALUE + COMMENT + r'?$')
-    FROM_FILE_LINE = re.compile(KEY + r'(?P<operator>=@|\+=@)\s*' + FILE + COMMENT + r'?$')
+    COMPONENT_LINE = re.compile(
+        KEY + r'\s*(?P<operator>=:)\s*(?P<component>\w+)\s*' + COMMENT + r'?$')
+    URL_LINE = re.compile(KEY + r'(?P<operator>=\$)\s*' + FILE + COMMENT + r'?$')
+    ONE_LINE = re.compile(KEY + r'(?P<operator>=|\%|\+|\-)\s*' + VALUE + COMMENT + r'?$')
+    FROM_FILE_LINE = re.compile(KEY + r'(?P<operator>=@|\+=@|\-=@)\s*' + FILE + COMMENT + r'?$')
     EXTENDS_LINE = re.compile(r'(extends|template)\s*=\s*' + FILE + COMMENT + r'?$')
-    MULTI_LINE = re.compile(KEY + r'(?P<operator>==|\+=|\%=)\s*' + COMMENT + r'?$')
+    MULTI_LINE = re.compile(KEY + r'(?P<operator>==|\+=|\-=|\%=)\s*' + COMMENT + r'?$')
     SANDBOX_FILE_LINE = re.compile(r'@\s*' + FILE + ALIAS + COMMENT + r'?$')
     END_MULTI_LINE = re.compile(r'==\s*$')
     COMMENT_LINE = re.compile(r'\s*' + COMMENT + r'$')
@@ -55,6 +59,8 @@ class Parser:
         
         self._multiline_dic = None
         self._multiline_key = None
+        self._multiline_op = None
+        self._multiline_value = None
         self._multiline_opened_lineno = None
         self._multiline_json = False
     
@@ -65,26 +71,11 @@ class Parser:
         self.warning.append("%s:%d -- %s\n%s" % f)
     
     
-    def dic_add_key(self, key, value, append=False, replace=False):
+    def dic_add_key(self, key, value, append=False, prepend=False, replace=False):
         """Add the value to the key in the dictionnary, parse the key to create sub dictionnaries.
          Append the value if append is set to True.
+         Prepend the value if prepend is set to True.
          Does not generate a warning when the key already exists if replace is set to True """
-        if key in self.HTML_KEYS:
-            src_match = ''
-            try:
-                matches = re.findall(self.SRC, value)
-                for match in matches:
-                    src_match = match[-1]
-                    directory, path = get_location(self.directory, src_match,
-                                                   current=dirname(self.path), parser=self)
-                    src = os.path.join(directory, path)
-                    value = value.replace(match[-1], to_download_url(src))
-            except SyntaxError as e:
-                raise SyntaxErrorPL(self.path, self.lines[self.lineno - 1], self.lineno, str(e))
-            except FileNotFoundError as e:
-                raise FileNotFound(self.path, self.lines[self.lineno - 1], src_match, self.lineno,
-                                   str(e))
-        
         current_dic = self.dic
         sub_keys = key.split(".")
         for k in sub_keys:
@@ -95,15 +86,20 @@ class Parser:
             current_dic = current_dic[k]
         last_key = sub_keys[-1]
         
-        if last_key in current_dic and not append and not replace:
-            self.add_warning(
-                "Key '" + key + "' overwritten at line " + str(self.lineno))
+        if last_key in current_dic and not append and not prepend and not replace:
+            self.add_warning("Key '" + key + "' overwritten at line " + str(self.lineno))
         if append:
             if last_key not in current_dic:
                 line = self._multiline_opened_lineno if self._multiline_key else self.lineno
-                raise SemanticError(self.path_parsed_file, self.lines[line - 1], line,
-                                    "Trying to append to non-existent key '" + key + "'.")
+                error = "Trying to append to non-existent key '" + key + "'."
+                raise SemanticError(self.path_parsed_file, self.lines[line - 1], line, error)
             current_dic[last_key] += value
+        elif prepend:
+            if last_key not in current_dic:
+                line = self._multiline_opened_lineno if self._multiline_key else self.lineno
+                error = "Trying to prepend to non-existent key '" + key + "'."
+                raise SemanticError(self.path_parsed_file, self.lines[line - 1], line, error)
+            current_dic[last_key] = value + current_dic[last_key]
         else:
             current_dic[last_key] = value
     
@@ -173,6 +169,8 @@ class Parser:
             with open(join(settings.FILEBROWSER_ROOT, directory, path)) as f:
                 if '+' in op:
                     self.dic_add_key(key, f.read(), append=True)
+                elif '-' in op:
+                    self.dic_add_key(key, f.read(), prepend=True)
                 else:
                     self.dic_add_key(key, f.read())
         except FileNotFoundError as e:
@@ -206,6 +204,8 @@ class Parser:
                                     message="Invalid JSON syntax starting ")
         elif op == '+':
             self.dic_add_key(key, value, append=True)
+        elif op == '-':
+            self.dic_add_key(key, value, prepend=True)
     
     
     def multi_line_match(self, match, line):
@@ -216,11 +216,13 @@ class Parser:
         op = match.group('operator')
         
         self._multiline_key = key
+        self._multiline_op = op
+        self._multiline_value = ''
         self._multiline_opened_lineno = self.lineno
         if op == '%=':
             self._multiline_json = True
         
-        if op != '+=':  # Allow next lines to be concatenated
+        if op != '+=' and op != '-=':  # Allow next lines to be concatenated
             self.dic_add_key(key, '')
     
     
@@ -232,24 +234,30 @@ class Parser:
                 - SyntaxErrorPL if self._multiline_json is True, line match END_MULTI_LINE
                   and string consisting of all readed line is not a well formated json."""
         if self.END_MULTI_LINE.match(line):
+            # [:-1] will remove last \n in a multiline value
+            if self._multiline_op == '-=':
+                self.dic_add_key(self._multiline_key, self._multiline_value[:-1], prepend=True)
+            else:
+                self.dic_add_key(self._multiline_key, self._multiline_value[:-1], append=True)
+            
             if self._multiline_json:
                 try:
-                    self.dic_add_key(self._multiline_key, json.loads(self.dic[self._multiline_key]),
-                                     replace=True)
+                    d = self.dic
+                    for k in self._multiline_key.split("."):
+                        d = d[k]
+                    self.dic_add_key(self._multiline_key, json.loads(d), replace=True)
                 except json.decoder.JSONDecodeError:
                     raise SyntaxErrorPL(join(self.directory.root, self.path),
                                         self.lines[self._multiline_opened_lineno - 1],
                                         self._multiline_opened_lineno,
                                         message="Invalid JSON syntax starting ")
-            # remove last \n in a multiline value
-            else:
-                self.dic_add_key(self._multiline_key,
-                                 self.dic_get_subkeys_value(self._multiline_key)[:-1],
-                                 replace=True)
+            
             self._multiline_key = None
+            self._multiline_op = None
+            self._multiline_value = None
             self._multiline_json = False
         else:
-            self.dic_add_key(self._multiline_key, line, append=True)
+            self._multiline_value += line
     
     
     def sandbox_file_line_match(self, match, line):
@@ -276,6 +284,49 @@ class Parser:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
     
     
+    def url_line_match(self, match, line):
+        """ Map value to a download url of a resource.
+
+            Raise from loader.exceptions:
+                - SyntaxErrorPL if no group 'key' or 'file' was found
+                - DirectoryNotFound if trying to load from a nonexistent directory
+                - FileNotFound if the given file do not exists."""
+        
+        key = match.group('key')
+        
+        try:
+            directory, path = get_location(self.directory, match.group('file'),
+                                           current=dirname(self.path), parser=self)
+            url = to_download_url(os.path.join(directory, path))
+            self.dic_add_key(key, url)
+        except FileNotFoundError as e:
+            raise FileNotFound(self.path_parsed_file, line, match.group('file'), self.lineno,
+                               str(e))
+        except SyntaxError as e:
+            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
+    
+    
+    def component_line_match(self, match, line):
+        """ Map value to a component.
+
+            Raise from loader.exceptions:
+                - SyntaxErrorPL if no group 'key' or 'component' was found
+                - DirectoryNotFound if trying to load from a nonexistent directory
+                - ComponentNotFound if component match.group("component") is not defined."""
+        key = match.group('key')
+        com = match.group('component')
+        try:
+            selector = SELECTORS[com]
+            self.dic_add_key(key, {
+                "cid":      str(uuid.uuid4()),
+                "selector": selector
+            })
+        except KeyError:
+            raise ComponentNotFound(com)
+        except SyntaxError as e:
+            raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
+    
+    
     def parse_line(self, line):
         """ Parse the given line by calling the appropriate function according to regex match.
 
@@ -289,6 +340,12 @@ class Parser:
         
         elif self.FROM_FILE_LINE.match(line):
             self.from_file_line_match(self.FROM_FILE_LINE.match(line), line)
+        
+        elif self.URL_LINE.match(line):
+            self.url_line_match(self.URL_LINE.match(line), line)
+        
+        elif self.COMPONENT_LINE.match(line):
+            self.component_line_match(self.COMPONENT_LINE.match(line), line)
         
         elif self.ONE_LINE.match(line):
             self.one_line_match(self.ONE_LINE.match(line), line)

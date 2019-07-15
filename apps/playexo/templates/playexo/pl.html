@@ -1,28 +1,24 @@
-<link rel="stylesheet" href="{{ static('/playexo/css/playexo.css') }}"/>
-{% if extracss %}{{ extracss|safe }}{% endif %}
 <div class="card exercise">
     <!-- HEADER -->
     <div class="card-header exercise__header">
-        <div class="text-center"><h2 class='exercise__title'>{% if title %}{{ title }}{% endif
-            %}</h2></div>
-        <div class="float-left"><span class='exercise__author'>{% if author %}{{ author }}{% endif %}</span>
+        <div class="text-center">
+            <h2 class='exercise__title'>{% if title %}{{ title }}{% endif %}</h2>
+        </div>
+        <div class="float-left">
+            <span class='exercise__author'>{% if author %}{{ author }}{% endif %}</span>
         </div>
     </div>
     <!-- BODY -->
     <div class="card-body exercise__body">
         <!-- INSTRUCTIONS -->
         <div class="exercise__instructions">
-            {% if 'text' %}
-            {% with texth__=text|markdown %}
-            {{ texth__|safe }}
-            {% endwith %}
+            {% if text %}
+            {{ text|markdown|safe }}
             {% endif %}
         </div>
         <!-- FEEDBACK -->
         <div class="exercise__feedback">
-            {% with feedbackh__=(feedback__|markdown) %}
-            {{ feedbackh__|safe if feedback__ else "" }}
-            {% endwith %}
+            {{ feedback__|markdown|safe if feedback else "" }}
         </div>
         <!-- FORM -->
         {% csrf_token %}
@@ -67,10 +63,12 @@
         <br/>
     </div>
 </div>
-<script type='text/javascript' src="{{ static('/playexo/js/playexo.js') }}"></script>
+
+{% if extracss %}{{ extracss|safe }}{% endif %}
 {% if extrajs %}{{ extrajs|safe }}{% endif %}
+
 <script type='text/javascript'>
     $(function () {
-        Activity.withEval("{{ url('playexo:evaluate', activity_id__, pl_id__) }}");
+        Activity.withEval("{{ url('playexo:evaluate', activity_id__, pl_id__) }}", {{ __components|tojson|safe }});
     });
 </script>

@@ -44,11 +44,6 @@ class MiscViewTestCase(TestCase):
         super().tearDownClass()
     
     
-    def test_index(self):
-        response = self.c.post(reverse("filebrowser:index"), {}, content_type='application/json')
-        self.assertContains(response, 'UPEM - PL', status_code=200)
-    
-    
     def test_download_env(self):
         pl = load_file(self.dir, "working.pl")[0]
         resp = SandboxBuild(pl.json).call()

@@ -52,7 +52,9 @@ PROJECT_APPS = [
     'loader',
     'classmanagement',
     'lti_app',
-    'qa'
+    'qa',
+    'editor',
+    'components',
 ]
 
 INSTALLED_APPS = PROJECT_APPS + PREREQ_APPS
@@ -228,6 +230,10 @@ LOGGING = {
         '': {
             'handlers': ['console', 'mail_admins'],
             'level':    'INFO',
+        },
+        'django.request': {
+            'handlers': ['console', 'mail_admins'],
+            'level':    'ERROR',
         },
     },
 }

@@ -15,6 +15,7 @@ from django_jinja.backend import Jinja2
 from jsonfield import JSONField
 
 from classmanagement.models import Course
+from components.utils import Component, components_source
 from loader.models import PL, PLTP
 from lti_app.models import LTIModel
 from playexo.enums import State
@@ -206,6 +207,7 @@ class SessionExerciseAbstract(models.Model):
             evaluator = SandboxEval(self.envid, answers)
         
         response = evaluator.call()
+        
         answer = {
             "answers": answers,
             "user":    request.user,
@@ -258,8 +260,12 @@ class SessionExerciseAbstract(models.Model):
             test    - (bool) Whether this exercise is in a testing session or not.
         """
         self.context = self.pl.json
+        
+        if 'components.py' not in self.context:
+            self.context['__files']['components.py'] = components_source()
         self.context['seed'] = seed if seed else create_seed()
         self.save()
+        
         response = SandboxBuild(dict(self.context), test=test).call()
         
         if response['status'] < 0:
@@ -290,6 +296,21 @@ class SessionExerciseAbstract(models.Model):
         self.context.update(context)
         self.built = True
         self.save()
+    
+    
+    def render(self, template, context, request):
+        env = Jinja2.get_default()
+        for k, v in context.items():
+            if isinstance(v, str):
+                context[k] = env.from_string(v).render(
+                    context=context,
+                    request=request
+                )
+        
+        return get_template(template).render({
+            "__components": Component.from_context(context),
+            **context
+        }, request)
 
 
 
@@ -362,12 +383,7 @@ class SessionExercise(SessionExerciseAbstract):
         if context:
             dic = {**context, **dic}
         
-        env = Jinja2.get_default()
-        for key in dic:
-            if type(dic[key]) is str:
-                dic[key] = env.from_string(dic[key]).render(context=dic, request=request)
-        
-        return get_template("playexo/pl.html").render(dic, request)
+        return self.render('playexo/pl.html', dic, request)
     
     
     def get_exercise(self, request, context=None):
@@ -457,7 +473,7 @@ class SessionTest(SessionExerciseAbstract):
         super().save(*args, **kwargs)
     
     
-    def get_pl(self, request, answer=None, template="playexo/preview.html"):
+    def get_pl(self, request, answer=None, template=None):
         """Return a template of the PL rendered with context.
         
         If answer is given, will determine if the seed must be reroll base on its grade."""
@@ -473,19 +489,13 @@ class SessionTest(SessionExerciseAbstract):
         
         dic = {
             **self.context,
-            **{
-                'user_settings__': self.user.profile,
-                'session__':       self,
-                'user__':          self.user,
-                'pl_id__':         pl.id,
-            },
+            'user_settings__': self.user.profile,
+            'session__':       self,
+            'user__':          self.user,
+            'pl_id__':         pl.id,
         }
-        env = Jinja2.get_default()
-        for key in dic:
-            if type(dic[key]) is str:
-                dic[key] = env.from_string(dic[key]).render(context=dic, request=request)
-        
-        return get_template(template).render(dic, request)
+        template = template if template else "playexo/preview.html"
+        return self.render(template, dic, request)
     
     
     def get_exercise(self, request, answer=None):
@@ -499,7 +509,9 @@ class SessionTest(SessionExerciseAbstract):
             error_msg = str(e)
             if request.user.profile.can_load():
                 error_msg += "<br><br>" + htmlprint.html_exc()
-            return get_template("playexo/error.html").render({"error_msg": error_msg})
+            return get_template("playexo/error.html").render({
+                "error_msg": error_msg
+            })
 
 
 
