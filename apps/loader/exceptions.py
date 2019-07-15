@@ -132,14 +132,16 @@ class MissingKey(Exception):
         return self.message + " : '" + self.key + "' in file " + normpath(self.path)
 
 
+
 class ComponentNotFound(Exception):
     """Raised when a component cannot be found."""
-
-
-    def __init__(self,  component):
-        self.component = component  
+    
+    
+    def __init__(self, component):
+        self.component = component
         print('-----errr2-----')
-        
+    
+    
     def __str__(self):
         return 'ComponentNotFound: component "%s" is not defined' \
-            % (self.component)
+               % (self.component)

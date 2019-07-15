@@ -1,21 +1,22 @@
+import traceback
 
 import htmlprint
-import traceback
 from django.conf import settings
 from django.contrib import messages
-from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from django.http import (HttpResponse, HttpResponseBadRequest, HttpResponseNotAllowed,
-                         HttpResponseNotFound, JsonResponse)
-from filebrowser.utils import rm_fb_root, join_fb_root, missing_parameter
-
+from django.http import (HttpResponseNotFound, JsonResponse)
+from django.shortcuts import render
 
 from editor.compilers.pl.pl_parser import find_parser
+
+
 
 @login_required
 def index(request):
     """ Used by the editor module to navigate """
     return render(request, 'editor/index.html')
+
+
 
 @login_required
 def compile(request):

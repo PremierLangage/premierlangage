@@ -148,7 +148,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         self.get_e_by_text("lib").click()
         self.get_e_by_text("demo").click()
         self.get_e_by_text("static_add.pl").click()
-        
+        self.get_e_by_text("NOTIFICATIONS").click()
         e = self.get_e_by_text("random_all.pltp")
         ActionChains(self.b).move_to_element(e).perform()
         
@@ -202,7 +202,6 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         window_before = self.b.window_handles[0]
         window_after = self.b.window_handles[1]
         self.b.switch_to.window(window_after)
-        self.b.switch_to.window(window_after)
         
         self.assertTrue(
             self.b.find_element_by_css_selector("span[class='MathJax_Preview']") is not None)
@@ -212,9 +211,24 @@ class SeleniumTestCase(StaticLiveServerTestCase):
 
     def test_filebrowser_theme(self):
         self.connect_to_filebrowser()
-        e = self.b.find_element_by_css_selector(".fa-palette")
+        e = self.b.find_element_by_id("nav-action-theme")
         self.assertTrue(self.b.find_element_by_css_selector(".light-theme"))
         self.assertFalse(self.b.find_elements_by_css_selector(".dark-theme"))
         e.click()
         self.assertFalse(self.b.find_elements_by_css_selector(".light-theme"))
         self.assertTrue(self.b.find_element_by_css_selector(".dark-theme"))
+        
+    def test_components_doc(self):
+        self.connect_to_filebrowser()
+        self.b.find_element_by_id("nav-action-components").click()
+
+        sleep(WAIT_TIME)
+
+        window_before = self.b.window_handles[0]
+        window_after = self.b.window_handles[1]
+        self.b.switch_to.window(window_after)
+        
+        self.assertTrue(self.get_e_by_text("Introduction to components") is not None)
+        
+        self.b.close()
+        self.b.switch_to.window(window_before)

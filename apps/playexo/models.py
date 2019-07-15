@@ -261,7 +261,7 @@ class SessionExerciseAbstract(models.Model):
         """
         self.context = self.pl.json
         
-        if not 'components.py' in self.context:
+        if 'components.py' not in self.context:
             self.context['__files']['components.py'] = components_source()
         self.context['seed'] = seed if seed else create_seed()
         self.save()
