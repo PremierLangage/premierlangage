@@ -2,8 +2,7 @@
 grader  =@ /grader/evaluator.py
 builder =@ /builder/before.py
 
-component.cid = radio
-component.selector = pl-radio-group
+component =: RadioGroup
 
 before==
 component.items = [

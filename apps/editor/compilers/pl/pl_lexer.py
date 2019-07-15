@@ -67,6 +67,9 @@ class Lexer(object):
         self.filepath = ''
         self.comments = []
 
+    def lineno(self):
+        return self.lexer.lineno
+
     def input(self, text):
         self.lexer.input(text)
 
@@ -110,7 +113,7 @@ class Lexer(object):
         return t
 
     def t_OP_ASSIGN_SINGLE(self, t):
-        r'(\+|\-|\%|\$|=:|=\$|=)'
+        r'(\+|\-|\%|\$|=\:|=\$|=)'
         return t
 
     def t_ID(self, t):

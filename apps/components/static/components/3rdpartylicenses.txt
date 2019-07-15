@@ -473,8 +473,6 @@ MIT
 @angular/forms
 MIT
 
-@angular/material/progress-spinner
-
 @angular/material/grid-list
 
 @angular/material/card

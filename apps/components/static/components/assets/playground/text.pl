@@ -2,10 +2,9 @@
 grader  =@ /grader/evaluator.py
 builder =@ /builder/before.py
 
-component.cid = component
+component =: Text
 component.text = The quick brown fox jumps over the lazy dog.
 component.selectable % true
-component.selector = pl-text
 
 before==
 ==

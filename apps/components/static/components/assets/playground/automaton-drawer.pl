@@ -2,8 +2,7 @@
 grader  =@ /grader/evaluator.py
 builder =@ /builder/before.py
 
-component.cid = component
-component.selector = pl-automaton-drawer
+component := AutomatonDrawer
 component.automaton ==
 #states
 s0

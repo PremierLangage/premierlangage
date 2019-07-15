@@ -2,8 +2,7 @@
 grader  =@ /grader/evaluator.py
 builder =@ /builder/before.py
 
-component.cid = component
-component.selector = pl-graph-drawer
+component =: GraphDrawer
 component.graph ==
 digraph G {
     a;

@@ -2,8 +2,7 @@
 grader  =@ /grader/evaluator.py
 builder =@ /builder/before.py
 
-component.cid = checkbox
-component.selector = pl-checkbox-group
+component =: CheckboxGroup
 
 before==
 component.items = [

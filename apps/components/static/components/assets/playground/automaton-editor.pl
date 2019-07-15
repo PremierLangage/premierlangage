@@ -2,8 +2,8 @@
 grader  =@ /grader/evaluator.py
 builder =@ /builder/before.py
 
-component.cid = component
-component.selector = pl-automaton-editor
+component =: AutomatonEditor
+
 before==
 ==
 

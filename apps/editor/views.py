@@ -1,5 +1,6 @@
 
 import htmlprint
+import traceback
 from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import render
@@ -26,6 +27,7 @@ def compile(request):
             'ast': ast
         })
     except Exception as e:  # pragma: no cover
+        traceback.print_exc()
         msg = "Impossible to open '" + path + "' : " + htmlprint.code(
             str(type(e)) + ' - ' + str(e))
         if settings.DEBUG:

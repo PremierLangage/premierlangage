@@ -24,7 +24,8 @@ from loader.utils import get_location
 
 from .errors import (CONTRACT_ERROR, SYNTAX_ERROR, TYPE_ERROR,
                      UNDEFINED_VARIABLE, UNRESOLVED_IMPORT,
-                     UNRESOLVED_REFERENCE, VARIABLE_OVERRIDE)
+                     UNRESOLVED_REFERENCE, VARIABLE_OVERRIDE,
+                     UNDEFINED_COMPONENT)
 from .pl_lexer import Lexer
 
 PARSERS = []
@@ -136,12 +137,16 @@ class Parser(object):
 
 
     def compile(self, extends):
-
         self.comments()
-
+        disable = self.lints('disable')
         if not extends: # original compiled file
             self.linting()
             self.requirements()
+
+        if len(disable) > 0:
+            self.ast['__errors'] = []
+            self.ast['__warnings'] = []
+
 
     def comments(self):
         for token in self.lexer.comments:
@@ -168,52 +173,75 @@ class Parser(object):
     def requirements(self):
         for k in self.REQUIRED:
             if not k in self.ast:
-                self.error(UNDEFINED_VARIABLE, '"%s" must be declared' % k)
+                self.error(UNDEFINED_VARIABLE, '"%s" must be declared' % k, lineno=1)
 
         for k in self.ast:
             if not k.startswith('__'):
                 self.finddoc(k)
-
                 if k in self.STRINGS and type(self.ast[k]) is not str:
-                    self.error(TYPE_ERROR, '"%s" must be a string' % k)
+                    self.error(TYPE_ERROR, '"%s" must be a string' % k, lineno=1)
 
     def linting(self):
+
+        def find_extends():
+            extends = self.ast['__extends']
+            for e in extends:
+                if e['file'] == self.path:
+                    return e
+
         def definitions():
             lints = self.lints('require')
+
             for lint in lints:
                 path, line, lint = lint
+                if path == self.path:
+                    continue
+
                 lint = lint.split('::')
             
-                typ = None
-                var = lint[0].strip()
+                vartype = None
+                varname = lint[0].strip()
                 n = len(lint)
                 if n == 2:
-                    typ = lint[1].strip()
+                    vartype = lint[1].strip()
 
-                if not var in self.ast['__definitions']:
-                    message = '"%s" must be declared because of a contract on line %s of @%s'
-                    self.error(CONTRACT_ERROR, message % (var, line, path))
-                if typ:
-                    id, obj = self.get(var)
-                    err = (typ == 'int' and type(obj[id]) != int) \
-                        or (typ == 'float' and type(obj[id]) != float) \
-                        or (typ == 'dict' and type(obj[id]) != dict) \
-                        or (typ == 'str' and type(obj[id]) != str)
+                if not varname in self.ast['__definitions']:
+                    message = 'variable "%s" must be declared'
+                    self.error(CONTRACT_ERROR, message % (varname), lineno=1)
 
-                    if err:
-                        message = '"%s" must be of type "%s" because of a contract on line %s of @%s'
-                        self.error(CONTRACT_ERROR, message % (var, typ, line, path))
+                if vartype:
+                    try:
+                        id, obj = self.get(varname)
+                        err = (vartype == 'int' and type(obj[id]) != int) \
+                            or (vartype == 'float' and type(obj[id]) != float) \
+                            or (vartype == 'dict' and type(obj[id]) != dict) \
+                            or (vartype == 'str' and type(obj[id]) != str)
+
+                        if err:
+                            message = 'variable "%s" must be of type "%s"'
+                            line = self.ast['__definitions'][varname].get('lineno', 1)
+                            self.error(CONTRACT_ERROR, message % (varname, vartype), lineno=line)
+                    except:
+                        # case where we search component.text
+                        # but component is not defined
+                        # obj will be equals to {} after a call to get and id to text
+                        message = 'variable "%s" must be of type "%s"'
+                        self.error(CONTRACT_ERROR, message % (varname, vartype), lineno=1)
 
         def files():
             lints = self.lints('sandbox')
             for lint in lints:
                 path, line, lint = lint
                 if not lint.strip() in self.ast['__files']:
-                    message = '"%s" must be on the sandbox because of a contract on line %s of @%s'
-                    self.error(CONTRACT_ERROR, message % (lint, line, path))
+                    message = '"%s" must be on the sandbox'
+                    self.error(CONTRACT_ERROR, message % (lint), lineno=1)
 
-        definitions()
-        files()
+        try:
+            definitions()
+            files()
+        except:
+            pass
+
 
     def finddoc(self, k):
         definition = self.ast['__definitions'].get(k)
@@ -327,6 +355,7 @@ class Parser(object):
         for prop in props[:-1]:
             parent[prop] = parent.get(prop, dict())
             parent = parent[prop]
+
         prop = props[-1]
         if not k in self.ast['__definitions'] and not k in self.EXTEND_KEYWORDS:
             self.ast['__definitions'][k] = {
@@ -407,8 +436,8 @@ class Parser(object):
 
             self.add_depend(path)
             self.ast['__extends'].append({
-                'child': self.path,
-                'parent': v,
+                'file': self.path,
+                'extends': v,
                 'lineno': self.lineno
             })
 
@@ -422,7 +451,7 @@ class Parser(object):
                 "selector": selector
             }
         except KeyError:
-            self.error(type='undefined component', message=v)
+            self.error(UNDEFINED_COMPONENT, v)
 
     def add_depend(self, path):
         self.ast['__dependencies'].append({
@@ -517,18 +546,19 @@ class Parser(object):
         except FileNotFoundError:
             self.error(
                 type=UNRESOLVED_REFERENCE,
-                message= v
+                message= v,
             )
         except Exception:
             self.error(
                 type=SYNTAX_ERROR,
-                message= v
+                message= v,
             )
 
     def p_sandbox(self, p):
         '''
         sandbox : OP_SANDBOX TEXT
         '''
+        self.lineno =  p.lineno(1)
         text = p[2].strip()
         match = self.SANBOX_FILE.match(text)
         try:
@@ -548,13 +578,13 @@ class Parser(object):
         except SyntaxError:
             self.error(
                 type=SYNTAX_ERROR,
-                message= text
+                message= text,
             )
 
         except FileNotFoundError:
             self.error(
                 type=UNRESOLVED_IMPORT,
-                message= text
+                message= text,
             )
 
     def p_empty(self, p):
@@ -562,5 +592,6 @@ class Parser(object):
         pass
     
     def p_error(self, e):
-        self.error(type=SYNTAX_ERROR, message=e.value, lineno=e.lineno)
+        if e:
+            self.error(type=SYNTAX_ERROR, message=e.value, lineno=e.lineno)
         self.parser.errok()

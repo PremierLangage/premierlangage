@@ -2,14 +2,13 @@
 grader  =@ /grader/evaluator.py
 builder =@ /builder/before.py
 
-component.cid = component
-component.selector = pl-code-editor
+component =: CodeEditor
+
 component.code ==
 import os
 ==
 component.theme = dark
 component.language = python
-
 
 before==
 ==

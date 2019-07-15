@@ -2,8 +2,8 @@
 grader  =@ /grader/evaluator.py
 builder =@ /builder/before.py
 
-component.cid = radio
-component.selector = pl-match-list
+component := MatchList
+
 component.items %=
 [
     { "id": "P1", "content": "P1", "target": false, "source": true },
