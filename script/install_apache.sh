@@ -19,7 +19,7 @@ Cyan='\033[0;36m';         # Cyan
 
 # Check if launch with root
 
-if  [ $UID ]
+if  [[ $EUID -ne 0 ]];
 then
 	echo -e "\n$Red You need to be root $Color_Off\n"
 	echo -e "$Red Restart the script with sudo or as super user $Color_Off\n"
@@ -29,9 +29,8 @@ fi
 # Check apache2
 echo -en "$Yellow Checking if$Color_Off apache2$Yellow is installed ... $Color_Off"
 
-dpkg -l apache2 &> /dev/null
 
-if [ $? == 0 ]
+if dpkg -l apache2 &> /dev/null;
 then
 	echo -e "$Green OK $Color_Off \n"
 else
@@ -47,9 +46,8 @@ fi
 # Check python3
 echo -en "$Yellow Checking if$Color_Off python3$Yellow is installed ... $Color_Off"
 
-dpkg -l python3 &> /dev/null
 
-if [ $? == 0 ]
+if dpkg -l python3 &> /dev/null;
 then
 	echo -e "$Green OK $Color_Off \n"
 else
@@ -65,9 +63,9 @@ fi
 # Check python3-pip
 echo -en "$Yellow Checking if$Color_Off python3-pip$Yellow is installed ... $Color_Off"
 
-dpkg -l python3-pip &> /dev/null
 
-if [ $? == 0 ]
+
+if dpkg -l python3-pip &> /dev/null;
 then
 	echo -e "$Green OK $Color_Off \n"
 else
@@ -83,9 +81,7 @@ fi
 # Check libapache2 mod wsgi python3
 echo -en "$Yellow Checking if$Color_Off libapache2-mod-wsgi-py3$Yellow is installed ... $Color_Off"
 
-dpkg -l libapache2-mod-wsgi-py3 &> /dev/null
-
-if [ $? == 0 ]
+if ! dpkg -l libapache2-mod-wsgi-py3 &> /dev/null;
 then
 	echo -e "$Green OK $Color_Off \n"
 else
@@ -109,7 +105,7 @@ while true
 do
 	PORT=443
 	echo -e "$Cyan \n Please, specify a port you would connect, leave blank to use $Yellow $PORT $Color_Off"
-	read PORT
+	read -r PORT
 	if [[ $PORT =~ $REGEX_PORT ]]
 	then
 		echo -e "\n 	$Green The port $Color_Off $Yellow $PORT $Color_Off $Green will be used $Color_Off"
@@ -126,7 +122,7 @@ done
 while true
 do
 	echo -e "$Cyan \n Please, specify your server's url admin : $Color_Off";
-    read URL
+    read -r URL
     if [[ $URL =~ $REGEX_SITE ]]
 	then
 		echo -e "\n 	$Green The server's url is $Color_Off $Yellow $URL $Color_Off"
@@ -138,7 +134,7 @@ done
 while true
 do
     echo -e "$Cyan \n Please, specify your e-mail admin : $Color_Off";
-    read EMAIL
+    read -r EMAIL
     if [[ $EMAIL =~ $REGEX_EMAIL ]]
     then
         echo -e "\n 	$Green Your e-mail admin is $Color_Off $Yellow $EMAIL $Color_Off$Green and the url site is $Green $url $Color_Off"
@@ -151,7 +147,7 @@ done
 #cd /etc/apache2/mods-enabled
 echo -e "$Yellow \n Creating macro.conf in $PATH_DIR ... $Color_Off \n"
 cd $PATH_DIR
-rm premierlangage-auto.conf 2| echo lol &> /dev/null
+rm premierlangage-auto.conf 2> /dev/null
 touch premierlangage-auto.conf
 echo -e "
 <VirtualHost *:$PORT>
