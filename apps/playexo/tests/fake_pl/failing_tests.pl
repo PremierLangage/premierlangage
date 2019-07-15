@@ -25,59 +25,46 @@ evaluator==
 import traceback
 import sys
 
-try: 
+try:
     if int(response['answer']) == 3 + 4:
         grade = (100, "Bonne réponse")
     else:
         grade = (0, "Mauvaise réponse")
-except:
-    print(traceback.format_exc(), file=sys.stderr)
-    grade = (-1, "Merci de rentrer un entier")
+==
+
+
+before==
+import random
+random.seed(seed)
+if seed == 42:
+    raise Exception()
+op1 = random.randint(1, 10)
+op2 = random.randint(1, 10)
 ==
 
 @ ~/utils/sandboxio.py
 @ ~/grader/evaluator.py [grader.py]
+@ /builder/before.py [builder.py]
 
 tests %=
 {
-    "correct" : {
+    "failing_grader" : {
         "response" : {
-            "answer" : 7
+            "answer" : "aaa"
         },
         "grade" : 100,
         "feedback" : "Bonne réponse\n"
     },
-    "incorrect" : {
+    "failing_builder" : {
         "response" : {
-            "answer" : 8
+            "answer" : 7
         },
-        "grade" : 0,
-        "feedback" : "Mauvaise réponse\n"
-    },
-    "not working" : {
-        "response" : {
-            "answer" : 8
-        },
-        "grade" : 50,
+        "grade" : 100,
         "feedback" : "Bonne réponse\n",
-        "seed" : 130
+        "seed" : 42
     },
-    "only grade" : {
-        "response" : {
-            "answer" : 7
-        },
-        "grade" : 100
-    },
-    "only feedback" : {
-        "response" : {
-            "answer" : 7
-        },
-        "feedback" : "Bonne réponse\n"
-    },
-    "grader failure" : {
-        "response" : {
-            "answer" : "aa"
-        },
+    "failing_test" : {
+        "grade" : 100,
         "feedback" : "Bonne réponse\n"
     }
 }
