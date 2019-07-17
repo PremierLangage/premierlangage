@@ -28,6 +28,18 @@ a:hover {
     color: initial;
 }
 
+/* CSS of Notifs */
+
+
+
+.notif_menu {
+    color : red;
+    display: none;
+}
+
+/* End of CSS' Notifs */
+
+
 .container-messages {
     z-index: 10; 
     position: absolute; 

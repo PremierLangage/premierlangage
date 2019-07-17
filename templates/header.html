@@ -14,7 +14,13 @@
                 <a class="mdl-navigation__link"
                    href="https://documentationpl.readthedocs.io/fr/latest/"
                    target="_blank"><i class="fas fa-book"></i>&nbsp;Documentation</a>
-                <a class="mdl-navigation__link" href="/notifs/"><i class="fas fa-bell"></i>&nbsp;Notifications</a>
+                <div class="notif_window">
+                    <a class="mdl-navigation__link notif_link" href="/notifs/"><i class="fas fa-bell"></i>&nbsp;Notifications</a>
+                    <span class="notif_menu">
+                        ***
+                    </span>
+                   <script> notifs(); </script>
+                </div>
             {% endif %}
             {% if request.user.is_authenticated and request.user.profile.is_admin or request.user.is_superuser %}
                 <a class="mdl-navigation__link" href="/admin/"><i class="fas fa-cog"></i>&nbsp;Administration</a>
