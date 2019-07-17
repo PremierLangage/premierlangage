@@ -16,7 +16,7 @@ from django.conf import settings
 from filebrowser.utils import to_download_url
 from loader.exceptions import FileNotFound, SemanticError, SyntaxErrorPL, ComponentNotFound
 from loader.utils import get_location
-from components.utils import SELECTORS
+from components.components import SELECTORS
 
 
 BAD_CHAR = r''.join(settings.FILEBROWSER_DISALLOWED_CHAR)

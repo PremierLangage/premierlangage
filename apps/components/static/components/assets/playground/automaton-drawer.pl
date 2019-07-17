@@ -2,13 +2,13 @@
 grader  =@ /grader/evaluator.py
 builder =@ /builder/before.py
 
-component := AutomatonDrawer
+component =: AutomatonDrawer
 component.automaton ==
 #states
 s0
 s1
 s2
-#initial
+#initials
 s0
 #accepting
 s2

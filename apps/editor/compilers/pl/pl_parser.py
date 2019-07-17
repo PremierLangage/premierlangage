@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-#  pl_lext.py
+#  pl_parser.py
 #
 #  Copyright 2019 Cisse Mamadou [mciissee@gmail.com]
 
@@ -15,7 +15,7 @@ from os.path import basename, dirname, join
 
 from ply import yacc
 
-from components.utils import SELECTORS
+from components.components import SELECTORS
 from filebrowser.models import Directory
 from filebrowser.utils import join_fb_root, rm_fb_root, to_download_url
 from loader.utils import get_location
@@ -217,10 +217,14 @@ class Parser(object):
                 if vartype:
                     try:
                         id, obj = self.get(varname)
-                        err = (vartype == 'int' and type(obj[id]) != int) \
-                              or (vartype == 'float' and type(obj[id]) != float) \
-                              or (vartype == 'dict' and type(obj[id]) != dict) \
-                              or (vartype == 'str' and type(obj[id]) != str)
+                        err = (
+                            (vartype == 'int' and not isinstance(obj[id], int))
+                            or (vartype == 'float' and not isinstance(obj[id], float))
+                            or (vartype == 'dict' and not isinstance(obj[id], dict))
+                            or (vartype == 'list' and not isinstance(obj[id], list))
+                            or (vartype == 'bool' and not isinstance(obj[id], bool))
+                            or (vartype == 'str' and not isinstance(obj[id], str))
+                        )
                         
                         if err:
                             message = 'variable "%s" must be of type "%s"'
@@ -444,18 +448,21 @@ class Parser(object):
                 message='"%s" should be used with "=" operator' % k
             )
         else:
-            path = rm_fb_root(self.abspath(v))
-            parser = find_parser()
-            ast = parser.parse(path, directory=self.directory, extends=True)
-            
-            merge(self.ast, ast)
-            
-            self.add_depend(path)
-            self.ast['__extends'].append({
-                'file':    self.path,
-                'extends': v,
-                'lineno':  self.lineno
-            })
+            try:
+                path = rm_fb_root(self.abspath(v))
+                parser = find_parser()
+                ast = parser.parse(path, directory=self.directory, extends=True)
+                
+                merge(self.ast, ast)
+                
+                self.add_depend(path)
+                self.ast['__extends'].append({
+                    'file':    self.path,
+                    'extends': v,
+                    'lineno':  self.lineno
+                })
+            except Exception:
+                self.error(UNRESOLVED_REFERENCE, v)
     
     
     def add_component(self, d, k, v, o):
