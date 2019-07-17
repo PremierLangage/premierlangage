@@ -1,0 +1,46 @@
+dist: xenial
+
+sudo: false
+
+services:
+  - docker
+  - postgresql
+  - xvfb
+
+language: python
+
+python:
+  - '3.5'
+  - '3.6'
+  - '3.7'
+
+addons:
+  firefox: "63.0.1"
+
+before_install:
+  - wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz
+  - mkdir geckodriver
+  - tar -xzf geckodriver-v0.24.0-linux64.tar.gz -C geckodriver
+  - export PATH=$PATH:$PWD/geckodriver
+  - git clone https://github.com/PremierLangage/sandbox.git
+  - cp test/config_test_pgsql.py premierlangage/config.py
+  - cd sandbox/
+  - pip install psycopg2
+  - ./install.sh
+  - python3 manage.py runserver 7000 &> /dev/null &
+  - cd ..
+  - yes n | ./script/install_release.sh
+
+install:
+  - pip install -U wheel setuptools
+  - pip install tox-travis
+  - pip install codecov
+
+script: tox
+
+after_success: codecov
+
+env:
+  global:
+    - PGPORT=5432
+    - TRAVIS="TRAVIS"

@@ -1,0 +1,133 @@
+.mdl-layout__header {
+    background-color: #343A40;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.mdl-layout-title {
+    margin-right: 16px;
+}
+
+.mdl-layout:not(.is-small-screen) .mdl-layout__header-row {
+    padding: 0 20px 0 20px;
+}
+
+.mdl-layout__header-row .mdl-navigation__link {
+    padding: 0px 8px;
+}
+
+.page-content {
+    position: relative;
+    padding: 2rem 8rem;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+    color: initial;
+}
+
+.container-messages {
+    z-index: 10; 
+    position: absolute; 
+    top: 16px; 
+    right: 16px; 
+    width: 320px; 
+    height: 400px; 
+    overflow: auto;
+}
+
+/* override material design lite font size */
+body {
+    font-size: 100%;
+  }
+  
+body, h1, h2, h3, h4, h5, h6 {
+    font-size-adjust: 0.5;
+}
+
+h1 {
+    font-size: 2em;
+    /* 2x body copy size = 32px */
+    line-height: 1.25;
+    /* 45px / 36px */
+  }
+  
+  @media (min-width: 43.75em) {
+    h1 {
+      font-size: 2.5em;
+      /* 2.5x body copy size = 40px */
+      line-height: 1.125;
+    }
+}
+h2 {
+    font-size: 1.625em;
+    /* 1.625x body copy size = 26px */
+    line-height: 1.15384615;
+    /* 30px / 26px */
+}
+
+@media (min-width: 43.75em) {
+    h2 {
+        font-size: 2em;
+        /* 2x body copy size = 32px */
+        line-height: 1.25;
+    }
+}
+h3 {
+    font-size: 1.375em;
+    /* 1.375x body copy size = 22px */
+    line-height: 1.13636364;
+    /* 25px / 22px */
+}
+  
+@media (min-width: 43.75em) {
+    h3 {
+      font-size: 1.5em;
+      /* 1.5x body copy size = 24px */
+      line-height: 1.25;
+    }
+}
+  
+@media (min-width: 56.25em) {
+    h3 {
+      font-size: 1.75em;
+      /* 1.75x body copy size = 28px */
+      line-height: 1.25;
+    }
+}
+  
+
+h4 {
+    font-size: 1.125em;
+    /* 1.125x body copy size = 18px */
+    line-height: 1.11111111;
+  }
+  
+@media (min-width: 43.75em) {
+    h4 {
+      line-height: 1.22222222;
+      /* (22px / 18px */
+    }
+}
+  
+h5 { font-size: 0.83em; }
+h6 { font-size: 0.75em; }
+
+/* fix bootstrap rendering on chrome and safari */
+button, html [type="button"], [type="reset"], [type="submit"] {
+    -webkit-appearance: none;
+}
+
+@media (max-width: 768px) {
+   
+    .page-content {
+        padding: 2rem 1rem;
+    }
+
+}

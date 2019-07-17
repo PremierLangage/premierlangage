@@ -1,0 +1,38 @@
+author=Dominique Revuz
+
+title=Demo IDEA
+
+introduction==
+
+# Feuille TP1
+Cette feuille de TP vous permettra de d'apprendre l'utilisation des deux fonctions de communication d'un programme python avec l'utilisateur.
+
+La fonction **print** qui permet d'afficher une information sur l'écran.
+
+	>>> print(3)
+	3
+	>>>
+
+
+
+La fonction **input** qui permet de demander une saisie au clavier. 
+
+	>>> nom = input("Entrez votre nom") # l'utilisateur entre son nom et valide
+	>>> print(nom)
+	Dominique
+	>>>
+
+
+==
+
+tag=root
+tog=input|print
+
+concept==return
+@ python/input/print1.pl
+@ python/input/print2.pl
+@ python/input/ageCapitaine.pl
+@ python/input/plusmoins.pl
+@ python/input/quelage.pl
+==
+

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block alert %}{% endblock %}
+{% block content %}
+<div class="row no-margin">
+    <div class="col-md-2"></div>
+    <div class="exercise-container col-md-8">{{ preview|safe }}</div>
+    <div class="col-md-2"></div>
+</div>
+{% include 'playexo/statics.html' %}
+{% endblock %}

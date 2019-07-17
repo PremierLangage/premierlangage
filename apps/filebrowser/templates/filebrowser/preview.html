@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+<!-- remove topbar inside the editor -->
+{% block header %}{% endblock header %}
+{% block content %}
+<div class="exercise-container">{{ preview|safe }}</div>
+{% include 'playexo/statics.html' %}
+{% endblock %}
