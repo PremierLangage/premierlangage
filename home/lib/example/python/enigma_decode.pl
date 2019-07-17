@@ -1,4 +1,4 @@
-extends = ~/template/python.pl
+extends = lib:/template/python.pl
 
 title = Decryption of Enigma Machine
 
@@ -52,6 +52,7 @@ class DecodeTestCase(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 ==
+
 
 
 

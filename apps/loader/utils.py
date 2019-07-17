@@ -1,6 +1,5 @@
 import os
 
-import gitcmd
 from django.conf import settings
 
 
@@ -35,31 +34,17 @@ def get_location(directory, path, current="", parser=None):
             raise FileNotFoundError("File '%s' does not exists in library '%s'" % (path, lib))
         return lib, os.path.normpath(path)
     
-    if path.startswith('/'):  # Relative to a repository
+    if path.startswith('/'):
         path = path[1:]
-        absolute = os.path.join(directory.root, current)
-        if gitcmd.in_repository(absolute, False):
-            top = gitcmd.top_level(absolute)[1]
-            absolute = os.path.join(os.path.basename(top), path)
-            if not os.path.isfile(
-                os.path.join(settings.FILEBROWSER_ROOT, directory.name, absolute)):
-                for lib in [i for i in os.listdir(settings.FILEBROWSER_ROOT) if
-                            i != settings.HOME]:  # pragma: no cover
-                    absolute = os.path.join(settings.FILEBROWSER_ROOT, lib, path)
-                    if os.path.isfile(absolute):
-                        return lib, path
-                
-                raise FileNotFoundError("File '%s' does not exists in repository '%s'"
-                                        % (path, os.path.basename(top)))
-            
-            return directory.name, os.path.normpath(absolute)
-        
-        for lib in [i for i in os.listdir(settings.FILEBROWSER_ROOT) if i != settings.HOME]:
-            absolute = os.path.join(settings.FILEBROWSER_ROOT, lib, path)
-            if os.path.isfile(absolute):
-                return lib, path
-        
-        raise SyntaxError("'/' was used but current file is not in a repository")
+        absolute = os.path.join(directory.root, path)
+        if not os.path.isfile(absolute):
+            for lib in [i for i in os.listdir(settings.FILEBROWSER_ROOT) if
+                        i != settings.HOME]:  # pragma: no cover
+                absolute = os.path.join(settings.FILEBROWSER_ROOT, lib, path)
+                if os.path.isfile(absolute):
+                    return lib, path
+            raise FileNotFoundError("File '%s' does not exist" % path)
+        return directory.name, os.path.normpath(path)
     
     if path.startswith('~/'):  # Relative to user's home
         path = path[2:]

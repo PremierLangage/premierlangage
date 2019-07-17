@@ -87,8 +87,7 @@ class UtilsTestCase(TestCase):
         current_repo = 'repo1/'
         current_dir = 'dir1/'
         
-        absolute = '~/repo1/file1.pl'
-        rel_repo = '/file2.pl'
+        absolute = '/repo1/file1.pl'
         relative = '../dir1/file3.pl'
         ref_lib = 'lib:/dir2/file4.pl'
         no_ref_lib = '/dir2/file4.pl'
@@ -99,10 +98,6 @@ class UtilsTestCase(TestCase):
         # Absolute in a repo
         self.assertEqual((self.dir.name, 'repo1/file1.pl'),
                          get_location(self.dir, absolute, current_repo))
-        
-        # Relative to repo
-        self.assertEqual((self.dir.name, 'repo1/file2.pl'),
-                         get_location(self.dir, rel_repo, current_repo))
         
         # Relative outside of repo
         self.assertEqual((self.dir.name, 'dir1/file3.pl'),
@@ -126,7 +121,7 @@ class UtilsTestCase(TestCase):
         with self.assertRaises(SyntaxError):
             get_location(self.dir, "1234:lib/digit", "")
         
-        with self.assertRaises(SyntaxError):
+        with self.assertRaises(FileNotFoundError):
             get_location(self.dir, "/lib/digit", "")
         
         with self.assertRaises(FileNotFoundError):
