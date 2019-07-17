@@ -15,7 +15,6 @@ from django_jinja.backend import Jinja2
 from jsonfield import JSONField
 
 from classmanagement.models import Course
-from components.utils import Component, components_source
 from loader.models import PL, PLTP
 from lti_app.models import LTIModel
 from playexo.enums import State
