@@ -15,13 +15,13 @@ from django_jinja.backend import Jinja2
 from jsonfield import JSONField
 
 from classmanagement.models import Course
-from components.utils import Component, components_source
+from components.components import Component, components_source
 from loader.models import PL, PLTP
 from lti_app.models import LTIModel
 from playexo.enums import State
 from playexo.exception import BuildScriptError, SandboxError
 from playexo.request import SandboxBuild, SandboxEval
-from components.components import Component, components_source
+
 
 logger = logging.getLogger(__name__)
 
