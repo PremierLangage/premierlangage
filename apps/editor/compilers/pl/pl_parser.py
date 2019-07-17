@@ -217,13 +217,15 @@ class Parser(object):
                 if vartype:
                     try:
                         id, obj = self.get(varname)
-                        err = (vartype == 'int' and type(obj[id]) != int) \
-                            or (vartype == 'float' and type(obj[id]) != float) \
-                            or (vartype == 'dict' and type(obj[id]) != dict) \
-                            or (vartype == 'list' and type(obj[id]) != list) \
-                            or (vartype == 'bool' and type(obj[id]) != bool) \
-                            or (vartype == 'str' and type(obj[id]) != str)
-
+                        err = (
+                            (vartype == 'int' and not isinstance(obj[id], int))
+                            or (vartype == 'float' and not isinstance(obj[id], float))
+                            or (vartype == 'dict' and not isinstance(obj[id], dict))
+                            or (vartype == 'list' and not isinstance(obj[id], list))
+                            or (vartype == 'bool' and not isinstance(obj[id], bool))
+                            or (vartype == 'str' and not isinstance(obj[id], str))
+                        )
+                        
                         if err:
                             message = 'variable "%s" must be of type "%s"'
                             line = self.ast['__definitions'][varname].get('lineno', 1)
@@ -450,18 +452,19 @@ class Parser(object):
                 path = rm_fb_root(self.abspath(v))
                 parser = find_parser()
                 ast = parser.parse(path, directory=self.directory, extends=True)
-
+                
                 merge(self.ast, ast)
-
+                
                 self.add_depend(path)
                 self.ast['__extends'].append({
-                    'file': self.path,
+                    'file':    self.path,
                     'extends': v,
-                    'lineno': self.lineno
+                    'lineno':  self.lineno
                 })
-            except:
+            except Exception:
                 self.error(UNRESOLVED_REFERENCE, v)
-
+    
+    
     def add_component(self, d, k, v, o):
         k = k.strip()
         v = v.strip()

@@ -94,17 +94,17 @@ class Component:
         if decorator:
             module = importlib.import_module(decorator.lower())
             return getattr(module, decorator)(**data)
-        else:
-            selector = data.get('selector')
-            if not selector:
-                msg = 'selector property is required for components'
-                raise Exception(msg)
-            for k in SELECTORS:
-                if SELECTORS[k] == selector:
-                    cls = globals().get(k)
-                    if not cls:
-                        break
-                    return cls(**data)
+            
+        selector = data.get('selector')
+        if not selector:
+            msg = 'selector property is required for components'
+            raise Exception(msg)
+        for k in SELECTORS:
+            if SELECTORS[k] == selector:
+                cls = globals().get(k)
+                if not cls:
+                    break
+                return cls(**data)
         
         return Component(**data)
     
