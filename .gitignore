@@ -8,6 +8,8 @@ tmp/
 apps/*/migrations/**
 !apps/*/migrations/__init__.py
 premierlangage/config.py
+apps/editor/compilers/pl/lextab.py
+apps/editor/compilers/pl/parser.out
 staticfiles/
 static/*
 media/
