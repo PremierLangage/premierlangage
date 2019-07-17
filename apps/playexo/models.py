@@ -1,8 +1,7 @@
 import logging
 import time
-import inspect
-import htmlprint
 
+import htmlprint
 from django.contrib.auth.models import User
 from django.db import IntegrityError, models
 from django.db.models.signals import post_save
@@ -16,6 +15,7 @@ from django_jinja.backend import Jinja2
 from jsonfield import JSONField
 
 from classmanagement.models import Course
+from components.utils import Component, components_source
 from loader.models import PL, PLTP
 from lti_app.models import LTIModel
 from playexo.enums import State
@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 def create_seed():
-    return time.time() % 100
+    return int(time.time() % 100)
 
 
 
@@ -193,7 +193,7 @@ class SessionExerciseAbstract(models.Model):
         return not seed or (oneshot and grade is not None and grade < oneshot_threshold)
     
     
-    def evaluate(self, request, answers, test=False):
+    def raw_evaluate(self, request, answers, test=False):
         """Evaluate the exercise with the given answers according to the current context.
         
         Parameters:
@@ -236,10 +236,23 @@ class SessionExerciseAbstract(models.Model):
         self.context.update(response['context'])
         self.context['answers__'] = answers
         self.save()
+        
+        return answer, feedback, response['status']
+    
+    
+    def evaluate(self, request, answers, test=False):
+        """Evaluate the exercise with the given answers according to the current context.
+        
+        Parameters:
+            request - (django.http.request) Current Django request object.
+            answers - (dict) Answers of the student.
+            test    - (bool) Whether this exercise is in a testing session or not.
+        """
+        answer, feedback, status = self.raw_evaluate(request, answers, test)
         return answer, feedback
     
     
-    def build(self, request, test=False):
+    def build(self, request, test=False, seed=None):
         """Build the exercise with the given according to the current context.
         
         Parameters:
@@ -248,12 +261,11 @@ class SessionExerciseAbstract(models.Model):
         """
         self.context = self.pl.json
         
-        if not 'components.py' in self.context:
+        if 'components.py' not in self.context:
             self.context['__files']['components.py'] = components_source()
-
-        self.context['seed'] = time.time()
+        self.context['seed'] = seed if seed else create_seed()
         self.save()
-
+        
         response = SandboxBuild(dict(self.context), test=test).call()
         
         if response['status'] < 0:
@@ -294,12 +306,12 @@ class SessionExerciseAbstract(models.Model):
                     context=context,
                     request=request
                 )
-
+        
         return get_template(template).render({
             "__components": Component.from_context(context),
             **context
         }, request)
-    
+
 
 
 class SessionExercise(SessionExerciseAbstract):
@@ -351,7 +363,7 @@ class SessionExercise(SessionExerciseAbstract):
                 self.context['seed'] if 'seed' in self.context else
                 None)
         if highest_grade is not None and self.reroll(seed, highest_grade.grade):
-            seed = time.time()
+            seed = create_seed()
             self.built = False
         self.add_to_context('seed', seed)
         
@@ -468,7 +480,7 @@ class SessionTest(SessionExerciseAbstract):
         pl = self.pl
         seed = self.context['seed'] if 'seed' in self.context else None
         if self.reroll(seed, answer['grade'] if answer else None):
-            seed = time.time()
+            seed = create_seed()
             self.built = False
             self.add_to_context('seed', seed)
         

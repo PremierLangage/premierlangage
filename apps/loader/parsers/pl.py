@@ -18,6 +18,7 @@ from loader.exceptions import FileNotFound, SemanticError, SyntaxErrorPL, Compon
 from loader.utils import get_location
 from components.components import SELECTORS
 
+
 BAD_CHAR = r''.join(settings.FILEBROWSER_DISALLOWED_CHAR)
 
 
@@ -30,9 +31,9 @@ class Parser:
     VALUE = r'(?P<value>[^=@%#][^#]*?)\s*'
     FILE = r'(?P<file>([a-zA-Z0-9_]*:)?((\/)?[^' + BAD_CHAR + r']+)(\/[^' + BAD_CHAR + r']+)*)\s*'
     ALIAS = r'((\[\s*(?P<alias>[a-zA-Z_.][a-zA-Z0-9_.]*)\s*\])\s*?)?'
- 
-
-    COMPONENT_LINE = re.compile(KEY + r'\s*(?P<operator>=:)\s*(?P<component>\w+)\s*' + COMMENT + r'?$')
+    
+    COMPONENT_LINE = re.compile(
+        KEY + r'\s*(?P<operator>=:)\s*(?P<component>\w+)\s*' + COMMENT + r'?$')
     URL_LINE = re.compile(KEY + r'(?P<operator>=\$)\s*' + FILE + COMMENT + r'?$')
     ONE_LINE = re.compile(KEY + r'(?P<operator>=|\%|\+|\-)\s*' + VALUE + COMMENT + r'?$')
     FROM_FILE_LINE = re.compile(KEY + r'(?P<operator>=@|\+=@|\-=@)\s*' + FILE + COMMENT + r'?$')
@@ -317,7 +318,7 @@ class Parser:
         try:
             selector = SELECTORS[com]
             self.dic_add_key(key, {
-                "cid": str(uuid.uuid4()),
+                "cid":      str(uuid.uuid4()),
                 "selector": selector
             })
         except KeyError:
@@ -325,7 +326,7 @@ class Parser:
         except SyntaxError as e:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
     
-
+    
     def parse_line(self, line):
         """ Parse the given line by calling the appropriate function according to regex match.
 
@@ -339,13 +340,13 @@ class Parser:
         
         elif self.FROM_FILE_LINE.match(line):
             self.from_file_line_match(self.FROM_FILE_LINE.match(line), line)
-          
+        
         elif self.URL_LINE.match(line):
             self.url_line_match(self.URL_LINE.match(line), line)
         
         elif self.COMPONENT_LINE.match(line):
             self.component_line_match(self.COMPONENT_LINE.match(line), line)
-           
+        
         elif self.ONE_LINE.match(line):
             self.one_line_match(self.ONE_LINE.match(line), line)
         
@@ -357,7 +358,7 @@ class Parser:
         
         elif self.COMMENT_LINE.match(line):
             self.dic['__comment'] += '\n' + self.COMMENT_LINE.match(line).group('comment')
-   
+        
         elif not self.EMPTY_LINE.match(line):
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno)
     

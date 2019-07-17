@@ -9,7 +9,6 @@ django-markdown-deux
 django-markdown-app
 django-taggit
 dj-database-url
-ply
 gunicorn
 jinja2
 jsonfield
@@ -17,6 +16,7 @@ markdown
 mkdocs
 mock
 oauth2
+ply
 pydenticon
 pytest
 pytest-django

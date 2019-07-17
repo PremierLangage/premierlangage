@@ -29,7 +29,14 @@
         <!-- ACTIONS -->
         <div class="exercise__actions text-center">
             <div class="btn-group" role="group" aria-label="actions">
-                <button class="btn btn-primary action-submit"><i class="fas fa-check"></i>Valider</button>
+                <button class="btn btn-primary action-submit"><i class="fas fa-check"></i> Valider</button>
+                {% if tests %}
+                <a type="button" class="btn btn-primary action-test"
+                   href="{{ url('playexo:test_pl', pl_id__)}}"
+                   target="_blank" test>
+                    <i class="fas fa-angle-double-right"></i> Tester
+                </a>
+                {% endif %}
                 <a type="button" class="btn btn-secondary action-download-env"
                    href="{{ url('filebrowser:dlenv', id__) }}" download>
                     <i class="fas fa-download"></i> Télécharger l'Environnement
@@ -54,4 +61,5 @@
         Activity.withTest("{{id__}}", "{{session__.id}}", {{ __components|tojson|safe }});
     });
 </script>
+
 
