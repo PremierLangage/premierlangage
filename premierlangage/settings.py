@@ -1,6 +1,7 @@
 import hashlib
 import logging
 import os
+import sys
 
 import dj_database_url
 from django.contrib.messages import constants as messages
@@ -30,6 +31,9 @@ ADMINS = []
 # Write email in console instead of sending it if DEBUG is True
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Set to true when 'python3 manage.py test' is used
+TESTING = sys.argv[1:2] == ['test']
 
 # Application definition
 PREREQ_APPS = [

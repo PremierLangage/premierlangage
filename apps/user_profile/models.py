@@ -1,3 +1,6 @@
+import os
+
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.files import File
 from django.db import models
@@ -24,7 +27,49 @@ class Profile(LTIModel):
     activity = models.ManyToManyField(Activity, blank=True)
     confirm = models.BooleanField(default=True)
     rep = models.IntegerField(default=0)
-    avatar = models.ImageField(upload_to=avatar_path, blank=True)
+    _avatar = models.ImageField(upload_to=avatar_path, blank=True)
+    
+    
+    @property
+    def avatar(self):
+        """Ensure the avatar does exists"""
+        if settings.TESTING:
+            self._avatar.url = ""
+            return self._avatar
+        
+        media_root = os.path.dirname(settings.MEDIA_ROOT)
+        if not self._avatar or not os.path.isfile(os.path.join(media_root, self._avatar.url[1:])):
+            self._avatar.save(self.user.username, File(generate_identicon(self.user)))
+        
+        return self._avatar
+    
+    
+    def __str__(self):
+        return self.user.username + "'s Profile"
+    
+    
+    @receiver(post_save, sender=User)
+    def create_user_profile(sender, instance, created, **kwargs):
+        """When a new user is created, create a corresponding profile."""
+        if created:
+            profile = Profile.objects.create(user=instance)
+            profile.save()
+    
+    
+    @receiver(post_save, sender=User)
+    def save_user_profile(sender, instance, **kwargs):
+        """Save the profile when its corresponding user is saved."""
+        instance.profile.save()
+    
+    
+    def save(self, *args, **kwargs):
+        """Fix the IntegrityError when creating a new user and modifying default profile."""
+        if self.pk is None:
+            p = Profile.objects.filter(user=self.user)
+            p.delete()
+            super(Profile, self).save(*args, **kwargs)
+        else:
+            super(Profile, self).save(*args, **kwargs)
     
     
     def set_role_lti(self, lti_launch):
@@ -59,33 +104,3 @@ class Profile(LTIModel):
     def can_load(self):
         """Returns True if the user is at least an Instructor, False if not."""
         return self.role <= Role.INSTRUCTOR or self.is_admin()
-    
-    
-    @receiver(post_save, sender=User)
-    def create_user_profile(sender, instance, created, **kwargs):
-        """When a new user is created, create a corresponding profile."""
-        if created:
-            profile = Profile.objects.create(user=instance)
-            profile.avatar.save(instance.username, File(generate_identicon(instance)))
-            profile.save()
-    
-    
-    @receiver(post_save, sender=User)
-    def save_user_profile(sender, instance, **kwargs):
-        """Save the profile when its corresponding user is saved."""
-        instance.profile.save()
-    
-    
-    def save(self, *args, **kwargs):
-        """Fix the IntegrityError when creating a new user and modifying default profile."""
-        if self.pk is None:
-            p = Profile.objects.filter(user=self.user)
-            p.delete()
-            super(Profile, self).save(*args, **kwargs)
-            self.avatar.save(self.user.username, File(generate_identicon(self.user)))
-        else:
-            super(Profile, self).save(*args, **kwargs)
-    
-    
-    def __str__(self):
-        return self.user.username + "'s Profile"

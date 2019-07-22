@@ -90,7 +90,7 @@ class LoadPLTPTestCase(TestCase):
             'name': 'test_pl',
             'path': 'Yggdrasil/working.pl',
         }, content_type='application/json')
-        self.assertContains(response, "UPEM - PL", status_code=200)
+        self.assertContains(response, "UPEM - PL")
     
     
     def test_test_pl_no_path(self):
