@@ -16,9 +16,9 @@ logger = logging.getLogger(__name__)
 
 class PL(models.Model):
     json = JSONField(default={})
-    name = models.CharField(max_length=100, null=False)
+    name = models.CharField(max_length=255, null=False)
     directory = models.ForeignKey(Directory, on_delete=models.SET_NULL, null=True)
-    rel_path = models.CharField(max_length=360, null=False)
+    rel_path = models.CharField(max_length=255, null=False)
     
     
     def __str__(self):  # pragma: no cover
@@ -27,12 +27,12 @@ class PL(models.Model):
 
 
 class PLTP(models.Model):
-    sha1 = models.CharField(primary_key=True, max_length=160)
+    sha1 = models.CharField(primary_key=True, max_length=255)
     json = JSONField(default={})
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=255)
     pl = models.ManyToManyField(PL, through='Index')
     directory = models.ForeignKey(Directory, on_delete=models.SET_NULL, null=True)
-    rel_path = models.CharField(max_length=360, null=True)
+    rel_path = models.CharField(max_length=255, null=True)
     
     
     def __str__(self):  # pragma: no cover

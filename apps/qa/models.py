@@ -20,8 +20,8 @@ REPUTATION = settings.QA_SETTINGS['reputation']
 
 class QAQuestion(models.Model, HitCountMixin, DateMixin):
     """Model class to contain every question in the forum"""
-    slug = models.SlugField(max_length=200)
-    title = models.CharField(max_length=200, blank=False)
+    slug = models.SlugField(max_length=255)
+    title = models.CharField(max_length=255, blank=False)
     description = MarkdownField()
     pub_date = models.DateTimeField('date published', auto_now_add=True)
     update_date = models.DateTimeField('date updated', null=True)
@@ -204,7 +204,7 @@ class BaseComment(models.Model, DateMixin):
     update_date = models.DateTimeField('date updated', null=True)
     update_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL,
                                     related_name="updated_comment")
-    comment_text = models.CharField(max_length=400)
+    comment_text = models.TextField()
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     
     class Meta:

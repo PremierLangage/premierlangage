@@ -19,8 +19,8 @@ class LTIModel(models.Model):
     """
     
     CONSUMER = ((i, i) for i in settings.LTI_OAUTH_CREDENTIALS.keys())
-    consumer_id = models.CharField(max_length=200, null=True, blank=True)
-    consumer = models.CharField(max_length=200, choices=CONSUMER, null=True, blank=True)
+    consumer_id = models.CharField(max_length=255, null=True, blank=True)
+    consumer = models.CharField(max_length=255, choices=CONSUMER, null=True, blank=True)
     
     class Meta:
         abstract = True
@@ -30,8 +30,8 @@ class LTIModel(models.Model):
 
 class LTIOutcome(models.Model):
     """Abstract Model to store LTI outcome url and source id of a consumer's activity."""
-    url = models.CharField(max_length=300)
-    sourcedid = models.CharField(max_length=300)
+    url = models.CharField(max_length=255)
+    sourcedid = models.CharField(max_length=255)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     class Meta:

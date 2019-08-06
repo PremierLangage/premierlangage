@@ -33,7 +33,7 @@ def create_seed():
 
 
 class Activity(LTIModel):
-    name = models.CharField(max_length=200, null=False)
+    name = models.CharField(max_length=255, null=False)
     open = models.BooleanField(default=True)
     pltp = models.ForeignKey(PLTP, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
@@ -136,7 +136,7 @@ class SessionExerciseAbstract(models.Model):
     
     pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=True)
     built = models.BooleanField(default=False)
-    envid = models.CharField(max_length=300, null=True)
+    envid = models.CharField(max_length=255, null=True)
     context = JSONField(null=True)
     
     
@@ -520,7 +520,7 @@ class Answer(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     pl = models.ForeignKey(PL, on_delete=models.CASCADE)
     activity = models.ForeignKey(Activity, null=True, on_delete=models.CASCADE)
-    seed = models.CharField(max_length=100, default=create_seed)
+    seed = models.CharField(max_length=255, default=create_seed)
     date = models.DateTimeField(default=timezone.now)
     grade = models.IntegerField(null=True)
     

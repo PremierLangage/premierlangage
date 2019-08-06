@@ -8,12 +8,12 @@ from django.db import models
 
 
 class Directory(models.Model):
-    name = models.CharField(max_length=1024, unique=True)
+    name = models.CharField(max_length=255, unique=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
     write_auth = models.ManyToManyField(User, blank=True, related_name="dir_write_auth")
     read_auth = models.ManyToManyField(User, blank=True, related_name="dir_read_auth")
-    remote = models.CharField(max_length=1024, blank=True, default='')
-    root = models.CharField(max_length=1024, blank=True)
+    remote = models.CharField(max_length=255, blank=True, default='')
+    root = models.CharField(max_length=255, blank=True)
     public = models.BooleanField(default=False, blank=True)
     read_only = models.BooleanField(default=False, blank=True)
     

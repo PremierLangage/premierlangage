@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 class Course(LTIModel):
     teacher = models.ManyToManyField(User, related_name="teaches", blank=True)
     student = models.ManyToManyField(User, blank=True)
-    name = models.CharField(max_length=200)
-    label = models.CharField(max_length=20)
+    name = models.CharField(max_length=255)
+    label = models.CharField(max_length=255)
     
     
     @classmethod
