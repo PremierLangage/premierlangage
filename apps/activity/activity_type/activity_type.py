@@ -29,7 +29,7 @@ class AbstractActivityType(ABC):
     @abstractmethod
     def small(self, activity, session_activity):
         """
-        This method is called when the dashboard of an activity is requested for a teacher.
+        This method can be called by any parent activity to display something from this activity.
         :return: A rendered template of the teacher dashboard
         """
         return None
@@ -38,7 +38,7 @@ class AbstractActivityType(ABC):
     @abstractmethod
     def small_sd(self, activity, session_activity):
         """
-        This method is called when the dashboard of an activity is requested for a teacher.
+        This method is called when the small dashboard of an activity is requested for a student.
         :return: A rendered template of the teacher dashboard
         """
         return None
@@ -47,7 +47,7 @@ class AbstractActivityType(ABC):
     @abstractmethod
     def small_td(self, activity, session_activity):
         """
-        This method is called when the dashboard of an activity is requested for a teacher.
+        This method is called when the small dashboard of an activity is requested for a teacher.
         :return: A rendered template of the teacher dashboard
         """
         return None
@@ -70,7 +70,7 @@ class AbstractActivityType(ABC):
     @abstractmethod
     def fetch(self, activity):
         """
-        This method is called when the play view is called.
+        This method is called when the fetch method of an activity is called.
         :return: (PLs, Activities): a tuple of a list of pls and a list of activities.
         """
         return None, None

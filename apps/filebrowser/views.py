@@ -572,8 +572,7 @@ def load_pltp(request):
             if warnings:  # pragma: no cover
                 for warning in warnings:
                     msg += str(warning)
-            activity = Activity.objects.create(name=pltp.name, pltp=pltp)
-            url_lti = request.build_absolute_uri(reverse("activity:play", args=[activity.pk]))
+            url_lti = request.build_absolute_uri(reverse("activity:play", args=[pltp.pk]))
             
             msg += "L'activité <b>'" + pltp.name + "'</b> a bien été créée et a pour URL LTI: \
                     <br>&emsp;&emsp;&emsp; <input id=\"copy\" style=\"width: 700px;\" value=\"" + \

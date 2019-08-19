@@ -238,7 +238,7 @@ class SessionExercise(SessionExerciseAbstract):
         """When an ActivitySession is created, automatically create a SessionExercise for the PLTP
         and every PL."""
         if created:
-            for pl in instance.activity.pltp.indexed_pl():
+            for pl in instance.activity.indexed_pl():
                 SessionExercise.objects.create(session_activity=instance, pl=pl)
             SessionExercise.objects.create(session_activity=instance)  # For the pltp
     
@@ -250,7 +250,7 @@ class SessionExercise(SessionExerciseAbstract):
             if self.pl:
                 self.context = dict(self.pl.json)
             else:
-                self.context = dict(self.session_activity.activity.pltp.json)
+                self.context = dict(self.session_activity.activity.activity_data)
         if 'activity_id__' not in self.context:
             self.context['activity_id__'] = self.session_activity.activity.id
         super().save(*args, **kwargs)
@@ -301,7 +301,7 @@ class SessionExercise(SessionExerciseAbstract):
                 dic = dict(self.context if not context else context)
                 dic['user_settings__'] = self.session_activity.user.profile
                 dic['user__'] = self.session_activity.user
-                dic['first_pl__'] = self.session_activity.activity.pltp.indexed_pl()[0].id
+                dic['first_pl__'] = self.session_activity.activity.indexed_pl()[0].id
                 env = Jinja2.get_default()
                 for key in dic:
                     if type(dic[key]) is str:
@@ -319,9 +319,9 @@ class SessionExercise(SessionExerciseAbstract):
         pl_list = [{
             'id':    None,
             'state': None,
-            'title': self.session_activity.activity.pltp.json['title'],
+            'title': self.session_activity.activity.activity_data['title'],
         }]
-        for pl in self.session_activity.activity.pltp.indexed_pl():
+        for pl in self.session_activity.activity.indexed_pl():
             pl_list.append({
                 'id':    pl.id,
                 'state': Answer.pl_state(pl, self.session_activity.user),
@@ -450,9 +450,9 @@ class Answer(models.Model):
     
     
     @staticmethod
-    def pltp_state(pltp, user):
+    def pltp_state(activity, user):
         """Return a list of tuples (pl_id, state) where state follow pl_state() rules."""
-        return [(pl.id, Answer.pl_state(pl, user)) for pl in pltp.indexed_pl()]
+        return [(pl.id, Answer.pl_state(pl, user)) for pl in activity.indexed_pl()]
     
     
     @staticmethod
@@ -505,8 +505,7 @@ class Answer(models.Model):
             dct = dict()
             dct['user_id'] = user.id
             for activity in course.activity_set.all():
-                dct['pltp_sha1'] = activity.pltp.sha1
-                dct['pl'] = Answer.pltp_state(activity.pltp, user)
+                dct['pl'] = Answer.pltp_state(activity, user)
             lst.append(dct)
         
         return lst
@@ -536,7 +535,7 @@ class Answer(models.Model):
         }
         
         for activity in course.activity_set.all():
-            summary = Answer.pltp_summary(activity.pltp, user)
+            summary = Answer.pltp_summary(activity, user)
             for k in summary:
                 state[k][1] += int(summary[k][1])
         

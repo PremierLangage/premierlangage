@@ -5,10 +5,10 @@ from activity.activity_type.section import Section
 
 
 type_dict = {
-    "Base":    Base,
-    "Course":  Course,
-    "Pltp":    Pltp,
-    "Section": Section,
+    "base":    Base,
+    "course":  Course,
+    "pltp":    Pltp,
+    "section": Section,
 }
 
 
