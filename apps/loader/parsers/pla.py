@@ -1,8 +1,8 @@
-from loader.parsers.pl import Parser as ParserPL
+from loader.parsers.pltp import Parser as ParserPLTP
 
 
 
-class Parser(ParserPL):
+class Parser(ParserPLTP):
     pass
 
 

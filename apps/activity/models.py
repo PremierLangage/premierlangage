@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 class Activity(LTIModel):
     name = models.CharField(max_length=255, null=False)
-    open = models.BooleanField(default=False)
+    open = models.BooleanField(default=True)
     activity_type = models.CharField(max_length=30, null=False,
                                      choices=zip(type_dict.keys(), type_dict.keys()))
     activity_data = JSONField(default={})
@@ -83,7 +83,7 @@ class SessionActivity(models.Model):
     
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
-    activity_data = JSONField(default={})
+    session_data = JSONField(default={})
     current_pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=True)
     
     
@@ -126,7 +126,7 @@ def init_session(sender, instance, created, *args, **kwargs):
     if created:
         activity = instance.activity
         activity_type = get_activity_type_class(activity.activity_type)()
-        instance.session_data = activity_type.init(activity, instance)
+        instance.session_data ={**instance.session_data, **activity_type.init(activity, instance)}
         instance.save()
 
 
@@ -135,7 +135,7 @@ def init_session(sender, instance, created, *args, **kwargs):
 def install_activity(sender, instance, created, *args, **kwargs):
     if created:
         activity_type = get_activity_type_class(instance.activity_type)()
-        instance.activity_data = activity_type.install(instance)
+        instance.activity_data = {**instance.activity_data, **activity_type.install(instance)}
         instance.save()
 
 

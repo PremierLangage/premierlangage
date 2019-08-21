@@ -1,5 +1,6 @@
 from activity.activity_type.activity_type import AbstractActivityType
 from loader.models import PL
+from playexo.models import Answer
 
 from django.shortcuts import get_object_or_404, redirect, reverse, render
 from django.http import HttpResponseBadRequest
@@ -80,21 +81,17 @@ class Pltp(AbstractActivityType):
                 exercise.seed = None
                 exercise.save()
             
-            elif session.current_pl and action == "next":
-                pls = activity.indexed_pl()
-                for previous, next in zip(pls, list(pls[1:]) + [None]):
-                    if previous == session.current_pl:
-                        session.current_pl = next
-                        session.save()
-                        break
-                else:
-                    session.current_pl = None
-                    session.save()
-            
             if action:
                 # Remove get arguments from URL
                 return redirect(reverse("activity:play", args=[activity.id]))
-        
+            
+        if session.current_pl:
+            last = Answer.last(session.current_pl, request.user)
+            Answer.objects.create(
+                user=request.user,
+                pl=session.current_pl,
+                answers=last.answers if last else {}
+            )
         return render(request, 'activity/activity_type/pltp/exercise.html', session.exercise().get_context(request))
     
     
@@ -139,6 +136,15 @@ class Pltp(AbstractActivityType):
         This method is called when the next button is clicked on an activity.
         :return: A redirection to the main page of the activity accordingly to the function.
         """
+        pls = activity.indexed_pl()
+        for previous, next in zip(pls, list(pls[1:]) + [None]):
+            if previous == session.current_pl:
+                session.current_pl = next
+                session.save()
+                break
+        else:
+            session.current_pl = None
+            session.save()
         return redirect(reverse("activity:play", args=[activity.id]))
     
     

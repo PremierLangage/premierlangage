@@ -2,22 +2,21 @@
 # -*- coding: utf-8 -*-
 
 
-import hashlib
 import logging
-import time
 from os.path import basename, splitext
 
 import htmlprint
 from django.conf import settings
 
+from activity.models import Activity, Index
 from filebrowser.models import Directory
+from loader.exceptions import MissingPL
 from loader.models import PL
-from activity.models import Index
 from loader.parser import get_type, parse_file
-from activity.models import Activity
 
 
 logger = logging.getLogger(__name__)
+
 
 
 def load_file(directory, rel_path):
@@ -66,7 +65,12 @@ def load_pl(directory, rel_path):
 
 
 def load_pltp(directory, rel_path):
-    return load_pla(directory, rel_path, type="pltp")
+    pltp, warnings = load_pla(directory, rel_path, type="pltp")
+    print(pltp.activity_data["__pl"])
+    if not pltp.activity_data["__pl"]:
+        raise MissingPL("Your PLTP must include at least one PL")
+    return pltp, warnings
+
 
 
 def load_pla(directory, rel_path, type=None):
@@ -109,6 +113,7 @@ def load_pla(directory, rel_path, type=None):
     for pl in pl_list:
         Index.objects.create(activity=pla, pl=pl)
     
+    print(pla.activity_data)
     return pla, [htmlprint.code(warning) for warning in warnings]
 
 

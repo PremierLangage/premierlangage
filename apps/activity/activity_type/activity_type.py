@@ -82,7 +82,7 @@ class AbstractActivityType(ABC):
         This method is called only the first time when the activity is created.
         :return: A new dictionnary to initialize the activity_data of an activity
         """
-        pass
+        return {}
     
     
     @abstractmethod
@@ -91,7 +91,7 @@ class AbstractActivityType(ABC):
         This method is called when a new instance of an activity is created.
         :return: A new dictionnary to initialize the session_data of a session_activity
         """
-        pass
+        return {}
     
     
     @abstractmethod

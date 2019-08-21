@@ -17,8 +17,6 @@ from playexo.enums import State
 from playexo.exception import BuildScriptError, SandboxError
 from playexo.request import SandboxBuild, SandboxEval
 
-from activity.models import Activity, SessionActivity
-
 
 logger = logging.getLogger(__name__)
 
@@ -226,14 +224,14 @@ class SessionExercise(SessionExerciseAbstract):
         envid   - Must contains the ID of the environment on the sandbox if the session is built.
         context - Dictionnary of the PL (or PLTP).
         session_activity - SessionActivity to which this SessionExercise belong."""
-    session_activity = models.ForeignKey(SessionActivity, on_delete=models.CASCADE)
+    session_activity = models.ForeignKey("activity.SessionActivity", on_delete=models.CASCADE)
     
     
     class Meta:
         unique_together = ('pl', 'session_activity')
     
     
-    @receiver(post_save, sender=SessionActivity)
+    @receiver(post_save, sender="activity.SessionActivity")
     def create_session_exercise(sender, instance, created, **kwargs):
         """When an ActivitySession is created, automatically create a SessionExercise for the PLTP
         and every PL."""
@@ -301,12 +299,14 @@ class SessionExercise(SessionExerciseAbstract):
                 dic = dict(self.context if not context else context)
                 dic['user_settings__'] = self.session_activity.user.profile
                 dic['user__'] = self.session_activity.user
-                dic['first_pl__'] = self.session_activity.activity.indexed_pl()[0].id
+                first_pls = self.session_activity.activity.indexed_pl()
+                if first_pls:
+                    dic['first_pl__'] = first_pls[0].id
                 env = Jinja2.get_default()
                 for key in dic:
                     if type(dic[key]) is str:
                         dic[key] = env.from_string(dic[key]).render(context=dic, request=request)
-                return get_template("playexo/pltp.html").render(dic, request)
+                return get_template("activity/activity_type/pltp/pltp.html").render(dic, request)
         
         except Exception as e:  # pragma: no cover
             error_msg = str(e)
@@ -332,7 +332,7 @@ class SessionExercise(SessionExerciseAbstract):
             "pl_list__": pl_list,
             'pl_id__':   self.pl.id if self.pl else None
         })
-        return get_template("playexo/navigation.html").render(context, request)
+        return get_template("activity/activity_type/pltp/navigation.html").render(context, request)
     
     
     def get_context(self, request):
@@ -422,7 +422,7 @@ class Answer(models.Model):
     answers = JSONField(default='{}')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     pl = models.ForeignKey(PL, on_delete=models.CASCADE)
-    activity = models.ForeignKey(Activity, null=True, on_delete=models.CASCADE)
+    activity = models.ForeignKey("activity.Activity", null=True, on_delete=models.CASCADE)
     seed = models.CharField(max_length=100, default=create_seed)
     date = models.DateTimeField(default=timezone.now)
     grade = models.IntegerField(null=True)

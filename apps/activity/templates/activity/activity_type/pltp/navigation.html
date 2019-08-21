@@ -2,10 +2,10 @@
     {% for item in pl_list__ %}
         {% if item.id == None %}
             {% if pl_id__ %}
-                <a style="white-space: normal;" href="{{ url('activity:play', activity_id__) }}?action=pltp"
+                <a style="white-space: normal;" href="{{ url('activity:play', activity_id__) }}?action=home"
                    type="button" class="btn btn-secondary  btn-lg">{{ item.title }}</a>
             {% else %}
-                <a style="white-space: normal;" href="{{ url('activity:play', activity_id__) }}?action=pltp"
+                <a style="white-space: normal;" href="{{ url('activity:play', activity_id__) }}?action=home"
                    type="button" class="btn btn-secondary  btn-lg active">{{ item.title }}</a>
             {% endif %}
         {% elif pl_id__ == item.id %}

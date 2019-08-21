@@ -7,9 +7,9 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 
 from activity.activity_type.utils import get_activity_type_class
-from activity.models import Activity
+from activity.models import Activity, SessionActivity
 from loader.models import PL
-from playexo.models import Answer, SessionActivity
+from playexo.models import Answer
 from playexo.utils import render_feedback
 
 
@@ -25,7 +25,6 @@ def play(request, activity_id):
     a_type = get_activity_type_class(activity.activity_type)()
     if not activity.open:
         return a_type.end(activity, session)
-    
     return a_type.template(request, activity, session)
 
 
@@ -34,9 +33,9 @@ def play(request, activity_id):
 @csrf_exempt
 def next(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
-    session = SessionActivity.objects.get_or_create(SessionActivity, user=request.user,
+    session, _ = SessionActivity.objects.get_or_create(SessionActivity, user=request.user,
                                                     activity=activity)
-    a_type = get_activity_type_class()()
+    a_type = get_activity_type_class(activity.activity_type)()
     if not activity.open:
         return a_type.end(activity, session)
     return a_type.next(activity, session)
