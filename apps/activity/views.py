@@ -34,7 +34,7 @@ def play(request, activity_id):
 def next(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
     session, _ = SessionActivity.objects.get_or_create(SessionActivity, user=request.user,
-                                                    activity=activity)
+                                                       activity=activity)
     a_type = get_activity_type_class(activity.activity_type)()
     if not activity.open:
         return a_type.end(activity, session)

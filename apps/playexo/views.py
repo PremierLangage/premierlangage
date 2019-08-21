@@ -1,5 +1,4 @@
 import logging
-import logging
 import traceback
 
 import htmlprint
@@ -14,9 +13,6 @@ from playexo.models import SessionTest
 
 
 logger = logging.getLogger(__name__)
-
-
-
 @login_required
 def test_pl(request, pl_id):
     if not request.user.profile.can_load():

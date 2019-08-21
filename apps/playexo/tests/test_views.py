@@ -11,8 +11,8 @@ from django.urls import reverse
 from activity.models import Activity
 from filebrowser.models import Directory
 from loader.loader import load_file
-from loader.models import Index
-from playexo.models import SessionActivity, SessionExercise
+from activity.models import Index, SessionActivity
+from playexo.models import SessionExercise
 from user_profile.enums import Role
 
 

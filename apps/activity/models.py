@@ -93,10 +93,8 @@ class SessionActivity(models.Model):
     
     def exercise(self, pl=...):
         """Return the SessionExercice corresponding to self.current_pl.
-        
         If the optionnal parameter 'pl' is given (can be given as None for the PLTP), will instead
         return the SessionExercice corresponding to pl.
-        
         Raise IntegrityError if no session for either self.current_pl or pl (if given) was found."""
         try:
             return next(
@@ -126,7 +124,7 @@ def init_session(sender, instance, created, *args, **kwargs):
     if created:
         activity = instance.activity
         activity_type = get_activity_type_class(activity.activity_type)()
-        instance.session_data ={**instance.session_data, **activity_type.init(activity, instance)}
+        instance.session_data = {**instance.session_data, **activity_type.init(activity, instance)}
         instance.save()
 
 
