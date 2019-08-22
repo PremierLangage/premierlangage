@@ -724,18 +724,20 @@ def test_pl(request):
         directory = Directory.objects.get(name=path_components[0])
         relative = os.path.join(*(path_components[1:]))
         pl, warnings = load_file(directory, relative)
-        
+    
         if not pl:
             return HttpResponseBadRequest(warnings.replace(settings.FILEBROWSER_ROOT, ""))
-        
+    
         pl.save()
         exercise = SessionTest.objects.create(pl=pl, user=request.user)
         preview = exercise.get_exercise(request)
-        
+    
         return render(request, 'filebrowser/test.html', {
             'preview': preview,
         })
     except Exception as e:  # pragma: no cover
+        import traceback
+        traceback.print_exc()
         msg = ("Impossible to test '" + os.path.basename(path) + "' : " + htmlprint.code(
             str(type(e)) + ' - ' + str(e)))
         return HttpResponseBadRequest(msg.replace(settings.FILEBROWSER_ROOT, ""))
@@ -811,7 +813,6 @@ def evaluate_pl(request):
     data = post.get('data', {})
     if 'session_id' not in data or not data['session_id']:
         return HttpResponseBadRequest(content="Couldn't resolve ajax request")
-    
     exercise = SessionTest.objects.get(pk=data['session_id'])
     answer, feedback = exercise.evaluate(request, data['answers'], test=True)
     

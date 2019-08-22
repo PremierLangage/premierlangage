@@ -15,8 +15,8 @@ def tar_from_dic(files):
     with tempfile.TemporaryDirectory() as tmp_dir, tempfile.TemporaryDirectory() as env_dir:
         with tarfile.open(tmp_dir + "/environment.tgz", "w:gz") as tar:
             for key in files:
-                with open(os.path.join(env_dir, key), "w") as f:
-                    print(files[key], file=f)
+                with open(os.path.join(env_dir, key), "wb") as f:
+                    f.write(files[key])
             
             tar.add(env_dir, arcname=os.path.sep)
         

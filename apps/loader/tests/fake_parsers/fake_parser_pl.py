@@ -4,7 +4,7 @@
 #  pl.py
 #
 #  Copyright 2018 Coumes Quentin
-
+import base64
 import json
 import os
 import re
@@ -274,8 +274,8 @@ class Parser:
             name = basename(path) if not match.group('alias') else match.group('alias')
             
             self.dic['__dependencies'].append(path)
-            with open(join(settings.FILEBROWSER_ROOT, directory, path)) as f:
-                self.dic['__files'][name] = f.read()
+            with open(join(settings.FILEBROWSER_ROOT, directory, path), "rb") as f:
+                self.dic['__files'][name] = base64.b85encode(f.read()).decode()
         
         except FileNotFoundError as e:
             raise FileNotFound(self.path_parsed_file, line, match.group('file'), self.lineno,
@@ -375,13 +375,7 @@ class Parser:
         self.fill_meta()
         
         for line in self.lines:
-            try:
-                self.parse_line(line)
-            except UnicodeDecodeError:
-                raise SyntaxErrorPL(join(self.directory.root, self.path),
-                                    self.lines[self.lineno - 1],
-                                    self.lineno,
-                                    message="Cannot reference a binary file")
+            self.parse_line(line)
             self.lineno += 1
         
         if self._multiline_key:  # If a multiline value is still open at the end of the parsing

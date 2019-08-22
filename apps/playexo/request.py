@@ -6,7 +6,7 @@
 #  Copyright 2017 Dominique Revuz <dr@univ-mlv.fr>
 #
 
-
+import base64
 import json
 import logging
 import os
@@ -32,16 +32,22 @@ class SandboxBuild:
     
     def _build_env(self):
         env = dict(self.dic['__files'])
+        
+        for k in env:
+            if k == "components.py":
+                env[k] = env[k].encode()
+            else:
+                env[k] = base64.b85decode(env[k].encode())
+        
         tmp = self.dic
         del tmp['__files']
-        
-        env['pl.json'] = json.dumps(tmp)
+        env['pl.json'] = json.dumps(tmp).encode()
         
         if 'grader' in self.dic and 'grader.py' not in env:
-            env['grader.py'] = self.dic['grader']
+            env['grader.py'] = self.dic['grader'].encode()
         
         if 'builder' in self.dic and 'builder.py' not in env:
-            env['builder.py'] = self.dic['builder']
+            env['builder.py'] = self.dic['builder'].encode()
         
         return env
     

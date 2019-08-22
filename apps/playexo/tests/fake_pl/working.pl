@@ -46,3 +46,4 @@ op2 = random.randint(1, 10)
 @ /utils/sandboxio.py
 builder=@/builder/before.py
 grader=@/grader/evaluator.py
+@ image.png

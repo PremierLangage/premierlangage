@@ -118,8 +118,6 @@ class PlParserTestCase(TestCase):
             pl.Parser(self.dir, "no_file_sandbox.pl").parse()
         with self.assertRaises(SyntaxErrorPL):
             pl.Parser(self.dir, "syntax_sandbox.pl").parse()
-        with self.assertRaises(SyntaxErrorPL):
-            pl.Parser(self.dir, "reference_binary.pl").parse()
         with self.assertRaises(FileNotFound):
             pl.Parser(self.dir, "no_image.pl").parse()
         with self.assertRaises(SemanticError):
