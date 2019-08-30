@@ -4,6 +4,7 @@ import htmlprint
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.http import (HttpResponseNotFound, JsonResponse)
 from django.shortcuts import render
 
@@ -14,6 +15,8 @@ from editor.compilers.pl.pl_parser import find_parser
 @login_required
 def index(request):
     """ Used by the editor module to navigate """
+    if not (request.user.is_authenticated and request.user.profile.can_load()):
+        raise PermissionDenied("You cannot access editor.")
     return render(request, 'editor/index.html')
 
 
