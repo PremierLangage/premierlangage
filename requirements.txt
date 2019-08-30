@@ -24,6 +24,7 @@ python-magic
 pytz
 recommonmark
 requests
+sandbox-api
 selenium
 sympy
 whitenoise
