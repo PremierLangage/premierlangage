@@ -39,7 +39,7 @@
     <a id="header-courses" class="mdl-navigation__link" href="/"><i class="fas fa-graduation-cap"></i>&nbsp;Mes
         Cours</a></a>
         {% if request.user.is_authenticated and request.user.profile.can_load() %}
-        <a id="header-editor" class="mdl-navigation__link" href="/filebrowser/"><i class="fas fa-cloud"></i>&nbsp;Editeur</a>
+        <a id="header-editor" class="mdl-navigation__link" href="/editor/"><i class="fas fa-cloud"></i>&nbsp;Editeur</a>
         <a id="header-ask" class="mdl-navigation__link" href="/ask/"><i class="fas fa-question"></i>&nbsp;FAQ</a>
         <a id="header-documentation" class="mdl-navigation__link" href="https://documentationpl.readthedocs.io/fr/latest/"
            target="_blank"><i class="fas fa-book"></i>&nbsp;Documentation</a>
