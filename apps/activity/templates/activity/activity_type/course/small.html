@@ -1,0 +1,16 @@
+<a class='course-item' href='activity/play/{{course.id}}'>
+    <div class='course-figure'>
+        <figure style='background-image: url("{{ static("classmanagement/images/course.png") }}");'></figure>
+    </div>
+    <div class='course-content'>
+
+        <span class='course-name'>{{course.name}}</span>
+        <p class='course-label'>
+            {% if not course.activity_data.label %}
+            Aucune description disponible pour ce cours.
+            {% else %}
+            {{course.activity_data.label}}
+            {% endif %}
+        </p>
+    </div>
+</a>

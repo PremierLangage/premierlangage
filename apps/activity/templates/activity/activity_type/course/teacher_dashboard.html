@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+
+
+{% block css %}
+    <link rel="stylesheet" href="{{ static('activity/css/block_chart.css') }}"/>
+    <link rel="stylesheet" href="{{ static('activity/css/classmanagement.css') }}"/>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="panel panel-default">
+
+            <div class="panel-body">
+                <h4>{{ name }}</h4>
+                <hr>
+                <div class="course-instructor-action">
+                    <a href="/activity/play/{{ course_id }}/">Retour</a>
+                </div>
+                <table class="table">
+                    <thead>
+                    <tr style='display: flex;'>
+                        {% for item in state %}
+                            <th style='display: flex;'>
+                                <div class="block course-block {{ item.template }}"
+                                     style="width: 20px; height: 20px;"></div>&emsp;{{ item }}
+                            </th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                </table>
+                <div class="table-responsive table-hover">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th class="border border-0"></th>
+                            <th colspan="100" class="border">
+                                <center>Activités</center>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th class="student-th">Élève</th>
+                            {% for i in range_tp %}
+                                <th>
+                                    <center>{{ loop.counter }}{% if loop.counter < 10 %}&nbsp;{%endif %}
+                                    </center>
+                                </th>
+                            {% endfor %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for stud in student %}
+                            <tr>
+                                <td class="summary-td">
+                                    <span class="mdl-chip mdl-chip--contact">
+                                        <span class="mdl-chip__contact mdl-color--blue mdl-color-text--white">
+                                            {{ firstof(stud.object.get_full_name()|capfirst|make_list|first, stud.object.username|capfirst|make_list|first) }}
+                                        </span>
+                                        <span class="mdl-chip__text">
+                                         <a class='text-dark'
+                                            href="/courses/course/{{ course_id }}/student/{{ stud.id }}/summary/">
+                                            {{ firstof(stud.object.get_full_name(), stud.object.username) }}
+                                         </a>
+                                        </span>
+                                    </span>
+                                </td>
+                                {% for activity in stud.activities %}
+                                    <center>
+                                        <td class="summary-td">
+                                            <p>{{ activity.name }}</p>
+                                            <a class="progress progress-summary"
+                                               href="/courses/course/{{ course_id }}/{{ activity.id }}/summary/">
+                                                {% for item in activity.state %}
+                                                    <div class="progress-bar {{ item.class }}"
+                                                         role="progressbar"
+                                                         style="width: {{ item.percent }}%"
+                                                         aria-valuenow="{{ item.percent }}"
+                                                         aria-valuemin="0"
+                                                         aria-valuemax="100">{{ item.count }}
+                                                    </div>
+                                                {% endfor %}
+                                            </a>
+                                        </td>
+                                    </center>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

@@ -13,6 +13,7 @@
 from django.urls import path
 
 from activity import views
+from django.contrib.auth import views as auth_views
 
 
 app_name = 'activity'
@@ -22,4 +23,8 @@ urlpatterns = [
     path(r'next/<int:activity_id>/', views.next, name="next"),
     path(r'evaluate/<int:activity_id>/<int:pl_id>', views.evaluate, name="evaluate"),
     path(r'dashboard/<int:activity_id>/', views.dashboard, name="dashboard"),
+    path(r'notes/<int:activity_id>/', views.notes, name="notes"),
+    path('login/', auth_views.LoginView.as_view(template_name='playexo/not_authenticated.html',
+                                                redirect_authenticated_user=True), name="login"),
+    path(r'logout/', views.disconnect, name="logout"),
 ]

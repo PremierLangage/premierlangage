@@ -45,64 +45,6 @@ def index(request):
 
 
 
-@csrf_exempt
-@login_required
-def course(request, pk):
-    try:
-        course = Course.objects.get(id=pk)
-    except Course.DoesNotExist:
-        raise Http404("Course (id: " + str(pk) + ") not found.")
-    
-    if not course.is_member(request.user) and not request.user.profile.is_admin():
-        logger.warning(
-            "User '" + request.user.username + "' denied to access course'" + course.name + "'.")
-        raise PermissionDenied("Vous n'êtes pas membre de cette classe.")
-    
-    if request.method == 'GET':
-        if request.GET.get("action", None) == "toggle_activity":
-            if request.user not in course.teacher.all():
-                logger.warning("User '" + request.user.username
-                               + "' denied to toggle course state'" + course.name + "'.")
-                raise PermissionDenied(
-                    "Vous n'avez pas les droits nécessaires pour fermer/ouvrir cette activité.")
-            try:
-                act = Activity.objects.get(id=request.GET.get("id", None))
-                act.open = not act.open
-                act.save()
-                logger.info("User '%s' set activity '%s' 'open' attribute to '%s' in '%s'."
-                            % (request.user.username, act.name, str(act.open), course.name))
-            except Activity.DoesNotExist:
-                raise Http404(
-                    "L'activité d'ID '" + str(request.GET.get("id", None)) + "' introuvable.")
-            return redirect(reverse("classmanagement:course", args=[pk]))
-    
-    activity = list()
-    for item in course.activity_set.all().order_by("id"):
-        pl = [
-            {
-                'name':  elem.json['title'],
-                'state': Answer.pl_state(elem, request.user)
-            }
-            for elem in item.pltp.indexed_pl()
-        ]
-        
-        activity.append({
-            'name':      item.name,
-            'pltp_sha1': item.pltp.sha1,
-            'title':     item.pltp.json['title'],
-            'pl':        pl,
-            'id':        item.id,
-            'open':      item.open,
-        })
-    
-    return render(request, 'classmanagement/course.html', {
-        'name':       course.name,
-        'activity':   activity,
-        'teacher':    course.teacher.all(),
-        'instructor': course.is_teacher(request.user),
-        'course_id':  pk,
-    })
-
 
 
 @csrf_exempt
@@ -249,40 +191,3 @@ def redirect_activity(request, activity_id):
 
 
 
-@login_required
-@require_GET
-def notes(request, course_id, activity_id):
-    try:
-        course = Course.objects.get(pk=course_id)
-        users = course.student.all()
-        activity = Activity.objects.get(pk=activity_id)
-        pl = activity.pltp.pl.all()
-    except ObjectDoesNotExist:
-        return HttpResponseForbidden("You are not a teacher of this class")
-    
-    if not request.user or not course.is_teacher(request.user):
-        return HttpResponseForbidden("Not authorized")
-    
-    csv = "username,firstname,lastname,email," + ''.join(
-        [str(i + 1) + ": " + p.name + "," for i, p in enumerate(pl)]) + "total\n"
-    for u in users:
-        grades = []
-        
-        for i in pl:
-            answer = Answer.highest_grade(i, u)
-            grades.append(
-                0 if answer is None else max(answer.grade, 0) if answer.grade is not None else 0)
-        
-        csv += ("%s,%s,%s,%s," % (u.username, u.first_name, u.last_name, u.email)
-                + ''.join([str(i) + "," for i in grades])
-                + str(sum(grades)) + "\n")
-    
-    response = HttpResponse(csv, content_type="text/csv")
-    response['Content-Disposition'] = 'attachment;filename=notes.csv'
-    return response
-
-
-
-def disconnect(request):
-    logout(request)
-    return redirect(reverse('classmanagement:login'))

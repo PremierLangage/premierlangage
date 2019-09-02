@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
@@ -9,7 +10,7 @@ from django.urls import reverse
 class AbstractActivityType(ABC):
     
     @abstractmethod
-    def student_dashboard(self, activity, session):
+    def student_dashboard(self, request, activity, session):
         """
         This method is called when the dashboard of an activity is requested for a student.
         :return: A rendered template of the student dashboard
@@ -18,7 +19,7 @@ class AbstractActivityType(ABC):
     
     
     @abstractmethod
-    def teacher_dashboard(self, activity, session):
+    def teacher_dashboard(self, request, activity, session):
         """
         This method is called when the dashboard of an activity is requested for a teacher.
         :return: A rendered template of the teacher dashboard
@@ -27,7 +28,7 @@ class AbstractActivityType(ABC):
     
     
     @abstractmethod
-    def small(self, activity, session_activity):
+    def small(self, request, activity):
         """
         This method can be called by any parent activity to display something from this activity.
         :return: A rendered template of the teacher dashboard
@@ -59,7 +60,7 @@ class AbstractActivityType(ABC):
     
     
     @abstractmethod
-    def template(self, request, activity, session, get_options):
+    def template(self, request, activity, session):
         """
         This method is called when the play view is called.
         :return: A rendered template of the main page of the activity.
@@ -86,7 +87,7 @@ class AbstractActivityType(ABC):
     
     
     @abstractmethod
-    def init(self, activity):
+    def init(self, activity, session):
         """
         This method is called when a new instance of an activity is created.
         :return: A new dictionnary to initialize the session_data of a session_activity
@@ -130,3 +131,15 @@ class AbstractActivityType(ABC):
         :return: A rendered template of the closed activity
         """
         raise PermissionDenied("Cette activité est fermé.")
+    
+    
+    @abstractmethod
+    def navigation(self, activity, session_activity, request):
+        """This method is called to get a rendered template of the navigation of this activity"""
+        return None
+    
+    
+    def notes(self, activity, request):
+        response = HttpResponse("", content_type="text/csv")
+        response['Content-Disposition'] = 'attachment;filename=notes.csv'
+        return response

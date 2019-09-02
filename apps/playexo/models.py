@@ -286,62 +286,6 @@ class SessionExercise(SessionExerciseAbstract):
             dic = {**context, **dic}
         
         return self.render('playexo/pl.html', dic, request)
-    
-    
-    def get_exercise(self, request, context=None):
-        """Return a template of the PL or the PLTP rendered with self.context.
-        
-        If given, will use context instead."""
-        try:
-            pl = self.pl
-            if pl:
-                return self.get_pl(request, context)
-            else:
-                dic = dict(self.context if not context else context)
-                dic['user_settings__'] = self.session_activity.user.profile
-                dic['user__'] = self.session_activity.user
-                first_pls = self.session_activity.activity.indexed_pl()
-                if first_pls:
-                    dic['first_pl__'] = first_pls[0].id
-                env = Jinja2.get_default()
-                for key in dic:
-                    if type(dic[key]) is str:
-                        dic[key] = env.from_string(dic[key]).render(context=dic, request=request)
-                return get_template("activity/activity_type/pltp/pltp.html").render(dic, request)
-        
-        except Exception as e:  # pragma: no cover
-            error_msg = str(e)
-            if request.user.profile.can_load():
-                error_msg += "<br><br>" + htmlprint.html_exc()
-            return get_template("playexo/error.html").render({"error_msg": error_msg})
-    
-    
-    def get_navigation(self, request):
-        pl_list = [{
-            'id':    None,
-            'state': None,
-            'title': self.session_activity.activity.activity_data['title'],
-        }]
-        for pl in self.session_activity.activity.indexed_pl():
-            pl_list.append({
-                'id':    pl.id,
-                'state': Answer.pl_state(pl, self.session_activity.user),
-                'title': pl.json['title'],
-            })
-        context = dict(self.context)
-        context.update({
-            "pl_list__": pl_list,
-            'pl_id__':   self.pl.id if self.pl else None
-        })
-        return get_template("activity/activity_type/pltp/navigation.html").render(context, request)
-    
-    
-    def get_context(self, request):
-        return {
-            "navigation": self.get_navigation(request),
-            "exercise":   self.get_exercise(request),
-        }
-
 
 
 class SessionTest(SessionExerciseAbstract):
@@ -403,9 +347,8 @@ class SessionTest(SessionExerciseAbstract):
     
     
     def get_exercise(self, request, answer=None):
-        """Return a template of the PL or the PLTP rendered with self.context.
+        """Return a template of the PL.
         
-        If given, will use context instead.
         If answer is given, will determine if the seed must be reroll base on its grade."""
         try:
             return self.get_pl(request, answer)
@@ -457,7 +400,7 @@ class Answer(models.Model):
     
     
     @staticmethod
-    def pltp_summary(pltp, user):
+    def activity_summary(activity, user):
         """
             Give information about the PLTP's completion of this user as a dict of 5 lists:
             {
@@ -479,7 +422,7 @@ class Answer(models.Model):
             State.ERROR:       [0.0, 0],
         }
         
-        for pl in pltp.indexed_pl():
+        for pl in activity.indexed_pl():
             state[Answer.pl_state(pl, user)][1] += 1
         
         nb_pl = max(sum([state[k][1] for k in state]), 1)

@@ -25,10 +25,10 @@
                 <img width='20' src="{{ request.user.profile.avatar.url }}">&nbsp;
                 {{ firstof(request.user.get_full_name(), request.user.get_username()) }}
             </a>
-            <a class="mdl-navigation__link" href="{{ url('classmanagement:logout') }}"><i
+            <a class="mdl-navigation__link" href="{{ url('activity:logout') }}"><i
                     class="fas fa-power-off fa-lg"></i></a>
             {% else %}
-            <a class="mdl-navigation__link" href="{{ url('classmanagement:login') }}">Connexion</a>
+            <a class="mdl-navigation__link" href="{{ url('activity:login') }}">Connexion</a>
             {% endif %}
         </nav>
     </div>

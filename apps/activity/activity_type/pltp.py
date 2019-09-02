@@ -1,10 +1,12 @@
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
+from django.http import HttpResponseBadRequest, HttpResponseForbidden, HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.template.loader import get_template
+from django.apps import apps
+
 from activity.activity_type.activity_type import AbstractActivityType
 from loader.models import PL
 from playexo.models import Answer
-
-from django.shortcuts import get_object_or_404, redirect, reverse, render
-from django.http import HttpResponseBadRequest
-from django.core.exceptions import PermissionDenied
 
 
 
@@ -15,7 +17,7 @@ class Pltp(AbstractActivityType):
         This method is called when the dashboard of an activity is requested for a student.
         :return: A rendered template of the student dashboard
         """
-        return None
+        return PermissionDenied()
     
     
     def teacher_dashboard(self, activity, session):
@@ -23,15 +25,29 @@ class Pltp(AbstractActivityType):
         This method is called when the dashboard of an activity is requested for a teacher.
         :return: A rendered template of the teacher dashboard
         """
-        return None
+        return PermissionDenied()
     
     
-    def small(self, activity, session_activity):
+    def small(self, request, activity):
         """
         This method can be called by any parent activity to display something from this activity.
         :return: A rendered template of the teacher dashboard
         """
-        return None
+        pl = [
+            {
+                'name':  activity.activity_data['title'],
+                'state': Answer.pl_state(elem, request.user)
+            }
+            for elem in activity.indexed_pl()
+        ]
+        
+        return get_template("activity/activity_type/pltp/small.html").render({
+            'title':      activity.activity_data['title'],
+            'pl':         pl,
+            'id':         activity.id,
+            'open':       activity.open,
+            'instructor': request.user in activity.teacher.all()
+        }, request)
     
     
     def small_sd(self, activity, session_activity):
@@ -39,7 +55,7 @@ class Pltp(AbstractActivityType):
         This method is called when the small dashboard of an activity is requested for a student.
         :return: A rendered template of the teacher dashboard
         """
-        return None
+        return PermissionDenied()
     
     
     def small_td(self, activity, session_activity):
@@ -47,11 +63,11 @@ class Pltp(AbstractActivityType):
         This method is called when the small dashboard of an activity is requested for a teacher.
         :return: A rendered template of the teacher dashboard
         """
-        return None
+        return PermissionDenied()
     
     
     def grading(self):
-        pass
+        return PermissionDenied()
     
     
     def template(self, request, activity, session):
@@ -76,7 +92,7 @@ class Pltp(AbstractActivityType):
                 Answer.objects.create(user=request.user, pl=session.current_pl)
             
             elif session.current_pl and action == "reroll":
-                exercise = session.exercise()
+                exercise = session.session_exercise()
                 exercise.built = False
                 exercise.seed = None
                 exercise.save()
@@ -84,7 +100,7 @@ class Pltp(AbstractActivityType):
             if action:
                 # Remove get arguments from URL
                 return redirect(reverse("activity:play", args=[activity.id]))
-            
+        
         if session.current_pl:
             last = Answer.last(session.current_pl, request.user)
             Answer.objects.create(
@@ -92,7 +108,8 @@ class Pltp(AbstractActivityType):
                 pl=session.current_pl,
                 answers=last.answers if last else {}
             )
-        return render(request, 'activity/activity_type/pltp/exercise.html', session.exercise().get_context(request))
+        return render(request, 'activity/activity_type/pltp/exercise.html',
+                      self.get_context(activity, session, request))
     
     
     def fetch(self, activity):
@@ -158,3 +175,60 @@ class Pltp(AbstractActivityType):
         :return: A rendered template of the closed activity
         """
         raise PermissionDenied("Cette activité est fermé.")
+    
+    
+    def navigation(self, activity, session_activity, request):
+        """This method is called to get a rendered template of the navigation of this activity"""
+        session_exercise = session_activity.session_exercise()
+        pl_list = [{
+            'id':    None,
+            'state': None,
+            'title': activity.activity_data['title'],
+        }]
+        for pl in activity.indexed_pl():
+            pl_list.append({
+                'id':    pl.id,
+                'state': Answer.pl_state(pl, session_activity.user),
+                'title': pl.json['title'],
+            })
+        context = dict(session_exercise.context)
+        context.update({
+            "pl_list__": pl_list,
+            'pl_id__':   session_exercise.pl.id if session_exercise.pl else None
+        })
+        return get_template("activity/activity_type/pltp/navigation.html").render(context, request)
+    
+    
+    def get_context(self, activity, session, request):
+        return {
+            "navigation": self.navigation(activity, session, request),
+            "exercise":   session.current_pl_template(request),
+        }
+    
+    
+    def notes(self, activity, request):
+        user = request.user
+        users = activity.student.all()
+        pl = activity.pl.all()
+        if not user or user not in activity.teacher.all():
+            return HttpResponseForbidden("Not authorized")
+        
+        csv = "username,firstname,lastname,email," + ''.join(
+            [str(i + 1) + ": " + p.name + "," for i, p in enumerate(pl)]) + "total\n"
+        for u in users:
+            grades = []
+            
+            for i in pl:
+                answer = Answer.highest_grade(i, u)
+                grades.append(
+                    0 if answer is None else max(answer.grade,
+                                                 0) if answer.grade is not None else 0)
+            
+            csv += ("%s,%s,%s,%s," % (u.username, u.first_name, u.last_name, u.email)
+                    + ''.join([str(i) + "," for i in grades])
+                    + str(sum(grades)) + "\n")
+        
+        response = HttpResponse(csv, content_type="text/csv")
+        response['Content-Disposition'] = 'attachment;filename=notes.csv'
+        print(response)
+        return response

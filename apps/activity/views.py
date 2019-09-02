@@ -1,9 +1,11 @@
 import json
 import logging
 
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, HttpResponseBadRequest
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, reverse
 from django.views.decorators.csrf import csrf_exempt
 
 from activity.activity_type.utils import get_activity_type_class
@@ -49,7 +51,7 @@ def evaluate(request, activity_id, pl_id):
     activity = get_object_or_404(Activity, id=activity_id)
     session = get_object_or_404(SessionActivity, user=request.user, activity=activity)
     pl = get_object_or_404(PL, id=pl_id)
-    exercise = session.exercise(pl)
+    exercise = session.session_exercise(pl)
     a_type = get_activity_type_class(activity.activity_type)()
     
     if 'requested_action' in status:
@@ -74,8 +76,8 @@ def evaluate(request, activity_id, pl_id):
             a_type.validate(activity, session, a, action="submit")
             return HttpResponse(
                 json.dumps({
-                    "navigation": exercise.get_navigation(request),
-                    "exercise":   exercise.get_exercise(request),
+                    "navigation": a_type.navigation(activity, session, request),
+                    "exercise":   session.current_pl_template(request),
                     "feedback":   render_feedback(feedback),
                 }),
                 content_type='application/json'
@@ -90,14 +92,39 @@ def evaluate(request, activity_id, pl_id):
 @csrf_exempt
 def dashboard(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
-    session = SessionActivity.objects.get_or_create(SessionActivity, user=request.user,
-                                                    activity=activity)
-    a_type = get_activity_type_class()()
+    session, _ = SessionActivity.objects.get_or_create(SessionActivity, user=request.user,
+                                                       activity=activity)
+    a_type = get_activity_type_class(activity.activity_type)()
     if not activity.open:
         return a_type.end(activity, session)
     
     if request.user in activity.teacher.all():
-        return a_type.teacher_dashboard(activity, session)
+        return a_type.teacher_dashboard(request, activity, session)
     
-    elif request.user in activity.user.all():
-        return a_type.student_dashboard(activity, session)
+    elif request.user in activity.student.all():
+        return a_type.student_dashboard(request, activity, session)
+
+
+
+@login_required
+def notes(request, activity_id):
+    activity = get_object_or_404(Activity, id=activity_id)
+    session, _ = SessionActivity.objects.get_or_create(SessionActivity, user=request.user,
+                                                       activity=activity)
+    a_type = get_activity_type_class(activity.activity_type)()
+    if request.user not in activity.teacher.all():
+        raise PermissionDenied("Vous devez être professeur pour récupérer les notes")
+    return a_type.notes(activity, request)
+
+
+
+@login_required
+@csrf_exempt
+def index(request):
+    return redirect(reverse("activity:play", args=[0]))
+
+
+
+def disconnect(request):
+    logout(request)
+    return redirect(reverse('activity:login'))
