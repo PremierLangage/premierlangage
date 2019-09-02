@@ -41,17 +41,17 @@ class Activity {
         this.nodes.actions.slideDown();
         this.components = options.components || {};
 
-        this.render();
-        this.addListeners();
-
         MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+        
+        this.loadComponents();
+        this.addListeners();
 
         if (window.onReadyPL) {
             window.onReadyPL(this.nodes);
         }
     }
 
-    render() {
+    loadComponents() {
         const nodes = document.querySelectorAll('[cid]');
         const components = Object.keys(this.components).map(k => {
             return this.components[k];
@@ -61,7 +61,8 @@ class Activity {
             const component = components.find(c => {
                 return c.cid === cid;
             });
-            if (component && node.deserialize) {
+
+            if (component) {
                 node.deserialize(component);
             }
         });
