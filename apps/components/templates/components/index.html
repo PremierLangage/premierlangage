@@ -6,11 +6,12 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" type="image/x-icon" href="{{ static('favicon.ico') }}"/>
-  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="{{ static('/components/styles.css') }}"/>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.staticaly.com/gh/PremierLangage/components/master/dist/styles.css?env=dev"/>
 <body>
-    <app-root></app-root>
+    <c-root></c-root>
+
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
             tex2jax: {
@@ -19,7 +20,16 @@
             }
         });
     </script>
+
     <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-    <script type='text/javascript' src="{{ static('/components/scripts.js') }}"></script>
+
+    <script src="https://cdn.staticaly.com/gh/PremierLangage/components/master/dist/polyfills-es5.js?env=dev" nomodule defer></script>
+    <script src="https://cdn.staticaly.com/gh/PremierLangage/components/master/dist/polyfills-es2015.js?env=dev" type="module"></script>
+    <script src="https://cdn.staticaly.com/gh/PremierLangage/components/master/dist/scripts.js?env=dev" defer></script>
+    <script src="https://cdn.staticaly.com/gh/PremierLangage/components/master/dist/runtime-es2015.js?env=dev" type="module"></script>
+    <script src="https://cdn.staticaly.com/gh/PremierLangage/components/master/dist/main-es2015.js?env=dev" type="module"></script>
+    <script src="https://cdn.staticaly.com/gh/PremierLangage/components/master/dist/runtime-es5.js?env=dev" nomodule defer></script>
+    <script src="https://cdn.staticaly.com/gh/PremierLangage/components/master/dist/main-es5.js?env=dev" nomodule defer></script>
+
 </body>
 </html>

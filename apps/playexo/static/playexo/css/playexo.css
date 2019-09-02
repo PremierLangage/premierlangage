@@ -6,7 +6,7 @@
     z-index: 10;
     position: fixed;
     width: 200px;
-    height: 100%;
+    height: calc(100% - 44px);
     border: 0;
     overflow-y: auto !important; 
     box-shadow: 1px 1px 12px #555;

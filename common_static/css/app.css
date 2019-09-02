@@ -1,27 +1,61 @@
-.mdl-layout__header {
-    background-color: #343A40;
+.app-header * {
+    font-size: 1rem;
+}
+
+.app-header__title {
+    display: flex;
+    flex-direction: column;
+    margin-left: 16px;
+}
+
+.app-header__nav {
+    display: flex;
+    flex: 1;
+    margin: 0 16px;
+}
+
+.app-version {
+    font-size: 10px;
+}
+
+.app-content {
+    position: relative;
+    --padding-top: 0px;
+    --padding-bottom: 0px;
+    --padding-start: 0px;
+    --padding-end: 0px;
+}
+
+.app-content--padding {
+    --padding-top: 2rem;
+    --padding-bottom: 2rem;
+    --padding-start: 8rem;
+    --padding-end: 8rem;
+}
+.app-spacer {
+    flex-grow: 1;
+}
+
+.app-navlink {
+    text-transform: none;
+}
+
+.app-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+}
+
+/* ionic toolbar */
+.toolbar-content {
+    display: flex;
+    overflow-x: auto;
 }
 
 .pointer {
     cursor: pointer;
 }
 
-.mdl-layout-title {
-    margin-right: 16px;
-}
-
-.mdl-layout:not(.is-small-screen) .mdl-layout__header-row {
-    padding: 0 20px 0 20px;
-}
-
-.mdl-layout__header-row .mdl-navigation__link {
-    padding: 0px 8px;
-}
-
-.page-content {
-    position: relative;
-    padding: 2rem 8rem;
-}
 
 a {
     text-decoration: none;
@@ -58,13 +92,14 @@ h1 {
     /* 45px / 36px */
   }
   
-  @media (min-width: 43.75em) {
+@media (min-width: 43.75em) {
     h1 {
       font-size: 2.5em;
       /* 2.5x body copy size = 40px */
       line-height: 1.125;
     }
 }
+
 h2 {
     font-size: 1.625em;
     /* 1.625x body copy size = 26px */

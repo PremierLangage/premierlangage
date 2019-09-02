@@ -1,27 +1,27 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <base href="/">
-        <title>{% block title %}UPEM - PL{% endblock %}</title>
-
-        {% include "head.html" %}
-
-        {% block head %}{% endblock %}
-        {% block css %}{% endblock %}
-        {% block js %}{% endblock %}
-    </head>
-    <body>
-        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-            {% block header %}{% include "header.html" %}{% endblock %}
-            <main class="mdl-layout__content">
-                <div class="page-content">
-                    {% block alert %}{% include "alert.html" %}{% endblock %}
-                    {% block content %}{% endblock %}
-                </div>
-            </main>
-        </div>
-        {% block end_script %}{% endblock %}
-    </body>
+<html mode="ios">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <base href="/">
+    <title>{% block title %}UPEM - PL{% endblock %}</title>
+    {% include "head.html" %}
+    {% block head %}{% endblock %}
+    {% block css %}{% endblock %}
+    {% block js %}{% endblock %}
+</head>
+<body class="light-theme">
+    <ion-app class="app">
+        {% block header %}
+            {% include "header.html" %}
+        {% endblock %}
+        <ion-content class="app-content">
+            {% block alert %}
+                {% include "alert.html" %}
+            {% endblock %}
+            {% block content %}{% endblock %}
+        </ion-content>
+    </ion-app>
+    {% block end_script %}{% endblock %}
+</body>
 </html>

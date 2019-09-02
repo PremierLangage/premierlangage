@@ -1,52 +1,44 @@
-<header class="mdl-layout__header">
-    <div class="mdl-layout__header-row">
-        <div class="mdl-layout-title">
-            <div>Premier Langage</div>
-            <span style='font-size: 10px;'>0.6.2</span>
+<ion-header class="app-header">
+    <ion-toolbar>
+        <div class="app-header__title">
+            <span>Premier Langage</span>
+            <span class='app-version'>0.6.2</span>
         </div>
-        <nav class="mdl-navigation mdl-layout--large-screen-only">
-            {% if request.user.is_authenticated and request.user.profile.can_load %}
-            <a class="mdl-navigation__link" href="/"><i class="fas fa-graduation-cap"></i>&nbsp;Mes
-                Cours</a></a>
-            <a class="mdl-navigation__link" href="/editor/"><i class="fas fa-cloud"></i>&nbsp;Editeur</a>
-            <a class="mdl-navigation__link" href="/ask/"><i
-                    class="fas fa-question"></i>&nbsp;FAQ</a>
-            <a class="mdl-navigation__link" href="https://documentationpl.readthedocs.io/fr/latest/"
-               target="_blank"><i class="fas fa-book"></i>&nbsp;Documentation</a>
-            {% endif %}
-            {% if request.user.is_authenticated and request.user.profile.is_admin or request.user.is_superuser %}
-            <a class="mdl-navigation__link" href="/admin/"><i class="fas fa-cog"></i>&nbsp;Administration</a>
-            {% endif %}
+        <nav class="app-header__nav">
+            <ion-buttons>
+                <ion-button id="header-courses" class="app-navlink" href="/">
+                    <i class="fas fa-graduation-cap"></i>&nbsp;Mes Cours
+                </ion-button>
+                {% if request.user.is_authenticated and request.user.profile.can_load() %}
+                <ion-button id="header-editor" class="app-navlink" href="/editor/">
+                    <i class="fas fa-cloud"></i>&nbsp;Editeur
+                </ion-button>
+                <ion-button id="header-ask" class="app-navlink" href="/ask/">
+                    <i class="fas fa-question"></i>&nbsp;FAQ
+                </ion-button>
+                <ion-button id="header-documentation" class="app-navlink" href="https://documentationpl.readthedocs.io/fr/latest/" target="_blank">
+                <i class="fas fa-book"></i>&nbsp;Documentation
+                </ion-button>
+                {% endif %}
+                {% if request.user.is_authenticated and request.user.profile.is_admin() or request.user.is_superuser %}
+                <ion-button id="header-admin" class="app-navlink" href="/admin/">
+                    <i class="fas fa-cog"></i>&nbsp;Administration
+                </ion-button>
+                {% endif %}
+            </ion-buttons>
+            <div class="app-spacer"></div>
+            <ion-buttons>
+                {% if request.user.is_authenticated %}
+                <ion-button class="app-navlink" href="/profile/">
+                    {{ firstof(request.user.get_full_name(), request.user.get_username()) }}
+                </ion-button>
+                <ion-button class="app-navlink" href="{{ url('classmanagement:logout') }}">
+                    <i class="fas fa-power-off fa-lg"></i>
+                </ion-button>
+                {% else %}
+                <ion-button class="app-navlink" href="{{ url('classmanagement:login') }}">Connexion</v>
+                {% endif %}
+            </ion-buttons>
         </nav>
-        <div class="mdl-layout-spacer"></div>
-        <nav class="mdl-navigation">
-            {% if request.user.is_authenticated %}
-            <a class="mdl-navigation__link" href="/profile/">
-                <img width='20' src="{{ request.user.profile.avatar.url }}">&nbsp;
-                {{ firstof(request.user.get_full_name(), request.user.get_username()) }}
-            </a>
-            <a class="mdl-navigation__link" href="{{ url('classmanagement:logout') }}"><i
-                    class="fas fa-power-off fa-lg"></i></a>
-            {% else %}
-            <a class="mdl-navigation__link" href="{{ url('classmanagement:login') }}">Connexion</a>
-            {% endif %}
-        </nav>
-    </div>
-</header>
-<div class="mdl-layout__drawer mdl-layout--small-screen-only">
-    <span class="mdl-layout-title">Premier Langage</span>
-    <nav class="mdl-navigation">
-        {% if request.user.is_authenticated and request.user.profile.can_load %}
-        <a class="mdl-navigation__link" href="/"><i class="fas fa-graduation-cap"></i>&nbsp;Mes
-            Cours</a></a>
-        <a class="mdl-navigation__link" href="/filebrowser/"><i class="fas fa-cloud"></i>&nbsp;Editeur</a>
-        <a class="mdl-navigation__link" href="/ask/"><i class="fas fa-question"></i>&nbsp;FAQ</a>
-        <a class="mdl-navigation__link" href="https://documentationpl.readthedocs.io/fr/latest/"
-           target="_blank"><i class="fas fa-book"></i>&nbsp;Documentation</a>
-        {% endif %}
-        {% if request.user.is_authenticated and request.user.profile.is_admin or request.user.is_superuser %}
-        <a class="mdl-navigation__link" href="/admin/"><i class="fas fa-cog"></i>&nbsp;Administration</a>
-        {% endif %}
-    </nav>
-    <div class="mdl-layout-spacer"></div>
-</div>
+    </ion-toolbar>
+</ion-header>
