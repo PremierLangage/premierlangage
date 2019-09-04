@@ -9,7 +9,7 @@
         <style>
 
 
-            div.one_notif {
+            div.notif {
                 height: 95px;
                 float: bottom;
                 padding: 0;
@@ -19,7 +19,7 @@
                 width: 100vw;
             }
 
-            div.one_element {
+            div.element {
                 display: inline-block;
                 width: 20%; /* 100 % / nombre de div contenant le span/div*/
                 height: 100%;
@@ -30,7 +30,7 @@
             }
 
 
-            div.p_notif {
+            div.p_notif, #dot{
                 width: 100%;
                 margin-left: auto;
                 margin-right: auto;
@@ -57,12 +57,6 @@
 
             #dot {
 
-                margin-left: auto;
-                margin-right: auto;
-                position: relative;
-                top: 50%;
-                text-align: center;
-                transform: translateY(-50%);
                 height: 10px;
                 width: 10px;
                 background-color: darkviolet;
@@ -76,28 +70,28 @@
         <hr class="separator_div">
         {% for notif in notifications_list %}
 
-            <div class="one_notif">
+            <div class="notif">
                 <div>
                     <div id="dot"
                          style="background-color: {% if notif.read %}white{% endif %}"></div>
 
                 </div>
-                <div class="one_element">
+                <div class="element">
                     <div class="p_notif"><img id="avatar" src="{{ notif.user.profile.avatar.url }}">
                     </div>
                 </div>
 
-                <div class="one_element">
+                <div class="element">
                     <div class="p_notif">{{ notif.context }}</div>
                 </div>
 
-                <div class="one_element">
+                <div class="element">
                     <div class="p_notif"><p class="p_superpose">{{ notif.title }}</p>
                         <p class="p_superpose">{{ notif.body }}</p>
                     </div>
                 </div>
 
-                <div class="one_element">
+                <div class="element">
                     <div class="p_notif">
                         {{ notif.pub_date_verbose() }}
                     </div>

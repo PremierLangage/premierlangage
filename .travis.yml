@@ -27,7 +27,7 @@ before_install:
   - cd sandbox/
   - pip install psycopg2
   - ./install.sh
-  - python3 manage.py runserver 7000 &> /dev/null &
+  - python3 manage.py runserve 7000 &> /dev/null &
   - cd ..
   - yes n | ./script/install_release.sh
 

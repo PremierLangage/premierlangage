@@ -15,11 +15,53 @@
                    href="https://documentationpl.readthedocs.io/fr/latest/"
                    target="_blank"><i class="fas fa-book"></i>&nbsp;Documentation</a>
                 <div class="notif_window">
-                    <a class="mdl-navigation__link notif_link" href="/notifs/"><i class="fas fa-bell"></i>&nbsp;Notifications</a>
-                    <span class="notif_menu">
-                        ***
-                    </span>
-                   <script> notifs(); </script>
+                    <a class="mdl-navigation__link notif_link" href="/notifs/"><i
+                            class="fas fa-bell"></i>&nbsp;Notifications</a>
+                    <div class="notif_menu">
+                        {% block alert %}{% endblock %}
+
+
+                        <hr class="separator_div">
+                        {% if notifications %}
+
+                            {% for notif in notifications %}
+
+                                <div class="one_notif">
+                                    <div>
+                                        <div id="dot"
+                                             style="background-color: {% if notif.read %}white{% endif %}"></div>
+
+                                    </div>
+                                    <div class="one_element">
+                                        <div class="p_notif"><img id="avatar"
+                                                                  src="{{ notif.user.profile.avatar.url }}">
+                                        </div>
+                                    </div>
+
+                                    <div class="one_element">
+                                        <div class="p_notif">{{ notif.context }}</div>
+                                    </div>
+
+                                    <div class="one_element">
+                                        <div class="p_notif"><p
+                                                class="p_superpose">{{ notif.title }}</p>
+                                            <p class="p_superpose">{{ notif.body }}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="one_element">
+                                        <div class="p_notif">
+                                            {{ notif.pub_date_verbose() }}
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <hr class="separator_div">
+                            {% endfor %}
+                        {% endif %}
+
+                    </div>
+                    <script> notifs(); </script>
                 </div>
             {% endif %}
             {% if request.user.is_authenticated and request.user.profile.is_admin or request.user.is_superuser %}
@@ -50,7 +92,8 @@
             <a class="mdl-navigation__link" href="/"><i class="fas fa-graduation-cap"></i>&nbsp;Mes
                 Cours</a></a>
             <a class="mdl-navigation__link" href="/filebrowser/"><i class="fas fa-cloud"></i>&nbsp;Editeur</a>
-            <a class="mdl-navigation__link" href="/ask/"><i class="fas fa-question"></i>&nbsp;FAQ</a>
+            <a class="mdl-navigation__link" href="/ask/"><i
+                    class="fas fa-question"></i>&nbsp;FAQ</a>
             <a class="mdl-navigation__link" href="https://documentationpl.readthedocs.io/fr/latest/"
                target="_blank"><i class="fas fa-book"></i>&nbsp;Documentation</a>
             <a class="mdl-navigation__link" href="/"><i class="fas fa-bell"></i>&nbsp;Notifications</a>

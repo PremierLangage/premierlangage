@@ -2,13 +2,13 @@ function notifs() {
 
 
     $(() => {
-        $("a.notif_link").hover(
+        $("a.notif_link, div.notif_menu").mouseenter(
             function () {
-                $('span.notif_menu').show();
-            }, function () {
-                $('span.notif_menu').hide();
-            }
-        );
+                $('div.notif_menu').show();
+            }).mouseleave(
+            function () {
+                $('div.notif_menu').hide();
+            });
     });
 }
 

@@ -8,7 +8,7 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test import override_settings
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
-
+from notifs.models import Notifications
 from filebrowser.models import Directory
 
 
@@ -206,3 +206,14 @@ class SeleniumTestCase(StaticLiveServerTestCase):
             self.b.find_element_by_css_selector("span[class='MathJax_Preview']") is not None)
         self.b.close()
         self.b.switch_to.window(window_before)
+
+    def test_filebrowser_notifications(self):
+        Notifications.objects.create(user=self.u, title="test", body="machin")
+
+        self.connect_to_filebrowser()
+
+        e = self.b.find_element_by_css_selector("a[class='mdl-navigation__link notif_link']")
+        ActionChains(self.b).move_to_element(e).perform()
+        sleep(WAIT_TIME)
+        self.assertTrue(
+            self.b.find_element_by_css_selector("div[class='one_notif']") is not None)

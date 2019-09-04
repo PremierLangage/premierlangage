@@ -9,7 +9,7 @@ from notifs.mixin import DateMixin
 class Notifications(models.Model, DateMixin):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     pub_date = models.DateTimeField(default=now)
-    url = models.URLField(null=True, blank=True, default=None)
+    url = models.URLField(null=True, blank=True, default=None)git
     read = models.BooleanField(default=False)
     title = models.CharField(max_length=50)
     body = models.CharField(max_length=400)
