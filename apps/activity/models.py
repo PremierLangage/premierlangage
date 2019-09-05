@@ -2,13 +2,16 @@ import logging
 
 import htmlprint
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import PermissionDenied
 from django.db import IntegrityError, models
 from django.db.models import F
 from django.dispatch import receiver
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.template.loader import get_template
+from django.urls import resolve
 from django_jinja.backend import Jinja2
-from jsonfield import JSONField
 
 from activity.activity_type.utils import get_activity_type_class, type_dict
 from loader.models import PL
@@ -24,7 +27,7 @@ class Activity(LTIModel):
     open = models.BooleanField(default=True)
     activity_type = models.CharField(max_length=30, null=False,
                                      choices=zip(type_dict.keys(), type_dict.keys()))
-    activity_data = JSONField(default={})
+    activity_data = JSONField(default=dict)
     parent = models.ForeignKey("self", on_delete=models.CASCADE, null=True)
     teacher = models.ManyToManyField(User, related_name="teaches", blank=True)
     student = models.ManyToManyField(User, related_name="learn", blank=True)
@@ -97,6 +100,81 @@ class Activity(LTIModel):
     
     def is_student(self, user):
         return user in self.student.all()
+    
+    
+    @classmethod
+    def get_or_create_course_from_lti(cls, user, lti_launch):
+        """Create a Course Activity corresponding to the ressource in the LTI request.
+        
+        Returns a tuple of (object, created), where object is the retrieved or created object and
+        created is a boolean specifying whether a new object was created.
+
+        Return None, False if parameters are missing in lti_launch."""
+        course_id = lti_launch["context_id"]
+        course_name = lti_launch.get("context_title")
+        course_label = lti_launch.get("context_label")
+        consumer = lti_launch['oauth_consumer_key']
+        if not (course_id and course_name and course_label and consumer):
+            return None, False
+        
+        try:
+            course = cls.objects.get(activity_data__consumer_id=course_id,
+                                     activity_data__consumer=consumer)
+            created = False
+        except cls.DoesNotExist:
+            data = {
+                "consumer":    consumer,
+                "consumer_id": course_id,
+                "label":       course_label
+            }
+            course = cls.objects.create(name=course_name, activity_data=data, type="course")
+            logger.info("New course created: %d - '%s' (%s:%s)"
+                        % (course.pk, course.name, consumer, course_id))
+            created = True
+        
+        course.student.add(user)
+        for role in lti_launch["roles"]:
+            if role in ["urn:lti:role:ims/lis/Instructor", "Instructor"]:
+                course.teacher.add(user)
+        course.save()
+        
+        return course, created
+    
+    
+    @classmethod
+    def get_or_create_from_lti(cls, request, lti_launch):
+        """Creates an Activity corresponding to ID in the url and sets its course according to
+        the LTI request..
+        The corresponding Course must have already been created, Course.DoesNotExists will be
+        raised otherwise.
+        Returns a tuple of (object, created), where object is the retrieved or created object and
+        created is a boolean specifying whether a new object was created."""
+        course_id = lti_launch.get("context_id")
+        consumer = lti_launch.get('oauth_consumer_key')
+        activity_id = lti_launch.get('resource_link_id')
+        activity_name = lti_launch.get('resource_link_title')
+        if not all([course_id, activity_id, activity_name, consumer]):
+            raise Http404("Could not create Activity: on of these parameters are missing:"
+                          + "[context_id, resource_link_id, resource_link_title, "
+                            "oauth_consumer_key]")
+        
+        course = cls.objects.get(activity_data__consumer_id=course_id,
+                                 activity_data__consumer=consumer)
+        try:
+            return cls.objects.get(consumer_id=activity_id, consumer=consumer), False
+        except Activity.DoesNotExist:
+            match = resolve(request.path)
+            if not match.app_name or not match.url_name:
+                match = None
+            if not match or (match and match.app_name + ":" + match.url_name != "activity:play"):
+                logger.warning(request.path + " does not correspond to 'activity:play' in "
+                                              "Activity.get_or_create_from_lti")
+                raise Http404("Activity could not be found.")
+            parent = get_object_or_404(Activity, id=match.kwargs['activity_id'])
+            new = Activity.objects.create(consumer_id=activity_id, consumer=consumer,
+                                          name=activity_name, pltp=parent.pltp, course=course,
+                                          parent=parent)
+        return new, True
 
 
 
@@ -110,7 +188,7 @@ class SessionActivity(models.Model):
     
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
-    session_data = JSONField(default={})
+    session_data = JSONField(default=dict)
     current_pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=True)
     
     

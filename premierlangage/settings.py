@@ -50,7 +50,6 @@ PROJECT_APPS = [
     'playexo',
     'user_profile',
     'loader',
-    'classmanagement',
     'lti_app',
     'qa',
     'editor',

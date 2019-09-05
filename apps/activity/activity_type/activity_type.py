@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
@@ -15,7 +15,7 @@ class AbstractActivityType(ABC):
         This method is called when the dashboard of an activity is requested for a student.
         :return: A rendered template of the student dashboard
         """
-        return None
+        return HttpResponseNotFound()
     
     
     @abstractmethod
@@ -24,7 +24,7 @@ class AbstractActivityType(ABC):
         This method is called when the dashboard of an activity is requested for a teacher.
         :return: A rendered template of the teacher dashboard
         """
-        return None
+        return HttpResponseNotFound()
     
     
     @abstractmethod
@@ -55,7 +55,7 @@ class AbstractActivityType(ABC):
     
     
     @abstractmethod
-    def grading(self):
+    def grading(self, activity, session):
         pass
     
     
@@ -130,7 +130,7 @@ class AbstractActivityType(ABC):
         This method is called when the activity is closed.
         :return: A rendered template of the closed activity
         """
-        raise PermissionDenied("Cette activité est fermé.")
+        raise PermissionDenied("Cette activité est fermée.")
     
     
     @abstractmethod
@@ -140,6 +140,8 @@ class AbstractActivityType(ABC):
     
     
     def notes(self, activity, request):
+        if not activity.is_teacher(request.user):
+            raise PermissionDenied("Vous n'êtes pas un professeur pour cette activité")
         response = HttpResponse("", content_type="text/csv")
         response['Content-Disposition'] = 'attachment;filename=notes.csv'
         return response

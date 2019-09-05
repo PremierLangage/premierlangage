@@ -58,7 +58,7 @@
                                         </span>
                                         <span class="mdl-chip__text">
                                          <a class='text-dark'
-                                            href="/courses/course/{{ course_id }}/student/{{ stud.id }}/summary/">
+                                            href="/activity/dashboard/{{ course_id }}/?studentid={{ stud.id }}">
                                             {{ firstof(stud.object.get_full_name(), stud.object.username) }}
                                          </a>
                                         </span>
@@ -69,7 +69,7 @@
                                         <td class="summary-td">
                                             <p>{{ activity.name }}</p>
                                             <a class="progress progress-summary"
-                                               href="/courses/course/{{ course_id }}/{{ activity.id }}/summary/">
+                                               href="/activity/dashboard/{{ activity.id }}/">
                                                 {% for item in activity.state %}
                                                     <div class="progress-bar {{ item.class }}"
                                                          role="progressbar"

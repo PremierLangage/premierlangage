@@ -3,8 +3,8 @@
 
 
 {% block css %}
-<link rel="stylesheet" href="{{ static('css/block_chart.css') }}"/>
-<link rel="stylesheet" href="{{ static('css/classmanagement.css') }}"/>
+<link rel="stylesheet" href="{{ static('activity/css/block_chart.css') }}"/>
+<link rel="stylesheet" href="{{ static('activity/css/classmanagement.css') }}"/>
 {% endblock %}
 
 {% block content %}
@@ -14,9 +14,7 @@
             <h4>{{course_name}}: {{activity_name}}</h4>
             <hr>
             <div class="course-instructor-action">
-                <a href="/courses/course/{{course_id}}/">Retour</a><br><br>
-                <a href="/courses/course/{{course_id}}/summary/">Voir l'avancement des élèves pour
-                    le cours</a>
+                <a href="/activity/dashboard/{{ course_id }}/">Retour vers le tableau de bord supérieur</a><br><br>
             </div>
             <table class="table">
                 <thead>
@@ -54,7 +52,7 @@
                                         </span>
                                         <span class="mdl-chip__text">
                                          <a class='text-dark'
-                                            href="/courses/course/{{course_id}}/student/{{elem.id}}/summary/">
+                                            href="/activity/dashboard/{{ activity.id }}/?studentid={{ elem.object.id }}">
                                             {{ firstof(elem.object.get_full_name(), elem.object.username) }}
                                          </a>
                                         </span>

@@ -17,7 +17,7 @@ class Section(AbstractActivityType):
         return None
     
     
-    def teacher_dashboard(self, activity, session):
+    def teacher_dashboard(self, request, activity, session):
         """
         This method is called when the dashboard of an activity is requested for a teacher.
         :return: A rendered template of the teacher dashboard
@@ -25,7 +25,7 @@ class Section(AbstractActivityType):
         return None
     
     
-    def small(self, request, activity, session_activity):
+    def small(self, request, activity):
         """
         This method can be called by any parent activity to display something from this activity.
         :return: A rendered template of the teacher dashboard
@@ -49,7 +49,7 @@ class Section(AbstractActivityType):
         return None
     
     
-    def grading(self):
+    def grading(self, activity, session):
         pass
     
     

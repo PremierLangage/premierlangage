@@ -7,12 +7,13 @@ from django.apps import apps
 from activity.activity_type.activity_type import AbstractActivityType
 from loader.models import PL
 from playexo.models import Answer
+from playexo.enums import State
 
 
 
 class Pltp(AbstractActivityType):
     
-    def student_dashboard(self, activity, session):
+    def student_dashboard(self, request, activity, session):
         """
         This method is called when the dashboard of an activity is requested for a student.
         :return: A rendered template of the student dashboard
@@ -20,12 +21,37 @@ class Pltp(AbstractActivityType):
         return PermissionDenied()
     
     
-    def teacher_dashboard(self, activity, session):
+    def teacher_dashboard(self, request, activity, session):
         """
         This method is called when the dashboard of an activity is requested for a teacher.
         :return: A rendered template of the teacher dashboard
         """
-        return PermissionDenied()
+        student = list()
+        for user in activity.student.all():
+            tp = list()
+            for pl in activity.indexed_pl():
+                tp.append({
+                    'name':  pl.json['title'],
+                    'state': Answer.pl_state(pl, user)
+                })
+            student.append({
+                'lastname': user.last_name,
+                'object':   user,
+                'id':       user.id,
+                'question': tp,
+            })
+        
+        # Sort list by student's name
+        student = sorted(student, key=lambda k: k['lastname'])
+        
+        return render(request, 'activity/activity_type/pltp/teacher_dashboard.html', {
+            'state':         [i for i in State if i != State.ERROR],
+            'course_name':   activity.parent.name,
+            'activity_name': activity.name,
+            'student':       student,
+            'range_tp':      range(len(activity.indexed_pl())),
+            'course_id':     activity.parent.id,
+        })
     
     
     def small(self, request, activity):
@@ -66,7 +92,7 @@ class Pltp(AbstractActivityType):
         return PermissionDenied()
     
     
-    def grading(self):
+    def grading(self, activity, session):
         return PermissionDenied()
     
     
@@ -230,5 +256,4 @@ class Pltp(AbstractActivityType):
         
         response = HttpResponse(csv, content_type="text/csv")
         response['Content-Disposition'] = 'attachment;filename=notes.csv'
-        print(response)
         return response

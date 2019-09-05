@@ -50,7 +50,7 @@ class Base(AbstractActivityType):
         raise PermissionDenied()
     
     
-    def grading(self):
+    def grading(self, activity, session):
         pass
     
     

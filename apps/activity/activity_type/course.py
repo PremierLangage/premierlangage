@@ -1,16 +1,16 @@
 import logging
 
 from django.apps import apps
+from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
-from django.http import Http404, HttpResponse
+from django.db.models import Q
+from django.http import Http404, HttpResponse, HttpResponseNotFound
 from django.shortcuts import redirect, render, reverse
 from django.template.loader import get_template
-from django.db.models import Q
-
-from playexo.enums import State
-from playexo.models import Answer
 
 from activity.activity_type.activity_type import AbstractActivityType
+from playexo.enums import State
+from playexo.models import Answer
 
 
 logger = logging.getLogger(__name__)
@@ -32,51 +32,11 @@ class Course(AbstractActivityType):
         This method is called when the dashboard of an activity is requested for a teacher.
         :return: A rendered template of the teacher dashboard
         """
-        user = request.user
-        if not activity.is_teacher(user):
-            logger.info("User '" + user.username
-                        + "' denied to access summary of course'" + activity.name + "'.")
-            raise PermissionDenied("Vous n'êtes pas professeur de cette classe.")
+        if request.method == "GET" and request.GET.get("studentid"):
+            return self.student_summary(request.GET.get("studentid"), request, activity)
         
-        activity_model = apps.get_model("activity", "Activity")
-        activities = activity_model.objects.filter(teacher=user, parent=activity)
-        
-        students = list()
-        for st in activity.student.all():
-            tp = list()
-            for a in activities:
-                if a.is_student(st):
-                    summary = Answer.activity_summary(activity, user)
-                    tp.append({
-                        'state':         [{
-                            'percent': summary[i][0],
-                            'count':   summary[i][1],
-                            'class':   i.template
-                        }
-                            for i in summary
-                        ],
-                        'name':          activity.activity_data['title'],
-                        'activity_name': activity.name,
-                        'id':            activity.id,
-                    })
-            students.append({
-                'lastname':   user.last_name,
-                'object':     user,
-                'id':         user.id,
-                'activities': tp,
-            })
-        students = sorted(students, key=lambda k: k['lastname'])
-        
-        context = {
-            'state':     [i for i in State if i != State.ERROR],
-            'name':      activity.name,
-            'student':   students,
-            'range_tp':  range(len(activities)),
-            'course_id': activity.id,
-        }
-
-        print(context)
-        return render(request, 'activity/activity_type/course/teacher_dashboard.html', context)
+        else:
+            return self.course_summary(request, activity)
     
     
     def small(self, request, activity):
@@ -142,7 +102,6 @@ class Course(AbstractActivityType):
         for item in activities:
             smalls.append(item.small(request))
         
-        print(smalls)
         return render(request, "activity/activity_type/course/index.html", {
             'name':       activity.name,
             'smalls':     smalls,
@@ -217,3 +176,81 @@ class Course(AbstractActivityType):
         response = HttpResponse("", content_type="text/csv")
         response['Content-Disposition'] = 'attachment;filename=notes.csv'
         return response
+    
+    
+    def course_summary(self, request, activity):
+        user = request.user
+        
+        activity_model = apps.get_model("activity", "Activity")
+        activities = activity_model.objects.filter(teacher=user, parent=activity)
+        
+        students = list()
+        for st in activity.student.all():
+            tp = list()
+            for a in activities:
+                if a.is_student(st):
+                    summary = Answer.activity_summary(a, user)
+                    tp.append({
+                        'state':         [{
+                            'percent': summary[i][0],
+                            'count':   summary[i][1],
+                            'class':   i.template
+                        }
+                            for i in summary
+                        ],
+                        'name':          a.activity_data['title'],
+                        'activity_name': a.name,
+                        'id':            a.id,
+                    })
+            students.append({
+                'lastname':   user.last_name,
+                'object':     user,
+                'id':         user.id,
+                'activities': tp,
+            })
+        students = sorted(students, key=lambda k: k['lastname'])
+        return render(request, 'activity/activity_type/course/teacher_dashboard.html', {
+            'state':     [i for i in State if i != State.ERROR],
+            'name':      activity.name,
+            'student':   students,
+            'range_tp':  range(len(activities)),
+            'course_id': activity.id,
+        })
+    
+    
+    def student_summary(self, student_id, request, activity):
+        try:
+            student = User.objects.get(id=student_id)
+        except User.DoesNotExist:
+            return HttpResponseNotFound("Cet étudiant ne fait pas partie de ce cours")
+        
+        if not activity.is_student(student):
+            return HttpResponseNotFound("Cet étudiant ne fait pas partie de ce cours")
+        
+        activity_model = apps.get_model("activity", "Activity")
+        activities = activity_model.objects.filter(teacher=request.user, parent=activity)
+        tp = list()
+        for activity in activities:
+            question = list()
+            for pl in activity.indexed_pl():
+                state = Answer.pl_state(pl, student)
+                question.append({
+                    'state': state,
+                    'name':  pl.json['title'],
+                })
+            len_tp = len(question) if len(question) else 1
+            tp.append({
+                'name':          activity.activity_data['title'],
+                'activity_name': activity.name,
+                'id':            activity.id,
+                'width':         str(100 / len_tp),
+                'pl':            question,
+            })
+        
+        return render(request, 'activity/activity_type/course/student_summary.html', {
+            'state':       [i for i in State if i != State.ERROR],
+            'course_name': activity.name,
+            'student':     student,
+            'activities':  tp,
+            'course_id':   activity.id,
+        })

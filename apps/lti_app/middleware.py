@@ -15,7 +15,6 @@ from django.shortcuts import redirect
 from django.urls import resolve, reverse
 from django.utils.deprecation import MiddlewareMixin
 
-from classmanagement.models import Course
 from lti_app.models import ActivityOutcome
 from activity.models import Activity
 
@@ -153,7 +152,7 @@ class LTIAuthMiddleware(MiddlewareMixin):
                 
                 # Creating and updating data according to lti_launch
                 user.profile.set_role_lti(lti_launch)
-                Course.get_or_create_from_lti(user, lti_launch)
+                Activity.get_or_create_course_from_lti(user, lti_launch)
                 urlmatch = resolve(request.path)
                 if not urlmatch.app_name or not urlmatch.url_name:
                     urlmatch = None
