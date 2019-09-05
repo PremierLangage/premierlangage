@@ -79,7 +79,7 @@ SESSION_SAVE_EVERY_REQUEST = True
 SESSION_COOKIE_AGE = 5 * 365 * 24 * 60 * 60
 
 # Redirect when not authenticated to
-LOGIN_URL = "/courses/login/"
+LOGIN_URL = "/activity/login/"
 
 # URLs module
 ROOT_URLCONF = 'premierlangage.urls'
