@@ -144,7 +144,8 @@ class Activity(LTIModel):
     
     @classmethod
     def get_or_update_from_lti(cls, request, lti_launch):
-        """Update and retrieve an Activity corresponding to ID in the url and sets its course according to
+        """Update and retrieve an Activity corresponding to ID in the url and sets its course
+        according to
         the LTI request..
         The corresponding Course must have already been created, Course.DoesNotExists will be
         raised otherwise.
@@ -160,12 +161,11 @@ class Activity(LTIModel):
             raise Http404("Could not create Activity: on of these parameters are missing:"
                           + "[context_id, resource_link_id, resource_link_title, "
                             "oauth_consumer_key]")
-        
-        course = cls.objects.get(activity_data__consumer_id=course_id,
-                                 activity_data__consumer=consumer)
+
+        updated = False
         try:
             activity, updated = cls.objects.get(activity_data__consumer_id=activity_id,
-                                                activity_data__consumer=consumer), False
+                                                activity_data__consumer=consumer), updated
         except Activity.DoesNotExist:
             match = resolve(request.path)
             if not match.app_name or not match.url_name:
@@ -176,11 +176,13 @@ class Activity(LTIModel):
                                    "Activity.get_or_create_from_lti")
                 raise Http404("Activity could not be found.")
             activity = get_object_or_404(Activity, id=match.kwargs['activity_id'])
-            activity.activity_data["consumer_id"] = activity_id
-            activity.activity_data["consumer"] = consumer
-            if activity.parent.id == 0:
-                activity.parent = course
-            updated = True
+            if activity.activity_type != "course":
+                activity.activity_data["consumer_id"] = activity_id
+                activity.activity_data["consumer"] = consumer
+                if activity.parent.id == 0:
+                    activity.parent = cls.objects.get(activity_data__consumer_id=course_id,
+                                                      activity_data__consumer=consumer)
+                updated = True
         
         for role in lti_launch["roles"]:
             if role in ["urn:lti:role:ims/list/Instructor", "Instructor"]:
