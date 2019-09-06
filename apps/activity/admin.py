@@ -10,7 +10,6 @@ class ActivityAdmin(admin.ModelAdmin):
 
 
 
-
 @admin.register(Index)
 class IndexAdmin(admin.ModelAdmin):
     list_display = ('activity', 'pl', 'index')

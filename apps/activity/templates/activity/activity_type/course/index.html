@@ -12,10 +12,9 @@
 {% block content %}
     <h4>{{ activity.name }}</h4>
     <hr/>
-    {% if instructor or request.user.profile.is_admin %}
+    {% if instructor or request.user.profile.is_admin() %}
         <div class="course-instructor-action">
-            <a href="/activity/dashboard/{{ course_id }}/"> Voir l'avancement des élèves pour ce
-                cours </a>
+            <a href="/activity/dashboard/{{ course_id }}/"> Gestion du cours </a>
         </div>
     {% endif %}
 

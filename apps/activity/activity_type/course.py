@@ -74,7 +74,8 @@ class Course(AbstractActivityType):
         pass
     
     
-    def template(self, request, activity, session):
+    def template(self, request, activity: "apps.activity.models.Activity",
+                 session: "apps.activity.models.SessionActivity"):
         """
         This method is called when the play view is called.
         :return: A rendered template of the main page of the activity.
@@ -106,7 +107,7 @@ class Course(AbstractActivityType):
             'name':       activity.name,
             'smalls':     smalls,
             'teacher':    activity.teacher.all(),
-            'instructor': user in activity.teacher.all(),
+            'instructor': activity.is_teacher(user),
             'course_id':  activity.id,
         })
     
