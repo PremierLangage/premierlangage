@@ -157,10 +157,12 @@ class LTIAuthMiddleware(MiddlewareMixin):
                     urlmatch = None
                 if urlmatch and urlmatch.app_name + ":" + urlmatch.url_name == "activity:play":
                     activity = get_object_or_404(Activity, id=urlmatch.kwargs['activity_id'])
-                    if activity.activity_type != "course":
+                    is_course = activity.activity_type != "course"
+                    if is_course:
                         Activity.get_or_create_course_from_lti(user, lti_launch)
                     activity, _ = Activity.get_or_update_from_lti(request, lti_launch)
-                    ActivityOutcome.get_or_create_from_lti(user, lti_launch)
+                    if is_course:
+                        ActivityOutcome.get_or_create_from_lti(user, lti_launch)
                     return redirect(reverse('activity:play', args=[activity.id]))
             else:
                 # User could not be authenticated!
