@@ -38,7 +38,7 @@ class Activity(LTIModel):
         """ Overriding delete() to also delete his PL if they're not in
         relation with any other activity """
         pl_list = self.indexed_pl()
-        logger.info("Activity '" + self.id + " (" + self.name + ")' has been deleted")
+        logger.info("Activity '" + str(self.id) + "(" + self.name + ")" +"' has been deleted")
         for pl in pl_list:
             if len(pl.activity_set.all()) <= 1:
                 logger.info("PL '" + str(pl.id) + " (" + pl.name
@@ -127,7 +127,7 @@ class Activity(LTIModel):
                 "consumer_id": course_id,
                 "label":       course_label
             }
-            course = cls.objects.create(name=course_name, activity_data=data, type="course")
+            course = cls.objects.create(name=course_name, activity_data=data, activity_type="course")
             logger.info("New course created: %d - '%s' (%s:%s)"
                         % (course.pk, course.name, consumer, course_id))
             created = True
@@ -153,6 +153,8 @@ class Activity(LTIModel):
         consumer = lti_launch.get('oauth_consumer_key')
         activity_id = lti_launch.get('resource_link_id')
         activity_name = lti_launch.get('resource_link_title')
+        user = request.user
+
         if not all([course_id, activity_id, activity_name, consumer]):
             raise Http404("Could not create Activity: on of these parameters are missing:"
                           + "[context_id, resource_link_id, resource_link_title, "
@@ -161,20 +163,28 @@ class Activity(LTIModel):
         course = cls.objects.get(activity_data__consumer_id=course_id,
                                  activity_data__consumer=consumer)
         try:
-            return cls.objects.get(consumer_id=activity_id, consumer=consumer), False
+            activity, created = cls.objects.get(activity_data__consumer_id=activity_id, activity_data__consumer=consumer), False
         except Activity.DoesNotExist:
             match = resolve(request.path)
             if not match.app_name or not match.url_name:
                 match = None
             if not match or (match and match.app_name + ":" + match.url_name != "activity:play"):
-                logger.warning(request.path + " does not correspond to 'activity:play' in "
-                                              "Activity.get_or_create_from_lti")
+                logger.warning(request.path + " does not correspond to 'activity:play' in Activity.get_or_create_from_lti")
                 raise Http404("Activity could not be found.")
-            parent = get_object_or_404(Activity, id=match.kwargs['activity_id'])
-            new = Activity.objects.create(consumer_id=activity_id, consumer=consumer,
-                                          name=activity_name, pltp=parent.pltp, course=course,
-                                          parent=parent)
-        return new, True
+            activity = get_object_or_404(Activity, id=match.kwargs['activity_id'])
+            activity.activity_data["consumer_id"] = activity_id
+            activity.activity_data["consumer"] = consumer
+            if activity.parent.id == 0:
+            	activity.parent = course
+            created = True
+            
+        for role in lti_launch["roles"]:
+        	if role in ["urn:lti:role:ims/list/Instructor", "Instructor"]:
+        		activity.teacher.add(user)
+        activity.student.add(user)
+        activity.save
+        
+        return activity, created
 
 
 
