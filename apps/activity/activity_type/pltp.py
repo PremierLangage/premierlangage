@@ -1,13 +1,12 @@
-from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
-from django.http import HttpResponseBadRequest, HttpResponseForbidden, HttpResponse
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.template.loader import get_template
-from django.apps import apps
 
 from activity.activity_type.activity_type import AbstractActivityType
 from loader.models import PL
-from playexo.models import Answer
 from playexo.enums import State
+from playexo.models import Answer
 
 
 

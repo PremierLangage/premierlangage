@@ -1,5 +1,6 @@
 from django.contrib import admin
-from activity.models import Activity, Index, SessionActivity
+
+from activity.models import Activity, Index
 
 
 
