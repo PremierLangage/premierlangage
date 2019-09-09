@@ -101,7 +101,7 @@ class Base(AbstractActivityType):
         pass
     
     
-    def validate(self, activity, session, answer, action=""):
+    def validate(self, activity, session, answer, feedback, action=""):
         pass
     
     

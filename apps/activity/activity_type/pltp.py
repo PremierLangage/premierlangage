@@ -169,8 +169,8 @@ class Pltp(AbstractActivityType):
         pass
     
     
-    def validate(self, activity, session, answer, action=""):
-        pass
+    def validate(self, activity, session, answer, feedback, action=""):
+        return feedback, True
     
     
     def next(self, activity, session):

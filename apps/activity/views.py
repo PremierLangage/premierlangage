@@ -72,8 +72,9 @@ def evaluate(request, activity_id, pl_id):
         elif status['requested_action'] == 'submit':  # Validate
             answer, feedback = exercise.evaluate(request, status['inputs'])
             answer['activity'] = session.activity
-            a = Answer.objects.create(**answer)
-            a_type.validate(activity, session, a, action="submit")
+            feedback, to_be_saved = a_type.validate(activity, session, answer, feedback, action="submit")
+            if to_be_saved:
+                a = Answer.objects.create(**answer)
             return HttpResponse(
                 json.dumps({
                     "navigation": a_type.navigation(activity, session, request),

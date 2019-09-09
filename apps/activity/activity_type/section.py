@@ -9,7 +9,7 @@ from activity.activity_type.activity_type import AbstractActivityType
 
 class Section(AbstractActivityType):
     
-    def student_dashboard(self, activity, session):
+    def student_dashboard(self, request, activity, session):
         """
         This method is called when the dashboard of an activity is requested for a student.
         :return: A rendered template of the student dashboard
@@ -93,7 +93,7 @@ class Section(AbstractActivityType):
         pass
     
     
-    def validate(self, activity, session, answer, action=""):
+    def validate(self, activity, session, answer, feedback, action=""):
         pass
     
     

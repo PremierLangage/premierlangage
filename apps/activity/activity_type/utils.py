@@ -2,6 +2,7 @@ from activity.activity_type.base import Base
 from activity.activity_type.course import Course
 from activity.activity_type.pltp import Pltp
 from activity.activity_type.section import Section
+from activity.activity_type.examen import Examen
 
 
 type_dict = {
@@ -9,6 +10,7 @@ type_dict = {
     "course":  Course,
     "pltp":    Pltp,
     "section": Section,
+    "examen": Examen,
 }
 
 

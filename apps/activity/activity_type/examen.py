@@ -1,15 +1,14 @@
-from abc import ABC, abstractmethod
-
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
+from activity.activity_type.activity_type import AbstractActivityType
 
 
-class AbstractActivityType(ABC):
+
+class Examen(AbstractActivityType):
     
-    @abstractmethod
     def student_dashboard(self, request, activity, session):
         """
         This method is called when the dashboard of an activity is requested for a student.
@@ -18,7 +17,6 @@ class AbstractActivityType(ABC):
         return HttpResponseNotFound()
     
     
-    @abstractmethod
     def teacher_dashboard(self, request, activity, session):
         """
         This method is called when the dashboard of an activity is requested for a teacher.
@@ -27,7 +25,6 @@ class AbstractActivityType(ABC):
         return HttpResponseNotFound()
     
     
-    @abstractmethod
     def small(self, request, activity):
         """
         This method can be called by any parent activity to display something from this activity.
@@ -36,7 +33,6 @@ class AbstractActivityType(ABC):
         return None
     
     
-    @abstractmethod
     def small_sd(self, activity, session_activity):
         """
         This method is called when the small dashboard of an activity is requested for a student.
@@ -45,7 +41,6 @@ class AbstractActivityType(ABC):
         return None
     
     
-    @abstractmethod
     def small_td(self, activity, session_activity):
         """
         This method is called when the small dashboard of an activity is requested for a teacher.
@@ -54,12 +49,10 @@ class AbstractActivityType(ABC):
         return None
     
     
-    @abstractmethod
     def grading(self, activity, session):
         pass
     
     
-    @abstractmethod
     def template(self, request, activity, session):
         """
         This method is called when the play view is called.
@@ -68,7 +61,6 @@ class AbstractActivityType(ABC):
         return render(request, "base.html", {})
     
     
-    @abstractmethod
     def fetch(self, activity):
         """
         This method is called when the fetch method of an activity is called.
@@ -77,7 +69,6 @@ class AbstractActivityType(ABC):
         return None, None
     
     
-    @abstractmethod
     def install(self, activity):
         """
         This method is called only the first time when the activity is created.
@@ -86,7 +77,6 @@ class AbstractActivityType(ABC):
         return {}
     
     
-    @abstractmethod
     def init(self, activity, session):
         """
         This method is called when a new instance of an activity is created.
@@ -95,25 +85,14 @@ class AbstractActivityType(ABC):
         return {}
     
     
-    @abstractmethod
     def push(self):
         pass
     
     
-    @abstractmethod
     def launch(self):
         pass
     
     
-    @abstractmethod
-    def validate(self, activity, session, answer, feedback, action=""):
-        """ Must return a tuple: (feedback, to_be_saved), where the feedback can be modified by
-        the activity, and to_be_saved is a boolean that decide whether the answer will be saved
-        in the database or not"""
-        pass
-    
-    
-    @abstractmethod
     def next(self, activity, session):
         """
         This method is called when the next button is clicked on an activity.
@@ -122,12 +101,17 @@ class AbstractActivityType(ABC):
         return redirect(reverse("activity:play", args=[activity.id]))
     
     
-    @abstractmethod
+    def validate(self, activity, session, answer, feedback, action=""):
+        """ Must return a tuple: (feedback, to_be_saved), where the feedback can be modified by
+        the activity, and to_be_saved is a boolean that decide whether the answer will be saved
+        in the database or not"""
+        return "Votre réponse a bien été enregistrée", True
+    
+    
     def pop(self, activity, session):
         pass
     
     
-    @abstractmethod
     def end(self, activity, session):
         """
         This method is called when the activity is closed.
@@ -136,7 +120,6 @@ class AbstractActivityType(ABC):
         raise PermissionDenied("Cette activité est fermée.")
     
     
-    @abstractmethod
     def navigation(self, activity, session_activity, request):
         """This method is called to get a rendered template of the navigation of this activity"""
         return None
