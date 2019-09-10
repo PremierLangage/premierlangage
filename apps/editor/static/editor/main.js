@@ -1,5 +1,546 @@
 (window["webpackJsonp"] = window["webpackJsonp"] || []).push([["main"],{
 
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/app.component.html":
+/*!**************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/app.component.html ***!
+  \**************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<app-loading></app-loading>\n<router-outlet></router-outlet>\n");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/ask/ask.component.html":
+/*!************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/ask/ask.component.html ***!
+  \************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<h1>ASK</h1>\n");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/courses/courses.component.html":
+/*!********************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/courses/courses.component.html ***!
+  \********************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<h1>courses</h1>\n");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/debugging/debugging.component.html":
+/*!*******************************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/debugging/debugging.component.html ***!
+  \*******************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<div class='tab-bar'>\n    <span id=\"editor-action-focus-notifs\"  class='tab-item' [class.active]=\"index === 0\" [matBadge]=\"problems\" (click)='onFocus(0)'>PROBLEMS</span>\n    <span id=\"editor-action-focus-problems\" class='tab-item' [class.active]=\"index === 1\" [matBadge]=\"notifs\" (click)='onFocus(1)'>NOTIFICATIONS</span>\n    <div class='spacer'></div>\n\n    <div *ngIf=\"index === 1\" id=\"logging-action-clear\" class='tab-item' matTooltip='Clear' (click)='onClearNotifs()'>\n        <i class=\"fas fa-trash-alt\"></i>\n    </div>\n\n    <div id=\"debugging-action-hide\" class='tab-item' matTooltip='Hide' (click)='onClose($event)'>\n        <i class=\"fas fa-times\"></i>\n    </div>\n</div>\n<div class='debugging-content'>\n    <ng-container [ngSwitch]=\"index\">\n     <problems *ngSwitchCase=\"0\"></problems>\n     <logging *ngSwitchCase=\"1\"></logging>\n    </ng-container>\n</div>\n");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/debugging/logging/logging.component.html":
+/*!*************************************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/debugging/logging/logging.component.html ***!
+  \*************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<ul class='logging-content' #container>\n    <h4 class=\"logging-nothing\" *ngIf='empty'>Nothing to display</h4>\n    <ng-container *ngFor=\"let item of items; let last = last; trackBy track\">\n        <li class='log log--{{item.type}}'>\n        <ng-container [ngSwitch]=\"item.type\">\n            <mat-icon *ngSwitchCase=\"'info'\" mat-list-icon class='log-icon'>info</mat-icon>\n            <mat-icon *ngSwitchCase=\"'warning'\" mat-list-icon class='log-icon'>warning</mat-icon>\n            <mat-icon *ngSwitchDefault mat-list-icon class='log-icon'>error</mat-icon>\n        </ng-container>\n        <p class='log-content' [innerHTML]='item.message | trustHtml'></p>\n        </li>\n        <mat-divider *ngIf='!last'></mat-divider>\n    </ng-container>\n</ul>\n");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/debugging/problems/problems.component.html":
+/*!***************************************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/debugging/problems/problems.component.html ***!
+  \***************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<ul class='problems-content' #container>\n    <h4 class=\"problems-nothing\" *ngIf='empty'>No problems</h4>\n    <ng-container *ngFor=\"let item of items; let last = last; trackBy track\">\n        <li class='problem problem--{{item.type}}'>\n            <img class=\"problem-file-icon\" [src]=\"item.path|icon|async\" />\n            <span class=\"problem-path\" matTooltip=\"Click to open\" (click)=\"openOnEditor(item)\"> {{ item.path }}: {{ item.lineno }}</span>\n            <ng-container [ngSwitch]=\"item.type\">\n                <mat-icon *ngSwitchCase=\"'warning'\" mat-list-icon class='problem-icon'>warning</mat-icon>\n                <mat-icon *ngSwitchDefault mat-list-icon class='problem-icon'>error</mat-icon>\n            </ng-container>\n            <p class='problem-content' [innerHTML]='item.message | trustHtml'></p>\n        </li>\n        <mat-divider *ngIf='!last'></mat-divider>\n    </ng-container>\n</ul>\n");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/editor.component.html":
+/*!******************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/editor.component.html ***!
+  \******************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<div class='editor-application mat-app-background'>\n  <mat-progress-bar color=\"warn\" mode=\"indeterminate\" *ngIf=\"taskInProgress\"></mat-progress-bar>\n  <div class='editor-split-panel'>\n    <navigation class='navigation' #navigation></navigation>\n    <as-split direction=\"horizontal\" gutterSize='2' useTransition='true'>\n        <as-split-area class='split-area' style='position: relative; overflow: hidden;' [size]=\"navigation.size\" [ngSwitch]=\"navigation.index\">\n            <explorer *ngSwitchCase=\"0\" showHeader='true' remote=\"true\"></explorer>\n            <search *ngSwitchCase=\"1\"></search>\n            <git *ngSwitchCase=\"2\"></git>\n        </as-split-area>\n        <as-split-area class='split-area' style='position: relative; overflow: hidden;' [size]=\"100 - navigation.size\">\n            <as-split class='split' direction='vertical' gutterSize='2' useTransition='true' (dragEnd)='debugging.dragEnd($event)'>\n                <as-split-area class='split-area' style='position: relative; overflow: hidden;' [size]='100 - debugging.size'>\n                    <workspace class='workspace' #workspace></workspace>\n                </as-split-area>\n                <as-split-area class='split-area' style='position: relative; overflow: hidden;' [size]='debugging.size'>\n                    <debugging class='debugging' #debugging></debugging>\n                </as-split-area>\n            </as-split>\n            <quick-open (closed)='showQuickOpen = false' *ngIf='showQuickOpen'></quick-open>\n        </as-split-area>\n    </as-split>\n  </div>\n  <status-bar></status-bar>\n</div>\n");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/navigation/explorer/explorer.component.html":
+/*!****************************************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/navigation/explorer/explorer.component.html ***!
+  \****************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<div class='tab-bar' *ngIf=\"showHeader\">\n    <span>EXPLORER</span>\n    <div class=\"spacer\"></div>\n    <div class='tab-item' (click)='refresh()' matTooltip='Refresh'>\n        <i class=\"fas fa-sync\"></i>\n    </div>\n</div>\n<div class=\"navigation-content\">\n    <app-tree [nodes]=\"nodes\" [options]=\"treeOptions\">\n        <ng-container *treeNode=\"let node\">\n            <span class='node-label' dnd [dndData]=\"node.id\" [draggable]=\"draggable(node)\"\n                        [droppable]=\"droppable(node)\" (dropped)=\"onDropped($event)\">\n                <img [icon]=\"node\"/>\n                <span matTooltip=\"{{ node.path | path }}\">{{ node.name }}</span>\n            </span>\n            <span class='node-option-group'>\n                <ng-container *ngFor='let option of nodeOptions; let i = index'>\n                    <span *ngIf='!option.divider && !option.forContextMenu && option.enabled(node)'\n                        id=\"node-option-{{ option.id }}-{{ node.path }}\" class='node-option'\n                        matTooltip='{{ option.label }}' (click)='option.action(node, $event)'>\n                        <i [class]=\"option.icon\"></i>&nbsp;\n                    </span>\n                </ng-container>\n            </span>\n        </ng-container>\n    </app-tree>\n</div>\n<ng-template #contextmenu let-node>\n\t<section class=\"context-menu\">\n        <ng-container *ngFor=\"let option of nodeOptions\">\n            <ng-container *ngIf=\"!option.divider &&!option.forHover && option.enabled(node)\">\n                <div (click)=\"option.action(node, $event);\">\n                    <i [class]=\"option.icon\"></i>&nbsp;\n                    <span> {{ option.label }}</span>\n                </div>\n            </ng-container>\n            <mat-divider></mat-divider>\n        </ng-container>\n\t</section>\n</ng-template>\n");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/navigation/git/git.component.html":
+/*!******************************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/navigation/git/git.component.html ***!
+  \******************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<mat-progress-bar mode=\"query\" *ngIf='runningTask()'></mat-progress-bar>\n<div class='navigation-content'>\n  <mat-accordion class='accordion' multi='true'>\n    <mat-expansion-panel class='repositories mat-elevation-z0' expanded='true'>\n      <mat-expansion-panel-header collapsedHeight='48px' expandedHeight='48px'>\n        <mat-panel-title>\n          REPOSITORIES\n        </mat-panel-title>\n      </mat-expansion-panel-header>\n      <ng-container *ngFor=\"let repo of repositories(); trackBy trackRepo\">\n          <div class='line pointer' [ngClass]='{ selected: isSelection(repo) }' (click)='changeSelection(repo)' [matTooltip]='repo.url'>\n              <span class='line-title' [matBadgeHidden]='repo.count === 0' [matBadge]=\"repo.count\" matBadgePosition=\"after\">{{repo.name}}</span>\n              <div class='spacer'></div>\n              <span class='line-subtitle'>{{repo.branch}}</span>\n              <span [matMenuTriggerFor]=\"options\">\n                  <i class='fas fa-ellipsis-h'></i>\n              </span>\n          </div>\n          <mat-menu #options=\"matMenu\">\n              <button mat-menu-item (click)='add(repo)' matTooltip='Add to git index'>Git Add</button>\n              <button mat-menu-item (click)='push(repo)' matTooltip='Push local changes to remote'>Git Push</button>\n              <button mat-menu-item (click)='pull(repo)' matTooltip='Pull changes from remote'>Git Pull</button>\n              <button mat-menu-item (click)='status(repo)' matTooltip='Show changes'>Git Status</button>\n              <button mat-menu-item (click)='checkout(repo)' matTooltip='Reset the repository to the last commit'>Git Checkout</button>\n          </mat-menu>\n      </ng-container>\n      <br/>\n      <button class='clone' mat-stroked-button matTooltip='Clone' (click)='clone()'>+</button>\n    </mat-expansion-panel>\n    <mat-divider></mat-divider>\n    <mat-expansion-panel class='changes mat-elevation-z0' *ngIf='selection' expanded='true'>\n      <mat-expansion-panel-header collapsedHeight='48px' expandedHeight='48px'>\n        <mat-panel-title>\n          CHANGES IN {{selection.name | uppercase}}\n        </mat-panel-title>\n      </mat-expansion-panel-header>\n      <mat-form-field class='commit'>\n          <input matInput placeholder=\"Press enter to commit\" (keydown)='commit($event)' [(ngModel)]='commitMessage'>\n      </mat-form-field>\n        <span *ngIf='selection.count === 0'>nothing to commit, working tree clean</span>\n        <ng-container *ngFor=\"let change of selection.changes; trackBy trackChange\">\n            <div class='line' [ngClass]='{clickable: canOpen(change)}' [matTooltip]=\"change.path|path\">\n                <span class='line-title' [matBadge]=\"change.type\" matBadgePosition=\"after\" (click)='open(change)'>{{change.name}}</span>\n                <div class='spacer'></div>\n                <ng-container *ngIf='hasOption(change)'>\n                    <span class='pointer' [matMenuTriggerFor]=\"menu\">\n                        <i class='fas fa-ellipsis-h'></i>\n                      </span>\n                </ng-container>\n            </div>\n            <mat-menu #menu=\"matMenu\">\n              <ng-container *ngFor='let option of options'>\n                  <button *ngIf='option.enabled(change)' (click)='option.action(change)' mat-menu-item>\n                    {{option.label}}\n                  </button>\n              </ng-container>\n            </mat-menu>\n        </ng-container>\n    </mat-expansion-panel>\n  </mat-accordion>\n</div>\n");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/navigation/navigation.component.html":
+/*!*********************************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/navigation/navigation.component.html ***!
+  \*********************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<img id=\"nav-action-explorer\" class=\"nav-action\" src=\"static/editor/assets/icons/navigation/explorer.svg\"\n     matTooltip=\"Explorer\" (click)=\"didTapExplorer()\"/>\n\n<img id=\"nav-action-search\" class=\"nav-action\" src=\"static/editor/assets/icons/navigation/search.svg\"\n     matTooltip=\"Search\" (click)='didTapSearch()'/>\n\n<div id=\"nav-action-git\" [matBadge]=\"gitBadge\" matTooltip=\"Git\">\n    <img class='nav-action' src='static/editor/assets/icons/navigation/git.svg' (click)='didTapGit()'/>\n</div>\n\n<div id=\"nav-action-infos\" class=\"nav-action\"  [matBadge]=\"infosBadge\" matTooltip=\"Informations\" (click)=\"didTapInfos()\">\n    <i class=\"fas fa-info\"></i>\n</div>\n\n\n<div id=\"nav-action-components\" class=\"nav-action\" matTooltip=\"Components\" (click)=\"didTapComponents()\">\n    <i class=\"fab fa-uikit\"></i>\n</div>\n\n<div class=\"spacer\"></div>\n\n<div id=\"nav-action-theme\" class=\"nav-action\" matTooltip=\"Switch Theme\" (click)=\"didTapTheme()\">\n    <i class=\"fas fa-palette\"></i>\n</div>\n\n<img id=\"nav-action-settings\" class=\"nav-action\" src=\"static/editor/assets/icons/navigation/settings.svg\"\n     matTooltip=\"Settings\" (click)=\"didTapSettings()\"/>\n");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/navigation/search/search.component.html":
+/*!************************************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/navigation/search/search.component.html ***!
+  \************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<ng-container>\n    <div class='tab-bar'>\n        <span>SEARCH</span>\n        <div class=\"spacer\"></div>\n    </div>\n    <mat-progress-bar mode='indeterminate' color='warn' *ngIf='querying'></mat-progress-bar>\n    <div class=\"navigation-content\">\n        <mat-form-field class='search'>\n          <input autoFocus autocomplete=\"off\" matInput placeholder=\"Press Enter to search\" (keydown)='search($event)' [(ngModel)]='query'>\n        </mat-form-field>\n        <ng-container>\n            <span class='result'>{{size}} result(s)</span>\n        </ng-container>\n        <explorer [nodes]='entries'></explorer>\n    </div>\n</ng-container>\n");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/quick-open/quick-open.component.html":
+/*!*********************************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/quick-open/quick-open.component.html ***!
+  \*********************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<div id='editor-overlay-quickOpenWidget' #quickOpen>\n    <input #input type=\"text\" placeholder=\"Quick Open\" [matAutocomplete]=\"auto\" (blur)='onBlured()' [formControl]=\"form\">\n    <mat-autocomplete #auto=\"matAutocomplete\" (optionSelected)='onSelected($event)' >\n        <mat-option *ngFor=\"let entry of $entries | async\" [value]=\"entry\">\n            <img [icon]=\"entry\"/><span class='entry-name'>{{entry.name}}</span> - <span class='entry-path'>{{entry.path|path}}</span>\n        </mat-option>\n    </mat-autocomplete>\n</div>\n");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/status-bar/status-bar.component.html":
+/*!*********************************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/status-bar/status-bar.component.html ***!
+  \*********************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<ng-container *ngIf=\"inRepo()\">\n    <span class=\"status-bar-item remote\">\n        <i class='remote-icon {{repoHost()}} fa-1x'></i>\n        <a href=\"{{repoUrl()}}\" target=\"_blank\">{{repoUrl()}}</a>\n        <i> - {{repoBranch()}} </i>\n    </span>\n</ng-container>\n<div class=\"spacer\"></div>\n<span class=\"status-bar-item\" *ngIf='cursor'>Ln {{cursor.lineNumber}}, Col {{cursor.column}}</span>\n\n<ng-container *ngIf='querying()'>\n    <mat-progress-spinner mode='indeterminate' color='warn' strokeWidth='2' diameter='16'></mat-progress-spinner>\n</ng-container>\n");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/workspace/code-editor/code-editor.component.html":
+/*!*********************************************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/workspace/code-editor/code-editor.component.html ***!
+  \*********************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<ngx-monaco-editor [hidden]='editor.diffEditing' class='code-editor' [options]=\"{}\" [model]='{}' (onInit)=\"codeEditorLoaded($event)\"></ngx-monaco-editor>\n<ngx-monaco-diff-editor [hidden]='!editor.diffEditing' class='code-editor' [options]=\"{}\" [originalModel]=\"{}\" [modifiedModel]=\"{}\" (onInit)=\"diffEditorLoaded($event)\"></ngx-monaco-diff-editor>\n\n\n");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/workspace/image-editor/image-editor.component.html":
+/*!***********************************************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/workspace/image-editor/image-editor.component.html ***!
+  \***********************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<div class='image-editor'>\n    <div *ngIf='isSVG; else notSVG' [innerHTML]='svg | trustHtml' [ngStyle]='{zoom: editor.zoom}'></div>\n    <ng-template #notSVG>\n        <img [src]='url'  [ngStyle]='{zoom: editor.zoom}' />\n    </ng-template>\n</div>\n");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/workspace/preview-editor/preview-editor.component.html":
+/*!***************************************************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/workspace/preview-editor/preview-editor.component.html ***!
+  \***************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<mat-progress-bar *ngIf='loading' color=\"warn\" mode=\"indeterminate\"></mat-progress-bar>\n<iframe *ngIf='isURL' class=\"preview-editor\" [srcdoc]=\"content | trustHtml\" frameborder=\"0\" (load)='didFrameLoaded()'></iframe>\n<div *ngIf='isHTML' class='preview-editor' [innerHTML]='content | trustHtml' runScripts></div>\n<div *ngIf='isMarkdown' class='preview-editor'><markdown [data]=\"content\"></markdown></div>\n");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/workspace/setting-editor/setting-editor.component.html":
+/*!***************************************************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/workspace/setting-editor/setting-editor.component.html ***!
+  \***************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<div class='tab-bar'>\n    <div class=\"tab-item active\">\n        <i class=\"tab-icon fa fa-cog\"></i>&nbsp;\n        <span>Settings</span>\n        <span class='tab-close' (click)='didClose()'>&nbsp;&times;</span>\n    </div>\n</div>\n<div class='setting-editor'>\n    <mat-list class='list-groups'>\n        <ng-container *ngFor='let item of groups'>\n            <mat-list-item  *ngIf=\"item.settings.length !== 0\" (click)='didSelect(item)'>\n                <span class='setting-item' [ngClass]='{ active: selection.title === item.title}'>{{item.name|nicifyName}}</span>\n            </mat-list-item>\n        </ng-container>\n    </mat-list>\n    <mat-list>\n        <ng-container *ngFor=\"let setting of selection.settings\">\n           <mat-list-item>\n                <span mat-line class='setting-item active'>{{setting.name|nicifyName:true}}</span>\n                <p mat-line *ngIf='setting.type !== \"Checkbox\"'>{{setting.comment}}</p>\n                <div mat-line>\n                    <ng-container [ngSwitch]=\"setting.type\">\n                        <mat-checkbox  color='primary' *ngSwitchCase=\"'Checkbox'\" [(ngModel)]='setting.value' (change)='didChange()'>{{setting.comment}}</mat-checkbox>\n                        <mat-form-field *ngSwitchCase=\"'Number'\">\n                            <input matInput type='number' placeholder=\"\" [(ngModel)]=\"setting.value\" (change)='didChange()'>\n                        </mat-form-field>\n                        <mat-form-field *ngSwitchCase=\"'Input'\">\n                            <input matInput type='text' placeholder=\"\" [(ngModel)]=\"setting.value\" (keyup)='didChange()'>\n                        </mat-form-field>\n                        <mat-form-field *ngSwitchCase=\"'Dropdown'\">\n                            <mat-select [(value)]='setting.value' (selectionChange)='didChange()'>\n                                <mat-option *ngFor=\"let choice of setting.choices\" [value]=\"choice\">\n                                    {{choice}}\n                                </mat-option>\n                            </mat-select>\n                        </mat-form-field>\n                    </ng-container>\n                </div>\n            </mat-list-item>\n        </ng-container>\n    </mat-list>\n</div>\n");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/workspace/welcome/welcome.component.html":
+/*!*************************************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/workspace/welcome/welcome.component.html ***!
+  \*************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (" <h3 class='welcome-title'>PL Editor</h3>\n<div class='welcome-section'>\n    <h3>User Interface</h3>\n    <img src=\"static/editor/assets/images/interface.png\" alt=\"interface\"> <br/> <br/>\n    <p>\n        PL Editor comes with a simple and intuitive layout that maximizes the space provided for the editor while leaving ample room to browse and access the full context of your project.\n        The UI is divided into four areas:\n    </p>\n    <mat-list>\n        <mat-list-item>\n            <p>A)&nbsp; <b>Side Bar</b> Contains different views like the Explorer to assist you while working on your project.</p>\n        </mat-list-item>\n\n        <mat-list-item>\n            <p>B)&nbsp; <b>Editor</b> The main area to edit your files. You can open as many editors as you like side by side.</p>\n        </mat-list-item>\n\n        <mat-list-item>\n            <p>C)&nbsp; <b>Debugging</b> Display different debugging information below the editor region for output or debug informations.</p>\n        </mat-list-item>\n\n        <mat-list-item>\n            <p>D)&nbsp; <b>Status Bar</b> Gives you additional context-specific indicators like the repository of the focused file/folder.</p>\n        </mat-list-item>\n    </mat-list>\n</div>\n\n<div class='welcome-section'>\n    <h3>Side by side editing</h3>\n    <mat-divider></mat-divider>\n    <p>\n        You can open as many editors as you like side by side horizontally.\n        If you already have one editor open, there are multiple ways of opening another editor to the side of the existing one:\n    </p>\n    <mat-list>\n        <mat-list-item>\n            <p>Click on a file in the Explorer.</p>\n        </mat-list-item>\n        <mat-list-item>\n            <p>Press <b> ⌘ →</b> (<b>Ctrl →</b> on Windows/Linux) inside a code editor will split the editor.</p>\n        </mat-list-item>\n        <mat-list-item>\n            <p>Click the <b>Split Editor</b> button in the upper right of an editor.</p>\n        </mat-list-item>\n        <mat-list-item>\n            <p>Press <b>Ctrl + O</b> to open the <b>Quick Open</b> dialog.</p>\n        </mat-list-item>\n    </mat-list>\n    <p>\n        Whenever you open another file, the editor that is active will display the content of that file.\n        So if you have two editors side by side and you want to open file into the right hand editor,\n        make sure that editor is active (by clicking inside it) before opening your file.\n    </p>\n    <p class='welcome-tip'>\n        Tip: You can resize editors and reorder them. Drag and drop the editor title area to reposition or resize the editor.\n    </p>\n</div>\n\n<div class='welcome-section'>\n    <h3>Explorer</h3>\n    <mat-divider></mat-divider>\n    <p>\n        The Explorer is used to browse, open, and manage all of the files and folders in your project.\n        You can do many things from here:\n    </p>\n    <mat-list>\n        <mat-list-item>\n            <p>Create, delete, and rename files and folders.</p>\n        </mat-list-item>\n        <mat-list-item>\n            <p>Move files and folders with drag and drop.</p>\n        </mat-list-item>\n        <mat-list-item>\n            <p>Load, reload, and test pl files </p>\n        </mat-list-item>\n    </mat-list>\n    <p class='welcome-tip'>Tip: You can open quickly a file with <b>Ctrl|Cmd + O</b></p>\n    <p class='welcome-tip'>Tip: You can drag and drop files (Single file) into the Explorer from outside to copy them</p>\n</div>\n\n<div class='welcome-section'>\n    <h3>Code colorization</h3>\n    <mat-divider></mat-divider>\n    <p>The editor provides a syntax colorization for the following extensions:</p>\n    <mat-list>\n        <mat-list-item *ngFor='let language of languages'> {{language}} </mat-list-item>\n    </mat-list>\n    <p>\n        There is also a special feature for files with <b>.pl</b> and <b>.pltp</b> extensions that allow you to embed a colorization of all the other languages inside a multiline key like in the following image. <br/>\n    </p>\n    <img src=\"static/editor/assets/images/embed-style.png\" alt=\"embed style\"> <br/>\n</div>\n\n<div>\n    <h3>Shorcuts</h3>\n    <mat-divider></mat-divider>\n    <table mat-table [dataSource]=\"shorcuts\" class=\"mat-elevation-z1\" style='width: 100%'>\n        <!-- Command -->\n        <ng-container matColumnDef=\"command\">\n            <th mat-header-cell *matHeaderCellDef> Command </th>\n            <td mat-cell *matCellDef=\"let element\"> {{element.command}} </td>\n        </ng-container>\n\n        <!-- Action -->\n        <ng-container matColumnDef=\"action\">\n            <th mat-header-cell *matHeaderCellDef> Action </th>\n            <td mat-cell *matCellDef=\"let element\"> {{element.action}} </td>\n        </ng-container>\n\n        <tr mat-header-row *matHeaderRowDef=\"displayedColumns\"></tr>\n        <tr mat-row *matRowDef=\"let row; columns: displayedColumns;\"></tr>\n    </table>\n</div>\n");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/workspace/workspace.component.html":
+/*!*******************************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/workspace/workspace.component.html ***!
+  \*******************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<as-split class='h100' direction='horizontal' gutterSize='2' useTransition='true' cdkDropListGroup>\n    <ng-container *ngFor='let group of groups'>\n        <as-split-area class='editor-group h100' style='overflow: hidden;'>\n            <div class='tab-bar'>\n                <div [id]='group.id' class='tab-group' cdkDropList [cdkDropListData]=\"group.resources\" (cdkDropListDropped)=\"group.drop($event)\">\n                    <div *ngFor='let resource of group.resources; trackBy: group.trackResource' [matTooltip]=\"resource.path | path\"\n                        [ngClass]=\"{'tab-item': true, active: group.isActive(resource), changed: resource.changed}\"\n                        (click)='group.reopen(resource)' cdkDragAxis='x' cdkDrag>\n                        <img [icon]=\"resource\"/>\n                        <ng-container *ngIf='group.isPreviewGroup()'>\n                            <span>'Preview'</span>&nbsp;\n                        </ng-container>\n                        <span>{{resource.name}}</span>\n                        <span class='tab-close' (click)='group.close(resource, true)'>&nbsp;&times;</span>\n                    </div>\n                </div>\n                <div class=\"spacer\"></div>\n                <ng-container *ngIf='group.hasAction();'>\n                    <ng-container *ngIf='group.focused()'>\n                        <ng-container *ngFor='let action of group.actions'>\n                            <div class='tab-item' [id]=\"action.id\" [matTooltip]='action.tooltip' *ngIf='action.condition(group.activeResource)' (click)='action.invoke(group.activeResource)'>\n                                <i class=\"{{ action.icon }}\"></i>\n                            </div>\n                        </ng-container>\n                    </ng-container>\n                    <div class='tab-item' id=\"editorGroup-action-more\" matTooltip='More Options' [matMenuTriggerFor]=\"editorMenu\">\n                        <i class=\"fas fa-ellipsis-h\"></i>\n                    </div>\n                    <mat-menu #editorMenu=\"matMenu\">\n                        <button id=\"editorGroup-action-save\" mat-menu-item (click)='group.save(group.activeResource)'>Save ⌘S</button>\n                        <button id=\"editorGroup-action-saveAll\" mat-menu-item (click)='group.saveAll()'>Save All ⌘Alt S</button>\n                        <button id=\"editorGroup-action-close\" mat-menu-item (click)='group.close(group.activeResource, true)'>Close ⌘K</button>\n                        <button id=\"editorGroup-action-closeAll\" mat-menu-item (click)='group.closeAll(true)'>Close All ⌘Alt K</button>\n                        <button id=\"editorGroup-action-closeSaved\" mat-menu-item (click)='group.closeSaved()'>Close Saved ⌘Alt U</button>\n                    </mat-menu>\n                </ng-container>\n            </div>\n            <ng-container *ngFor='let editor of group.editors; trackBy: group.trackEditor'>\n                <ng-container [ngSwitch]=\"editor.type()\">\n                    <code-editor [hidden]='!group.activeEditorIs(\"code\")' *ngSwitchCase=\"'code'\" [editor]='editor'></code-editor>\n                    <image-editor [hidden]='!group.activeEditorIs(\"image\")' *ngSwitchCase=\"'image'\" [editor]='editor'></image-editor>\n                    <preview-editor [hidden]='!group.activeEditorIs(\"preview\")' *ngSwitchCase=\"'preview'\" [editor]='editor'></preview-editor>\n                </ng-container>\n            </ng-container>\n        </as-split-area>\n    </ng-container>\n    <as-split-area class='editor-group h100' style='overflow: hidden;' *ngIf='showSettings'>\n        <setting-editor></setting-editor>\n    </as-split-area>\n    <welcome *ngIf='!hasGroup'></welcome>\n</as-split>\n");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/login/login.component.html":
+/*!****************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/pages/login/login.component.html ***!
+  \****************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<p>login works!</p>\n");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/shared/components/confirm/confirm.component.html":
+/*!********************************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/shared/components/confirm/confirm.component.html ***!
+  \********************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<h4 mat-dialog-title>{{data?.title}}</h4>\n<p mat-dialog-content>{{data?.message}}</p>\n<div mat-dialog-actions>\n    <button mat-button [mat-dialog-close]=\"true\">{{data?.okTitle}}</button>\n    <button mat-button [mat-dialog-close]=\"false\">{{data?.noTitle}}</button>\n</div>");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/shared/components/loading/loading.component.html":
+/*!********************************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/shared/components/loading/loading.component.html ***!
+  \********************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<div id=\"loader-wrapper\"  *ngIf='loading'>\n    <div id=\"loader\"></div>\n    <div class=\"loader-section section-left\"></div>\n    <div class=\"loader-section section-right\"></div>\n</div>\n");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/shared/components/prompt/prompt.component.html":
+/*!******************************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/shared/components/prompt/prompt.component.html ***!
+  \******************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<h4 mat-dialog-title>{{data?.title}}</h4>\n<div mat-dialog-content>\n\t<p [innerHTML]='data?.message'></p>\n\t<form>\n\t\t<mat-form-field class='full-width' *ngFor='let field of data.fields'>\n\t\t\t<input matInput name='field.value' autocomplete=\"on\" [type]='field.type' [placeholder]=\"field?.placeholder\" [(ngModel)]='field.value' >\n\t\t</mat-form-field>\n\t</form>\n</div>\n\n<div mat-dialog-actions>\n    <button mat-button [mat-dialog-close]=\"data\">{{data.okTitle}}</button>\n    <button mat-button [mat-dialog-close]=\"false\">{{data.noTitle}}</button>\n</div>");
+
+/***/ }),
+
+/***/ "./node_modules/raw-loader/dist/cjs.js!./src/app/shared/components/tree/tree.component.html":
+/*!**************************************************************************************************!*\
+  !*** ./node_modules/raw-loader/dist/cjs.js!./src/app/shared/components/tree/tree.component.html ***!
+  \**************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"tree-component\">\n  <mat-tree #tree [dataSource]=\"dataSource\" [treeControl]=\"treeControl\">\n    <!-- DEFAULT NODE -->\n    <mat-tree-node\n      *matTreeNodeDef=\"let node\" matTreeNodePadding matTreeNodePaddingIndent=\"16\"\n      id=\"tree-node-{{node.id}}\" [ngClass]=\"{ focused: node.focused, editing: node.editing }\" tabindex=\"0\">\n      <ng-container *ngTemplateOutlet=\"defaultNodeTemplate; context: { $implicit: node }\"></ng-container>\n      <ng-container *ngIf=\"node.creating\">\n        <ng-container *ngTemplateOutlet=\"editingState\"></ng-container>\n      </ng-container>\n    </mat-tree-node>\n    <!-- EXPANDABLE NODE -->\n    <mat-tree-node\n      *matTreeNodeDef=\"let node; when: expandable\" matTreeNodePadding matTreeNodePaddingIndent=\"16\" matTreeNodeToggle\n      id=\"tree-node-{{node.id}}\" [ngClass]=\"{ focused: node.focused }\" tabindex=\"0\">\n      <ng-container *ngTemplateOutlet=\"defaultNodeTemplate; context: { $implicit: node }\"></ng-container>\n      <ng-container *ngIf=\"node.creating\">\n        <ng-container *ngTemplateOutlet=\"editingState\"></ng-container>\n      </ng-container>\n    </mat-tree-node>\n  </mat-tree>\n</div>\n<!-- DEFAULT TEMPLATE -->\n<ng-template #defaultNodeTemplate let-node>\n  <ng-container *ngIf=\"!node.renaming; else renaming\">\n    <div class=\"node-content\" (click)=\"onClick(node, $event)\" (contextmenu)=\"onContextMenu(node, $event)\">\n      <ng-container *ngIf=\"template; else default\">\n        <ng-container *ngTemplateOutlet=\"template; context: { $implicit: node }\"></ng-container>\n      </ng-container>\n      <ng-template #default>\n        {{node.name}}\n      </ng-template>\n    </div>\n  </ng-container>\n  <ng-template #renaming>\n    <ng-container *ngTemplateOutlet=\"editingState\"></ng-container>\n  </ng-template>\n</ng-template>\n<!-- EDITING STATE -->\n<ng-template #editingState>\n  <div class=\"node-content\">\n    <span class=\"input-wrapper\">\n      <input autofocus\n              type='text'\n              placeholder='Press Enter to create ESC to cancel...'\n              [(ngModel)]=\"editedName\"\n              (keydown)='onEdit($event)'\n              (blur)='onEdit($event)'/>\n      </span>\n  </div>\n</ng-template>\n");
+
+/***/ }),
+
+/***/ "./node_modules/tslib/tslib.es6.js":
+/*!*****************************************!*\
+  !*** ./node_modules/tslib/tslib.es6.js ***!
+  \*****************************************/
+/*! exports provided: __extends, __assign, __rest, __decorate, __param, __metadata, __awaiter, __generator, __exportStar, __values, __read, __spread, __spreadArrays, __await, __asyncGenerator, __asyncDelegator, __asyncValues, __makeTemplateObject, __importStar, __importDefault */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__extends", function() { return __extends; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__assign", function() { return __assign; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__rest", function() { return __rest; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__decorate", function() { return __decorate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__param", function() { return __param; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__metadata", function() { return __metadata; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__awaiter", function() { return __awaiter; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__generator", function() { return __generator; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__exportStar", function() { return __exportStar; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__values", function() { return __values; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__read", function() { return __read; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__spread", function() { return __spread; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__spreadArrays", function() { return __spreadArrays; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__await", function() { return __await; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__asyncGenerator", function() { return __asyncGenerator; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__asyncDelegator", function() { return __asyncDelegator; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__asyncValues", function() { return __asyncValues; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__makeTemplateObject", function() { return __makeTemplateObject; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__importStar", function() { return __importStar; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "__importDefault", function() { return __importDefault; });
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+/* global Reflect, Promise */
+
+var extendStatics = function(d, b) {
+    extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return extendStatics(d, b);
+};
+
+function __extends(d, b) {
+    extendStatics(d, b);
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+}
+
+var __assign = function() {
+    __assign = Object.assign || function __assign(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+    }
+    return __assign.apply(this, arguments);
+}
+
+function __rest(s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+}
+
+function __decorate(decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+}
+
+function __param(paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+}
+
+function __metadata(metadataKey, metadataValue) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
+}
+
+function __awaiter(thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+}
+
+function __generator(thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+}
+
+function __exportStar(m, exports) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+
+function __values(o) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
+    if (m) return m.call(o);
+    return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+}
+
+function __read(o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+}
+
+function __spread() {
+    for (var ar = [], i = 0; i < arguments.length; i++)
+        ar = ar.concat(__read(arguments[i]));
+    return ar;
+}
+
+function __spreadArrays() {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
+
+function __await(v) {
+    return this instanceof __await ? (this.v = v, this) : new __await(v);
+}
+
+function __asyncGenerator(thisArg, _arguments, generator) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var g = generator.apply(thisArg, _arguments || []), i, q = [];
+    return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
+    function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+    function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
+    function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
+    function fulfill(value) { resume("next", value); }
+    function reject(value) { resume("throw", value); }
+    function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
+}
+
+function __asyncDelegator(o) {
+    var i, p;
+    return i = {}, verb("next"), verb("throw", function (e) { throw e; }), verb("return"), i[Symbol.iterator] = function () { return this; }, i;
+    function verb(n, f) { i[n] = o[n] ? function (v) { return (p = !p) ? { value: __await(o[n](v)), done: n === "return" } : f ? f(v) : v; } : f; }
+}
+
+function __asyncValues(o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+}
+
+function __makeTemplateObject(cooked, raw) {
+    if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+    return cooked;
+};
+
+function __importStar(mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result.default = mod;
+    return result;
+}
+
+function __importDefault(mod) {
+    return (mod && mod.__esModule) ? mod : { default: mod };
+}
+
+
+/***/ }),
+
 /***/ "./src/$$_lazy_route_resource lazy recursive":
 /*!**********************************************************!*\
   !*** ./src/$$_lazy_route_resource lazy namespace object ***!
@@ -27,56 +568,52 @@ webpackEmptyAsyncContext.id = "./src/$$_lazy_route_resource lazy recursive";
 /*!***************************************!*\
   !*** ./src/app/app-routing.module.ts ***!
   \***************************************/
-/*! exports provided: AppRoutingModule */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AppRoutingModule", function() { return AppRoutingModule; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
-/* harmony import */ var _editor_editor_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./editor/editor.component */ "./src/app/editor/editor.component.ts");
-/* harmony import */ var _editor_editor_resolver__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./editor/editor.resolver */ "./src/app/editor/editor.resolver.ts");
 
-
-
-
-
-var routes = [
-    { path: 'editor', component: _editor_editor_component__WEBPACK_IMPORTED_MODULE_3__["EditorComponent"], resolve: { data: _editor_editor_resolver__WEBPACK_IMPORTED_MODULE_4__["EditorResolver"] } },
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const router_1 = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm2015/router.js");
+const editor_resolver_1 = __webpack_require__(/*! ./pages/editor/editor.resolver */ "./src/app/pages/editor/editor.resolver.ts");
+const routes = [
+    {
+        path: 'editor',
+        loadChildren: () => Promise.resolve().then(() => __webpack_require__(/*! ./pages/editor/editor.module */ "./src/app/pages/editor/editor.module.ts")).then(m => m.EditorModule),
+        resolve: { data: editor_resolver_1.EditorResolver }
+    },
+    {
+        path: 'login',
+        loadChildren: () => Promise.resolve().then(() => __webpack_require__(/*! ./pages/login/login.module */ "./src/app/pages/login/login.module.ts")).then(m => m.LoginModule),
+    },
+    {
+        path: 'ask',
+        loadChildren: () => Promise.resolve().then(() => __webpack_require__(/*! ./pages/ask/ask.module */ "./src/app/pages/ask/ask.module.ts")).then(m => m.AskModule),
+    },
+    {
+        path: 'courses',
+        loadChildren: () => Promise.resolve().then(() => __webpack_require__(/*! ./pages/courses/courses.module */ "./src/app/pages/courses/courses.module.ts")).then(m => m.CoursesModule),
+    },
     { path: '**', redirectTo: 'editor', pathMatch: 'full' }
 ];
-var AppRoutingModule = /** @class */ (function () {
-    function AppRoutingModule() {
-    }
-    AppRoutingModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"])({
-            imports: [
-                _angular_router__WEBPACK_IMPORTED_MODULE_2__["RouterModule"].forRoot(routes, {
-                    enableTracing: false,
-                    preloadingStrategy: _angular_router__WEBPACK_IMPORTED_MODULE_2__["PreloadAllModules"]
-                })
-            ],
-            providers: [_editor_editor_resolver__WEBPACK_IMPORTED_MODULE_4__["EditorResolver"]],
-            exports: [_angular_router__WEBPACK_IMPORTED_MODULE_2__["RouterModule"]]
-        })
-    ], AppRoutingModule);
-    return AppRoutingModule;
-}());
+let AppRoutingModule = class AppRoutingModule {
+};
+AppRoutingModule = tslib_1.__decorate([
+    core_1.NgModule({
+        imports: [
+            router_1.RouterModule.forRoot(routes, {
+                enableTracing: false,
+                preloadingStrategy: router_1.PreloadAllModules
+            })
+        ],
+        providers: [editor_resolver_1.EditorResolver],
+        exports: [router_1.RouterModule]
+    })
+], AppRoutingModule);
+exports.AppRoutingModule = AppRoutingModule;
 
-
-
-/***/ }),
-
-/***/ "./src/app/app.component.html":
-/*!************************************!*\
-  !*** ./src/app/app.component.html ***!
-  \************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<div id=\"loader-wrapper\"  *ngIf='loading'>\n    <div id=\"loader\"></div>\n    <div class=\"loader-section section-left\"></div>\n    <div class=\"loader-section section-right\"></div>\n</div>\n<router-outlet></router-outlet>\n"
 
 /***/ }),
 
@@ -84,10 +621,12 @@ module.exports = "<div id=\"loader-wrapper\"  *ngIf='loading'>\n    <div id=\"lo
 /*!************************************!*\
   !*** ./src/app/app.component.scss ***!
   \************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL2FwcC5jb21wb25lbnQuc2NzcyJ9 */"
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL2FwcC5jb21wb25lbnQuc2NzcyJ9 */");
 
 /***/ }),
 
@@ -95,97 +634,58 @@ module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW
 /*!**********************************!*\
   !*** ./src/app/app.component.ts ***!
   \**********************************/
-/*! exports provided: AppComponent */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AppComponent", function() { return AppComponent; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_cdk_overlay__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/cdk/overlay */ "./node_modules/@angular/cdk/esm5/overlay.es5.js");
-/* harmony import */ var _editor_shared_models_settings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./editor/shared/models/settings */ "./src/app/editor/shared/models/settings.ts");
-/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
-/* harmony import */ var _editor_shared_services_settings_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./editor/shared/services/settings.service */ "./src/app/editor/shared/services/settings.service.ts");
 
-
-
-
-
-
-var AppComponent = /** @class */ (function () {
-    function AppComponent(router, settings, overlayContainer) {
-        var _this = this;
-        this.router = router;
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const overlay_1 = __webpack_require__(/*! @angular/cdk/overlay */ "./node_modules/@angular/cdk/esm2015/overlay.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const settings_1 = __webpack_require__(/*! ./pages/editor/shared/models/settings */ "./src/app/pages/editor/shared/models/settings.ts");
+const settings_service_1 = __webpack_require__(/*! ./pages/editor/shared/services/settings.service */ "./src/app/pages/editor/shared/services/settings.service.ts");
+let AppComponent = class AppComponent {
+    constructor(settings, overlayContainer) {
         this.settings = settings;
         this.overlayContainer = overlayContainer;
         this.subscriptions = [];
-        this.loading = false;
-        this.header = document.querySelector('header');
-        router.events.subscribe(function (event) {
-            _this.navigationInterceptor(event);
-        });
     }
-    AppComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        this.subscriptions.push(this.settings.changed.subscribe(function (e) {
-            _this.setTheme(_this.settings.get(_editor_shared_models_settings__WEBPACK_IMPORTED_MODULE_3__["Settings"].EDITOR_KEY, 'theme').value);
+    ngOnInit() {
+        this.setTheme('light-theme');
+        this.subscriptions.push(this.settings.changed.subscribe(e => {
+            this.setTheme(this.settings.get(settings_1.Settings.EDITOR_KEY, 'theme').value);
         }));
-        this.setTheme('dark-theme');
-    };
-    AppComponent.prototype.ngOnDestroy = function () {
-        this.subscriptions.forEach(function (s) { return s.unsubscribe(); });
-    };
-    AppComponent.prototype.setTheme = function (theme) {
-        var container = this.overlayContainer.getContainerElement();
+    }
+    ngOnDestroy() {
+        this.subscriptions.forEach(s => s.unsubscribe());
+    }
+    setTheme(theme) {
+        const container = this.overlayContainer.getContainerElement();
         container.classList.remove('dark-theme');
         container.classList.remove('light-theme');
         container.classList.add(theme);
         this.theme = theme;
-    };
-    AppComponent.prototype.navigationInterceptor = function (event) {
-        if (event instanceof _angular_router__WEBPACK_IMPORTED_MODULE_4__["NavigationStart"]) {
-            this.header.style.display = 'none';
-            document.body.classList.remove('loaded');
-            this.loading = true;
-        }
-        if (event instanceof _angular_router__WEBPACK_IMPORTED_MODULE_4__["NavigationEnd"]) {
-            this.endLoading();
-        }
-        // Set loading state to false in both of the below events to hide the spinner in case a request fails
-        if (event instanceof _angular_router__WEBPACK_IMPORTED_MODULE_4__["NavigationCancel"]) {
-            this.endLoading();
-        }
-        if (event instanceof _angular_router__WEBPACK_IMPORTED_MODULE_4__["NavigationError"]) {
-            this.endLoading();
-        }
-    };
-    AppComponent.prototype.endLoading = function () {
-        var _this = this;
-        this.header.style.display = 'flex';
-        document.body.classList.add('loaded');
-        setTimeout(function () {
-            _this.loading = false;
-            document.body.classList.remove('loaded');
-        }, 3000);
-    };
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["HostBinding"])('class'),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", String)
-    ], AppComponent.prototype, "theme", void 0);
-    AppComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-            selector: 'app-root',
-            template: __webpack_require__(/*! ./app.component.html */ "./src/app/app.component.html"),
-            styles: [__webpack_require__(/*! ./app.component.scss */ "./src/app/app.component.scss")]
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_router__WEBPACK_IMPORTED_MODULE_4__["Router"],
-            _editor_shared_services_settings_service__WEBPACK_IMPORTED_MODULE_5__["SettingsService"],
-            _angular_cdk_overlay__WEBPACK_IMPORTED_MODULE_2__["OverlayContainer"]])
-    ], AppComponent);
-    return AppComponent;
-}());
-
+    }
+};
+AppComponent.ctorParameters = () => [
+    { type: settings_service_1.SettingsService },
+    { type: overlay_1.OverlayContainer }
+];
+tslib_1.__decorate([
+    core_1.HostBinding('class'),
+    tslib_1.__metadata("design:type", String)
+], AppComponent.prototype, "theme", void 0);
+AppComponent = tslib_1.__decorate([
+    core_1.Component({
+        selector: 'app-root',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./app.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/app.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./app.component.scss */ "./src/app/app.component.scss")).default]
+    }),
+    tslib_1.__metadata("design:paramtypes", [settings_service_1.SettingsService,
+        overlay_1.OverlayContainer])
+], AppComponent);
+exports.AppComponent = AppComponent;
 
 
 /***/ }),
@@ -194,644 +694,814 @@ var AppComponent = /** @class */ (function () {
 /*!*******************************!*\
   !*** ./src/app/app.module.ts ***!
   \*******************************/
-/*! exports provided: AppModule */
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const http_1 = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm2015/http.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const platform_browser_1 = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm2015/platform-browser.js");
+const animations_1 = __webpack_require__(/*! @angular/platform-browser/animations */ "./node_modules/@angular/platform-browser/fesm2015/animations.js");
+const angular_split_1 = __webpack_require__(/*! angular-split */ "./node_modules/angular-split/fesm2015/angular-split.js"); // https://www.npmjs.com/package/angular-split
+const angular2_markdown_1 = __webpack_require__(/*! angular2-markdown */ "./node_modules/angular2-markdown/index.js"); // https://www.npmjs.com/package/angular2-markdown
+const ngx_monaco_editor_1 = __webpack_require__(/*! ngx-monaco-editor */ "./node_modules/ngx-monaco-editor/fesm2015/ngx-monaco-editor.js"); // https://www.npmjs.com/package/ngx-monaco-editor/v/7.0.0
+const ngx_toastr_1 = __webpack_require__(/*! ngx-toastr */ "./node_modules/ngx-toastr/fesm2015/ngx-toastr.js"); // https://www.npmjs.com/package/ngx-toastr
+const app_routing_module_1 = __webpack_require__(/*! ./app-routing.module */ "./src/app/app-routing.module.ts");
+const app_component_1 = __webpack_require__(/*! ./app.component */ "./src/app/app.component.ts");
+const monaco_1 = __webpack_require__(/*! ./pages/editor/shared/models/monaco */ "./src/app/pages/editor/shared/models/monaco.ts");
+const shared_module_1 = __webpack_require__(/*! ./shared/shared.module */ "./src/app/shared/shared.module.ts");
+const login_component_1 = __webpack_require__(/*! ./pages/login/login.component */ "./src/app/pages/login/login.component.ts");
+let AppModule = class AppModule {
+};
+AppModule = tslib_1.__decorate([
+    core_1.NgModule({
+        declarations: [app_component_1.AppComponent, login_component_1.LoginComponent],
+        imports: [
+            platform_browser_1.BrowserModule,
+            animations_1.BrowserAnimationsModule,
+            http_1.HttpClientModule,
+            http_1.HttpClientXsrfModule.withOptions({
+                cookieName: 'csrftoken',
+                headerName: 'X-CSRFToken'
+            }),
+            angular2_markdown_1.MarkdownModule.forRoot(),
+            angular_split_1.AngularSplitModule.forRoot(),
+            ngx_monaco_editor_1.MonacoEditorModule.forRoot(monaco_1.MONACO_CONFIG),
+            ngx_toastr_1.ToastrModule.forRoot({ preventDuplicates: true }),
+            shared_module_1.SharedModule,
+            app_routing_module_1.AppRoutingModule
+        ],
+        providers: [],
+        bootstrap: [app_component_1.AppComponent],
+        entryComponents: []
+    })
+], AppModule);
+exports.AppModule = AppModule;
+
+
+/***/ }),
+
+/***/ "./src/app/pages/ask/ask-routing.module.ts":
+/*!*************************************************!*\
+  !*** ./src/app/pages/ask/ask-routing.module.ts ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const router_1 = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm2015/router.js");
+const common_1 = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm2015/common.js");
+const ask_component_1 = __webpack_require__(/*! ./ask.component */ "./src/app/pages/ask/ask.component.ts");
+const routes = [
+    { path: '', component: ask_component_1.AskComponent }
+];
+let AskRoutingModule = class AskRoutingModule {
+};
+AskRoutingModule = tslib_1.__decorate([
+    core_1.NgModule({
+        imports: [common_1.CommonModule, router_1.RouterModule.forChild(routes)],
+        exports: [router_1.RouterModule]
+    })
+], AskRoutingModule);
+exports.AskRoutingModule = AskRoutingModule;
+
+
+/***/ }),
+
+/***/ "./src/app/pages/ask/ask.component.scss":
+/*!**********************************************!*\
+  !*** ./src/app/pages/ask/ask.component.scss ***!
+  \**********************************************/
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AppModule", function() { return AppModule; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm5/common.js");
-/* harmony import */ var _app_routing_module__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./app-routing.module */ "./src/app/app-routing.module.ts");
-/* harmony import */ var _app_component__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./app.component */ "./src/app/app.component.ts");
-/* harmony import */ var _editor_editor_module__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./editor/editor.module */ "./src/app/editor/editor.module.ts");
-
-
-
-
-
-
-var AppModule = /** @class */ (function () {
-    function AppModule() {
-    }
-    AppModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"])({
-            declarations: [
-                _app_component__WEBPACK_IMPORTED_MODULE_4__["AppComponent"],
-            ],
-            imports: [
-                _angular_common__WEBPACK_IMPORTED_MODULE_2__["CommonModule"],
-                _app_routing_module__WEBPACK_IMPORTED_MODULE_3__["AppRoutingModule"],
-                _editor_editor_module__WEBPACK_IMPORTED_MODULE_5__["EditorModule"],
-            ],
-            providers: [],
-            bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_4__["AppComponent"]],
-            entryComponents: [],
-        })
-    ], AppModule);
-    return AppModule;
-}());
-
-
+/* harmony default export */ __webpack_exports__["default"] = ("\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL2Fzay9hc2suY29tcG9uZW50LnNjc3MifQ== */");
 
 /***/ }),
 
-/***/ "./src/app/editor/debugging/console/console.component.html":
-/*!*****************************************************************!*\
-  !*** ./src/app/editor/debugging/console/console.component.html ***!
-  \*****************************************************************/
+/***/ "./src/app/pages/ask/ask.component.ts":
+/*!********************************************!*\
+  !*** ./src/app/pages/ask/ask.component.ts ***!
+  \********************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<ul class='console__content' #container>\n    <h4 *ngIf='empty'>Nothing to display</h4>\n    <ng-container *ngFor=\"let item of items; let last = last; trackBy track\">\n        <li class='log log--{{item.type}}'>\n        <ng-container [ngSwitch]=\"item.type\">\n            <mat-icon *ngSwitchCase=\"'info'\" mat-list-icon class='log-icon'>info</mat-icon>\n            <mat-icon *ngSwitchCase=\"'warning'\" mat-list-icon class='log-icon'>warning</mat-icon>\n            <mat-icon *ngSwitchDefault mat-list-icon class='log-icon'>error</mat-icon>\n        </ng-container>\n        <p class='log-content' [innerHTML]='item.message | trustHtml'></p>\n        </li>\n        <mat-divider *ngIf='!last'></mat-divider>\n    </ng-container>\n</ul>\n"
-
-/***/ }),
-
-/***/ "./src/app/editor/debugging/console/console.component.scss":
-/*!*****************************************************************!*\
-  !*** ./src/app/editor/debugging/console/console.component.scss ***!
-  \*****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = ".console__content {\n  height: 100%; }\n\n.log {\n  position: relative;\n  list-style-type: none;\n  list-style-type: none;\n  display: -webkit-box;\n  display: flex;\n  -webkit-box-align: baseline;\n          align-items: baseline;\n  padding: 8px; }\n\n.log .log-icon {\n    position: absolute; }\n\n.log--info .log-icon {\n  color: #009688; }\n\n.log--warning .log-icon {\n  color: #FFEB3B; }\n\n.log--error .log-icon {\n  color: #F44336; }\n\n.log-content {\n  padding: 0 32px; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL2VkaXRvci9kZWJ1Z2dpbmcvY29uc29sZS9jb25zb2xlLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksYUFBWSxFQUNmOztBQUVEO0VBQ0ksbUJBQWtCO0VBQ2xCLHNCQUFxQjtFQUNyQixzQkFBcUI7RUFDckIscUJBQWE7RUFBYixjQUFhO0VBQ2IsNEJBQXFCO1VBQXJCLHNCQUFxQjtFQUNyQixhQUFZLEVBSWY7O0FBVkQ7SUFRUSxtQkFBa0IsRUFDckI7O0FBR0w7RUFFUSxlQUFjLEVBQ2pCOztBQUdMO0VBRVEsZUFBYyxFQUNqQjs7QUFHTDtFQUVRLGVBQWEsRUFDaEI7O0FBR0w7RUFDSSxnQkFBZSxFQUNsQiIsImZpbGUiOiJzcmMvYXBwL2VkaXRvci9kZWJ1Z2dpbmcvY29uc29sZS9jb25zb2xlLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmNvbnNvbGVfX2NvbnRlbnQge1xuICAgIGhlaWdodDogMTAwJTtcbn1cblxuLmxvZyB7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgIGxpc3Qtc3R5bGUtdHlwZTogbm9uZTtcbiAgICBsaXN0LXN0eWxlLXR5cGU6IG5vbmU7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBhbGlnbi1pdGVtczogYmFzZWxpbmU7XG4gICAgcGFkZGluZzogOHB4O1xuICAgIC5sb2ctaWNvbiB7XG4gICAgICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICB9XG59XG5cbi5sb2ctLWluZm8ge1xuICAgIC5sb2ctaWNvbiB7XG4gICAgICAgIGNvbG9yOiAjMDA5Njg4O1xuICAgIH1cbn1cblxuLmxvZy0td2FybmluZyB7XG4gICAgLmxvZy1pY29uIHtcbiAgICAgICAgY29sb3I6ICNGRkVCM0I7XG4gICAgfVxufVxuXG4ubG9nLS1lcnJvciB7XG4gICAgICAubG9nLWljb24ge1xuICAgICAgICBjb2xvcjojRjQ0MzM2O1xuICAgIH1cbn1cblxuLmxvZy1jb250ZW50IHtcbiAgICBwYWRkaW5nOiAwIDMycHg7XG59XG4iXX0= */"
-
-/***/ }),
-
-/***/ "./src/app/editor/debugging/console/console.component.ts":
-/*!***************************************************************!*\
-  !*** ./src/app/editor/debugging/console/console.component.ts ***!
-  \***************************************************************/
-/*! exports provided: ConsoleComponent */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ConsoleComponent", function() { return ConsoleComponent; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
 
-
-
-var ConsoleComponent = /** @class */ (function () {
-    function ConsoleComponent(notification) {
-        this.notification = notification;
-        this.subscriptions = [];
-        this.items = [];
-    }
-    ConsoleComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        this.empty = true;
-        this.subscriptions.push(this.notification.logAdded.subscribe(function (message) {
-            _this.empty = false;
-            _this.items.push(message);
-            _this.scrollBottom();
-        }));
-    };
-    ConsoleComponent.prototype.ngOnDestroy = function () {
-        this.subscriptions.forEach(function (item) { return item.unsubscribe(); });
-    };
-    ConsoleComponent.prototype.didTapClear = function (event) {
-        event.stopPropagation();
-        this.items = [];
-        this.empty = true;
-        this.notification.clear();
-    };
-    ConsoleComponent.prototype.track = function (index, _item) {
-        return index;
-    };
-    ConsoleComponent.prototype.scrollBottom = function () {
-        if (this.container) {
-            this.container.nativeElement.scrollTop = this.container.nativeElement.scrollHeight;
-        }
-    };
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ViewChild"])('container'),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"])
-    ], ConsoleComponent.prototype, "container", void 0);
-    ConsoleComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-            // tslint:disable-next-line: component-selector
-            selector: 'console',
-            template: __webpack_require__(/*! ./console.component.html */ "./src/app/editor/debugging/console/console.component.html"),
-            styles: [__webpack_require__(/*! ./console.component.scss */ "./src/app/editor/debugging/console/console.component.scss")]
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_2__["NotificationService"]])
-    ], ConsoleComponent);
-    return ConsoleComponent;
-}());
-
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+let AskComponent = class AskComponent {
+    constructor() { }
+    ngOnInit() { }
+};
+AskComponent = tslib_1.__decorate([
+    core_1.Component({
+        selector: 'app-ask',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./ask.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/ask/ask.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./ask.component.scss */ "./src/app/pages/ask/ask.component.scss")).default]
+    }),
+    tslib_1.__metadata("design:paramtypes", [])
+], AskComponent);
+exports.AskComponent = AskComponent;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/debugging/debugging.component.html":
-/*!***********************************************************!*\
-  !*** ./src/app/editor/debugging/debugging.component.html ***!
-  \***********************************************************/
+/***/ "./src/app/pages/ask/ask.module.ts":
+/*!*****************************************!*\
+  !*** ./src/app/pages/ask/ask.module.ts ***!
+  \*****************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = "<div class='tab-bar' (click)='didTapOpen($event)'>\n    <h3 class='tab-item'>CONSOLE</h3>\n    <div class='spacer'></div>\n    <div id=\"console-action-clear\" class='tab-item' matTooltip='Clear' (click)='console.didTapClear($event)'>\n        <i class=\"fas fa-trash-alt\"></i>\n    </div>\n    <div id=\"debugging-action-hide\" class='tab-item' matTooltip='Hide' (click)='didTapClose($event)'>\n        <i class=\"fas fa-times\"></i>\n    </div>\n</div>\n<div class='debugging__content'>\n    <console #console></console>\n</div>\n"
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const common_1 = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm2015/common.js");
+const shared_module_1 = __webpack_require__(/*! src/app/shared/shared.module */ "./src/app/shared/shared.module.ts");
+const ask_routing_module_1 = __webpack_require__(/*! ./ask-routing.module */ "./src/app/pages/ask/ask-routing.module.ts");
+const ask_component_1 = __webpack_require__(/*! ./ask.component */ "./src/app/pages/ask/ask.component.ts");
+let AskModule = class AskModule {
+};
+AskModule = tslib_1.__decorate([
+    core_1.NgModule({
+        declarations: [ask_component_1.AskComponent],
+        imports: [common_1.CommonModule, shared_module_1.SharedModule, ask_routing_module_1.AskRoutingModule],
+        exports: [],
+        providers: [],
+    })
+], AskModule);
+exports.AskModule = AskModule;
+
 
 /***/ }),
 
-/***/ "./src/app/editor/debugging/debugging.component.scss":
-/*!***********************************************************!*\
-  !*** ./src/app/editor/debugging/debugging.component.scss ***!
-  \***********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = ":host {\n  position: relative;\n  overflow: hidden;\n  height: 100%; }\n\n.tab-item {\n  background: transparent; }\n\n.debugging__content {\n  overflow: auto;\n  height: calc(100% - 36px);\n  padding: 0; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL2VkaXRvci9kZWJ1Z2dpbmcvZGVidWdnaW5nLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksbUJBQWtCO0VBQ2xCLGlCQUFnQjtFQUNoQixhQUFZLEVBQ2Y7O0FBRUQ7RUFDSSx3QkFBdUIsRUFDMUI7O0FBRUQ7RUFDSSxlQUFjO0VBQ2QsMEJBQXlCO0VBQ3pCLFdBQVUsRUFDYiIsImZpbGUiOiJzcmMvYXBwL2VkaXRvci9kZWJ1Z2dpbmcvZGVidWdnaW5nLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiOmhvc3Qge1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgIGhlaWdodDogMTAwJTtcbn1cblxuLnRhYi1pdGVtIHtcbiAgICBiYWNrZ3JvdW5kOiB0cmFuc3BhcmVudDtcbn1cblxuLmRlYnVnZ2luZ19fY29udGVudCB7XG4gICAgb3ZlcmZsb3c6IGF1dG87XG4gICAgaGVpZ2h0OiBjYWxjKDEwMCUgLSAzNnB4KTtcbiAgICBwYWRkaW5nOiAwO1xufVxuIl19 */"
-
-/***/ }),
-
-/***/ "./src/app/editor/debugging/debugging.component.ts":
+/***/ "./src/app/pages/courses/courses-routing.module.ts":
 /*!*********************************************************!*\
-  !*** ./src/app/editor/debugging/debugging.component.ts ***!
+  !*** ./src/app/pages/courses/courses-routing.module.ts ***!
   \*********************************************************/
-/*! exports provided: DebuggingComponent */
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const router_1 = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm2015/router.js");
+const common_1 = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm2015/common.js");
+const courses_component_1 = __webpack_require__(/*! ./courses.component */ "./src/app/pages/courses/courses.component.ts");
+const routes = [
+    { path: '', component: courses_component_1.CoursesComponent }
+];
+let CoursesRoutingModule = class CoursesRoutingModule {
+};
+CoursesRoutingModule = tslib_1.__decorate([
+    core_1.NgModule({
+        imports: [common_1.CommonModule, router_1.RouterModule.forChild(routes)],
+        exports: [router_1.RouterModule]
+    })
+], CoursesRoutingModule);
+exports.CoursesRoutingModule = CoursesRoutingModule;
+
+
+/***/ }),
+
+/***/ "./src/app/pages/courses/courses.component.scss":
+/*!******************************************************!*\
+  !*** ./src/app/pages/courses/courses.component.scss ***!
+  \******************************************************/
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DebuggingComponent", function() { return DebuggingComponent; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _navigation_navigation_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../navigation/navigation.service */ "./src/app/editor/navigation/navigation.service.ts");
-/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
+/* harmony default export */ __webpack_exports__["default"] = ("\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL2NvdXJzZXMvY291cnNlcy5jb21wb25lbnQuc2NzcyJ9 */");
+
+/***/ }),
+
+/***/ "./src/app/pages/courses/courses.component.ts":
+/*!****************************************************!*\
+  !*** ./src/app/pages/courses/courses.component.ts ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+let CoursesComponent = class CoursesComponent {
+    constructor() { }
+    ngOnInit() { }
+};
+CoursesComponent = tslib_1.__decorate([
+    core_1.Component({
+        selector: 'app-courses',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./courses.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/courses/courses.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./courses.component.scss */ "./src/app/pages/courses/courses.component.scss")).default]
+    }),
+    tslib_1.__metadata("design:paramtypes", [])
+], CoursesComponent);
+exports.CoursesComponent = CoursesComponent;
 
 
+/***/ }),
+
+/***/ "./src/app/pages/courses/courses.module.ts":
+/*!*************************************************!*\
+  !*** ./src/app/pages/courses/courses.module.ts ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const common_1 = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm2015/common.js");
+const shared_module_1 = __webpack_require__(/*! src/app/shared/shared.module */ "./src/app/shared/shared.module.ts");
+const courses_component_1 = __webpack_require__(/*! ./courses.component */ "./src/app/pages/courses/courses.component.ts");
+const courses_routing_module_1 = __webpack_require__(/*! ./courses-routing.module */ "./src/app/pages/courses/courses-routing.module.ts");
+let CoursesModule = class CoursesModule {
+};
+CoursesModule = tslib_1.__decorate([
+    core_1.NgModule({
+        declarations: [courses_component_1.CoursesComponent],
+        imports: [common_1.CommonModule, shared_module_1.SharedModule, courses_routing_module_1.CoursesRoutingModule],
+        exports: [],
+        providers: [],
+    })
+], CoursesModule);
+exports.CoursesModule = CoursesModule;
 
 
-var DebuggingComponent = /** @class */ (function () {
-    function DebuggingComponent(navigation, notification) {
+/***/ }),
+
+/***/ "./src/app/pages/editor/debugging/debugging.component.scss":
+/*!*****************************************************************!*\
+  !*** ./src/app/pages/editor/debugging/debugging.component.scss ***!
+  \*****************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (":host {\n  position: relative;\n  overflow: hidden;\n  height: 100%;\n}\n\n.tab-bar {\n  padding: 0px;\n}\n\n.tab-item {\n  background: transparent;\n  color: var(--tab-foreground);\n  font-size: 10px !important;\n}\n\n.debugging-content {\n  overflow: auto;\n  height: calc(100% - 36px);\n  padding: 0;\n}\n\n.mat-badge-medium .mat-badge-content {\n  right: 0px !important;\n  top: -4px !important;\n  right: -10px;\n  background: transparent;\n  font-size: 10px;\n  color: var(--tab-foreground);\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL3BhZ2VzL2VkaXRvci9kZWJ1Z2dpbmcvZGVidWdnaW5nLmNvbXBvbmVudC5zY3NzIiwic3JjL2FwcC9wYWdlcy9lZGl0b3IvZGVidWdnaW5nL2RlYnVnZ2luZy5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGtCQUFBO0VBQ0EsZ0JBQUE7RUFDQSxZQUFBO0FDQ0o7O0FERUE7RUFDSSxZQUFBO0FDQ0o7O0FEQ0k7RUFDSSx1QkFBQTtFQUNBLDRCQUFBO0VBQ0EsMEJBQUE7QUNFUjs7QURFQTtFQUNJLGNBQUE7RUFDQSx5QkFBQTtFQUNBLFVBQUE7QUNDSjs7QURFQTtFQUNJLHFCQUFBO0VBQ0Esb0JBQUE7RUFDQSxZQUFBO0VBQ0EsdUJBQUE7RUFDQSxlQUFBO0VBQ0EsNEJBQUE7QUNDSiIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL2VkaXRvci9kZWJ1Z2dpbmcvZGVidWdnaW5nLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiOmhvc3Qge1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgIGhlaWdodDogMTAwJTtcbn1cblxuLnRhYi1iYXIge1xuICAgIHBhZGRpbmc6IDBweDtcbn1cbiAgICAudGFiLWl0ZW0ge1xuICAgICAgICBiYWNrZ3JvdW5kOiB0cmFuc3BhcmVudDtcbiAgICAgICAgY29sb3I6IHZhcigtLXRhYi1mb3JlZ3JvdW5kKTtcbiAgICAgICAgZm9udC1zaXplOiAxMHB4ICFpbXBvcnRhbnQ7XG4gICAgfVxuXG5cbi5kZWJ1Z2dpbmctY29udGVudCB7XG4gICAgb3ZlcmZsb3c6IGF1dG87XG4gICAgaGVpZ2h0OiBjYWxjKDEwMCUgLSAzNnB4KTtcbiAgICBwYWRkaW5nOiAwO1xufVxuXG4ubWF0LWJhZGdlLW1lZGl1bSAubWF0LWJhZGdlLWNvbnRlbnQge1xuICAgIHJpZ2h0OiAwcHggIWltcG9ydGFudDtcbiAgICB0b3A6IC00cHggIWltcG9ydGFudDtcbiAgICByaWdodDogLTEwcHg7XG4gICAgYmFja2dyb3VuZDogdHJhbnNwYXJlbnQ7XG4gICAgZm9udC1zaXplOiAxMHB4O1xuICAgIGNvbG9yOiB2YXIoLS10YWItZm9yZWdyb3VuZCk7XG59XG4iLCI6aG9zdCB7XG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgaGVpZ2h0OiAxMDAlO1xufVxuXG4udGFiLWJhciB7XG4gIHBhZGRpbmc6IDBweDtcbn1cblxuLnRhYi1pdGVtIHtcbiAgYmFja2dyb3VuZDogdHJhbnNwYXJlbnQ7XG4gIGNvbG9yOiB2YXIoLS10YWItZm9yZWdyb3VuZCk7XG4gIGZvbnQtc2l6ZTogMTBweCAhaW1wb3J0YW50O1xufVxuXG4uZGVidWdnaW5nLWNvbnRlbnQge1xuICBvdmVyZmxvdzogYXV0bztcbiAgaGVpZ2h0OiBjYWxjKDEwMCUgLSAzNnB4KTtcbiAgcGFkZGluZzogMDtcbn1cblxuLm1hdC1iYWRnZS1tZWRpdW0gLm1hdC1iYWRnZS1jb250ZW50IHtcbiAgcmlnaHQ6IDBweCAhaW1wb3J0YW50O1xuICB0b3A6IC00cHggIWltcG9ydGFudDtcbiAgcmlnaHQ6IC0xMHB4O1xuICBiYWNrZ3JvdW5kOiB0cmFuc3BhcmVudDtcbiAgZm9udC1zaXplOiAxMHB4O1xuICBjb2xvcjogdmFyKC0tdGFiLWZvcmVncm91bmQpO1xufSJdfQ== */");
+
+/***/ }),
+
+/***/ "./src/app/pages/editor/debugging/debugging.component.ts":
+/*!***************************************************************!*\
+  !*** ./src/app/pages/editor/debugging/debugging.component.ts ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const navigation_service_1 = __webpack_require__(/*! ../navigation/navigation.service */ "./src/app/pages/editor/navigation/navigation.service.ts");
+const notification_service_1 = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
+const compiler_service_1 = __webpack_require__(/*! ../shared/services/compiler.service */ "./src/app/pages/editor/shared/services/compiler.service.ts");
+let DebuggingComponent = class DebuggingComponent {
+    constructor(navigation, compiler, notification) {
         this.navigation = navigation;
+        this.compiler = compiler;
         this.notification = notification;
         this.subscriptions = [];
         this.openedSize = 60;
         this.size = 5;
+        this.index = 0;
     }
-    DebuggingComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        this.subscriptions.push(this.navigation.debugging.subscribe(function () {
-            if (_this.size < _this.openedSize) {
-                _this.open();
+    get notifs() {
+        return this.notification.size;
+    }
+    get problems() {
+        return this.compiler.problemsCount;
+    }
+    ngOnInit() {
+        this.subscriptions.push(this.navigation.infos.subscribe(() => {
+            if (this.size < this.openedSize) {
+                this.open();
             }
             else {
-                _this.close();
+                this.close();
             }
         }));
-        this.subscriptions.push(this.notification.logAdded.subscribe(function () { return _this.open(); }));
-    };
-    DebuggingComponent.prototype.ngOnDestroy = function () {
-        this.subscriptions.forEach(function (item) { return item.unsubscribe(); });
-    };
-    DebuggingComponent.prototype.didTapOpen = function (event) {
-        event.stopPropagation();
-        this.open();
-    };
-    DebuggingComponent.prototype.didTapClose = function (event) {
+        this.subscriptions.push(this.notification.logAdded.subscribe(this.open.bind(this)));
+    }
+    ngOnDestroy() {
+        this.subscriptions.forEach(item => item.unsubscribe());
+    }
+    onClose(event) {
         event.stopPropagation();
         this.size = 5;
-    };
-    DebuggingComponent.prototype.dragEnd = function (data) {
+    }
+    onFocus(index) {
+        this.index = index;
+        this.open();
+    }
+    onClearNotifs() {
+        this.notification.clear();
+    }
+    dragEnd(data) {
         this.size = data.sizes[1];
         if (this.size < 5) {
             this.size = 5;
         }
-    };
-    DebuggingComponent.prototype.open = function () {
+    }
+    open() {
         if (this.size < this.openedSize) {
             this.size = this.openedSize;
         }
-    };
-    DebuggingComponent.prototype.close = function () {
-        this.size = 0;
-    };
-    DebuggingComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-            // tslint:disable-next-line: component-selector
-            selector: 'debugging',
-            template: __webpack_require__(/*! ./debugging.component.html */ "./src/app/editor/debugging/debugging.component.html"),
-            styles: [__webpack_require__(/*! ./debugging.component.scss */ "./src/app/editor/debugging/debugging.component.scss")]
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_navigation_navigation_service__WEBPACK_IMPORTED_MODULE_2__["NavigationService"],
-            src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_3__["NotificationService"]])
-    ], DebuggingComponent);
-    return DebuggingComponent;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/editor/editor-routing.module.ts":
-/*!*************************************************!*\
-  !*** ./src/app/editor/editor-routing.module.ts ***!
-  \*************************************************/
-/*! exports provided: EditorRoutingModule */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EditorRoutingModule", function() { return EditorRoutingModule; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
-/* harmony import */ var _editor_component__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./editor.component */ "./src/app/editor/editor.component.ts");
-
-
-
-
-var routes = [
-    { path: '', component: _editor_component__WEBPACK_IMPORTED_MODULE_3__["EditorComponent"] }
-];
-var EditorRoutingModule = /** @class */ (function () {
-    function EditorRoutingModule() {
     }
-    EditorRoutingModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"])({
-            imports: [
-                _angular_router__WEBPACK_IMPORTED_MODULE_2__["RouterModule"].forChild(routes)
-            ],
-            exports: [
-                _angular_router__WEBPACK_IMPORTED_MODULE_2__["RouterModule"]
-            ]
-        })
-    ], EditorRoutingModule);
-    return EditorRoutingModule;
-}());
-
+    close() {
+        this.size = 5;
+    }
+};
+DebuggingComponent.ctorParameters = () => [
+    { type: navigation_service_1.NavigationService },
+    { type: compiler_service_1.CompilerService },
+    { type: notification_service_1.NotificationService }
+];
+DebuggingComponent = tslib_1.__decorate([
+    core_1.Component({
+        // tslint:disable-next-line: component-selector
+        selector: 'debugging',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./debugging.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/debugging/debugging.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./debugging.component.scss */ "./src/app/pages/editor/debugging/debugging.component.scss")).default]
+    }),
+    tslib_1.__metadata("design:paramtypes", [navigation_service_1.NavigationService,
+        compiler_service_1.CompilerService,
+        notification_service_1.NotificationService])
+], DebuggingComponent);
+exports.DebuggingComponent = DebuggingComponent;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/editor.component.html":
-/*!**********************************************!*\
-  !*** ./src/app/editor/editor.component.html ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<div class='editor-host mat-app-background'>\n  <mat-progress-bar color=\"warn\" mode=\"indeterminate\" *ngIf=\"taskInProgress\"></mat-progress-bar>\n  <div class='editor-host-container'>\n    <navigation class='navigation' #navigation></navigation>\n    <as-split direction=\"horizontal\" gutterSize='2' useTransition='true'>\n        <as-split-area class='split-area' style='position: relative; overflow: hidden;'\n                       [size]=\"navigation.size\" [ngSwitch]=\"navigation.index\">\n            <explorer *ngSwitchCase=\"0\" showHeader='true' remote=\"true\"></explorer>\n            <search *ngSwitchCase=\"1\"></search>\n            <git *ngSwitchCase=\"2\"></git>\n        </as-split-area>\n        <as-split-area class='split-area' style='position: relative; overflow: hidden;'\n                       [size]=\"100 - navigation.size\">\n            <as-split class='split' direction='vertical' gutterSize='2' useTransition='true' (dragEnd)='debugging.dragEnd($event)'>\n                <as-split-area class='split-area' style='position: relative; overflow: hidden;' [size]='100 - debugging.size'>\n                    <workspace class='workspace' #workspace></workspace>\n                </as-split-area>\n                <as-split-area class='split-area' style='position: relative; overflow: hidden;'\n                               [size]='debugging.size'>\n                    <debugging class='debugging' #debugging></debugging>\n                </as-split-area>\n            </as-split>\n            <quick-open (closed)='showQuickOpen = false' *ngIf='showQuickOpen'></quick-open>\n        </as-split-area>\n    </as-split>\n  </div>\n  <status-bar></status-bar>\n</div>\n"
-
-/***/ }),
-
-/***/ "./src/app/editor/editor.component.scss":
-/*!**********************************************!*\
-  !*** ./src/app/editor/editor.component.scss ***!
-  \**********************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = ".editor-host {\n  position: relative;\n  padding: 0;\n  margin: 0;\n  display: -webkit-box;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n          flex-flow: column;\n  height: calc(100vh - var(--header-height));\n  color: #5a5a5a; }\n\n.editor-host-container {\n  display: -webkit-box;\n  display: flex;\n  position: relative;\n  overflow: hidden;\n  height: 100%;\n  -webkit-box-flex: 1;\n          flex: 1; }\n\n.split {\n  position: relative;\n  height: 100%; }\n\n.split-area {\n  height: 100%;\n  position: relative;\n  overflow: hidden; }\n\n.navigation__content {\n  height: calc(100% - var(--tab-height)) !important;\n  margin: 0px;\n  padding: 0px;\n  overflow: auto;\n  background-color: var(--sideBar-background);\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none; }\n\n.tab-bar {\n  z-index: 1;\n  display: -webkit-box;\n  display: flex;\n  position: relative;\n  height: var(--tab-height);\n  background-color: var(--tab-inactiveBackground);\n  -webkit-box-align: center;\n          align-items: center;\n  overflow: hidden;\n  padding: 0px; }\n\n.tab-bar .tab-group {\n    display: -webkit-box;\n    display: flex;\n    -webkit-box-align: center;\n            align-items: center;\n    height: 100%;\n    width: 100%;\n    overflow-x: auto; }\n\n.tab-bar .tab-item {\n    display: -webkit-inline-box;\n    display: inline-flex;\n    height: 100%;\n    -webkit-box-align: center;\n            align-items: center;\n    position: relative;\n    font-size: 14px;\n    color: #5a5a5a;\n    font-style: normal;\n    padding: 0px 12px;\n    cursor: pointer;\n    white-space: nowrap;\n    text-overflow: ellipsis; }\n\n.tab-bar .tab-item.active {\n      background-color: var(--tab-activeBackground);\n      color: var(--tab-activeForeground); }\n\n.tab-bar .tab-item.changed {\n      border-bottom: 1px solid salmon; }\n\n.tab-bar .tab-item:hover {\n      background-color: var(--tab-hoverBackground); }\n\n.tab-bar .tab-item .tab-icon {\n      margin-right: 4px; }\n\n.tab-bar .tab-item .tab-close {\n      font-size: 18px; }\n\n.tab-bar .tab-item .tab-close:hover {\n        opacity: 1; }\n\n.tree-component .mat-tree {\n  background: transparent !important; }\n\n.tree-component .mat-tree .mat-tree-node:hover, .tree-component .mat-tree .mat-tree-node.focused {\n    background-color: var(--sideBar-hoverBackground) !important; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL2VkaXRvci9lZGl0b3IuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxtQkFBa0I7RUFDbEIsV0FBVTtFQUNWLFVBQVM7RUFDVCxxQkFBYTtFQUFiLGNBQWE7RUFDYiw2QkFBaUI7RUFBakIsOEJBQWlCO1VBQWpCLGtCQUFpQjtFQUNqQiwyQ0FBMEM7RUFDMUMsZUFBYyxFQUNqQjs7QUFFRDtFQUNJLHFCQUFhO0VBQWIsY0FBYTtFQUNiLG1CQUFrQjtFQUNsQixpQkFBZ0I7RUFDaEIsYUFBWTtFQUNaLG9CQUFPO1VBQVAsUUFBTyxFQUNWOztBQUVEO0VBQ0ksbUJBQWtCO0VBQ2xCLGFBQVksRUFDZjs7QUFFRDtFQUNJLGFBQVk7RUFDWixtQkFBa0I7RUFDbEIsaUJBQWdCLEVBQ25COztBQUdEO0VBQ0ksa0RBQWlEO0VBQ2pELFlBQVc7RUFDWCxhQUFZO0VBQ1osZUFBYztFQUNkLDRDQUEyQztFQUMzQywwQkFBaUI7S0FBakIsdUJBQWlCO01BQWpCLHNCQUFpQjtVQUFqQixrQkFBaUIsRUFDcEI7O0FBRUQ7RUFDSSxXQUFVO0VBQ1YscUJBQWE7RUFBYixjQUFhO0VBQ2IsbUJBQWtCO0VBQ2xCLDBCQUF5QjtFQUN6QixnREFBK0M7RUFDL0MsMEJBQW1CO1VBQW5CLG9CQUFtQjtFQUNuQixpQkFBZ0I7RUFDaEIsYUFBWSxFQThDZjs7QUF0REQ7SUFXUSxxQkFBYTtJQUFiLGNBQWE7SUFDYiwwQkFBbUI7WUFBbkIsb0JBQW1CO0lBQ25CLGFBQVk7SUFDWixZQUFXO0lBQ1gsaUJBQWdCLEVBQ25COztBQWhCTDtJQW1CUSw0QkFBb0I7SUFBcEIscUJBQW9CO0lBQ3BCLGFBQVk7SUFDWiwwQkFBbUI7WUFBbkIsb0JBQW1CO0lBQ25CLG1CQUFrQjtJQUNsQixnQkFBZTtJQUNmLGVBQWM7SUFDZCxtQkFBa0I7SUFDbEIsa0JBQWlCO0lBQ2pCLGdCQUFlO0lBQ2Ysb0JBQW1CO0lBQ25CLHdCQUF1QixFQXdCMUI7O0FBckRMO01BK0JZLDhDQUE2QztNQUM3QyxtQ0FBa0MsRUFDckM7O0FBakNUO01Bb0NZLGdDQUErQixFQUNsQzs7QUFyQ1Q7TUF3Q1ksNkNBQTRDLEVBQy9DOztBQXpDVDtNQTRDWSxrQkFBaUIsRUFDcEI7O0FBN0NUO01BZ0RZLGdCQUFlLEVBSWxCOztBQXBEVDtRQWtEZ0IsV0FBVSxFQUNiOztBQUtiO0VBRVEsbUNBQWtDLEVBTXJDOztBQVJMO0lBS2dCLDREQUEyRCxFQUM5RCIsImZpbGUiOiJzcmMvYXBwL2VkaXRvci9lZGl0b3IuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuZWRpdG9yLWhvc3Qge1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBwYWRkaW5nOiAwO1xuICAgIG1hcmdpbjogMDtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGZsZXgtZmxvdzogY29sdW1uO1xuICAgIGhlaWdodDogY2FsYygxMDB2aCAtIHZhcigtLWhlYWRlci1oZWlnaHQpKTtcbiAgICBjb2xvcjogIzVhNWE1YTtcbn1cblxuLmVkaXRvci1ob3N0LWNvbnRhaW5lciB7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICBoZWlnaHQ6IDEwMCU7XG4gICAgZmxleDogMTtcbn1cblxuLnNwbGl0IHtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgaGVpZ2h0OiAxMDAlO1xufVxuXG4uc3BsaXQtYXJlYSB7XG4gICAgaGVpZ2h0OiAxMDAlO1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xufVxuXG5cbi5uYXZpZ2F0aW9uX19jb250ZW50IHtcbiAgICBoZWlnaHQ6IGNhbGMoMTAwJSAtIHZhcigtLXRhYi1oZWlnaHQpKSAhaW1wb3J0YW50O1xuICAgIG1hcmdpbjogMHB4O1xuICAgIHBhZGRpbmc6IDBweDtcbiAgICBvdmVyZmxvdzogYXV0bztcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1zaWRlQmFyLWJhY2tncm91bmQpO1xuICAgIHVzZXItc2VsZWN0OiBub25lO1xufVxuXG4udGFiLWJhciB7XG4gICAgei1pbmRleDogMTtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBoZWlnaHQ6IHZhcigtLXRhYi1oZWlnaHQpO1xuICAgIGJhY2tncm91bmQtY29sb3I6IHZhcigtLXRhYi1pbmFjdGl2ZUJhY2tncm91bmQpO1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICBwYWRkaW5nOiAwcHg7XG5cbiAgICAudGFiLWdyb3VwIHtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAgaGVpZ2h0OiAxMDAlO1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgb3ZlcmZsb3cteDogYXV0bztcbiAgICB9XG5cbiAgICAudGFiLWl0ZW0ge1xuICAgICAgICBkaXNwbGF5OiBpbmxpbmUtZmxleDtcbiAgICAgICAgaGVpZ2h0OiAxMDAlO1xuICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgIGZvbnQtc2l6ZTogMTRweDtcbiAgICAgICAgY29sb3I6ICM1YTVhNWE7XG4gICAgICAgIGZvbnQtc3R5bGU6IG5vcm1hbDtcbiAgICAgICAgcGFkZGluZzogMHB4IDEycHg7XG4gICAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICAgICAgd2hpdGUtc3BhY2U6IG5vd3JhcDtcbiAgICAgICAgdGV4dC1vdmVyZmxvdzogZWxsaXBzaXM7XG4gICAgICAgICYuYWN0aXZlIHtcbiAgICAgICAgICAgIGJhY2tncm91bmQtY29sb3I6IHZhcigtLXRhYi1hY3RpdmVCYWNrZ3JvdW5kKTtcbiAgICAgICAgICAgIGNvbG9yOiB2YXIoLS10YWItYWN0aXZlRm9yZWdyb3VuZCk7XG4gICAgICAgIH1cblxuICAgICAgICAmLmNoYW5nZWQge1xuICAgICAgICAgICAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkIHNhbG1vbjtcbiAgICAgICAgfVxuXG4gICAgICAgICY6aG92ZXIge1xuICAgICAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tdGFiLWhvdmVyQmFja2dyb3VuZCk7XG4gICAgICAgIH1cblxuICAgICAgICAudGFiLWljb24ge1xuICAgICAgICAgICAgbWFyZ2luLXJpZ2h0OiA0cHg7XG4gICAgICAgIH1cblxuICAgICAgICAudGFiLWNsb3NlIHtcbiAgICAgICAgICAgIGZvbnQtc2l6ZTogMThweDtcbiAgICAgICAgICAgICY6aG92ZXIge1xuICAgICAgICAgICAgICAgIG9wYWNpdHk6IDE7XG4gICAgICAgICAgICB9XG4gICAgICAgIH1cbiAgICB9XG59XG5cbi50cmVlLWNvbXBvbmVudCB7XG4gICAgLm1hdC10cmVlIHtcbiAgICAgICAgYmFja2dyb3VuZDogdHJhbnNwYXJlbnQgIWltcG9ydGFudDtcbiAgICAgICAgLm1hdC10cmVlLW5vZGUge1xuICAgICAgICAgICAgJjpob3ZlciwgJi5mb2N1c2VkIHtcbiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1zaWRlQmFyLWhvdmVyQmFja2dyb3VuZCkgIWltcG9ydGFudDtcbiAgICAgICAgICAgIH1cbiAgICAgICAgfVxuICAgIH1cbn1cbiJdfQ== */"
-
-/***/ }),
-
-/***/ "./src/app/editor/editor.component.ts":
-/*!********************************************!*\
-  !*** ./src/app/editor/editor.component.ts ***!
-  \********************************************/
-/*! exports provided: EditorComponent */
+/***/ "./src/app/pages/editor/debugging/logging/logging.component.scss":
+/*!***********************************************************************!*\
+  !*** ./src/app/pages/editor/debugging/logging/logging.component.scss ***!
+  \***********************************************************************/
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EditorComponent", function() { return EditorComponent; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _shared_services_resource_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./shared/services/resource.service */ "./src/app/editor/shared/services/resource.service.ts");
-/* harmony import */ var _shared_services_task_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./shared/services/task.service */ "./src/app/editor/shared/services/task.service.ts");
+/* harmony default export */ __webpack_exports__["default"] = (".logging-content {\n  height: 100%;\n  padding: 0;\n}\n\n.logging-nothing {\n  padding: 4px;\n}\n\n.log {\n  position: relative;\n  list-style-type: none;\n  list-style-type: none;\n  display: flex;\n  align-items: baseline;\n  padding: 4px 8px;\n}\n\n.log .log-icon {\n  position: absolute;\n}\n\n.log--info .log-icon {\n  color: #009688;\n}\n\n.log--warning .log-icon {\n  color: #FFEB3B;\n}\n\n.log--error .log-icon {\n  color: #F44336;\n}\n\n.log-content {\n  padding: 0 32px;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL3BhZ2VzL2VkaXRvci9kZWJ1Z2dpbmcvbG9nZ2luZy9sb2dnaW5nLmNvbXBvbmVudC5zY3NzIiwic3JjL2FwcC9wYWdlcy9lZGl0b3IvZGVidWdnaW5nL2xvZ2dpbmcvbG9nZ2luZy5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLFlBQUE7RUFDQSxVQUFBO0FDQ0o7O0FERUE7RUFDSSxZQUFBO0FDQ0o7O0FERUE7RUFDSSxrQkFBQTtFQUNBLHFCQUFBO0VBQ0EscUJBQUE7RUFDQSxhQUFBO0VBQ0EscUJBQUE7RUFDQSxnQkFBQTtBQ0NKOztBREFJO0VBQ0ksa0JBQUE7QUNFUjs7QURHSTtFQUNJLGNBQUE7QUNBUjs7QURLSTtFQUNJLGNBQUE7QUNGUjs7QURPTTtFQUNFLGNBQUE7QUNKUjs7QURRQTtFQUNJLGVBQUE7QUNMSiIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL2VkaXRvci9kZWJ1Z2dpbmcvbG9nZ2luZy9sb2dnaW5nLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmxvZ2dpbmctY29udGVudCB7XG4gICAgaGVpZ2h0OiAxMDAlO1xuICAgIHBhZGRpbmc6IDA7XG59XG5cbi5sb2dnaW5nLW5vdGhpbmcge1xuICAgIHBhZGRpbmc6IDRweDtcbn1cblxuLmxvZyB7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgIGxpc3Qtc3R5bGUtdHlwZTogbm9uZTtcbiAgICBsaXN0LXN0eWxlLXR5cGU6IG5vbmU7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBhbGlnbi1pdGVtczogYmFzZWxpbmU7XG4gICAgcGFkZGluZzogNHB4IDhweDtcbiAgICAubG9nLWljb24ge1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgfVxufVxuXG4ubG9nLS1pbmZvIHtcbiAgICAubG9nLWljb24ge1xuICAgICAgICBjb2xvcjogIzAwOTY4ODtcbiAgICB9XG59XG5cbi5sb2ctLXdhcm5pbmcge1xuICAgIC5sb2ctaWNvbiB7XG4gICAgICAgIGNvbG9yOiAjRkZFQjNCO1xuICAgIH1cbn1cblxuLmxvZy0tZXJyb3Ige1xuICAgICAgLmxvZy1pY29uIHtcbiAgICAgICAgY29sb3I6I0Y0NDMzNjtcbiAgICB9XG59XG5cbi5sb2ctY29udGVudCB7XG4gICAgcGFkZGluZzogMCAzMnB4O1xufVxuIiwiLmxvZ2dpbmctY29udGVudCB7XG4gIGhlaWdodDogMTAwJTtcbiAgcGFkZGluZzogMDtcbn1cblxuLmxvZ2dpbmctbm90aGluZyB7XG4gIHBhZGRpbmc6IDRweDtcbn1cblxuLmxvZyB7XG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgbGlzdC1zdHlsZS10eXBlOiBub25lO1xuICBsaXN0LXN0eWxlLXR5cGU6IG5vbmU7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGFsaWduLWl0ZW1zOiBiYXNlbGluZTtcbiAgcGFkZGluZzogNHB4IDhweDtcbn1cbi5sb2cgLmxvZy1pY29uIHtcbiAgcG9zaXRpb246IGFic29sdXRlO1xufVxuXG4ubG9nLS1pbmZvIC5sb2ctaWNvbiB7XG4gIGNvbG9yOiAjMDA5Njg4O1xufVxuXG4ubG9nLS13YXJuaW5nIC5sb2ctaWNvbiB7XG4gIGNvbG9yOiAjRkZFQjNCO1xufVxuXG4ubG9nLS1lcnJvciAubG9nLWljb24ge1xuICBjb2xvcjogI0Y0NDMzNjtcbn1cblxuLmxvZy1jb250ZW50IHtcbiAgcGFkZGluZzogMCAzMnB4O1xufSJdfQ== */");
+
+/***/ }),
+
+/***/ "./src/app/pages/editor/debugging/logging/logging.component.ts":
+/*!*********************************************************************!*\
+  !*** ./src/app/pages/editor/debugging/logging/logging.component.ts ***!
+  \*********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const notification_service_1 = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
+let LoggingComponent = class LoggingComponent {
+    constructor(notification) {
+        this.notification = notification;
+        this.subscriptions = [];
+    }
+    get empty() {
+        return this.notification.size === 0;
+    }
+    get items() {
+        return this.notification.logs;
+    }
+    ngOnInit() {
+        this.subscriptions.push(this.notification.logAdded.subscribe(_ => {
+            this.scrollBottom();
+        }));
+    }
+    ngOnDestroy() {
+        this.subscriptions.forEach(item => item.unsubscribe());
+    }
+    clear(event) {
+        event.stopPropagation();
+        this.notification.clear();
+    }
+    track(index, _item) {
+        return index;
+    }
+    scrollBottom() {
+        if (this.container) {
+            this.container.nativeElement.scrollTop = this.container.nativeElement.scrollHeight;
+        }
+    }
+};
+LoggingComponent.ctorParameters = () => [
+    { type: notification_service_1.NotificationService }
+];
+tslib_1.__decorate([
+    core_1.ViewChild('container', { static: true }),
+    tslib_1.__metadata("design:type", core_1.ElementRef)
+], LoggingComponent.prototype, "container", void 0);
+LoggingComponent = tslib_1.__decorate([
+    core_1.Component({
+        // tslint:disable-next-line: component-selector
+        selector: 'logging',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./logging.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/debugging/logging/logging.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./logging.component.scss */ "./src/app/pages/editor/debugging/logging/logging.component.scss")).default]
+    }),
+    tslib_1.__metadata("design:paramtypes", [notification_service_1.NotificationService])
+], LoggingComponent);
+exports.LoggingComponent = LoggingComponent;
 
 
+/***/ }),
+
+/***/ "./src/app/pages/editor/debugging/problems/problems.component.scss":
+/*!*************************************************************************!*\
+  !*** ./src/app/pages/editor/debugging/problems/problems.component.scss ***!
+  \*************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (".problems-content {\n  height: 100%;\n  padding: 0;\n}\n\n.problem {\n  position: relative;\n  list-style-type: none;\n  list-style-type: none;\n  display: grid;\n  grid-template-columns: 16px auto;\n  grid-gap: 0 8px;\n  align-items: center;\n  padding: 4px 8px;\n}\n\n.problem:hover {\n  background-color: var(--tab-hoverBackground);\n}\n\n.problems-nothing {\n  padding: 4px;\n}\n\n.problem-file-icon, .problem-icon {\n  width: 16px !important;\n  height: 16px !important;\n  font-size: 16px !important;\n}\n\n.problem-path {\n  cursor: pointer;\n}\n\n.problem-path:hover {\n  text-decoration: underline;\n}\n\n.problem-icon {\n  display: inline-table;\n}\n\n.problem--info .problem-icon {\n  color: #009688;\n}\n\n.problem--warning .problem-icon {\n  color: #FFEB3B;\n}\n\n.problem--error .problem-icon {\n  color: #F44336;\n}\n\n.problem-content {\n  display: contents;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL3BhZ2VzL2VkaXRvci9kZWJ1Z2dpbmcvcHJvYmxlbXMvcHJvYmxlbXMuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2VkaXRvci9kZWJ1Z2dpbmcvcHJvYmxlbXMvcHJvYmxlbXMuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxZQUFBO0VBQ0EsVUFBQTtBQ0NKOztBREVBO0VBQ0ksa0JBQUE7RUFDQSxxQkFBQTtFQUNBLHFCQUFBO0VBQ0EsYUFBQTtFQUNBLGdDQUFBO0VBQ0EsZUFBQTtFQUNBLG1CQUFBO0VBQ0EsZ0JBQUE7QUNDSjs7QURDSTtFQUNJLDRDQUFBO0FDQ1I7O0FER0E7RUFDSSxZQUFBO0FDQUo7O0FER0E7RUFDSSxzQkFBQTtFQUNBLHVCQUFBO0VBQ0EsMEJBQUE7QUNBSjs7QURFQTtFQUNJLGVBQUE7QUNDSjs7QURBSTtFQUNJLDBCQUFBO0FDRVI7O0FEQ0E7RUFDSSxxQkFBQTtBQ0VKOztBREVJO0VBQ0ksY0FBQTtBQ0NSOztBRElJO0VBQ0ksY0FBQTtBQ0RSOztBRE1NO0VBQ0UsY0FBQTtBQ0hSOztBRE9BO0VBQ0ksaUJBQUE7QUNKSiIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL2VkaXRvci9kZWJ1Z2dpbmcvcHJvYmxlbXMvcHJvYmxlbXMuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIucHJvYmxlbXMtY29udGVudCB7XG4gICAgaGVpZ2h0OiAxMDAlO1xuICAgIHBhZGRpbmc6IDA7XG59XG5cbi5wcm9ibGVtIHtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgbGlzdC1zdHlsZS10eXBlOiBub25lO1xuICAgIGxpc3Qtc3R5bGUtdHlwZTogbm9uZTtcbiAgICBkaXNwbGF5OiBncmlkO1xuICAgIGdyaWQtdGVtcGxhdGUtY29sdW1uczogMTZweCBhdXRvO1xuICAgIGdyaWQtZ2FwOiAwIDhweDtcbiAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgIHBhZGRpbmc6IDRweCA4cHg7XG5cbiAgICAmOmhvdmVyIHtcbiAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tdGFiLWhvdmVyQmFja2dyb3VuZCk7XG4gICAgfVxufVxuXG4ucHJvYmxlbXMtbm90aGluZyB7XG4gICAgcGFkZGluZzogNHB4O1xufVxuXG4ucHJvYmxlbS1maWxlLWljb24sIC5wcm9ibGVtLWljb24ge1xuICAgIHdpZHRoOiAxNnB4ICFpbXBvcnRhbnQ7XG4gICAgaGVpZ2h0OiAxNnB4ICFpbXBvcnRhbnQ7XG4gICAgZm9udC1zaXplOiAxNnB4ICFpbXBvcnRhbnQ7XG59XG4ucHJvYmxlbS1wYXRoIHtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgJjpob3ZlciB7XG4gICAgICAgIHRleHQtZGVjb3JhdGlvbjogdW5kZXJsaW5lO1xuICAgIH1cbn1cbi5wcm9ibGVtLWljb24ge1xuICAgIGRpc3BsYXk6IGlubGluZS10YWJsZTtcbn1cblxuLnByb2JsZW0tLWluZm8ge1xuICAgIC5wcm9ibGVtLWljb24ge1xuICAgICAgICBjb2xvcjogIzAwOTY4ODtcbiAgICB9XG59XG5cbi5wcm9ibGVtLS13YXJuaW5nIHtcbiAgICAucHJvYmxlbS1pY29uIHtcbiAgICAgICAgY29sb3I6ICNGRkVCM0I7XG4gICAgfVxufVxuXG4ucHJvYmxlbS0tZXJyb3Ige1xuICAgICAgLnByb2JsZW0taWNvbiB7XG4gICAgICAgIGNvbG9yOiNGNDQzMzY7XG4gICAgfVxufVxuXG4ucHJvYmxlbS1jb250ZW50IHtcbiAgICBkaXNwbGF5OiBjb250ZW50cztcbn1cbiIsIi5wcm9ibGVtcy1jb250ZW50IHtcbiAgaGVpZ2h0OiAxMDAlO1xuICBwYWRkaW5nOiAwO1xufVxuXG4ucHJvYmxlbSB7XG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgbGlzdC1zdHlsZS10eXBlOiBub25lO1xuICBsaXN0LXN0eWxlLXR5cGU6IG5vbmU7XG4gIGRpc3BsYXk6IGdyaWQ7XG4gIGdyaWQtdGVtcGxhdGUtY29sdW1uczogMTZweCBhdXRvO1xuICBncmlkLWdhcDogMCA4cHg7XG4gIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gIHBhZGRpbmc6IDRweCA4cHg7XG59XG4ucHJvYmxlbTpob3ZlciB7XG4gIGJhY2tncm91bmQtY29sb3I6IHZhcigtLXRhYi1ob3ZlckJhY2tncm91bmQpO1xufVxuXG4ucHJvYmxlbXMtbm90aGluZyB7XG4gIHBhZGRpbmc6IDRweDtcbn1cblxuLnByb2JsZW0tZmlsZS1pY29uLCAucHJvYmxlbS1pY29uIHtcbiAgd2lkdGg6IDE2cHggIWltcG9ydGFudDtcbiAgaGVpZ2h0OiAxNnB4ICFpbXBvcnRhbnQ7XG4gIGZvbnQtc2l6ZTogMTZweCAhaW1wb3J0YW50O1xufVxuXG4ucHJvYmxlbS1wYXRoIHtcbiAgY3Vyc29yOiBwb2ludGVyO1xufVxuLnByb2JsZW0tcGF0aDpob3ZlciB7XG4gIHRleHQtZGVjb3JhdGlvbjogdW5kZXJsaW5lO1xufVxuXG4ucHJvYmxlbS1pY29uIHtcbiAgZGlzcGxheTogaW5saW5lLXRhYmxlO1xufVxuXG4ucHJvYmxlbS0taW5mbyAucHJvYmxlbS1pY29uIHtcbiAgY29sb3I6ICMwMDk2ODg7XG59XG5cbi5wcm9ibGVtLS13YXJuaW5nIC5wcm9ibGVtLWljb24ge1xuICBjb2xvcjogI0ZGRUIzQjtcbn1cblxuLnByb2JsZW0tLWVycm9yIC5wcm9ibGVtLWljb24ge1xuICBjb2xvcjogI0Y0NDMzNjtcbn1cblxuLnByb2JsZW0tY29udGVudCB7XG4gIGRpc3BsYXk6IGNvbnRlbnRzO1xufSJdfQ== */");
+
+/***/ }),
+
+/***/ "./src/app/pages/editor/debugging/problems/problems.component.ts":
+/*!***********************************************************************!*\
+  !*** ./src/app/pages/editor/debugging/problems/problems.component.ts ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const compiler_service_1 = __webpack_require__(/*! ../../shared/services/compiler.service */ "./src/app/pages/editor/shared/services/compiler.service.ts");
+const opener_service_1 = __webpack_require__(/*! ../../shared/services/opener.service */ "./src/app/pages/editor/shared/services/opener.service.ts");
+const notification_service_1 = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
+let ProblemsComponent = class ProblemsComponent {
+    constructor(compiler, opener, notification) {
+        this.compiler = compiler;
+        this.opener = opener;
+        this.notification = notification;
+        this.subscriptions = [];
+    }
+    ngOnInit() {
+        this.empty = true;
+        this.subscriptions.push(this.compiler.compiled.subscribe(_ => {
+            this.items = this.compiler.problems.map(prop => {
+                return {
+                    type: prop.isWarning ? 'warning' : 'error',
+                    message: `${prop.type} ${prop.message}`,
+                    path: prop.file,
+                    lineno: prop.lineno,
+                };
+            });
+            this.empty = this.items.length === 0;
+        }));
+    }
+    ngOnDestroy() {
+        this.subscriptions.forEach(item => item.unsubscribe());
+    }
+    track(index, _item) {
+        return index;
+    }
+    openOnEditor(item) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.opener.open(item.path, {
+                    position: {
+                        line: item.lineno,
+                        column: 0
+                    }
+                });
+            }
+            catch (_a) {
+                this.notification.error(`Failed to open '${item.path}'`);
+            }
+        });
+    }
+};
+ProblemsComponent.ctorParameters = () => [
+    { type: compiler_service_1.CompilerService },
+    { type: opener_service_1.OpenerService },
+    { type: notification_service_1.NotificationService }
+];
+ProblemsComponent = tslib_1.__decorate([
+    core_1.Component({
+        // tslint:disable-next-line: component-selector
+        selector: 'problems',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./problems.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/debugging/problems/problems.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./problems.component.scss */ "./src/app/pages/editor/debugging/problems/problems.component.scss")).default]
+    }),
+    tslib_1.__metadata("design:paramtypes", [compiler_service_1.CompilerService,
+        opener_service_1.OpenerService,
+        notification_service_1.NotificationService])
+], ProblemsComponent);
+exports.ProblemsComponent = ProblemsComponent;
 
 
-var EditorComponent = /** @class */ (function () {
-    function EditorComponent(task, resources) {
+/***/ }),
+
+/***/ "./src/app/pages/editor/editor-routing.module.ts":
+/*!*******************************************************!*\
+  !*** ./src/app/pages/editor/editor-routing.module.ts ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const router_1 = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm2015/router.js");
+const editor_component_1 = __webpack_require__(/*! ./editor.component */ "./src/app/pages/editor/editor.component.ts");
+const routes = [
+    { path: '', component: editor_component_1.EditorComponent }
+];
+let EditorRoutingModule = class EditorRoutingModule {
+};
+EditorRoutingModule = tslib_1.__decorate([
+    core_1.NgModule({
+        imports: [
+            router_1.RouterModule.forChild(routes)
+        ],
+        exports: [
+            router_1.RouterModule
+        ]
+    })
+], EditorRoutingModule);
+exports.EditorRoutingModule = EditorRoutingModule;
+
+
+/***/ }),
+
+/***/ "./src/app/pages/editor/editor.component.scss":
+/*!****************************************************!*\
+  !*** ./src/app/pages/editor/editor.component.scss ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (".editor-application {\n  position: relative;\n  padding: 0;\n  margin: 0;\n  display: flex;\n  flex-flow: column;\n  height: 100%;\n  color: #5a5a5a;\n}\n\n.editor-split-panel {\n  display: flex;\n  position: relative;\n  overflow: hidden;\n  height: 100%;\n  flex: 1;\n}\n\n.editor-split-panel .split {\n  position: relative;\n  height: 100%;\n}\n\n.editor-split-panel .split-area {\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n}\n\n.navigation-content {\n  height: calc(100% - var(--tab-height)) !important;\n  background-color: var(--sideBar-background);\n  margin: 0px;\n  padding: 0px;\n  overflow: auto;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.navigation-content * {\n  font-size: 12px;\n}\n\n.tab-bar {\n  z-index: 1;\n  display: flex;\n  position: relative;\n  height: var(--tab-height);\n  background-color: var(--tab-inactiveBackground);\n  align-items: center;\n  overflow: hidden;\n  padding: 0px;\n}\n\n.tab-bar .tab-group {\n  display: flex;\n  align-items: center;\n  height: 100%;\n  width: 100%;\n  overflow-x: auto;\n}\n\n.tab-bar .tab-item {\n  display: inline-flex;\n  height: 100%;\n  align-items: center;\n  position: relative;\n  font-size: 14px;\n  font-style: normal;\n  padding: 0px 12px;\n  cursor: pointer;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n}\n\n.tab-bar .tab-item.active {\n  background-color: var(--tab-activeBackground);\n  color: var(--tab-activeForeground);\n}\n\n.tab-bar .tab-item.changed {\n  border-bottom: 1px solid salmon;\n}\n\n.tab-bar .tab-item:hover {\n  background-color: var(--tab-hoverBackground);\n}\n\n.tab-bar .tab-item .tab-icon {\n  margin-right: 4px;\n}\n\n.tab-bar .tab-item .tab-close {\n  font-size: 18px;\n}\n\n.tab-bar .tab-item .tab-close:hover {\n  opacity: 1;\n}\n\n.tree-component .mat-tree {\n  background: transparent !important;\n}\n\n.tree-component .mat-tree .mat-tree-node:hover, .tree-component .mat-tree .mat-tree-node.focused {\n  background-color: var(--sideBar-hoverBackground) !important;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL3BhZ2VzL2VkaXRvci9lZGl0b3IuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2VkaXRvci9lZGl0b3IuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxrQkFBQTtFQUNBLFVBQUE7RUFDQSxTQUFBO0VBQ0EsYUFBQTtFQUNBLGlCQUFBO0VBQ0EsWUFBQTtFQUNBLGNBQUE7QUNDSjs7QURFQTtFQUNJLGFBQUE7RUFDQSxrQkFBQTtFQUNBLGdCQUFBO0VBQ0EsWUFBQTtFQUNBLE9BQUE7QUNDSjs7QURDSTtFQUNJLGtCQUFBO0VBQ0EsWUFBQTtBQ0NSOztBREVJO0VBQ0ksWUFBQTtFQUNBLGtCQUFBO0VBQ0EsZ0JBQUE7QUNBUjs7QURLQTtFQUNJLGlEQUFBO0VBQ0EsMkNBQUE7RUFDQSxXQUFBO0VBQ0EsWUFBQTtFQUNBLGNBQUE7RUFDQSx5QkFBQTtLQUFBLHNCQUFBO01BQUEscUJBQUE7VUFBQSxpQkFBQTtBQ0ZKOztBREdJO0VBQ0ksZUFBQTtBQ0RSOztBREtBO0VBQ0ksVUFBQTtFQUNBLGFBQUE7RUFDQSxrQkFBQTtFQUNBLHlCQUFBO0VBQ0EsK0NBQUE7RUFDQSxtQkFBQTtFQUNBLGdCQUFBO0VBQ0EsWUFBQTtBQ0ZKOztBRElJO0VBQ0ksYUFBQTtFQUNBLG1CQUFBO0VBQ0EsWUFBQTtFQUNBLFdBQUE7RUFDQSxnQkFBQTtBQ0ZSOztBREtJO0VBQ0ksb0JBQUE7RUFDQSxZQUFBO0VBQ0EsbUJBQUE7RUFDQSxrQkFBQTtFQUNBLGVBQUE7RUFDQSxrQkFBQTtFQUNBLGlCQUFBO0VBQ0EsZUFBQTtFQUNBLG1CQUFBO0VBQ0EsdUJBQUE7QUNIUjs7QURLUTtFQUNJLDZDQUFBO0VBQ0Esa0NBQUE7QUNIWjs7QURNUTtFQUNJLCtCQUFBO0FDSlo7O0FET1E7RUFDSSw0Q0FBQTtBQ0xaOztBRFFRO0VBQ0ksaUJBQUE7QUNOWjs7QURTUTtFQUNJLGVBQUE7QUNQWjs7QURRWTtFQUNJLFVBQUE7QUNOaEI7O0FEY0k7RUFDSSxrQ0FBQTtBQ1hSOztBRGFZO0VBQ0ksMkRBQUE7QUNYaEIiLCJmaWxlIjoic3JjL2FwcC9wYWdlcy9lZGl0b3IvZWRpdG9yLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmVkaXRvci1hcHBsaWNhdGlvbiB7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgIHBhZGRpbmc6IDA7XG4gICAgbWFyZ2luOiAwO1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgZmxleC1mbG93OiBjb2x1bW47XG4gICAgaGVpZ2h0OiAxMDAlO1xuICAgIGNvbG9yOiAjNWE1YTVhO1xufVxuXG4uZWRpdG9yLXNwbGl0LXBhbmVsIHtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgIGhlaWdodDogMTAwJTtcbiAgICBmbGV4OiAxO1xuXG4gICAgLnNwbGl0IHtcbiAgICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgICAgICBoZWlnaHQ6IDEwMCU7XG4gICAgfVxuXG4gICAgLnNwbGl0LWFyZWEge1xuICAgICAgICBoZWlnaHQ6IDEwMCU7XG4gICAgICAgIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICB9XG5cbn1cblxuLm5hdmlnYXRpb24tY29udGVudCB7XG4gICAgaGVpZ2h0OiBjYWxjKDEwMCUgLSB2YXIoLS10YWItaGVpZ2h0KSkgIWltcG9ydGFudDtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1zaWRlQmFyLWJhY2tncm91bmQpO1xuICAgIG1hcmdpbjogMHB4O1xuICAgIHBhZGRpbmc6IDBweDtcbiAgICBvdmVyZmxvdzogYXV0bztcbiAgICB1c2VyLXNlbGVjdDogbm9uZTtcbiAgICAqIHtcbiAgICAgICAgZm9udC1zaXplOiAxMnB4O1xuICAgIH1cbn1cblxuLnRhYi1iYXIge1xuICAgIHotaW5kZXg6IDE7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgaGVpZ2h0OiB2YXIoLS10YWItaGVpZ2h0KTtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS10YWItaW5hY3RpdmVCYWNrZ3JvdW5kKTtcbiAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgcGFkZGluZzogMHB4O1xuXG4gICAgLnRhYi1ncm91cCB7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgIGhlaWdodDogMTAwJTtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIG92ZXJmbG93LXg6IGF1dG87XG4gICAgfVxuXG4gICAgLnRhYi1pdGVtIHtcbiAgICAgICAgZGlzcGxheTogaW5saW5lLWZsZXg7XG4gICAgICAgIGhlaWdodDogMTAwJTtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgICAgICBmb250LXNpemU6IDE0cHg7XG4gICAgICAgIGZvbnQtc3R5bGU6IG5vcm1hbDtcbiAgICAgICAgcGFkZGluZzogMHB4IDEycHg7XG4gICAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICAgICAgd2hpdGUtc3BhY2U6IG5vd3JhcDtcbiAgICAgICAgdGV4dC1vdmVyZmxvdzogZWxsaXBzaXM7XG5cbiAgICAgICAgJi5hY3RpdmUge1xuICAgICAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tdGFiLWFjdGl2ZUJhY2tncm91bmQpO1xuICAgICAgICAgICAgY29sb3I6IHZhcigtLXRhYi1hY3RpdmVGb3JlZ3JvdW5kKTtcbiAgICAgICAgfVxuXG4gICAgICAgICYuY2hhbmdlZCB7XG4gICAgICAgICAgICBib3JkZXItYm90dG9tOiAxcHggc29saWQgc2FsbW9uO1xuICAgICAgICB9XG5cbiAgICAgICAgJjpob3ZlciB7XG4gICAgICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS10YWItaG92ZXJCYWNrZ3JvdW5kKTtcbiAgICAgICAgfVxuXG4gICAgICAgIC50YWItaWNvbiB7XG4gICAgICAgICAgICBtYXJnaW4tcmlnaHQ6IDRweDtcbiAgICAgICAgfVxuXG4gICAgICAgIC50YWItY2xvc2Uge1xuICAgICAgICAgICAgZm9udC1zaXplOiAxOHB4O1xuICAgICAgICAgICAgJjpob3ZlciB7XG4gICAgICAgICAgICAgICAgb3BhY2l0eTogMTtcbiAgICAgICAgICAgIH1cbiAgICAgICAgfVxuXG4gICAgfVxufVxuXG4udHJlZS1jb21wb25lbnQge1xuICAgIC5tYXQtdHJlZSB7XG4gICAgICAgIGJhY2tncm91bmQ6IHRyYW5zcGFyZW50ICFpbXBvcnRhbnQ7XG4gICAgICAgIC5tYXQtdHJlZS1ub2RlIHtcbiAgICAgICAgICAgICY6aG92ZXIsICYuZm9jdXNlZCB7XG4gICAgICAgICAgICAgICAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tc2lkZUJhci1ob3ZlckJhY2tncm91bmQpICFpbXBvcnRhbnQ7XG4gICAgICAgICAgICB9XG4gICAgICAgIH1cbiAgICB9XG59XG4iLCIuZWRpdG9yLWFwcGxpY2F0aW9uIHtcbiAgcG9zaXRpb246IHJlbGF0aXZlO1xuICBwYWRkaW5nOiAwO1xuICBtYXJnaW46IDA7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGZsZXgtZmxvdzogY29sdW1uO1xuICBoZWlnaHQ6IDEwMCU7XG4gIGNvbG9yOiAjNWE1YTVhO1xufVxuXG4uZWRpdG9yLXNwbGl0LXBhbmVsIHtcbiAgZGlzcGxheTogZmxleDtcbiAgcG9zaXRpb246IHJlbGF0aXZlO1xuICBvdmVyZmxvdzogaGlkZGVuO1xuICBoZWlnaHQ6IDEwMCU7XG4gIGZsZXg6IDE7XG59XG4uZWRpdG9yLXNwbGl0LXBhbmVsIC5zcGxpdCB7XG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgaGVpZ2h0OiAxMDAlO1xufVxuLmVkaXRvci1zcGxpdC1wYW5lbCAuc3BsaXQtYXJlYSB7XG4gIGhlaWdodDogMTAwJTtcbiAgcG9zaXRpb246IHJlbGF0aXZlO1xuICBvdmVyZmxvdzogaGlkZGVuO1xufVxuXG4ubmF2aWdhdGlvbi1jb250ZW50IHtcbiAgaGVpZ2h0OiBjYWxjKDEwMCUgLSB2YXIoLS10YWItaGVpZ2h0KSkgIWltcG9ydGFudDtcbiAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tc2lkZUJhci1iYWNrZ3JvdW5kKTtcbiAgbWFyZ2luOiAwcHg7XG4gIHBhZGRpbmc6IDBweDtcbiAgb3ZlcmZsb3c6IGF1dG87XG4gIHVzZXItc2VsZWN0OiBub25lO1xufVxuLm5hdmlnYXRpb24tY29udGVudCAqIHtcbiAgZm9udC1zaXplOiAxMnB4O1xufVxuXG4udGFiLWJhciB7XG4gIHotaW5kZXg6IDE7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgaGVpZ2h0OiB2YXIoLS10YWItaGVpZ2h0KTtcbiAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tdGFiLWluYWN0aXZlQmFja2dyb3VuZCk7XG4gIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gIG92ZXJmbG93OiBoaWRkZW47XG4gIHBhZGRpbmc6IDBweDtcbn1cbi50YWItYmFyIC50YWItZ3JvdXAge1xuICBkaXNwbGF5OiBmbGV4O1xuICBhbGlnbi1pdGVtczogY2VudGVyO1xuICBoZWlnaHQ6IDEwMCU7XG4gIHdpZHRoOiAxMDAlO1xuICBvdmVyZmxvdy14OiBhdXRvO1xufVxuLnRhYi1iYXIgLnRhYi1pdGVtIHtcbiAgZGlzcGxheTogaW5saW5lLWZsZXg7XG4gIGhlaWdodDogMTAwJTtcbiAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgcG9zaXRpb246IHJlbGF0aXZlO1xuICBmb250LXNpemU6IDE0cHg7XG4gIGZvbnQtc3R5bGU6IG5vcm1hbDtcbiAgcGFkZGluZzogMHB4IDEycHg7XG4gIGN1cnNvcjogcG9pbnRlcjtcbiAgd2hpdGUtc3BhY2U6IG5vd3JhcDtcbiAgdGV4dC1vdmVyZmxvdzogZWxsaXBzaXM7XG59XG4udGFiLWJhciAudGFiLWl0ZW0uYWN0aXZlIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tdGFiLWFjdGl2ZUJhY2tncm91bmQpO1xuICBjb2xvcjogdmFyKC0tdGFiLWFjdGl2ZUZvcmVncm91bmQpO1xufVxuLnRhYi1iYXIgLnRhYi1pdGVtLmNoYW5nZWQge1xuICBib3JkZXItYm90dG9tOiAxcHggc29saWQgc2FsbW9uO1xufVxuLnRhYi1iYXIgLnRhYi1pdGVtOmhvdmVyIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tdGFiLWhvdmVyQmFja2dyb3VuZCk7XG59XG4udGFiLWJhciAudGFiLWl0ZW0gLnRhYi1pY29uIHtcbiAgbWFyZ2luLXJpZ2h0OiA0cHg7XG59XG4udGFiLWJhciAudGFiLWl0ZW0gLnRhYi1jbG9zZSB7XG4gIGZvbnQtc2l6ZTogMThweDtcbn1cbi50YWItYmFyIC50YWItaXRlbSAudGFiLWNsb3NlOmhvdmVyIHtcbiAgb3BhY2l0eTogMTtcbn1cblxuLnRyZWUtY29tcG9uZW50IC5tYXQtdHJlZSB7XG4gIGJhY2tncm91bmQ6IHRyYW5zcGFyZW50ICFpbXBvcnRhbnQ7XG59XG4udHJlZS1jb21wb25lbnQgLm1hdC10cmVlIC5tYXQtdHJlZS1ub2RlOmhvdmVyLCAudHJlZS1jb21wb25lbnQgLm1hdC10cmVlIC5tYXQtdHJlZS1ub2RlLmZvY3VzZWQge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1zaWRlQmFyLWhvdmVyQmFja2dyb3VuZCkgIWltcG9ydGFudDtcbn0iXX0= */");
+
+/***/ }),
+
+/***/ "./src/app/pages/editor/editor.component.ts":
+/*!**************************************************!*\
+  !*** ./src/app/pages/editor/editor.component.ts ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const resource_service_1 = __webpack_require__(/*! ./shared/services/resource.service */ "./src/app/pages/editor/shared/services/resource.service.ts");
+const task_service_1 = __webpack_require__(/*! ./shared/services/task.service */ "./src/app/pages/editor/shared/services/task.service.ts");
+let EditorComponent = class EditorComponent {
+    constructor(task, resources) {
         this.task = task;
         this.resources = resources;
     }
-    Object.defineProperty(EditorComponent.prototype, "taskInProgress", {
-        get: function () {
-            return this.task.running;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    EditorComponent.prototype.ngOnInit = function () {
-    };
-    EditorComponent.prototype.beforeunload = function ($event) {
-        if (!!this.resources.findPredicate(function (item) { return item.changed; })) { // the if is required
+    get taskInProgress() {
+        return this.task.running;
+    }
+    ngOnInit() {
+    }
+    beforeunload($event) {
+        if (!!this.resources.findPredicate(item => item.changed)) { // the if is required
             $event.returnValue = true;
         }
-    };
-    EditorComponent.prototype.keypressed = function ($event) {
-        if ($event.ctrlKey && $event.key === 'o') {
+    }
+    keypressed($event) {
+        if (($event.ctrlKey || $event.metaKey) && $event.key === 'o') {
             $event.preventDefault();
             $event.stopPropagation();
             this.showQuickOpen = true;
         }
-    };
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["HostListener"])('window:beforeunload', ['$event']),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", Function),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [Object]),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:returntype", void 0)
-    ], EditorComponent.prototype, "beforeunload", null);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["HostListener"])('document:keydown', ['$event']),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", Function),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [KeyboardEvent]),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:returntype", void 0)
-    ], EditorComponent.prototype, "keypressed", null);
-    EditorComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-            selector: 'app-editor',
-            template: __webpack_require__(/*! ./editor.component.html */ "./src/app/editor/editor.component.html"),
-            encapsulation: _angular_core__WEBPACK_IMPORTED_MODULE_1__["ViewEncapsulation"].None,
-            styles: [__webpack_require__(/*! ./editor.component.scss */ "./src/app/editor/editor.component.scss")]
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_task_service__WEBPACK_IMPORTED_MODULE_3__["TaskService"],
-            _shared_services_resource_service__WEBPACK_IMPORTED_MODULE_2__["ResourceService"]])
-    ], EditorComponent);
-    return EditorComponent;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/editor/editor.module.ts":
-/*!*****************************************!*\
-  !*** ./src/app/editor/editor.module.ts ***!
-  \*****************************************/
-/*! exports provided: EditorModule */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EditorModule", function() { return EditorModule; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var time_ago_pipe__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! time-ago-pipe */ "./node_modules/time-ago-pipe/esm5/time-ago-pipe.js");
-/* harmony import */ var angular_split__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! angular-split */ "./node_modules/angular-split/fesm5/angular-split.js");
-/* harmony import */ var ngx_monaco_editor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ngx-monaco-editor */ "./node_modules/ngx-monaco-editor/index.js");
-/* harmony import */ var angular2_markdown__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! angular2-markdown */ "./node_modules/angular2-markdown/index.js");
-/* harmony import */ var angular_tree_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! angular-tree-component */ "./node_modules/angular-tree-component/dist/angular-tree-component.js");
-/* harmony import */ var rxjs_compat_Observable__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! rxjs-compat/Observable */ "./node_modules/rxjs-compat/Observable.js");
-/* harmony import */ var rxjs_compat_Observable__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(rxjs_compat_Observable__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _shared_modules_shared_module__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../shared/modules/shared.module */ "./src/app/shared/modules/shared.module.ts");
-/* harmony import */ var _editor_component__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./editor.component */ "./src/app/editor/editor.component.ts");
-/* harmony import */ var _editor_routing_module__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./editor-routing.module */ "./src/app/editor/editor-routing.module.ts");
-/* harmony import */ var _debugging_debugging_component__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./debugging/debugging.component */ "./src/app/editor/debugging/debugging.component.ts");
-/* harmony import */ var _debugging_console_console_component__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./debugging/console/console.component */ "./src/app/editor/debugging/console/console.component.ts");
-/* harmony import */ var _status_bar_status_bar_component__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./status-bar/status-bar.component */ "./src/app/editor/status-bar/status-bar.component.ts");
-/* harmony import */ var _navigation_navigation_component__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./navigation/navigation.component */ "./src/app/editor/navigation/navigation.component.ts");
-/* harmony import */ var _navigation_explorer_explorer_component__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./navigation/explorer/explorer.component */ "./src/app/editor/navigation/explorer/explorer.component.ts");
-/* harmony import */ var _navigation_search_search_component__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./navigation/search/search.component */ "./src/app/editor/navigation/search/search.component.ts");
-/* harmony import */ var _navigation_git_git_component__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./navigation/git/git.component */ "./src/app/editor/navigation/git/git.component.ts");
-/* harmony import */ var _workspace_workspace_component__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./workspace/workspace.component */ "./src/app/editor/workspace/workspace.component.ts");
-/* harmony import */ var _workspace_code_editor_code_editor_component__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./workspace/code-editor/code-editor.component */ "./src/app/editor/workspace/code-editor/code-editor.component.ts");
-/* harmony import */ var _workspace_image_editor_image_editor_component__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./workspace/image-editor/image-editor.component */ "./src/app/editor/workspace/image-editor/image-editor.component.ts");
-/* harmony import */ var _workspace_preview_editor_preview_editor_component__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./workspace/preview-editor/preview-editor.component */ "./src/app/editor/workspace/preview-editor/preview-editor.component.ts");
-/* harmony import */ var _workspace_welcome_welcome_component__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./workspace/welcome/welcome.component */ "./src/app/editor/workspace/welcome/welcome.component.ts");
-/* harmony import */ var _workspace_setting_editor_setting_editor_component__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./workspace/setting-editor/setting-editor.component */ "./src/app/editor/workspace/setting-editor/setting-editor.component.ts");
-/* harmony import */ var _quick_open_quick_open_component__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./quick-open/quick-open.component */ "./src/app/editor/quick-open/quick-open.component.ts");
-/* harmony import */ var _shared_pipes_path_pipe__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./shared/pipes/path.pipe */ "./src/app/editor/shared/pipes/path.pipe.ts");
-/* harmony import */ var _shared_pipes_nicify_name_pipe__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./shared/pipes/nicify-name.pipe */ "./src/app/editor/shared/pipes/nicify-name.pipe.ts");
-/* harmony import */ var _shared_languages_language__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./shared/languages/language */ "./src/app/editor/shared/languages/language.ts");
-/* harmony import */ var _shared_languages_premierlangage__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./shared/languages/premierlangage */ "./src/app/editor/shared/languages/premierlangage.ts");
-/* harmony import */ var _shared_directives_icon_directive__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ./shared/directives/icon.directive */ "./src/app/editor/shared/directives/icon.directive.ts");
-/* harmony import */ var _shared_themes_theme__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ./shared/themes/theme */ "./src/app/editor/shared/themes/theme.ts");
-/* harmony import */ var _shared_themes_light_theme__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ./shared/themes/light-theme */ "./src/app/editor/shared/themes/light-theme.ts");
-/* harmony import */ var _shared_themes_dark_theme__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ./shared/themes/dark-theme */ "./src/app/editor/shared/themes/dark-theme.ts");
-/* harmony import */ var _shared_models_monaco__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ./shared/models/monaco */ "./src/app/editor/shared/models/monaco.ts");
-
-
-// https://www.npmjs.com/package/time-ago-pipe
-
-// https://www.npmjs.com/package/angular-split
-
-// https://www.npmjs.com/package/ngx-monaco-editor/v/7.0.0
-
-// https://www.npmjs.com/package/angular2-markdown
-
-// https://angular2-tree.readme.io/docs/
-
-
-
-
-
-/* DEBUGGING COMPONENTS */
-
-
-
-/* NAVIGATION COMPONENTS */
-
-
-
-
-/* WORKSPACE COMPONENTS */
-
-
-
-
-
-
-
-/* PIPES */
-
-
-
-
-
-
-
-
-
-var EditorModule = /** @class */ (function () {
-    function EditorModule() {
     }
-    EditorModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"])({
-            declarations: [
-                _shared_pipes_path_pipe__WEBPACK_IMPORTED_MODULE_25__["PathPipe"],
-                time_ago_pipe__WEBPACK_IMPORTED_MODULE_2__["TimeAgoPipe"],
-                _shared_pipes_nicify_name_pipe__WEBPACK_IMPORTED_MODULE_26__["NicifyNamePipe"],
-                _shared_directives_icon_directive__WEBPACK_IMPORTED_MODULE_29__["IconDirective"],
-                _editor_component__WEBPACK_IMPORTED_MODULE_9__["EditorComponent"],
-                _navigation_navigation_component__WEBPACK_IMPORTED_MODULE_14__["NavigationComponent"],
-                _navigation_explorer_explorer_component__WEBPACK_IMPORTED_MODULE_15__["ExplorerComponent"],
-                _navigation_search_search_component__WEBPACK_IMPORTED_MODULE_16__["SearchComponent"],
-                _navigation_git_git_component__WEBPACK_IMPORTED_MODULE_17__["GitComponent"],
-                _status_bar_status_bar_component__WEBPACK_IMPORTED_MODULE_13__["FooterComponent"],
-                _debugging_debugging_component__WEBPACK_IMPORTED_MODULE_11__["DebuggingComponent"],
-                _debugging_console_console_component__WEBPACK_IMPORTED_MODULE_12__["ConsoleComponent"],
-                _workspace_workspace_component__WEBPACK_IMPORTED_MODULE_18__["WorkspaceComponent"],
-                _workspace_code_editor_code_editor_component__WEBPACK_IMPORTED_MODULE_19__["CodeEditorComponent"],
-                _workspace_image_editor_image_editor_component__WEBPACK_IMPORTED_MODULE_20__["ImageEditorComponent"],
-                _workspace_preview_editor_preview_editor_component__WEBPACK_IMPORTED_MODULE_21__["PreviewEditorComponent"],
-                _workspace_setting_editor_setting_editor_component__WEBPACK_IMPORTED_MODULE_23__["SettingEditorComponent"],
-                _workspace_welcome_welcome_component__WEBPACK_IMPORTED_MODULE_22__["WelcomeComponent"],
-                _quick_open_quick_open_component__WEBPACK_IMPORTED_MODULE_24__["QuickOpenComponent"],
-            ],
-            imports: [
-                _editor_routing_module__WEBPACK_IMPORTED_MODULE_10__["EditorRoutingModule"],
-                _shared_modules_shared_module__WEBPACK_IMPORTED_MODULE_8__["SharedModule"],
-                angular_tree_component__WEBPACK_IMPORTED_MODULE_6__["TreeModule"].forRoot(),
-                ngx_monaco_editor__WEBPACK_IMPORTED_MODULE_4__["MonacoEditorModule"].forRoot(_shared_models_monaco__WEBPACK_IMPORTED_MODULE_33__["MONACO_CONFIG"]),
-                angular_split__WEBPACK_IMPORTED_MODULE_3__["AngularSplitModule"].forRoot(),
-                angular2_markdown__WEBPACK_IMPORTED_MODULE_5__["MarkdownModule"].forRoot(),
-            ],
-            exports: [
-                _editor_component__WEBPACK_IMPORTED_MODULE_9__["EditorComponent"],
-            ],
-            providers: [
-                { provide: _shared_languages_language__WEBPACK_IMPORTED_MODULE_27__["LANGUAGE_PROVIDERS"], multi: true, useClass: _shared_languages_premierlangage__WEBPACK_IMPORTED_MODULE_28__["PremierLangage"] },
-                { provide: _shared_themes_theme__WEBPACK_IMPORTED_MODULE_30__["THEME_PROVIDERS"], multi: true, useClass: _shared_themes_dark_theme__WEBPACK_IMPORTED_MODULE_32__["DarkTheme"] },
-                { provide: _shared_themes_theme__WEBPACK_IMPORTED_MODULE_30__["THEME_PROVIDERS"], multi: true, useClass: _shared_themes_light_theme__WEBPACK_IMPORTED_MODULE_31__["LightTheme"] },
-            ]
-        })
-    ], EditorModule);
-    return EditorModule;
-}());
-
+};
+EditorComponent.ctorParameters = () => [
+    { type: task_service_1.TaskService },
+    { type: resource_service_1.ResourceService }
+];
+tslib_1.__decorate([
+    core_1.HostListener('window:beforeunload', ['$event']),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [Object]),
+    tslib_1.__metadata("design:returntype", void 0)
+], EditorComponent.prototype, "beforeunload", null);
+tslib_1.__decorate([
+    core_1.HostListener('document:keydown', ['$event']),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [KeyboardEvent]),
+    tslib_1.__metadata("design:returntype", void 0)
+], EditorComponent.prototype, "keypressed", null);
+EditorComponent = tslib_1.__decorate([
+    core_1.Component({
+        selector: 'app-editor',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./editor.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/editor.component.html")).default,
+        encapsulation: core_1.ViewEncapsulation.None,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./editor.component.scss */ "./src/app/pages/editor/editor.component.scss")).default]
+    }),
+    tslib_1.__metadata("design:paramtypes", [task_service_1.TaskService,
+        resource_service_1.ResourceService])
+], EditorComponent);
+exports.EditorComponent = EditorComponent;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/editor.resolver.ts":
-/*!*******************************************!*\
-  !*** ./src/app/editor/editor.resolver.ts ***!
-  \*******************************************/
-/*! exports provided: EditorResolver */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/editor.module.ts":
+/*!***********************************************!*\
+  !*** ./src/app/pages/editor/editor.module.ts ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EditorResolver", function() { return EditorResolver; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _shared_services_resource_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./shared/services/resource.service */ "./src/app/editor/shared/services/resource.service.ts");
-/* harmony import */ var _shared_services_settings_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./shared/services/settings.service */ "./src/app/editor/shared/services/settings.service.ts");
-/* harmony import */ var _shared_services_notification_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const shared_module_1 = __webpack_require__(/*! ../../shared/shared.module */ "./src/app/shared/shared.module.ts");
+const debugging_component_1 = __webpack_require__(/*! ./debugging/debugging.component */ "./src/app/pages/editor/debugging/debugging.component.ts");
+const logging_component_1 = __webpack_require__(/*! ./debugging/logging/logging.component */ "./src/app/pages/editor/debugging/logging/logging.component.ts");
+const problems_component_1 = __webpack_require__(/*! ./debugging/problems/problems.component */ "./src/app/pages/editor/debugging/problems/problems.component.ts");
+const editor_routing_module_1 = __webpack_require__(/*! ./editor-routing.module */ "./src/app/pages/editor/editor-routing.module.ts");
+const editor_component_1 = __webpack_require__(/*! ./editor.component */ "./src/app/pages/editor/editor.component.ts");
+const explorer_component_1 = __webpack_require__(/*! ./navigation/explorer/explorer.component */ "./src/app/pages/editor/navigation/explorer/explorer.component.ts");
+const git_component_1 = __webpack_require__(/*! ./navigation/git/git.component */ "./src/app/pages/editor/navigation/git/git.component.ts");
+const navigation_component_1 = __webpack_require__(/*! ./navigation/navigation.component */ "./src/app/pages/editor/navigation/navigation.component.ts");
+const search_component_1 = __webpack_require__(/*! ./navigation/search/search.component */ "./src/app/pages/editor/navigation/search/search.component.ts");
+const quick_open_component_1 = __webpack_require__(/*! ./quick-open/quick-open.component */ "./src/app/pages/editor/quick-open/quick-open.component.ts");
+const icon_directive_1 = __webpack_require__(/*! ./shared/directives/icon.directive */ "./src/app/pages/editor/shared/directives/icon.directive.ts");
+const nicify_name_pipe_1 = __webpack_require__(/*! ./shared/pipes/nicify-name.pipe */ "./src/app/pages/editor/shared/pipes/nicify-name.pipe.ts");
+const path_pipe_1 = __webpack_require__(/*! ./shared/pipes/path.pipe */ "./src/app/pages/editor/shared/pipes/path.pipe.ts");
+const status_bar_component_1 = __webpack_require__(/*! ./status-bar/status-bar.component */ "./src/app/pages/editor/status-bar/status-bar.component.ts");
+const code_editor_component_1 = __webpack_require__(/*! ./workspace/code-editor/code-editor.component */ "./src/app/pages/editor/workspace/code-editor/code-editor.component.ts");
+const image_editor_component_1 = __webpack_require__(/*! ./workspace/image-editor/image-editor.component */ "./src/app/pages/editor/workspace/image-editor/image-editor.component.ts");
+const preview_editor_component_1 = __webpack_require__(/*! ./workspace/preview-editor/preview-editor.component */ "./src/app/pages/editor/workspace/preview-editor/preview-editor.component.ts");
+const setting_editor_component_1 = __webpack_require__(/*! ./workspace/setting-editor/setting-editor.component */ "./src/app/pages/editor/workspace/setting-editor/setting-editor.component.ts");
+const welcome_component_1 = __webpack_require__(/*! ./workspace/welcome/welcome.component */ "./src/app/pages/editor/workspace/welcome/welcome.component.ts");
+const workspace_component_1 = __webpack_require__(/*! ./workspace/workspace.component */ "./src/app/pages/editor/workspace/workspace.component.ts");
+let EditorModule = class EditorModule {
+};
+EditorModule = tslib_1.__decorate([
+    core_1.NgModule({
+        declarations: [
+            path_pipe_1.PathPipe,
+            nicify_name_pipe_1.NicifyNamePipe,
+            icon_directive_1.IconDirective,
+            editor_component_1.EditorComponent,
+            navigation_component_1.NavigationComponent,
+            explorer_component_1.ExplorerComponent,
+            search_component_1.SearchComponent,
+            git_component_1.GitComponent,
+            status_bar_component_1.FooterComponent,
+            debugging_component_1.DebuggingComponent,
+            problems_component_1.ProblemsComponent,
+            logging_component_1.LoggingComponent,
+            workspace_component_1.WorkspaceComponent,
+            code_editor_component_1.CodeEditorComponent,
+            image_editor_component_1.ImageEditorComponent,
+            preview_editor_component_1.PreviewEditorComponent,
+            setting_editor_component_1.SettingEditorComponent,
+            welcome_component_1.WelcomeComponent,
+            quick_open_component_1.QuickOpenComponent
+        ],
+        imports: [
+            shared_module_1.SharedModule,
+            editor_routing_module_1.EditorRoutingModule,
+        ],
+    })
+], EditorModule);
+exports.EditorModule = EditorModule;
 
 
+/***/ }),
 
+/***/ "./src/app/pages/editor/editor.resolver.ts":
+/*!*************************************************!*\
+  !*** ./src/app/pages/editor/editor.resolver.ts ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
 
-var EditorResolver = /** @class */ (function () {
-    function EditorResolver(settings, resources, notification) {
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const notification_service_1 = __webpack_require__(/*! ../../shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
+const resource_service_1 = __webpack_require__(/*! ./shared/services/resource.service */ "./src/app/pages/editor/shared/services/resource.service.ts");
+const settings_service_1 = __webpack_require__(/*! ./shared/services/settings.service */ "./src/app/pages/editor/shared/services/settings.service.ts");
+let EditorResolver = class EditorResolver {
+    constructor(settings, resources, notification) {
         this.settings = settings;
         this.resources = resources;
         this.notification = notification;
     }
-    EditorResolver.prototype.resolve = function (route, state) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var error_1;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this.resources.refresh()];
-                    case 1:
-                        _a.sent();
-                        return [4 /*yield*/, this.settings.loadSettings()];
-                    case 2:
-                        _a.sent();
-                        return [3 /*break*/, 4];
-                    case 3:
-                        error_1 = _a.sent();
-                        this.notification.error(error_1.message);
-                        return [3 /*break*/, 4];
-                    case 4: return [2 /*return*/];
-                }
-            });
+    resolve(route, state) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            try {
+                yield this.resources.refresh();
+                yield this.settings.loadSettings();
+            }
+            catch (error) {
+                this.notification.error(error.message);
+            }
         });
-    };
-    EditorResolver = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])(),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_settings_service__WEBPACK_IMPORTED_MODULE_3__["SettingsService"],
-            _shared_services_resource_service__WEBPACK_IMPORTED_MODULE_2__["ResourceService"],
-            _shared_services_notification_service__WEBPACK_IMPORTED_MODULE_4__["NotificationService"]])
-    ], EditorResolver);
-    return EditorResolver;
-}());
-
+    }
+};
+EditorResolver.ctorParameters = () => [
+    { type: settings_service_1.SettingsService },
+    { type: resource_service_1.ResourceService },
+    { type: notification_service_1.NotificationService }
+];
+EditorResolver = tslib_1.__decorate([
+    core_1.Injectable(),
+    tslib_1.__metadata("design:paramtypes", [settings_service_1.SettingsService,
+        resource_service_1.ResourceService,
+        notification_service_1.NotificationService])
+], EditorResolver);
+exports.EditorResolver = EditorResolver;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/navigation/explorer/explorer.component.html":
-/*!********************************************************************!*\
-  !*** ./src/app/editor/navigation/explorer/explorer.component.html ***!
-  \********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<div class='tab-bar' *ngIf=\"showHeader\">\n    <span>EXPLORER</span>\n    <div class=\"spacer\"></div>\n    <div class='tab-item' (click)='refresh()' matTooltip='Refresh'>\n        <i class=\"fas fa-sync\"></i>\n    </div>\n</div>\n<div class=\"navigation__content\">\n    <app-tree [nodes]=\"nodes\" [options]=\"treeOptions\">\n        <ng-container *treeNode=\"let node\">\n            <span class='node-label' dnd [dndData]=\"node.id\" [draggable]=\"draggable(node)\"\n                        [droppable]=\"droppable(node)\" (dropped)=\"onDropped($event)\">\n                <img [icon]=\"node\"/>\n                <span matTooltip=\"{{ node.path | path }}\">{{ node.name }}</span>\n            </span>\n            <span class='node-option-group'>\n                <ng-container *ngFor='let option of nodeOptions; let i = index'>\n                    <span *ngIf='!option.divider && !option.forContextMenu && option.enabled(node)'\n                        id=\"node-option-{{ option.id }}-{{ node.path }}\" class='node-option'\n                        matTooltip='{{ option.label }}' (click)='option.action(node, $event)'>\n                        <i [class]=\"option.icon\"></i>&nbsp;\n                    </span>\n                </ng-container>\n            </span>\n        </ng-container>\n    </app-tree>\n</div>\n<ng-template #contextmenu let-node>\n\t<section class=\"context-menu\">\n        <ng-container *ngFor=\"let option of nodeOptions\">\n            <ng-container *ngIf=\"!option.divider &&!option.forHover && option.enabled(node)\">\n                <div (click)=\"option.action(node, $event);\">\n                    <i [class]=\"option.icon\"></i>&nbsp;\n                    <span> {{ option.label }}</span>\n                </div>\n            </ng-container>\n            <mat-divider></mat-divider>\n        </ng-container>\n\t</section>\n</ng-template>\n"
-
-/***/ }),
-
-/***/ "./src/app/editor/navigation/explorer/explorer.component.scss":
-/*!********************************************************************!*\
-  !*** ./src/app/editor/navigation/explorer/explorer.component.scss ***!
-  \********************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = ".tab-bar {\n  font-size: 1rem;\n  margin: 0;\n  padding: 0 0 0 16px; }\n\n.mat-tree {\n  background-color: transparent;\n  padding: 0; }\n\n.node-content .node-label {\n  display: -webkit-inline-box;\n  display: inline-flex;\n  -webkit-box-align: center;\n          align-items: center;\n  width: 100%;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  display: block;\n  overflow: hidden; }\n\n.node-content .node-option-group {\n  position: absolute;\n  right: 0;\n  visibility: hidden;\n  font-size: 14px; }\n\n.node-content .node-option-group .node-option {\n    cursor: pointer; }\n\n.node-content:hover .node-option-group {\n  visibility: visible; }\n\n.dnd-drag {\n  opacity: 0.5; }\n\n.dnd-over {\n  box-shadow: inset 0px 0px 0px 2px #CCC;\n  background: rgba(66, 66, 66, 0.1); }\n\n.mat-divider {\n  border-top-color: #333; }\n\n.context-menu {\n  background-color: #fafafa;\n  padding: 4pt;\n  font-size: 10pt;\n  z-index: 1000;\n  box-shadow: 0 0 12pt rgba(0, 0, 0, 0.25);\n  border-radius: 4pt;\n  padding: 0.5em 0 0.5em 0;\n  -webkit-animation: fadeIn 0.1s ease-out;\n          animation: fadeIn 0.1s ease-out;\n  opacity: 1.0;\n  display: block; }\n\n.context-menu hr {\n  border: none;\n  border-bottom: 1px solid #eee; }\n\n.context-menu div {\n  cursor: pointer;\n  display: block;\n  text-decoration: none;\n  color: #333;\n  padding: 0.5em 2em 0.5em 0.75em;\n  max-width: 18em;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis; }\n\n.context-menu div:hover {\n  background-color: #333;\n  color: #fff; }\n\n.context-menu div::before {\n  content: '';\n  margin-right: 0.75em;\n  width: 0.5em;\n  height: 1em;\n  display: inline-block; }\n\n/* Animatinons */\n\n@-webkit-keyframes fadeIn {\n  from {\n    opacity: 0; }\n  to {\n    opacity: 1.0; } }\n\n@keyframes fadeIn {\n  from {\n    opacity: 0; }\n  to {\n    opacity: 1.0; } }\n\n@-webkit-keyframes fadeOut {\n  from {\n    opacity: 1.0; }\n  to {\n    opacity: 0.0; } }\n\n@keyframes fadeOut {\n  from {\n    opacity: 1.0; }\n  to {\n    opacity: 0.0; } }\n\n.is-fadingIn {\n  -webkit-animation: fadeIn 0.1s ease-out;\n  animation: fadeIn 0.1s ease-out;\n  opacity: 1.0;\n  display: block; }\n\n.is-fadingOut {\n  -webkit-animation: fadeOut 0.1s ease-out;\n  animation: fadeOut 0.1s ease-out;\n  opacity: 0.0;\n  display: block; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL2VkaXRvci9uYXZpZ2F0aW9uL2V4cGxvcmVyL2V4cGxvcmVyLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksZ0JBQWU7RUFDZixVQUFTO0VBQ1Qsb0JBQW1CLEVBQ3RCOztBQUVEO0VBQ0UsOEJBQTZCO0VBQzdCLFdBQVUsRUFDWDs7QUFFRDtFQUNNLDRCQUFvQjtFQUFwQixxQkFBb0I7RUFDcEIsMEJBQW1CO1VBQW5CLG9CQUFtQjtFQUNuQixZQUFXO0VBQ1gsb0JBQW1CO0VBQ25CLHdCQUF1QjtFQUN2QixlQUFjO0VBQ2QsaUJBQWdCLEVBQ3JCOztBQUVEO0VBQ0ksbUJBQWtCO0VBQ2xCLFNBQVE7RUFDUixtQkFBa0I7RUFDbEIsZ0JBQWUsRUFJbEI7O0FBUkQ7SUFNUSxnQkFBZSxFQUNsQjs7QUFHTDtFQUNJLG9CQUFtQixFQUN0Qjs7QUFFRDtFQUNJLGFBQVksRUFDZjs7QUFFRDtFQUNJLHVDQUFzQztFQUN0QyxrQ0FBOEIsRUFDakM7O0FBRUQ7RUFDSSx1QkFBc0IsRUFDekI7O0FBRUQ7RUFDRSwwQkFBeUI7RUFDekIsYUFBWTtFQUNaLGdCQUFlO0VBQ2YsY0FBYTtFQUNiLHlDQUF3QztFQUN4QyxtQkFBa0I7RUFDbEIseUJBQXdCO0VBQ3hCLHdDQUErQjtVQUEvQixnQ0FBK0I7RUFDL0IsYUFBVztFQUNYLGVBQWEsRUFDZDs7QUFFRDtFQUNFLGFBQVk7RUFDWiw4QkFBNkIsRUFDOUI7O0FBRUQ7RUFDRSxnQkFBZTtFQUNmLGVBQWM7RUFDZCxzQkFBcUI7RUFDckIsWUFBVztFQUNYLGdDQUErQjtFQUMvQixnQkFBZTtFQUNmLG9CQUFtQjtFQUNuQixpQkFBZ0I7RUFDaEIsd0JBQXVCLEVBQ3hCOztBQUVEO0VBQ0UsdUJBQXNCO0VBQ3RCLFlBQVcsRUFDWjs7QUFFRDtFQUNFLFlBQVc7RUFDWCxxQkFBb0I7RUFDcEIsYUFBWTtFQUNaLFlBQVc7RUFDWCxzQkFBcUIsRUFDdEI7O0FBRUQsaUJBQWlCOztBQUNqQjtFQUNFO0lBQ0UsV0FBVSxFQUFBO0VBRVo7SUFDRSxhQUFZLEVBQUEsRUFBQTs7QUFJaEI7RUFDRTtJQUNFLFdBQVUsRUFBQTtFQUVaO0lBQ0UsYUFBWSxFQUFBLEVBQUE7O0FBSWhCO0VBQ0U7SUFDRSxhQUFZLEVBQUE7RUFFZDtJQUNFLGFBQVksRUFBQSxFQUFBOztBQUloQjtFQUNFO0lBQ0UsYUFBWSxFQUFBO0VBRWQ7SUFDRSxhQUFZLEVBQUEsRUFBQTs7QUFJaEI7RUFDRSx3Q0FBdUM7RUFDdkMsZ0NBQStCO0VBQy9CLGFBQVk7RUFDWixlQUFjLEVBQ2Y7O0FBRUQ7RUFDRSx5Q0FBd0M7RUFDeEMsaUNBQWdDO0VBQ2hDLGFBQVk7RUFDWixlQUFjLEVBQ2YiLCJmaWxlIjoic3JjL2FwcC9lZGl0b3IvbmF2aWdhdGlvbi9leHBsb3Jlci9leHBsb3Jlci5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi50YWItYmFyIHtcbiAgICBmb250LXNpemU6IDFyZW07XG4gICAgbWFyZ2luOiAwO1xuICAgIHBhZGRpbmc6IDAgMCAwIDE2cHg7XG59XG5cbi5tYXQtdHJlZSB7XG4gIGJhY2tncm91bmQtY29sb3I6IHRyYW5zcGFyZW50O1xuICBwYWRkaW5nOiAwO1xufVxuXG4ubm9kZS1jb250ZW50IC5ub2RlLWxhYmVsIHtcbiAgICAgIGRpc3BsYXk6IGlubGluZS1mbGV4O1xuICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgd2hpdGUtc3BhY2U6IG5vd3JhcDtcbiAgICAgIHRleHQtb3ZlcmZsb3c6IGVsbGlwc2lzO1xuICAgICAgZGlzcGxheTogYmxvY2s7XG4gICAgICBvdmVyZmxvdzogaGlkZGVuO1xufVxuXG4ubm9kZS1jb250ZW50IC5ub2RlLW9wdGlvbi1ncm91cCB7XG4gICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgIHJpZ2h0OiAwO1xuICAgIHZpc2liaWxpdHk6IGhpZGRlbjtcbiAgICBmb250LXNpemU6IDE0cHg7XG4gICAgLm5vZGUtb3B0aW9uIHtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIH1cbn1cblxuLm5vZGUtY29udGVudDpob3ZlciAubm9kZS1vcHRpb24tZ3JvdXAge1xuICAgIHZpc2liaWxpdHk6IHZpc2libGU7XG59XG5cbi5kbmQtZHJhZyB7XG4gICAgb3BhY2l0eTogMC41O1xufVxuXG4uZG5kLW92ZXIge1xuICAgIGJveC1zaGFkb3c6IGluc2V0IDBweCAwcHggMHB4IDJweCAjQ0NDO1xuICAgIGJhY2tncm91bmQ6IHJnYmEoNjYsNjYsNjYsMC4xKTtcbn1cblxuLm1hdC1kaXZpZGVyIHtcbiAgICBib3JkZXItdG9wLWNvbG9yOiAjMzMzO1xufVxuXG4uY29udGV4dC1tZW51IHtcbiAgYmFja2dyb3VuZC1jb2xvcjogI2ZhZmFmYTtcbiAgcGFkZGluZzogNHB0O1xuICBmb250LXNpemU6IDEwcHQ7XG4gIHotaW5kZXg6IDEwMDA7XG4gIGJveC1zaGFkb3c6IDAgMCAxMnB0IHJnYmEoMCwgMCwgMCwgMC4yNSk7XG4gIGJvcmRlci1yYWRpdXM6IDRwdDtcbiAgcGFkZGluZzogMC41ZW0gMCAwLjVlbSAwO1xuICBhbmltYXRpb246IGZhZGVJbiAwLjFzIGVhc2Utb3V0O1xuICBvcGFjaXR5OjEuMDtcbiAgZGlzcGxheTpibG9jaztcbn1cblxuLmNvbnRleHQtbWVudSBociB7XG4gIGJvcmRlcjogbm9uZTtcbiAgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkICNlZWU7XG59XG5cbi5jb250ZXh0LW1lbnUgZGl2IHtcbiAgY3Vyc29yOiBwb2ludGVyO1xuICBkaXNwbGF5OiBibG9jaztcbiAgdGV4dC1kZWNvcmF0aW9uOiBub25lO1xuICBjb2xvcjogIzMzMztcbiAgcGFkZGluZzogMC41ZW0gMmVtIDAuNWVtIDAuNzVlbTtcbiAgbWF4LXdpZHRoOiAxOGVtO1xuICB3aGl0ZS1zcGFjZTogbm93cmFwO1xuICBvdmVyZmxvdzogaGlkZGVuO1xuICB0ZXh0LW92ZXJmbG93OiBlbGxpcHNpcztcbn1cblxuLmNvbnRleHQtbWVudSBkaXY6aG92ZXIge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjMzMzO1xuICBjb2xvcjogI2ZmZjtcbn1cblxuLmNvbnRleHQtbWVudSBkaXY6OmJlZm9yZSB7XG4gIGNvbnRlbnQ6ICcnO1xuICBtYXJnaW4tcmlnaHQ6IDAuNzVlbTtcbiAgd2lkdGg6IDAuNWVtO1xuICBoZWlnaHQ6IDFlbTtcbiAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xufVxuXG4vKiBBbmltYXRpbm9ucyAqL1xuQC13ZWJraXQta2V5ZnJhbWVzIGZhZGVJbiB7XG4gIGZyb20ge1xuICAgIG9wYWNpdHk6IDA7XG4gIH1cbiAgdG8ge1xuICAgIG9wYWNpdHk6IDEuMDtcbiAgfVxufVxuXG5Aa2V5ZnJhbWVzIGZhZGVJbiB7XG4gIGZyb20ge1xuICAgIG9wYWNpdHk6IDA7XG4gIH1cbiAgdG8ge1xuICAgIG9wYWNpdHk6IDEuMDtcbiAgfVxufVxuXG5ALXdlYmtpdC1rZXlmcmFtZXMgZmFkZU91dCB7XG4gIGZyb20ge1xuICAgIG9wYWNpdHk6IDEuMDtcbiAgfVxuICB0byB7XG4gICAgb3BhY2l0eTogMC4wO1xuICB9XG59XG5cbkBrZXlmcmFtZXMgZmFkZU91dCB7XG4gIGZyb20ge1xuICAgIG9wYWNpdHk6IDEuMDtcbiAgfVxuICB0byB7XG4gICAgb3BhY2l0eTogMC4wO1xuICB9XG59XG5cbi5pcy1mYWRpbmdJbiB7XG4gIC13ZWJraXQtYW5pbWF0aW9uOiBmYWRlSW4gMC4xcyBlYXNlLW91dDtcbiAgYW5pbWF0aW9uOiBmYWRlSW4gMC4xcyBlYXNlLW91dDtcbiAgb3BhY2l0eTogMS4wO1xuICBkaXNwbGF5OiBibG9jaztcbn1cblxuLmlzLWZhZGluZ091dCB7XG4gIC13ZWJraXQtYW5pbWF0aW9uOiBmYWRlT3V0IDAuMXMgZWFzZS1vdXQ7XG4gIGFuaW1hdGlvbjogZmFkZU91dCAwLjFzIGVhc2Utb3V0O1xuICBvcGFjaXR5OiAwLjA7XG4gIGRpc3BsYXk6IGJsb2NrO1xufVxuIl19 */"
-
-/***/ }),
-
-/***/ "./src/app/editor/navigation/explorer/explorer.component.ts":
-/*!******************************************************************!*\
-  !*** ./src/app/editor/navigation/explorer/explorer.component.ts ***!
-  \******************************************************************/
-/*! exports provided: ExplorerComponent */
+/***/ "./src/app/pages/editor/navigation/explorer/explorer.component.scss":
+/*!**************************************************************************!*\
+  !*** ./src/app/pages/editor/navigation/explorer/explorer.component.scss ***!
+  \**************************************************************************/
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ExplorerComponent", function() { return ExplorerComponent; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/app/shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
-/* harmony import */ var _shared_models_resource__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../shared/models/resource */ "./src/app/editor/shared/models/resource.ts");
-/* harmony import */ var _shared_services_pl_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../shared/services/pl.service */ "./src/app/editor/shared/services/pl.service.ts");
-/* harmony import */ var _shared_services_opener_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../shared/services/opener.service */ "./src/app/editor/shared/services/opener.service.ts");
-/* harmony import */ var _shared_services_editor_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../shared/services/editor.service */ "./src/app/editor/shared/services/editor.service.ts");
-/* harmony import */ var _shared_services_resource_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../shared/services/resource.service */ "./src/app/editor/shared/services/resource.service.ts");
-/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
-/* harmony import */ var src_app_shared_components_tree_tree_component__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! src/app/shared/components/tree/tree.component */ "./src/app/shared/components/tree/tree.component.ts");
-/* harmony import */ var _angular_cdk_overlay__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @angular/cdk/overlay */ "./node_modules/@angular/cdk/esm5/overlay.es5.js");
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
-/* harmony import */ var _angular_cdk_portal__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @angular/cdk/portal */ "./node_modules/@angular/cdk/esm5/portal.es5.js");
-/* harmony import */ var _shared_models_filters__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../../shared/models/filters */ "./src/app/editor/shared/models/filters.ts");
+/* harmony default export */ __webpack_exports__["default"] = (".tab-bar {\n  font-size: 1rem;\n  margin: 0;\n  padding: 0 0 0 16px;\n}\n\n.mat-tree {\n  background-color: transparent;\n  padding: 0;\n}\n\n.node-content .node-label {\n  display: inline-flex;\n  align-items: center;\n  width: 100%;\n  white-space: nowrap;\n  text-overflow: ellipsis;\n  display: block;\n  overflow: hidden;\n}\n\n.node-content .node-option-group {\n  position: absolute;\n  right: 0;\n  visibility: hidden;\n  font-size: 14px;\n}\n\n.node-content .node-option-group .node-option {\n  cursor: pointer;\n}\n\n.node-content:hover .node-option-group {\n  visibility: visible;\n}\n\n.dnd-drag {\n  opacity: 0.5;\n}\n\n.dnd-over {\n  box-shadow: inset 0px 0px 0px 2px #CCC;\n  background: rgba(66, 66, 66, 0.1);\n}\n\n.mat-divider {\n  border-top-color: #333;\n}\n\n.context-menu {\n  background-color: #fafafa;\n  padding: 4pt;\n  font-size: 10pt;\n  z-index: 1000;\n  box-shadow: 0 0 12pt rgba(0, 0, 0, 0.25);\n  border-radius: 4pt;\n  padding: 0.5em 0 0.5em 0;\n  -webkit-animation: fadeIn 0.1s ease-out;\n          animation: fadeIn 0.1s ease-out;\n  opacity: 1;\n  display: block;\n}\n\n.context-menu hr {\n  border: none;\n  border-bottom: 1px solid #eee;\n}\n\n.context-menu div {\n  cursor: pointer;\n  display: block;\n  text-decoration: none;\n  color: #333;\n  padding: 0.5em 2em 0.5em 0.75em;\n  max-width: 18em;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n}\n\n.context-menu div:hover {\n  background-color: #333;\n  color: #fff;\n}\n\n.context-menu div::before {\n  content: \"\";\n  margin-right: 0.75em;\n  width: 0.5em;\n  height: 1em;\n  display: inline-block;\n}\n\n/* Animatinons */\n\n@-webkit-keyframes fadeIn {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeIn {\n  from {\n    opacity: 0;\n  }\n  to {\n    opacity: 1;\n  }\n}\n\n@-webkit-keyframes fadeOut {\n  from {\n    opacity: 1;\n  }\n  to {\n    opacity: 0;\n  }\n}\n\n@keyframes fadeOut {\n  from {\n    opacity: 1;\n  }\n  to {\n    opacity: 0;\n  }\n}\n\n.is-fadingIn {\n  -webkit-animation: fadeIn 0.1s ease-out;\n  animation: fadeIn 0.1s ease-out;\n  opacity: 1;\n  display: block;\n}\n\n.is-fadingOut {\n  -webkit-animation: fadeOut 0.1s ease-out;\n  animation: fadeOut 0.1s ease-out;\n  opacity: 0;\n  display: block;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL3BhZ2VzL2VkaXRvci9uYXZpZ2F0aW9uL2V4cGxvcmVyL2V4cGxvcmVyLmNvbXBvbmVudC5zY3NzIiwic3JjL2FwcC9wYWdlcy9lZGl0b3IvbmF2aWdhdGlvbi9leHBsb3Jlci9leHBsb3Jlci5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGVBQUE7RUFDQSxTQUFBO0VBQ0EsbUJBQUE7QUNDSjs7QURFQTtFQUNFLDZCQUFBO0VBQ0EsVUFBQTtBQ0NGOztBREVBO0VBQ00sb0JBQUE7RUFDQSxtQkFBQTtFQUNBLFdBQUE7RUFDQSxtQkFBQTtFQUNBLHVCQUFBO0VBQ0EsY0FBQTtFQUNBLGdCQUFBO0FDQ047O0FERUE7RUFDSSxrQkFBQTtFQUNBLFFBQUE7RUFDQSxrQkFBQTtFQUNBLGVBQUE7QUNDSjs7QURBSTtFQUNJLGVBQUE7QUNFUjs7QURFQTtFQUNJLG1CQUFBO0FDQ0o7O0FERUE7RUFDSSxZQUFBO0FDQ0o7O0FERUE7RUFDSSxzQ0FBQTtFQUNBLGlDQUFBO0FDQ0o7O0FERUE7RUFDSSxzQkFBQTtBQ0NKOztBREVBO0VBQ0UseUJBQUE7RUFDQSxZQUFBO0VBQ0EsZUFBQTtFQUNBLGFBQUE7RUFDQSx3Q0FBQTtFQUNBLGtCQUFBO0VBQ0Esd0JBQUE7RUFDQSx1Q0FBQTtVQUFBLCtCQUFBO0VBQ0EsVUFBQTtFQUNBLGNBQUE7QUNDRjs7QURFQTtFQUNFLFlBQUE7RUFDQSw2QkFBQTtBQ0NGOztBREVBO0VBQ0UsZUFBQTtFQUNBLGNBQUE7RUFDQSxxQkFBQTtFQUNBLFdBQUE7RUFDQSwrQkFBQTtFQUNBLGVBQUE7RUFDQSxtQkFBQTtFQUNBLGdCQUFBO0VBQ0EsdUJBQUE7QUNDRjs7QURFQTtFQUNFLHNCQUFBO0VBQ0EsV0FBQTtBQ0NGOztBREVBO0VBQ0UsV0FBQTtFQUNBLG9CQUFBO0VBQ0EsWUFBQTtFQUNBLFdBQUE7RUFDQSxxQkFBQTtBQ0NGOztBREVBLGdCQUFBOztBQUNBO0VBQ0U7SUFDRSxVQUFBO0VDQ0Y7RURDQTtJQUNFLFVBQUE7RUNDRjtBQUNGOztBREVBO0VBQ0U7SUFDRSxVQUFBO0VDQUY7RURFQTtJQUNFLFVBQUE7RUNBRjtBQUNGOztBREdBO0VBQ0U7SUFDRSxVQUFBO0VDREY7RURHQTtJQUNFLFVBQUE7RUNERjtBQUNGOztBRElBO0VBQ0U7SUFDRSxVQUFBO0VDRkY7RURJQTtJQUNFLFVBQUE7RUNGRjtBQUNGOztBREtBO0VBQ0UsdUNBQUE7RUFDQSwrQkFBQTtFQUNBLFVBQUE7RUFDQSxjQUFBO0FDSEY7O0FETUE7RUFDRSx3Q0FBQTtFQUNBLGdDQUFBO0VBQ0EsVUFBQTtFQUNBLGNBQUE7QUNIRiIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL2VkaXRvci9uYXZpZ2F0aW9uL2V4cGxvcmVyL2V4cGxvcmVyLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLnRhYi1iYXIge1xuICAgIGZvbnQtc2l6ZTogMXJlbTtcbiAgICBtYXJnaW46IDA7XG4gICAgcGFkZGluZzogMCAwIDAgMTZweDtcbn1cblxuLm1hdC10cmVlIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogdHJhbnNwYXJlbnQ7XG4gIHBhZGRpbmc6IDA7XG59XG5cbi5ub2RlLWNvbnRlbnQgLm5vZGUtbGFiZWwge1xuICAgICAgZGlzcGxheTogaW5saW5lLWZsZXg7XG4gICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICB3aGl0ZS1zcGFjZTogbm93cmFwO1xuICAgICAgdGV4dC1vdmVyZmxvdzogZWxsaXBzaXM7XG4gICAgICBkaXNwbGF5OiBibG9jaztcbiAgICAgIG92ZXJmbG93OiBoaWRkZW47XG59XG5cbi5ub2RlLWNvbnRlbnQgLm5vZGUtb3B0aW9uLWdyb3VwIHtcbiAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgcmlnaHQ6IDA7XG4gICAgdmlzaWJpbGl0eTogaGlkZGVuO1xuICAgIGZvbnQtc2l6ZTogMTRweDtcbiAgICAubm9kZS1vcHRpb24ge1xuICAgICAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgfVxufVxuXG4ubm9kZS1jb250ZW50OmhvdmVyIC5ub2RlLW9wdGlvbi1ncm91cCB7XG4gICAgdmlzaWJpbGl0eTogdmlzaWJsZTtcbn1cblxuLmRuZC1kcmFnIHtcbiAgICBvcGFjaXR5OiAwLjU7XG59XG5cbi5kbmQtb3ZlciB7XG4gICAgYm94LXNoYWRvdzogaW5zZXQgMHB4IDBweCAwcHggMnB4ICNDQ0M7XG4gICAgYmFja2dyb3VuZDogcmdiYSg2Niw2Niw2NiwwLjEpO1xufVxuXG4ubWF0LWRpdmlkZXIge1xuICAgIGJvcmRlci10b3AtY29sb3I6ICMzMzM7XG59XG5cbi5jb250ZXh0LW1lbnUge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiAjZmFmYWZhO1xuICBwYWRkaW5nOiA0cHQ7XG4gIGZvbnQtc2l6ZTogMTBwdDtcbiAgei1pbmRleDogMTAwMDtcbiAgYm94LXNoYWRvdzogMCAwIDEycHQgcmdiYSgwLCAwLCAwLCAwLjI1KTtcbiAgYm9yZGVyLXJhZGl1czogNHB0O1xuICBwYWRkaW5nOiAwLjVlbSAwIDAuNWVtIDA7XG4gIGFuaW1hdGlvbjogZmFkZUluIDAuMXMgZWFzZS1vdXQ7XG4gIG9wYWNpdHk6MS4wO1xuICBkaXNwbGF5OmJsb2NrO1xufVxuXG4uY29udGV4dC1tZW51IGhyIHtcbiAgYm9yZGVyOiBub25lO1xuICBib3JkZXItYm90dG9tOiAxcHggc29saWQgI2VlZTtcbn1cblxuLmNvbnRleHQtbWVudSBkaXYge1xuICBjdXJzb3I6IHBvaW50ZXI7XG4gIGRpc3BsYXk6IGJsb2NrO1xuICB0ZXh0LWRlY29yYXRpb246IG5vbmU7XG4gIGNvbG9yOiAjMzMzO1xuICBwYWRkaW5nOiAwLjVlbSAyZW0gMC41ZW0gMC43NWVtO1xuICBtYXgtd2lkdGg6IDE4ZW07XG4gIHdoaXRlLXNwYWNlOiBub3dyYXA7XG4gIG92ZXJmbG93OiBoaWRkZW47XG4gIHRleHQtb3ZlcmZsb3c6IGVsbGlwc2lzO1xufVxuXG4uY29udGV4dC1tZW51IGRpdjpob3ZlciB7XG4gIGJhY2tncm91bmQtY29sb3I6ICMzMzM7XG4gIGNvbG9yOiAjZmZmO1xufVxuXG4uY29udGV4dC1tZW51IGRpdjo6YmVmb3JlIHtcbiAgY29udGVudDogJyc7XG4gIG1hcmdpbi1yaWdodDogMC43NWVtO1xuICB3aWR0aDogMC41ZW07XG4gIGhlaWdodDogMWVtO1xuICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7XG59XG5cbi8qIEFuaW1hdGlub25zICovXG5ALXdlYmtpdC1rZXlmcmFtZXMgZmFkZUluIHtcbiAgZnJvbSB7XG4gICAgb3BhY2l0eTogMDtcbiAgfVxuICB0byB7XG4gICAgb3BhY2l0eTogMS4wO1xuICB9XG59XG5cbkBrZXlmcmFtZXMgZmFkZUluIHtcbiAgZnJvbSB7XG4gICAgb3BhY2l0eTogMDtcbiAgfVxuICB0byB7XG4gICAgb3BhY2l0eTogMS4wO1xuICB9XG59XG5cbkAtd2Via2l0LWtleWZyYW1lcyBmYWRlT3V0IHtcbiAgZnJvbSB7XG4gICAgb3BhY2l0eTogMS4wO1xuICB9XG4gIHRvIHtcbiAgICBvcGFjaXR5OiAwLjA7XG4gIH1cbn1cblxuQGtleWZyYW1lcyBmYWRlT3V0IHtcbiAgZnJvbSB7XG4gICAgb3BhY2l0eTogMS4wO1xuICB9XG4gIHRvIHtcbiAgICBvcGFjaXR5OiAwLjA7XG4gIH1cbn1cblxuLmlzLWZhZGluZ0luIHtcbiAgLXdlYmtpdC1hbmltYXRpb246IGZhZGVJbiAwLjFzIGVhc2Utb3V0O1xuICBhbmltYXRpb246IGZhZGVJbiAwLjFzIGVhc2Utb3V0O1xuICBvcGFjaXR5OiAxLjA7XG4gIGRpc3BsYXk6IGJsb2NrO1xufVxuXG4uaXMtZmFkaW5nT3V0IHtcbiAgLXdlYmtpdC1hbmltYXRpb246IGZhZGVPdXQgMC4xcyBlYXNlLW91dDtcbiAgYW5pbWF0aW9uOiBmYWRlT3V0IDAuMXMgZWFzZS1vdXQ7XG4gIG9wYWNpdHk6IDAuMDtcbiAgZGlzcGxheTogYmxvY2s7XG59XG4iLCIudGFiLWJhciB7XG4gIGZvbnQtc2l6ZTogMXJlbTtcbiAgbWFyZ2luOiAwO1xuICBwYWRkaW5nOiAwIDAgMCAxNnB4O1xufVxuXG4ubWF0LXRyZWUge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiB0cmFuc3BhcmVudDtcbiAgcGFkZGluZzogMDtcbn1cblxuLm5vZGUtY29udGVudCAubm9kZS1sYWJlbCB7XG4gIGRpc3BsYXk6IGlubGluZS1mbGV4O1xuICBhbGlnbi1pdGVtczogY2VudGVyO1xuICB3aWR0aDogMTAwJTtcbiAgd2hpdGUtc3BhY2U6IG5vd3JhcDtcbiAgdGV4dC1vdmVyZmxvdzogZWxsaXBzaXM7XG4gIGRpc3BsYXk6IGJsb2NrO1xuICBvdmVyZmxvdzogaGlkZGVuO1xufVxuXG4ubm9kZS1jb250ZW50IC5ub2RlLW9wdGlvbi1ncm91cCB7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgcmlnaHQ6IDA7XG4gIHZpc2liaWxpdHk6IGhpZGRlbjtcbiAgZm9udC1zaXplOiAxNHB4O1xufVxuLm5vZGUtY29udGVudCAubm9kZS1vcHRpb24tZ3JvdXAgLm5vZGUtb3B0aW9uIHtcbiAgY3Vyc29yOiBwb2ludGVyO1xufVxuXG4ubm9kZS1jb250ZW50OmhvdmVyIC5ub2RlLW9wdGlvbi1ncm91cCB7XG4gIHZpc2liaWxpdHk6IHZpc2libGU7XG59XG5cbi5kbmQtZHJhZyB7XG4gIG9wYWNpdHk6IDAuNTtcbn1cblxuLmRuZC1vdmVyIHtcbiAgYm94LXNoYWRvdzogaW5zZXQgMHB4IDBweCAwcHggMnB4ICNDQ0M7XG4gIGJhY2tncm91bmQ6IHJnYmEoNjYsIDY2LCA2NiwgMC4xKTtcbn1cblxuLm1hdC1kaXZpZGVyIHtcbiAgYm9yZGVyLXRvcC1jb2xvcjogIzMzMztcbn1cblxuLmNvbnRleHQtbWVudSB7XG4gIGJhY2tncm91bmQtY29sb3I6ICNmYWZhZmE7XG4gIHBhZGRpbmc6IDRwdDtcbiAgZm9udC1zaXplOiAxMHB0O1xuICB6LWluZGV4OiAxMDAwO1xuICBib3gtc2hhZG93OiAwIDAgMTJwdCByZ2JhKDAsIDAsIDAsIDAuMjUpO1xuICBib3JkZXItcmFkaXVzOiA0cHQ7XG4gIHBhZGRpbmc6IDAuNWVtIDAgMC41ZW0gMDtcbiAgYW5pbWF0aW9uOiBmYWRlSW4gMC4xcyBlYXNlLW91dDtcbiAgb3BhY2l0eTogMTtcbiAgZGlzcGxheTogYmxvY2s7XG59XG5cbi5jb250ZXh0LW1lbnUgaHIge1xuICBib3JkZXI6IG5vbmU7XG4gIGJvcmRlci1ib3R0b206IDFweCBzb2xpZCAjZWVlO1xufVxuXG4uY29udGV4dC1tZW51IGRpdiB7XG4gIGN1cnNvcjogcG9pbnRlcjtcbiAgZGlzcGxheTogYmxvY2s7XG4gIHRleHQtZGVjb3JhdGlvbjogbm9uZTtcbiAgY29sb3I6ICMzMzM7XG4gIHBhZGRpbmc6IDAuNWVtIDJlbSAwLjVlbSAwLjc1ZW07XG4gIG1heC13aWR0aDogMThlbTtcbiAgd2hpdGUtc3BhY2U6IG5vd3JhcDtcbiAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgdGV4dC1vdmVyZmxvdzogZWxsaXBzaXM7XG59XG5cbi5jb250ZXh0LW1lbnUgZGl2OmhvdmVyIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogIzMzMztcbiAgY29sb3I6ICNmZmY7XG59XG5cbi5jb250ZXh0LW1lbnUgZGl2OjpiZWZvcmUge1xuICBjb250ZW50OiBcIlwiO1xuICBtYXJnaW4tcmlnaHQ6IDAuNzVlbTtcbiAgd2lkdGg6IDAuNWVtO1xuICBoZWlnaHQ6IDFlbTtcbiAgZGlzcGxheTogaW5saW5lLWJsb2NrO1xufVxuXG4vKiBBbmltYXRpbm9ucyAqL1xuQC13ZWJraXQta2V5ZnJhbWVzIGZhZGVJbiB7XG4gIGZyb20ge1xuICAgIG9wYWNpdHk6IDA7XG4gIH1cbiAgdG8ge1xuICAgIG9wYWNpdHk6IDE7XG4gIH1cbn1cbkBrZXlmcmFtZXMgZmFkZUluIHtcbiAgZnJvbSB7XG4gICAgb3BhY2l0eTogMDtcbiAgfVxuICB0byB7XG4gICAgb3BhY2l0eTogMTtcbiAgfVxufVxuQC13ZWJraXQta2V5ZnJhbWVzIGZhZGVPdXQge1xuICBmcm9tIHtcbiAgICBvcGFjaXR5OiAxO1xuICB9XG4gIHRvIHtcbiAgICBvcGFjaXR5OiAwO1xuICB9XG59XG5Aa2V5ZnJhbWVzIGZhZGVPdXQge1xuICBmcm9tIHtcbiAgICBvcGFjaXR5OiAxO1xuICB9XG4gIHRvIHtcbiAgICBvcGFjaXR5OiAwO1xuICB9XG59XG4uaXMtZmFkaW5nSW4ge1xuICAtd2Via2l0LWFuaW1hdGlvbjogZmFkZUluIDAuMXMgZWFzZS1vdXQ7XG4gIGFuaW1hdGlvbjogZmFkZUluIDAuMXMgZWFzZS1vdXQ7XG4gIG9wYWNpdHk6IDE7XG4gIGRpc3BsYXk6IGJsb2NrO1xufVxuXG4uaXMtZmFkaW5nT3V0IHtcbiAgLXdlYmtpdC1hbmltYXRpb246IGZhZGVPdXQgMC4xcyBlYXNlLW91dDtcbiAgYW5pbWF0aW9uOiBmYWRlT3V0IDAuMXMgZWFzZS1vdXQ7XG4gIG9wYWNpdHk6IDA7XG4gIGRpc3BsYXk6IGJsb2NrO1xufSJdfQ== */");
+
+/***/ }),
+
+/***/ "./src/app/pages/editor/navigation/explorer/explorer.component.ts":
+/*!************************************************************************!*\
+  !*** ./src/app/pages/editor/navigation/explorer/explorer.component.ts ***!
+  \************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 // tslint:disable: max-line-length
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var ExplorerComponent = /** @class */ (function () {
-    function ExplorerComponent(pl, editor, opener, overlay, resources, notification, viewContainerRef) {
-        var _this = this;
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const rxjs_1 = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm2015/index.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const paths_model_1 = __webpack_require__(/*! src/app/shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
+const resource_1 = __webpack_require__(/*! ../../shared/models/resource */ "./src/app/pages/editor/shared/models/resource.ts");
+const pl_service_1 = __webpack_require__(/*! ../../shared/services/pl.service */ "./src/app/pages/editor/shared/services/pl.service.ts");
+const opener_service_1 = __webpack_require__(/*! ../../shared/services/opener.service */ "./src/app/pages/editor/shared/services/opener.service.ts");
+const editor_service_1 = __webpack_require__(/*! ../../shared/services/editor.service */ "./src/app/pages/editor/shared/services/editor.service.ts");
+const resource_service_1 = __webpack_require__(/*! ../../shared/services/resource.service */ "./src/app/pages/editor/shared/services/resource.service.ts");
+const notification_service_1 = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
+const tree_component_1 = __webpack_require__(/*! src/app/shared/components/tree/tree.component */ "./src/app/shared/components/tree/tree.component.ts");
+const overlay_1 = __webpack_require__(/*! @angular/cdk/overlay */ "./node_modules/@angular/cdk/esm2015/overlay.js");
+const operators_1 = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm2015/operators/index.js");
+const portal_1 = __webpack_require__(/*! @angular/cdk/portal */ "./node_modules/@angular/cdk/esm2015/portal.js");
+const filters = __webpack_require__(/*! ../../shared/models/filters */ "./src/app/pages/editor/shared/models/filters.ts");
+let ExplorerComponent = class ExplorerComponent {
+    constructor(pl, editor, opener, overlay, resources, notification, viewContainerRef) {
         this.pl = pl;
         this.editor = editor;
         this.opener = opener;
@@ -844,287 +1514,210 @@ var ExplorerComponent = /** @class */ (function () {
          * nodes options
          */
         this.nodeOptions = [
-            { id: 'share', icon: 'fas fa-share', label: 'Share', enabled: _shared_models_filters__WEBPACK_IMPORTED_MODULE_14__["canBeTested"], action: this.optionShare.bind(this) },
-            { id: 'test', icon: 'fas fa-check', label: 'Test', enabled: _shared_models_filters__WEBPACK_IMPORTED_MODULE_14__["canBeTested"], action: this.optionTest.bind(this) },
-            { id: 'load-pla', icon: 'fas fa-play', label: 'Load', enabled: _shared_models_filters__WEBPACK_IMPORTED_MODULE_14__["canBeLoaded"], action: this.optionLoad.bind(this) },
-            { id: 'reload-pla', icon: 'fas fa-sync', label: 'Reload', enabled: _shared_models_filters__WEBPACK_IMPORTED_MODULE_14__["canBeReloaded"], action: this.optionReload.bind(this) },
-            { id: 'new-file', icon: 'far fa-file', label: 'New File', enabled: _shared_models_filters__WEBPACK_IMPORTED_MODULE_14__["canAddChild"], action: this.optionAddFile.bind(this) },
-            { id: 'new-folder', icon: 'far fa-folder', label: 'New Folder', enabled: _shared_models_filters__WEBPACK_IMPORTED_MODULE_14__["canAddChild"], action: this.optionAddFolder.bind(this) },
+            { id: 'share', icon: 'fas fa-share', label: 'Share', enabled: filters.canBeTested, action: this.optionShare.bind(this) },
+            { id: 'test', icon: 'fas fa-check', label: 'Test', enabled: filters.canBeTested, action: this.optionTest.bind(this) },
+            { id: 'load-pla', icon: 'fas fa-play', label: 'Load', enabled: filters.canBeLoaded, action: this.optionLoad.bind(this) },
+            { id: 'reload-pla', icon: 'fas fa-sync', label: 'Reload', enabled: filters.canBeReloaded, action: this.optionReload.bind(this) },
+            { id: 'new-file', icon: 'far fa-file', label: 'New File', enabled: filters.canAddChild, action: this.optionAddFile.bind(this) },
+            { id: 'new-folder', icon: 'far fa-folder', label: 'New Folder', enabled: filters.canAddChild, action: this.optionAddFolder.bind(this) },
             { divider: true },
             // { id: 'copy', icon: 'fas fa-copy', label: 'Copy', enabled: _ => true, action: this.optionCopy.bind(this), forContextMenu: true  },
             // { id: 'paste', icon: 'fas fa-paste', label: 'Paste', enabled: node => this.toCopy && filters.isFolder(node), action: this.optionPaste.bind(this), forContextMenu: true  },
-            { id: 'copy-path', icon: 'fas fa-link', label: 'Copy Path', enabled: function (_) { return true; }, action: this.optionCopyPath.bind(this), forContextMenu: true },
+            { id: 'copy-path', icon: 'fas fa-link', label: 'Copy Path', enabled: _ => true, action: this.optionCopyPath.bind(this), forContextMenu: true },
             { divider: true },
-            { id: 'rename', icon: 'far fa-edit', label: 'Rename', enabled: _shared_models_filters__WEBPACK_IMPORTED_MODULE_14__["canBeRenamed"], action: this.optionRename.bind(this) },
-            { id: 'delete', icon: 'far fa-trash-alt', label: 'Delete', enabled: _shared_models_filters__WEBPACK_IMPORTED_MODULE_14__["canBeDeleted"], action: this.optionDelete.bind(this) },
+            { id: 'rename', icon: 'far fa-edit', label: 'Rename', enabled: filters.canBeRenamed, action: this.optionRename.bind(this) },
+            { id: 'delete', icon: 'far fa-trash-alt', label: 'Delete', enabled: filters.canBeDeleted, action: this.optionDelete.bind(this) },
             { divider: true },
-            { id: 'readonly', icon: 'fas fa-lock', label: 'Read Only', enabled: _shared_models_filters__WEBPACK_IMPORTED_MODULE_14__["isReadOnly"], action: function () { }, forHover: true },
-            { id: 'download', icon: 'fas fa-download', label: 'Download', enabled: _shared_models_filters__WEBPACK_IMPORTED_MODULE_14__["isFolder"], action: this.optionDownload.bind(this) },
+            { id: 'readonly', icon: 'fas fa-lock', label: 'Read Only', enabled: filters.isReadOnly, action: () => { }, forHover: true },
+            { id: 'download', icon: 'fas fa-download', label: 'Download', enabled: filters.isFolder, action: this.optionDownload.bind(this) },
         ];
         this.treeOptions = {
             idField: 'path',
             selected: this.onSelected.bind(this),
             edited: this.onEdited.bind(this),
-            contextmenu: function (e) {
-                _this.openContextMenu(e.event, e.node);
+            contextmenu: (e) => {
+                this.openContextMenu(e.event, e.node);
             }
         };
-        console.log('ok');
     }
-    ExplorerComponent.prototype.ngOnInit = function () {
-        var _this = this;
+    ngOnInit() {
         if (this.remote) {
             this.nodes = this.resources.getAll();
-            this.subscriptions.push(this.resources.changed.subscribe(function (data) {
-                _this.nodes = data;
+            this.subscriptions.push(this.resources.changed.subscribe(data => {
+                this.nodes = data;
             }));
         }
-        this.subscriptions.push(this.resources.focused.subscribe(function (data) {
-            _this.tree.onFocus(data);
+        this.subscriptions.push(this.resources.focused.subscribe(data => {
+            this.tree.onFocus(data);
         }));
-    };
-    ExplorerComponent.prototype.ngOnDestroy = function () {
-        this.subscriptions.forEach(function (s) { return s.unsubscribe(); });
-    };
+    }
+    ngOnDestroy() {
+        this.subscriptions.forEach(s => s.unsubscribe());
+    }
     /**
      * Gets a value indicating whether the resource is draggrable
      * @param node the node.
      * 	@returns true only if the resource is not a root folder.
      */
-    ExplorerComponent.prototype.draggable = function (node) {
-        return !_shared_models_filters__WEBPACK_IMPORTED_MODULE_14__["isRoot"](node) && node.write;
-    };
+    draggable(node) {
+        return !filters.isRoot(node) && node.write;
+    }
     /**
      * Gets a value indicating a resource is droppable into the given 'resource'
      * @param node the node.
      * 	@returns true only if the resource is a folder.
      */
-    ExplorerComponent.prototype.droppable = function (node) {
-        return _shared_models_filters__WEBPACK_IMPORTED_MODULE_14__["isFolder"](node) && node.write;
-    };
+    droppable(node) {
+        return filters.isFolder(node) && node.write;
+    }
     /**
      * Handles refresh button click by retrieving resources from the server.
      */
-    ExplorerComponent.prototype.refresh = function () {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var confirm, _a, error_1;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        confirm = this.resources.findPredicate(function (e) { return e.changed && e.opened; });
-                        _b.label = 1;
-                    case 1:
-                        _b.trys.push([1, 8, , 9]);
-                        _a = !confirm;
-                        if (_a) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.notification.confirmAsync({
-                                title: 'You will lose any unsaved changes after this. Are you sure ?',
-                                okTitle: 'Refresh',
-                                noTitle: 'Cancel'
-                            })];
-                    case 2:
-                        _a = (_b.sent());
-                        _b.label = 3;
-                    case 3:
-                        if (!_a) return [3 /*break*/, 7];
-                        return [4 /*yield*/, this.editor.closeAll()];
-                    case 4:
-                        if (!_b.sent()) return [3 /*break*/, 6];
-                        return [4 /*yield*/, this.resources.refresh()];
-                    case 5:
-                        _b.sent();
-                        return [3 /*break*/, 7];
-                    case 6:
+    refresh() {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const confirm = this.resources.findPredicate(e => e.changed && e.opened);
+            try {
+                if (!confirm || (yield this.notification.confirmAsync({
+                    title: 'You will lose any unsaved changes after this. Are you sure ?',
+                    okTitle: 'Refresh',
+                    noTitle: 'Cancel'
+                }))) {
+                    if (yield this.editor.closeAll()) {
+                        yield this.resources.refresh();
+                    }
+                    else {
                         this.notification.logError('an error occured while trying to close the editor groups');
-                        _b.label = 7;
-                    case 7: return [3 /*break*/, 9];
-                    case 8:
-                        error_1 = _b.sent();
-                        this.notification.logError(error_1);
-                        return [3 /*break*/, 9];
-                    case 9: return [2 /*return*/];
+                    }
                 }
-            });
+            }
+            catch (error) {
+                this.notification.logError(error);
+            }
         });
-    };
+    }
     /**
      * Handles drag and drop event by asking a confirmation to the user then :
      * - If 'data.file' exists, the function will save the file on the server to the directory 'data.dst'.
      * - If data.src exists, the function will move the resource 'data.src' to the directory 'data.dst'.
      * @param e the dropped data.
      */
-    ExplorerComponent.prototype.onDropped = function (e) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var srcPath, dstPath, srcName, src, dst, options, confirmed, error_2;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        srcPath = e.src || e.file.name;
-                        dstPath = e.dst;
-                        if (srcPath === dstPath) {
-                            return [2 /*return*/];
-                        }
-                        srcName = Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_3__["basename"])(srcPath);
-                        src = this.resources.find(srcPath);
-                        dst = this.resources.find(dstPath);
-                        if (src && src.parent === e.dst) {
-                            return [2 /*return*/];
-                        }
-                        options = {
-                            title: "Are you sure you want to move '" + srcName + "' to '" + dst.name + "'?",
-                            okTitle: 'Move',
-                            noTitle: 'Cancel'
-                        };
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 5, , 6]);
-                        return [4 /*yield*/, this.notification.confirmAsync(options)];
-                    case 2:
-                        confirmed = _a.sent();
-                        if (!confirmed) return [3 /*break*/, 4];
-                        return [4 /*yield*/, this.resources.move(src || e.file, dst)];
-                    case 3:
-                        _a.sent();
-                        this.tree.collapse(dst);
-                        this.tree.expand(dst);
-                        _a.label = 4;
-                    case 4: return [3 /*break*/, 6];
-                    case 5:
-                        error_2 = _a.sent();
-                        this.notification.logError(error_2);
-                        return [3 /*break*/, 6];
-                    case 6: return [2 /*return*/];
+    onDropped(e) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const srcPath = e.src || e.file.name;
+            const dstPath = e.dst;
+            if (srcPath === dstPath) {
+                return;
+            }
+            const srcName = paths_model_1.basename(srcPath);
+            const src = this.resources.find(srcPath);
+            const dst = this.resources.find(dstPath);
+            if (src && src.parent === e.dst) {
+                return;
+            }
+            const options = {
+                title: `Are you sure you want to move '${srcName}' to '${dst.name}'?`,
+                okTitle: 'Move',
+                noTitle: 'Cancel'
+            };
+            try {
+                const confirmed = yield this.notification.confirmAsync(options);
+                if (confirmed) {
+                    yield this.resources.move(src || e.file, dst);
+                    this.tree.collapse(dst);
+                    this.tree.expand(dst);
                 }
-            });
+            }
+            catch (error) {
+                this.notification.logError(error);
+            }
         });
-    };
+    }
     /**
      * Handles focus and keyboard event while the resource is in edition mode.
      * - If the event is a escapse keydown event, the function will cancel the edition of the resource
      * - If the event is a blur of enter keydown event, the function will rename or creates the resource on the server.
      * @param e the node.
      */
-    ExplorerComponent.prototype.onEdited = function (e) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var node, event, error_3;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        node = e.node, event = e.event;
-                        if (!(event.keyCode === 27)) return [3 /*break*/, 1];
+    onEdited(e) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const { node, event } = e;
+            if (event.keyCode === 27) { // escape key
+                this.tree.endEdit();
+            }
+            else if (event.type === 'blur' || event.keyCode === 13) { // focus losed or enter key
+                if (!e.editedText) {
+                    this.tree.endEdit();
+                    return;
+                }
+                try {
+                    if (node.renaming) {
+                        yield this.resources.rename(node, e.editedText);
                         this.tree.endEdit();
-                        return [3 /*break*/, 8];
-                    case 1:
-                        if (!(event.type === 'blur' || event.keyCode === 13)) return [3 /*break*/, 8];
-                        if (!e.editedText) {
-                            this.tree.endEdit();
-                            return [2 /*return*/];
-                        }
-                        _a.label = 2;
-                    case 2:
-                        _a.trys.push([2, 7, , 8]);
-                        if (!node.renaming) return [3 /*break*/, 4];
-                        return [4 /*yield*/, this.resources.rename(node, e.editedText)];
-                    case 3:
-                        _a.sent();
-                        this.tree.endEdit();
-                        return [3 /*break*/, 6];
-                    case 4:
+                    }
+                    else {
                         node.name = e.editedText;
-                        return [4 /*yield*/, this.resources.create(node)];
-                    case 5:
-                        _a.sent();
+                        yield this.resources.create(node);
                         this.tree.endEdit();
-                        _a.label = 6;
-                    case 6: return [3 /*break*/, 8];
-                    case 7:
-                        error_3 = _a.sent();
-                        this.tree.endEdit();
-                        this.notification.logError(error_3);
-                        return [3 /*break*/, 8];
-                    case 8: return [2 /*return*/];
+                    }
                 }
-            });
-        });
-    };
-    /**
-     * Handles click on a tree node.
-     * @param e the node.
-     */
-    ExplorerComponent.prototype.onSelected = function (e) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!(e.node.type === _shared_models_resource__WEBPACK_IMPORTED_MODULE_4__["ResourceTypes"].Folder)) return [3 /*break*/, 1];
-                        this.resources.focus(e.node);
-                        return [3 /*break*/, 3];
-                    case 1: return [4 /*yield*/, this.opener.open(e.node.path)];
-                    case 2:
-                        _a.sent();
-                        _a.label = 3;
-                    case 3: return [2 /*return*/];
+                catch (error) {
+                    this.tree.endEdit();
+                    this.notification.logError(error);
                 }
-            });
+            }
         });
-    };
-    ExplorerComponent.prototype.optionDelete = function (node, event) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var confirmed, error_4;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        this.preventDefault(event);
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 5, , 6]);
-                        return [4 /*yield*/, this.notification.confirmAsync({
-                                title: 'Are you sure you want to delete \'' + node.name + '\'?',
-                                okTitle: 'Delete',
-                                noTitle: 'Cancel'
-                            })];
-                    case 2:
-                        confirmed = _a.sent();
-                        if (!confirmed) return [3 /*break*/, 4];
-                        return [4 /*yield*/, this.resources.delete(node)];
-                    case 3:
-                        _a.sent();
-                        _a.label = 4;
-                    case 4: return [3 /*break*/, 6];
-                    case 5:
-                        error_4 = _a.sent();
-                        this.notification.logError(error_4);
-                        return [3 /*break*/, 6];
-                    case 6: return [2 /*return*/];
+    }
+    onSelected(e) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            if (e.node.type === resource_1.ResourceTypes.Folder) {
+                this.resources.focus(e.node);
+            }
+            else {
+                yield this.opener.open(e.node.path);
+            }
+        });
+    }
+    optionDelete(node, event) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            this.preventDefault(event);
+            try {
+                const confirmed = yield this.notification.confirmAsync({
+                    title: 'Are you sure you want to delete \'' + node.name + '\'?',
+                    okTitle: 'Delete',
+                    noTitle: 'Cancel'
+                });
+                if (confirmed) {
+                    yield this.resources.delete(node);
                 }
-            });
+            }
+            catch (error) {
+                this.notification.logError(error);
+            }
         });
-    };
-    ExplorerComponent.prototype.optionDownload = function (node, event) {
+    }
+    optionDownload(node, event) {
         this.preventDefault(event);
-        this.opener.openURL("/filebrowser/option?name=download_resource&path=" + node.path);
-    };
-    ExplorerComponent.prototype.optionAddFile = function (node, event) {
+        this.opener.openURL(this.resources.downloadURL(node));
+    }
+    optionAddFile(node, event) {
         this.preventDefault(event);
-        this.tree.pushNode(node, Object(_shared_models_resource__WEBPACK_IMPORTED_MODULE_4__["createResource"])(node, _shared_models_resource__WEBPACK_IMPORTED_MODULE_4__["ResourceTypes"].File));
-    };
-    ExplorerComponent.prototype.optionAddFolder = function (node, event) {
+        this.tree.pushNode(node, resource_1.createResource(node, resource_1.ResourceTypes.File));
+    }
+    optionAddFolder(node, event) {
         this.preventDefault(event);
-        this.tree.pushNode(node, Object(_shared_models_resource__WEBPACK_IMPORTED_MODULE_4__["createResource"])(node, _shared_models_resource__WEBPACK_IMPORTED_MODULE_4__["ResourceTypes"].Folder));
-    };
-    ExplorerComponent.prototype.optionLoad = function (node, event) {
-        var _this = this;
+        this.tree.pushNode(node, resource_1.createResource(node, resource_1.ResourceTypes.Folder));
+    }
+    optionLoad(node, event) {
         this.preventDefault(event);
-        this.pl.load(node).then(function (response) {
-            _this.notification.logInfo(response);
-        }).catch(function (error) {
-            _this.notification.logError(error);
+        this.pl.load(node).then(response => {
+            this.notification.logInfo(response);
+        }).catch(error => {
+            this.notification.logError(error);
         });
-    };
-    ExplorerComponent.prototype.optionReload = function (node, event) {
-        var _this = this;
+    }
+    optionReload(node, event) {
         this.preventDefault(event);
-        var options = {
+        const options = {
             title: 'Reload Activity',
             message: 'ID of the activity which should be reloaded with this PLTP.'
                 + 'It should be the ID inside the URL used on your LTI consumer (Moodle, Blackboard, ...), '
@@ -1136,46 +1729,43 @@ var ExplorerComponent = /** @class */ (function () {
                 { type: 'number', placeholder: 'Activity ID', required: true, value: 0 }
             ]
         };
-        this.notification.promptAsync(options).then(function (data) {
+        this.notification.promptAsync(options).then((data) => {
             if (data.fields) {
-                _this.pl.reload(node, data.fields[0].value).then((function (response) {
-                    _this.notification.logInfo(response);
-                })).catch(function (error) {
-                    _this.notification.logError(error);
+                this.pl.reload(node, data.fields[0].value).then((response => {
+                    this.notification.logInfo(response);
+                })).catch(error => {
+                    this.notification.logError(error);
                 });
             }
         });
-    };
-    ExplorerComponent.prototype.optionRename = function (node, event) {
+    }
+    optionRename(node, event) {
         this.preventDefault(event);
         this.tree.renameNode(node);
-    };
-    ExplorerComponent.prototype.optionTest = function (node, event) {
+    }
+    optionTest(node, event) {
         this.preventDefault(event);
-        this.opener.openURL(this.resources.downloadURL(node));
-    };
-    ExplorerComponent.prototype.optionCopyPath = function (node, event) {
+        this.opener.openURL(this.resources.testURL(node));
+    }
+    optionCopyPath(node, event) {
         this.preventDefault(event);
-        var path = node.path.split('/');
-        path = path.slice(1, path.length);
-        this.editor.copyToClipboard(path.join('/'));
+        this.editor.copyToClipboard(node.path);
         this.notification.snack('Copied to clipboard!', {
             duration: 3000
         });
-    };
-    ExplorerComponent.prototype.optionShare = function (node, event) {
+    }
+    optionShare(node, event) {
         this.preventDefault(event);
-        this.editor.copyToClipboard(this.resources.downloadURL(node));
+        this.editor.copyToClipboard(this.resources.testURL(node));
         this.notification.snack('Copied to clipboard!', {
             duration: 3000
         });
-    };
-    ExplorerComponent.prototype.openContextMenu = function (event, node) {
-        var _this = this;
+    }
+    openContextMenu(event, node) {
         this.preventDefault(event);
-        var x = event.x, y = event.y;
-        var positionStrategy = this.overlay.position()
-            .flexibleConnectedTo({ x: x, y: y })
+        const { x, y } = event;
+        const positionStrategy = this.overlay.position()
+            .flexibleConnectedTo({ x, y })
             .withPositions([
             {
                 originX: 'end',
@@ -1185,126 +1775,117 @@ var ExplorerComponent = /** @class */ (function () {
             }
         ]);
         this.overlayRef = this.overlay.create({
-            positionStrategy: positionStrategy,
+            positionStrategy,
             scrollStrategy: this.overlay.scrollStrategies.close()
         });
-        this.overlayRef.attach(new _angular_cdk_portal__WEBPACK_IMPORTED_MODULE_13__["TemplatePortal"](this.contextmenu, this.viewContainerRef, {
+        this.overlayRef.attach(new portal_1.TemplatePortal(this.contextmenu, this.viewContainerRef, {
             $implicit: node
         }));
-        setTimeout(function () {
-            _this.contextMenuSubscription = Object(rxjs__WEBPACK_IMPORTED_MODULE_1__["fromEvent"])(document, 'click')
-                .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_12__["filter"])(function (e) {
-                var clickTarget = e.target;
-                return !!_this.overlayRef && !_this.overlayRef.overlayElement.contains(clickTarget);
-            }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_12__["take"])(1)).subscribe(function () { return _this.closeContextMenu(); });
+        setTimeout(() => {
+            this.contextMenuSubscription = rxjs_1.fromEvent(document, 'click')
+                .pipe(operators_1.filter(e => {
+                const clickTarget = e.target;
+                return !!this.overlayRef && !this.overlayRef.overlayElement.contains(clickTarget);
+            }), operators_1.take(1)).subscribe(() => this.closeContextMenu());
         }, 500);
-    };
-    ExplorerComponent.prototype.closeContextMenu = function () {
+    }
+    closeContextMenu() {
         // tslint:disable-next-line: no-unused-expression
         this.contextMenuSubscription && this.contextMenuSubscription.unsubscribe();
         if (this.overlayRef) {
             this.overlayRef.dispose();
             this.overlayRef = null;
         }
-    };
-    ExplorerComponent.prototype.preventDefault = function (event) {
+    }
+    preventDefault(event) {
         event.preventDefault();
         event.stopPropagation();
         this.closeContextMenu();
-    };
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["Input"])(),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", Array)
-    ], ExplorerComponent.prototype, "nodes", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["Input"])(),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", Boolean)
-    ], ExplorerComponent.prototype, "showHeader", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["Input"])(),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", Boolean)
-    ], ExplorerComponent.prototype, "remote", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ViewChild"])(src_app_shared_components_tree_tree_component__WEBPACK_IMPORTED_MODULE_10__["TreeComponent"]),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", src_app_shared_components_tree_tree_component__WEBPACK_IMPORTED_MODULE_10__["TreeComponent"])
-    ], ExplorerComponent.prototype, "tree", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["ViewChild"])('contextmenu'),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_2__["TemplateRef"])
-    ], ExplorerComponent.prototype, "contextmenu", void 0);
-    ExplorerComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["Component"])({
-            // tslint:disable-next-line: component-selector
-            selector: 'explorer',
-            template: __webpack_require__(/*! ./explorer.component.html */ "./src/app/editor/navigation/explorer/explorer.component.html"),
-            encapsulation: _angular_core__WEBPACK_IMPORTED_MODULE_2__["ViewEncapsulation"].None,
-            styles: [__webpack_require__(/*! ./explorer.component.scss */ "./src/app/editor/navigation/explorer/explorer.component.scss")]
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_pl_service__WEBPACK_IMPORTED_MODULE_5__["PLService"],
-            _shared_services_editor_service__WEBPACK_IMPORTED_MODULE_7__["EditorService"],
-            _shared_services_opener_service__WEBPACK_IMPORTED_MODULE_6__["OpenerService"],
-            _angular_cdk_overlay__WEBPACK_IMPORTED_MODULE_11__["Overlay"],
-            _shared_services_resource_service__WEBPACK_IMPORTED_MODULE_8__["ResourceService"],
-            src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_9__["NotificationService"],
-            _angular_core__WEBPACK_IMPORTED_MODULE_2__["ViewContainerRef"]])
-    ], ExplorerComponent);
-    return ExplorerComponent;
-}());
-
+    }
+};
+ExplorerComponent.ctorParameters = () => [
+    { type: pl_service_1.PLService },
+    { type: editor_service_1.EditorService },
+    { type: opener_service_1.OpenerService },
+    { type: overlay_1.Overlay },
+    { type: resource_service_1.ResourceService },
+    { type: notification_service_1.NotificationService },
+    { type: core_1.ViewContainerRef }
+];
+tslib_1.__decorate([
+    core_1.Input(),
+    tslib_1.__metadata("design:type", Array)
+], ExplorerComponent.prototype, "nodes", void 0);
+tslib_1.__decorate([
+    core_1.Input(),
+    tslib_1.__metadata("design:type", Boolean)
+], ExplorerComponent.prototype, "showHeader", void 0);
+tslib_1.__decorate([
+    core_1.Input(),
+    tslib_1.__metadata("design:type", Boolean)
+], ExplorerComponent.prototype, "remote", void 0);
+tslib_1.__decorate([
+    core_1.ViewChild(tree_component_1.TreeComponent, { static: true }),
+    tslib_1.__metadata("design:type", tree_component_1.TreeComponent)
+], ExplorerComponent.prototype, "tree", void 0);
+tslib_1.__decorate([
+    core_1.ViewChild('contextmenu', { static: true }),
+    tslib_1.__metadata("design:type", core_1.TemplateRef)
+], ExplorerComponent.prototype, "contextmenu", void 0);
+ExplorerComponent = tslib_1.__decorate([
+    core_1.Component({
+        // tslint:disable-next-line: component-selector
+        selector: 'explorer',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./explorer.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/navigation/explorer/explorer.component.html")).default,
+        encapsulation: core_1.ViewEncapsulation.None,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./explorer.component.scss */ "./src/app/pages/editor/navigation/explorer/explorer.component.scss")).default]
+    }),
+    tslib_1.__metadata("design:paramtypes", [pl_service_1.PLService,
+        editor_service_1.EditorService,
+        opener_service_1.OpenerService,
+        overlay_1.Overlay,
+        resource_service_1.ResourceService,
+        notification_service_1.NotificationService,
+        core_1.ViewContainerRef])
+], ExplorerComponent);
+exports.ExplorerComponent = ExplorerComponent;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/navigation/git/git.component.html":
-/*!**********************************************************!*\
-  !*** ./src/app/editor/navigation/git/git.component.html ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<mat-progress-bar mode=\"query\" *ngIf='runningTask()'></mat-progress-bar>\n<div class='navigation__content'>\n  <mat-accordion class='accordion' multi='true'>\n    <mat-expansion-panel class='repositories mat-elevation-z0' expanded='true'>\n      <mat-expansion-panel-header collapsedHeight='48px' expandedHeight='48px'>\n        <mat-panel-title>\n          REPOSITORIES\n        </mat-panel-title>\n      </mat-expansion-panel-header>\n      <ng-container *ngFor=\"let repo of repositories(); trackBy trackRepo\">\n          <div class='line pointer' [ngClass]='{ selected: isSelection(repo) }' (click)='changeSelection(repo)' [matTooltip]='repo.url'> \n              <span class='line-title' [matBadgeHidden]='repo.count === 0' [matBadge]=\"repo.count\" matBadgePosition=\"after\">{{repo.name}}</span>\n              <div class='spacer'></div>\n              <span class='line-subtitle'>{{repo.branch}}</span>\n              <span [matMenuTriggerFor]=\"options\">\n                  <i class='fas fa-ellipsis-h'></i>\n              </span>\n          </div>\n          <mat-menu #options=\"matMenu\">\n              <button mat-menu-item (click)='add(repo)' matTooltip='Add to git index'>Git Add</button>\n              <button mat-menu-item (click)='push(repo)' matTooltip='Push local changes to remote'>Git Push</button>\n              <button mat-menu-item (click)='pull(repo)' matTooltip='Pull changes from remote'>Git Pull</button>\n              <button mat-menu-item (click)='status(repo)' matTooltip='Show changes'>Git Status</button>\n              <button mat-menu-item (click)='checkout(repo)' matTooltip='Reset the repository to the last commit'>Git Checkout</button>\n          </mat-menu>\n      </ng-container>\n      <br/>\n      <button class='clone' mat-stroked-button matTooltip='Clone' (click)='clone()'>+</button>\n    </mat-expansion-panel>\n    <mat-divider></mat-divider>\n    <mat-expansion-panel class='changes mat-elevation-z0' *ngIf='selection' expanded='true'>\n      <mat-expansion-panel-header collapsedHeight='48px' expandedHeight='48px'>\n        <mat-panel-title>\n          CHANGES IN {{selection.name | uppercase}}\n        </mat-panel-title>\n      </mat-expansion-panel-header>\n      <mat-form-field class='commit'>\n          <input matInput placeholder=\"Press enter to commit\" (keydown)='commit($event)' [(ngModel)]='commitMessage'>\n      </mat-form-field>\n        <span *ngIf='selection.count === 0'>nothing to commit, working tree clean</span>\n        <ng-container *ngFor=\"let change of selection.changes; trackBy trackChange\">\n            <div class='line' [ngClass]='{clickable: canOpen(change)}' [matTooltip]=\"change.path|path\"> \n                <span class='line-title' [matBadge]=\"change.type\" matBadgePosition=\"after\" (click)='open(change)'>{{change.name}}</span>\n                <div class='spacer'></div>\n                <ng-container *ngIf='hasOption(change)'>\n                    <span class='pointer' [matMenuTriggerFor]=\"menu\">\n                        <i class='fas fa-ellipsis-h'></i>\n                      </span>\n                </ng-container>\n            </div>\n            <mat-menu #menu=\"matMenu\">\n              <ng-container *ngFor='let option of options'>\n                  <button *ngIf='option.enabled(change)' (click)='option.action(change)' mat-menu-item>\n                    {{option.label}}\n                  </button>\n              </ng-container>\n            </mat-menu>\n        </ng-container>\n    </mat-expansion-panel>    \n  </mat-accordion>\n</div>\n"
-
-/***/ }),
-
-/***/ "./src/app/editor/navigation/git/git.component.scss":
-/*!**********************************************************!*\
-  !*** ./src/app/editor/navigation/git/git.component.scss ***!
-  \**********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = ".navigation__content {\n  height: 100%;\n  overflow: auto; }\n\n.mat-accordion .mat-expansion-panel {\n  background-color: transparent; }\n\n.line {\n  display: -webkit-box;\n  display: flex;\n  height: 32px;\n  -webkit-box-align: center;\n          align-items: center;\n  padding-right: 8px;\n  overflow: visible; }\n\n.line.selected {\n    border-right: 1px solid; }\n\n.line.clickable .line-title {\n    cursor: pointer; }\n\n.line-title {\n  font-size: 1em;\n  margin-right: 8px; }\n\n.line-title.mat-badge-medium.mat-badge-overlap.mat-badge-after .mat-badge-content {\n    right: -30px; }\n\n.line-title.mat-badge-medium.mat-badge-above .mat-badge-content {\n    top: 0; }\n\n.line-subtitle {\n  margin-right: 8px; }\n\n.commit, .clone {\n  width: 100%; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL2VkaXRvci9uYXZpZ2F0aW9uL2dpdC9naXQuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxhQUFZO0VBQ1osZUFBYyxFQUNqQjs7QUFFRDtFQUNJLDhCQUE2QixFQUNoQzs7QUFFRDtFQUNJLHFCQUFhO0VBQWIsY0FBYTtFQUNiLGFBQVk7RUFDWiwwQkFBbUI7VUFBbkIsb0JBQW1CO0VBQ25CLG1CQUFrQjtFQUNsQixrQkFBaUIsRUFRcEI7O0FBYkQ7SUFRUSx3QkFBdUIsRUFDMUI7O0FBVEw7SUFXUSxnQkFBZSxFQUNsQjs7QUFHTDtFQUNJLGVBQWM7RUFDZCxrQkFBaUIsRUFTcEI7O0FBWEQ7SUFLUSxhQUFZLEVBQ2Y7O0FBTkw7SUFTUSxPQUFNLEVBQ1Q7O0FBR0w7RUFDSSxrQkFBaUIsRUFDcEI7O0FBRUQ7RUFDSSxZQUFXLEVBQ2QiLCJmaWxlIjoic3JjL2FwcC9lZGl0b3IvbmF2aWdhdGlvbi9naXQvZ2l0LmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLm5hdmlnYXRpb25fX2NvbnRlbnQge1xuICAgIGhlaWdodDogMTAwJTtcbiAgICBvdmVyZmxvdzogYXV0bztcbn1cblxuLm1hdC1hY2NvcmRpb24gLm1hdC1leHBhbnNpb24tcGFuZWwge1xuICAgIGJhY2tncm91bmQtY29sb3I6IHRyYW5zcGFyZW50O1xufVxuXG4ubGluZSB7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBoZWlnaHQ6IDMycHg7XG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICBwYWRkaW5nLXJpZ2h0OiA4cHg7XG4gICAgb3ZlcmZsb3c6IHZpc2libGU7XG5cbiAgICAmLnNlbGVjdGVkIHtcbiAgICAgICAgYm9yZGVyLXJpZ2h0OiAxcHggc29saWQ7XG4gICAgfVxuICAgICYuY2xpY2thYmxlIC5saW5lLXRpdGxlIHtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIH1cbn1cblxuLmxpbmUtdGl0bGUge1xuICAgIGZvbnQtc2l6ZTogMWVtO1xuICAgIG1hcmdpbi1yaWdodDogOHB4O1xuICAgIFxuICAgICYubWF0LWJhZGdlLW1lZGl1bS5tYXQtYmFkZ2Utb3ZlcmxhcC5tYXQtYmFkZ2UtYWZ0ZXIgLm1hdC1iYWRnZS1jb250ZW50IHtcbiAgICAgICAgcmlnaHQ6IC0zMHB4O1xuICAgIH1cblxuICAgICYubWF0LWJhZGdlLW1lZGl1bS5tYXQtYmFkZ2UtYWJvdmUgLm1hdC1iYWRnZS1jb250ZW50IHtcbiAgICAgICAgdG9wOiAwO1xuICAgIH1cbn1cblxuLmxpbmUtc3VidGl0bGUge1xuICAgIG1hcmdpbi1yaWdodDogOHB4O1xufVxuXG4uY29tbWl0LCAuY2xvbmUge1xuICAgIHdpZHRoOiAxMDAlO1xufVxuXG4iXX0= */"
-
-/***/ }),
-
-/***/ "./src/app/editor/navigation/git/git.component.ts":
-/*!********************************************************!*\
-  !*** ./src/app/editor/navigation/git/git.component.ts ***!
-  \********************************************************/
-/*! exports provided: GitComponent */
+/***/ "./src/app/pages/editor/navigation/git/git.component.scss":
+/*!****************************************************************!*\
+  !*** ./src/app/pages/editor/navigation/git/git.component.scss ***!
+  \****************************************************************/
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GitComponent", function() { return GitComponent; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _shared_services_git_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../shared/services/git.service */ "./src/app/editor/shared/services/git.service.ts");
-/* harmony import */ var _shared_services_resource_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../shared/services/resource.service */ "./src/app/editor/shared/services/resource.service.ts");
-/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
-/* harmony import */ var _shared_services_opener_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../shared/services/opener.service */ "./src/app/editor/shared/services/opener.service.ts");
-/* harmony import */ var _shared_services_editor_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../shared/services/editor.service */ "./src/app/editor/shared/services/editor.service.ts");
-/* harmony import */ var _shared_models_filters__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../shared/models/filters */ "./src/app/editor/shared/models/filters.ts");
+/* harmony default export */ __webpack_exports__["default"] = (".navigation-content {\n  height: 100%;\n  overflow: auto;\n}\n\n.mat-accordion .mat-expansion-panel {\n  background-color: transparent;\n}\n\n.line {\n  display: flex;\n  height: 32px;\n  align-items: center;\n  padding-right: 8px;\n  overflow: visible;\n}\n\n.line.selected {\n  border-right: 1px solid;\n}\n\n.line.clickable .line-title {\n  cursor: pointer;\n}\n\n.line-title {\n  font-size: 1em;\n  margin-right: 8px;\n}\n\n.line-title.mat-badge-medium.mat-badge-overlap.mat-badge-after .mat-badge-content {\n  right: -30px;\n}\n\n.line-title.mat-badge-medium.mat-badge-above .mat-badge-content {\n  top: 0;\n}\n\n.line-subtitle {\n  margin-right: 8px;\n}\n\n.commit, .clone {\n  width: 100%;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL3BhZ2VzL2VkaXRvci9uYXZpZ2F0aW9uL2dpdC9naXQuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2VkaXRvci9uYXZpZ2F0aW9uL2dpdC9naXQuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxZQUFBO0VBQ0EsY0FBQTtBQ0NKOztBREVBO0VBQ0ksNkJBQUE7QUNDSjs7QURFQTtFQUNJLGFBQUE7RUFDQSxZQUFBO0VBQ0EsbUJBQUE7RUFDQSxrQkFBQTtFQUNBLGlCQUFBO0FDQ0o7O0FEQ0k7RUFDSSx1QkFBQTtBQ0NSOztBRENJO0VBQ0ksZUFBQTtBQ0NSOztBREdBO0VBQ0ksY0FBQTtFQUNBLGlCQUFBO0FDQUo7O0FERUk7RUFDSSxZQUFBO0FDQVI7O0FER0k7RUFDSSxNQUFBO0FDRFI7O0FES0E7RUFDSSxpQkFBQTtBQ0ZKOztBREtBO0VBQ0ksV0FBQTtBQ0ZKIiwiZmlsZSI6InNyYy9hcHAvcGFnZXMvZWRpdG9yL25hdmlnYXRpb24vZ2l0L2dpdC5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5uYXZpZ2F0aW9uLWNvbnRlbnQge1xuICAgIGhlaWdodDogMTAwJTtcbiAgICBvdmVyZmxvdzogYXV0bztcbn1cblxuLm1hdC1hY2NvcmRpb24gLm1hdC1leHBhbnNpb24tcGFuZWwge1xuICAgIGJhY2tncm91bmQtY29sb3I6IHRyYW5zcGFyZW50O1xufVxuXG4ubGluZSB7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBoZWlnaHQ6IDMycHg7XG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICBwYWRkaW5nLXJpZ2h0OiA4cHg7XG4gICAgb3ZlcmZsb3c6IHZpc2libGU7XG5cbiAgICAmLnNlbGVjdGVkIHtcbiAgICAgICAgYm9yZGVyLXJpZ2h0OiAxcHggc29saWQ7XG4gICAgfVxuICAgICYuY2xpY2thYmxlIC5saW5lLXRpdGxlIHtcbiAgICAgICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIH1cbn1cblxuLmxpbmUtdGl0bGUge1xuICAgIGZvbnQtc2l6ZTogMWVtO1xuICAgIG1hcmdpbi1yaWdodDogOHB4O1xuXG4gICAgJi5tYXQtYmFkZ2UtbWVkaXVtLm1hdC1iYWRnZS1vdmVybGFwLm1hdC1iYWRnZS1hZnRlciAubWF0LWJhZGdlLWNvbnRlbnQge1xuICAgICAgICByaWdodDogLTMwcHg7XG4gICAgfVxuXG4gICAgJi5tYXQtYmFkZ2UtbWVkaXVtLm1hdC1iYWRnZS1hYm92ZSAubWF0LWJhZGdlLWNvbnRlbnQge1xuICAgICAgICB0b3A6IDA7XG4gICAgfVxufVxuXG4ubGluZS1zdWJ0aXRsZSB7XG4gICAgbWFyZ2luLXJpZ2h0OiA4cHg7XG59XG5cbi5jb21taXQsIC5jbG9uZSB7XG4gICAgd2lkdGg6IDEwMCU7XG59XG5cbiIsIi5uYXZpZ2F0aW9uLWNvbnRlbnQge1xuICBoZWlnaHQ6IDEwMCU7XG4gIG92ZXJmbG93OiBhdXRvO1xufVxuXG4ubWF0LWFjY29yZGlvbiAubWF0LWV4cGFuc2lvbi1wYW5lbCB7XG4gIGJhY2tncm91bmQtY29sb3I6IHRyYW5zcGFyZW50O1xufVxuXG4ubGluZSB7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGhlaWdodDogMzJweDtcbiAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgcGFkZGluZy1yaWdodDogOHB4O1xuICBvdmVyZmxvdzogdmlzaWJsZTtcbn1cbi5saW5lLnNlbGVjdGVkIHtcbiAgYm9yZGVyLXJpZ2h0OiAxcHggc29saWQ7XG59XG4ubGluZS5jbGlja2FibGUgLmxpbmUtdGl0bGUge1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG5cbi5saW5lLXRpdGxlIHtcbiAgZm9udC1zaXplOiAxZW07XG4gIG1hcmdpbi1yaWdodDogOHB4O1xufVxuLmxpbmUtdGl0bGUubWF0LWJhZGdlLW1lZGl1bS5tYXQtYmFkZ2Utb3ZlcmxhcC5tYXQtYmFkZ2UtYWZ0ZXIgLm1hdC1iYWRnZS1jb250ZW50IHtcbiAgcmlnaHQ6IC0zMHB4O1xufVxuLmxpbmUtdGl0bGUubWF0LWJhZGdlLW1lZGl1bS5tYXQtYmFkZ2UtYWJvdmUgLm1hdC1iYWRnZS1jb250ZW50IHtcbiAgdG9wOiAwO1xufVxuXG4ubGluZS1zdWJ0aXRsZSB7XG4gIG1hcmdpbi1yaWdodDogOHB4O1xufVxuXG4uY29tbWl0LCAuY2xvbmUge1xuICB3aWR0aDogMTAwJTtcbn0iXX0= */");
 
+/***/ }),
 
+/***/ "./src/app/pages/editor/navigation/git/git.component.ts":
+/*!**************************************************************!*\
+  !*** ./src/app/pages/editor/navigation/git/git.component.ts ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
 
-
-
-
-
-var GitComponent = /** @class */ (function () {
-    function GitComponent(git, opener, editor, resources, notification) {
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const git_service_1 = __webpack_require__(/*! ../../shared/services/git.service */ "./src/app/pages/editor/shared/services/git.service.ts");
+const resource_service_1 = __webpack_require__(/*! ../../shared/services/resource.service */ "./src/app/pages/editor/shared/services/resource.service.ts");
+const notification_service_1 = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
+const opener_service_1 = __webpack_require__(/*! ../../shared/services/opener.service */ "./src/app/pages/editor/shared/services/opener.service.ts");
+const editor_service_1 = __webpack_require__(/*! ../../shared/services/editor.service */ "./src/app/pages/editor/shared/services/editor.service.ts");
+const filters_1 = __webpack_require__(/*! ../../shared/models/filters */ "./src/app/pages/editor/shared/models/filters.ts");
+let GitComponent = class GitComponent {
+    constructor(git, opener, editor, resources, notification) {
         this.git = git;
         this.opener = opener;
         this.editor = editor;
@@ -1315,325 +1896,258 @@ var GitComponent = /** @class */ (function () {
         /** value of commit input form */
         this.commitMessage = '';
     }
-    GitComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        this.options.push({ label: 'Open File', enabled: function (item) { return _this.canOpen(item); }, action: function (item) {
-                _this.open(item);
+    ngOnInit() {
+        this.options.push({ label: 'Open File', enabled: (item) => this.canOpen(item), action: (item) => {
+                this.open(item);
             } });
-        this.options.push({ label: 'Git Add', enabled: function (item) { return _this.canAdd(item); }, action: function (item) {
-                _this.add(item);
+        this.options.push({ label: 'Git Add', enabled: (item) => this.canAdd(item), action: (item) => {
+                this.add(item);
             } });
-        this.options.push({ label: 'Git Checkout', enabled: function (item) { return _this.canCheckout(item); }, action: function (item) {
-                _this.checkout(item);
+        this.options.push({ label: 'Git Checkout', enabled: (item) => this.canCheckout(item), action: (item) => {
+                this.checkout(item);
             } });
-    };
-    GitComponent.prototype.ngOnDestroy = function () {
-    };
+    }
+    ngOnDestroy() {
+    }
     /** used inside the html template to checks if a repo is selected */
-    GitComponent.prototype.isSelection = function (item) {
+    isSelection(item) {
         return this.selection && this.selection.url === item.url;
-    };
+    }
     /**
      * changes the selected repository.
      * @param item the new seleted repository.
      */
-    GitComponent.prototype.changeSelection = function (item) {
+    changeSelection(item) {
         this.selection = item;
-    };
+    }
     /** used inside html template with *ngFor to keep track of the repository item */
-    GitComponent.prototype.trackRepo = function (_index, item) {
+    trackRepo(_index, item) {
         return item.url;
-    };
+    }
     /** used inside html template with *ngFor to keep track of the repository item */
-    GitComponent.prototype.trackChange = function (_index, item) {
+    trackChange(_index, item) {
         return item.path;
-    };
+    }
     /**
      * gets a value indicating whether git add command can be applied to
      * the resource linked to the repository item.
      * @param item the repository item.
     */
-    GitComponent.prototype.canAdd = function (item) {
+    canAdd(item) {
         return item.type.includes('M') || !item.type.includes('D');
-    };
+    }
     /**
      * gets a value indicating whether git checkout command can be applied to
      * the resource linked to the repository item.
      * @param item the repository item.
     */
-    GitComponent.prototype.canCheckout = function (item) {
+    canCheckout(item) {
         return item.type !== '??' && !item.type.includes('D');
-    };
+    }
     /**
      * gets a value indicating whether the resource linked to the repository item
      * can be opened by any editor.
      * @param item the repository item.
     */
-    GitComponent.prototype.canOpen = function (item) {
+    canOpen(item) {
         return !item.isdir && !item.type.includes('D');
-    };
+    }
     /**
      * open the resource linked to the repository object in the editor.
      * @param item the repository item.
     */
-    GitComponent.prototype.open = function (item) {
+    open(item) {
         if (this.canOpen(item)) {
             this.opener.open(item.path, {
                 diffMode: true
             });
         }
-    };
+    }
     /**
      * executes git add command on the given repository item.
      *	@param item the repository item.
      */
-    GitComponent.prototype.add = function (item) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.git.add(item)];
-                    case 1:
-                        if (_a.sent()) {
-                            this.refresh();
-                            return [2 /*return*/, true];
-                        }
-                        return [2 /*return*/, false];
-                }
-            });
+    add(item) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            if (yield this.git.add(item)) {
+                this.refresh();
+                return true;
+            }
+            return false;
         });
-    };
+    }
     /**
      * executes git push command on the given repository item
      *	@param item the repository item.
      */
-    GitComponent.prototype.push = function (item) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var fields, options, response, login, password;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fields = [
-                            { type: 'text', placeholder: 'Login', required: false, value: '' },
-                            { type: 'password', placeholder: 'Passsword', required: false, value: '' },
-                        ];
-                        options = {
-                            title: 'Push',
-                            fields: fields
-                        };
-                        return [4 /*yield*/, this.notification.promptAsync(options)];
-                    case 1:
-                        response = _a.sent();
-                        if (response) {
-                            login = response.fields[0].value;
-                            password = response.fields[1].value;
-                            return [2 /*return*/, this.git.push(item, login, password)];
-                        }
-                        return [2 /*return*/, false];
-                }
-            });
+    push(item) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const fields = [
+                { type: 'text', placeholder: 'Login', required: false, value: '' },
+                { type: 'password', placeholder: 'Passsword', required: false, value: '' },
+            ];
+            const options = {
+                title: 'Push',
+                fields: fields
+            };
+            const response = yield this.notification.promptAsync(options);
+            if (response) {
+                const login = response.fields[0].value;
+                const password = response.fields[1].value;
+                return this.git.push(item, login, password);
+            }
+            return false;
         });
-    };
+    }
     /**
      * executes git pull command on the given repository item after asking a confirmation.
      * - if the command succeed, the resources of the editor will be refreshed.
      *	@param item the repository item.
      */
-    GitComponent.prototype.pull = function (item) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var confirmed, success, refreshed, error_1;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.notification.confirmAsync({
-                            title: 'Please confirm your action',
-                            message: 'This action will pull the latest changes from the remote server and close the opened editors!',
-                            okTitle: 'Pull',
-                            noTitle: 'Cancel'
-                        })];
-                    case 1:
-                        confirmed = _a.sent();
-                        _a.label = 2;
-                    case 2:
-                        _a.trys.push([2, 9, , 10]);
-                        if (!confirmed) return [3 /*break*/, 8];
-                        return [4 /*yield*/, this.git.pull(item)];
-                    case 3:
-                        success = _a.sent();
-                        if (!success) return [3 /*break*/, 7];
-                        return [4 /*yield*/, this.editor.closeAll()];
-                    case 4:
-                        if (!_a.sent()) return [3 /*break*/, 6];
-                        return [4 /*yield*/, this.resources.refresh()];
-                    case 5:
-                        refreshed = _a.sent();
-                        if (refreshed) {
-                            this.refresh();
-                            return [2 /*return*/, true];
-                        }
-                        return [2 /*return*/, false];
-                    case 6: return [2 /*return*/, false];
-                    case 7: return [2 /*return*/, false];
-                    case 8: return [2 /*return*/, false];
-                    case 9:
-                        error_1 = _a.sent();
-                        this.notification.logError(error_1);
-                        return [2 /*return*/, false];
-                    case 10: return [2 /*return*/];
-                }
+    pull(item) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const confirmed = yield this.notification.confirmAsync({
+                title: 'Please confirm your action',
+                message: 'This action will pull the latest changes from the remote server and close the opened editors!',
+                okTitle: 'Pull',
+                noTitle: 'Cancel'
             });
+            try {
+                if (confirmed) {
+                    const success = yield this.git.pull(item);
+                    if (success) {
+                        if (yield this.editor.closeAll()) {
+                            const refreshed = yield this.resources.refresh();
+                            if (refreshed) {
+                                this.refresh();
+                                return true;
+                            }
+                            return false;
+                        }
+                        return false;
+                    }
+                    return false;
+                }
+                return false;
+            }
+            catch (error) {
+                this.notification.logError(error);
+                return false;
+            }
         });
-    };
+    }
     /**
      * executes git status command on the given repository.
      *	@param item the repository item.
      */
-    GitComponent.prototype.status = function (item) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                return [2 /*return*/, this.git.status(item)];
-            });
+    status(item) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return this.git.status(item);
         });
-    };
+    }
     /**
      * executes git pull command on the given repository item after asking a confirmation.
      *	@param item the repository item.
      */
-    GitComponent.prototype.checkout = function (item) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var confirmed, success, refreshed, resource, error_2;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.notification.confirmAsync({
-                            title: 'Please confirm your action',
-                            message: 'This action will reset all your local changes up to your last commit and close the opened editors!',
-                            okTitle: 'Checkout',
-                            noTitle: 'Cancel'
-                        })];
-                    case 1:
-                        confirmed = _a.sent();
-                        _a.label = 2;
-                    case 2:
-                        _a.trys.push([2, 11, , 12]);
-                        if (!confirmed) return [3 /*break*/, 10];
-                        return [4 /*yield*/, this.git.checkout(item)];
-                    case 3:
-                        success = _a.sent();
-                        if (!success) return [3 /*break*/, 9];
-                        return [4 /*yield*/, this.editor.closeAll()];
-                    case 4:
-                        if (!_a.sent()) return [3 /*break*/, 8];
-                        return [4 /*yield*/, this.resources.refresh()];
-                    case 5:
-                        refreshed = _a.sent();
-                        if (!refreshed) return [3 /*break*/, 7];
-                        return [4 /*yield*/, this.resources.find(item.path)];
-                    case 6:
-                        resource = _a.sent();
-                        if (resource && Object(_shared_models_filters__WEBPACK_IMPORTED_MODULE_7__["isFile"])(resource)) {
-                            this.opener.open(resource.path, {
-                                diffMode: true
-                            });
-                        }
-                        this.refresh();
-                        return [2 /*return*/, true];
-                    case 7: return [2 /*return*/, false];
-                    case 8: return [2 /*return*/, false];
-                    case 9: return [2 /*return*/, false];
-                    case 10: return [3 /*break*/, 12];
-                    case 11:
-                        error_2 = _a.sent();
-                        this.notification.logError(error_2);
-                        return [2 /*return*/, false];
-                    case 12: return [2 /*return*/];
-                }
+    checkout(item) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const confirmed = yield this.notification.confirmAsync({
+                title: 'Please confirm your action',
+                message: 'This action will reset all your local changes up to your last commit and close the opened editors!',
+                okTitle: 'Checkout',
+                noTitle: 'Cancel'
             });
+            try {
+                if (confirmed) {
+                    const success = yield this.git.checkout(item);
+                    if (success) {
+                        if (yield this.editor.closeAll()) {
+                            const refreshed = yield this.resources.refresh();
+                            if (refreshed) {
+                                const resource = yield this.resources.find(item.path);
+                                if (resource && filters_1.isFile(resource)) {
+                                    this.opener.open(resource.path, {
+                                        diffMode: true
+                                    });
+                                }
+                                this.refresh();
+                                return true;
+                            }
+                            return false;
+                        }
+                        return false;
+                    }
+                    return false;
+                }
+            }
+            catch (error) {
+                this.notification.logError(error);
+                return false;
+            }
         });
-    };
+    }
     /**
      * executes git clone command.
      * - if the command succeed, the resources of the editor will be refreshed.
      */
-    GitComponent.prototype.clone = function () {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var fields, options, response, confirmOptions, url, username, password, success, _a, error_3;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        fields = [
-                            { type: 'url', placeholder: 'Url', required: true, value: '' },
-                            { type: 'text', placeholder: 'Username', required: false, value: '' },
-                            { type: 'password', placeholder: 'Passsword', required: false, value: '' },
-                        ];
-                        options = {
-                            title: 'Clone repository',
-                            fields: fields
-                        };
-                        return [4 /*yield*/, this.notification.promptAsync(options)];
-                    case 1:
-                        response = _b.sent();
-                        _b.label = 2;
-                    case 2:
-                        _b.trys.push([2, 11, , 12]);
-                        if (!response) return [3 /*break*/, 10];
-                        if (!!!this.resources.findPredicate(function (item) { return item.changed; })) return [3 /*break*/, 4];
-                        confirmOptions = {
+    clone() {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const fields = [
+                { type: 'url', placeholder: 'Url', required: true, value: '' },
+                { type: 'text', placeholder: 'Username', required: false, value: '' },
+                { type: 'password', placeholder: 'Passsword', required: false, value: '' },
+            ];
+            const options = {
+                title: 'Clone repository',
+                fields: fields
+            };
+            const response = yield this.notification.promptAsync(options);
+            try {
+                if (response) {
+                    if (!!this.resources.findPredicate(item => item.changed)) {
+                        const confirmOptions = {
                             title: 'Please confirm your action',
                             message: 'This action will create new directory and close the opened editors!',
                             okTitle: 'Clone',
                             noTitle: 'Cancel'
                         };
-                        return [4 /*yield*/, this.notification.confirmAsync(confirmOptions)];
-                    case 3:
-                        if (!(_b.sent())) {
-                            return [2 /*return*/, false];
+                        if (!(yield this.notification.confirmAsync(confirmOptions))) {
+                            return false;
                         }
-                        _b.label = 4;
-                    case 4:
-                        url = response.fields[0].value;
-                        username = response.fields[1].value;
-                        password = response.fields[2].value;
-                        return [4 /*yield*/, this.git.clone(this.resources.home, url, username, password)];
-                    case 5:
-                        success = _b.sent();
-                        if (!success) return [3 /*break*/, 9];
-                        return [4 /*yield*/, this.editor.closeAll()];
-                    case 6:
-                        _a = (_b.sent());
-                        if (!_a) return [3 /*break*/, 8];
-                        return [4 /*yield*/, this.resources.refresh()];
-                    case 7:
-                        _a = (_b.sent());
-                        _b.label = 8;
-                    case 8:
-                        if (_a) {
+                    }
+                    const url = response.fields[0].value;
+                    const username = response.fields[1].value;
+                    const password = response.fields[2].value;
+                    const success = yield this.git.clone(this.resources.home, url, username, password);
+                    if (success) {
+                        if ((yield this.editor.closeAll()) && (yield this.resources.refresh())) {
                             this.refresh();
-                            return [2 /*return*/, true];
+                            return true;
                         }
-                        return [2 /*return*/, false];
-                    case 9: return [2 /*return*/, false];
-                    case 10: return [3 /*break*/, 12];
-                    case 11:
-                        error_3 = _b.sent();
-                        this.notification.logError(error_3);
-                        return [2 /*return*/, false];
-                    case 12: return [2 /*return*/];
+                        return false;
+                    }
+                    return false;
                 }
-            });
+            }
+            catch (error) {
+                this.notification.logError(error);
+                return false;
+            }
         });
-    };
+    }
     /**
      * executes git commit command on the selected repository with the
      * value of commit message input form if enter key is pressed.
      *	@param event the keyboard event of the input.
      */
-    GitComponent.prototype.commit = function (event) {
-        var _this = this;
+    commit(event) {
         // tslint:disable-next-line: deprecation
         if (event.keyCode === 13) {
             if (this.commitMessage) {
-                this.git.commit(this.selection, this.commitMessage).then(function (success) {
+                this.git.commit(this.selection, this.commitMessage).then((success) => {
                     if (success) {
-                        _this.commitMessage = '';
-                        _this.selection.changes = _this.selection.changes.filter(function (e) { return !e.type.includes('M'); });
+                        this.commitMessage = '';
+                        this.selection.changes = this.selection.changes.filter(e => !e.type.includes('M'));
                     }
                 });
             }
@@ -1641,98 +2155,87 @@ var GitComponent = /** @class */ (function () {
                 this.notification.logError('commit message is required');
             }
         }
-    };
+    }
     /**
      * gets the repositories
      * */
-    GitComponent.prototype.repositories = function () {
+    repositories() {
         return this.git.repos;
-    };
+    }
     /**
      * gets a value indicating whether a git command is running
      * */
-    GitComponent.prototype.runningTask = function () {
+    runningTask() {
         return this.git.runningTask;
-    };
-    GitComponent.prototype.hasOption = function (item) {
-        return this.options.some(function (option) { return option.enabled(item); });
-    };
-    GitComponent.prototype.refresh = function () {
-        var _this = this;
+    }
+    hasOption(item) {
+        return this.options.some(option => option.enabled(item));
+    }
+    refresh() {
         if (this.selection) {
-            this.selection = this.repositories().find(function (item) {
-                return item.url === _this.selection.url;
-            }) || this.repositories().find(function (_) { return true; });
+            this.selection = this.repositories().find(item => {
+                return item.url === this.selection.url;
+            }) || this.repositories().find(_ => true);
         }
-    };
-    GitComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-            // tslint:disable-next-line: component-selector
-            selector: 'git',
-            template: __webpack_require__(/*! ./git.component.html */ "./src/app/editor/navigation/git/git.component.html"),
-            styles: [__webpack_require__(/*! ./git.component.scss */ "./src/app/editor/navigation/git/git.component.scss")]
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_git_service__WEBPACK_IMPORTED_MODULE_2__["GitService"],
-            _shared_services_opener_service__WEBPACK_IMPORTED_MODULE_5__["OpenerService"],
-            _shared_services_editor_service__WEBPACK_IMPORTED_MODULE_6__["EditorService"],
-            _shared_services_resource_service__WEBPACK_IMPORTED_MODULE_3__["ResourceService"],
-            src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_4__["NotificationService"]])
-    ], GitComponent);
-    return GitComponent;
-}());
-
+    }
+};
+GitComponent.ctorParameters = () => [
+    { type: git_service_1.GitService },
+    { type: opener_service_1.OpenerService },
+    { type: editor_service_1.EditorService },
+    { type: resource_service_1.ResourceService },
+    { type: notification_service_1.NotificationService }
+];
+GitComponent = tslib_1.__decorate([
+    core_1.Component({
+        // tslint:disable-next-line: component-selector
+        selector: 'git',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./git.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/navigation/git/git.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./git.component.scss */ "./src/app/pages/editor/navigation/git/git.component.scss")).default]
+    }),
+    tslib_1.__metadata("design:paramtypes", [git_service_1.GitService,
+        opener_service_1.OpenerService,
+        editor_service_1.EditorService,
+        resource_service_1.ResourceService,
+        notification_service_1.NotificationService])
+], GitComponent);
+exports.GitComponent = GitComponent;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/navigation/navigation.component.html":
-/*!*************************************************************!*\
-  !*** ./src/app/editor/navigation/navigation.component.html ***!
-  \*************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<img id=\"nav-action-explorer\" class=\"nav-action\" src=\"static/editor/assets/icons/navigation/explorer.svg\"\n     matTooltip=\"Explorer\" (click)=\"didTapExplorer()\"/>\n\n<img id=\"nav-action-search\" class=\"nav-action\" src=\"static/editor/assets/icons/navigation/search.svg\"\n     matTooltip=\"Search\" (click)='didTapSearch()'/>\n\n<div id=\"nav-action-git\" [matBadge]=\"gitBadge()\" matTooltip=\"Git\">\n    <img class='nav-action' src='static/editor/assets/icons/navigation/git.svg' (click)='didTapGit()'/>\n</div>\n\n<div id=\"nav-action-console\" class=\"nav-action\"  [matBadge]=\"consoleBadge()\" matTooltip=\"Console\" (click)=\"didTapConsole()\">\n    <i class=\"fas fa-info\"></i>\n</div>\n\n\n<div id=\"nav-action-components\" class=\"nav-action\" matTooltip=\"Components\" (click)=\"didTapComponents()\">\n    <i class=\"fab fa-uikit\"></i>\n</div>\n\n<div class=\"spacer\"></div>\n\n<div id=\"nav-action-theme\" class=\"nav-action\" matTooltip=\"Switch Theme\" (click)=\"didTapTheme()\">\n    <i class=\"fas fa-palette\"></i>\n</div>\n\n<img id=\"nav-action-settings\" class=\"nav-action\" src=\"static/editor/assets/icons/navigation/settings.svg\"\n     matTooltip=\"Settings\" (click)=\"didTapSettings()\"/>\n"
-
-/***/ }),
-
-/***/ "./src/app/editor/navigation/navigation.component.scss":
-/*!*************************************************************!*\
-  !*** ./src/app/editor/navigation/navigation.component.scss ***!
-  \*************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = ":host {\n  display: -webkit-box;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n          flex-direction: column;\n  -webkit-box-align: center;\n          align-items: center;\n  padding: 8px 0 0 0;\n  background-color: var(--activityBar-background);\n  color: var(--activityBar-foreground);\n  width: 50px;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none; }\n\n.nav-action {\n  cursor: pointer;\n  width: 36px;\n  height: 36px;\n  margin-bottom: 16px;\n  overflow: visible; }\n\n.nav-action .fas, .nav-action .fab {\n    width: 36px;\n    height: 36px;\n    font-size: 36px;\n    text-align: center; }\n\n.mat-badge-content {\n  width: unset !important;\n  height: unset !important; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL2VkaXRvci9uYXZpZ2F0aW9uL25hdmlnYXRpb24uY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxxQkFBYTtFQUFiLGNBQWE7RUFDYiw2QkFBc0I7RUFBdEIsOEJBQXNCO1VBQXRCLHVCQUFzQjtFQUN0QiwwQkFBbUI7VUFBbkIsb0JBQW1CO0VBQ25CLG1CQUFrQjtFQUNsQixnREFBK0M7RUFDL0MscUNBQW9DO0VBQ3BDLFlBQVc7RUFDWCwwQkFBaUI7S0FBakIsdUJBQWlCO01BQWpCLHNCQUFpQjtVQUFqQixrQkFBaUIsRUFDcEI7O0FBRUQ7RUFDSSxnQkFBZTtFQUNmLFlBQVc7RUFDWCxhQUFZO0VBQ1osb0JBQW1CO0VBQ25CLGtCQUFpQixFQVNwQjs7QUFkRDtJQVFRLFlBQVc7SUFDWCxhQUFZO0lBQ1osZ0JBQWU7SUFDZixtQkFBa0IsRUFDckI7O0FBSUw7RUFDSSx3QkFBdUI7RUFDdkIseUJBQXdCLEVBQzNCIiwiZmlsZSI6InNyYy9hcHAvZWRpdG9yL25hdmlnYXRpb24vbmF2aWdhdGlvbi5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIjpob3N0IHtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICBwYWRkaW5nOiA4cHggMCAwIDA7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tYWN0aXZpdHlCYXItYmFja2dyb3VuZCk7XG4gICAgY29sb3I6IHZhcigtLWFjdGl2aXR5QmFyLWZvcmVncm91bmQpO1xuICAgIHdpZHRoOiA1MHB4O1xuICAgIHVzZXItc2VsZWN0OiBub25lO1xufVxuXG4ubmF2LWFjdGlvbiB7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIHdpZHRoOiAzNnB4O1xuICAgIGhlaWdodDogMzZweDtcbiAgICBtYXJnaW4tYm90dG9tOiAxNnB4O1xuICAgIG92ZXJmbG93OiB2aXNpYmxlO1xuXG4gICAgLmZhcywgLmZhYiB7XG4gICAgICAgIHdpZHRoOiAzNnB4O1xuICAgICAgICBoZWlnaHQ6IDM2cHg7XG4gICAgICAgIGZvbnQtc2l6ZTogMzZweDtcbiAgICAgICAgdGV4dC1hbGlnbjogY2VudGVyO1xuICAgIH1cblxufVxuXG4ubWF0LWJhZGdlLWNvbnRlbnQge1xuICAgIHdpZHRoOiB1bnNldCAhaW1wb3J0YW50O1xuICAgIGhlaWdodDogdW5zZXQgIWltcG9ydGFudDtcbn1cbiJdfQ== */"
-
-/***/ }),
-
-/***/ "./src/app/editor/navigation/navigation.component.ts":
-/*!***********************************************************!*\
-  !*** ./src/app/editor/navigation/navigation.component.ts ***!
-  \***********************************************************/
-/*! exports provided: NavigationComponent */
+/***/ "./src/app/pages/editor/navigation/navigation.component.scss":
+/*!*******************************************************************!*\
+  !*** ./src/app/pages/editor/navigation/navigation.component.scss ***!
+  \*******************************************************************/
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NavigationComponent", function() { return NavigationComponent; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _shared_services_git_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/services/git.service */ "./src/app/editor/shared/services/git.service.ts");
-/* harmony import */ var _navigation_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./navigation.service */ "./src/app/editor/navigation/navigation.service.ts");
-/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
-/* harmony import */ var _shared_services_settings_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../shared/services/settings.service */ "./src/app/editor/shared/services/settings.service.ts");
-/* harmony import */ var _shared_models_settings__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../shared/models/settings */ "./src/app/editor/shared/models/settings.ts");
+/* harmony default export */ __webpack_exports__["default"] = (":host {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  padding: 8px 0 0 0;\n  background-color: var(--activityBar-background);\n  color: var(--activityBar-foreground);\n  width: 50px;\n  -webkit-user-select: none;\n     -moz-user-select: none;\n      -ms-user-select: none;\n          user-select: none;\n}\n\n.nav-action {\n  cursor: pointer;\n  width: 36px;\n  height: 36px;\n  margin-bottom: 16px;\n  overflow: visible;\n}\n\n.nav-action .fas, .nav-action .fab {\n  width: 36px;\n  height: 36px;\n  font-size: 36px;\n  text-align: center;\n}\n\n.mat-badge-content {\n  width: unset !important;\n  height: unset !important;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL3BhZ2VzL2VkaXRvci9uYXZpZ2F0aW9uL25hdmlnYXRpb24uY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2VkaXRvci9uYXZpZ2F0aW9uL25hdmlnYXRpb24uY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxhQUFBO0VBQ0Esc0JBQUE7RUFDQSxtQkFBQTtFQUNBLGtCQUFBO0VBQ0EsK0NBQUE7RUFDQSxvQ0FBQTtFQUNBLFdBQUE7RUFDQSx5QkFBQTtLQUFBLHNCQUFBO01BQUEscUJBQUE7VUFBQSxpQkFBQTtBQ0NKOztBREVBO0VBQ0ksZUFBQTtFQUNBLFdBQUE7RUFDQSxZQUFBO0VBQ0EsbUJBQUE7RUFDQSxpQkFBQTtBQ0NKOztBRENJO0VBQ0ksV0FBQTtFQUNBLFlBQUE7RUFDQSxlQUFBO0VBQ0Esa0JBQUE7QUNDUjs7QURJQTtFQUNJLHVCQUFBO0VBQ0Esd0JBQUE7QUNESiIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL2VkaXRvci9uYXZpZ2F0aW9uL25hdmlnYXRpb24uY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyI6aG9zdCB7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgcGFkZGluZzogOHB4IDAgMCAwO1xuICAgIGJhY2tncm91bmQtY29sb3I6IHZhcigtLWFjdGl2aXR5QmFyLWJhY2tncm91bmQpO1xuICAgIGNvbG9yOiB2YXIoLS1hY3Rpdml0eUJhci1mb3JlZ3JvdW5kKTtcbiAgICB3aWR0aDogNTBweDtcbiAgICB1c2VyLXNlbGVjdDogbm9uZTtcbn1cblxuLm5hdi1hY3Rpb24ge1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICB3aWR0aDogMzZweDtcbiAgICBoZWlnaHQ6IDM2cHg7XG4gICAgbWFyZ2luLWJvdHRvbTogMTZweDtcbiAgICBvdmVyZmxvdzogdmlzaWJsZTtcblxuICAgIC5mYXMsIC5mYWIge1xuICAgICAgICB3aWR0aDogMzZweDtcbiAgICAgICAgaGVpZ2h0OiAzNnB4O1xuICAgICAgICBmb250LXNpemU6IDM2cHg7XG4gICAgICAgIHRleHQtYWxpZ246IGNlbnRlcjtcbiAgICB9XG5cbn1cblxuLm1hdC1iYWRnZS1jb250ZW50IHtcbiAgICB3aWR0aDogdW5zZXQgIWltcG9ydGFudDtcbiAgICBoZWlnaHQ6IHVuc2V0ICFpbXBvcnRhbnQ7XG59XG4iLCI6aG9zdCB7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gIHBhZGRpbmc6IDhweCAwIDAgMDtcbiAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tYWN0aXZpdHlCYXItYmFja2dyb3VuZCk7XG4gIGNvbG9yOiB2YXIoLS1hY3Rpdml0eUJhci1mb3JlZ3JvdW5kKTtcbiAgd2lkdGg6IDUwcHg7XG4gIHVzZXItc2VsZWN0OiBub25lO1xufVxuXG4ubmF2LWFjdGlvbiB7XG4gIGN1cnNvcjogcG9pbnRlcjtcbiAgd2lkdGg6IDM2cHg7XG4gIGhlaWdodDogMzZweDtcbiAgbWFyZ2luLWJvdHRvbTogMTZweDtcbiAgb3ZlcmZsb3c6IHZpc2libGU7XG59XG4ubmF2LWFjdGlvbiAuZmFzLCAubmF2LWFjdGlvbiAuZmFiIHtcbiAgd2lkdGg6IDM2cHg7XG4gIGhlaWdodDogMzZweDtcbiAgZm9udC1zaXplOiAzNnB4O1xuICB0ZXh0LWFsaWduOiBjZW50ZXI7XG59XG5cbi5tYXQtYmFkZ2UtY29udGVudCB7XG4gIHdpZHRoOiB1bnNldCAhaW1wb3J0YW50O1xuICBoZWlnaHQ6IHVuc2V0ICFpbXBvcnRhbnQ7XG59Il19 */");
 
+/***/ }),
 
+/***/ "./src/app/pages/editor/navigation/navigation.component.ts":
+/*!*****************************************************************!*\
+  !*** ./src/app/pages/editor/navigation/navigation.component.ts ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
 
-
-
-
-var NavigationComponent = /** @class */ (function () {
-    function NavigationComponent(git, settings, navigation, notification) {
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const git_service_1 = __webpack_require__(/*! ../shared/services/git.service */ "./src/app/pages/editor/shared/services/git.service.ts");
+const navigation_service_1 = __webpack_require__(/*! ./navigation.service */ "./src/app/pages/editor/navigation/navigation.service.ts");
+const notification_service_1 = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
+const settings_service_1 = __webpack_require__(/*! ../shared/services/settings.service */ "./src/app/pages/editor/shared/services/settings.service.ts");
+const settings_1 = __webpack_require__(/*! ../shared/models/settings */ "./src/app/pages/editor/shared/models/settings.ts");
+let NavigationComponent = class NavigationComponent {
+    constructor(git, settings, navigation, notification) {
         this.git = git;
         this.settings = settings;
         this.navigation = navigation;
@@ -1740,134 +2243,122 @@ var NavigationComponent = /** @class */ (function () {
         this.size = 25;
         this.index = 0;
     }
-    NavigationComponent.prototype.didTapButton = function (index) {
+    get gitBadge() {
+        return this.git.size;
+    }
+    get infosBadge() {
+        return this.notification.size;
+    }
+    didTapButton(index) {
         if (index === this.index) {
             this.size = this.size === 25 ? 0 : 25;
         }
         this.index = index;
-    };
-    NavigationComponent.prototype.didTapExplorer = function () {
-        this.didTapButton(0);
-    };
-    NavigationComponent.prototype.didTapSearch = function () {
-        this.didTapButton(1);
-    };
-    NavigationComponent.prototype.didTapGit = function () {
-        this.didTapButton(2);
-    };
-    NavigationComponent.prototype.didTapConsole = function () {
-        this.navigation.debugging.next();
-    };
-    NavigationComponent.prototype.didTapComponents = function () {
-        var url = window.location.origin + '/components';
-        window.open(url, '_blank');
-    };
-    NavigationComponent.prototype.didTapTheme = function () {
-        var theme = this.settings.get(_shared_models_settings__WEBPACK_IMPORTED_MODULE_6__["Settings"].EDITOR_KEY, 'theme');
-        var newTheme = theme.value === 'light-theme' ? 'dark-theme' : 'light-theme';
-        this.settings.set(_shared_models_settings__WEBPACK_IMPORTED_MODULE_6__["Settings"].EDITOR_KEY, 'theme', newTheme);
-    };
-    NavigationComponent.prototype.didTapSettings = function () {
-        this.navigation.settings.next();
-    };
-    NavigationComponent.prototype.gitBadge = function () {
-        return this.git.size;
-    };
-    NavigationComponent.prototype.consoleBadge = function () {
-        return this.notification.size;
-    };
-    NavigationComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-            // tslint:disable-next-line: component-selector
-            selector: 'navigation',
-            template: __webpack_require__(/*! ./navigation.component.html */ "./src/app/editor/navigation/navigation.component.html"),
-            styles: [__webpack_require__(/*! ./navigation.component.scss */ "./src/app/editor/navigation/navigation.component.scss")]
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_git_service__WEBPACK_IMPORTED_MODULE_2__["GitService"],
-            _shared_services_settings_service__WEBPACK_IMPORTED_MODULE_5__["SettingsService"],
-            _navigation_service__WEBPACK_IMPORTED_MODULE_3__["NavigationService"],
-            src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_4__["NotificationService"]])
-    ], NavigationComponent);
-    return NavigationComponent;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/editor/navigation/navigation.service.ts":
-/*!*********************************************************!*\
-  !*** ./src/app/editor/navigation/navigation.service.ts ***!
-  \*********************************************************/
-/*! exports provided: NavigationService */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NavigationService", function() { return NavigationService; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
-
-
-
-var NavigationService = /** @class */ (function () {
-    function NavigationService() {
-        this.debugging = new rxjs__WEBPACK_IMPORTED_MODULE_2__["Subject"]();
-        this.settings = new rxjs__WEBPACK_IMPORTED_MODULE_2__["Subject"]();
     }
-    NavigationService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({ providedIn: 'root' })
-    ], NavigationService);
-    return NavigationService;
-}());
-
+    didTapExplorer() {
+        this.didTapButton(0);
+    }
+    didTapSearch() {
+        this.didTapButton(1);
+    }
+    didTapGit() {
+        this.didTapButton(2);
+    }
+    didTapInfos() {
+        this.navigation.infos.next();
+    }
+    didTapComponents() {
+        const url = window.location.origin + '/components';
+        window.open(url, '_blank');
+    }
+    didTapTheme() {
+        const theme = this.settings.get(settings_1.Settings.EDITOR_KEY, 'theme');
+        const newTheme = theme.value === 'light-theme' ? 'dark-theme' : 'light-theme';
+        this.settings.set(settings_1.Settings.EDITOR_KEY, 'theme', newTheme);
+    }
+    didTapSettings() {
+        this.navigation.settings.next();
+    }
+};
+NavigationComponent.ctorParameters = () => [
+    { type: git_service_1.GitService },
+    { type: settings_service_1.SettingsService },
+    { type: navigation_service_1.NavigationService },
+    { type: notification_service_1.NotificationService }
+];
+NavigationComponent = tslib_1.__decorate([
+    core_1.Component({
+        // tslint:disable-next-line: component-selector
+        selector: 'navigation',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./navigation.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/navigation/navigation.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./navigation.component.scss */ "./src/app/pages/editor/navigation/navigation.component.scss")).default]
+    }),
+    tslib_1.__metadata("design:paramtypes", [git_service_1.GitService,
+        settings_service_1.SettingsService,
+        navigation_service_1.NavigationService,
+        notification_service_1.NotificationService])
+], NavigationComponent);
+exports.NavigationComponent = NavigationComponent;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/navigation/search/search.component.html":
-/*!****************************************************************!*\
-  !*** ./src/app/editor/navigation/search/search.component.html ***!
-  \****************************************************************/
+/***/ "./src/app/pages/editor/navigation/navigation.service.ts":
+/*!***************************************************************!*\
+  !*** ./src/app/pages/editor/navigation/navigation.service.ts ***!
+  \***************************************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = "<ng-container>\n    <div class='tab-bar'>\n        <span>SEARCH</span>\n        <div class=\"spacer\"></div>\n    </div>\n    <mat-progress-bar mode='indeterminate' color='warn' *ngIf='querying'></mat-progress-bar>\n    <div class=\"navigation__content\">\n        <mat-form-field class='search'>\n          <input autoFocus autocomplete=\"off\" matInput placeholder=\"Press Enter to search\" (keydown)='search($event)' [(ngModel)]='query'>\n        </mat-form-field>\n        <ng-container>\n            <span class='result'>{{size}} result(s)</span>\n        </ng-container>\n        <explorer [nodes]='entries'></explorer>\n    </div>\n</ng-container>\n"
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const rxjs_1 = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm2015/index.js");
+let NavigationService = class NavigationService {
+    constructor() {
+        this.infos = new rxjs_1.Subject();
+        this.settings = new rxjs_1.Subject();
+    }
+};
+NavigationService = tslib_1.__decorate([
+    core_1.Injectable({ providedIn: 'root' })
+], NavigationService);
+exports.NavigationService = NavigationService;
+
 
 /***/ }),
 
-/***/ "./src/app/editor/navigation/search/search.component.scss":
-/*!****************************************************************!*\
-  !*** ./src/app/editor/navigation/search/search.component.scss ***!
-  \****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = ".navigation__content {\n  padding: 0 8px;\n  height: calc(100% - 36px);\n  overflow: auto; }\n\n.search {\n  width: 90%;\n  margin: 0 16px; }\n\n.result {\n  padding: 0 16px;\n  font-size: 1.1; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL2VkaXRvci9uYXZpZ2F0aW9uL3NlYXJjaC9zZWFyY2guY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxlQUFjO0VBQ2QsMEJBQXlCO0VBQ3pCLGVBQWMsRUFDakI7O0FBRUQ7RUFDSSxXQUFVO0VBQ1YsZUFBYyxFQUNqQjs7QUFFRDtFQUNJLGdCQUFlO0VBQ2YsZUFBYyxFQUNqQiIsImZpbGUiOiJzcmMvYXBwL2VkaXRvci9uYXZpZ2F0aW9uL3NlYXJjaC9zZWFyY2guY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIubmF2aWdhdGlvbl9fY29udGVudCB7XG4gICAgcGFkZGluZzogMCA4cHg7XG4gICAgaGVpZ2h0OiBjYWxjKDEwMCUgLSAzNnB4KTtcbiAgICBvdmVyZmxvdzogYXV0bztcbn1cblxuLnNlYXJjaCB7XG4gICAgd2lkdGg6IDkwJTtcbiAgICBtYXJnaW46IDAgMTZweDtcbn1cblxuLnJlc3VsdCB7XG4gICAgcGFkZGluZzogMCAxNnB4O1xuICAgIGZvbnQtc2l6ZTogMS4xO1xufSJdfQ== */"
-
-/***/ }),
-
-/***/ "./src/app/editor/navigation/search/search.component.ts":
-/*!**************************************************************!*\
-  !*** ./src/app/editor/navigation/search/search.component.ts ***!
-  \**************************************************************/
-/*! exports provided: SearchComponent */
+/***/ "./src/app/pages/editor/navigation/search/search.component.scss":
+/*!**********************************************************************!*\
+  !*** ./src/app/pages/editor/navigation/search/search.component.scss ***!
+  \**********************************************************************/
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SearchComponent", function() { return SearchComponent; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _shared_services_resource_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../shared/services/resource.service */ "./src/app/editor/shared/services/resource.service.ts");
-/* harmony import */ var _shared_models_resource__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../shared/models/resource */ "./src/app/editor/shared/models/resource.ts");
+/* harmony default export */ __webpack_exports__["default"] = (".navigation-content {\n  padding: 0 8px;\n  height: calc(100% - 36px);\n  overflow: auto;\n}\n\n.search {\n  width: 90%;\n  margin: 0 16px;\n}\n\n.result {\n  padding: 0 16px;\n  font-size: 1.1;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL3BhZ2VzL2VkaXRvci9uYXZpZ2F0aW9uL3NlYXJjaC9zZWFyY2guY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2VkaXRvci9uYXZpZ2F0aW9uL3NlYXJjaC9zZWFyY2guY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxjQUFBO0VBQ0EseUJBQUE7RUFDQSxjQUFBO0FDQ0o7O0FERUE7RUFDSSxVQUFBO0VBQ0EsY0FBQTtBQ0NKOztBREVBO0VBQ0ksZUFBQTtFQUNBLGNBQUE7QUNDSiIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL2VkaXRvci9uYXZpZ2F0aW9uL3NlYXJjaC9zZWFyY2guY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIubmF2aWdhdGlvbi1jb250ZW50IHtcbiAgICBwYWRkaW5nOiAwIDhweDtcbiAgICBoZWlnaHQ6IGNhbGMoMTAwJSAtIDM2cHgpO1xuICAgIG92ZXJmbG93OiBhdXRvO1xufVxuXG4uc2VhcmNoIHtcbiAgICB3aWR0aDogOTAlO1xuICAgIG1hcmdpbjogMCAxNnB4O1xufVxuXG4ucmVzdWx0IHtcbiAgICBwYWRkaW5nOiAwIDE2cHg7XG4gICAgZm9udC1zaXplOiAxLjE7XG59XG4iLCIubmF2aWdhdGlvbi1jb250ZW50IHtcbiAgcGFkZGluZzogMCA4cHg7XG4gIGhlaWdodDogY2FsYygxMDAlIC0gMzZweCk7XG4gIG92ZXJmbG93OiBhdXRvO1xufVxuXG4uc2VhcmNoIHtcbiAgd2lkdGg6IDkwJTtcbiAgbWFyZ2luOiAwIDE2cHg7XG59XG5cbi5yZXN1bHQge1xuICBwYWRkaW5nOiAwIDE2cHg7XG4gIGZvbnQtc2l6ZTogMS4xO1xufSJdfQ== */");
 
+/***/ }),
 
+/***/ "./src/app/pages/editor/navigation/search/search.component.ts":
+/*!********************************************************************!*\
+  !*** ./src/app/pages/editor/navigation/search/search.component.ts ***!
+  \********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
 
-var SearchComponent = /** @class */ (function () {
-    function SearchComponent(resources) {
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const resource_service_1 = __webpack_require__(/*! ../../shared/services/resource.service */ "./src/app/pages/editor/shared/services/resource.service.ts");
+const resource_1 = __webpack_require__(/*! ../../shared/models/resource */ "./src/app/pages/editor/shared/models/resource.ts");
+let SearchComponent = class SearchComponent {
+    constructor(resources) {
         this.resources = resources;
         this.dataSource = [];
         this.entries = [];
@@ -1875,21 +2366,20 @@ var SearchComponent = /** @class */ (function () {
         this.size = 0;
         this.empty = false;
     }
-    SearchComponent.prototype.ngOnInit = function () {
-        this.dataSource = this.resources.findAll((function (r) {
+    ngOnInit() {
+        this.dataSource = this.resources.findAll((r => {
             return true;
         }));
-    };
-    SearchComponent.prototype.search = function (event) {
-        var _this = this;
+    }
+    search(event) {
         // tslint:disable-next-line: deprecation
         if (event.keyCode === 13) {
             this.querying = true;
             this.query = this.query.trim().toLocaleLowerCase();
             if (this.query) {
-                this.entries = this.dataSource.filter((function (e) {
-                    var index = e.name.toLocaleLowerCase().indexOf(_this.query);
-                    return e.type === _shared_models_resource__WEBPACK_IMPORTED_MODULE_3__["ResourceTypes"].File && index === 0;
+                this.entries = this.dataSource.filter((e => {
+                    const index = e.name.toLocaleLowerCase().indexOf(this.query);
+                    return e.type === resource_1.ResourceTypes.File && index === 0;
                 }));
                 this.size = this.entries.length;
                 this.empty = this.size === 0;
@@ -1901,223 +2391,197 @@ var SearchComponent = /** @class */ (function () {
             }
             this.querying = false;
         }
-    };
-    SearchComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-            // tslint:disable-next-line: component-selector
-            selector: 'search',
-            template: __webpack_require__(/*! ./search.component.html */ "./src/app/editor/navigation/search/search.component.html"),
-            styles: [__webpack_require__(/*! ./search.component.scss */ "./src/app/editor/navigation/search/search.component.scss")]
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_resource_service__WEBPACK_IMPORTED_MODULE_2__["ResourceService"]])
-    ], SearchComponent);
-    return SearchComponent;
-}());
-
+    }
+};
+SearchComponent.ctorParameters = () => [
+    { type: resource_service_1.ResourceService }
+];
+SearchComponent = tslib_1.__decorate([
+    core_1.Component({
+        // tslint:disable-next-line: component-selector
+        selector: 'search',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./search.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/navigation/search/search.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./search.component.scss */ "./src/app/pages/editor/navigation/search/search.component.scss")).default]
+    }),
+    tslib_1.__metadata("design:paramtypes", [resource_service_1.ResourceService])
+], SearchComponent);
+exports.SearchComponent = SearchComponent;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/quick-open/quick-open.component.html":
-/*!*************************************************************!*\
-  !*** ./src/app/editor/quick-open/quick-open.component.html ***!
-  \*************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<div id='editor-overlay-quickOpenWidget' #quickOpen>\n    <input #input type=\"text\" placeholder=\"Quick Open\" [matAutocomplete]=\"auto\" (blur)='onBlured()' [formControl]=\"form\">\n    <mat-autocomplete #auto=\"matAutocomplete\" (optionSelected)='onSelected($event)' >\n        <mat-option *ngFor=\"let entry of $entries | async\" [value]=\"entry\">\n            <img [icon]=\"entry\"/><span class='entry-name'>{{entry.name}}</span> - <span class='entry-path'>{{entry.path|path}}</span>\n        </mat-option>\n    </mat-autocomplete>\n</div>\n"
-
-/***/ }),
-
-/***/ "./src/app/editor/quick-open/quick-open.component.scss":
-/*!*************************************************************!*\
-  !*** ./src/app/editor/quick-open/quick-open.component.scss ***!
-  \*************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "#editor-overlay-quickOpenWidget {\n  z-index: 100000;\n  left: 0;\n  right: 0;\n  width: 40%;\n  margin: auto;\n  position: absolute;\n  top: 36px;\n  padding: 0 4px; }\n  #editor-overlay-quickOpenWidget input {\n    width: 100%;\n    height: 44px;\n    margin: 0 0 0 16px;\n    padding: 0.1rem 0.3rem;\n    font-size: 1rem;\n    line-height: 1.5;\n    background-clip: padding-box;\n    border: 1px solid #ced4da;\n    border-radius: 0.15rem;\n    -webkit-transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;\n    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }\n  #editor-overlay-quickOpenWidget input:focus {\n      border-color: #80bdff;\n      outline: 0;\n      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); }\n  .entry-icon {\n  font-size: 14px; }\n  .entry-name {\n  font-size: 14px; }\n  .entry-path {\n  font-size: 10px; }\n  div.mat-autocomplete-panel {\n  height: auto;\n  max-height: 400px;\n  overflow-y: auto; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL2VkaXRvci9xdWljay1vcGVuL3F1aWNrLW9wZW4uY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxnQkFBZTtFQUNmLFFBQU87RUFDUCxTQUFRO0VBQ1IsV0FBVTtFQUNWLGFBQVk7RUFDWixtQkFBa0I7RUFDbEIsVUFBUztFQUNULGVBQWMsRUFrQmpCO0VBMUJEO0lBVVEsWUFBVztJQUNYLGFBQVk7SUFDWixtQkFBa0I7SUFDbEIsdUJBQXNCO0lBQ3RCLGdCQUFlO0lBQ2YsaUJBQWdCO0lBQ2hCLDZCQUE0QjtJQUM1QiwwQkFBeUI7SUFDekIsdUJBQXNCO0lBQ3RCLGlGQUF3RTtJQUF4RSx5RUFBd0UsRUFNM0U7RUF6Qkw7TUFxQlksc0JBQXFCO01BQ3JCLFdBQVU7TUFDVixpREFBZ0QsRUFDbkQ7RUFJVDtFQUNJLGdCQUFlLEVBQ2xCO0VBRUQ7RUFDSSxnQkFBZSxFQUNsQjtFQUVEO0VBQ0ksZ0JBQWUsRUFDbEI7RUFFRDtFQUNJLGFBQVk7RUFDWixrQkFBaUI7RUFDakIsaUJBQWdCLEVBQ25CIiwiZmlsZSI6InNyYy9hcHAvZWRpdG9yL3F1aWNrLW9wZW4vcXVpY2stb3Blbi5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIiNlZGl0b3Itb3ZlcmxheS1xdWlja09wZW5XaWRnZXQge1xuICAgIHotaW5kZXg6IDEwMDAwMDtcbiAgICBsZWZ0OiAwO1xuICAgIHJpZ2h0OiAwO1xuICAgIHdpZHRoOiA0MCU7XG4gICAgbWFyZ2luOiBhdXRvO1xuICAgIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgICB0b3A6IDM2cHg7XG4gICAgcGFkZGluZzogMCA0cHg7XG4gICAgaW5wdXQge1xuICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgaGVpZ2h0OiA0NHB4O1xuICAgICAgICBtYXJnaW46IDAgMCAwIDE2cHg7XG4gICAgICAgIHBhZGRpbmc6IDAuMXJlbSAwLjNyZW07XG4gICAgICAgIGZvbnQtc2l6ZTogMXJlbTtcbiAgICAgICAgbGluZS1oZWlnaHQ6IDEuNTtcbiAgICAgICAgYmFja2dyb3VuZC1jbGlwOiBwYWRkaW5nLWJveDtcbiAgICAgICAgYm9yZGVyOiAxcHggc29saWQgI2NlZDRkYTtcbiAgICAgICAgYm9yZGVyLXJhZGl1czogMC4xNXJlbTtcbiAgICAgICAgdHJhbnNpdGlvbjogYm9yZGVyLWNvbG9yIDAuMTVzIGVhc2UtaW4tb3V0LCBib3gtc2hhZG93IDAuMTVzIGVhc2UtaW4tb3V0O1xuICAgICAgICAmOmZvY3VzIHtcbiAgICAgICAgICAgIGJvcmRlci1jb2xvcjogIzgwYmRmZjtcbiAgICAgICAgICAgIG91dGxpbmU6IDA7XG4gICAgICAgICAgICBib3gtc2hhZG93OiAwIDAgMCAwLjJyZW0gcmdiYSgwLCAxMjMsIDI1NSwgMC4yNSk7XG4gICAgICAgIH1cbiAgICB9XG59XG5cbi5lbnRyeS1pY29uIHtcbiAgICBmb250LXNpemU6IDE0cHg7XG59XG5cbi5lbnRyeS1uYW1lIHtcbiAgICBmb250LXNpemU6IDE0cHg7XG59XG5cbi5lbnRyeS1wYXRoIHtcbiAgICBmb250LXNpemU6IDEwcHg7XG59XG5cbmRpdi5tYXQtYXV0b2NvbXBsZXRlLXBhbmVsIHtcbiAgICBoZWlnaHQ6IGF1dG87XG4gICAgbWF4LWhlaWdodDogNDAwcHg7XG4gICAgb3ZlcmZsb3cteTogYXV0bztcbn1cbiJdfQ== */"
-
-/***/ }),
-
-/***/ "./src/app/editor/quick-open/quick-open.component.ts":
-/*!***********************************************************!*\
-  !*** ./src/app/editor/quick-open/quick-open.component.ts ***!
-  \***********************************************************/
-/*! exports provided: QuickOpenComponent */
+/***/ "./src/app/pages/editor/quick-open/quick-open.component.scss":
+/*!*******************************************************************!*\
+  !*** ./src/app/pages/editor/quick-open/quick-open.component.scss ***!
+  \*******************************************************************/
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "QuickOpenComponent", function() { return QuickOpenComponent; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm5/forms.js");
-/* harmony import */ var _shared_models_resource__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../shared/models/resource */ "./src/app/editor/shared/models/resource.ts");
-/* harmony import */ var _shared_services_opener_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../shared/services/opener.service */ "./src/app/editor/shared/services/opener.service.ts");
-/* harmony import */ var _shared_services_resource_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../shared/services/resource.service */ "./src/app/editor/shared/services/resource.service.ts");
-/* harmony import */ var rxjs_operators__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm5/operators/index.js");
-/* harmony import */ var rxjs_add_operator_debounceTime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! rxjs/add/operator/debounceTime */ "./node_modules/rxjs-compat/_esm5/add/operator/debounceTime.js");
+/* harmony default export */ __webpack_exports__["default"] = ("#editor-overlay-quickOpenWidget {\n  z-index: 100000;\n  left: 0;\n  right: 0;\n  width: 40%;\n  margin: auto;\n  position: absolute;\n  top: 36px;\n  padding: 0 4px;\n}\n#editor-overlay-quickOpenWidget input {\n  width: 100%;\n  height: 44px;\n  margin: 0 0 0 16px;\n  padding: 0.1rem 0.3rem;\n  font-size: 1rem;\n  line-height: 1.5;\n  background-clip: padding-box;\n  border: 1px solid #ced4da;\n  border-radius: 0.15rem;\n  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;\n}\n#editor-overlay-quickOpenWidget input:focus {\n  border-color: #80bdff;\n  outline: 0;\n  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);\n}\n.entry-icon {\n  font-size: 14px;\n}\n.entry-name {\n  font-size: 14px;\n}\n.entry-path {\n  font-size: 10px;\n}\ndiv.mat-autocomplete-panel {\n  height: auto;\n  max-height: 400px;\n  overflow-y: auto;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL3BhZ2VzL2VkaXRvci9xdWljay1vcGVuL3F1aWNrLW9wZW4uY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2VkaXRvci9xdWljay1vcGVuL3F1aWNrLW9wZW4uY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxlQUFBO0VBQ0EsT0FBQTtFQUNBLFFBQUE7RUFDQSxVQUFBO0VBQ0EsWUFBQTtFQUNBLGtCQUFBO0VBQ0EsU0FBQTtFQUNBLGNBQUE7QUNDSjtBREFJO0VBQ0ksV0FBQTtFQUNBLFlBQUE7RUFDQSxrQkFBQTtFQUNBLHNCQUFBO0VBQ0EsZUFBQTtFQUNBLGdCQUFBO0VBQ0EsNEJBQUE7RUFDQSx5QkFBQTtFQUNBLHNCQUFBO0VBQ0Esd0VBQUE7QUNFUjtBRERRO0VBQ0kscUJBQUE7RUFDQSxVQUFBO0VBQ0EsZ0RBQUE7QUNHWjtBREVBO0VBQ0ksZUFBQTtBQ0NKO0FERUE7RUFDSSxlQUFBO0FDQ0o7QURFQTtFQUNJLGVBQUE7QUNDSjtBREVBO0VBQ0ksWUFBQTtFQUNBLGlCQUFBO0VBQ0EsZ0JBQUE7QUNDSiIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL2VkaXRvci9xdWljay1vcGVuL3F1aWNrLW9wZW4uY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIjZWRpdG9yLW92ZXJsYXktcXVpY2tPcGVuV2lkZ2V0IHtcbiAgICB6LWluZGV4OiAxMDAwMDA7XG4gICAgbGVmdDogMDtcbiAgICByaWdodDogMDtcbiAgICB3aWR0aDogNDAlO1xuICAgIG1hcmdpbjogYXV0bztcbiAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgdG9wOiAzNnB4O1xuICAgIHBhZGRpbmc6IDAgNHB4O1xuICAgIGlucHV0IHtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIGhlaWdodDogNDRweDtcbiAgICAgICAgbWFyZ2luOiAwIDAgMCAxNnB4O1xuICAgICAgICBwYWRkaW5nOiAwLjFyZW0gMC4zcmVtO1xuICAgICAgICBmb250LXNpemU6IDFyZW07XG4gICAgICAgIGxpbmUtaGVpZ2h0OiAxLjU7XG4gICAgICAgIGJhY2tncm91bmQtY2xpcDogcGFkZGluZy1ib3g7XG4gICAgICAgIGJvcmRlcjogMXB4IHNvbGlkICNjZWQ0ZGE7XG4gICAgICAgIGJvcmRlci1yYWRpdXM6IDAuMTVyZW07XG4gICAgICAgIHRyYW5zaXRpb246IGJvcmRlci1jb2xvciAwLjE1cyBlYXNlLWluLW91dCwgYm94LXNoYWRvdyAwLjE1cyBlYXNlLWluLW91dDtcbiAgICAgICAgJjpmb2N1cyB7XG4gICAgICAgICAgICBib3JkZXItY29sb3I6ICM4MGJkZmY7XG4gICAgICAgICAgICBvdXRsaW5lOiAwO1xuICAgICAgICAgICAgYm94LXNoYWRvdzogMCAwIDAgMC4ycmVtIHJnYmEoMCwgMTIzLCAyNTUsIDAuMjUpO1xuICAgICAgICB9XG4gICAgfVxufVxuXG4uZW50cnktaWNvbiB7XG4gICAgZm9udC1zaXplOiAxNHB4O1xufVxuXG4uZW50cnktbmFtZSB7XG4gICAgZm9udC1zaXplOiAxNHB4O1xufVxuXG4uZW50cnktcGF0aCB7XG4gICAgZm9udC1zaXplOiAxMHB4O1xufVxuXG5kaXYubWF0LWF1dG9jb21wbGV0ZS1wYW5lbCB7XG4gICAgaGVpZ2h0OiBhdXRvO1xuICAgIG1heC1oZWlnaHQ6IDQwMHB4O1xuICAgIG92ZXJmbG93LXk6IGF1dG87XG59XG4iLCIjZWRpdG9yLW92ZXJsYXktcXVpY2tPcGVuV2lkZ2V0IHtcbiAgei1pbmRleDogMTAwMDAwO1xuICBsZWZ0OiAwO1xuICByaWdodDogMDtcbiAgd2lkdGg6IDQwJTtcbiAgbWFyZ2luOiBhdXRvO1xuICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gIHRvcDogMzZweDtcbiAgcGFkZGluZzogMCA0cHg7XG59XG4jZWRpdG9yLW92ZXJsYXktcXVpY2tPcGVuV2lkZ2V0IGlucHV0IHtcbiAgd2lkdGg6IDEwMCU7XG4gIGhlaWdodDogNDRweDtcbiAgbWFyZ2luOiAwIDAgMCAxNnB4O1xuICBwYWRkaW5nOiAwLjFyZW0gMC4zcmVtO1xuICBmb250LXNpemU6IDFyZW07XG4gIGxpbmUtaGVpZ2h0OiAxLjU7XG4gIGJhY2tncm91bmQtY2xpcDogcGFkZGluZy1ib3g7XG4gIGJvcmRlcjogMXB4IHNvbGlkICNjZWQ0ZGE7XG4gIGJvcmRlci1yYWRpdXM6IDAuMTVyZW07XG4gIHRyYW5zaXRpb246IGJvcmRlci1jb2xvciAwLjE1cyBlYXNlLWluLW91dCwgYm94LXNoYWRvdyAwLjE1cyBlYXNlLWluLW91dDtcbn1cbiNlZGl0b3Itb3ZlcmxheS1xdWlja09wZW5XaWRnZXQgaW5wdXQ6Zm9jdXMge1xuICBib3JkZXItY29sb3I6ICM4MGJkZmY7XG4gIG91dGxpbmU6IDA7XG4gIGJveC1zaGFkb3c6IDAgMCAwIDAuMnJlbSByZ2JhKDAsIDEyMywgMjU1LCAwLjI1KTtcbn1cblxuLmVudHJ5LWljb24ge1xuICBmb250LXNpemU6IDE0cHg7XG59XG5cbi5lbnRyeS1uYW1lIHtcbiAgZm9udC1zaXplOiAxNHB4O1xufVxuXG4uZW50cnktcGF0aCB7XG4gIGZvbnQtc2l6ZTogMTBweDtcbn1cblxuZGl2Lm1hdC1hdXRvY29tcGxldGUtcGFuZWwge1xuICBoZWlnaHQ6IGF1dG87XG4gIG1heC1oZWlnaHQ6IDQwMHB4O1xuICBvdmVyZmxvdy15OiBhdXRvO1xufSJdfQ== */");
 
+/***/ }),
 
+/***/ "./src/app/pages/editor/quick-open/quick-open.component.ts":
+/*!*****************************************************************!*\
+  !*** ./src/app/pages/editor/quick-open/quick-open.component.ts ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
 
-
-
-
-
-var QuickOpenComponent = /** @class */ (function () {
-    function QuickOpenComponent(opener, resources) {
-        var _this = this;
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const forms_1 = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm2015/forms.js");
+const resource_1 = __webpack_require__(/*! ../shared/models/resource */ "./src/app/pages/editor/shared/models/resource.ts");
+const opener_service_1 = __webpack_require__(/*! ../shared/services/opener.service */ "./src/app/pages/editor/shared/services/opener.service.ts");
+const resource_service_1 = __webpack_require__(/*! ../shared/services/resource.service */ "./src/app/pages/editor/shared/services/resource.service.ts");
+const operators_1 = __webpack_require__(/*! rxjs/operators */ "./node_modules/rxjs/_esm2015/operators/index.js");
+__webpack_require__(/*! rxjs/add/operator/debounceTime */ "./node_modules/rxjs-compat/_esm2015/add/operator/debounceTime.js");
+let QuickOpenComponent = class QuickOpenComponent {
+    constructor(opener, resources) {
         this.opener = opener;
         this.resources = resources;
-        this.closed = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"]();
-        this.form = new _angular_forms__WEBPACK_IMPORTED_MODULE_2__["FormControl"]();
-        this.data = this.resources.findAll(function (resource) {
-            return resource.type === _shared_models_resource__WEBPACK_IMPORTED_MODULE_3__["ResourceTypes"].File;
+        this.closed = new core_1.EventEmitter();
+        this.form = new forms_1.FormControl();
+        this.data = this.resources.findAll(resource => {
+            return resource.type === resource_1.ResourceTypes.File;
         });
         this.$entries = this.form
             .valueChanges
             .debounceTime(200)
-            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["startWith"])(''), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_6__["map"])(function (query) { return query ? _this.filter(query) : _this.data.slice(); }));
+            .pipe(operators_1.startWith(''), operators_1.map(query => query ? this.filter(query) : this.data.slice()));
     }
-    QuickOpenComponent.prototype.ngAfterViewInit = function () {
-        var _this = this;
-        setTimeout(function () {
-            _this.input.nativeElement.focus();
+    ngAfterViewInit() {
+        setTimeout(() => {
+            this.input.nativeElement.focus();
         }, 200);
-    };
-    QuickOpenComponent.prototype.onBlured = function () {
+    }
+    onBlured() {
         this.closed.emit();
-    };
-    QuickOpenComponent.prototype.onSelected = function (e) {
+    }
+    onSelected(e) {
         this.closed.emit();
         this.opener.open(e.option.value.path);
-    };
-    QuickOpenComponent.prototype.filter = function (query) {
+    }
+    filter(query) {
         query = (query || '').toLowerCase();
-        return this.data.filter(function (item) {
+        return this.data.filter(item => {
             return item.name.toLowerCase().indexOf(query) === 0;
         });
-    };
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Output"])(),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"])
-    ], QuickOpenComponent.prototype, "closed", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ViewChild"])('input'),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"])
-    ], QuickOpenComponent.prototype, "input", void 0);
-    QuickOpenComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-            // tslint:disable-next-line: component-selector
-            selector: 'quick-open',
-            template: __webpack_require__(/*! ./quick-open.component.html */ "./src/app/editor/quick-open/quick-open.component.html"),
-            styles: [__webpack_require__(/*! ./quick-open.component.scss */ "./src/app/editor/quick-open/quick-open.component.scss")]
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_opener_service__WEBPACK_IMPORTED_MODULE_4__["OpenerService"], _shared_services_resource_service__WEBPACK_IMPORTED_MODULE_5__["ResourceService"]])
-    ], QuickOpenComponent);
-    return QuickOpenComponent;
-}());
-
+    }
+};
+QuickOpenComponent.ctorParameters = () => [
+    { type: opener_service_1.OpenerService },
+    { type: resource_service_1.ResourceService }
+];
+tslib_1.__decorate([
+    core_1.Output(),
+    tslib_1.__metadata("design:type", core_1.EventEmitter)
+], QuickOpenComponent.prototype, "closed", void 0);
+tslib_1.__decorate([
+    core_1.ViewChild('input', { static: true }),
+    tslib_1.__metadata("design:type", core_1.ElementRef)
+], QuickOpenComponent.prototype, "input", void 0);
+QuickOpenComponent = tslib_1.__decorate([
+    core_1.Component({
+        // tslint:disable-next-line: component-selector
+        selector: 'quick-open',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./quick-open.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/quick-open/quick-open.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./quick-open.component.scss */ "./src/app/pages/editor/quick-open/quick-open.component.scss")).default]
+    }),
+    tslib_1.__metadata("design:paramtypes", [opener_service_1.OpenerService, resource_service_1.ResourceService])
+], QuickOpenComponent);
+exports.QuickOpenComponent = QuickOpenComponent;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/directives/icon.directive.ts":
-/*!************************************************************!*\
-  !*** ./src/app/editor/shared/directives/icon.directive.ts ***!
-  \************************************************************/
-/*! exports provided: IconDirective */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/directives/icon.directive.ts":
+/*!******************************************************************!*\
+  !*** ./src/app/pages/editor/shared/directives/icon.directive.ts ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "IconDirective", function() { return IconDirective; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _services_resource_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../services/resource.service */ "./src/app/editor/shared/services/resource.service.ts");
-/* harmony import */ var _themes_icons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../themes/icons */ "./src/app/editor/shared/themes/icons.ts");
 
-
-
-
-var IconDirective = /** @class */ (function () {
-    function IconDirective(el, resources, changes) {
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const resource_service_1 = __webpack_require__(/*! ../services/resource.service */ "./src/app/pages/editor/shared/services/resource.service.ts");
+const theme_icons_1 = __webpack_require__(/*! ../../../../shared/themes/theme.icons */ "./src/app/shared/themes/theme.icons.ts");
+let IconDirective = class IconDirective {
+    constructor(el, resources, changes) {
         this.el = el;
         this.resources = resources;
         this.changes = changes;
     }
-    IconDirective.prototype.ngOnInit = function () {
-        var _this = this;
+    ngOnInit() {
         this.el.nativeElement.classList.add('resource-icon');
-        this.subscription = this.resources.focused.subscribe(function (focus) {
-            if (focus && _this.resource && focus.path === _this.resource.path) {
-                _this.resource = focus;
-                _this.refresh();
+        this.subscription = this.resources.focused.subscribe(focus => {
+            if (focus && this.resource && focus.path === this.resource.path) {
+                this.resource = focus;
+                this.refresh();
             }
         });
         this.refresh();
-    };
-    IconDirective.prototype.ngOnDestroy = function () {
+    }
+    ngOnDestroy() {
         if (this.subscription) {
             this.subscription.unsubscribe();
         }
-    };
-    IconDirective.prototype.refresh = function () {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var native, _a;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        native = this.el.nativeElement;
-                        _a = native;
-                        return [4 /*yield*/, Object(_themes_icons__WEBPACK_IMPORTED_MODULE_3__["iconPath"])(this.resource)];
-                    case 1:
-                        _a.src = _b.sent();
-                        native.style.width = '16px';
-                        native.style.height = '16px';
-                        native.style.marginRight = '4px';
-                        return [2 /*return*/];
-                }
-            });
+    }
+    refresh() {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const native = this.el.nativeElement;
+            native.src = yield theme_icons_1.iconPath(this.resource);
+            native.style.width = '16px';
+            native.style.height = '16px';
+            native.style.marginRight = '4px';
         });
-    };
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])('icon'),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", Object)
-    ], IconDirective.prototype, "resource", void 0);
-    IconDirective = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"])({
-            // tslint:disable-next-line: directive-selector
-            selector: '[icon]'
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"],
-            _services_resource_service__WEBPACK_IMPORTED_MODULE_2__["ResourceService"],
-            _angular_core__WEBPACK_IMPORTED_MODULE_1__["ChangeDetectorRef"]])
-    ], IconDirective);
-    return IconDirective;
-}());
-
+    }
+};
+IconDirective.ctorParameters = () => [
+    { type: core_1.ElementRef },
+    { type: resource_service_1.ResourceService },
+    { type: core_1.ChangeDetectorRef }
+];
+tslib_1.__decorate([
+    core_1.Input('icon'),
+    tslib_1.__metadata("design:type", Object)
+], IconDirective.prototype, "resource", void 0);
+IconDirective = tslib_1.__decorate([
+    core_1.Directive({
+        // tslint:disable-next-line: directive-selector
+        selector: '[icon]'
+    }),
+    tslib_1.__metadata("design:paramtypes", [core_1.ElementRef,
+        resource_service_1.ResourceService,
+        core_1.ChangeDetectorRef])
+], IconDirective);
+exports.IconDirective = IconDirective;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/languages/language.ts":
-/*!*****************************************************!*\
-  !*** ./src/app/editor/shared/languages/language.ts ***!
-  \*****************************************************/
-/*! exports provided: LANGUAGES, LANGUAGE_PROVIDERS */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/languages/language.ts":
+/*!***********************************************************!*\
+  !*** ./src/app/pages/editor/shared/languages/language.ts ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LANGUAGES", function() { return LANGUAGES; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LANGUAGE_PROVIDERS", function() { return LANGUAGE_PROVIDERS; });
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
 /** List of languages supported by the editor */
-var LANGUAGES = [
+exports.LANGUAGES = [
     { extension: 'css', id: 'css' },
     { extension: 'scss', id: 'scss', alias: ['sass'] },
     { extension: 'less', id: 'less', alias: ['less'] },
@@ -2146,27 +2610,32 @@ var LANGUAGES = [
     { extension: 'swift', id: 'swift' }
 ];
 /** InjectionToken to provides new language to the editor */
-var LANGUAGE_PROVIDERS = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["InjectionToken"]('Language Provider');
+exports.LANGUAGE_PROVIDERS = new core_1.InjectionToken('Language Provider');
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/languages/premierlangage.ts":
-/*!***********************************************************!*\
-  !*** ./src/app/editor/shared/languages/premierlangage.ts ***!
-  \***********************************************************/
-/*! exports provided: PremierLangage */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/languages/premierlangage.ts":
+/*!*****************************************************************!*\
+  !*** ./src/app/pages/editor/shared/languages/premierlangage.ts ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PremierLangage", function() { return PremierLangage; });
+
+var PremierLangage_1;
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const compiler_service_1 = __webpack_require__(/*! ../services/compiler.service */ "./src/app/pages/editor/shared/services/compiler.service.ts");
 // tslint:disable: max-line-length
 /**
  * Provides syntax highlighter for pl and pltp files inside monaco editor.
  */
-var PremierLangage = /** @class */ (function () {
-    function PremierLangage() {
+let PremierLangage = PremierLangage_1 = class PremierLangage {
+    constructor(compiler) {
+        this.compiler = compiler;
         this.id = 'pl';
         this.extensions = ['.pl', '.pltp'];
     }
@@ -2175,13 +2644,13 @@ var PremierLangage = /** @class */ (function () {
      * the monarch api described at :
      * https://microsoft.github.io/monaco-editor/monarch.html
      */
-    PremierLangage.prototype.syntax = function () {
+    syntax() {
         return {
             // Set defaultToken to invalid to see what you do not tokenize yet
             // defaultToken: 'invalid',
             keywords: [
-                'title', 'author', 'introduction', 'teacher', 'text', 'build', 'before', 'form', 'template',
-                'extracss', 'extrajs', 'evaluator', 'extends'
+                'title', 'author', 'introduction', 'teacher', 'text', 'form', 'template',
+                'extracss', 'extrajs', 'extends'
             ],
             tokenizer: {
                 root: [
@@ -2226,57 +2695,61 @@ var PremierLangage = /** @class */ (function () {
                 ],
             },
         };
-    };
-    PremierLangage.prototype.hoversProviders = function () {
-        return [{
-                provideHover: function (model, position) {
-                    try {
-                        var token = model.getWordAtPosition(position);
-                        if (token) {
-                            if (token.startColumn === 1 && token.word in PremierLangage.BUILT_IN) {
-                                var lineCount = model.getLineCount();
-                                return {
-                                    range: new monaco.Range(1, 1, 3, model.getLineMaxColumn(lineCount)),
-                                    contents: [
-                                        { value: '**PL BUILT-IN**' },
-                                        { value: PremierLangage.BUILT_IN[token.word] }
-                                    ]
-                                };
-                            }
+    }
+    hoversProviders() {
+        return [
+            {
+                provideHover: (model, position) => {
+                    const symbol = this.findSymbol(model, position);
+                    if (symbol) {
+                        const ast = this.compiler.getAST();
+                        const contents = [];
+                        const definition = ast['__definitions'][symbol];
+                        contents.push({ value: `${definition.file}: ${definition.lineno}` });
+                        if (symbol in PremierLangage_1.BUILT_IN) {
+                            contents.push({ value: PremierLangage_1.BUILT_IN[symbol] });
                         }
+                        if (definition.doc) {
+                            contents.push({ value: definition.doc });
+                        }
+                        return {
+                            range: new monaco.Range(1, 1, 3, model.getLineMaxColumn(model.getLineCount())),
+                            contents: contents
+                        };
                     }
-                    catch (_a) {
-                        // TODO freeze on firefox
-                    }
+                    return null;
                 }
-            }];
-    };
-    PremierLangage.prototype.linksProviders = function () {
+            }
+        ];
+    }
+    linksProviders() {
         return [
             {
                 provideLinks: function (model, _token) {
-                    var links = [];
+                    const result = {
+                        links: []
+                    };
                     try {
-                        var lines = model.getValue().split('\n');
-                        var length_1 = lines.length;
-                        var i = 0;
-                        var match = void 0;
-                        while (i < length_1) {
-                            if (lines[i].match(PremierLangage.MULTI_LINE_PATTERN)) {
+                        const lines = model.getValue().split('\n');
+                        const length = lines.length;
+                        let i = 0;
+                        let match;
+                        while (i < length) {
+                            if (lines[i].match(PremierLangage_1.MULTI_LINE_PATTERN)) {
                                 i++;
-                                while (i < length_1) {
-                                    if (lines[i].match(PremierLangage.END_MULTI_LINE_PATTERN)) {
+                                while (i < length) {
+                                    if (lines[i].match(PremierLangage_1.END_MULTI_LINE_PATTERN)) {
                                         break;
                                     }
                                     i++;
                                 }
-                                if (i >= length_1) {
+                                if (i >= length) {
                                     break;
                                 }
                             }
-                            match = PremierLangage.REFERENCE_PATTERN.exec(lines[i]);
+                            match = PremierLangage_1.REFERENCE_PATTERN.exec(lines[i]);
                             if (match) {
-                                var comment = false;
+                                let comment = false;
                                 while (match.index >= 0) {
                                     if (lines[i][match.index] === '#') {
                                         comment = true;
@@ -2285,9 +2758,9 @@ var PremierLangage = /** @class */ (function () {
                                     match.index--;
                                 }
                                 if (!comment) {
-                                    var url = match.pop();
-                                    var index = lines[i].indexOf(url);
-                                    links.push({
+                                    const url = match.pop();
+                                    const index = lines[i].indexOf(url);
+                                    result.links.push({
                                         range: new monaco.Range(i + 1, index + 1, i + 1, index + url.length + 2),
                                         url: url,
                                     });
@@ -2299,28 +2772,28 @@ var PremierLangage = /** @class */ (function () {
                     catch (_a) {
                         // TODO freeze on firefox
                     }
-                    return links;
+                    return result;
                 },
                 resolveLink: function (link, _token) {
                     return link;
                 }
             }
         ];
-    };
-    PremierLangage.prototype.foldingsProviders = function () {
+    }
+    foldingsProviders() {
         return [
             {
-                provideFoldingRanges: function (model) {
-                    var ranges = [];
+                provideFoldingRanges: (model) => {
+                    const ranges = [];
                     try {
-                        var lines = model.getValue().split('\n');
-                        var length_2 = lines.length;
-                        var i = 0, start = -1;
-                        while (i < length_2) {
-                            if (lines[i].match(PremierLangage.MULTI_LINE_PATTERN)) {
+                        const lines = model.getValue().split('\n');
+                        const length = lines.length;
+                        let i = 0, start = -1;
+                        while (i < length) {
+                            if (lines[i].match(PremierLangage_1.MULTI_LINE_PATTERN)) {
                                 start = i;
                             }
-                            else if (lines[i].match(PremierLangage.END_MULTI_LINE_PATTERN)) {
+                            else if (lines[i].match(PremierLangage_1.END_MULTI_LINE_PATTERN)) {
                                 ranges.push({
                                     start: start + 1,
                                     end: i + 1,
@@ -2331,25 +2804,23 @@ var PremierLangage = /** @class */ (function () {
                             i++;
                         }
                     }
-                    catch (_a) {
-                        // TODO freeze on firefox
-                    }
+                    catch (_a) { }
                     return ranges;
                 }
             }
         ];
-    };
-    PremierLangage.prototype.completionsProviders = function () {
+    }
+    completionsProviders() {
         return [
             {
-                provideCompletionItems: function (model, position) {
+                provideCompletionItems: (model, position) => {
                     // 10 is an arbitrary number to provide completion only for line starts.
                     if (position.column > 10) {
-                        return [];
+                        return null;
                     }
                     // const line = model.getLineContent(position.lineNumber);
-                    return Object.keys(PremierLangage.BUILT_IN).map(function (name) {
-                        var embed = 'python';
+                    const suggestions = Object.keys(PremierLangage_1.BUILT_IN).map(name => {
+                        let embed = 'python';
                         switch (name) {
                             case 'evaluator':
                             case 'before':
@@ -2366,114 +2837,322 @@ var PremierLangage = /** @class */ (function () {
                         }
                         return {
                             label: name,
-                            detail: PremierLangage.BUILT_IN[name],
-                            insertText: name + " == #|" + embed + "| \n\n==",
+                            detail: PremierLangage_1.BUILT_IN[name],
+                            insertText: `${name} == #|${embed}| \n\n==`,
                             kind: monaco.languages.CompletionItemKind.Snippet,
                         };
                     });
+                    return { suggestions };
                 },
             },
             {
                 triggerCharacters: ['c-'],
-                provideCompletionItems: function (model, position) {
+                provideCompletionItems: (model, position) => {
                     // 10 is an arbitrary number to provide completion only for line starts.
                     if (position.column > 10) {
-                        return [];
+                        return null;
                     }
                     // const line = model.getLineContent(position.lineNumber);
-                    return Object.keys(PremierLangage.COMPONENTS).map(function (name) {
-                        var component = PremierLangage.COMPONENTS[name];
+                    const suggestions = Object.keys(PremierLangage_1.COMPONENTS).map(name => {
+                        const component = PremierLangage_1.COMPONENTS[name];
                         return {
                             label: name,
                             detail: '',
                             insertText: component.snippet,
-                            kind: monaco.languages.CompletionItemKind.Snippet,
+                            kind: monaco.languages.CompletionItemKind.Snippet
                         };
                     });
+                    return {
+                        suggestions,
+                    };
+                },
+            },
+            {
+                triggerCharacters: ['='],
+                provideCompletionItems: (model, position) => {
+                    const ast = this.compiler.getAST();
+                    if (ast) {
+                        const definitions = ast['__definitions'];
+                        const suggestions = Object.keys(definitions).map(name => {
+                            return {
+                                label: name,
+                                detail: definitions[name].doc || definitions[name].file,
+                                insertText: name,
+                                kind: monaco.languages.CompletionItemKind.Property,
+                            };
+                        });
+                        return { suggestions };
+                    }
+                    return null;
+                },
+            },
+            {
+                triggerCharacters: ['{'],
+                provideCompletionItems: (model, position) => {
+                    const ast = this.compiler.getAST();
+                    if (ast) {
+                        const definitions = ast['__definitions'];
+                        const suggestions = Object.keys(definitions).map(name => {
+                            return {
+                                label: name,
+                                detail: 'Insert content of ' + name,
+                                insertText: `{{ ${name} }}`,
+                                kind: monaco.languages.CompletionItemKind.Snippet,
+                            };
+                        });
+                        return { suggestions };
+                    }
+                    return null;
                 },
             }
         ];
-    };
-    /** Regex expression that matches files referenced inside pl and pltp files */
-    PremierLangage.REFERENCE_PATTERN = /(@|(?:\$=)|(?:template|grader|builder|extends|builder|grader)\s*=)\s*(\w+:)?([~a-zA-Z0-9_\.\/-]+)/;
-    // Modify the rule multiline inside the method registerMonarch if this is modified !!!
-    /** Regex expression that matches the start of multiline keys inside pl and pltp files */
-    PremierLangage.MULTI_LINE_PATTERN = /^[a-zA-Z_](\.?\w+)*\s*((==)|(%=)|((\+|-)=(?!@)))/;
-    /** Regex expression that matches the end of multiline keys inside pl and pltp files */
-    PremierLangage.END_MULTI_LINE_PATTERN = /^==\s*$/;
-    /** Built-in keys of premier langage */
-    PremierLangage.BUILT_IN = {
-        title: 'Titre de l\'exercice/feuille d\'exercice',
-        author: 'Auteur de l\'exercice',
-        introduction: 'Présentation de la feuille d\'exercice, le contenu de cette clé est interprété comme du markdown.',
-        teacher: 'Sur un PLTP, affiche un note visible par les enseignant seulement',
-        text: 'Énoncé de l\'exercice, le contenu de cette clé est interprété comme du markdown.',
-        build: 'Clé contenant une fonction build (ancienne syntaxe: utiliser de préférence before), à utiliser avec le builder /builder/build.py',
-        before: 'Code python permettant de modifier l\'exercice avant son exécution sur le navigateur',
-        form: 'Formulaire HTML permettant à l\'élève de répondre',
-        template: 'Définie template comme étant la base de ce fichier',
-        extracss: 'Ajoute des feuilles de styles supplémentaires à la page HTML',
-        extrajs: 'Ajoute des scripts supplémentaires à la page HTML'
-    };
-    PremierLangage.COMPONENTS = {
-        'c-automaton-editor': {
-            snippet: "\ncomponent % { \"cid\": \"component\", \"selector\": \"pl-automaton-editor\" }\n",
-        },
-        'c-automaton-drawer': {
-            snippet: "\ncomponent % { \"cid\": \"component\", \"selector\": \"pl-automaton-drawer\" }\ncomponent.automaton ==\n#states\ns0\ns1\n#initial\ns0\n#accepting\ns1\n#alphabet\na\nb\n#transitions\ns0:a>s1\ns1:b>s1\n==\n",
-        },
-        'c-checkbox-group': {
-            snippet: "\ncomponent % { \"cid\": \"component\", \"selector\": \"pl-checkbox-group\" }\ncomponent.items %=\n[\n    { \"id\": \"A\", \"content\": \"A\" },\n    { \"id\": \"B\", \"content\": \"B\" }\n]\n==\n",
-        },
-        'c-code-editor': {
-            snippet: "\ncomponent % { \"cid\": \"component\", \"selector\": \"pl-code-editor\" }\ncomponent.language = python\ncomponent.code ==\nTYPE YOUR CODE HERE\n==\n",
-        },
-        'c-drag-drop': {
-            snippet: "\ndrag % { \"cid\": \"drag\", \"selector\": \"pl-drag-drop\" }\ndrag.content = Drag Me\n\ndrop % { \"cid\": \"drop\", \"selector\": \"pl-drag-drop\" }\ndrop.droppable % true\n",
-        },
-        'c-input': {
-            snippet: "\ncomponent % { \"cid\": \"component\", \"selector\": \"pl-input\" }\ncomponent.type = text\n",
-        },
-        'c-match-list': {
-            snippet: "\ncomponent % { \"cid\": \"component\", \"selector\": \"pl-match-list\" }\ncomponent.items %=\n[\n    { id: 'S1', content: 'S1', target: false, source: true, },\n    { id: 'S2', content: 'S2', target: false, source: true, },\n    { id: 'S3', content: 'S3', target: false, source: true, },\n\n    { id: 'T1', content: 'T1', target: true, source: false, },\n    { id: 'T2', content: 'T2', target: true, source: false, },\n    { id: 'T3', content: 'T3', target: true, source: false, },\n]\n==\n\n",
-            description: '...',
-        },
-        'c-math-input': {
-            snippet: "\ncomponent % { \"cid\": \"component\", \"selector\": \"pl-math-input\" }\n",
-        },
-        'c-math-drawer': {
-            snippet: "\ncomponent % { \"cid\": \"component\", \"selector\": \"pl-math-drawer\" }\n",
-        },
-        'c-matrix': {
-            snippet: "\ncomponent % { \"cid\": \"component\", \"selector\": \"pl-matrix\" }\ncomponent.matrix %=\n[\n    [{ \"value\": 0 }, { \"value\": 0 }],\n    [{ \"value\": 0 }, { \"value\": 0 }]\n]\n==\n",
-        },
-        'c-radio-group': {
-            snippet: "\ncomponent % { \"cid\": \"component\", \"selector\": \"pl-radio-group\" }\ncomponent.items %=\n[\n    { \"id\": \"R1\", \"content\": \"R1\" },\n    { \"id\": \"R2\", \"content\": \"R2\" }\n]\n==\n",
-        },
-        'c-sort-list': {
-            snippet: "\ncomponent % { \"cid\": \"component\", \"selector\": \"pl-sort-list\" }\ncomponent.items %=\n[\n    { \"id\": \"A\", \"content\": \"A\" },\n    { \"id\": \"B\", \"content\": \"B\" }\n]\n==\n",
-        },
-        'c-text': {
-            snippet: "\ncomponent % { \"cid\": \"component\", \"selector\": \"pl-text\" }\ncomponent.text ==\n==\ncomponent.selectable = false\n",
-        },
-    };
-    return PremierLangage;
-}());
+    }
+    /**
+     * Finds a symbol in the symbol tree according to the position
+     * of the cursor
+     * @param model editor text model
+     * @param position cursor position in the editor.
+     * @returns a symbol name or null
+     */
+    findSymbol(model, position) {
+        function isAlphaNumeric(str) {
+            if (!str) {
+                return false;
+            }
+            let code, i, len;
+            for (i = 0, len = str.length; i < len; i++) {
+                code = str.charCodeAt(i);
+                if (!(code > 47 && code < 58) && // numeric (0-9)
+                    !(code > 64 && code < 91) && // upper alpha (A-Z)
+                    !(code > 96 && code < 123)) { // lower alpha (a-z)
+                    return false;
+                }
+            }
+            return true;
+        }
+        function interpolationIndex(lineContent, colNum) {
+            let i = colNum;
+            let open = 0;
+            while (i >= 0) {
+                const c = lineContent[i];
+                if (c === '{') {
+                    open++;
+                    if (open === 2) {
+                        return i;
+                    }
+                    continue;
+                }
+                if (c !== '.' && c !== ' ' && !isAlphaNumeric(c)) {
+                    break;
+                }
+                i--;
+            }
+            return -1;
+        }
+        const ast = this.compiler.getAST();
+        if (!ast) {
+            return null;
+        }
+        const definitions = ast['__definitions'];
+        const token = model.getWordAtPosition(position);
+        if (token) {
+            const before = model.getValueInRange({
+                startLineNumber: position.lineNumber, startColumn: 1,
+                endLineNumber: position.lineNumber, endColumn: token.endColumn
+            });
+            const name = before.trim();
+            if (definitions[name]) {
+                return name;
+            }
+            const i = interpolationIndex(before, token.startColumn);
+            if (i !== -1) {
+                const lineContent = model.getLineContent(position.lineNumber);
+                const text = lineContent.slice(i - 1, lineContent.length);
+                const match = text.match(/\{\{\s*([^\s|\}]+)[^\}]*\}/);
+                if (match && match.length === 2 && definitions[match[1]]) {
+                    return match[1];
+                }
+            }
+        }
+    }
+};
+/** Regex expression that matches files referenced inside pl and pltp files */
+PremierLangage.REFERENCE_PATTERN = /(@|(?:\$=)|(?:template|grader|builder|extends|builder|grader)\s*=)\s*(\w+:)?([~a-zA-Z0-9_\.\/-]+)/;
+// Modify the rule multiline inside the method registerMonarch if this is modified !!!
+/** Regex expression that matches the start of multiline keys inside pl and pltp files */
+PremierLangage.MULTI_LINE_PATTERN = /^[a-zA-Z_](\.?\w+)*\s*((==)|(%=)|((\+|-)=(?!@)))/;
+/** Regex expression that matches the end of multiline keys inside pl and pltp files */
+PremierLangage.END_MULTI_LINE_PATTERN = /^==\s*$/;
+/** Built-in keys of premier langage */
+PremierLangage.BUILT_IN = {
+    title: 'Title of the exercise',
+    author: 'Author of the exercice',
+    introduction: 'Introduction of a PLTP',
+    teacher: 'Notes only visible for the teachers in a PLTP page',
+    text: 'Instructions of the exercise for the students.',
+    form: 'HTML of the exercise',
+    template: 'Extends a PL',
+    extends: 'Extends a PL',
+    extracss: 'Extra css of the PL',
+    extrajs: 'Extra scripts of the page'
+};
+PremierLangage.COMPONENTS = {
+    'c-automaton-editor': {
+        snippet: `
+component =: AutomatonEditor
+`,
+    },
+    'c-automaton-drawer': {
+        snippet: `
+component =: AutomatonDrawer
+component.automaton ==
+#states
+s0
+s1
+#initial
+s0
+#accepting
+s1
+#alphabet
+a
+b
+#transitions
+s0:a>s1
+s1:b>s1
+==
+`,
+    },
+    'c-checkbox-group': {
+        snippet: `
+component =: CheckboxGroup
+component.items %=
+[
+    { "id": "A", "content": "A" },
+    { "id": "B", "content": "B" }
+]
+==
+`,
+    },
+    'c-code-editor': {
+        snippet: `
+component =: CodeEditor
+component.language = python
+component.code ==
+TYPE YOUR CODE HERE
+==
+`,
+    },
+    'c-drag-drop': {
+        snippet: `
+drag =: DragDrop
+drag.cid = 'DRAG'
+drag.content = Drag Me
 
+drop =: DragDrop
+drop.cid = 'DROP'
+drop.droppable % true
+`,
+    },
+    'c-input': {
+        snippet: `
+component =: Input
+component.type = text
+`,
+    },
+    'c-match-list': {
+        snippet: `
+component =: MatchList
+component.items %=
+[
+    { id: 'S1', content: 'S1', target: false, source: true },
+    { id: 'S2', content: 'S2', target: false, source: true },
+    { id: 'S3', content: 'S3', target: false, source: true },
+
+    { id: 'T1', content: 'T1', target: true, source: false },
+    { id: 'T2', content: 'T2', target: true, source: false },
+    { id: 'T3', content: 'T3', target: true, source: false },
+]
+==
+
+`,
+        description: '...',
+    },
+    'c-math-input': {
+        snippet: `
+component =: MathInput
+`,
+    },
+    'c-math-drawer': {
+        snippet: `
+component =: MathDrawer
+`,
+    },
+    'c-matrix': {
+        snippet: `
+component =: Matrix
+component.matrix %=
+[
+    [{ "value": 0 }, { "value": 0 }],
+    [{ "value": 0 }, { "value": 0 }]
+]
+==
+`,
+    },
+    'c-radio-group': {
+        snippet: `
+component =: RadioGroup
+component.items %=
+[
+    { "id": "R1", "content": "R1" },
+    { "id": "R2", "content": "R2" }
+]
+==
+`,
+    },
+    'c-sort-list': {
+        snippet: `
+component =: SortList
+component.items %=
+[
+    { "id": "A", "content": "A" },
+    { "id": "B", "content": "B" }
+]
+==
+`,
+    },
+    'c-text': {
+        snippet: `
+component =: Text
+component.text ==
+YOUR TEXT HERE
+==
+component.selectable = true
+`,
+    },
+};
+PremierLangage.ctorParameters = () => [
+    { type: compiler_service_1.CompilerService }
+];
+PremierLangage = PremierLangage_1 = tslib_1.__decorate([
+    core_1.Injectable({ providedIn: 'root' }),
+    tslib_1.__metadata("design:paramtypes", [compiler_service_1.CompilerService])
+], PremierLangage);
+exports.PremierLangage = PremierLangage;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/models/editor-actions.ts":
-/*!********************************************************!*\
-  !*** ./src/app/editor/shared/models/editor-actions.ts ***!
-  \********************************************************/
-/*! exports provided: EditorActions */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/models/editor-actions.ts":
+/*!**************************************************************!*\
+  !*** ./src/app/pages/editor/shared/models/editor-actions.ts ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EditorActions", function() { return EditorActions; });
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 var EditorActions;
 (function (EditorActions) {
     EditorActions.focus = 'editor-action-focus';
@@ -2483,831 +3162,710 @@ var EditorActions;
     EditorActions.zoomInImage = 'editorGroup-action-zoomInImage';
     EditorActions.zoomOutImage = 'editorGroup-action-zoomOutImage';
     EditorActions.splitEditor = 'editorGroup-action-splitEditor';
-})(EditorActions || (EditorActions = {}));
+})(EditorActions = exports.EditorActions || (exports.EditorActions = {}));
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/models/editor-groups.ts":
-/*!*******************************************************!*\
-  !*** ./src/app/editor/shared/models/editor-groups.ts ***!
-  \*******************************************************/
-/*! exports provided: EditorGroup */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/models/editor-groups.ts":
+/*!*************************************************************!*\
+  !*** ./src/app/pages/editor/shared/models/editor-groups.ts ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EditorGroup", function() { return EditorGroup; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/cdk/drag-drop */ "./node_modules/@angular/cdk/esm5/drag-drop.es5.js");
-/* harmony import */ var _editors__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./editors */ "./src/app/editor/shared/models/editors.ts");
 
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const drag_drop_1 = __webpack_require__(/*! @angular/cdk/drag-drop */ "./node_modules/@angular/cdk/esm2015/drag-drop.js");
+const editors_1 = __webpack_require__(/*! ./editors */ "./src/app/pages/editor/shared/models/editors.ts");
 /** Implementation of IEditorGroup interface */
-var EditorGroup = /** @class */ (function () {
-    function EditorGroup(editorService) {
+class EditorGroup {
+    constructor(editorService) {
         this._editors = [];
         this._resources = [];
         this._actions = [];
         this._id = ++EditorGroup.NEXT_ID;
         this._editorService = editorService;
     }
-    Object.defineProperty(EditorGroup.prototype, "resources", {
-        get: function () {
-            return this._resources;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(EditorGroup.prototype, "editors", {
-        get: function () {
-            return this._editors;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    EditorGroup.prototype.id = function () {
+    get resources() {
+        return this._resources;
+    }
+    get editors() {
+        return this._editors;
+    }
+    get id() {
         return this._id;
-    };
-    EditorGroup.prototype.empty = function () {
-        return !this._resources.some(function (_) { return true; });
-    };
-    EditorGroup.prototype.focus = function (focused) {
-        this._focused = focused;
-    };
-    EditorGroup.prototype.focused = function () {
-        return this._focused;
-    };
-    EditorGroup.prototype.isActive = function (resource) {
-        return this._activeResource && this._activeResource.path === resource.path;
-    };
-    EditorGroup.prototype.hasAction = function () {
-        return !this.empty() && !this.isPreviewGroup();
-    };
-    EditorGroup.prototype.isPreviewGroup = function () {
-        return this.someEditor(function (e) { return e.type() === _editors__WEBPACK_IMPORTED_MODULE_2__["EditorTypes"].Preview; });
-    };
-    EditorGroup.prototype.someEditor = function (predicate) {
-        return this._editors.some(predicate);
-    };
-    EditorGroup.prototype.someResource = function (predicate) {
-        return this._resources.some(predicate);
-    };
-    EditorGroup.prototype.containsEditor = function (editor) {
-        return this.someEditor(function (e) { return e.id() === editor.id(); });
-    };
-    EditorGroup.prototype.containsResource = function (resource) {
-        return this.someResource(function (r) { return r.path === resource.path; });
-    };
-    EditorGroup.prototype.open = function (resource, options) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var editor;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        editor = this._editors.find(function (e) { return e.canOpen(resource); }) || this.createEditor(resource);
-                        if (!editor) {
-                            throw new Error('The is no registered editor to open \'' + resource.path + '\'');
-                        }
-                        this._actions = editor.actions() || [];
-                        this._activeEditor = editor;
-                        this._activeResource = resource;
-                        this._activeEditor.open(resource, options);
-                        if (this.isPreviewGroup()) {
-                            if (this._resources.length === 0) {
-                                this._resources.push(resource);
-                            }
-                            else {
-                                this._resources[0] = resource;
-                            }
-                        }
-                        else if (!this.someResource(function (e) { return e.path === resource.path; })) {
-                            this._resources.push(resource);
-                        }
-                        resource.opened = true;
-                        return [4 /*yield*/, this._editorService.focusGroup(this)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
-    EditorGroup.prototype.openSide = function (resource) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                return [2 /*return*/, this._editorService.open(resource, {
-                        openToSide: true
-                    })];
-            });
-        });
-    };
-    EditorGroup.prototype.save = function (resource) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                return [2 /*return*/, this._editorService.saveContent(resource)];
-            });
-        });
-    };
-    EditorGroup.prototype.saveAll = function () {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var _i, _a, resource;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _i = 0, _a = this._resources;
-                        _b.label = 1;
-                    case 1:
-                        if (!(_i < _a.length)) return [3 /*break*/, 4];
-                        resource = _a[_i];
-                        return [4 /*yield*/, this.save(resource)];
-                    case 2:
-                        if (!(_b.sent())) {
-                            return [2 /*return*/, false];
-                        }
-                        _b.label = 3;
-                    case 3:
-                        _i++;
-                        return [3 /*break*/, 1];
-                    case 4: return [2 /*return*/, true];
-                }
-            });
-        });
-    };
-    EditorGroup.prototype.close = function (resource, confirm) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var changed, options, _a;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        changed = this.closeGuard(resource);
-                        options = {
-                            title: 'Do you want to close \'' + resource.name + '\'?',
-                            message: 'Your changes will be lost if you don\'t save them.',
-                            okTitle: 'Don\'t Save',
-                            noTitle: 'Cancel'
-                        };
-                        _a = !(confirm && changed);
-                        if (_a) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.confirm(options)];
-                    case 1:
-                        _a = (_b.sent());
-                        _b.label = 2;
-                    case 2:
-                        if (!_a) return [3 /*break*/, 4];
-                        if (changed) {
-                            resource.content = resource.savedContent;
-                            resource.changed = false;
-                        }
-                        if (confirm) {
-                            resource.meta.previewData = undefined;
-                        }
-                        return [4 /*yield*/, this.removeResource(resource)];
-                    case 3: return [2 /*return*/, _b.sent()];
-                    case 4: return [2 /*return*/, false];
-                }
-            });
-        });
-    };
-    EditorGroup.prototype.closeAll = function (confirm) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var changed, options, _a;
-            var _this = this;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        changed = this.someResource(function (tab) { return _this.closeGuard(tab); });
-                        options = {
-                            title: 'Do you want to close the files ?',
-                            message: 'Your changes will be lost if you don\'t save them.',
-                            okTitle: 'Don\'t Save',
-                            noTitle: 'Cancel'
-                        };
-                        _a = !(confirm && changed);
-                        if (_a) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.confirm(options)];
-                    case 1:
-                        _a = (_b.sent());
-                        _b.label = 2;
-                    case 2:
-                        if (!_a) return [3 /*break*/, 5];
-                        _b.label = 3;
-                    case 3:
-                        if (!(this._resources.length > 0)) return [3 /*break*/, 5];
-                        return [4 /*yield*/, this.close(this._resources[0], false)];
-                    case 4:
-                        if (!(_b.sent())) {
-                            return [2 /*return*/, false];
-                        }
-                        return [3 /*break*/, 3];
-                    case 5: return [2 /*return*/, true];
-                }
-            });
-        });
-    };
-    EditorGroup.prototype.closeSaved = function () {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var i;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!this.someResource(function (e) { return !e.changed; })) return [3 /*break*/, 5];
-                        i = 0;
-                        _a.label = 1;
-                    case 1:
-                        if (!(i < this._resources.length)) return [3 /*break*/, 4];
-                        if (!!this._resources[i].changed) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.close(this._resources[i])];
-                    case 2:
-                        if (!(_a.sent())) {
-                            return [2 /*return*/, false];
-                        }
-                        _a.label = 3;
-                    case 3:
-                        i++;
-                        return [3 /*break*/, 1];
-                    case 4: return [3 /*break*/, 0];
-                    case 5: return [2 /*return*/, true];
-                }
-            });
-        });
-    };
-    EditorGroup.prototype.findResource = function (predicate) {
-        return this._resources.find(function (e) { return predicate(e); });
-    };
-    EditorGroup.prototype.findResourceAt = function (index) {
-        return this._resources[index];
-    };
-    EditorGroup.prototype.actions = function () {
+    }
+    get actions() {
         return this._actions || (this._actions = []);
-    };
-    EditorGroup.prototype.activeResource = function () {
+    }
+    get activeResource() {
         return this._activeResource;
-    };
-    EditorGroup.prototype.activeEditor = function () {
+    }
+    empty() {
+        return !this._resources.some(_ => true);
+    }
+    focus(focused) {
+        this._focused = focused;
+    }
+    focused() {
+        return this._focused;
+    }
+    isActive(resource) {
+        return this._activeResource && this._activeResource.path === resource.path;
+    }
+    hasAction() {
+        return !this.empty() && !this.isPreviewGroup();
+    }
+    isPreviewGroup() {
+        return this.someEditor(e => e.type() === editors_1.EditorTypes.Preview);
+    }
+    someEditor(predicate) {
+        return this._editors.some(predicate);
+    }
+    someResource(predicate) {
+        return this._resources.some(predicate);
+    }
+    containsEditor(editor) {
+        return this.someEditor(e => e.id() === editor.id());
+    }
+    containsResource(resource) {
+        return this.someResource(r => r.path === resource.path);
+    }
+    open(resource, options) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const editor = this._editors.find(e => e.canOpen(resource)) || this.createEditor(resource);
+            if (!editor) {
+                throw new Error('The is no registered editor to open \'' + resource.path + '\'');
+            }
+            this._actions = editor.actions() || [];
+            this._activeEditor = editor;
+            this._activeResource = resource;
+            this._activeEditor.open(resource, options);
+            if (this.isPreviewGroup()) {
+                if (this._resources.length === 0) {
+                    this._resources.push(resource);
+                }
+                else {
+                    this._resources[0] = resource;
+                }
+            }
+            else if (!this.someResource(e => e.path === resource.path)) {
+                this._resources.push(resource);
+            }
+            resource.opened = true;
+            return yield this._editorService.focusGroup(this);
+        });
+    }
+    openSide(resource) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return this._editorService.open(resource, {
+                openToSide: true
+            });
+        });
+    }
+    save(resource) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return this._editorService.saveContent(resource);
+        });
+    }
+    saveAll() {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            for (const resource of this._resources) {
+                if (!(yield this.save(resource))) {
+                    return false;
+                }
+            }
+            return true;
+        });
+    }
+    close(resource, confirm) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const changed = this.closeGuard(resource);
+            const options = {
+                title: 'Do you want to close \'' + resource.name + '\'?',
+                message: 'Your changes will be lost if you don\'t save them.',
+                okTitle: 'Don\'t Save',
+                noTitle: 'Cancel'
+            };
+            if (!(confirm && changed) || (yield this.confirm(options))) {
+                if (changed) {
+                    resource.content = resource.savedContent;
+                    resource.changed = false;
+                }
+                if (confirm) {
+                    resource.meta.previewData = undefined;
+                }
+                return yield this.removeResource(resource);
+            }
+            return false;
+        });
+    }
+    closeAll(confirm) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const changed = this.someResource(tab => this.closeGuard(tab));
+            const options = {
+                title: 'Do you want to close the files ?',
+                message: 'Your changes will be lost if you don\'t save them.',
+                okTitle: 'Don\'t Save',
+                noTitle: 'Cancel'
+            };
+            if (!(confirm && changed) || (yield this.confirm(options))) {
+                while (this._resources.length > 0) {
+                    if (!(yield this.close(this._resources[0], false))) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        });
+    }
+    closeSaved() {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            while (this.someResource(e => !e.changed)) {
+                for (let i = 0; i < this._resources.length; i++) {
+                    if (!this._resources[i].changed) {
+                        if (!(yield this.close(this._resources[i]))) {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        });
+    }
+    findResource(predicate) {
+        return this._resources.find(e => predicate(e));
+    }
+    findResourceAt(index) {
+        return this._resources[index];
+    }
+    activeEditor() {
         return this._activeEditor;
-    };
-    EditorGroup.prototype.activeEditorIs = function (type) {
+    }
+    activeEditorIs(type) {
         return !!this._activeEditor && this._activeEditor.type() === type;
-    };
-    EditorGroup.prototype.editorService = function () {
+    }
+    editorService() {
         return this._editorService;
-    };
-    EditorGroup.prototype.drop = function (event) {
-        var source = this._editorService.findGroup(parseInt(event.previousContainer.id, 10));
-        var target = this;
+    }
+    drop(event) {
+        const source = this._editorService.findGroup(parseInt(event.previousContainer.id, 10));
+        const target = this;
         if (this.isPreviewGroup() || source.isPreviewGroup()) {
             return;
         }
         if (event.previousContainer === event.container) {
-            Object(_angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_1__["moveItemInArray"])(event.container.data, event.previousIndex, event.currentIndex);
+            drag_drop_1.moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
         }
         else {
-            var movedTab = source.findResourceAt(event.previousIndex);
+            const movedTab = source.findResourceAt(event.previousIndex);
             target.open(movedTab);
             source.close(movedTab, false);
         }
-    };
-    EditorGroup.prototype.reopen = function (resource) {
+    }
+    reopen(resource) {
         if (!this.isPreviewGroup()) {
             this.open(resource);
         }
-    };
-    EditorGroup.prototype.trackEditor = function (_, editor) {
+    }
+    trackEditor(_, editor) {
         return editor.id();
-    };
-    EditorGroup.prototype.trackResource = function (_, resource) {
+    }
+    trackResource(_, resource) {
         return resource.path;
-    };
-    EditorGroup.prototype.confirm = function (options) {
+    }
+    confirm(options) {
         return this._editorService.confirm(options);
-    };
-    EditorGroup.prototype.closeGuard = function (resource) {
+    }
+    closeGuard(resource) {
         if (this.isPreviewGroup()) {
             return false;
         }
-        return resource.changed && this._editorService.findGroupsPredicate(function (group) {
+        return resource.changed && this._editorService.findGroupsPredicate(group => {
             return !group.isPreviewGroup() && group.containsResource(resource);
         }).length === 1;
-    };
-    EditorGroup.prototype.createEditor = function (resource) {
-        for (var _i = 0, INSTANTIATORS_1 = _editors__WEBPACK_IMPORTED_MODULE_2__["INSTANTIATORS"]; _i < INSTANTIATORS_1.length; _i++) {
-            var item = INSTANTIATORS_1[_i];
+    }
+    createEditor(resource) {
+        for (const item of editors_1.INSTANTIATORS) {
             if (item.condition(resource)) {
-                var editor = item.create(this, resource);
+                const editor = item.create(this, resource);
                 this._editors.push(editor);
                 return editor;
             }
         }
         return undefined;
-    };
-    EditorGroup.prototype.removeResource = function (resource) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var indexToRemove, newIndex, _a;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        indexToRemove = this._resources.findIndex(function (e) { return e.path === resource.path; });
-                        if (!(indexToRemove !== -1)) return [3 /*break*/, 5];
-                        if (this.isActive(resource)) {
-                            this._activeEditor = undefined;
-                            this._activeResource = undefined;
-                        }
-                        this._actions = [];
-                        this._resources.splice(indexToRemove, 1);
-                        newIndex = Math.max(0, indexToRemove - 1);
-                        if (!(!this._activeResource && newIndex < this._resources.length)) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.open(this._resources[newIndex])];
-                    case 1:
-                        _b.sent();
-                        _b.label = 2;
-                    case 2:
-                        resource.opened = this._editorService.findGroups(resource).length > 0;
-                        _a = this.empty();
-                        if (!_a) return [3 /*break*/, 4];
-                        return [4 /*yield*/, this._editorService.disposeGroup(this)];
-                    case 3:
-                        _a = (_b.sent());
-                        _b.label = 4;
-                    case 4: return [2 /*return*/, _a || true];
-                    case 5: return [2 /*return*/, false];
+    }
+    removeResource(resource) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const indexToRemove = this._resources.findIndex(e => e.path === resource.path);
+            if (indexToRemove !== -1) {
+                if (this.isActive(resource)) {
+                    this._activeEditor = undefined;
+                    this._activeResource = undefined;
                 }
-            });
+                this._actions = [];
+                this._resources.splice(indexToRemove, 1);
+                const newIndex = Math.max(0, indexToRemove - 1);
+                if (!this._activeResource && newIndex < this._resources.length) {
+                    yield this.open(this._resources[newIndex]);
+                }
+                resource.opened = this._editorService.findGroups(resource).length > 0;
+                return this.empty() && (yield this._editorService.disposeGroup(this)) || true;
+            }
+            return false;
         });
-    };
-    EditorGroup.NEXT_ID = 0;
-    return EditorGroup;
-}());
-
+    }
+}
+EditorGroup.NEXT_ID = 0;
+exports.EditorGroup = EditorGroup;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/models/editors.ts":
-/*!*************************************************!*\
-  !*** ./src/app/editor/shared/models/editors.ts ***!
-  \*************************************************/
-/*! exports provided: EditorTypes, AbstractEditor, CodeEditor, ImageEditor, PreviewEditor, openAsCode, openAsImage, openAsPreview, INSTANTIATORS */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/models/editors.ts":
+/*!*******************************************************!*\
+  !*** ./src/app/pages/editor/shared/models/editors.ts ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EditorTypes", function() { return EditorTypes; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AbstractEditor", function() { return AbstractEditor; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CodeEditor", function() { return CodeEditor; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImageEditor", function() { return ImageEditor; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PreviewEditor", function() { return PreviewEditor; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "openAsCode", function() { return openAsCode; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "openAsImage", function() { return openAsImage; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "openAsPreview", function() { return openAsPreview; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "INSTANTIATORS", function() { return INSTANTIATORS; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
-/* harmony import */ var _filters__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./filters */ "./src/app/editor/shared/models/filters.ts");
-/* harmony import */ var _editor_actions__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./editor-actions */ "./src/app/editor/shared/models/editor-actions.ts");
+
 // tslint:disable: max-line-length
-// next line required for unit-tests
-/// <reference path="../../../../../node_modules/ngx-monaco-editor/monaco.d.ts" />
-
-
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const rxjs_1 = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm2015/index.js");
+const filters_1 = __webpack_require__(/*! ./filters */ "./src/app/pages/editor/shared/models/filters.ts");
+const editor_actions_1 = __webpack_require__(/*! ./editor-actions */ "./src/app/pages/editor/shared/models/editor-actions.ts");
 var EditorTypes;
 (function (EditorTypes) {
     EditorTypes["Code"] = "code";
     EditorTypes["Preview"] = "preview";
     EditorTypes["Image"] = "image";
-})(EditorTypes || (EditorTypes = {}));
-var AbstractEditor = /** @class */ (function () {
-    function AbstractEditor(group, resource) {
-        this.opened = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
+})(EditorTypes = exports.EditorTypes || (exports.EditorTypes = {}));
+class AbstractEditor {
+    constructor(group, resource) {
+        this.opened = new rxjs_1.Subject();
         this._id = ++AbstractEditor.ID_COUNTER;
         this._resource = resource;
         this._group = group;
     }
-    AbstractEditor.prototype.id = function () {
+    id() {
         return this._id;
-    };
-    AbstractEditor.prototype.group = function () {
+    }
+    group() {
         return this._group;
-    };
-    AbstractEditor.prototype.focus = function (focused) {
+    }
+    focus(focused) {
         this._focused = focused;
-    };
-    AbstractEditor.prototype.open = function (resource, options) {
+    }
+    open(resource, options) {
         this._resource = resource;
         this.opened.next(resource);
-    };
-    AbstractEditor.prototype.hasFocus = function () {
-        return this._focused;
-    };
-    AbstractEditor.prototype.resource = function () {
-        return this._resource;
-    };
-    AbstractEditor.ID_COUNTER = 0;
-    return AbstractEditor;
-}());
-
-var CodeEditor = /** @class */ (function (_super) {
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](CodeEditor, _super);
-    function CodeEditor(group, resource) {
-        var _this = _super.call(this, group, resource) || this;
-        _this.diffRequested = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
-        _this.previewRequested = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
-        return _this;
     }
-    CodeEditor.prototype.type = function () {
+    hasFocus() {
+        return this._focused;
+    }
+    resource() {
+        return this._resource;
+    }
+}
+AbstractEditor.ID_COUNTER = 0;
+exports.AbstractEditor = AbstractEditor;
+class CodeEditor extends AbstractEditor {
+    constructor(group, resource) {
+        super(group, resource);
+        this.diffRequested = new rxjs_1.Subject();
+        this.previewRequested = new rxjs_1.Subject();
+    }
+    type() {
         return EditorTypes.Code;
-    };
-    CodeEditor.prototype.actions = function () {
+    }
+    actions() {
         return [
             this.preview(),
             this.onDiff(),
             this.offDiff(),
             this.splitEditor()
         ];
-    };
-    CodeEditor.prototype.open = function (resource, options) {
+    }
+    open(resource, options) {
         this.diffEditing = options && options.diffMode;
-        _super.prototype.open.call(this, resource, options);
-    };
-    CodeEditor.prototype.split = function () {
+        super.open(resource, options);
+    }
+    split() {
         this.group().editorService().open(this.resource(), {
             openToSide: true
         });
-    };
-    CodeEditor.prototype.canOpen = function (resource) {
+    }
+    canOpen(resource) {
         return openAsCode(resource);
-    };
-    CodeEditor.prototype.preview = function () {
-        var _this = this;
+    }
+    preview() {
         return {
-            id: _editor_actions__WEBPACK_IMPORTED_MODULE_3__["EditorActions"].preview, icon: 'fas fa-play', tooltip: 'Preview ⌘Enter',
-            condition: _filters__WEBPACK_IMPORTED_MODULE_2__["canBePreviewed"], invoke: function (item) {
-                _this.previewRequested.next(item);
+            id: editor_actions_1.EditorActions.preview, icon: 'fas fa-play', tooltip: 'Preview ⌘Enter',
+            condition: filters_1.canBePreviewed, invoke: (item) => {
+                this.previewRequested.next(item);
             }
         };
-    };
-    CodeEditor.prototype.onDiff = function () {
-        var that = this;
+    }
+    onDiff() {
+        const that = this;
         return {
-            id: _editor_actions__WEBPACK_IMPORTED_MODULE_3__["EditorActions"].onDiff, icon: 'fas fa-eye', tooltip: 'Open Changes',
-            condition: function (item) {
-                return Object(_filters__WEBPACK_IMPORTED_MODULE_2__["isRepo"])(item) && !that.diffEditing;
+            id: editor_actions_1.EditorActions.onDiff, icon: 'fas fa-eye', tooltip: 'Open Changes',
+            condition: (item) => {
+                return filters_1.isRepo(item) && !that.diffEditing;
             },
-            invoke: function (_) {
+            invoke: (_) => {
                 that.diffEditing = true;
                 that.diffRequested.next(that.diffEditing);
             }
         };
-    };
-    CodeEditor.prototype.offDiff = function () {
-        var that = this;
+    }
+    offDiff() {
+        const that = this;
         return {
-            id: _editor_actions__WEBPACK_IMPORTED_MODULE_3__["EditorActions"].offDiff, icon: 'fas fa-eye-slash', tooltip: 'Close Changes',
-            condition: function (_) {
+            id: editor_actions_1.EditorActions.offDiff, icon: 'fas fa-eye-slash', tooltip: 'Close Changes',
+            condition: (_) => {
                 return that.diffEditing;
-            }, invoke: function (_) {
+            }, invoke: (_) => {
                 that.diffEditing = false;
                 that.diffRequested.next(that.diffEditing);
             }
         };
-    };
-    CodeEditor.prototype.splitEditor = function () {
-        var that = this;
+    }
+    splitEditor() {
+        const that = this;
         return {
-            id: _editor_actions__WEBPACK_IMPORTED_MODULE_3__["EditorActions"].splitEditor, icon: 'fas fa-columns', tooltip: 'Split ⌘Right', condition: function () {
+            id: editor_actions_1.EditorActions.splitEditor, icon: 'fas fa-columns', tooltip: 'Split ⌘Right', condition: () => {
                 return true;
-            }, invoke: function (_) {
+            }, invoke: (_) => {
                 that.split();
             }
         };
-    };
-    return CodeEditor;
-}(AbstractEditor));
-
-var ImageEditor = /** @class */ (function (_super) {
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](ImageEditor, _super);
-    function ImageEditor(group, resource) {
-        var _this = _super.call(this, group, resource) || this;
-        _this.zoom = 0.7;
-        return _this;
     }
-    ImageEditor.prototype.type = function () {
+}
+exports.CodeEditor = CodeEditor;
+class ImageEditor extends AbstractEditor {
+    constructor(group, resource) {
+        super(group, resource);
+        this.zoom = 0.7;
+    }
+    type() {
         return EditorTypes.Image;
-    };
-    ImageEditor.prototype.actions = function () {
-        var _this = this;
+    }
+    actions() {
         return [
             {
-                id: _editor_actions__WEBPACK_IMPORTED_MODULE_3__["EditorActions"].zoomInImage, icon: 'fas fa-plus', tooltip: 'Zoom In',
-                condition: function (_) { return true; }, invoke: function (_) {
-                    _this.zoomIn();
+                id: editor_actions_1.EditorActions.zoomInImage, icon: 'fas fa-plus', tooltip: 'Zoom In',
+                condition: (_) => true, invoke: (_) => {
+                    this.zoomIn();
                 }
             },
             {
-                id: _editor_actions__WEBPACK_IMPORTED_MODULE_3__["EditorActions"].zoomOutImage, icon: 'fas fa-minus', tooltip: 'Zoom Out',
-                condition: function (_) { return true; }, invoke: function (_) {
-                    _this.zoomOut();
+                id: editor_actions_1.EditorActions.zoomOutImage, icon: 'fas fa-minus', tooltip: 'Zoom Out',
+                condition: (_) => true, invoke: (_) => {
+                    this.zoomOut();
                 }
             }
         ];
-    };
-    ImageEditor.prototype.canOpen = function (resource) {
-        return openAsImage(resource);
-    };
-    ImageEditor.prototype.zoomIn = function () {
-        this.zoom = Math.min(this.zoom + .05, 1);
-    };
-    ImageEditor.prototype.zoomOut = function () {
-        this.zoom = Math.max(this.zoom - .05, 0.3);
-    };
-    return ImageEditor;
-}(AbstractEditor));
-
-var PreviewEditor = /** @class */ (function (_super) {
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](PreviewEditor, _super);
-    function PreviewEditor(group, document) {
-        return _super.call(this, group, document) || this;
     }
-    PreviewEditor.prototype.type = function () {
+    canOpen(resource) {
+        return openAsImage(resource);
+    }
+    zoomIn() {
+        this.zoom = Math.min(this.zoom + .05, 1);
+    }
+    zoomOut() {
+        this.zoom = Math.max(this.zoom - .05, 0.3);
+    }
+}
+exports.ImageEditor = ImageEditor;
+class PreviewEditor extends AbstractEditor {
+    constructor(group, document) {
+        super(group, document);
+    }
+    type() {
         return EditorTypes.Preview;
-    };
-    PreviewEditor.prototype.actions = function () {
+    }
+    actions() {
         return [];
-    };
-    PreviewEditor.prototype.canOpen = function (resource) {
+    }
+    canOpen(resource) {
         return openAsPreview(resource);
-    };
-    return PreviewEditor;
-}(AbstractEditor));
-
+    }
+}
+exports.PreviewEditor = PreviewEditor;
 function openAsCode(resource) {
     return !openAsImage(resource);
 }
+exports.openAsCode = openAsCode;
 function openAsImage(resource) {
-    return !openAsPreview(resource) && resource.meta && resource.meta.image && !Object(_filters__WEBPACK_IMPORTED_MODULE_2__["isSVG"])(resource);
+    return !openAsPreview(resource) && resource.meta && resource.meta.image && !filters_1.isSVG(resource);
 }
+exports.openAsImage = openAsImage;
 function openAsPreview(resource) {
     return !!resource.meta && !!resource.meta.previewData;
 }
-var INSTANTIATORS = [
-    { condition: openAsImage, create: function (group, r) { return new ImageEditor(group, r); } },
-    { condition: openAsPreview, create: function (group, r) { return new PreviewEditor(group, r); } },
-    { condition: openAsCode, create: function (group, r) { return new CodeEditor(group, r); } }
+exports.openAsPreview = openAsPreview;
+exports.INSTANTIATORS = [
+    { condition: openAsImage, create: (group, r) => new ImageEditor(group, r) },
+    { condition: openAsPreview, create: (group, r) => new PreviewEditor(group, r) },
+    { condition: openAsCode, create: (group, r) => new CodeEditor(group, r) }
 ];
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/models/filters.ts":
-/*!*************************************************!*\
-  !*** ./src/app/editor/shared/models/filters.ts ***!
-  \*************************************************/
-/*! exports provided: PREVIEW_EXTENSIONS, canRead, canWrite, isReadOnly, isRepo, isLoaded, isHome, isLib, isRoot, isFolder, isFile, isPL, isPLA, isSVG, isPLTP, isMarkdown, canBePreviewed, canAddChild, canCopy, canBeRenamed, canBeDeleted, canBeTested, canBeLoaded, canBeReloaded, compareGroup */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/models/filters.ts":
+/*!*******************************************************!*\
+  !*** ./src/app/pages/editor/shared/models/filters.ts ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PREVIEW_EXTENSIONS", function() { return PREVIEW_EXTENSIONS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canRead", function() { return canRead; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canWrite", function() { return canWrite; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isReadOnly", function() { return isReadOnly; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isRepo", function() { return isRepo; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isLoaded", function() { return isLoaded; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isHome", function() { return isHome; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isLib", function() { return isLib; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isRoot", function() { return isRoot; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isFolder", function() { return isFolder; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isFile", function() { return isFile; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPL", function() { return isPL; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPLA", function() { return isPLA; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isSVG", function() { return isSVG; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isPLTP", function() { return isPLTP; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isMarkdown", function() { return isMarkdown; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBePreviewed", function() { return canBePreviewed; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canAddChild", function() { return canAddChild; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canCopy", function() { return canCopy; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBeRenamed", function() { return canBeRenamed; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBeDeleted", function() { return canBeDeleted; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBeTested", function() { return canBeTested; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBeLoaded", function() { return canBeLoaded; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "canBeReloaded", function() { return canBeReloaded; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "compareGroup", function() { return compareGroup; });
-/* harmony import */ var _resource__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./resource */ "./src/app/editor/shared/models/resource.ts");
-/* harmony import */ var src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! src/app/shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
-/* harmony import */ var src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! src/app/shared/models/assert.model */ "./src/app/shared/models/assert.model.ts");
 
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const resource_1 = __webpack_require__(/*! ./resource */ "./src/app/pages/editor/shared/models/resource.ts");
+const assert_model_1 = __webpack_require__(/*! src/app/shared/models/assert.model */ "./src/app/shared/models/assert.model.ts");
+const paths_model_1 = __webpack_require__(/*! src/app/shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
 /** extensions of files with preview option */
-var PREVIEW_EXTENSIONS = ['pl', 'md', 'svg'];
+exports.PREVIEW_EXTENSIONS = ['pl', 'md', 'svg'];
 /**
  * Gets a value indicating whether the resource can be readed.
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function canRead(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
     return !!item && item.read;
 }
+exports.canRead = canRead;
 /**
  * Gets a value indicating whether the resource can be modified.
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function canWrite(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
     return !!item && item.write;
 }
+exports.canWrite = canWrite;
 /**
  * Gets a value indicating whether the resource is on readonly mode.
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function isReadOnly(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
     return !canWrite(item);
 }
+exports.isReadOnly = isReadOnly;
 /**
  * Gets a value indicating whether the resource is in a repository.
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function isRepo(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
     return !!item && !!item.repo;
 }
+exports.isRepo = isRepo;
 /**
  * Gets a value indicating whether the resource is loaded with it's metadata.
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function isLoaded(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
     return !!item && !!item.meta;
 }
+exports.isLoaded = isLoaded;
 /**
  * Gets a value indicating whether the resource is the home folder.
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function isHome(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
     return !!item && item.path === 'Yggdrasil';
 }
+exports.isHome = isHome;
 /**
  * Gets a value indicating whether the resource is the lib folder.
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function isLib(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
     return !!item && item.path === 'lib';
 }
+exports.isLib = isLib;
 /**
  * Gets a value indicating whether the resource is a root folder.
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function isRoot(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
     return isHome(item) || isLib(item);
 }
+exports.isRoot = isRoot;
 /**
  * Gets a value indicating whether the resource is a folder.
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function isFolder(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
-    return !!item && item.type === _resource__WEBPACK_IMPORTED_MODULE_0__["ResourceTypes"].Folder;
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
+    return !!item && item.type === resource_1.ResourceTypes.Folder;
 }
+exports.isFolder = isFolder;
 /**
  * Gets a value indicating whether the resource is a file.
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function isFile(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
-    return !!item && item.type === _resource__WEBPACK_IMPORTED_MODULE_0__["ResourceTypes"].File;
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
+    return !!item && item.type === resource_1.ResourceTypes.File;
 }
+exports.isFile = isFile;
 /**
  * Gets a value indicating whether the resource is a PL resource.
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function isPL(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
-    return !!item && isFile(item) && Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_1__["extname"])(item.path) === 'pl';
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
+    return !!item && isFile(item) && paths_model_1.extname(item.path) === 'pl';
 }
+exports.isPL = isPL;
 /**
  * Gets a value indicating whether the resource is a PLA resource.
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function isPLA(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
-    return !!item && isFile(item) && Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_1__["extname"])(item.path) === 'pla';
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
+    return !!item && isFile(item) && paths_model_1.extname(item.path) === 'pla';
 }
+exports.isPLA = isPLA;
 /**
  * Gets a value indicating whether the resource is a svg resource.
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function isSVG(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
-    return !!item && isFile(item) && Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_1__["extname"])(item.path) === 'svg';
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
+    return !!item && isFile(item) && paths_model_1.extname(item.path) === 'svg';
 }
+exports.isSVG = isSVG;
 /**
  * Gets a value indicating whether the resource is a PLTP.
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function isPLTP(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
-    return !!item && isFile(item) && Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_1__["extname"])(item.path) === 'pltp';
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
+    return !!item && isFile(item) && paths_model_1.extname(item.path) === 'pltp';
 }
+exports.isPLTP = isPLTP;
 /**
  * Gets a value indicating whether the resource is a markdown resource.
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function isMarkdown(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
-    return !!item && isFile(item) && Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_1__["extname"])(item.path) === 'md';
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
+    return !!item && isFile(item) && paths_model_1.extname(item.path) === 'md';
 }
+exports.isMarkdown = isMarkdown;
 /**
  * Gets a value indicating whether the resource can be previewed.
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function canBePreviewed(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
-    return !!item && isFile(item) && PREVIEW_EXTENSIONS.includes(Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_1__["extname"])(item.path));
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
+    return !!item && isFile(item) && exports.PREVIEW_EXTENSIONS.includes(paths_model_1.extname(item.path));
 }
+exports.canBePreviewed = canBePreviewed;
 /**
  * Gets a value indicating whether the resource is a folder with a write permission.
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function canAddChild(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
     return canWrite(item) && isFolder(item);
 }
+exports.canAddChild = canAddChild;
 /**
  * Gets a value indicating whether the resource can be copied|dragged.
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function canCopy(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
     return canRead(item) && !isRoot(item);
 }
+exports.canCopy = canCopy;
 /**
  * Gets a value indicating whether the resource can be renamed.
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function canBeRenamed(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
     return canWrite(item) && !isRoot(item);
 }
+exports.canBeRenamed = canBeRenamed;
 /**
  * Gets a value indicating whether the resource can be deleted.
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function canBeDeleted(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
     return canWrite(item) && !isRoot(item);
 }
+exports.canBeDeleted = canBeDeleted;
 /**
  * Gets a value indicating whether the resource can be tested (PL only).
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function canBeTested(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
     return canRead(item) && isFile(item) && isPL(item);
 }
+exports.canBeTested = canBeTested;
 /**
  * Gets a value indicating whether the resource can be loaded (PLTP only).
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function canBeLoaded(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
     return canWrite(item) && isFile(item) && (isPLTP(item) || isPLA(item));
 }
+exports.canBeLoaded = canBeLoaded;
 /**
  * Gets a value indicating whether the resource can be reloaded (PLTP only).
  * @param item the resource
  * @throws {ReferenceError} if item is null
  */
 function canBeReloaded(item) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(item, 'param "item" is required');
+    assert_model_1.Asserts.requireNonNull(item, 'param "item" is required');
     return canWrite(item) && isFile(item) && (isPLTP(item) || isPLA(item));
 }
+exports.canBeReloaded = canBeReloaded;
 /**
  * Checks whether the two groups are the same (id are equals)
  * @param grp1 the first group
@@ -3315,31 +3873,30 @@ function canBeReloaded(item) {
  * @throws {ReferenceError} is grp1 or grp2 are null
  */
 function compareGroup(grp1, grp2) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(grp1, '"param "grp1" is required');
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_2__["Asserts"].requireNonNull(grp2, '"param "grp2" is required');
-    return grp1.id() === grp2.id();
+    assert_model_1.Asserts.requireNonNull(grp1, '"param "grp1" is required');
+    assert_model_1.Asserts.requireNonNull(grp2, '"param "grp2" is required');
+    return grp1.id === grp2.id;
 }
+exports.compareGroup = compareGroup;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/models/monaco.ts":
-/*!************************************************!*\
-  !*** ./src/app/editor/shared/models/monaco.ts ***!
-  \************************************************/
-/*! exports provided: MONACO_LOADED, MONACO_CONFIG, onMonacoLoad */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/models/monaco.ts":
+/*!******************************************************!*\
+  !*** ./src/app/pages/editor/shared/models/monaco.ts ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MONACO_LOADED", function() { return MONACO_LOADED; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MONACO_CONFIG", function() { return MONACO_CONFIG; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "onMonacoLoad", function() { return onMonacoLoad; });
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
 
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const rxjs_1 = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm2015/index.js");
 /** Subject that emit first time monaco editor is loaded */
-var MONACO_LOADED = new rxjs__WEBPACK_IMPORTED_MODULE_0__["Subject"]();
-var MONACO_CONFIG = {
+exports.MONACO_LOADED = new rxjs_1.Subject();
+exports.MONACO_CONFIG = {
     baseUrl: '/static/editor/assets',
     defaultOptions: {
         automaticLayout: true
@@ -3347,33 +3904,33 @@ var MONACO_CONFIG = {
     onMonacoLoad: onMonacoLoad,
 };
 function onMonacoLoad() {
-    MONACO_LOADED.next(monaco);
+    exports.MONACO_LOADED.next(monaco);
 }
+exports.onMonacoLoad = onMonacoLoad;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/models/resource.ts":
-/*!**************************************************!*\
-  !*** ./src/app/editor/shared/models/resource.ts ***!
-  \**************************************************/
-/*! exports provided: ResourceTypes, createResource */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/models/resource.ts":
+/*!********************************************************!*\
+  !*** ./src/app/pages/editor/shared/models/resource.ts ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ResourceTypes", function() { return ResourceTypes; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createResource", function() { return createResource; });
-/* harmony import */ var src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! src/app/shared/models/assert.model */ "./src/app/shared/models/assert.model.ts");
 
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const assert_model_1 = __webpack_require__(/*! src/app/shared/models/assert.model */ "./src/app/shared/models/assert.model.ts");
 var ResourceTypes;
 (function (ResourceTypes) {
     ResourceTypes["File"] = "file";
     ResourceTypes["Folder"] = "folder";
-})(ResourceTypes || (ResourceTypes = {}));
+})(ResourceTypes = exports.ResourceTypes || (exports.ResourceTypes = {}));
 function createResource(parent, type) {
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_0__["Asserts"].assert(parent.type === 'folder', 'resource.type must be folder');
-    src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_0__["Asserts"].assert(parent.children.every(function (e) { return !e.renaming; }), 'cannot edit multiple resources');
+    assert_model_1.Asserts.assert(parent.type === 'folder', 'resource.type must be folder');
+    assert_model_1.Asserts.assert(parent.children.every(e => !e.renaming), 'cannot edit multiple resources');
     parent.expanded = true;
     parent.children = parent.children || [];
     return {
@@ -3396,24 +3953,26 @@ function createResource(parent, type) {
         meta: undefined,
     };
 }
+exports.createResource = createResource;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/models/settings.ts":
-/*!**************************************************!*\
-  !*** ./src/app/editor/shared/models/settings.ts ***!
-  \**************************************************/
-/*! exports provided: Settings */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/models/settings.ts":
+/*!********************************************************!*\
+  !*** ./src/app/pages/editor/shared/models/settings.ts ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Settings", function() { return Settings; });
+
 // tslint:disable: max-line-length
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 var Settings;
 (function (Settings) {
-    var Types;
+    let Types;
     (function (Types) {
         Types["Checkbox"] = "Checkbox";
         Types["Number"] = "Number";
@@ -3515,7 +4074,7 @@ var Settings;
         {
             name: 'foldingStrategy', group: 'editor', type: Types.Dropdown, value: 'auto',
             choices: ['auto', 'indentation'],
-            comment: "Selects the folding strategy. 'auto' uses the strategies contributed for the current document, 'indentation' uses the indentation based folding strategy"
+            comment: `Selects the folding strategy. 'auto' uses the strategies contributed for the current document, 'indentation' uses the indentation based folding strategy`
         },
         // FONT
         {
@@ -3537,11 +4096,11 @@ var Settings;
         // Formatting
         {
             name: 'formatOnPaste', group: 'editor.formatting', type: Types.Checkbox, value: false,
-            comment: "Controls whether the editor should automatically format the pasted content. (Require a formatter)",
+            comment: `Controls whether the editor should automatically format the pasted content. (Require a formatter)`,
         },
         {
             name: 'formatOnType', group: 'editor.formatting', type: Types.Checkbox, value: false,
-            comment: "Controls whether the editor should automatically format the content each time. (Require a formatter)",
+            comment: `Controls whether the editor should automatically format the content each time. (Require a formatter)`,
         },
         {
             name: 'glyphMargin', group: 'editor', type: Types.Checkbox, value: true,
@@ -3794,86 +4353,75 @@ var Settings;
             choices: ['none', 'same', 'indent', 'deepIndent']
         },
         {
-            name: 'blames', group: 'git', type: Types.Checkbox, value: false,
+            name: 'blames', group: 'git', type: Types.Checkbox, value: false, hidden: true,
             comment: 'Annotates each line in the focused file with information from the revision which last modified the line.',
         },
+        {
+            name: 'enabled', group: 'compiler', type: Types.Checkbox, value: false, hidden: false,
+            comment: 'Enables the experimental compiler',
+        },
     ];
-})(Settings || (Settings = {}));
+})(Settings = exports.Settings || (exports.Settings = {}));
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/pipes/icon.pipe.ts":
-/*!**************************************************!*\
-  !*** ./src/app/editor/shared/pipes/icon.pipe.ts ***!
-  \**************************************************/
-/*! exports provided: IconPipe */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/pipes/icon.pipe.ts":
+/*!********************************************************!*\
+  !*** ./src/app/pages/editor/shared/pipes/icon.pipe.ts ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "IconPipe", function() { return IconPipe; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _themes_icons__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../themes/icons */ "./src/app/editor/shared/themes/icons.ts");
 
-
-
-var IconPipe = /** @class */ (function () {
-    function IconPipe() {
-    }
-    IconPipe.prototype.transform = function (input) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, Object(_themes_icons__WEBPACK_IMPORTED_MODULE_2__["iconPath"])(input)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const theme_icons_1 = __webpack_require__(/*! ../../../../shared/themes/theme.icons */ "./src/app/shared/themes/theme.icons.ts");
+let IconPipe = class IconPipe {
+    transform(input) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return yield theme_icons_1.iconPath(input);
         });
-    };
-    IconPipe = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Pipe"])({ name: 'icon' })
-    ], IconPipe);
-    return IconPipe;
-}());
-
+    }
+};
+IconPipe = tslib_1.__decorate([
+    core_1.Pipe({ name: 'icon' })
+], IconPipe);
+exports.IconPipe = IconPipe;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/pipes/nicify-name.pipe.ts":
-/*!*********************************************************!*\
-  !*** ./src/app/editor/shared/pipes/nicify-name.pipe.ts ***!
-  \*********************************************************/
-/*! exports provided: NicifyNamePipe */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/pipes/nicify-name.pipe.ts":
+/*!***************************************************************!*\
+  !*** ./src/app/pages/editor/shared/pipes/nicify-name.pipe.ts ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NicifyNamePipe", function() { return NicifyNamePipe; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 
-
-var NicifyNamePipe = /** @class */ (function () {
-    function NicifyNamePipe() {
-    }
-    NicifyNamePipe.prototype.transform = function (v, nicifyProperty) {
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+let NicifyNamePipe = class NicifyNamePipe {
+    transform(v, nicifyProperty) {
         if (!v) {
             return v;
         }
         if (!nicifyProperty) {
             v = v.split('.').pop();
         }
-        var builder = [];
-        var index = 0;
-        var c;
-        var length = v.length;
+        const builder = [];
+        let index = 0;
+        let c;
+        const length = v.length;
         while (index < length) {
             c = v[index];
             // tslint:disable-next-line: triple-equals
-            var isLetter = c.toLowerCase() != c.toUpperCase();
+            const isLetter = c.toLowerCase() != c.toUpperCase();
             if (index === 0) {
                 builder.push(c.toUpperCase());
             }
@@ -3897,100 +4445,242 @@ var NicifyNamePipe = /** @class */ (function () {
             index++;
         }
         return builder.join('');
-    };
-    NicifyNamePipe = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Pipe"])({ name: 'nicifyName' })
-    ], NicifyNamePipe);
-    return NicifyNamePipe;
-}());
-
+    }
+};
+NicifyNamePipe = tslib_1.__decorate([
+    core_1.Pipe({ name: 'nicifyName' })
+], NicifyNamePipe);
+exports.NicifyNamePipe = NicifyNamePipe;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/pipes/path.pipe.ts":
-/*!**************************************************!*\
-  !*** ./src/app/editor/shared/pipes/path.pipe.ts ***!
-  \**************************************************/
-/*! exports provided: PathPipe */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/pipes/path.pipe.ts":
+/*!********************************************************!*\
+  !*** ./src/app/pages/editor/shared/pipes/path.pipe.ts ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PathPipe", function() { return PathPipe; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 
-
-var PathPipe = /** @class */ (function () {
-    function PathPipe() {
-    }
-    PathPipe.prototype.transform = function (v) {
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+let PathPipe = class PathPipe {
+    transform(v) {
         if (!v) {
             return v;
         }
-        var components = v.split('/');
+        const components = v.split('/');
         if (components[0] === 'lib') {
             return v;
         }
         components[0] = 'home';
         return components.join('/');
-    };
-    PathPipe = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Pipe"])({ name: 'path' })
-    ], PathPipe);
-    return PathPipe;
-}());
-
+    }
+};
+PathPipe = tslib_1.__decorate([
+    core_1.Pipe({ name: 'path' })
+], PathPipe);
+exports.PathPipe = PathPipe;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/services/editor.service.ts":
-/*!**********************************************************!*\
-  !*** ./src/app/editor/shared/services/editor.service.ts ***!
-  \**********************************************************/
-/*! exports provided: AbstractEditorService, EditorService */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/services/compiler.service.ts":
+/*!******************************************************************!*\
+  !*** ./src/app/pages/editor/shared/services/compiler.service.ts ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AbstractEditorService", function() { return AbstractEditorService; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "EditorService", function() { return EditorService; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
-/* harmony import */ var _models_editor_groups__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../models/editor-groups */ "./src/app/editor/shared/models/editor-groups.ts");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _resource_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./resource.service */ "./src/app/editor/shared/services/resource.service.ts");
-/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
-/* harmony import */ var _models_filters__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../models/filters */ "./src/app/editor/shared/models/filters.ts");
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const assert_model_1 = __webpack_require__(/*! src/app/shared/models/assert.model */ "./src/app/shared/models/assert.model.ts");
+const filters_1 = __webpack_require__(/*! ../models/filters */ "./src/app/pages/editor/shared/models/filters.ts");
+const http_1 = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm2015/http.js");
+const task_service_1 = __webpack_require__(/*! ./task.service */ "./src/app/pages/editor/shared/services/task.service.ts");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const rxjs_1 = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm2015/index.js");
+const settings_service_1 = __webpack_require__(/*! ./settings.service */ "./src/app/pages/editor/shared/services/settings.service.ts");
+let CompilerService = class CompilerService {
+    constructor(http, task, settings) {
+        this.http = http;
+        this.task = task;
+        this.settings = settings;
+        this._errors = [];
+        this._warnings = [];
+        this._problems = [];
+        this._problemsCount = 0;
+        this._warningsCount = 0;
+        this._errorsCount = 0;
+        this.compilation = {};
+        this.compiled = new rxjs_1.Subject();
+    }
+    get enabled() {
+        return this.settings.get('compiler', 'enabled').value === true;
+    }
+    get problemsCount() {
+        return this._problemsCount;
+    }
+    get warningsCount() {
+        return this._warningsCount;
+    }
+    get errorsCount() {
+        return this._errorsCount;
+    }
+    get allErrors() {
+        return this._errors || (this._errors = []);
+    }
+    get allWarnings() {
+        return this._warnings || (this._warnings = []);
+    }
+    get problems() {
+        return this._problems || (this._problems = []);
+    }
+    errors(resource) {
+        const data = this.compilation[resource.path];
+        if (data && data.ast) {
+            return data.ast.__errors;
+        }
+        return [];
+    }
+    warnings(resource) {
+        const data = this.compilation[resource.path];
+        if (data && data.ast) {
+            return data.ast.__warnings;
+        }
+        return [];
+    }
+    getAST() {
+        if (!this.active) {
+            return null;
+        }
+        const data = this.compilation[this.active.path];
+        if (!data) {
+            return null;
+        }
+        return data.ast;
+    }
+    compile(resource) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            if (this.enabled) {
+                assert_model_1.Asserts.requireNonNull(resource, 'resource');
+                if (!filters_1.isPL(resource)) {
+                    return null;
+                }
+                this.active = resource;
+                const data = this.compilation[resource.path] || {
+                    compiling: false
+                };
+                if (data.compiling) {
+                    return data.ast;
+                }
+                data.compiling = true;
+                let response;
+                try {
+                    this.task.emitTaskEvent(true, 'compilation');
+                    const params = new http_1.HttpParams().set('path', resource.path);
+                    response = yield this.http.get('editor/compile', {
+                        params: params, responseType: 'json'
+                    }).toPromise();
+                    data.compiling = false;
+                    this.task.emitTaskEvent(false);
+                    data.ast = response.ast;
+                    this.compilation[resource.path] = data;
+                    this._errors = [];
+                    this._warnings = [];
+                    Object.keys(this.compilation).forEach(k => {
+                        const item = this.compilation[k];
+                        if (item && item.ast) {
+                            const errors = item.ast.__errors;
+                            const warnings = item.ast.__warnings;
+                            this._errors = [...this._errors, ...errors];
+                            this._warnings = [...this._warnings, ...warnings];
+                        }
+                    });
+                    this._warnings.forEach(w => w.isWarning = true);
+                    this._errors.forEach(w => w.isError = true);
+                    this._problems = [...this._errors, ...this._warnings];
+                    this._problemsCount = this._problems.length;
+                    this._warningsCount = this._warnings.length;
+                    this._errorsCount = this._errors.length;
+                    this.compiled.next();
+                }
+                catch (error) {
+                    data.compiling = false;
+                    this.task.emitTaskEvent(false);
+                    throw error;
+                }
+            }
+            else {
+                this._problems = [];
+                this._warnings = [];
+                this._errors = [];
+                this._errorsCount = 0;
+                this._warningsCount = 0;
+                this._problemsCount = 0;
+                this.compiled.next();
+            }
+        });
+    }
+};
+CompilerService.ctorParameters = () => [
+    { type: http_1.HttpClient },
+    { type: task_service_1.TaskService },
+    { type: settings_service_1.SettingsService }
+];
+CompilerService = tslib_1.__decorate([
+    core_1.Injectable({ providedIn: 'root' }),
+    tslib_1.__metadata("design:paramtypes", [http_1.HttpClient,
+        task_service_1.TaskService,
+        settings_service_1.SettingsService])
+], CompilerService);
+exports.CompilerService = CompilerService;
 
 
+/***/ }),
 
+/***/ "./src/app/pages/editor/shared/services/editor.service.ts":
+/*!****************************************************************!*\
+  !*** ./src/app/pages/editor/shared/services/editor.service.ts ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
 
-
-
-var AbstractEditorService = /** @class */ (function () {
-    function AbstractEditorService() {
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const rxjs_1 = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm2015/index.js");
+const editor_groups_1 = __webpack_require__(/*! ../models/editor-groups */ "./src/app/pages/editor/shared/models/editor-groups.ts");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const resource_service_1 = __webpack_require__(/*! ./resource.service */ "./src/app/pages/editor/shared/services/resource.service.ts");
+const notification_service_1 = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
+const filters_1 = __webpack_require__(/*! ../models/filters */ "./src/app/pages/editor/shared/models/filters.ts");
+class AbstractEditorService {
+    constructor() {
         this.events = {};
         this.subscriptions = [];
         this.groups = Object.create(null);
         /** invoked each time a (focus | open | close) event is raised */
-        this.changed = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
+        this.changed = new rxjs_1.Subject();
     }
-    AbstractEditorService.prototype.on = function (eventName, action) {
-        var subject = this.events[eventName] || (this.events[eventName] = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]());
-        return subject.subscribe(function (e) {
+    on(eventName, action) {
+        const subject = this.events[eventName] || (this.events[eventName] = new rxjs_1.Subject());
+        return subject.subscribe(e => {
             action(e);
         });
-    };
-    AbstractEditorService.prototype.fire = function (eventName, data) {
-        var e = this.events[eventName];
+    }
+    fire(eventName, data) {
+        const e = this.events[eventName];
         e.next(data);
-    };
-    AbstractEditorService.prototype.copyToClipboard = function (data) {
-        var selBox = document.createElement('textarea');
+    }
+    copyToClipboard(data) {
+        const selBox = document.createElement('textarea');
         selBox.style.position = 'fixed';
         selBox.style.left = '0';
         selBox.style.top = '0';
@@ -4001,698 +4691,544 @@ var AbstractEditorService = /** @class */ (function () {
         selBox.select();
         document.execCommand('copy');
         document.body.removeChild(selBox);
-    };
-    AbstractEditorService.prototype.subscribe = function (subscription) {
+    }
+    subscribe(subscription) {
         this.subscriptions.push(subscription);
-    };
-    AbstractEditorService.prototype.unsubscribeAll = function () {
-        this.subscriptions.forEach(function (item) { return item.unsubscribe(); });
-    };
-    AbstractEditorService.prototype.listGroups = function () {
-        var _this = this;
-        return Object.keys(this.groups).map(function (id) { return _this.groups[id]; });
-    };
-    AbstractEditorService.prototype.findGroup = function (id) {
+    }
+    unsubscribeAll() {
+        this.subscriptions.forEach(item => item.unsubscribe());
+    }
+    listGroups() {
+        return Object.keys(this.groups).map(id => this.groups[id]);
+    }
+    findGroup(id) {
         return this.groups[id];
-    };
-    AbstractEditorService.prototype.findGroups = function (resource) {
-        return this.findGroupsPredicate(function (group) {
-            return group.someResource(function (item) { return item.path === resource.path; });
+    }
+    findGroups(resource) {
+        return this.findGroupsPredicate(group => {
+            return group.someResource(item => item.path === resource.path);
         });
-    };
-    AbstractEditorService.prototype.findGroupsPredicate = function (predicate) {
+    }
+    findGroupsPredicate(predicate) {
         return this.listGroups().filter(predicate);
-    };
-    AbstractEditorService.prototype.closeAll = function () {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var groups;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        groups = this.listGroups();
-                        _a.label = 1;
-                    case 1:
-                        if (!(groups.length !== 0)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, groups[0].closeAll()];
-                    case 2:
-                        if (!(_a.sent())) {
-                            return [2 /*return*/, false];
-                        }
-                        groups = this.listGroups();
-                        return [3 /*break*/, 1];
-                    case 3: return [2 /*return*/, true];
+    }
+    closeAll() {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            let groups = this.listGroups();
+            while (groups.length !== 0) {
+                if (!(yield groups[0].closeAll())) {
+                    return false;
                 }
-            });
+                groups = this.listGroups();
+            }
+            return true;
         });
-    };
-    AbstractEditorService.prototype.closePreview = function () {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                if (!this.previewGroup) {
-                    return [2 /*return*/, Promise.resolve(true)];
+    }
+    closePreview() {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            if (!this.previewGroup) {
+                return Promise.resolve(true);
+            }
+            return this.previewGroup.closeAll();
+        });
+    }
+    focusGroup(group) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            let result = true;
+            this.disposePreview();
+            const active = group.activeResource;
+            if (active) {
+                if (group.isPreviewGroup()) {
+                    this.previewGroup = group;
                 }
-                return [2 /*return*/, this.previewGroup.closeAll()];
-            });
-        });
-    };
-    AbstractEditorService.prototype.focusGroup = function (group) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var result, active;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        result = true;
-                        this.disposePreview();
-                        active = group.activeResource();
-                        if (!active) return [3 /*break*/, 3];
-                        if (!group.isPreviewGroup()) return [3 /*break*/, 1];
-                        this.previewGroup = group;
-                        return [3 /*break*/, 3];
-                    case 1:
-                        if (!(active.meta && active.meta.previewData)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.open(active, {
-                                openToSide: true
-                            })];
-                    case 2:
-                        result = _a.sent();
-                        _a.label = 3;
-                    case 3:
-                        this.groups[group.id()] = group;
-                        if (!group.isPreviewGroup()) {
-                            this.listGroups().forEach(function (item) {
-                                item.focus(false);
-                            });
-                            group.focus(true);
-                        }
-                        this.changed.next(this.listGroups());
-                        return [2 /*return*/, result];
+                else if (active.meta && active.meta.previewData) {
+                    result = yield this.open(active, {
+                        openToSide: true
+                    });
                 }
-            });
+            }
+            this.groups[group.id] = group;
+            if (!group.isPreviewGroup()) {
+                this.listGroups().forEach(item => {
+                    item.focus(false);
+                });
+                group.focus(true);
+            }
+            this.changed.next(this.listGroups());
+            return result;
         });
-    };
-    AbstractEditorService.prototype.disposeGroup = function (group) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var next;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!this.findGroup(group.id())) {
-                            throw new Error("The group '" + group.id() + "' is not found");
-                        }
-                        this.disposePreview();
-                        if (!group.focused()) return [3 /*break*/, 2];
-                        next = this.listGroups().find(function (g) { return !Object(_models_filters__WEBPACK_IMPORTED_MODULE_6__["compareGroup"])(g, group); });
-                        if (!next) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.focusGroup(next)];
-                    case 1:
-                        _a.sent();
-                        _a.label = 2;
-                    case 2:
-                        delete this.groups[group.id()];
-                        this.changed.next(this.listGroups());
-                        return [2 /*return*/, true];
+    }
+    disposeGroup(group) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            if (!this.findGroup(group.id)) {
+                throw new Error(`The group '${group.id}' is not found`);
+            }
+            this.disposePreview();
+            if (group.focused()) {
+                const next = this.listGroups().find(g => !filters_1.compareGroup(g, group));
+                if (next) {
+                    yield this.focusGroup(next);
                 }
-            });
+            }
+            delete this.groups[group.id];
+            this.changed.next(this.listGroups());
+            return true;
         });
-    };
-    AbstractEditorService.prototype.disposePreview = function () {
+    }
+    disposePreview() {
         if (this.previewGroup) {
             this.previewGroup.closeAll();
             this.previewGroup = undefined;
         }
-    };
-    return AbstractEditorService;
-}());
-
+    }
+}
+exports.AbstractEditorService = AbstractEditorService;
 /**
  * Concretes implementation of IEditorService interface
  */
-var EditorService = /** @class */ (function (_super) {
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](EditorService, _super);
-    function EditorService(resources, notification) {
-        var _this = _super.call(this) || this;
-        _this.resources = resources;
-        _this.notification = notification;
-        resources.renamed.subscribe(function (_) {
-            _this.listGroups().forEach(function (group) { return group.open(group.activeResource()); });
+let EditorService = class EditorService extends AbstractEditorService {
+    constructor(resources, notification) {
+        super();
+        this.resources = resources;
+        this.notification = notification;
+        resources.renamed.subscribe(_ => {
+            this.listGroups().forEach(group => group.open(group.activeResource));
         });
-        resources.deleted.subscribe(function (item) {
-            _this.findGroups(item).forEach(function (group) {
+        resources.deleted.subscribe(item => {
+            this.findGroups(item).forEach(group => {
                 group.close(item, false);
             });
         });
-        return _this;
     }
-    EditorService.prototype.open = function (resource, options) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var group, groups, error_1;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, this.resources.open(resource)];
-                    case 1:
-                        if (!(_a.sent())) {
-                            return [2 /*return*/, Promise.reject(new Error("Unable to open '" + resource.path + "': resource content not found"))];
-                        }
-                        group = void 0;
-                        groups = this.listGroups();
-                        options = options || {};
-                        if (options.openToSide) {
-                            group = new _models_editor_groups__WEBPACK_IMPORTED_MODULE_2__["EditorGroup"](this);
-                        }
-                        else {
-                            groups = groups.filter(function (g) { return !g.isPreviewGroup(); }); // remove preview group
-                            // tslint:disable-next-line: max-line-length
-                            group = groups.find(function (g) { return g.focused() && g.someResource(function (r) { return r.path === resource.path; }); }) // find focused that contains the resource
-                                || groups.find(function (g) { return g.focused(); }) // find focused
-                                || groups.find(function (_) { return true; }) || new _models_editor_groups__WEBPACK_IMPORTED_MODULE_2__["EditorGroup"](this); // find any or create new group
-                        }
-                        return [4 /*yield*/, group.open(resource, options)];
-                    case 2: return [2 /*return*/, _a.sent()];
-                    case 3:
-                        error_1 = _a.sent();
-                        this.notification.logError(error_1);
-                        return [2 /*return*/, false];
-                    case 4: return [2 /*return*/];
+    open(resource, options) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            try {
+                if (!(yield this.resources.open(resource))) {
+                    return Promise.reject(new Error(`Unable to open '${resource.path}': resource content not found`));
                 }
-            });
-        });
-    };
-    EditorService.prototype.focusGroup = function (group) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var focused;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, _super.prototype.focusGroup.call(this, group)];
-                    case 1:
-                        focused = _a.sent();
-                        if (focused) {
-                            this.resources.focus(group.activeResource());
-                        }
-                        return [2 /*return*/, focused];
+                let group;
+                let groups = this.listGroups();
+                options = options || {};
+                if (options.openToSide) {
+                    group = new editor_groups_1.EditorGroup(this);
                 }
-            });
+                else {
+                    groups = groups.filter(g => !g.isPreviewGroup()); // remove preview group
+                    // tslint:disable-next-line: max-line-length
+                    group = groups.find(g => g.focused() && g.someResource(r => r.path === resource.path)) // find focused that contains the resource
+                        || groups.find(g => g.focused()) // find focused
+                        || groups.find(_ => true) || new editor_groups_1.EditorGroup(this); // find any or create new group
+                }
+                return yield group.open(resource, options);
+            }
+            catch (error) {
+                this.notification.logError(error);
+                return false;
+            }
         });
-    };
-    EditorService.prototype.confirm = function (options) {
+    }
+    focusGroup(group) {
+        const _super = Object.create(null, {
+            focusGroup: { get: () => super.focusGroup }
+        });
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const focused = yield _super.focusGroup.call(this, group);
+            if (focused) {
+                this.resources.focus(group.activeResource);
+            }
+            return focused;
+        });
+    }
+    confirm(options) {
         return this.notification.confirmAsync(options);
-    };
-    EditorService.prototype.saveContent = function (resource) {
+    }
+    saveContent(resource) {
         return this.resources.save(resource);
-    };
-    EditorService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_3__["Injectable"])({
-            providedIn: 'root'
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_resource_service__WEBPACK_IMPORTED_MODULE_4__["ResourceService"],
-            src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_5__["NotificationService"]])
-    ], EditorService);
-    return EditorService;
-}(AbstractEditorService));
-
+    }
+};
+EditorService.ctorParameters = () => [
+    { type: resource_service_1.ResourceService },
+    { type: notification_service_1.NotificationService }
+];
+EditorService = tslib_1.__decorate([
+    core_1.Injectable({
+        providedIn: 'root'
+    }),
+    tslib_1.__metadata("design:paramtypes", [resource_service_1.ResourceService,
+        notification_service_1.NotificationService])
+], EditorService);
+exports.EditorService = EditorService;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/services/git.service.ts":
-/*!*******************************************************!*\
-  !*** ./src/app/editor/shared/services/git.service.ts ***!
-  \*******************************************************/
-/*! exports provided: GitService */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/services/git.service.ts":
+/*!*************************************************************!*\
+  !*** ./src/app/pages/editor/shared/services/git.service.ts ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GitService", function() { return GitService; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
-/* harmony import */ var _models_filters__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../models/filters */ "./src/app/editor/shared/models/filters.ts");
-/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
-/* harmony import */ var src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! src/app/shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
-/* harmony import */ var src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! src/app/shared/models/assert.model */ "./src/app/shared/models/assert.model.ts");
 
-
-
-
-
-
-
-var GitService = /** @class */ (function () {
-    function GitService(http, notification) {
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const http_1 = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm2015/http.js");
+const filters_1 = __webpack_require__(/*! ../models/filters */ "./src/app/pages/editor/shared/models/filters.ts");
+const notification_service_1 = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
+const assert_model_1 = __webpack_require__(/*! src/app/shared/models/assert.model */ "./src/app/shared/models/assert.model.ts");
+const settings_service_1 = __webpack_require__(/*! ./settings.service */ "./src/app/pages/editor/shared/services/settings.service.ts");
+const paths_model_1 = __webpack_require__(/*! src/app/shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
+let GitService = class GitService {
+    constructor(http, settings, notification) {
         this.http = http;
+        this.settings = settings;
         this.notification = notification;
-        /** git repositories */
+        this.blames = {};
         this.repos = [];
     }
-    GitService.prototype.refresh = function () {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var success, params, response_1, error_1;
-            var _this = this;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        success = false;
-                        _b.label = 1;
-                    case 1:
-                        _b.trys.push([1, 3, , 4]);
-                        this.runningTask = true;
-                        params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'git_changes');
-                        return [4 /*yield*/, this.http.get('filebrowser/option', { params: params }).toPromise()];
-                    case 2:
-                        response_1 = _b.sent();
-                        this.repos = [];
-                        Object.keys(response_1).forEach(function (key) {
-                            var data = response_1[key];
-                            var name = Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_5__["basename"])(key.endsWith('/') ? key.slice(0, key.length - 1) : key);
-                            _this.repos.push({
-                                name: name,
-                                url: key,
-                                path: data.path,
-                                branch: data.branch,
-                                count: data.changes.length,
-                                changes: data.changes
-                            });
-                            return false;
-                        });
-                        this.size = this.repos.reduce(function (p, c, _i, _a) { return p + c.count; }, 0);
-                        success = true;
-                        return [3 /*break*/, 4];
-                    case 3:
-                        error_1 = _b.sent();
-                        this.notification.logError(error_1);
-                        return [3 /*break*/, 4];
-                    case 4:
-                        this.runningTask = false;
-                        return [2 /*return*/, success];
-                }
-            });
+    refresh() {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            let success = false;
+            try {
+                this.runningTask = true;
+                const response = yield this.http.get('/api/git/changes').toPromise();
+                this.repos = [];
+                Object.keys(response).forEach(key => {
+                    const data = response[key];
+                    const name = paths_model_1.basename(key.endsWith('/') ? key.slice(0, key.length - 1) : key);
+                    this.repos.push({
+                        name: name,
+                        url: key,
+                        path: data.path,
+                        branch: data.branch,
+                        count: data.changes.length,
+                        changes: data.changes
+                    });
+                    return false;
+                });
+                this.size = this.repos.reduce((p, c, _i, _a) => p + c.count, 0);
+                success = true;
+            }
+            catch (error) {
+                this.notification.logError(error);
+            }
+            this.runningTask = false;
+            return success;
         });
-    };
-    GitService.prototype.show = function (item) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var response, params, error_2;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        this.runningTask = true;
-                        _b.label = 1;
-                    case 1:
-                        _b.trys.push([1, 3, , 4]);
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(item, 'item');
-                        params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'git_show').set('path', item.path);
-                        return [4 /*yield*/, this.http.get('/filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
-                    case 2:
-                        response = _b.sent();
-                        return [3 /*break*/, 4];
-                    case 3:
-                        error_2 = _b.sent();
-                        this.notification.logError(error_2);
-                        return [3 /*break*/, 4];
-                    case 4:
-                        this.runningTask = false;
-                        return [2 /*return*/, response];
-                }
-            });
+    }
+    show(item) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            let response;
+            this.runningTask = true;
+            try {
+                assert_model_1.Asserts.requireNonNull(item, 'item');
+                const params = new http_1.HttpParams().set('path', item.path);
+                response = yield this.http.get('/api/git/show', { params: params, responseType: 'text' }).toPromise();
+            }
+            catch (error) {
+                this.notification.logError(error);
+            }
+            this.runningTask = false;
+            return response;
         });
-    };
-    GitService.prototype.status = function (item) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var success, params, response, error_3;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        success = false;
-                        this.runningTask = true;
-                        _b.label = 1;
-                    case 1:
-                        _b.trys.push([1, 3, , 4]);
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(item, 'item');
-                        params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'git_status').set('path', item.path);
-                        return [4 /*yield*/, this.http.get('/filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
-                    case 2:
-                        response = _b.sent();
-                        this.logResponse(item, response);
-                        success = true;
-                        return [3 /*break*/, 4];
-                    case 3:
-                        error_3 = _b.sent();
-                        this.notification.logError(error_3);
-                        return [3 /*break*/, 4];
-                    case 4:
-                        this.runningTask = false;
-                        return [2 /*return*/, success];
-                }
-            });
+    }
+    status(item) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            let success = false;
+            this.runningTask = true;
+            try {
+                assert_model_1.Asserts.requireNonNull(item, 'item');
+                const params = new http_1.HttpParams().set('path', item.path);
+                const response = yield this.http.get('api/git/status', { params: params, responseType: 'text' }).toPromise();
+                this.logResponse(item, response);
+                success = true;
+            }
+            catch (error) {
+                this.notification.logError(error);
+            }
+            this.runningTask = false;
+            return success;
         });
-    };
-    GitService.prototype.add = function (item) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var success, params, response, error_4;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        success = false;
-                        this.runningTask = true;
-                        _b.label = 1;
-                    case 1:
-                        _b.trys.push([1, 4, , 5]);
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(item, 'item');
-                        params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'git_add').set('path', item.path);
-                        return [4 /*yield*/, this.http.get('/filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
-                    case 2:
-                        response = _b.sent();
-                        this.logResponse(item, response);
-                        return [4 /*yield*/, this.refresh()];
-                    case 3:
-                        success = _b.sent();
-                        return [3 /*break*/, 5];
-                    case 4:
-                        error_4 = _b.sent();
-                        this.notification.logError(error_4);
-                        return [3 /*break*/, 5];
-                    case 5:
-                        this.runningTask = false;
-                        return [2 /*return*/, success];
-                }
-            });
+    }
+    add(item) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            let success = false;
+            this.runningTask = true;
+            try {
+                assert_model_1.Asserts.requireNonNull(item, 'item');
+                const params = new http_1.HttpParams().set('path', item.path);
+                const response = yield this.http.get('/api/git/add', { params: params, responseType: 'text' }).toPromise();
+                this.logResponse(item, response);
+                success = yield this.refresh();
+            }
+            catch (error) {
+                this.notification.logError(error);
+            }
+            this.runningTask = false;
+            return success;
         });
-    };
-    GitService.prototype.checkout = function (item) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var success, params, response, error_5;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        this.runningTask = true;
-                        success = false;
-                        _b.label = 1;
-                    case 1:
-                        _b.trys.push([1, 4, , 5]);
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(item, 'item');
-                        params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'git_checkout').set('path', item.path);
-                        return [4 /*yield*/, this.http.get('/filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
-                    case 2:
-                        response = _b.sent();
-                        this.logResponse(item, response);
-                        return [4 /*yield*/, this.refresh()];
-                    case 3:
-                        success = _b.sent();
-                        return [3 /*break*/, 5];
-                    case 4:
-                        error_5 = _b.sent();
-                        this.notification.logError(error_5);
-                        return [3 /*break*/, 5];
-                    case 5:
-                        this.runningTask = false;
-                        return [2 /*return*/, success];
-                }
-            });
+    }
+    checkout(item) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            this.runningTask = true;
+            let success = false;
+            try {
+                assert_model_1.Asserts.requireNonNull(item, 'item');
+                const params = new http_1.HttpParams().set('path', item.path);
+                const response = yield this.http.get('/api/git/checkout', { params: params, responseType: 'text' }).toPromise();
+                this.logResponse(item, response);
+                success = yield this.refresh();
+            }
+            catch (error) {
+                this.notification.logError(error);
+            }
+            this.runningTask = false;
+            return success;
         });
-    };
-    GitService.prototype.commit = function (item, commit) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var success, headers, data, response, error_6;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        success = false;
-                        this.runningTask = true;
-                        _b.label = 1;
-                    case 1:
-                        _b.trys.push([1, 3, , 4]);
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(item, 'item');
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(commit, 'commit');
-                        headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
-                        data = { 'name': 'git_commit', 'path': item.path, commit: commit };
-                        return [4 /*yield*/, this.http.post('/filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise()];
-                    case 2:
-                        response = _b.sent();
-                        this.logResponse(item, response);
-                        this.refresh();
-                        success = true;
-                        return [3 /*break*/, 4];
-                    case 3:
-                        error_6 = _b.sent();
-                        this.notification.logError(error_6);
-                        return [3 /*break*/, 4];
-                    case 4:
-                        this.runningTask = false;
-                        return [2 /*return*/, success];
-                }
-            });
+    }
+    commit(item, commit) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            let success = false;
+            this.runningTask = true;
+            try {
+                assert_model_1.Asserts.requireNonNull(item, 'item');
+                assert_model_1.Asserts.requireNonNull(commit, 'commit');
+                const headers = new http_1.HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
+                const data = { path: item.path, commit };
+                const response = yield this.http.post('/api/git/commit', data, { headers: headers, responseType: 'text' }).toPromise();
+                this.logResponse(item, response);
+                this.refresh();
+                success = true;
+            }
+            catch (error) {
+                this.notification.logError(error);
+            }
+            this.runningTask = false;
+            return success;
         });
-    };
-    GitService.prototype.push = function (item, username, password) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var success, headers, data, response, error_7;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        success = false;
-                        this.runningTask = true;
-                        _b.label = 1;
-                    case 1:
-                        _b.trys.push([1, 3, , 4]);
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(item, 'item');
-                        headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
-                        data = { 'name': 'git_push', 'path': item.path, username: username, password: password };
-                        return [4 /*yield*/, this.http.post('/filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise()];
-                    case 2:
-                        response = _b.sent();
-                        this.logResponse(item, response);
-                        this.refresh();
-                        success = true;
-                        return [3 /*break*/, 4];
-                    case 3:
-                        error_7 = _b.sent();
-                        this.notification.logError(error_7);
-                        return [3 /*break*/, 4];
-                    case 4:
-                        this.runningTask = false;
-                        return [2 /*return*/, success];
-                }
-            });
+    }
+    push(item, username, password) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            let success = false;
+            this.runningTask = true;
+            try {
+                assert_model_1.Asserts.requireNonNull(item, 'item');
+                const headers = new http_1.HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
+                const data = { path: item.path, username, password };
+                const response = yield this.http.post('/api/git/push', data, { headers: headers, responseType: 'text' }).toPromise();
+                this.logResponse(item, response);
+                this.refresh();
+                success = true;
+            }
+            catch (error) {
+                this.notification.logError(error);
+            }
+            this.runningTask = false;
+            return success;
         });
-    };
-    GitService.prototype.pull = function (item, username, password) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var success, headers, data, response, error_8;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        success = false;
-                        this.runningTask = true;
-                        _b.label = 1;
-                    case 1:
-                        _b.trys.push([1, 3, , 4]);
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(item, 'item');
-                        headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
-                        data = { 'name': 'git_pull', 'path': item.path, username: username, password: password };
-                        return [4 /*yield*/, this.http.post('/filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise()];
-                    case 2:
-                        response = _b.sent();
-                        this.logResponse(item, response);
-                        success = true;
-                        return [3 /*break*/, 4];
-                    case 3:
-                        error_8 = _b.sent();
-                        this.notification.logError(error_8);
-                        return [3 /*break*/, 4];
-                    case 4:
-                        this.runningTask = false;
-                        return [2 /*return*/, success];
-                }
-            });
+    }
+    pull(item, username, password) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            let success = false;
+            this.runningTask = true;
+            try {
+                assert_model_1.Asserts.requireNonNull(item, 'item');
+                const headers = new http_1.HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
+                const data = { path: item.path, username, password };
+                const response = yield this.http.post('/api/git/pull', data, { headers: headers, responseType: 'text' }).toPromise();
+                this.logResponse(item, response);
+                success = true;
+            }
+            catch (error) {
+                this.notification.logError(error);
+            }
+            this.runningTask = false;
+            return success;
         });
-    };
-    GitService.prototype.clone = function (home, url, username, password, destination) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var success, headers, data, name_1, error_9;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        success = false;
-                        this.runningTask = true;
-                        _b.label = 1;
-                    case 1:
-                        _b.trys.push([1, 3, , 4]);
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(home, 'parent');
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(url, 'url');
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].assert(Object(_models_filters__WEBPACK_IMPORTED_MODULE_3__["isHome"])(home), 'clone operation is applicable to home only');
-                        headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
-                        data = {
-                            'name': 'git_clone',
-                            'path': home.path,
-                            url: url,
-                            username: username,
-                            password: password,
-                            destination: destination
-                        };
-                        return [4 /*yield*/, this.http.post('/filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise()];
-                    case 2:
-                        _b.sent();
-                        name_1 = Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_5__["basename"])(url.endsWith('/') ? url.slice(0, url.length - 1) : url);
-                        this.notification.logInfo(url + " cloned into the directory " + name_1);
-                        success = true;
-                        return [3 /*break*/, 4];
-                    case 3:
-                        error_9 = _b.sent();
-                        this.notification.logError(error_9);
-                        return [3 /*break*/, 4];
-                    case 4:
-                        this.runningTask = false;
-                        return [2 /*return*/, success];
-                }
-            });
+    }
+    clone(home, url, username, password, destination) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            let success = false;
+            this.runningTask = true;
+            try {
+                assert_model_1.Asserts.requireNonNull(home, 'parent');
+                assert_model_1.Asserts.requireNonNull(url, 'url');
+                assert_model_1.Asserts.assert(filters_1.isHome(home), 'clone operation is applicable to home only');
+                const headers = new http_1.HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
+                const data = {
+                    'path': home.path,
+                    url: url,
+                    username: username,
+                    password: password,
+                    destination: destination
+                };
+                yield this.http.post('/api/git/clone', data, { headers: headers, responseType: 'text' }).toPromise();
+                const name = paths_model_1.basename(url.endsWith('/') ? url.slice(0, url.length - 1) : url);
+                this.notification.logInfo(`${url} cloned into the directory ${name}`);
+                success = true;
+            }
+            catch (error) {
+                this.notification.logError(error);
+            }
+            this.runningTask = false;
+            return success;
         });
-    };
-    GitService.prototype.blame = function (item) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var response, params, headers, error_10;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        this.runningTask = true;
-                        _b.label = 1;
-                    case 1:
-                        _b.trys.push([1, 3, , 4]);
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_6__["Asserts"].requireNonNull(item, 'item');
-                        params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'git_blame').set('path', item.path);
-                        headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
-                        return [4 /*yield*/, this.http.get('/filebrowser/option', { headers: headers, params: params }).toPromise()];
-                    case 2:
-                        response = (_b.sent());
-                        this.runningTask = false;
-                        return [3 /*break*/, 4];
-                    case 3:
-                        error_10 = _b.sent();
-                        this.runningTask = false;
-                        throw error_10;
-                    case 4: return [2 /*return*/, response];
-                }
-            });
+    }
+    blame(item) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            let response;
+            this.runningTask = true;
+            try {
+                assert_model_1.Asserts.requireNonNull(item, 'item');
+                const params = new http_1.HttpParams().set('path', item.path);
+                const headers = new http_1.HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
+                response = (yield this.http.get('/api/git/blame', { headers: headers, params: params }).toPromise());
+                this.runningTask = false;
+            }
+            catch (error) {
+                this.runningTask = false;
+                throw error;
+            }
+            return response;
         });
-    };
-    GitService.prototype.logResponse = function (item, response) {
-        this.notification.logInfo(item.path + ":<br/> " + response);
-    };
-    GitService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
-            providedIn: 'root'
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"], src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_4__["NotificationService"]])
-    ], GitService);
-    return GitService;
-}());
-
+    }
+    /** Gets a value indicating whether blame option is enablad in the settings */
+    enabledBlames() {
+        return this.settings.get('git', 'blames').value === true;
+    }
+    /**
+     * Refresh blames of `resource`.
+     * @param resource the resource
+     * @returns A promise that resolves with true
+     */
+    refreshBlames(resource) {
+        if (this.enabledBlames()) {
+            return this.blame(resource).then(response => {
+                const lines = resource.content.split('\n');
+                for (const item of response) {
+                    item.text = lines[item.line - 1];
+                    if (item.email === 'not.committed.yet') {
+                        item.email = 'Uncommitted changes';
+                    }
+                }
+                this.blames[resource.path] = response;
+                return true;
+            }).catch(_ => false);
+        }
+        return true;
+    }
+    logResponse(item, response) {
+        this.notification.logInfo(`${item.path}:<br/> ${response}`);
+    }
+};
+GitService.ctorParameters = () => [
+    { type: http_1.HttpClient },
+    { type: settings_service_1.SettingsService },
+    { type: notification_service_1.NotificationService }
+];
+GitService = tslib_1.__decorate([
+    core_1.Injectable({
+        providedIn: 'root'
+    }),
+    tslib_1.__metadata("design:paramtypes", [http_1.HttpClient,
+        settings_service_1.SettingsService,
+        notification_service_1.NotificationService])
+], GitService);
+exports.GitService = GitService;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/services/monaco.service.ts":
-/*!**********************************************************!*\
-  !*** ./src/app/editor/shared/services/monaco.service.ts ***!
-  \**********************************************************/
-/*! exports provided: MonacoService */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/services/monaco.service.ts":
+/*!****************************************************************!*\
+  !*** ./src/app/pages/editor/shared/services/monaco.service.ts ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MonacoService", function() { return MonacoService; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! src/app/shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
-/* harmony import */ var _languages_language__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../languages/language */ "./src/app/editor/shared/languages/language.ts");
-/* harmony import */ var _git_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./git.service */ "./src/app/editor/shared/services/git.service.ts");
-/* harmony import */ var _opener_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./opener.service */ "./src/app/editor/shared/services/opener.service.ts");
-/* harmony import */ var _resource_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./resource.service */ "./src/app/editor/shared/services/resource.service.ts");
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
-/* harmony import */ var _models_settings__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../models/settings */ "./src/app/editor/shared/models/settings.ts");
-/* harmony import */ var _models_monaco__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../models/monaco */ "./src/app/editor/shared/models/monaco.ts");
-/* harmony import */ var _editor_service__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./editor.service */ "./src/app/editor/shared/services/editor.service.ts");
-/* harmony import */ var _themes_theme__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../themes/theme */ "./src/app/editor/shared/themes/theme.ts");
-/* harmony import */ var _settings_service__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./settings.service */ "./src/app/editor/shared/services/settings.service.ts");
+
 // tslint:disable: max-line-length
-
-
-
-
-
-
-
-
-
-
-
-
-
-var MonacoService = /** @class */ (function () {
-    function MonacoService(git, editor, opener, settings, resources, themes, languages) {
-        this.git = git;
+var MonacoService_1;
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const paths_model_1 = __webpack_require__(/*! src/app/shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
+const language_1 = __webpack_require__(/*! ../languages/language */ "./src/app/pages/editor/shared/languages/language.ts");
+const opener_service_1 = __webpack_require__(/*! ./opener.service */ "./src/app/pages/editor/shared/services/opener.service.ts");
+const resource_service_1 = __webpack_require__(/*! ./resource.service */ "./src/app/pages/editor/shared/services/resource.service.ts");
+const rxjs_1 = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm2015/index.js");
+const settings_1 = __webpack_require__(/*! ../models/settings */ "./src/app/pages/editor/shared/models/settings.ts");
+const monaco_1 = __webpack_require__(/*! ../models/monaco */ "./src/app/pages/editor/shared/models/monaco.ts");
+const editor_service_1 = __webpack_require__(/*! ./editor.service */ "./src/app/pages/editor/shared/services/editor.service.ts");
+const theme_1 = __webpack_require__(/*! ../../../../shared/themes/theme */ "./src/app/shared/themes/theme.ts");
+const settings_service_1 = __webpack_require__(/*! ./settings.service */ "./src/app/pages/editor/shared/services/settings.service.ts");
+let MonacoService = MonacoService_1 = class MonacoService {
+    constructor(editor, opener, settings, resources, themes, languages) {
         this.editor = editor;
         this.opener = opener;
         this.settings = settings;
         this.resources = resources;
         this.themes = themes;
         this.languages = languages;
-        this.blames = {};
         this.states = {};
         this.editors = [];
-        this.cursorChanged = new rxjs__WEBPACK_IMPORTED_MODULE_7__["Subject"]();
-        this.blameChanged = new rxjs__WEBPACK_IMPORTED_MODULE_7__["Subject"]();
-        _models_monaco__WEBPACK_IMPORTED_MODULE_9__["MONACO_LOADED"].subscribe(this.onMonacoLoaded.bind(this));
+        this.cursorChanged = new rxjs_1.Subject();
+        monaco_1.MONACO_LOADED.subscribe(this.onMonacoLoaded.bind(this));
+    }
+    static parseURI(path) {
+        return monaco.Uri.parse('file://' + path);
     }
     /**
      * Finds the language id linked to the given `resource`
      * @param resource the resource.
      * @returns the id of the language for the resource or empty string if not found.
      */
-    MonacoService.prototype.findLanguage = function (resource) {
-        var ext = Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_2__["extname"])(resource.path) || resource.path;
-        var language = _languages_language__WEBPACK_IMPORTED_MODULE_3__["LANGUAGES"].find(function (item) { return item.extension === ext; });
+    findLanguage(resource) {
+        const ext = paths_model_1.extname(resource.path) || resource.path;
+        const language = language_1.LANGUAGES.find(item => item.extension === ext);
         return !!language ? language.id : '';
-    };
+    }
     /**
      * Disposes the editor.
      * @param editor the disposed editor.
      */
-    MonacoService.prototype.onEditorDisposed = function (editor) {
-        var item = this.editors.find(function (e) { return e.editor.getId() === editor.getId(); });
+    onEditorDisposed(editor) {
+        const item = this.editors.find(e => e.editor.getId() === editor.getId());
         if (!item) {
             throw new Error('unregistered editor ' + editor.getId());
         }
-        this.editors = this.editors.filter(function (e) { return e.editor.getId() !== editor.getId(); });
-        item.disposables.forEach(function (e) { return e.dispose(); });
+        this.editors = this.editors.filter(e => e.editor.getId() !== editor.getId());
+        item.disposables.forEach(e => e.dispose());
         item.editor.dispose();
         if (this.editors.length === 0) {
             this.cursorChanged.next(undefined);
         }
-    };
+    }
     /**
      * Overrides the editor features.
      * @param editor the created editor.
      */
-    MonacoService.prototype.onEditorCreated = function (editor) {
-        var _this = this;
-        var disposables = [];
-        var linkDetector = editor.getContribution('editor.linkDetector');
-        linkDetector.openerService.open = function (uri) {
-            _this.opener.openReference(editor.getModel().uri.path, uri.path);
+    onEditorCreated(editor) {
+        const disposables = [];
+        const linkDetector = editor.getContribution('editor.linkDetector');
+        linkDetector.openerService.open = (uri) => {
+            this.opener.openReference(editor.getModel().uri.path, uri.path);
         };
         disposables.push(linkDetector);
-        disposables.push(editor.onDidBlurEditor(function () {
-            _this.cursorChanged.next(_this.cursor);
+        disposables.push(editor.onDidBlurEditorText(() => {
+            this.cursorChanged.next(this.cursor);
         }));
-        disposables.push(editor.onDidChangeCursorPosition(function (e) {
-            _this.didCursorChanged(e, editor);
+        disposables.push(editor.onDidChangeCursorPosition(e => {
+            this.onCursorChanged(e, editor);
         }));
-        disposables.push(editor.onDidChangeModelContent(function () {
+        disposables.push(editor.onDidChangeModelContent(() => {
         }));
-        this.editors.push({ editor: editor, disposables: disposables });
+        this.editors.push({ editor, disposables });
         this.updateSettings();
-    };
+    }
     /**
      * Saves the state of the editor and handles the new active resource.
      * @param context the last opened resource and its viewState
@@ -4700,51 +5236,19 @@ var MonacoService = /** @class */ (function () {
      * @param model the model of the active resource
      * @param editor the editor that opened the resource
      */
-    MonacoService.prototype.onOpened = function (context, active, model, editor) {
+    onOpened(context, active, model, editor) {
         if (context.resource) {
             this.states[context.resource.path] = context.viewState;
         }
-        var viewState = this.states[active.path];
+        const viewState = this.states[active.path];
         if (viewState) {
             editor.restoreViewState(viewState); // fix #228
         }
         this.cursor = editor.getPosition();
         this.cursorChanged.next(this.cursor);
-        this.refreshBlames(active, model);
-    };
-    /** Gets a value indicating whether blame option is enablad in the settings */
-    MonacoService.prototype.enabledBlames = function () {
-        return this.settings.get('git', 'blames').value === true;
-    };
-    /**
-     * Refreshs the blames of the editor
-     * @param resource the focused resource
-     * @param model the model of the resource
-     * @returns A promise that resolves with true
-     */
-    MonacoService.prototype.refreshBlames = function (resource, model) {
-        var _this = this;
-        if (this.enabledBlames()) {
-            return this.git.blame(resource).then(function (response) {
-                var lines = resource.content.split('\n');
-                var linesLength = lines.length;
-                for (var _i = 0, response_1 = response; _i < response_1.length; _i++) {
-                    var item = response_1[_i];
-                    item.text = lines[item.line - 1];
-                    if (item.email === 'not.committed.yet') {
-                        item.email = 'Uncommitted changes';
-                    }
-                }
-                _this.blames[resource.path] = response;
-                _this.refreshBlame(model);
-                return true;
-            }).catch(function (_) { return false; });
-        }
-        return true;
-    };
-    MonacoService.prototype.onMonacoLoaded = function () {
-        var _this = this;
-        this.themes.forEach(function (theme) {
+    }
+    onMonacoLoaded() {
+        this.themes.forEach(theme => {
             monaco.editor.defineTheme(theme.id, {
                 base: theme.base,
                 inherit: theme.inherit,
@@ -4752,324 +5256,264 @@ var MonacoService = /** @class */ (function () {
                 colors: theme.colors
             });
         });
-        this.languages.forEach(function (language) {
+        this.languages.forEach(language => {
             monaco.languages.register({
                 id: language.id,
                 extensions: language.extensions || [],
                 aliases: language.aliases || []
             });
             monaco.languages.setMonarchTokensProvider(language.id, language.syntax());
-            language.hoversProviders().forEach(function (provider) {
+            language.hoversProviders().forEach(provider => {
                 monaco.languages.registerHoverProvider(language.id, provider);
             });
-            language.foldingsProviders().forEach(function (provider) {
+            language.foldingsProviders().forEach(provider => {
                 monaco.languages.registerFoldingRangeProvider(language.id, provider);
             });
-            language.linksProviders().forEach(function (provider) {
+            language.linksProviders().forEach(provider => {
                 monaco.languages.registerLinkProvider(language.id, provider);
             });
-            language.completionsProviders().forEach(function (provider) {
+            language.completionsProviders().forEach(provider => {
                 monaco.languages.registerCompletionItemProvider(language.id, provider);
             });
         });
-        this.editor.subscribe(this.resources.deleted.subscribe(function (e) {
-            _this.disposeModel(e.path);
+        this.editor.subscribe(this.resources.deleted.subscribe(e => {
+            this.disposeModel(e.path);
         }));
-        this.editor.subscribe(this.resources.renamed.subscribe(function (e) {
-            _this.disposeModel(e.before);
+        this.editor.subscribe(this.resources.renamed.subscribe(e => {
+            this.disposeModel(e.before);
         }));
-        this.editor.subscribe(this.settings.changed.subscribe(function (_) {
-            _this.updateSettings();
+        this.editor.subscribe(this.settings.changed.subscribe(_ => {
+            this.updateSettings();
         }));
-    };
-    MonacoService.prototype.disposeModel = function (path) {
-        var model = monaco.editor.getModel(monaco.Uri.parse(path));
+    }
+    disposeModel(path) {
+        const model = monaco.editor.getModel(MonacoService_1.parseURI(path));
         if (model) {
             model.dispose();
         }
-    };
-    MonacoService.prototype.didCursorChanged = function (e, editor) {
+    }
+    onCursorChanged(e, editor) {
         this.cursor = e.position;
         this.cursorChanged.next(e.position);
-        for (var _i = 0, _a = this.editors; _i < _a.length; _i++) {
-            var item = _a[_i];
+        for (const item of this.editors) {
             if (item.editor.getId() !== editor.getId()) {
-                var model = item.editor.getModel();
+                const model = item.editor.getModel();
                 if (model && model.id === editor.getModel().id) {
                     item.editor.setPosition(e.position);
                 }
             }
         }
-        this.refreshBlame(editor.getModel());
-    };
-    MonacoService.prototype.updateSettings = function () {
-        var settings = this.settings.extract(_models_settings__WEBPACK_IMPORTED_MODULE_8__["Settings"].EDITOR_KEY);
+    }
+    updateSettings() {
+        const settings = this.settings.extract(settings_1.Settings.EDITOR_KEY);
         if (monaco) {
-            this.editors.forEach(function (item) {
+            this.editors.forEach(item => {
                 item.editor.updateOptions(settings);
             });
             monaco.editor.setTheme(settings['theme']);
         }
-    };
-    MonacoService.prototype.disposeUnusedModels = function () {
-        var monaco = window.monaco;
-        var models = monaco.editor.getModels();
-        for (var _i = 0, models_1 = models; _i < models_1.length; _i++) {
-            var model = models_1[_i];
-            if (model._attachedEditorCount === 0) {
-                model.dispose();
-            }
-        }
-    };
-    MonacoService.prototype.refreshBlame = function (model) {
-        if (this.enabledBlames() && model) {
-            var blame = void 0;
-            var blames = this.blames[model.uri.path];
-            if (blames) {
-                var lineNumber = this.cursor ? this.cursor.lineNumber : 0;
-                var content_1 = model.getLineContent(lineNumber);
-                blame = blames.find(function (item) { return item.text.trim() === content_1.trim(); });
-            }
-            this.blameChanged.next({ blame: blame, modelId: model.id });
-        }
-    };
-    MonacoService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({ providedIn: 'root' }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__param"](5, Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"])(_themes_theme__WEBPACK_IMPORTED_MODULE_11__["THEME_PROVIDERS"])),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__param"](6, Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"])(_languages_language__WEBPACK_IMPORTED_MODULE_3__["LANGUAGE_PROVIDERS"])),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_git_service__WEBPACK_IMPORTED_MODULE_4__["GitService"],
-            _editor_service__WEBPACK_IMPORTED_MODULE_10__["EditorService"],
-            _opener_service__WEBPACK_IMPORTED_MODULE_5__["OpenerService"],
-            _settings_service__WEBPACK_IMPORTED_MODULE_12__["SettingsService"],
-            _resource_service__WEBPACK_IMPORTED_MODULE_6__["ResourceService"], Array, Array])
-    ], MonacoService);
-    return MonacoService;
-}());
-
+    }
+};
+MonacoService.ctorParameters = () => [
+    { type: editor_service_1.EditorService },
+    { type: opener_service_1.OpenerService },
+    { type: settings_service_1.SettingsService },
+    { type: resource_service_1.ResourceService },
+    { type: Array, decorators: [{ type: core_1.Inject, args: [theme_1.THEME_PROVIDERS,] }] },
+    { type: Array, decorators: [{ type: core_1.Inject, args: [language_1.LANGUAGE_PROVIDERS,] }] }
+];
+MonacoService = MonacoService_1 = tslib_1.__decorate([
+    core_1.Injectable({ providedIn: 'root' }),
+    tslib_1.__param(4, core_1.Inject(theme_1.THEME_PROVIDERS)),
+    tslib_1.__param(5, core_1.Inject(language_1.LANGUAGE_PROVIDERS)),
+    tslib_1.__metadata("design:paramtypes", [editor_service_1.EditorService,
+        opener_service_1.OpenerService,
+        settings_service_1.SettingsService,
+        resource_service_1.ResourceService, Array, Array])
+], MonacoService);
+exports.MonacoService = MonacoService;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/services/opener.service.ts":
-/*!**********************************************************!*\
-  !*** ./src/app/editor/shared/services/opener.service.ts ***!
-  \**********************************************************/
-/*! exports provided: OpenerService */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/services/opener.service.ts":
+/*!****************************************************************!*\
+  !*** ./src/app/pages/editor/shared/services/opener.service.ts ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OpenerService", function() { return OpenerService; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _models_resource__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../models/resource */ "./src/app/editor/shared/models/resource.ts");
-/* harmony import */ var _editor_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./editor.service */ "./src/app/editor/shared/services/editor.service.ts");
-/* harmony import */ var _resource_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./resource.service */ "./src/app/editor/shared/services/resource.service.ts");
-/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
 
-
-
-
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const resource_1 = __webpack_require__(/*! ../models/resource */ "./src/app/pages/editor/shared/models/resource.ts");
+const editor_service_1 = __webpack_require__(/*! ./editor.service */ "./src/app/pages/editor/shared/services/editor.service.ts");
+const resource_service_1 = __webpack_require__(/*! ./resource.service */ "./src/app/pages/editor/shared/services/resource.service.ts");
+const notification_service_1 = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
 /** Implementation of IOpenService interface */
-var OpenerService = /** @class */ (function () {
-    function OpenerService(editor, resources, notification) {
+let OpenerService = class OpenerService {
+    constructor(editor, resources, notification) {
         this.editor = editor;
         this.resources = resources;
         this.notification = notification;
     }
-    OpenerService.prototype.open = function (path, options) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var resource;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                if (!path) {
-                    return [2 /*return*/, Promise.reject(new Error('parameter "path" is required'))];
-                }
-                path = path.trim();
-                if (path.startsWith('http') || path.startsWith('mailto')) {
-                    // open http or default mail application
-                    this.openURL(path);
-                    return [2 /*return*/, Promise.resolve(true)];
-                }
-                resource = this.resources.find(path);
+    open(path, options) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            if (!path) {
+                return Promise.reject(new Error('parameter "path" is required'));
+            }
+            path = path.trim();
+            if (path.startsWith('http') || path.startsWith('mailto')) {
+                // open http or default mail application
+                this.openURL(path);
+                return Promise.resolve(true);
+            }
+            const resource = this.resources.find(path);
+            if (!resource) {
+                return Promise.reject(new Error(`Unable to open '${path}': resource not found`));
+            }
+            if (resource.type !== resource_1.ResourceTypes.Folder) {
+                return this.editor.open(resource, options);
+            }
+            return false;
+        });
+    }
+    openReference(base, target) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            try {
+                const resource = this.resources.find(base);
                 if (!resource) {
-                    return [2 /*return*/, Promise.reject(new Error("Unable to open '" + path + "': resource not found"))];
+                    return Promise.reject(new Error(`Unable to open '${target}': '${base}' not found`));
                 }
-                if (resource.type !== _models_resource__WEBPACK_IMPORTED_MODULE_2__["ResourceTypes"].Folder) {
-                    return [2 /*return*/, this.editor.open(resource, options)];
+                const reference = yield this.resources.findRelativeTo(resource, target);
+                if (!reference) {
+                    return Promise.reject(new Error(`Unable to open '${base}': resource not found relative to '${base}'`));
                 }
-                return [2 /*return*/, false];
-            });
+                return yield this.editor.open(reference);
+            }
+            catch (error) {
+                this.notification.logError(error);
+                return false;
+            }
         });
-    };
-    OpenerService.prototype.openReference = function (base, target) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var resource, reference, error_1;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        resource = this.resources.find(base);
-                        if (!resource) {
-                            return [2 /*return*/, Promise.reject(new Error("Unable to open '" + target + "': '" + base + "' not found"))];
-                        }
-                        return [4 /*yield*/, this.resources.findRelativeTo(resource, target)];
-                    case 1:
-                        reference = _a.sent();
-                        if (!reference) {
-                            return [2 /*return*/, Promise.reject(new Error("Unable to open '" + base + "': resource not found relative to '" + base + "'"))];
-                        }
-                        return [4 /*yield*/, this.editor.open(reference)];
-                    case 2: return [2 /*return*/, _a.sent()];
-                    case 3:
-                        error_1 = _a.sent();
-                        this.notification.logError(error_1);
-                        return [2 /*return*/, false];
-                    case 4: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    OpenerService.prototype.openURL = function (url, openInNewTab) {
-        if (openInNewTab === void 0) { openInNewTab = true; }
+    }
+    openURL(url, openInNewTab = true) {
         if (openInNewTab) {
             window.open(url, '_blank');
         }
         else {
             window.open(url);
         }
-    };
-    OpenerService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
-            providedIn: 'root',
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_editor_service__WEBPACK_IMPORTED_MODULE_3__["EditorService"],
-            _resource_service__WEBPACK_IMPORTED_MODULE_4__["ResourceService"],
-            src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_5__["NotificationService"]])
-    ], OpenerService);
-    return OpenerService;
-}());
-
+    }
+};
+OpenerService.ctorParameters = () => [
+    { type: editor_service_1.EditorService },
+    { type: resource_service_1.ResourceService },
+    { type: notification_service_1.NotificationService }
+];
+OpenerService = tslib_1.__decorate([
+    core_1.Injectable({
+        providedIn: 'root',
+    }),
+    tslib_1.__metadata("design:paramtypes", [editor_service_1.EditorService,
+        resource_service_1.ResourceService,
+        notification_service_1.NotificationService])
+], OpenerService);
+exports.OpenerService = OpenerService;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/services/pl.service.ts":
-/*!******************************************************!*\
-  !*** ./src/app/editor/shared/services/pl.service.ts ***!
-  \******************************************************/
-/*! exports provided: PLService */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/services/pl.service.ts":
+/*!************************************************************!*\
+  !*** ./src/app/pages/editor/shared/services/pl.service.ts ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PLService", function() { return PLService; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
-/* harmony import */ var _task_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./task.service */ "./src/app/editor/shared/services/task.service.ts");
 
-
-
-
-var PLService = /** @class */ (function () {
-    function PLService(http, task) {
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const http_1 = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm2015/http.js");
+const task_service_1 = __webpack_require__(/*! ./task.service */ "./src/app/pages/editor/shared/services/task.service.ts");
+let PLService = class PLService {
+    constructor(http, task) {
         this.http = http;
         this.task = task;
     }
-    PLService.prototype.load = function (resource) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var response, params, error_1;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        this.task.emitTaskEvent(true, 'load pltp');
-                        params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'load_pltp').set('path', resource.path);
-                        return [4 /*yield*/, this.http.get('/filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
-                    case 1:
-                        response = _a.sent();
-                        this.task.emitTaskEvent(false);
-                        return [3 /*break*/, 3];
-                    case 2:
-                        error_1 = _a.sent();
-                        this.task.emitTaskEvent(false);
-                        throw error_1;
-                    case 3: return [2 /*return*/, response];
-                }
-            });
+    load(resource) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            let response;
+            try {
+                this.task.emitTaskEvent(true, 'load pltp');
+                const params = new http_1.HttpParams().set('name', 'load_pltp').set('path', resource.path);
+                response = yield this.http.get('/filebrowser/option', { params: params, responseType: 'text' }).toPromise();
+                this.task.emitTaskEvent(false);
+            }
+            catch (error) {
+                this.task.emitTaskEvent(false);
+                throw error;
+            }
+            return response;
         });
-    };
-    PLService.prototype.reload = function (resource, activityId) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var response, data, headers, error_2;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        this.task.emitTaskEvent(true, 'reload pltp');
-                        data = {
-                            name: 'reload_pltp',
-                            path: resource.path,
-                            activity_id: activityId,
-                        };
-                        headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
-                        return [4 /*yield*/, this.http.post('filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise()];
-                    case 1:
-                        response = _a.sent();
-                        this.task.emitTaskEvent(false);
-                        return [3 /*break*/, 3];
-                    case 2:
-                        error_2 = _a.sent();
-                        this.task.emitTaskEvent(false);
-                        throw error_2;
-                    case 3: return [2 /*return*/, response];
-                }
-            });
+    }
+    reload(resource, activityId) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            let response;
+            try {
+                this.task.emitTaskEvent(true, 'reload pltp');
+                const data = {
+                    name: 'reload_pltp',
+                    path: resource.path,
+                    activity_id: activityId,
+                };
+                const headers = new http_1.HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
+                response = yield this.http.post('filebrowser/option', data, { headers: headers, responseType: 'text' }).toPromise();
+                this.task.emitTaskEvent(false);
+            }
+            catch (error) {
+                this.task.emitTaskEvent(false);
+                throw error;
+            }
+            return response;
         });
-    };
-    PLService.prototype.compile = function (resource) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                return [2 /*return*/];
-            });
-        });
-    };
-    PLService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({ providedIn: 'root' }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"],
-            _task_service__WEBPACK_IMPORTED_MODULE_3__["TaskService"]])
-    ], PLService);
-    return PLService;
-}());
-
+    }
+};
+PLService.ctorParameters = () => [
+    { type: http_1.HttpClient },
+    { type: task_service_1.TaskService }
+];
+PLService = tslib_1.__decorate([
+    core_1.Injectable({ providedIn: 'root' }),
+    tslib_1.__metadata("design:paramtypes", [http_1.HttpClient,
+        task_service_1.TaskService])
+], PLService);
+exports.PLService = PLService;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/services/preview.service.ts":
-/*!***********************************************************!*\
-  !*** ./src/app/editor/shared/services/preview.service.ts ***!
-  \***********************************************************/
-/*! exports provided: PreviewService */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/services/preview.service.ts":
+/*!*****************************************************************!*\
+  !*** ./src/app/pages/editor/shared/services/preview.service.ts ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PreviewService", function() { return PreviewService; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
-/* harmony import */ var _task_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./task.service */ "./src/app/editor/shared/services/task.service.ts");
-/* harmony import */ var src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! src/app/shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
 
-
-
-
-
-var PreviewService = /** @class */ (function () {
-    function PreviewService(task, http) {
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const http_1 = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm2015/http.js");
+const task_service_1 = __webpack_require__(/*! ./task.service */ "./src/app/pages/editor/shared/services/task.service.ts");
+const paths_model_1 = __webpack_require__(/*! src/app/shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
+let PreviewService = class PreviewService {
+    constructor(task, http) {
         this.task = task;
         this.http = http;
         this.previewProviders = {};
@@ -5084,88 +5528,73 @@ var PreviewService = /** @class */ (function () {
      * @param resource the resource to preview.
      * @returns Promise<Resource> resolved with the resource
      */
-    PreviewService.prototype.preview = function (resource) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var response, error_1;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        this.task.emitTaskEvent(true, 'preview');
-                        return [4 /*yield*/, this.previewProviders[Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_4__["extname"])(resource.path)](resource, this)];
-                    case 1:
-                        response = _a.sent();
-                        resource.meta.previewData = response.preview;
-                        this.task.emitTaskEvent(false);
-                        return [2 /*return*/, resource];
-                    case 2:
-                        error_1 = _a.sent();
-                        this.task.emitTaskEvent(false);
-                        throw error_1;
-                    case 3: return [2 /*return*/];
-                }
-            });
+    preview(resource) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            try {
+                this.task.emitTaskEvent(true, 'preview');
+                const response = yield this.previewProviders[paths_model_1.extname(resource.path)](resource, this);
+                resource.meta.previewData = response.preview;
+                this.task.emitTaskEvent(false);
+                return resource;
+            }
+            catch (error) {
+                this.task.emitTaskEvent(false);
+                throw error;
+            }
         });
-    };
-    PreviewService.prototype.previewPL = function (resource, service) {
-        var data = {
+    }
+    previewPL(resource, service) {
+        const data = {
             'name': 'preview_pl',
             'path': resource.path,
             'content': resource.content
         };
-        var headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
+        const headers = new http_1.HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
         return service.http.post('filebrowser/option', data, { headers: headers }).toPromise();
-    };
-    PreviewService.prototype.previewMD = function (resource, service) {
+    }
+    previewMD(resource, service) {
         return Promise.resolve({ preview: resource.content });
-    };
-    PreviewService.prototype.previewSVG = function (resource) {
+    }
+    previewSVG(resource) {
         return Promise.resolve({ preview: resource.content });
-    };
-    PreviewService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({ providedIn: 'root' }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_task_service__WEBPACK_IMPORTED_MODULE_3__["TaskService"],
-            _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"]])
-    ], PreviewService);
-    return PreviewService;
-}());
-
+    }
+};
+PreviewService.ctorParameters = () => [
+    { type: task_service_1.TaskService },
+    { type: http_1.HttpClient }
+];
+PreviewService = tslib_1.__decorate([
+    core_1.Injectable({ providedIn: 'root' }),
+    tslib_1.__metadata("design:paramtypes", [task_service_1.TaskService,
+        http_1.HttpClient])
+], PreviewService);
+exports.PreviewService = PreviewService;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/services/resource.service.ts":
-/*!************************************************************!*\
-  !*** ./src/app/editor/shared/services/resource.service.ts ***!
-  \************************************************************/
-/*! exports provided: ResourceService */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/services/resource.service.ts":
+/*!******************************************************************!*\
+  !*** ./src/app/pages/editor/shared/services/resource.service.ts ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ResourceService", function() { return ResourceService; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
-/* harmony import */ var _models_resource__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../models/resource */ "./src/app/editor/shared/models/resource.ts");
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
-/* harmony import */ var _git_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./git.service */ "./src/app/editor/shared/services/git.service.ts");
-/* harmony import */ var _task_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./task.service */ "./src/app/editor/shared/services/task.service.ts");
-/* harmony import */ var src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! src/app/shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
-/* harmony import */ var src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! src/app/shared/models/assert.model */ "./src/app/shared/models/assert.model.ts");
-/* harmony import */ var _models_filters__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../models/filters */ "./src/app/editor/shared/models/filters.ts");
 
-
-
-
-
-
-
-
-
-
-var ResourceService = /** @class */ (function () {
-    function ResourceService(git, http, task) {
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const http_1 = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm2015/http.js");
+const resource_1 = __webpack_require__(/*! ../models/resource */ "./src/app/pages/editor/shared/models/resource.ts");
+const rxjs_1 = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm2015/index.js");
+const git_service_1 = __webpack_require__(/*! ./git.service */ "./src/app/pages/editor/shared/services/git.service.ts");
+const task_service_1 = __webpack_require__(/*! ./task.service */ "./src/app/pages/editor/shared/services/task.service.ts");
+const assert_model_1 = __webpack_require__(/*! src/app/shared/models/assert.model */ "./src/app/shared/models/assert.model.ts");
+const filters = __webpack_require__(/*! ../models/filters */ "./src/app/pages/editor/shared/models/filters.ts");
+const paths_model_1 = __webpack_require__(/*! src/app/shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
+let ResourceService = class ResourceService {
+    constructor(git, http, task) {
         this.git = git;
         this.http = http;
         this.task = task;
@@ -5182,29 +5611,25 @@ var ResourceService = /** @class */ (function () {
          *
          * where `before` is the path before the renaming and `after` the path after the renaming
         */
-        this.renamed = new rxjs__WEBPACK_IMPORTED_MODULE_4__["Subject"]();
+        this.renamed = new rxjs_1.Subject();
         /** event that emits after a resource is created */
-        this.created = new rxjs__WEBPACK_IMPORTED_MODULE_4__["Subject"]();
+        this.created = new rxjs_1.Subject();
         /** event that emits after a resource is deleted */
-        this.deleted = new rxjs__WEBPACK_IMPORTED_MODULE_4__["Subject"]();
+        this.deleted = new rxjs_1.Subject();
         /** event that emits each time any resource is created|deleted|renamed  */
-        this.changed = new rxjs__WEBPACK_IMPORTED_MODULE_4__["Subject"]();
+        this.changed = new rxjs_1.Subject();
         /** event that emits each time the focused resource change */
-        this.focused = new rxjs__WEBPACK_IMPORTED_MODULE_4__["Subject"]();
+        this.focused = new rxjs_1.Subject();
     }
-    Object.defineProperty(ResourceService.prototype, "home", {
-        get: function () {
-            return this.resources[0];
-        },
-        enumerable: true,
-        configurable: true
-    });
-    ResourceService.prototype.focus = function (resource) {
+    get home() {
+        return this.resources[0];
+    }
+    focus(resource) {
         this.focused.next(resource);
-    };
-    ResourceService.prototype.getAll = function () {
+    }
+    getAll() {
         return this.resources.slice();
-    };
+    }
     /**
      * Finds the resource with the given path.
      *
@@ -5213,7 +5638,7 @@ var ResourceService = /** @class */ (function () {
      * @param path the path of the resource to search
      * @returns the resource or undefined
      */
-    ResourceService.prototype.find = function (path) {
+    find(path) {
         if (!path) {
             return undefined;
         }
@@ -5221,8 +5646,8 @@ var ResourceService = /** @class */ (function () {
         if (path.startsWith('/')) {
             path = path.substring(1, path.length);
         }
-        return this.findPredicate(function (item) { return item.path === path; });
-    };
+        return this.findPredicate(item => item.path === path);
+    }
     /**
      * Finds all the resources which meets the given predicate.
      *
@@ -5230,9 +5655,9 @@ var ResourceService = /** @class */ (function () {
      * of the path.
      * @param predicate the predicate to test
      */
-    ResourceService.prototype.findAll = function (predicate) {
-        return this.cache.filter(function (item) { return predicate(item); });
-    };
+    findAll(predicate) {
+        return this.cache.filter(item => predicate(item));
+    }
     /**
      * Finds the resource which meets the given predicate.
      *
@@ -5240,243 +5665,208 @@ var ResourceService = /** @class */ (function () {
      * of the path.
      * @param predicate the predicate to test
      */
-    ResourceService.prototype.findPredicate = function (predicate) {
-        return this.cache.find(function (r) { return predicate(r); });
-    };
+    findPredicate(predicate) {
+        return this.cache.find(r => predicate(r));
+    }
     /**
      * Finds the resource at `path` relative to the path of the given `resource`.
      * @param resource the resource
      * @param path the path to find.
      * @returns A promise that resolves with the resource.
      */
-    ResourceService.prototype.findRelativeTo = function (resource, path) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var params, response, error_1;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        this.task.emitTaskEvent(true, 'resolve path');
-                        params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]()
-                            .set('name', 'resolve_path')
-                            .set('path', resource.path)
-                            .set('target', path);
-                        return [4 /*yield*/, this.http.get('filebrowser/option', { params: params, responseType: 'text' }).toPromise()];
-                    case 1:
-                        response = _a.sent();
-                        this.task.emitTaskEvent(false);
-                        return [2 /*return*/, this.find(response)];
-                    case 2:
-                        error_1 = _a.sent();
-                        this.task.emitTaskEvent(false);
-                        throw error_1;
-                    case 3: return [2 /*return*/];
-                }
-            });
+    findRelativeTo(resource, path) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            try {
+                this.task.emitTaskEvent(true, 'resolve path');
+                const params = new http_1.HttpParams()
+                    .set('name', 'resolve_path')
+                    .set('path', resource.path)
+                    .set('target', path);
+                const response = yield this.http.get('filebrowser/option', { params: params, responseType: 'text' }).toPromise();
+                this.task.emitTaskEvent(false);
+                return this.find(response);
+            }
+            catch (error) {
+                this.task.emitTaskEvent(false);
+                throw error;
+            }
         });
-    };
+    }
     /**
      * creates the resource on the server.
      * @param resource the resource object to create.
      * @returns Promise<boolean> rejected with an error or resolved with true.
      */
-    ResourceService.prototype.create = function (resource) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var data, success, error_2;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].checkName(resource.name);
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(_models_filters__WEBPACK_IMPORTED_MODULE_9__["canWrite"](resource), 'permission denied: write access not granted for ' + resource.path);
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(_models_filters__WEBPACK_IMPORTED_MODULE_9__["canWrite"](this.find(resource.parent)), 'permission denied: write access not granted for ' + resource.parent);
-                        this.task.emitTaskEvent(true, 'creating resource');
-                        if (resource.name.endsWith('pl')) {
-                            resource.content = "\n@ /utils/sandboxio.py\ngrader  =@ /grader/evaluator.py\nbuilder =@ /builder/before.py\n\nbefore== #|python|\n==\n\nevaluator== #|python|\ngrade = (100, 'OK')\n==\n\n\n\ntitle== #|html|\n==\n\ntext== #|html|\n==\n\nform== #|html|\n==\n";
-                        }
-                        console.log(resource.content);
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        data = {
-                            name: 'create_resource',
-                            path: resource.parent + '/' + resource.name,
-                            content: resource.content,
-                            type: resource.type
-                        };
-                        return [4 /*yield*/, this.edit(data, resource)];
-                    case 2:
-                        success = _a.sent();
-                        this.task.emitTaskEvent(false);
-                        return [2 /*return*/, success];
-                    case 3:
-                        error_2 = _a.sent();
-                        this.task.emitTaskEvent(false);
-                        throw error_2;
-                    case 4: return [2 /*return*/];
-                }
-            });
+    create(resource) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            assert_model_1.Asserts.checkName(resource.name);
+            assert_model_1.Asserts.assert(filters.canWrite(resource), 'permission denied: write access not granted for ' + resource.path);
+            assert_model_1.Asserts.assert(filters.canWrite(this.find(resource.parent)), 'permission denied: write access not granted for ' + resource.parent);
+            this.task.emitTaskEvent(true, 'creating resource');
+            if (resource.name.endsWith('pl')) {
+                resource.content = `
+@ /utils/sandboxio.py
+grader  =@ /grader/evaluator.py
+builder =@ /builder/before.py
+
+before== #|python|
+==
+
+evaluator== #|python|
+grade = (100, 'OK')
+==
+
+
+
+title== #|html|
+==
+
+text== #|html|
+==
+
+form== #|html|
+==
+`;
+            }
+            try {
+                const data = {
+                    name: 'create_resource',
+                    path: resource.parent + '/' + resource.name,
+                    content: resource.content,
+                    type: resource.type
+                };
+                const success = yield this.edit(data, resource);
+                this.task.emitTaskEvent(false);
+                return success;
+            }
+            catch (error) {
+                this.task.emitTaskEvent(false);
+                throw error;
+            }
         });
-    };
+    }
     /**
      * Renames the resource on the server.
      * @param resource the resource object to rename.
      * @param name the new name of the resource.
      * @returns Promise<boolean> resolved with true if the resource is renamed.
      */
-    ResourceService.prototype.rename = function (resource, name) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var success, data, error_3;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].checkName(name);
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(_models_filters__WEBPACK_IMPORTED_MODULE_9__["canWrite"](resource), 'permission denied');
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(!_models_filters__WEBPACK_IMPORTED_MODULE_9__["isRoot"](resource), 'cannot rename root directory');
-                        if (name === resource.name) {
-                            return [2 /*return*/, Promise.resolve(true)];
-                        }
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        success = false;
-                        this.task.emitTaskEvent(true, 'rename');
-                        data = {
-                            name: 'rename_resource',
-                            path: resource.path,
-                            target: name,
-                        };
-                        return [4 /*yield*/, this.edit(data, resource)];
-                    case 2:
-                        success = _a.sent();
-                        this.task.emitTaskEvent(false);
-                        return [2 /*return*/, success];
-                    case 3:
-                        error_3 = _a.sent();
-                        this.task.emitTaskEvent(false);
-                        throw error_3;
-                    case 4: return [2 /*return*/];
-                }
-            });
+    rename(resource, name) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            assert_model_1.Asserts.checkName(name);
+            assert_model_1.Asserts.assert(filters.canWrite(resource), 'permission denied');
+            assert_model_1.Asserts.assert(!filters.isRoot(resource), 'cannot rename root directory');
+            if (name === resource.name) {
+                return Promise.resolve(true);
+            }
+            try {
+                let success = false;
+                this.task.emitTaskEvent(true, 'rename');
+                const data = {
+                    name: 'rename_resource',
+                    path: resource.path,
+                    target: name,
+                };
+                success = yield this.edit(data, resource);
+                this.task.emitTaskEvent(false);
+                return success;
+            }
+            catch (error) {
+                this.task.emitTaskEvent(false);
+                throw error;
+            }
         });
-    };
+    }
     /**
      * Deletes the resource object from the server.
      * @param resource the resource object to deletes.
      * @returns Promise<boolean> resolved with true or false and rejected with an error
      */
-    ResourceService.prototype.delete = function (resource) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var headers, success, error_4;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].requireNonNull(resource, 'resource');
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(_models_filters__WEBPACK_IMPORTED_MODULE_9__["canWrite"](resource), 'permission denied');
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(!_models_filters__WEBPACK_IMPORTED_MODULE_9__["isRoot"](resource), 'permission denied');
-                        this.task.emitTaskEvent(true, 'delete');
-                        headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
-                        return [4 /*yield*/, this.http.post('filebrowser/option', {
-                                name: 'delete_resource',
-                                path: resource.path
-                            }, { headers: headers }).toPromise()];
-                    case 1:
-                        _a.sent();
-                        success = this.remove(resource.path);
-                        this.task.emitTaskEvent(false);
-                        this.git.refresh();
-                        return [2 /*return*/, success];
-                    case 2:
-                        error_4 = _a.sent();
-                        this.task.emitTaskEvent(false);
-                        throw error_4;
-                    case 3: return [2 /*return*/];
-                }
-            });
+    delete(resource) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            try {
+                assert_model_1.Asserts.requireNonNull(resource, 'resource');
+                assert_model_1.Asserts.assert(filters.canWrite(resource), 'permission denied');
+                assert_model_1.Asserts.assert(!filters.isRoot(resource), 'permission denied');
+                this.task.emitTaskEvent(true, 'delete');
+                const headers = new http_1.HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
+                yield this.http.post('filebrowser/option', {
+                    name: 'delete_resource',
+                    path: resource.path
+                }, { headers: headers }).toPromise();
+                const success = this.remove(resource.path);
+                this.task.emitTaskEvent(false);
+                this.git.refresh();
+                return success;
+            }
+            catch (error) {
+                this.task.emitTaskEvent(false);
+                throw error;
+            }
         });
-    };
+    }
     /**
      * Moves the file|resource 'src' to the resource 'dst'.
      * @param src the source file or resource
      * @param dst the destination resource
      * @returns Promise<boolean> rejected with a string error message or resolved with true
      */
-    ResourceService.prototype.move = function (src, dst) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var resource, error_5;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 5, , 6]);
-                        this.task.emitTaskEvent(true, 'move');
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].requireNonNull(src, 'src');
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].requireNonNull(dst, 'dst');
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(_models_filters__WEBPACK_IMPORTED_MODULE_9__["canWrite"](dst), 'permission denied');
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(_models_filters__WEBPACK_IMPORTED_MODULE_9__["isFolder"](dst), 'destination must be a directory');
-                        resource = void 0;
-                        if (!('size' in src)) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.drop(src, dst)];
-                    case 1:
-                        resource = _a.sent();
-                        return [3 /*break*/, 4];
-                    case 2: return [4 /*yield*/, this.drag(src, dst)];
-                    case 3:
-                        resource = _a.sent();
-                        _a.label = 4;
-                    case 4:
-                        this.sort(dst.children);
-                        this.changed.next(this.getAll());
-                        this.task.emitTaskEvent(false);
-                        this.git.refresh();
-                        return [2 /*return*/, true];
-                    case 5:
-                        error_5 = _a.sent();
-                        this.task.emitTaskEvent(false);
-                        throw error_5;
-                    case 6: return [2 /*return*/];
+    move(src, dst) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            try {
+                this.task.emitTaskEvent(true, 'move');
+                assert_model_1.Asserts.requireNonNull(src, 'src');
+                assert_model_1.Asserts.requireNonNull(dst, 'dst');
+                assert_model_1.Asserts.assert(filters.canWrite(dst), 'permission denied');
+                assert_model_1.Asserts.assert(filters.isFolder(dst), 'destination must be a directory');
+                let resource;
+                if ('size' in src) { // File type contains size property
+                    resource = yield this.drop(src, dst);
                 }
-            });
+                else {
+                    resource = yield this.drag(src, dst);
+                }
+                this.sort(dst.children);
+                this.changed.next(this.getAll());
+                this.task.emitTaskEvent(false);
+                this.git.refresh();
+                return true;
+            }
+            catch (error) {
+                this.task.emitTaskEvent(false);
+                throw error;
+            }
         });
-    };
+    }
     /**
      * Saves the content of the resource on the server
      * @param resource the resource
      * @returns Promise<boolean> resolved with true and rejected with an error
      */
-    ResourceService.prototype.save = function (resource) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var headers, error_6;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!resource.changed) {
-                            return [2 /*return*/, true];
-                        }
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        this.task.emitTaskEvent(true, 'save');
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].requireNonNull(resource, 'resource');
-                        headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
-                        return [4 /*yield*/, this.http.post('filebrowser/option', {
-                                name: 'update_resource', path: resource.path, content: resource.content
-                            }, { headers: headers }).toPromise()];
-                    case 2:
-                        _a.sent();
-                        resource.changed = false;
-                        resource.savedContent = resource.content;
-                        this.task.emitTaskEvent(false);
-                        this.git.refresh();
-                        return [2 /*return*/, true];
-                    case 3:
-                        error_6 = _a.sent();
-                        this.task.emitTaskEvent(false);
-                        throw error_6;
-                    case 4: return [2 /*return*/];
-                }
-            });
+    save(resource) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            if (!resource.changed) {
+                return true;
+            }
+            try {
+                this.task.emitTaskEvent(true, 'save');
+                assert_model_1.Asserts.requireNonNull(resource, 'resource');
+                const headers = new http_1.HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
+                yield this.http.post('filebrowser/option', {
+                    name: 'update_resource', path: resource.path, content: resource.content
+                }, { headers: headers }).toPromise();
+                resource.changed = false;
+                resource.savedContent = resource.content;
+                this.task.emitTaskEvent(false);
+                this.git.refresh();
+                return true;
+            }
+            catch (error) {
+                this.task.emitTaskEvent(false);
+                throw error;
+            }
         });
-    };
+    }
     /**
      * Downloads the folder as a zip archive
      * @param resource the resource
@@ -5484,267 +5874,183 @@ var ResourceService = /** @class */ (function () {
      * @throws {TypeError} if resource is not a folder.
      * @returns Promise<void> resolved with true and rejected with an error
      */
-    ResourceService.prototype.download = function (resource) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var params, error_7;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].requireNonNull(resource, 'resource');
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(resource.type === _models_resource__WEBPACK_IMPORTED_MODULE_3__["ResourceTypes"].Folder);
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        this.task.emitTaskEvent(true);
-                        params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'download_resource').set('path', resource.path);
-                        return [4 /*yield*/, this.http.get('filebrowser/option', { params: params }).toPromise()];
-                    case 2:
-                        _a.sent();
-                        this.task.emitTaskEvent(false);
-                        return [3 /*break*/, 4];
-                    case 3:
-                        error_7 = _a.sent();
-                        this.task.emitTaskEvent(false);
-                        throw error_7;
-                    case 4: return [2 /*return*/];
-                }
-            });
+    download(resource) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            assert_model_1.Asserts.requireNonNull(resource, 'resource');
+            assert_model_1.Asserts.assert(resource.type === resource_1.ResourceTypes.Folder);
+            try {
+                this.task.emitTaskEvent(true);
+                const params = new http_1.HttpParams().set('name', 'download_resource').set('path', resource.path);
+                yield this.http.get('filebrowser/option', { params: params }).toPromise();
+                this.task.emitTaskEvent(false);
+            }
+            catch (error) {
+                this.task.emitTaskEvent(false);
+                throw error;
+            }
         });
-    };
+    }
     /**
      * Opens the content of the resource on the server (if not already opened)
      * @param resource the resource
      * @returns Promise<boolean> resolved with true or false and rejected with an error
      */
-    ResourceService.prototype.open = function (resource) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var params, response, error_8;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (resource.type === _models_resource__WEBPACK_IMPORTED_MODULE_3__["ResourceTypes"].Folder) {
-                            return [2 /*return*/, true];
-                        }
-                        if (_models_filters__WEBPACK_IMPORTED_MODULE_9__["isLoaded"](resource) && !resource.dirty) {
-                            return [2 /*return*/, true];
-                        }
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        this.task.emitTaskEvent(true, 'retrieving resource content');
-                        params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'get_resource').set('path', resource.path);
-                        return [4 /*yield*/, this.http.get('filebrowser/option', { params: params }).toPromise()];
-                    case 2:
-                        response = _a.sent();
-                        resource.meta = response['meta'];
-                        resource.content = resource.savedContent = response['content'];
-                        resource.changed = resource.dirty = false;
-                        this.task.emitTaskEvent(false);
-                        return [2 /*return*/, true];
-                    case 3:
-                        error_8 = _a.sent();
-                        this.task.emitTaskEvent(false);
-                        throw error_8;
-                    case 4: return [2 /*return*/];
-                }
-            });
+    open(resource) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            if (resource.type === resource_1.ResourceTypes.Folder) {
+                return true;
+            }
+            if (filters.isLoaded(resource) && !resource.dirty) {
+                return true;
+            }
+            try {
+                this.task.emitTaskEvent(true, 'retrieving resource content');
+                const params = new http_1.HttpParams().set('name', 'get_resource').set('path', resource.path);
+                const response = yield this.http.get('filebrowser/option', { params: params }).toPromise();
+                resource.meta = response['meta'];
+                resource.content = resource.savedContent = response['content'];
+                resource.changed = resource.dirty = false;
+                this.task.emitTaskEvent(false);
+                return true;
+            }
+            catch (error) {
+                this.task.emitTaskEvent(false);
+                throw error;
+            }
         });
-    };
+    }
     /**
      * Reloads the resources from the server.
      * @returns A promise that resolves with true
      */
-    ResourceService.prototype.refresh = function () {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var params, resources, error_9;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        this.task.emitTaskEvent(true, 'retrieving resources');
-                        params = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpParams"]().set('name', 'get_resources');
-                        return [4 /*yield*/, this.http.get('/filebrowser/option', { params: params }).toPromise()];
-                    case 1:
-                        resources = _a.sent();
-                        if (resources.length > 0) {
-                            this.sort(resources);
-                        }
-                        return [4 /*yield*/, this.build(resources)];
-                    case 2:
-                        _a.sent();
-                        this.changed.next(this.resources.slice());
-                        this.task.emitTaskEvent(false);
-                        return [2 /*return*/, true];
-                    case 3:
-                        error_9 = _a.sent();
-                        this.resources = [];
-                        this.changed.next(this.resources.slice());
-                        this.task.emitTaskEvent(false);
-                        throw error_9;
-                    case 4: return [2 /*return*/];
+    refresh() {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            try {
+                this.task.emitTaskEvent(true, 'retrieving resources');
+                const params = new http_1.HttpParams().set('name', 'get_resources');
+                const resources = yield this.http.get('/filebrowser/option', { params: params }).toPromise();
+                if (resources.length > 0) {
+                    this.sort(resources);
                 }
-            });
+                yield this.build(resources);
+                this.changed.next(this.resources.slice());
+                this.task.emitTaskEvent(false);
+                return true;
+            }
+            catch (error) {
+                this.resources = [];
+                this.changed.next(this.resources.slice());
+                this.task.emitTaskEvent(false);
+                throw error;
+            }
         });
-    };
-    ResourceService.prototype.downloadURL = function (resource) {
+    }
+    testURL(resource) {
         return window.location.origin + '/filebrowser/option?name=test_pl&path=' + resource.path;
-    };
-    ResourceService.prototype.build = function (resources) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+    }
+    downloadURL(resource) {
+        return window.location.origin + '/filebrowser/option?name=download_resource&path=' + resource.path;
+    }
+    build(resources) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const cache = [];
             function recursive(item) {
-                return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-                    var _i, _a, child;
-                    return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_b) {
-                        switch (_b.label) {
-                            case 0:
-                                cache.push(item);
-                                if (!item.children) return [3 /*break*/, 4];
-                                _i = 0, _a = item.children;
-                                _b.label = 1;
-                            case 1:
-                                if (!(_i < _a.length)) return [3 /*break*/, 4];
-                                child = _a[_i];
-                                return [4 /*yield*/, recursive(child)];
-                            case 2:
-                                _b.sent();
-                                _b.label = 3;
-                            case 3:
-                                _i++;
-                                return [3 /*break*/, 1];
-                            case 4: return [2 /*return*/];
+                return tslib_1.__awaiter(this, void 0, void 0, function* () {
+                    cache.push(item);
+                    if (item.children) {
+                        for (const child of item.children) {
+                            yield recursive(child);
                         }
-                    });
+                    }
                 });
             }
-            var cache, _i, resources_1, root;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        cache = [];
-                        _i = 0, resources_1 = resources;
-                        _a.label = 1;
-                    case 1:
-                        if (!(_i < resources_1.length)) return [3 /*break*/, 4];
-                        root = resources_1[_i];
-                        return [4 /*yield*/, recursive(root)];
-                    case 2:
-                        _a.sent();
-                        _a.label = 3;
-                    case 3:
-                        _i++;
-                        return [3 /*break*/, 1];
-                    case 4:
-                        this.cache = cache;
-                        this.resources = resources;
-                        this.git.refresh();
-                        return [2 /*return*/];
-                }
-            });
+            for (const root of resources) {
+                yield recursive(root);
+            }
+            this.cache = cache;
+            this.resources = resources;
+            this.git.refresh();
         });
-    };
-    ResourceService.prototype.edit = function (data, resource) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var headers, response, parent, after, before;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
-                        return [4 /*yield*/, this.http.post('filebrowser/option', data, {
-                                headers: headers
-                            }).toPromise()];
-                    case 1:
-                        response = _a.sent();
-                        parent = this.find(resource.parent);
-                        parent.children = parent.children || [];
-                        after = response['path'];
-                        before = resource.path;
-                        if (resource.renaming) {
-                            resource.name = Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_7__["basename"])(after);
-                            this.replace(before, after);
-                        }
-                        else {
-                            resource.path = after;
-                            parent.children.push(resource);
-                            this.cache.push(resource);
-                            this.created.next(resource);
-                        }
-                        resource.renaming = false;
-                        resource.creating = false;
-                        this.git.refresh();
-                        this.sort(parent.children);
-                        this.changed.next(this.getAll());
-                        return [2 /*return*/, true];
-                }
-            });
+    }
+    edit(data, resource) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const headers = new http_1.HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
+            const response = yield this.http.post('filebrowser/option', data, {
+                headers: headers
+            }).toPromise();
+            const parent = this.find(resource.parent);
+            parent.children = parent.children || [];
+            const after = response['path'];
+            const before = resource.path;
+            if (resource.renaming) {
+                resource.name = paths_model_1.basename(after);
+                this.replace(before, after);
+            }
+            else {
+                resource.path = after;
+                parent.children.push(resource);
+                this.cache.push(resource);
+                this.created.next(resource);
+            }
+            resource.renaming = false;
+            resource.creating = false;
+            this.git.refresh();
+            this.sort(parent.children);
+            this.changed.next(this.getAll());
+            return true;
         });
-    };
-    ResourceService.prototype.drop = function (src, dst) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var formData, headers, newRes;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].requireNonNull(src.name, 'src.name');
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].requireNonNull(dst.path, 'dst.path');
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].checkName(src.name);
-                        formData = new FormData();
-                        formData.append('file', src, src.name);
-                        formData.append('path', dst.path);
-                        headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]();
-                        headers.set('Content-Type', null);
-                        headers.set('Accept', 'multipart/form-data');
-                        return [4 /*yield*/, this.http.post('/filebrowser/upload_resource', formData, { headers: headers }).toPromise()];
-                    case 1:
-                        _a.sent();
-                        newRes = Object(_models_resource__WEBPACK_IMPORTED_MODULE_3__["createResource"])(dst, _models_resource__WEBPACK_IMPORTED_MODULE_3__["ResourceTypes"].File);
-                        newRes.path = dst.path + '/' + src.name;
-                        newRes.name = src.name;
-                        newRes.renaming = newRes.creating = false;
-                        dst.children = dst.children || [];
-                        dst.children.push(newRes);
-                        this.cache.push(newRes);
-                        return [2 /*return*/, newRes];
-                }
-            });
+    }
+    drop(src, dst) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            assert_model_1.Asserts.requireNonNull(src.name, 'src.name');
+            assert_model_1.Asserts.requireNonNull(dst.path, 'dst.path');
+            assert_model_1.Asserts.checkName(src.name);
+            const formData = new FormData();
+            formData.append('file', src, src.name);
+            formData.append('path', dst.path);
+            const headers = new http_1.HttpHeaders();
+            headers.set('Content-Type', null);
+            headers.set('Accept', 'multipart/form-data');
+            yield this.http.post('/filebrowser/upload_resource', formData, { headers: headers }).toPromise();
+            const newRes = resource_1.createResource(dst, resource_1.ResourceTypes.File);
+            newRes.path = dst.path + '/' + src.name;
+            newRes.name = src.name;
+            newRes.renaming = newRes.creating = false;
+            dst.children = dst.children || [];
+            dst.children.push(newRes);
+            this.cache.push(newRes);
+            return newRes;
         });
-    };
-    ResourceService.prototype.drag = function (src, dst) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var headers, response, before, after, parent;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].requireNonNull(src.path, 'src.path');
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].requireNonNull(dst.path, 'dst.path');
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(src.path !== dst.path, 'cannot move the resource to the same path');
-                        src_app_shared_models_assert_model__WEBPACK_IMPORTED_MODULE_8__["Asserts"].assert(!_models_filters__WEBPACK_IMPORTED_MODULE_9__["isRoot"](src), 'cannot move a root resource');
-                        headers = new _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpHeaders"]().set('Content-Type', 'application/json;charset=UTF-8');
-                        return [4 /*yield*/, this.http.post('filebrowser/option', {
-                                name: 'move_resource',
-                                path: src.path,
-                                dst: dst.path
-                            }, { headers: headers }).toPromise()];
-                    case 1:
-                        response = _a.sent();
-                        before = src.path;
-                        after = response['path'];
-                        parent = this.find(src.parent);
-                        parent.children = parent.children.filter(function (item) { return item.path !== src.path; });
-                        src.parent = dst.path;
-                        src.path = after;
-                        dst.children.push(src);
-                        this.replace(before, after);
-                        this.changed.next(this.getAll());
-                        return [2 /*return*/, src];
-                }
-            });
+    }
+    drag(src, dst) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            assert_model_1.Asserts.requireNonNull(src.path, 'src.path');
+            assert_model_1.Asserts.requireNonNull(dst.path, 'dst.path');
+            assert_model_1.Asserts.assert(src.path !== dst.path, 'cannot move the resource to the same path');
+            assert_model_1.Asserts.assert(!filters.isRoot(src), 'cannot move a root resource');
+            const headers = new http_1.HttpHeaders().set('Content-Type', 'application/json;charset=UTF-8');
+            const response = yield this.http.post('filebrowser/option', {
+                name: 'move_resource',
+                path: src.path,
+                dst: dst.path
+            }, { headers: headers }).toPromise();
+            const before = src.path;
+            const after = response['path'];
+            const parent = this.find(src.parent);
+            parent.children = parent.children.filter(item => item.path !== src.path);
+            src.parent = dst.path;
+            src.path = after;
+            dst.children.push(src);
+            this.replace(before, after);
+            this.changed.next(this.getAll());
+            return src;
         });
-    };
-    ResourceService.prototype.replace = function (oldPath, newPath) {
-        var that = this;
+    }
+    replace(oldPath, newPath) {
+        const that = this;
         function doAction(item) {
             if (item.path.startsWith(oldPath)) {
-                var before = item.path;
+                const before = item.path;
                 item.path = before.replace(oldPath, newPath);
                 that.renamed.next({ before: before, after: item.path });
             }
@@ -5752,99 +6058,97 @@ var ResourceService = /** @class */ (function () {
                 item.parent = item.parent.replace(oldPath, newPath);
             }
         }
-        for (var _i = 0, _a = this.cache; _i < _a.length; _i++) {
-            var item = _a[_i];
+        for (const item of this.cache) {
             doAction(item);
         }
-    };
-    ResourceService.prototype.remove = function (path) {
+    }
+    remove(path) {
         path = path.trim();
-        var toRemove = this.find(path);
+        const toRemove = this.find(path);
         if (!toRemove) {
             return false;
         }
-        var p = this.find(toRemove.parent);
+        const p = this.find(toRemove.parent);
         if (!p) {
             return false;
         }
-        var index = p.children.findIndex(function (e) { return e.path === path; });
+        const index = p.children.findIndex(e => e.path === path);
         if (index === -1) {
             return false;
         }
         p.children.splice(index, 1);
-        this.cache = this.cache.filter(function (e) { return e.path !== path; });
+        this.cache = this.cache.filter(e => e.path !== path);
         function propagate(item, subject) {
             subject.next(item);
             if (item.children) {
-                item.children.forEach(function (child) { return propagate(child, subject); });
+                item.children.forEach(child => propagate(child, subject));
             }
         }
         propagate(toRemove, this.deleted);
         this.changed.next(this.getAll());
         return true;
-    };
-    ResourceService.prototype.sort = function (resources) {
+    }
+    sort(resources) {
         if (resources) {
-            resources.sort(function (a, b) {
+            resources.sort((a, b) => {
                 if (a.type === b.type) {
                     return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
                 }
                 return a.type === 'folder' ? -1 : 1;
             });
-            for (var _i = 0, resources_2 = resources; _i < resources_2.length; _i++) {
-                var item = resources_2[_i];
+            for (const item of resources) {
                 this.sort(item.children);
             }
         }
-    };
-    ResourceService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
-            providedIn: 'root'
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_git_service__WEBPACK_IMPORTED_MODULE_5__["GitService"],
-            _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"],
-            _task_service__WEBPACK_IMPORTED_MODULE_6__["TaskService"]])
-    ], ResourceService);
-    return ResourceService;
-}());
-
+    }
+};
+ResourceService.ctorParameters = () => [
+    { type: git_service_1.GitService },
+    { type: http_1.HttpClient },
+    { type: task_service_1.TaskService }
+];
+ResourceService = tslib_1.__decorate([
+    core_1.Injectable({
+        providedIn: 'root'
+    }),
+    tslib_1.__metadata("design:paramtypes", [git_service_1.GitService,
+        http_1.HttpClient,
+        task_service_1.TaskService])
+], ResourceService);
+exports.ResourceService = ResourceService;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/services/settings.service.ts":
-/*!************************************************************!*\
-  !*** ./src/app/editor/shared/services/settings.service.ts ***!
-  \************************************************************/
-/*! exports provided: SettingsService */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/services/settings.service.ts":
+/*!******************************************************************!*\
+  !*** ./src/app/pages/editor/shared/services/settings.service.ts ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SettingsService", function() { return SettingsService; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
-/* harmony import */ var _models_settings__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../models/settings */ "./src/app/editor/shared/models/settings.ts");
+
 // tslint:disable: max-line-length
-
-
-
-
-var SettingsService = /** @class */ (function () {
-    function SettingsService() {
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const rxjs_1 = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm2015/index.js");
+const settings_1 = __webpack_require__(/*! ../models/settings */ "./src/app/pages/editor/shared/models/settings.ts");
+let SettingsService = class SettingsService {
+    constructor() {
         this.settings = {};
-        this.changed = new rxjs__WEBPACK_IMPORTED_MODULE_2__["Subject"]();
+        this.changed = new rxjs_1.Subject();
     }
-    SettingsService.prototype.get = function (groupName, settingName) {
-        return (this.settings[groupName] || []).find(function (item) {
+    get(groupName, settingName) {
+        return (this.settings[groupName] || []).find(item => {
             return item.group === groupName && item.name === settingName;
         });
-    };
-    SettingsService.prototype.set = function (groupName, settingName, value) {
-        var item;
-        var g = (this.settings[groupName] || []);
-        for (var i = 0; i < g.length; i++) {
+    }
+    set(groupName, settingName, value) {
+        let item;
+        const g = (this.settings[groupName] || []);
+        for (let i = 0; i < g.length; i++) {
             item = g[i];
             if (item.name === settingName) {
                 g[i].value = value;
@@ -5852,17 +6156,16 @@ var SettingsService = /** @class */ (function () {
                 break;
             }
         }
-    };
-    SettingsService.prototype.save = function () {
-        localStorage.setItem(_models_settings__WEBPACK_IMPORTED_MODULE_3__["Settings"].STORAGE_KEY, JSON.stringify(this.settings));
+    }
+    save() {
+        localStorage.setItem(settings_1.Settings.STORAGE_KEY, JSON.stringify(this.settings));
         this.changed.next(this.settings);
-    };
-    SettingsService.prototype.update = function (groups) {
-        var _this = this;
-        groups.forEach(function (group) {
-            var settings = _this.settings[group.name] || [];
-            group.settings.forEach(function (setting) {
-                for (var i = 0; i < settings.length; i++) {
+    }
+    update(groups) {
+        groups.forEach(group => {
+            const settings = this.settings[group.name] || [];
+            group.settings.forEach(setting => {
+                for (let i = 0; i < settings.length; i++) {
                     if (settings[i].name === setting.name) {
                         settings[i] = setting;
                         return;
@@ -5870,55 +6173,62 @@ var SettingsService = /** @class */ (function () {
                 }
                 settings.push(setting);
             });
-            _this.settings[group.name] = settings;
+            this.settings[group.name] = settings;
         });
         this.save();
-    };
-    SettingsService.prototype.getAll = function () {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__assign"]({}, this.settings);
-    };
-    SettingsService.prototype.ofGroup = function (groupName) {
+    }
+    getAll() {
+        return Object.assign({}, this.settings);
+    }
+    ofGroup(groupName) {
         return this.settings[groupName] || [];
-    };
-    SettingsService.prototype.extract = function (groupName) {
-        var _this = this;
-        var obj = {};
-        Object.keys(this.settings).filter(function (k) {
+    }
+    extract(groupName) {
+        let obj = {};
+        Object.keys(this.settings).filter(k => {
             return k.startsWith(groupName);
-        }).forEach(function (k) {
-            obj = _this.settings[k].reduce(function (_, curr) {
-                _this.assign(obj, curr.name, curr.value);
+        }).forEach(k => {
+            obj = this.settings[k].reduce((_, curr) => {
+                this.assign(obj, curr.name, curr.value);
                 return obj;
             }, obj);
         });
         return obj;
-    };
-    SettingsService.prototype.loadSettings = function () {
-        var _this = this;
-        return new Promise(function (resolve) {
-            var store = localStorage.getItem(_models_settings__WEBPACK_IMPORTED_MODULE_3__["Settings"].STORAGE_KEY);
-            _this.settings = JSON.parse(store);
-            if (!_this.settings) {
-                _this.settings = {};
+    }
+    loadSettings() {
+        // TODO sync storage with defaults (comments, defaults values..)
+        return new Promise((resolve) => {
+            const store = localStorage.getItem(settings_1.Settings.STORAGE_KEY);
+            this.settings = JSON.parse(store);
+            if (!this.settings) {
+                this.settings = {};
             }
-            var defaults = _models_settings__WEBPACK_IMPORTED_MODULE_3__["Settings"].defaults;
-            defaults.forEach(function (item) {
-                _this.settings[item.group] = _this.settings[item.group] || [];
-                if (!_this.settings[item.group].some(function (setting) {
-                    return setting.group === item.group && setting.name === item.name;
-                })) {
-                    _this.settings[item.group].push(item);
+            const defaults = settings_1.Settings.defaults;
+            defaults.forEach(item => {
+                this.settings[item.group] = this.settings[item.group] || [];
+                let some = this.settings[item.group].find(setting => {
+                    return setting.name === item.name;
+                });
+                if (!some) {
+                    some = item;
+                    this.settings[item.group].push(item);
+                }
+                some.hidden = item.hidden;
+            });
+            Object.keys(this.settings).forEach(k => {
+                if (this.settings[k].length === 0) {
+                    delete this.settings[k];
                 }
             });
-            _this.changed.next(_this.settings);
+            this.changed.next(this.settings);
             resolve();
         });
-    };
-    SettingsService.prototype.assign = function (obj, path, value) {
-        var a = path.split('.');
-        var o = obj;
-        for (var i = 0; i < a.length - 1; i++) {
-            var n = a[i];
+    }
+    assign(obj, path, value) {
+        const a = path.split('.');
+        let o = obj;
+        for (let i = 0; i < a.length - 1; i++) {
+            const n = a[i];
             if (n in o) {
                 o = o[n];
             }
@@ -5928,83 +6238,2299 @@ var SettingsService = /** @class */ (function () {
             }
         }
         o[a[a.length - 1]] = value;
-    };
-    SettingsService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({ providedIn: 'root' }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
-    ], SettingsService);
-    return SettingsService;
-}());
-
+    }
+};
+SettingsService = tslib_1.__decorate([
+    core_1.Injectable({ providedIn: 'root' }),
+    tslib_1.__metadata("design:paramtypes", [])
+], SettingsService);
+exports.SettingsService = SettingsService;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/services/task.service.ts":
-/*!********************************************************!*\
-  !*** ./src/app/editor/shared/services/task.service.ts ***!
-  \********************************************************/
-/*! exports provided: TaskService */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/pages/editor/shared/services/task.service.ts":
+/*!**************************************************************!*\
+  !*** ./src/app/pages/editor/shared/services/task.service.ts ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TaskService", function() { return TaskService; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
 
-
-
-var TaskService = /** @class */ (function () {
-    function TaskService() {
-        this.onRunningTask = new rxjs__WEBPACK_IMPORTED_MODULE_2__["Subject"]();
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const rxjs_1 = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm2015/index.js");
+let TaskService = class TaskService {
+    constructor() {
+        this.onRunningTask = new rxjs_1.Subject();
     }
-    Object.defineProperty(TaskService.prototype, "running", {
-        get: function () {
-            return this._running;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(TaskService.prototype, "taskName", {
-        get: function () {
-            return this._taskName;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    TaskService.prototype.emitTaskEvent = function (running, taskName) {
-        if (taskName === void 0) { taskName = null; }
+    get running() {
+        return this._running;
+    }
+    get taskName() {
+        return this._taskName;
+    }
+    emitTaskEvent(running, taskName = null) {
         this._running = running;
         this._taskName = taskName;
         this.onRunningTask.next(running);
-    };
-    TaskService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
-            providedIn: 'root'
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
-    ], TaskService);
-    return TaskService;
-}());
-
+    }
+};
+TaskService = tslib_1.__decorate([
+    core_1.Injectable({
+        providedIn: 'root'
+    }),
+    tslib_1.__metadata("design:paramtypes", [])
+], TaskService);
+exports.TaskService = TaskService;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/themes/dark-theme.ts":
-/*!****************************************************!*\
-  !*** ./src/app/editor/shared/themes/dark-theme.ts ***!
-  \****************************************************/
-/*! exports provided: DarkTheme */
+/***/ "./src/app/pages/editor/status-bar/status-bar.component.scss":
+/*!*******************************************************************!*\
+  !*** ./src/app/pages/editor/status-bar/status-bar.component.scss ***!
+  \*******************************************************************/
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DarkTheme", function() { return DarkTheme; });
-var DarkTheme = /** @class */ (function () {
-    function DarkTheme() {
+/* harmony default export */ __webpack_exports__["default"] = (":host {\n  display: flex;\n  align-content: center;\n  align-items: center;\n  height: 20px;\n  background-color: var(--statusBar-background);\n  color: var(--statusBar-foreground);\n  font-size: 12px;\n  padding: 0 8px;\n}\n\n.status-bar-item {\n  margin-right: 8px;\n}\n\n.status-bar-item:hover {\n  background-color: var(--statusBarItem-hoverBackground);\n}\n\n.remote .remote-icon {\n  margin: 0 4px;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL3BhZ2VzL2VkaXRvci9zdGF0dXMtYmFyL3N0YXR1cy1iYXIuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2VkaXRvci9zdGF0dXMtYmFyL3N0YXR1cy1iYXIuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxhQUFBO0VBQ0EscUJBQUE7RUFDQSxtQkFBQTtFQUNBLFlBQUE7RUFDQSw2Q0FBQTtFQUNBLGtDQUFBO0VBQ0EsZUFBQTtFQUNBLGNBQUE7QUNDSjs7QURFQTtFQUNJLGlCQUFBO0FDQ0o7O0FERUE7RUFDSSxzREFBQTtBQ0NKOztBREdJO0VBQWdCLGFBQUE7QUNDcEIiLCJmaWxlIjoic3JjL2FwcC9wYWdlcy9lZGl0b3Ivc3RhdHVzLWJhci9zdGF0dXMtYmFyLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiOmhvc3Qge1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgYWxpZ24tY29udGVudDogY2VudGVyO1xuICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgaGVpZ2h0OiAyMHB4O1xuICAgIGJhY2tncm91bmQtY29sb3I6IHZhcigtLXN0YXR1c0Jhci1iYWNrZ3JvdW5kKTtcbiAgICBjb2xvcjogdmFyKC0tc3RhdHVzQmFyLWZvcmVncm91bmQpO1xuICAgIGZvbnQtc2l6ZTogMTJweDtcbiAgICBwYWRkaW5nOiAwIDhweDtcbn1cblxuLnN0YXR1cy1iYXItaXRlbSB7XG4gICAgbWFyZ2luLXJpZ2h0OiA4cHg7XG59XG5cbi5zdGF0dXMtYmFyLWl0ZW06aG92ZXIge1xuICAgIGJhY2tncm91bmQtY29sb3I6IHZhcigtLXN0YXR1c0Jhckl0ZW0taG92ZXJCYWNrZ3JvdW5kKTtcbn1cblxuLnJlbW90ZSB7XG4gICAgLnJlbW90ZS1pY29uIHsgIG1hcmdpbjogMCA0cHg7IH1cbn1cblxuIiwiOmhvc3Qge1xuICBkaXNwbGF5OiBmbGV4O1xuICBhbGlnbi1jb250ZW50OiBjZW50ZXI7XG4gIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gIGhlaWdodDogMjBweDtcbiAgYmFja2dyb3VuZC1jb2xvcjogdmFyKC0tc3RhdHVzQmFyLWJhY2tncm91bmQpO1xuICBjb2xvcjogdmFyKC0tc3RhdHVzQmFyLWZvcmVncm91bmQpO1xuICBmb250LXNpemU6IDEycHg7XG4gIHBhZGRpbmc6IDAgOHB4O1xufVxuXG4uc3RhdHVzLWJhci1pdGVtIHtcbiAgbWFyZ2luLXJpZ2h0OiA4cHg7XG59XG5cbi5zdGF0dXMtYmFyLWl0ZW06aG92ZXIge1xuICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1zdGF0dXNCYXJJdGVtLWhvdmVyQmFja2dyb3VuZCk7XG59XG5cbi5yZW1vdGUgLnJlbW90ZS1pY29uIHtcbiAgbWFyZ2luOiAwIDRweDtcbn0iXX0= */");
+
+/***/ }),
+
+/***/ "./src/app/pages/editor/status-bar/status-bar.component.ts":
+/*!*****************************************************************!*\
+  !*** ./src/app/pages/editor/status-bar/status-bar.component.ts ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const filters_1 = __webpack_require__(/*! ../shared/models/filters */ "./src/app/pages/editor/shared/models/filters.ts");
+const monaco_service_1 = __webpack_require__(/*! ../shared/services/monaco.service */ "./src/app/pages/editor/shared/services/monaco.service.ts");
+const resource_service_1 = __webpack_require__(/*! ../shared/services/resource.service */ "./src/app/pages/editor/shared/services/resource.service.ts");
+const task_service_1 = __webpack_require__(/*! ../shared/services/task.service */ "./src/app/pages/editor/shared/services/task.service.ts");
+let FooterComponent = class FooterComponent {
+    constructor(task, monaco, resources) {
+        this.task = task;
+        this.monaco = monaco;
+        this.resources = resources;
+        this.subscriptions = [];
+    }
+    ngOnInit() {
+        this.subscriptions.push(this.monaco.cursorChanged.subscribe(cursor => {
+            this.cursor = cursor;
+        }));
+        this.subscriptions.push(this.resources.focused.subscribe(resource => {
+            this.focused = resource;
+        }));
+    }
+    ngOnDestroy() {
+        this.subscriptions.forEach(s => s.unsubscribe());
+    }
+    querying() {
+        return this.task.running;
+    }
+    taskName() {
+        return this.task.taskName;
+    }
+    inRepo() {
+        return !!this.focused && filters_1.isRepo(this.focused);
+    }
+    repoHost() {
+        return !!this.focused && this.focused.repo.host;
+    }
+    repoUrl() {
+        return !!this.focused && this.focused.repo.url;
+    }
+    repoBranch() {
+        return !!this.focused && this.focused.repo.branch;
+    }
+};
+FooterComponent.ctorParameters = () => [
+    { type: task_service_1.TaskService },
+    { type: monaco_service_1.MonacoService },
+    { type: resource_service_1.ResourceService }
+];
+FooterComponent = tslib_1.__decorate([
+    core_1.Component({
+        // tslint:disable-next-line: component-selector
+        selector: 'status-bar',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./status-bar.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/status-bar/status-bar.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./status-bar.component.scss */ "./src/app/pages/editor/status-bar/status-bar.component.scss")).default]
+    }),
+    tslib_1.__metadata("design:paramtypes", [task_service_1.TaskService,
+        monaco_service_1.MonacoService,
+        resource_service_1.ResourceService])
+], FooterComponent);
+exports.FooterComponent = FooterComponent;
+
+
+/***/ }),
+
+/***/ "./src/app/pages/editor/workspace/code-editor/code-editor.component.scss":
+/*!*******************************************************************************!*\
+  !*** ./src/app/pages/editor/workspace/code-editor/code-editor.component.scss ***!
+  \*******************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (".code-editor {\n  height: calc(100% - 36px);\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL3BhZ2VzL2VkaXRvci93b3Jrc3BhY2UvY29kZS1lZGl0b3IvY29kZS1lZGl0b3IuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2VkaXRvci93b3Jrc3BhY2UvY29kZS1lZGl0b3IvY29kZS1lZGl0b3IuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSx5QkFBQTtBQ0NKIiwiZmlsZSI6InNyYy9hcHAvcGFnZXMvZWRpdG9yL3dvcmtzcGFjZS9jb2RlLWVkaXRvci9jb2RlLWVkaXRvci5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5jb2RlLWVkaXRvciB7XG4gICAgaGVpZ2h0OiBjYWxjKDEwMCUgLSAzNnB4KTsgLy8gMzYgPSB0YWIgaGVpZ2h0IDE2ID0gYmxhbWUgaGVpZ2h0XG59XG4iLCIuY29kZS1lZGl0b3Ige1xuICBoZWlnaHQ6IGNhbGMoMTAwJSAtIDM2cHgpO1xufSJdfQ== */");
+
+/***/ }),
+
+/***/ "./src/app/pages/editor/workspace/code-editor/code-editor.component.ts":
+/*!*****************************************************************************!*\
+  !*** ./src/app/pages/editor/workspace/code-editor/code-editor.component.ts ***!
+  \*****************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const editors_1 = __webpack_require__(/*! ../../shared/models/editors */ "./src/app/pages/editor/shared/models/editors.ts");
+const notification_service_1 = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
+const monaco_service_1 = __webpack_require__(/*! ../../shared/services/monaco.service */ "./src/app/pages/editor/shared/services/monaco.service.ts");
+const git_service_1 = __webpack_require__(/*! ../../shared/services/git.service */ "./src/app/pages/editor/shared/services/git.service.ts");
+const filters_1 = __webpack_require__(/*! ../../shared/models/filters */ "./src/app/pages/editor/shared/models/filters.ts");
+const editor_service_1 = __webpack_require__(/*! ../../shared/services/editor.service */ "./src/app/pages/editor/shared/services/editor.service.ts");
+const preview_service_1 = __webpack_require__(/*! ../../shared/services/preview.service */ "./src/app/pages/editor/shared/services/preview.service.ts");
+const compiler_service_1 = __webpack_require__(/*! ../../shared/services/compiler.service */ "./src/app/pages/editor/shared/services/compiler.service.ts");
+const settings_service_1 = __webpack_require__(/*! ../../shared/services/settings.service */ "./src/app/pages/editor/shared/services/settings.service.ts");
+let CodeEditorComponent = class CodeEditorComponent {
+    constructor(git, compiler, preview, notification, editorService, monacoService, settings) {
+        this.git = git;
+        this.compiler = compiler;
+        this.preview = preview;
+        this.notification = notification;
+        this.editorService = editorService;
+        this.monacoService = monacoService;
+        this.settings = settings;
+        this.subscriptions = [];
+    }
+    ngOnInit() {
+        this.subscriptions.push(this.editor.opened.subscribe(uri => {
+            this.open(uri);
+        }));
+        this.subscriptions.push(this.editor.previewRequested.subscribe((item) => {
+            this.didPreview(item);
+        }));
+        this.subscriptions.push(this.editor.diffRequested.subscribe(() => {
+            this.open(this.editor.resource());
+        }));
+        this.subscriptions.push(this.settings.changed.subscribe(_ => {
+            this.compile().catch();
+        }));
+    }
+    ngOnDestroy() {
+        this.subscriptions.forEach(item => item.unsubscribe());
+        this.editorChanges.dispose();
+        this.monacoService.onEditorDisposed(this.editor.codeEditor);
+        this.monacoService.onEditorDisposed(this.editor.diffEditor.getModifiedEditor());
+    }
+    codeEditorLoaded(codeEditor) {
+        this.monacoService.onEditorCreated(codeEditor);
+        this.editor.codeEditor = codeEditor;
+        this.addCommands(codeEditor);
+    }
+    diffEditorLoaded(diffEditor) {
+        this.monacoService.onEditorCreated(diffEditor.getModifiedEditor());
+        this.editor.diffEditor = diffEditor;
+        this.addCommands(this.editor.diffEditor.getModifiedEditor());
+        this.open(this.editor.resource());
+    }
+    addCommands(editor) {
+        this.editorChanges = editor.onDidChangeModelContent(() => {
+            this.didContentChanged(editor);
+        });
+        const empty = '';
+        // tslint:disable: no-bitwise
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => {
+            this.didSave();
+        }, empty);
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_S, () => {
+            this.editor.group().saveAll().catch(error => {
+                this.notification.logError(error);
+            });
+        }, empty);
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_K, () => {
+            this.editor.group().close(this.editor.resource(), true).catch(error => {
+                this.notification.logError(error);
+            });
+        }, empty);
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_K, () => {
+            this.editor.group().closeAll(true).catch(error => {
+                this.notification.logError(error);
+            });
+        }, empty);
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_U, () => {
+            this.editor.group().closeSaved().catch(error => {
+                this.notification.logError(error);
+            });
+        }, empty);
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+            if (filters_1.canBePreviewed(this.active)) {
+                this.didPreview(this.active);
+            }
+        }, empty);
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.Enter, () => {
+            this.editorService.closePreview();
+        }, empty);
+        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.RightArrow, () => {
+            this.editor.split();
+        }, empty);
+        // tslint:enable: no-bitwise
+    }
+    didSave() {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            try {
+                const resource = this.editor.resource();
+                const success = yield this.editor.group().save(resource);
+                if (success) {
+                    yield this.compile();
+                }
+            }
+            catch (error) {
+                this.notification.logError(error);
+            }
+        });
+    }
+    didContentChanged(editor) {
+        if (!this.readonly) {
+            const model = editor.getModel();
+            this.active.content = model.getValue();
+            this.active.changed = this.active.savedContent !== this.active.content;
+        }
+    }
+    didPreview(item) {
+        this.preview.preview(item).then(() => {
+            this.editorService.open(item);
+        }).catch(error => {
+            this.notification.logError(error);
+        });
+    }
+    open(resource, options) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const context = {
+                resource: this.active,
+                viewState: this.editor.codeEditor.saveViewState(),
+            };
+            this.active = resource;
+            const monaco = window.monaco;
+            const uri = monaco_service_1.MonacoService.parseURI(resource.path);
+            const language = this.monacoService.findLanguage(this.active);
+            const model = monaco.editor.getModel(uri) || monaco.editor.createModel(this.active.content, language, uri);
+            if (model.getValue() !== this.active.content) {
+                model.setValue(this.active.content);
+                this.active.changed = false;
+                this.active.savedContent = this.active.content;
+            }
+            this.readonly = this.editor.diffEditing || !this.active.write;
+            this.editor.codeEditor.setModel(model);
+            this.editor.codeEditor.updateOptions({ readOnly: this.readonly });
+            this.editor.codeEditor.focus();
+            yield this.checkDiffOptions(monaco, language);
+            yield this.checkCodeOptions(monaco, options);
+            this.monacoService.onOpened(context, this.active, model, this.editor.codeEditor);
+            this.compile().catch();
+        });
+    }
+    checkCodeOptions(monaco, options) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            if (options) {
+                if (options.position) {
+                    this.editor.codeEditor.setPosition({
+                        lineNumber: options.position.line, column: options.position.line
+                    });
+                    this.editor.codeEditor.revealLineInCenter(options.position.line, monaco.editor.ScrollType.Smooth);
+                }
+            }
+        });
+    }
+    checkDiffOptions(monaco, language) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            if (this.editor.diffEditing) {
+                let diff = '';
+                try {
+                    diff = (yield this.git.show(this.active)) || '';
+                }
+                catch (_) { }
+                this.editor.diffEditor.setModel({
+                    original: monaco.editor.createModel(diff, language),
+                    modified: monaco.editor.createModel(this.active.content, language),
+                });
+                this.editor.diffEditor.getModifiedEditor().updateOptions({ readOnly: this.readonly });
+                this.editor.diffEditor.getModifiedEditor().focus();
+            }
+        });
+    }
+    compile() {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            const resource = this.editor.resource();
+            try {
+                yield this.compiler.compile(resource);
+                this.decorations = this.decorations || [];
+                const editor = this.editor.codeEditor;
+                const errors = this.compiler.errors(resource);
+                if (this.compiler.enabled) {
+                    this.decorations = editor.deltaDecorations(this.decorations, errors.map(error => {
+                        const message = `**${error.type}**: ${error.message}`;
+                        return {
+                            range: new monaco.Range(error.lineno, 1, error.lineno, 1),
+                            options: {
+                                isWholeLine: true,
+                                className: 'error-line-content',
+                                glyphMarginClassName: 'error-glyph-margin',
+                                glyphMarginHoverMessage: { value: message, isTrusted: true },
+                            }
+                        };
+                    }));
+                }
+                else {
+                    this.decorations = editor.deltaDecorations(this.decorations, []);
+                }
+            }
+            catch (_a) { }
+        });
+    }
+};
+CodeEditorComponent.ctorParameters = () => [
+    { type: git_service_1.GitService },
+    { type: compiler_service_1.CompilerService },
+    { type: preview_service_1.PreviewService },
+    { type: notification_service_1.NotificationService },
+    { type: editor_service_1.EditorService },
+    { type: monaco_service_1.MonacoService },
+    { type: settings_service_1.SettingsService }
+];
+tslib_1.__decorate([
+    core_1.Input(),
+    tslib_1.__metadata("design:type", editors_1.CodeEditor)
+], CodeEditorComponent.prototype, "editor", void 0);
+CodeEditorComponent = tslib_1.__decorate([
+    core_1.Component({
+        // tslint:disable-next-line: component-selector
+        selector: 'code-editor',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./code-editor.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/workspace/code-editor/code-editor.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./code-editor.component.scss */ "./src/app/pages/editor/workspace/code-editor/code-editor.component.scss")).default]
+    }),
+    tslib_1.__metadata("design:paramtypes", [git_service_1.GitService,
+        compiler_service_1.CompilerService,
+        preview_service_1.PreviewService,
+        notification_service_1.NotificationService,
+        editor_service_1.EditorService,
+        monaco_service_1.MonacoService,
+        settings_service_1.SettingsService])
+], CodeEditorComponent);
+exports.CodeEditorComponent = CodeEditorComponent;
+
+
+/***/ }),
+
+/***/ "./src/app/pages/editor/workspace/image-editor/image-editor.component.scss":
+/*!*********************************************************************************!*\
+  !*** ./src/app/pages/editor/workspace/image-editor/image-editor.component.scss ***!
+  \*********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (".image-editor {\n  height: calc(100% - 36px);\n  position: relative;\n  background-position: 0px 0px, 10px 10px;\n  background-size: 20px 20px;\n  background-image: linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee 100%), linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee 100%);\n  text-align: center;\n}\n.image-editor img {\n  text-align: center;\n  display: block;\n  position: absolute;\n  top: 0px;\n  right: 0px;\n  bottom: 0px;\n  left: 0px;\n  max-width: 100%;\n  height: auto;\n  margin: auto;\n  border-radius: 16px;\n  background-color: transparent;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL3BhZ2VzL2VkaXRvci93b3Jrc3BhY2UvaW1hZ2UtZWRpdG9yL2ltYWdlLWVkaXRvci5jb21wb25lbnQuc2NzcyIsInNyYy9hcHAvcGFnZXMvZWRpdG9yL3dvcmtzcGFjZS9pbWFnZS1lZGl0b3IvaW1hZ2UtZWRpdG9yLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0kseUJBQUE7RUFDQSxrQkFBQTtFQUNBLHVDQUFBO0VBQ0EsMEJBQUE7RUFDQSxrTUFDSTtFQUVKLGtCQUFBO0FDREo7QURHSTtFQUNJLGtCQUFBO0VBQ0EsY0FBQTtFQUNBLGtCQUFBO0VBQ0EsUUFBQTtFQUNBLFVBQUE7RUFDQSxXQUFBO0VBQ0EsU0FBQTtFQUNBLGVBQUE7RUFDQSxZQUFBO0VBQ0EsWUFBQTtFQUNBLG1CQUFBO0VBQ0EsNkJBQUE7QUNEUiIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL2VkaXRvci93b3Jrc3BhY2UvaW1hZ2UtZWRpdG9yL2ltYWdlLWVkaXRvci5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5pbWFnZS1lZGl0b3Ige1xuICAgIGhlaWdodDogY2FsYygxMDAlIC0gMzZweCk7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgIGJhY2tncm91bmQtcG9zaXRpb246IDBweCAwcHgsIDEwcHggMTBweDtcbiAgICBiYWNrZ3JvdW5kLXNpemU6IDIwcHggMjBweDtcbiAgICBiYWNrZ3JvdW5kLWltYWdlOlxuICAgICAgICBsaW5lYXItZ3JhZGllbnQoNDVkZWcsICNlZWUgMjUlLCB0cmFuc3BhcmVudCAyNSUsIHRyYW5zcGFyZW50IDc1JSwgI2VlZSA3NSUsICNlZWUgMTAwJSksXG4gICAgICAgIGxpbmVhci1ncmFkaWVudCg0NWRlZywgI2VlZSAyNSUsIHRyYW5zcGFyZW50IDI1JSwgdHJhbnNwYXJlbnQgNzUlLCAjZWVlIDc1JSwgI2VlZSAxMDAlKTtcbiAgICB0ZXh0LWFsaWduOiBjZW50ZXI7XG5cbiAgICBpbWcge1xuICAgICAgICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gICAgICAgIGRpc3BsYXk6IGJsb2NrO1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIHRvcDogMHB4O1xuICAgICAgICByaWdodDogMHB4O1xuICAgICAgICBib3R0b206IDBweDtcbiAgICAgICAgbGVmdDogMHB4O1xuICAgICAgICBtYXgtd2lkdGg6IDEwMCU7XG4gICAgICAgIGhlaWdodDogYXV0bztcbiAgICAgICAgbWFyZ2luOiBhdXRvO1xuICAgICAgICBib3JkZXItcmFkaXVzOiAxNnB4O1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiB0cmFuc3BhcmVudDtcbiAgICB9XG5cbn1cbiIsIi5pbWFnZS1lZGl0b3Ige1xuICBoZWlnaHQ6IGNhbGMoMTAwJSAtIDM2cHgpO1xuICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gIGJhY2tncm91bmQtcG9zaXRpb246IDBweCAwcHgsIDEwcHggMTBweDtcbiAgYmFja2dyb3VuZC1zaXplOiAyMHB4IDIwcHg7XG4gIGJhY2tncm91bmQtaW1hZ2U6IGxpbmVhci1ncmFkaWVudCg0NWRlZywgI2VlZSAyNSUsIHRyYW5zcGFyZW50IDI1JSwgdHJhbnNwYXJlbnQgNzUlLCAjZWVlIDc1JSwgI2VlZSAxMDAlKSwgbGluZWFyLWdyYWRpZW50KDQ1ZGVnLCAjZWVlIDI1JSwgdHJhbnNwYXJlbnQgMjUlLCB0cmFuc3BhcmVudCA3NSUsICNlZWUgNzUlLCAjZWVlIDEwMCUpO1xuICB0ZXh0LWFsaWduOiBjZW50ZXI7XG59XG4uaW1hZ2UtZWRpdG9yIGltZyB7XG4gIHRleHQtYWxpZ246IGNlbnRlcjtcbiAgZGlzcGxheTogYmxvY2s7XG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcbiAgdG9wOiAwcHg7XG4gIHJpZ2h0OiAwcHg7XG4gIGJvdHRvbTogMHB4O1xuICBsZWZ0OiAwcHg7XG4gIG1heC13aWR0aDogMTAwJTtcbiAgaGVpZ2h0OiBhdXRvO1xuICBtYXJnaW46IGF1dG87XG4gIGJvcmRlci1yYWRpdXM6IDE2cHg7XG4gIGJhY2tncm91bmQtY29sb3I6IHRyYW5zcGFyZW50O1xufSJdfQ== */");
+
+/***/ }),
+
+/***/ "./src/app/pages/editor/workspace/image-editor/image-editor.component.ts":
+/*!*******************************************************************************!*\
+  !*** ./src/app/pages/editor/workspace/image-editor/image-editor.component.ts ***!
+  \*******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const editors_1 = __webpack_require__(/*! ../../shared/models/editors */ "./src/app/pages/editor/shared/models/editors.ts");
+const filters_1 = __webpack_require__(/*! ../../shared/models/filters */ "./src/app/pages/editor/shared/models/filters.ts");
+let ImageEditorComponent = class ImageEditorComponent {
+    constructor() { }
+    ngOnInit() {
+        this.open(this.editor.resource());
+        this.openSubscription = this.editor.opened.subscribe(document => {
+            this.open(document);
+        });
+    }
+    ngOnDestroy() {
+        this.openSubscription.unsubscribe();
+    }
+    open(resource) {
+        this.svg = resource.content;
+        this.url = resource.meta.downloadUrl;
+        this.isSVG = filters_1.isSVG(resource);
+    }
+};
+tslib_1.__decorate([
+    core_1.Input(),
+    tslib_1.__metadata("design:type", editors_1.ImageEditor)
+], ImageEditorComponent.prototype, "editor", void 0);
+ImageEditorComponent = tslib_1.__decorate([
+    core_1.Component({
+        // tslint:disable-next-line: component-selector
+        selector: 'image-editor',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./image-editor.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/workspace/image-editor/image-editor.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./image-editor.component.scss */ "./src/app/pages/editor/workspace/image-editor/image-editor.component.scss")).default]
+    }),
+    tslib_1.__metadata("design:paramtypes", [])
+], ImageEditorComponent);
+exports.ImageEditorComponent = ImageEditorComponent;
+
+
+/***/ }),
+
+/***/ "./src/app/pages/editor/workspace/preview-editor/preview-editor.component.scss":
+/*!*************************************************************************************!*\
+  !*** ./src/app/pages/editor/workspace/preview-editor/preview-editor.component.scss ***!
+  \*************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (".preview-editor {\n  height: calc(100% - 36px);\n  overflow: auto;\n  padding: 8px;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL3BhZ2VzL2VkaXRvci93b3Jrc3BhY2UvcHJldmlldy1lZGl0b3IvcHJldmlldy1lZGl0b3IuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2VkaXRvci93b3Jrc3BhY2UvcHJldmlldy1lZGl0b3IvcHJldmlldy1lZGl0b3IuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSx5QkFBQTtFQUNBLGNBQUE7RUFDQSxZQUFBO0FDQ0oiLCJmaWxlIjoic3JjL2FwcC9wYWdlcy9lZGl0b3Ivd29ya3NwYWNlL3ByZXZpZXctZWRpdG9yL3ByZXZpZXctZWRpdG9yLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLnByZXZpZXctZWRpdG9yIHtcbiAgICBoZWlnaHQ6IGNhbGMoMTAwJSAtIDM2cHgpO1xuICAgIG92ZXJmbG93OiBhdXRvO1xuICAgIHBhZGRpbmc6IDhweDtcbn0iLCIucHJldmlldy1lZGl0b3Ige1xuICBoZWlnaHQ6IGNhbGMoMTAwJSAtIDM2cHgpO1xuICBvdmVyZmxvdzogYXV0bztcbiAgcGFkZGluZzogOHB4O1xufSJdfQ== */");
+
+/***/ }),
+
+/***/ "./src/app/pages/editor/workspace/preview-editor/preview-editor.component.ts":
+/*!***********************************************************************************!*\
+  !*** ./src/app/pages/editor/workspace/preview-editor/preview-editor.component.ts ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const editors_1 = __webpack_require__(/*! ../../shared/models/editors */ "./src/app/pages/editor/shared/models/editors.ts");
+const run_scripts_directive_1 = __webpack_require__(/*! src/app/shared/directives/run-scripts.directive */ "./src/app/shared/directives/run-scripts.directive.ts");
+const filters_1 = __webpack_require__(/*! ../../shared/models/filters */ "./src/app/pages/editor/shared/models/filters.ts");
+let PreviewEditorComponent = class PreviewEditorComponent {
+    constructor() { }
+    ngOnInit() {
+        this.open(this.editor.resource());
+        this.openSubscription = this.editor.opened.subscribe(document => {
+            this.open(document);
+        });
+    }
+    ngOnDestroy() {
+        this.openSubscription.unsubscribe();
+    }
+    didFrameLoaded() {
+        this.counter++;
+        // for some reason onload of iframe is called twice
+        this.loading = this.counter % 2 === 0;
+    }
+    open(resource) {
+        this.content = resource.meta.previewData;
+        this.isMarkdown = filters_1.isMarkdown(resource);
+        this.isHTML = filters_1.isSVG(resource);
+        this.isURL = filters_1.isPL(resource);
+        this.loading = this.isURL;
+        if (this.isHTML && this.scripts) {
+            this.scripts.runScripts();
+        }
+    }
+};
+tslib_1.__decorate([
+    core_1.Input(),
+    tslib_1.__metadata("design:type", editors_1.PreviewEditor)
+], PreviewEditorComponent.prototype, "editor", void 0);
+tslib_1.__decorate([
+    core_1.ViewChild(run_scripts_directive_1.RunScriptsDirective, { static: true }),
+    tslib_1.__metadata("design:type", run_scripts_directive_1.RunScriptsDirective)
+], PreviewEditorComponent.prototype, "scripts", void 0);
+PreviewEditorComponent = tslib_1.__decorate([
+    core_1.Component({
+        // tslint:disable-next-line: component-selector
+        selector: 'preview-editor',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./preview-editor.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/workspace/preview-editor/preview-editor.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./preview-editor.component.scss */ "./src/app/pages/editor/workspace/preview-editor/preview-editor.component.scss")).default]
+    }),
+    tslib_1.__metadata("design:paramtypes", [])
+], PreviewEditorComponent);
+exports.PreviewEditorComponent = PreviewEditorComponent;
+
+
+/***/ }),
+
+/***/ "./src/app/pages/editor/workspace/setting-editor/setting-editor.component.scss":
+/*!*************************************************************************************!*\
+  !*** ./src/app/pages/editor/workspace/setting-editor/setting-editor.component.scss ***!
+  \*************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (".setting-editor {\n  height: calc(100% - 36px);\n  display: flex;\n}\n\n.mat-form-field {\n  width: 75%;\n}\n\n.tab-bar {\n  padding: 0;\n}\n\n.mat-list {\n  height: 100%;\n  width: 100%;\n  overflow: auto;\n}\n\n.mat-list.mat-list-base {\n  margin-bottom: 8px;\n}\n\n.mat-list.list-groups {\n  width: 180px;\n  padding: 0 12px;\n  overflow: auto;\n}\n\n.setting-item {\n  cursor: pointer;\n}\n\n.setting-item.active, .setting-item:hover {\n  color: #007bff;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL3BhZ2VzL2VkaXRvci93b3Jrc3BhY2Uvc2V0dGluZy1lZGl0b3Ivc2V0dGluZy1lZGl0b3IuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3BhZ2VzL2VkaXRvci93b3Jrc3BhY2Uvc2V0dGluZy1lZGl0b3Ivc2V0dGluZy1lZGl0b3IuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSx5QkFBQTtFQUNBLGFBQUE7QUNDSjs7QURHQTtFQUNJLFVBQUE7QUNBSjs7QURHQTtFQUNJLFVBQUE7QUNBSjs7QURHQTtFQUNJLFlBQUE7RUFDQSxXQUFBO0VBQ0EsY0FBQTtBQ0FKOztBRENJO0VBQ0ksa0JBQUE7QUNDUjs7QURHQTtFQUNJLFlBQUE7RUFDQSxlQUFBO0VBQ0EsY0FBQTtBQ0FKOztBREdBO0VBQ0ksZUFBQTtBQ0FKOztBRENJO0VBQ0ksY0FBQTtBQ0NSIiwiZmlsZSI6InNyYy9hcHAvcGFnZXMvZWRpdG9yL3dvcmtzcGFjZS9zZXR0aW5nLWVkaXRvci9zZXR0aW5nLWVkaXRvci5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5zZXR0aW5nLWVkaXRvciB7XG4gICAgaGVpZ2h0OiBjYWxjKDEwMCUgLSAzNnB4KTtcbiAgICBkaXNwbGF5OiBmbGV4O1xufVxuXG5cbi5tYXQtZm9ybS1maWVsZCB7XG4gICAgd2lkdGg6IDc1JTtcbn1cblxuLnRhYi1iYXIge1xuICAgIHBhZGRpbmc6IDA7XG59XG5cbi5tYXQtbGlzdCB7XG4gICAgaGVpZ2h0OiAxMDAlO1xuICAgIHdpZHRoOiAxMDAlO1xuICAgIG92ZXJmbG93OiBhdXRvO1xuICAgICYubWF0LWxpc3QtYmFzZSB7XG4gICAgICAgIG1hcmdpbi1ib3R0b206IDhweDtcbiAgICB9XG59XG5cbi5tYXQtbGlzdC5saXN0LWdyb3VwcyB7XG4gICAgd2lkdGg6IDE4MHB4O1xuICAgIHBhZGRpbmc6IDAgMTJweDtcbiAgICBvdmVyZmxvdzogYXV0bztcbn1cblxuLnNldHRpbmctaXRlbSB7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuICAgICYuYWN0aXZlLCAmOmhvdmVyIHtcbiAgICAgICAgY29sb3I6ICMwMDdiZmY7XG4gICAgfVxufVxuIiwiLnNldHRpbmctZWRpdG9yIHtcbiAgaGVpZ2h0OiBjYWxjKDEwMCUgLSAzNnB4KTtcbiAgZGlzcGxheTogZmxleDtcbn1cblxuLm1hdC1mb3JtLWZpZWxkIHtcbiAgd2lkdGg6IDc1JTtcbn1cblxuLnRhYi1iYXIge1xuICBwYWRkaW5nOiAwO1xufVxuXG4ubWF0LWxpc3Qge1xuICBoZWlnaHQ6IDEwMCU7XG4gIHdpZHRoOiAxMDAlO1xuICBvdmVyZmxvdzogYXV0bztcbn1cbi5tYXQtbGlzdC5tYXQtbGlzdC1iYXNlIHtcbiAgbWFyZ2luLWJvdHRvbTogOHB4O1xufVxuXG4ubWF0LWxpc3QubGlzdC1ncm91cHMge1xuICB3aWR0aDogMTgwcHg7XG4gIHBhZGRpbmc6IDAgMTJweDtcbiAgb3ZlcmZsb3c6IGF1dG87XG59XG5cbi5zZXR0aW5nLWl0ZW0ge1xuICBjdXJzb3I6IHBvaW50ZXI7XG59XG4uc2V0dGluZy1pdGVtLmFjdGl2ZSwgLnNldHRpbmctaXRlbTpob3ZlciB7XG4gIGNvbG9yOiAjMDA3YmZmO1xufSJdfQ== */");
+
+/***/ }),
+
+/***/ "./src/app/pages/editor/workspace/setting-editor/setting-editor.component.ts":
+/*!***********************************************************************************!*\
+  !*** ./src/app/pages/editor/workspace/setting-editor/setting-editor.component.ts ***!
+  \***********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+// tslint:disable: max-line-length
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const navigation_service_1 = __webpack_require__(/*! ../../navigation/navigation.service */ "./src/app/pages/editor/navigation/navigation.service.ts");
+const settings_service_1 = __webpack_require__(/*! ../../shared/services/settings.service */ "./src/app/pages/editor/shared/services/settings.service.ts");
+let SettingEditorComponent = class SettingEditorComponent {
+    constructor(settings, navigation) {
+        this.settings = settings;
+        this.navigation = navigation;
+        /** setting groups */
+        this.groups = [];
+    }
+    ngOnInit() {
+        const settings = this.settings.getAll();
+        const groups = Object.keys(settings).sort((a, b) => {
+            return a.split('.').pop().toLowerCase() < b.split('.').pop().toLowerCase() ? -1 : 1;
+        });
+        this.groups = groups.reduce((acc, groupName) => {
+            if (!acc.some(item => item.name === groupName)) {
+                acc.push({
+                    name: groupName,
+                    settings: this.settings.ofGroup(groupName).filter(setting => {
+                        return !setting.hidden;
+                    })
+                });
+            }
+            return acc;
+        }, []);
+        if (this.groups.length > 0) {
+            this.selection = this.groups[0];
+        }
+    }
+    /** Handles close button click event */
+    didClose() {
+        this.navigation.settings.next();
+    }
+    /** Handles settings change event */
+    didChange() {
+        this.settings.update(this.groups);
+    }
+    /**
+     * Handles click event on setting group inside the template.
+     * @param group the selected group.
+     */
+    didSelect(group) {
+        this.selection = group;
+    }
+};
+SettingEditorComponent.ctorParameters = () => [
+    { type: settings_service_1.SettingsService },
+    { type: navigation_service_1.NavigationService }
+];
+SettingEditorComponent = tslib_1.__decorate([
+    core_1.Component({
+        // tslint:disable-next-line: component-selector
+        selector: 'setting-editor',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./setting-editor.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/workspace/setting-editor/setting-editor.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./setting-editor.component.scss */ "./src/app/pages/editor/workspace/setting-editor/setting-editor.component.scss")).default]
+    }),
+    tslib_1.__metadata("design:paramtypes", [settings_service_1.SettingsService,
+        navigation_service_1.NavigationService])
+], SettingEditorComponent);
+exports.SettingEditorComponent = SettingEditorComponent;
+
+
+/***/ }),
+
+/***/ "./src/app/pages/editor/workspace/welcome/welcome.component.scss":
+/*!***********************************************************************!*\
+  !*** ./src/app/pages/editor/workspace/welcome/welcome.component.scss ***!
+  \***********************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (":host {\n  width: 100%;\n  padding: 4rem 8rem;\n  display: flex;\n  flex-direction: column;\n  overflow: auto;\n}\n\n.welcome-title {\n  align-self: center;\n}\n\n.welcome-section {\n  width: 100%;\n}\n\n.welcome-tip {\n  border-left: 0.25em solid #dfe2e5;\n  color: #6a737d;\n  padding: 0 1em;\n}\n\nimg {\n  display: block;\n  width: 50%;\n  height: auto;\n  margin: auto;\n}\n\n.mat-list-base .mat-list-item, .mat-list-base .mat-list-option {\n  height: 32px;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL3BhZ2VzL2VkaXRvci93b3Jrc3BhY2Uvd2VsY29tZS93ZWxjb21lLmNvbXBvbmVudC5zY3NzIiwic3JjL2FwcC9wYWdlcy9lZGl0b3Ivd29ya3NwYWNlL3dlbGNvbWUvd2VsY29tZS5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFDQTtFQUNJLFdBQUE7RUFDQSxrQkFBQTtFQUNBLGFBQUE7RUFDQSxzQkFBQTtFQUNBLGNBQUE7QUNBSjs7QURHQTtFQUNJLGtCQUFBO0FDQUo7O0FER0E7RUFDSSxXQUFBO0FDQUo7O0FER0E7RUFDSSxpQ0FBQTtFQUNBLGNBQUE7RUFDQSxjQUFBO0FDQUo7O0FERUE7RUFDSSxjQUFBO0VBQ0EsVUFBQTtFQUNBLFlBQUE7RUFDQSxZQUFBO0FDQ0o7O0FERUE7RUFDSSxZQUFBO0FDQ0oiLCJmaWxlIjoic3JjL2FwcC9wYWdlcy9lZGl0b3Ivd29ya3NwYWNlL3dlbGNvbWUvd2VsY29tZS5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIlxuOmhvc3Qge1xuICAgIHdpZHRoOiAxMDAlO1xuICAgIHBhZGRpbmc6IDRyZW0gOHJlbTtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgb3ZlcmZsb3c6IGF1dG87XG59XG5cbi53ZWxjb21lLXRpdGxlIHtcbiAgICBhbGlnbi1zZWxmOiBjZW50ZXI7XG59XG5cbi53ZWxjb21lLXNlY3Rpb24ge1xuICAgIHdpZHRoOiAxMDAlO1xufVxuXG4ud2VsY29tZS10aXAge1xuICAgIGJvcmRlci1sZWZ0OiAuMjVlbSBzb2xpZCAjZGZlMmU1O1xuICAgIGNvbG9yOiAjNmE3MzdkO1xuICAgIHBhZGRpbmc6IDAgMWVtO1xufVxuaW1nIHtcbiAgICBkaXNwbGF5OiBibG9jaztcbiAgICB3aWR0aDogNTAlO1xuICAgIGhlaWdodDogYXV0bztcbiAgICBtYXJnaW46IGF1dG87XG59XG5cbi5tYXQtbGlzdC1iYXNlIC5tYXQtbGlzdC1pdGVtLCAubWF0LWxpc3QtYmFzZSAubWF0LWxpc3Qtb3B0aW9uIHtcbiAgICBoZWlnaHQ6IDMycHg7XG59IiwiOmhvc3Qge1xuICB3aWR0aDogMTAwJTtcbiAgcGFkZGluZzogNHJlbSA4cmVtO1xuICBkaXNwbGF5OiBmbGV4O1xuICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuICBvdmVyZmxvdzogYXV0bztcbn1cblxuLndlbGNvbWUtdGl0bGUge1xuICBhbGlnbi1zZWxmOiBjZW50ZXI7XG59XG5cbi53ZWxjb21lLXNlY3Rpb24ge1xuICB3aWR0aDogMTAwJTtcbn1cblxuLndlbGNvbWUtdGlwIHtcbiAgYm9yZGVyLWxlZnQ6IDAuMjVlbSBzb2xpZCAjZGZlMmU1O1xuICBjb2xvcjogIzZhNzM3ZDtcbiAgcGFkZGluZzogMCAxZW07XG59XG5cbmltZyB7XG4gIGRpc3BsYXk6IGJsb2NrO1xuICB3aWR0aDogNTAlO1xuICBoZWlnaHQ6IGF1dG87XG4gIG1hcmdpbjogYXV0bztcbn1cblxuLm1hdC1saXN0LWJhc2UgLm1hdC1saXN0LWl0ZW0sIC5tYXQtbGlzdC1iYXNlIC5tYXQtbGlzdC1vcHRpb24ge1xuICBoZWlnaHQ6IDMycHg7XG59Il19 */");
+
+/***/ }),
+
+/***/ "./src/app/pages/editor/workspace/welcome/welcome.component.ts":
+/*!*********************************************************************!*\
+  !*** ./src/app/pages/editor/workspace/welcome/welcome.component.ts ***!
+  \*********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const language_1 = __webpack_require__(/*! ../../shared/languages/language */ "./src/app/pages/editor/shared/languages/language.ts");
+let WelcomeComponent = class WelcomeComponent {
+    constructor() {
+        this.displayedColumns = ['command', 'action'];
+        this.shorcuts = [
+            { command: 'F1', action: 'Show all commands (inside a code editor)' },
+            { command: 'Ctrl + O', action: 'Quick open a file' },
+            { command: 'Ctrl|⌘ + Space', action: 'Trigger suggestion (inside a code editor)' },
+            { command: 'Ctrl|⌘ Right Arrow', action: 'Split editor (inside a code editor)' },
+            { command: 'Ctrl|⌘ + Enter', action: 'Open preview (inside a code editor)' },
+            { command: 'Ctrl|⌘ + Alt + Enter', action: 'Hide preview (inside a code editor)' },
+            { command: 'Ctrl|⌘ + S', action: 'Save focused file (inside a code editor)' },
+            { command: 'Ctrl|⌘ + Alt + S', action: 'Save all files (inside a code editor)' },
+            { command: 'Ctrl|⌘ + K', action: 'Close focused file (inside a code editor)' },
+            { command: 'Ctrl|⌘ + Alt + K', action: 'Close all files (inside a code editor)' },
+        ];
+        this.languages = language_1.LANGUAGES.reduce((p, c, i, a) => {
+            if (!p.includes(c.id)) {
+                p.push(c.id);
+            }
+            return p;
+        }, []);
+    }
+};
+WelcomeComponent = tslib_1.__decorate([
+    core_1.Component({
+        // tslint:disable-next-line: component-selector
+        selector: 'welcome',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./welcome.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/workspace/welcome/welcome.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./welcome.component.scss */ "./src/app/pages/editor/workspace/welcome/welcome.component.scss")).default]
+    })
+], WelcomeComponent);
+exports.WelcomeComponent = WelcomeComponent;
+
+
+/***/ }),
+
+/***/ "./src/app/pages/editor/workspace/workspace.component.scss":
+/*!*****************************************************************!*\
+  !*** ./src/app/pages/editor/workspace/workspace.component.scss ***!
+  \*****************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (".editor-group {\n  position: relative;\n  overflow: hidden;\n}\n\n.tab-bar {\n  padding: 0;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL3BhZ2VzL2VkaXRvci93b3Jrc3BhY2Uvd29ya3NwYWNlLmNvbXBvbmVudC5zY3NzIiwic3JjL2FwcC9wYWdlcy9lZGl0b3Ivd29ya3NwYWNlL3dvcmtzcGFjZS5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGtCQUFBO0VBQ0EsZ0JBQUE7QUNDSjs7QURFQTtFQUNJLFVBQUE7QUNDSiIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL2VkaXRvci93b3Jrc3BhY2Uvd29ya3NwYWNlLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmVkaXRvci1ncm91cCB7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgIG92ZXJmbG93OiBoaWRkZW47XG59XG5cbi50YWItYmFyIHtcbiAgICBwYWRkaW5nOiAwO1xufVxuIiwiLmVkaXRvci1ncm91cCB7XG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgb3ZlcmZsb3c6IGhpZGRlbjtcbn1cblxuLnRhYi1iYXIge1xuICBwYWRkaW5nOiAwO1xufSJdfQ== */");
+
+/***/ }),
+
+/***/ "./src/app/pages/editor/workspace/workspace.component.ts":
+/*!***************************************************************!*\
+  !*** ./src/app/pages/editor/workspace/workspace.component.ts ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const editor_service_1 = __webpack_require__(/*! ../shared/services/editor.service */ "./src/app/pages/editor/shared/services/editor.service.ts");
+const navigation_service_1 = __webpack_require__(/*! ../navigation/navigation.service */ "./src/app/pages/editor/navigation/navigation.service.ts");
+let WorkspaceComponent = class WorkspaceComponent {
+    constructor(editor, changes, navigation) {
+        this.editor = editor;
+        this.changes = changes;
+        this.navigation = navigation;
+        this.subscriptions = [];
+        this.groups = [];
+    }
+    ngOnInit() {
+        this.hasGroup = false;
+        this.groups = this.editor.listGroups();
+        this.subscriptions.push(this.editor.changed.subscribe((groups) => {
+            this.groups = groups;
+            this.hasGroup = groups.length > 0;
+            this.changes.detectChanges();
+        }));
+        this.subscriptions.push(this.navigation.settings.subscribe(() => {
+            this.showSettings = !this.showSettings;
+        }));
+    }
+    ngOnDestroy() {
+        this.subscriptions.forEach(item => item.unsubscribe());
+    }
+};
+WorkspaceComponent.ctorParameters = () => [
+    { type: editor_service_1.EditorService },
+    { type: core_1.ChangeDetectorRef },
+    { type: navigation_service_1.NavigationService }
+];
+WorkspaceComponent = tslib_1.__decorate([
+    core_1.Component({
+        // tslint:disable-next-line: component-selector
+        selector: 'workspace',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./workspace.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/editor/workspace/workspace.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./workspace.component.scss */ "./src/app/pages/editor/workspace/workspace.component.scss")).default]
+    }),
+    tslib_1.__metadata("design:paramtypes", [editor_service_1.EditorService,
+        core_1.ChangeDetectorRef,
+        navigation_service_1.NavigationService])
+], WorkspaceComponent);
+exports.WorkspaceComponent = WorkspaceComponent;
+
+
+/***/ }),
+
+/***/ "./src/app/pages/login/login-routing.module.ts":
+/*!*****************************************************!*\
+  !*** ./src/app/pages/login/login-routing.module.ts ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const router_1 = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm2015/router.js");
+const common_1 = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm2015/common.js");
+const login_component_1 = __webpack_require__(/*! ./login.component */ "./src/app/pages/login/login.component.ts");
+const routes = [
+    { path: '', component: login_component_1.LoginComponent }
+];
+let LoginRoutingModule = class LoginRoutingModule {
+};
+LoginRoutingModule = tslib_1.__decorate([
+    core_1.NgModule({
+        imports: [common_1.CommonModule, router_1.RouterModule.forChild(routes)],
+        exports: [router_1.RouterModule]
+    })
+], LoginRoutingModule);
+exports.LoginRoutingModule = LoginRoutingModule;
+
+
+/***/ }),
+
+/***/ "./src/app/pages/login/login.component.scss":
+/*!**************************************************!*\
+  !*** ./src/app/pages/login/login.component.scss ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3BhZ2VzL2xvZ2luL2xvZ2luLmNvbXBvbmVudC5zY3NzIn0= */");
+
+/***/ }),
+
+/***/ "./src/app/pages/login/login.component.ts":
+/*!************************************************!*\
+  !*** ./src/app/pages/login/login.component.ts ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+let LoginComponent = class LoginComponent {
+    constructor() { }
+    ngOnInit() {
+    }
+};
+LoginComponent = tslib_1.__decorate([
+    core_1.Component({
+        selector: 'app-login',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./login.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/pages/login/login.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./login.component.scss */ "./src/app/pages/login/login.component.scss")).default]
+    }),
+    tslib_1.__metadata("design:paramtypes", [])
+], LoginComponent);
+exports.LoginComponent = LoginComponent;
+
+
+/***/ }),
+
+/***/ "./src/app/pages/login/login.module.ts":
+/*!*********************************************!*\
+  !*** ./src/app/pages/login/login.module.ts ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const common_1 = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm2015/common.js");
+const shared_module_1 = __webpack_require__(/*! src/app/shared/shared.module */ "./src/app/shared/shared.module.ts");
+const login_component_1 = __webpack_require__(/*! ./login.component */ "./src/app/pages/login/login.component.ts");
+const login_routing_module_1 = __webpack_require__(/*! ./login-routing.module */ "./src/app/pages/login/login-routing.module.ts");
+let LoginModule = class LoginModule {
+};
+LoginModule = tslib_1.__decorate([
+    core_1.NgModule({
+        declarations: [login_component_1.LoginComponent],
+        imports: [common_1.CommonModule, shared_module_1.SharedModule, login_routing_module_1.LoginRoutingModule],
+        exports: [],
+        providers: [],
+    })
+], LoginModule);
+exports.LoginModule = LoginModule;
+
+
+/***/ }),
+
+/***/ "./src/app/shared/components/confirm/confirm.component.scss":
+/*!******************************************************************!*\
+  !*** ./src/app/shared/components/confirm/confirm.component.scss ***!
+  \******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3NoYXJlZC9jb21wb25lbnRzL2NvbmZpcm0vY29uZmlybS5jb21wb25lbnQuc2NzcyJ9 */");
+
+/***/ }),
+
+/***/ "./src/app/shared/components/confirm/confirm.component.ts":
+/*!****************************************************************!*\
+  !*** ./src/app/shared/components/confirm/confirm.component.ts ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const material_1 = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm2015/material.js");
+let ConfirmComponent = class ConfirmComponent {
+    constructor(dialog, data, changes) {
+        this.dialog = dialog;
+        this.data = data;
+        data.okTitle = data.okTitle || 'OK';
+        data.noTitle = data.noTitle || 'CANCEL';
+        setTimeout(function () {
+            changes.detectChanges();
+        }, 1);
+    }
+};
+ConfirmComponent.ctorParameters = () => [
+    { type: material_1.MatDialogRef },
+    { type: undefined, decorators: [{ type: core_1.Inject, args: [material_1.MAT_DIALOG_DATA,] }] },
+    { type: core_1.ChangeDetectorRef }
+];
+ConfirmComponent = tslib_1.__decorate([
+    core_1.Component({
+        selector: 'app-confirm',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./confirm.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/shared/components/confirm/confirm.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./confirm.component.scss */ "./src/app/shared/components/confirm/confirm.component.scss")).default]
+    }),
+    tslib_1.__param(1, core_1.Inject(material_1.MAT_DIALOG_DATA)),
+    tslib_1.__metadata("design:paramtypes", [material_1.MatDialogRef, Object, core_1.ChangeDetectorRef])
+], ConfirmComponent);
+exports.ConfirmComponent = ConfirmComponent;
+
+
+/***/ }),
+
+/***/ "./src/app/shared/components/loading/loading.component.scss":
+/*!******************************************************************!*\
+  !*** ./src/app/shared/components/loading/loading.component.scss ***!
+  \******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3NoYXJlZC9jb21wb25lbnRzL2xvYWRpbmcvbG9hZGluZy5jb21wb25lbnQuc2NzcyJ9 */");
+
+/***/ }),
+
+/***/ "./src/app/shared/components/loading/loading.component.ts":
+/*!****************************************************************!*\
+  !*** ./src/app/shared/components/loading/loading.component.ts ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const router_1 = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm2015/router.js");
+let LoadingComponent = class LoadingComponent {
+    constructor(router) {
+        this.router = router;
+    }
+    ngOnInit() {
+        this.router.events.subscribe((event) => {
+            this.navigationInterceptor(event);
+        });
+    }
+    navigationInterceptor(event) {
+        if (event instanceof router_1.NavigationStart) {
+            document.body.classList.remove('loaded');
+            this.loading = true;
+        }
+        if (event instanceof router_1.NavigationEnd) {
+            this.endLoading();
+        }
+        // Set loading state to false in both of the below events to hide the spinner in case a request fails
+        if (event instanceof router_1.NavigationCancel) {
+            this.endLoading();
+        }
+        if (event instanceof router_1.NavigationError) {
+            this.endLoading();
+        }
+    }
+    endLoading() {
+        document.body.classList.add('loaded');
+        setTimeout(() => {
+            this.loading = false;
+            document.body.classList.remove('loaded');
+        }, 3000);
+    }
+};
+LoadingComponent.ctorParameters = () => [
+    { type: router_1.Router }
+];
+tslib_1.__decorate([
+    core_1.Input(),
+    tslib_1.__metadata("design:type", Boolean)
+], LoadingComponent.prototype, "loading", void 0);
+LoadingComponent = tslib_1.__decorate([
+    core_1.Component({
+        selector: 'app-loading',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./loading.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/shared/components/loading/loading.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./loading.component.scss */ "./src/app/shared/components/loading/loading.component.scss")).default]
+    }),
+    tslib_1.__metadata("design:paramtypes", [router_1.Router])
+], LoadingComponent);
+exports.LoadingComponent = LoadingComponent;
+
+
+/***/ }),
+
+/***/ "./src/app/shared/components/prompt/prompt.component.scss":
+/*!****************************************************************!*\
+  !*** ./src/app/shared/components/prompt/prompt.component.scss ***!
+  \****************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("form {\n  display: flex;\n  flex-direction: column;\n  min-width: 300px;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL3NoYXJlZC9jb21wb25lbnRzL3Byb21wdC9wcm9tcHQuY29tcG9uZW50LnNjc3MiLCJzcmMvYXBwL3NoYXJlZC9jb21wb25lbnRzL3Byb21wdC9wcm9tcHQuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxhQUFBO0VBQ0Esc0JBQUE7RUFDQSxnQkFBQTtBQ0NKIiwiZmlsZSI6InNyYy9hcHAvc2hhcmVkL2NvbXBvbmVudHMvcHJvbXB0L3Byb21wdC5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbImZvcm0ge1xuICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICBtaW4td2lkdGg6IDMwMHB4O1xufSAiLCJmb3JtIHtcbiAgZGlzcGxheTogZmxleDtcbiAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgbWluLXdpZHRoOiAzMDBweDtcbn0iXX0= */");
+
+/***/ }),
+
+/***/ "./src/app/shared/components/prompt/prompt.component.ts":
+/*!**************************************************************!*\
+  !*** ./src/app/shared/components/prompt/prompt.component.ts ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const material_1 = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm2015/material.js");
+let PromptComponent = class PromptComponent {
+    constructor(dialog, data) {
+        this.dialog = dialog;
+        this.data = data;
+        data.okTitle = data.okTitle || 'OK';
+        data.noTitle = data.noTitle || 'CANCEL';
+    }
+};
+PromptComponent.ctorParameters = () => [
+    { type: material_1.MatDialogRef },
+    { type: undefined, decorators: [{ type: core_1.Inject, args: [material_1.MAT_DIALOG_DATA,] }] }
+];
+PromptComponent = tslib_1.__decorate([
+    core_1.Component({
+        selector: 'app-prompt',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./prompt.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/shared/components/prompt/prompt.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./prompt.component.scss */ "./src/app/shared/components/prompt/prompt.component.scss")).default]
+    }),
+    tslib_1.__param(1, core_1.Inject(material_1.MAT_DIALOG_DATA)),
+    tslib_1.__metadata("design:paramtypes", [material_1.MatDialogRef, Object])
+], PromptComponent);
+exports.PromptComponent = PromptComponent;
+
+
+/***/ }),
+
+/***/ "./src/app/shared/components/tree/tree.component.scss":
+/*!************************************************************!*\
+  !*** ./src/app/shared/components/tree/tree.component.scss ***!
+  \************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (".tree-component {\n  height: 100%;\n}\n.tree-component .mat-tree-node {\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  min-height: 32px;\n  overflow: hidden;\n}\n.tree-component .mat-tree-node:hover, .tree-component .mat-tree-node.focused {\n  background-color: rgba(66, 66, 66, 0.1);\n}\n.tree-component .mat-tree-node .node-content {\n  cursor: pointer;\n  display: flex;\n  position: relative;\n  align-items: center;\n  justify-content: space-between;\n  width: 100%;\n  min-height: 32px;\n  padding: 0 16px;\n  overflow: hidden;\n}\n.tree-component .mat-tree-node .input-wrapper {\n  display: flex;\n  align-items: center;\n  width: 100%;\n  margin-right: 4px;\n}\n.tree-component .mat-tree-node input {\n  width: 100%;\n  margin: 0 0 0 16px;\n  padding: 0.1rem 0.3rem;\n  font-size: 1rem;\n  line-height: 1.5;\n  background-clip: padding-box;\n  border: 1px solid #ced4da;\n  border-radius: 0.15rem;\n  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;\n}\n.tree-component .mat-tree-node input:focus {\n  border-color: #80bdff;\n  outline: 0;\n  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);\n}\n.tree-component .dnd-drag {\n  opacity: 0.5;\n}\n.tree-component .dnd-over {\n  box-shadow: inset 0px 0px 0px 2px #CCC;\n  background: rgba(66, 66, 66, 0.1);\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL3NoYXJlZC9jb21wb25lbnRzL3RyZWUvdHJlZS5jb21wb25lbnQuc2NzcyIsInNyYy9hcHAvc2hhcmVkL2NvbXBvbmVudHMvdHJlZS90cmVlLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksWUFBQTtBQ0NKO0FEQUk7RUFDSSxhQUFBO0VBQ0Esc0JBQUE7RUFDQSxXQUFBO0VBQ0EsZ0JBQUE7RUFDQSxnQkFBQTtBQ0VSO0FEQVE7RUFDSSx1Q0FBQTtBQ0VaO0FEQVE7RUFDSSxlQUFBO0VBQ0EsYUFBQTtFQUNBLGtCQUFBO0VBQ0EsbUJBQUE7RUFDQSw4QkFBQTtFQUNBLFdBQUE7RUFDQSxnQkFBQTtFQUNBLGVBQUE7RUFDQSxnQkFBQTtBQ0VaO0FEQ1E7RUFDSSxhQUFBO0VBQ0EsbUJBQUE7RUFDQSxXQUFBO0VBQ0EsaUJBQUE7QUNDWjtBREVRO0VBQ0ksV0FBQTtFQUNBLGtCQUFBO0VBQ0Esc0JBQUE7RUFDQSxlQUFBO0VBQ0EsZ0JBQUE7RUFDQSw0QkFBQTtFQUNBLHlCQUFBO0VBQ0Esc0JBQUE7RUFDQSx3RUFBQTtBQ0FaO0FERVk7RUFDSSxxQkFBQTtFQUNBLFVBQUE7RUFDQSxnREFBQTtBQ0FoQjtBREtJO0VBQ0ksWUFBQTtBQ0hSO0FETUk7RUFDSSxzQ0FBQTtFQUNBLGlDQUFBO0FDSlIiLCJmaWxlIjoic3JjL2FwcC9zaGFyZWQvY29tcG9uZW50cy90cmVlL3RyZWUuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIudHJlZS1jb21wb25lbnQge1xuICAgIGhlaWdodDogMTAwJTtcbiAgICAubWF0LXRyZWUtbm9kZSB7XG4gICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgIGZsZXgtZGlyZWN0aW9uOiBjb2x1bW47XG4gICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICBtaW4taGVpZ2h0OiAzMnB4O1xuICAgICAgICBvdmVyZmxvdzogaGlkZGVuO1xuXG4gICAgICAgICY6aG92ZXIsICYuZm9jdXNlZCB7XG4gICAgICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiByZ2JhKDY2LDY2LDY2LDAuMSk7XG4gICAgICAgIH1cbiAgICAgICAgLm5vZGUtY29udGVudCB7XG4gICAgICAgICAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICAgICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgICAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAgICAgIGp1c3RpZnktY29udGVudDogc3BhY2UtYmV0d2VlbjtcbiAgICAgICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICAgICAgbWluLWhlaWdodDogMzJweDtcbiAgICAgICAgICAgIHBhZGRpbmc6IDAgMTZweDtcbiAgICAgICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG4gICAgICAgIH1cblxuICAgICAgICAuaW5wdXQtd3JhcHBlciAge1xuICAgICAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgICAgIGFsaWduLWl0ZW1zOiBjZW50ZXI7XG4gICAgICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgICAgIG1hcmdpbi1yaWdodDogNHB4O1xuICAgICAgICB9XG5cbiAgICAgICAgaW5wdXQge1xuICAgICAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgICAgICBtYXJnaW46IDAgMCAwIDE2cHg7XG4gICAgICAgICAgICBwYWRkaW5nOiAwLjFyZW0gMC4zcmVtO1xuICAgICAgICAgICAgZm9udC1zaXplOiAxcmVtO1xuICAgICAgICAgICAgbGluZS1oZWlnaHQ6IDEuNTtcbiAgICAgICAgICAgIGJhY2tncm91bmQtY2xpcDogcGFkZGluZy1ib3g7XG4gICAgICAgICAgICBib3JkZXI6IDFweCBzb2xpZCAjY2VkNGRhO1xuICAgICAgICAgICAgYm9yZGVyLXJhZGl1czogMC4xNXJlbTtcbiAgICAgICAgICAgIHRyYW5zaXRpb246IGJvcmRlci1jb2xvciAwLjE1cyBlYXNlLWluLW91dCwgYm94LXNoYWRvdyAwLjE1cyBlYXNlLWluLW91dDtcblxuICAgICAgICAgICAgJjpmb2N1cyB7XG4gICAgICAgICAgICAgICAgYm9yZGVyLWNvbG9yOiAjODBiZGZmO1xuICAgICAgICAgICAgICAgIG91dGxpbmU6IDA7XG4gICAgICAgICAgICAgICAgYm94LXNoYWRvdzogMCAwIDAgMC4ycmVtIHJnYmEoMCwgMTIzLCAyNTUsIDAuMjUpO1xuICAgICAgICAgICAgfVxuICAgICAgICB9XG4gICAgfVxuXG4gICAgLmRuZC1kcmFnIHtcbiAgICAgICAgb3BhY2l0eTogMC41O1xuICAgIH1cblxuICAgIC5kbmQtb3ZlciB7XG4gICAgICAgIGJveC1zaGFkb3c6IGluc2V0IDBweCAwcHggMHB4IDJweCAjQ0NDO1xuICAgICAgICBiYWNrZ3JvdW5kOiByZ2JhKDY2LDY2LDY2LDAuMSk7XG4gICAgfVxufVxuIiwiLnRyZWUtY29tcG9uZW50IHtcbiAgaGVpZ2h0OiAxMDAlO1xufVxuLnRyZWUtY29tcG9uZW50IC5tYXQtdHJlZS1ub2RlIHtcbiAgZGlzcGxheTogZmxleDtcbiAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgd2lkdGg6IDEwMCU7XG4gIG1pbi1oZWlnaHQ6IDMycHg7XG4gIG92ZXJmbG93OiBoaWRkZW47XG59XG4udHJlZS1jb21wb25lbnQgLm1hdC10cmVlLW5vZGU6aG92ZXIsIC50cmVlLWNvbXBvbmVudCAubWF0LXRyZWUtbm9kZS5mb2N1c2VkIHtcbiAgYmFja2dyb3VuZC1jb2xvcjogcmdiYSg2NiwgNjYsIDY2LCAwLjEpO1xufVxuLnRyZWUtY29tcG9uZW50IC5tYXQtdHJlZS1ub2RlIC5ub2RlLWNvbnRlbnQge1xuICBjdXJzb3I6IHBvaW50ZXI7XG4gIGRpc3BsYXk6IGZsZXg7XG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcbiAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAganVzdGlmeS1jb250ZW50OiBzcGFjZS1iZXR3ZWVuO1xuICB3aWR0aDogMTAwJTtcbiAgbWluLWhlaWdodDogMzJweDtcbiAgcGFkZGluZzogMCAxNnB4O1xuICBvdmVyZmxvdzogaGlkZGVuO1xufVxuLnRyZWUtY29tcG9uZW50IC5tYXQtdHJlZS1ub2RlIC5pbnB1dC13cmFwcGVyIHtcbiAgZGlzcGxheTogZmxleDtcbiAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgd2lkdGg6IDEwMCU7XG4gIG1hcmdpbi1yaWdodDogNHB4O1xufVxuLnRyZWUtY29tcG9uZW50IC5tYXQtdHJlZS1ub2RlIGlucHV0IHtcbiAgd2lkdGg6IDEwMCU7XG4gIG1hcmdpbjogMCAwIDAgMTZweDtcbiAgcGFkZGluZzogMC4xcmVtIDAuM3JlbTtcbiAgZm9udC1zaXplOiAxcmVtO1xuICBsaW5lLWhlaWdodDogMS41O1xuICBiYWNrZ3JvdW5kLWNsaXA6IHBhZGRpbmctYm94O1xuICBib3JkZXI6IDFweCBzb2xpZCAjY2VkNGRhO1xuICBib3JkZXItcmFkaXVzOiAwLjE1cmVtO1xuICB0cmFuc2l0aW9uOiBib3JkZXItY29sb3IgMC4xNXMgZWFzZS1pbi1vdXQsIGJveC1zaGFkb3cgMC4xNXMgZWFzZS1pbi1vdXQ7XG59XG4udHJlZS1jb21wb25lbnQgLm1hdC10cmVlLW5vZGUgaW5wdXQ6Zm9jdXMge1xuICBib3JkZXItY29sb3I6ICM4MGJkZmY7XG4gIG91dGxpbmU6IDA7XG4gIGJveC1zaGFkb3c6IDAgMCAwIDAuMnJlbSByZ2JhKDAsIDEyMywgMjU1LCAwLjI1KTtcbn1cbi50cmVlLWNvbXBvbmVudCAuZG5kLWRyYWcge1xuICBvcGFjaXR5OiAwLjU7XG59XG4udHJlZS1jb21wb25lbnQgLmRuZC1vdmVyIHtcbiAgYm94LXNoYWRvdzogaW5zZXQgMHB4IDBweCAwcHggMnB4ICNDQ0M7XG4gIGJhY2tncm91bmQ6IHJnYmEoNjYsIDY2LCA2NiwgMC4xKTtcbn0iXX0= */");
+
+/***/ }),
+
+/***/ "./src/app/shared/components/tree/tree.component.ts":
+/*!**********************************************************!*\
+  !*** ./src/app/shared/components/tree/tree.component.ts ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const tree_1 = __webpack_require__(/*! @angular/cdk/tree */ "./node_modules/@angular/cdk/esm2015/tree.js");
+const tree_2 = __webpack_require__(/*! @angular/material/tree */ "./node_modules/@angular/material/esm2015/tree.js");
+const tree_node_directive_1 = __webpack_require__(/*! ../../directives/tree-node.directive */ "./src/app/shared/directives/tree-node.directive.ts");
+/** Renders a recursive tree */
+let TreeComponent = class TreeComponent {
+    constructor() {
+        this.options = {
+            idField: ''
+        };
+    }
+    set nodes(nodes) {
+        this._nodes = nodes;
+        this.build();
+    }
+    ngOnInit() {
+        this.build();
+    }
+    /**
+     * Checks if the `node`is expandable
+     */
+    expandable(_, node) {
+        return node.expanded || node.expandable;
+    }
+    /**
+     * Expands the passed node and recursively expand all its parents.
+     */
+    expand(e) {
+        const node = this.findNode(e);
+        if (node) {
+            if (this.options.expanded) {
+                this.options.expanded(node);
+            }
+            const parent = this.findParent(node);
+            this.treeControl.expand(parent);
+            if (parent) {
+                parent.expanded = true;
+                if (this.options.expanded) {
+                    this.options.expanded(parent);
+                }
+            }
+            if (parent && parent.level > 0) {
+                this.expand(parent);
+            }
+        }
+    }
+    collapse(e) {
+        const node = this.findNode(e);
+        if (node) {
+            this.treeControl.collapse(node);
+        }
+    }
+    /**
+     * Adds `node` to the children of `parent`
+     * and sets the parent in a editing state.
+     * @param parent the parent of the node to add.
+     * @param node the node to add.
+     */
+    pushNode(parent, node) {
+        parent.creating = true;
+        parent.renaming = false;
+        parent.expanded = true;
+        this.editedName = '';
+        this.editing = this.transformer(node);
+        this.editing.creating = true;
+        this.editing.renaming = false;
+        this.editingParent = parent;
+        this.treeControl.expand(parent);
+    }
+    renameNode(node) {
+        node.renaming = true;
+        this.editedName = node.name;
+        this.editing = node;
+        this.editing.creating = false;
+        this.editing.renaming = true;
+    }
+    endEdit() {
+        if (this.editingParent) {
+            this.editingParent.creating = this.editingParent.renaming = false;
+        }
+        this.editing.creating = this.editing.renaming = false;
+        this.editing = this.editingParent = null;
+        // TODO fix throw exception after renaming
+    }
+    /**
+     * Emits `editing` event with the original
+     * KeyboardEvent `event`
+     * @param event the original event.
+     */
+    onEdit(event) {
+        if (this.options.edited) {
+            this.options.edited({
+                node: this.editing,
+                event,
+                editedText: this.editedName,
+            });
+        }
+    }
+    onTrack(_, item) {
+        return item.id;
+    }
+    /**
+     * Focus the node `e` inside the tree, expand all its parents
+     * and moves the scroller to make the node visible.
+     * @param e A node id or a reference to a node.
+     */
+    onFocus(e) {
+        if (this.focused) {
+            this.focused.focused = false;
+            this.focused = null;
+        }
+        this.focused = this.findNode(e);
+        if (this.focused) {
+            this.focused.focused = true;
+            this.focused.expanded = this.focused.expandable && !this.focused.expanded;
+            this.expand(this.focused);
+            const node = document.getElementById('tree-node-' + this.focused.id);
+            if (node) {
+                node.focus();
+            }
+        }
+    }
+    /**
+     * Focus the `node` and emits `clicked` event.
+     * @param node the node.
+     * @param event original event.
+     */
+    onClick(node, event) {
+        if (this.options.selected) {
+            this.options.selected({ node, event });
+        }
+    }
+    onContextMenu(node, event) {
+        if (this.options.contextmenu) {
+            this.options.contextmenu({ node, event });
+        }
+    }
+    build() {
+        this.treeControl = new tree_1.FlatTreeControl(node => node.level, node => node.expandable);
+        this.treeFlattener = new tree_2.MatTreeFlattener((node, level) => this.transformer(node, level), node => node.level, node => node.expandable, node => node.children);
+        this.dataSource = new tree_2.MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+        this.connect();
+    }
+    findNode(e) {
+        if (e && typeof (e) === 'string') {
+            return this.treeControl.dataNodes.find(n => n.id === e);
+        }
+        return e;
+    }
+    /**
+    * Iterates over each node in reverse order and return the first node
+    * that has a lower level than the passed node.
+    */
+    findParent(node) {
+        const currentLevel = this.treeControl.getLevel(node);
+        if (currentLevel < 1) {
+            return null;
+        }
+        const startIndex = this.treeControl.dataNodes.indexOf(node) - 1;
+        for (let i = startIndex; i >= 0; i--) {
+            const currentNode = this.treeControl.dataNodes[i];
+            if (this.treeControl.getLevel(currentNode) < currentLevel) {
+                return currentNode;
+            }
+        }
+    }
+    connect() {
+        if (this.options.idField && this.dataSource) {
+            this.dataSource.data = this._nodes;
+            this.treeControl.dataNodes.forEach(node => {
+                if (node.expanded) {
+                    this.treeControl.expand(node);
+                }
+            });
+        }
+    }
+    transformer(node, level) {
+        node.level = level;
+        node.expandable = !!node.children && node.children.length > 0;
+        if (!this.options.idField) {
+            throw new Error('@Input() idField must be provided');
+        }
+        if (!(this.options.idField in node)) {
+            throw new Error(`property '${this.options.idField}' must be present in the nodes`);
+        }
+        node.id = node[this.options.idField];
+        return node;
+    }
+};
+tslib_1.__decorate([
+    core_1.ContentChild(tree_node_directive_1.TreeNodeDirective, { read: core_1.TemplateRef, static: true }),
+    tslib_1.__metadata("design:type", Object)
+], TreeComponent.prototype, "template", void 0);
+tslib_1.__decorate([
+    core_1.Input(),
+    tslib_1.__metadata("design:type", Object)
+], TreeComponent.prototype, "options", void 0);
+tslib_1.__decorate([
+    core_1.Input(),
+    tslib_1.__metadata("design:type", Array),
+    tslib_1.__metadata("design:paramtypes", [Array])
+], TreeComponent.prototype, "nodes", null);
+TreeComponent = tslib_1.__decorate([
+    core_1.Component({
+        selector: 'app-tree',
+        template: tslib_1.__importDefault(__webpack_require__(/*! raw-loader!./tree.component.html */ "./node_modules/raw-loader/dist/cjs.js!./src/app/shared/components/tree/tree.component.html")).default,
+        styles: [tslib_1.__importDefault(__webpack_require__(/*! ./tree.component.scss */ "./src/app/shared/components/tree/tree.component.scss")).default]
+    }),
+    tslib_1.__metadata("design:paramtypes", [])
+], TreeComponent);
+exports.TreeComponent = TreeComponent;
+
+
+/***/ }),
+
+/***/ "./src/app/shared/directives/autofocus.directive.ts":
+/*!**********************************************************!*\
+  !*** ./src/app/shared/directives/autofocus.directive.ts ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+/**
+ * Input element that can be autofocused.
+ */
+let AutofocusDirective = class AutofocusDirective {
+    constructor(el) {
+        this.el = el;
+    }
+    ngAfterContentInit() {
+        setTimeout(() => {
+            this.el.nativeElement.focus();
+        }, 500);
+    }
+};
+AutofocusDirective.ctorParameters = () => [
+    { type: core_1.ElementRef }
+];
+AutofocusDirective = tslib_1.__decorate([
+    core_1.Directive({
+        // tslint:disable-next-line: directive-selector
+        selector: 'input[autofocus]'
+    }),
+    tslib_1.__metadata("design:paramtypes", [core_1.ElementRef])
+], AutofocusDirective);
+exports.AutofocusDirective = AutofocusDirective;
+
+
+/***/ }),
+
+/***/ "./src/app/shared/directives/dnd.directive.ts":
+/*!****************************************************!*\
+  !*** ./src/app/shared/directives/dnd.directive.ts ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+/**
+ * Element that can share or accept a data of dragged dom element.
+
+ * - the class `dnd-over` is added to the element when a dragged data hover the element.
+ * - the class `dnd-drag` is added to the element when the element is dragged.
+ */
+let DndDirective = class DndDirective {
+    constructor(el) {
+        this.el = el;
+        /**
+         * A value indicating whether the element can share a data or not
+         */
+        this.draggable = true;
+        /**  A value indicating whether a data can be dropped to this element */
+        this.droppable = true;
+        /** emits after a data is dropped */
+        this.dropped = new core_1.EventEmitter();
+        /** emits after a data hover the element */
+        this.hovered = new core_1.EventEmitter();
+    }
+    ngAfterContentInit() {
+        this.setDraggable();
+        this.setDroppable();
+    }
+    setDraggable() {
+        const node = this.el.nativeElement;
+        node.draggable = true;
+        const dragstart = (e) => {
+            if (!this.draggable) {
+                e.preventDefault();
+                return;
+            }
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('dnd-data', this.dndData);
+            node.classList.add('dnd-drag');
+            return false;
+        };
+        node.addEventListener('dragstart', dragstart, false);
+        const dragend = (e) => {
+            node.classList.remove('dnd-drag');
+            return false;
+        };
+        node.addEventListener('dragend', dragend, false);
+    }
+    setDroppable() {
+        if (!this.droppable) {
+            return;
+        }
+        const node = this.el.nativeElement;
+        node.draggable = true;
+        const dragover = (e) => {
+            e.dataTransfer.dropEffect = 'move';
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            node.classList.add('dnd-over');
+            this.hovered.emit(true);
+            return false;
+        };
+        node.addEventListener('dragover', dragover, false);
+        const dragenter = (e) => {
+            node.classList.add('dnd-over');
+            this.hovered.emit(true);
+            return false;
+        };
+        node.addEventListener('dragenter', dragenter, false);
+        const dragleave = (e) => {
+            node.classList.remove('dnd-over');
+            this.hovered.emit(false);
+            return false;
+        };
+        node.addEventListener('dragleave', dragleave, false);
+        const drop = (e) => {
+            e.preventDefault();
+            let file;
+            if (e.dataTransfer.items.length > 0) {
+                for (let i = 0; i < e.dataTransfer.items.length; i++) {
+                    const item = e.dataTransfer.items[i];
+                    if (item.kind === 'file') {
+                        file = item.getAsFile();
+                    }
+                }
+            }
+            else if (e.dataTransfer.files.length > 0) {
+                file = e.dataTransfer.files[0];
+            }
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            node.classList.remove('dnd-over');
+            const dst = this.dndData;
+            const src = e.dataTransfer.getData('dnd-data');
+            if ((src || file)) {
+                this.dropped.emit({ src, file, dst });
+            }
+            return false;
+        };
+        node.addEventListener('drop', drop, false);
+    }
+};
+DndDirective.ctorParameters = () => [
+    { type: core_1.ElementRef }
+];
+tslib_1.__decorate([
+    core_1.Input(),
+    tslib_1.__metadata("design:type", Object)
+], DndDirective.prototype, "draggable", void 0);
+tslib_1.__decorate([
+    core_1.Input(),
+    tslib_1.__metadata("design:type", Object)
+], DndDirective.prototype, "droppable", void 0);
+tslib_1.__decorate([
+    core_1.Output(),
+    tslib_1.__metadata("design:type", core_1.EventEmitter)
+], DndDirective.prototype, "dropped", void 0);
+tslib_1.__decorate([
+    core_1.Output(),
+    tslib_1.__metadata("design:type", core_1.EventEmitter)
+], DndDirective.prototype, "hovered", void 0);
+tslib_1.__decorate([
+    core_1.Input(),
+    tslib_1.__metadata("design:type", Object)
+], DndDirective.prototype, "dndData", void 0);
+DndDirective = tslib_1.__decorate([
+    core_1.Directive({
+        // tslint:disable-next-line: directive-selector
+        selector: '[dnd]'
+    }),
+    tslib_1.__metadata("design:paramtypes", [core_1.ElementRef])
+], DndDirective);
+exports.DndDirective = DndDirective;
+
+
+/***/ }),
+
+/***/ "./src/app/shared/directives/run-scripts.directive.ts":
+/*!************************************************************!*\
+  !*** ./src/app/shared/directives/run-scripts.directive.ts ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+/**
+ * Directives that allows to reload scripts tags of a dom element.
+ */
+// tslint:disable-next-line: directive-selector
+let RunScriptsDirective = class RunScriptsDirective {
+    constructor(elementRef) {
+        this.elementRef = elementRef;
+    }
+    ngOnInit() {
+        setTimeout(() => {
+            this.runScripts();
+        });
+    }
+    /**
+     * Reloads the scripts elements of the dom element.
+     */
+    runScripts() {
+        const scripts = this.elementRef.nativeElement.getElementsByTagName('script');
+        const scriptsInitialLength = scripts.length;
+        for (let i = 0; i < scriptsInitialLength; i++) {
+            const script = scripts[i];
+            const scriptCopy = document.createElement('script');
+            scriptCopy.type = script.type ? script.type : 'text/javascript';
+            if (script.innerHTML) {
+                scriptCopy.innerHTML = `${script.innerHTML}`;
+            }
+            else if (script.src) {
+                scriptCopy.src = script.src;
+            }
+            scriptCopy.async = false;
+            script.parentNode.replaceChild(scriptCopy, script);
+        }
+    }
+};
+RunScriptsDirective.ctorParameters = () => [
+    { type: core_1.ElementRef }
+];
+RunScriptsDirective = tslib_1.__decorate([
+    core_1.Directive({ selector: '[runScripts]', exportAs: 'runScripts' }),
+    tslib_1.__metadata("design:paramtypes", [core_1.ElementRef])
+], RunScriptsDirective);
+exports.RunScriptsDirective = RunScriptsDirective;
+
+
+/***/ }),
+
+/***/ "./src/app/shared/directives/tree-node.directive.ts":
+/*!**********************************************************!*\
+  !*** ./src/app/shared/directives/tree-node.directive.ts ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+/** Element that can be used as a template for a `TreeComponent`  */
+let TreeNodeDirective = class TreeNodeDirective {
+};
+TreeNodeDirective = tslib_1.__decorate([
+    core_1.Directive({
+        // tslint:disable-next-line: directive-selector
+        selector: '[treeNode]'
+    })
+], TreeNodeDirective);
+exports.TreeNodeDirective = TreeNodeDirective;
+
+
+/***/ }),
+
+/***/ "./src/app/shared/material.module.ts":
+/*!*******************************************!*\
+  !*** ./src/app/shared/material.module.ts ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+__webpack_require__(/*! hammerjs */ "./node_modules/hammerjs/hammer.js");
+const material_1 = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm2015/material.js");
+const table_1 = __webpack_require__(/*! @angular/cdk/table */ "./node_modules/@angular/cdk/esm2015/table.js");
+const scrolling_1 = __webpack_require__(/*! @angular/cdk/scrolling */ "./node_modules/@angular/cdk/esm2015/scrolling.js");
+const drag_drop_1 = __webpack_require__(/*! @angular/cdk/drag-drop */ "./node_modules/@angular/cdk/esm2015/drag-drop.js");
+let MaterialModule = class MaterialModule {
+};
+MaterialModule = tslib_1.__decorate([
+    core_1.NgModule({
+        imports: [
+            scrolling_1.ScrollingModule,
+            material_1.MatCommonModule,
+            material_1.MatBadgeModule,
+            material_1.MatFormFieldModule,
+            material_1.MatAutocompleteModule,
+            material_1.MatButtonModule,
+            material_1.MatButtonToggleModule,
+            material_1.MatCardModule,
+            material_1.MatCheckboxModule,
+            material_1.MatChipsModule,
+            material_1.MatStepperModule,
+            material_1.MatDatepickerModule,
+            material_1.MatDialogModule,
+            material_1.MatExpansionModule,
+            material_1.MatGridListModule,
+            material_1.MatIconModule,
+            material_1.MatInputModule,
+            material_1.MatListModule,
+            material_1.MatMenuModule,
+            material_1.MatNativeDateModule,
+            material_1.MatPaginatorModule,
+            material_1.MatProgressBarModule,
+            material_1.MatProgressSpinnerModule,
+            material_1.MatRadioModule,
+            material_1.MatRippleModule,
+            material_1.MatSelectModule,
+            material_1.MatSidenavModule,
+            material_1.MatSliderModule,
+            material_1.MatSlideToggleModule,
+            material_1.MatSnackBarModule,
+            material_1.MatSortModule,
+            material_1.MatTableModule,
+            material_1.MatTabsModule,
+            material_1.MatToolbarModule,
+            material_1.MatTooltipModule,
+            table_1.CdkTableModule,
+            material_1.MatTreeModule,
+            drag_drop_1.DragDropModule,
+        ],
+        exports: [
+            scrolling_1.ScrollingModule,
+            material_1.MatCommonModule,
+            material_1.MatBadgeModule,
+            material_1.MatFormFieldModule,
+            material_1.MatAutocompleteModule,
+            material_1.MatButtonModule,
+            material_1.MatButtonToggleModule,
+            material_1.MatCardModule,
+            material_1.MatCheckboxModule,
+            material_1.MatChipsModule,
+            material_1.MatStepperModule,
+            material_1.MatDatepickerModule,
+            material_1.MatDialogModule,
+            material_1.MatExpansionModule,
+            material_1.MatGridListModule,
+            material_1.MatIconModule,
+            material_1.MatInputModule,
+            material_1.MatListModule,
+            material_1.MatMenuModule,
+            material_1.MatNativeDateModule,
+            material_1.MatPaginatorModule,
+            material_1.MatProgressBarModule,
+            material_1.MatProgressSpinnerModule,
+            material_1.MatRadioModule,
+            material_1.MatRippleModule,
+            material_1.MatSelectModule,
+            material_1.MatSidenavModule,
+            material_1.MatSliderModule,
+            material_1.MatSlideToggleModule,
+            material_1.MatSnackBarModule,
+            material_1.MatSortModule,
+            material_1.MatTableModule,
+            material_1.MatTabsModule,
+            material_1.MatToolbarModule,
+            material_1.MatTooltipModule,
+            material_1.MatTreeModule,
+            drag_drop_1.DragDropModule,
+        ],
+    })
+], MaterialModule);
+exports.MaterialModule = MaterialModule;
+
+
+/***/ }),
+
+/***/ "./src/app/shared/models/assert.model.ts":
+/*!***********************************************!*\
+  !*** ./src/app/shared/models/assert.model.ts ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+var Asserts;
+(function (Asserts) {
+    Asserts.DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&'];
+    /**
+     * Throws an exception if obj is null or empty (expected for boolean and number)
+     * @param obj - the object to evaluate
+     * @param message - an optional error message
+     * @throws {ReferenceError} if obj is null or undefined
+     * @return the object itself.
+     */
+    function requireNonNull(obj, message) {
+        if (obj == null) {
+            message = message || 'requireNonNull';
+            throw new ReferenceError(message);
+        }
+        return obj;
+    }
+    Asserts.requireNonNull = requireNonNull;
+    function requireNonNullArray(array, message) {
+        this.requireNonNull(array, message);
+        array.forEach(item => this.requireNonNull(item), message);
+        return array;
+    }
+    Asserts.requireNonNullArray = requireNonNullArray;
+    function requireNonNullString(input, message) {
+        if (input == null || input.trim().length === 0) {
+            message = message || `'require non null or empty`;
+            throw new ReferenceError(message);
+        }
+        return input;
+    }
+    Asserts.requireNonNullString = requireNonNullString;
+    /**
+     * Throws an exception if condition if false.
+     * @param condition - the condition
+     * @param message - an optional error message
+     * @throws {Error} if condition is false
+     */
+    function assert(condition, message) {
+        if (!condition) {
+            throw new Error(message);
+        }
+    }
+    Asserts.assert = assert;
+    /**
+     * Throws an exception if `name` cannot be used a file name.
+     * @param name the name to evaluate
+     */
+    function checkName(name) {
+        if (!name) {
+            throw new ReferenceError('name should not be null or empty');
+        }
+        if (!Asserts.DISALLOWED_CHAR.every(e => !name.includes(e))) {
+            throw new Error(name + 'should not contains any of ' + Asserts.DISALLOWED_CHAR);
+        }
+    }
+    Asserts.checkName = checkName;
+})(Asserts = exports.Asserts || (exports.Asserts = {}));
+
+
+/***/ }),
+
+/***/ "./src/app/shared/models/paths.model.ts":
+/*!**********************************************!*\
+  !*** ./src/app/shared/models/paths.model.ts ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+/**
+ * Returns the last portion of a path. Similar to the Unix basename command.
+ * Often used to extract the file name from a fully qualified path.
+ * @param the path to evaluate.
+ */
+function basename(path) {
+    if (!path) {
+        return path;
+    }
+    path = path.replace(/\\/g, '/');
+    return path.slice(path.lastIndexOf('/') + 1, path.length);
+}
+exports.basename = basename;
+/**
+ * Returns the directory name of a path. Similar to the Unix dirname command.
+ * @param path the path to evaluate
+ */
+function dirname(path) {
+    if (!path) {
+        return path;
+    }
+    path = path.replace(/\\/g, '/');
+    let head = path.slice(0, path.lastIndexOf('/') + 1);
+    if (head && !head.match(/^\/*$/g)) {
+        head = head.replace(/\/*$/g, '');
+    }
+    return head;
+}
+exports.dirname = dirname;
+/**
+ * Returns the extension of the path (in lowercase), from the last '.' to end of string in the last portion of the path.
+ * If there is no '.' in the last portion of the path or the first character of it is '.', then it returns an empty string
+ * @param path the path to evaluate
+ * @returns the extension in lowercase or an empty string.
+ */
+function extname(path) {
+    const base = basename(path);
+    if (!base) {
+        return base;
+    }
+    if (base.startsWith('.')) {
+        return '';
+    }
+    const dotIndex = base.lastIndexOf('.');
+    if (dotIndex === -1) {
+        return '';
+    }
+    return base.substring(dotIndex + 1).toLowerCase();
+}
+exports.extname = extname;
+
+
+/***/ }),
+
+/***/ "./src/app/shared/pipes/trust-html.pipe.ts":
+/*!*************************************************!*\
+  !*** ./src/app/shared/pipes/trust-html.pipe.ts ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const platform_browser_1 = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm2015/platform-browser.js");
+let TrustHtmlPipe = class TrustHtmlPipe {
+    constructor(domSanitizer) {
+        this.domSanitizer = domSanitizer;
+    }
+    transform(value) {
+        return this.domSanitizer.bypassSecurityTrustHtml(value);
+    }
+};
+TrustHtmlPipe.ctorParameters = () => [
+    { type: platform_browser_1.DomSanitizer }
+];
+TrustHtmlPipe = tslib_1.__decorate([
+    core_1.Pipe({
+        name: 'trustHtml'
+    }),
+    tslib_1.__metadata("design:paramtypes", [platform_browser_1.DomSanitizer])
+], TrustHtmlPipe);
+exports.TrustHtmlPipe = TrustHtmlPipe;
+
+
+/***/ }),
+
+/***/ "./src/app/shared/pipes/trust-resource-url.pipe.ts":
+/*!*********************************************************!*\
+  !*** ./src/app/shared/pipes/trust-resource-url.pipe.ts ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const platform_browser_1 = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm2015/platform-browser.js");
+let TrustResourceUrlPipe = class TrustResourceUrlPipe {
+    constructor(domSanitizer) {
+        this.domSanitizer = domSanitizer;
+    }
+    transform(value) {
+        return this.domSanitizer.bypassSecurityTrustResourceUrl(value);
+    }
+};
+TrustResourceUrlPipe.ctorParameters = () => [
+    { type: platform_browser_1.DomSanitizer }
+];
+TrustResourceUrlPipe = tslib_1.__decorate([
+    core_1.Pipe({
+        name: 'trustResourceUrl'
+    }),
+    tslib_1.__metadata("design:paramtypes", [platform_browser_1.DomSanitizer])
+], TrustResourceUrlPipe);
+exports.TrustResourceUrlPipe = TrustResourceUrlPipe;
+
+
+/***/ }),
+
+/***/ "./src/app/shared/pipes/trust-script.pipe.ts":
+/*!***************************************************!*\
+  !*** ./src/app/shared/pipes/trust-script.pipe.ts ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const platform_browser_1 = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm2015/platform-browser.js");
+let TrustScriptPipe = class TrustScriptPipe {
+    constructor(domSanitizer) {
+        this.domSanitizer = domSanitizer;
+    }
+    transform(value) {
+        return this.domSanitizer.bypassSecurityTrustScript(value);
+    }
+};
+TrustScriptPipe.ctorParameters = () => [
+    { type: platform_browser_1.DomSanitizer }
+];
+TrustScriptPipe = tslib_1.__decorate([
+    core_1.Pipe({
+        name: 'trustScript'
+    }),
+    tslib_1.__metadata("design:paramtypes", [platform_browser_1.DomSanitizer])
+], TrustScriptPipe);
+exports.TrustScriptPipe = TrustScriptPipe;
+
+
+/***/ }),
+
+/***/ "./src/app/shared/pipes/trust-style.pipe.ts":
+/*!**************************************************!*\
+  !*** ./src/app/shared/pipes/trust-style.pipe.ts ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const platform_browser_1 = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm2015/platform-browser.js");
+let TrustStylePipe = class TrustStylePipe {
+    constructor(domSanitizer) {
+        this.domSanitizer = domSanitizer;
+    }
+    transform(value) {
+        return this.domSanitizer.bypassSecurityTrustStyle(value);
+    }
+};
+TrustStylePipe.ctorParameters = () => [
+    { type: platform_browser_1.DomSanitizer }
+];
+TrustStylePipe = tslib_1.__decorate([
+    core_1.Pipe({
+        name: 'trustStyle'
+    }),
+    tslib_1.__metadata("design:paramtypes", [platform_browser_1.DomSanitizer])
+], TrustStylePipe);
+exports.TrustStylePipe = TrustStylePipe;
+
+
+/***/ }),
+
+/***/ "./src/app/shared/pipes/trust-url.pipe.ts":
+/*!************************************************!*\
+  !*** ./src/app/shared/pipes/trust-url.pipe.ts ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const platform_browser_1 = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm2015/platform-browser.js");
+let TrustUrlPipe = class TrustUrlPipe {
+    constructor(domSanitizer) {
+        this.domSanitizer = domSanitizer;
+    }
+    transform(value, args) {
+        return this.domSanitizer.bypassSecurityTrustUrl(value);
+    }
+};
+TrustUrlPipe.ctorParameters = () => [
+    { type: platform_browser_1.DomSanitizer }
+];
+TrustUrlPipe = tslib_1.__decorate([
+    core_1.Pipe({
+        name: 'trustUrl'
+    }),
+    tslib_1.__metadata("design:paramtypes", [platform_browser_1.DomSanitizer])
+], TrustUrlPipe);
+exports.TrustUrlPipe = TrustUrlPipe;
+
+
+/***/ }),
+
+/***/ "./src/app/shared/services/notification.service.ts":
+/*!*********************************************************!*\
+  !*** ./src/app/shared/services/notification.service.ts ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const ngx_toastr_1 = __webpack_require__(/*! ngx-toastr */ "./node_modules/ngx-toastr/fesm2015/ngx-toastr.js");
+const rxjs_1 = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm2015/index.js");
+const material_1 = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm2015/material.js");
+const prompt_component_1 = __webpack_require__(/*! ../components/prompt/prompt.component */ "./src/app/shared/components/prompt/prompt.component.ts");
+const confirm_component_1 = __webpack_require__(/*! ../components/confirm/confirm.component */ "./src/app/shared/components/confirm/confirm.component.ts");
+const http_1 = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm2015/http.js");
+let AbstractNotificationService = class AbstractNotificationService {
+    constructor() {
+        this.logAdded = new rxjs_1.Subject();
+        this._logs = [];
+        this.size = 0;
+    }
+    get logs() {
+        return this._logs;
+    }
+    clear() {
+        this.size = 0;
+        this._logs = [];
+    }
+};
+AbstractNotificationService = tslib_1.__decorate([
+    core_1.Injectable(),
+    tslib_1.__metadata("design:paramtypes", [])
+], AbstractNotificationService);
+exports.AbstractNotificationService = AbstractNotificationService;
+let NotificationService = class NotificationService extends AbstractNotificationService {
+    constructor(zone, dialog, toastr, snackbar) {
+        super();
+        this.zone = zone;
+        this.dialog = dialog;
+        this.toastr = toastr;
+        this.snackbar = snackbar;
+    }
+    snack(message, config) {
+        this.zone.run(() => {
+            this.snackbar.open(message, '', config);
+        });
+    }
+    success(message, title = '') {
+        this.zone.run(() => {
+            this.toastr.success(this.parseMessage(message, false), title, {
+                enableHtml: true,
+                onActivateTick: true,
+            });
+        });
+    }
+    warning(message, title = '') {
+        this.zone.run(() => {
+            this.toastr.warning(this.parseMessage(message, false), title, {
+                enableHtml: true,
+                onActivateTick: true,
+            });
+        });
+    }
+    error(message, title = '') {
+        this.zone.run(() => {
+            this.toastr.error(this.parseMessage(message, false), title, {
+                enableHtml: true,
+                onActivateTick: true,
+            });
+        });
+    }
+    prompt(options, completion) {
+        this.promptAsync(options).then((data) => {
+            completion(data);
+        });
+    }
+    promptAsync(options) {
+        const ref = this.dialog.open(prompt_component_1.PromptComponent, {
+            hasBackdrop: true,
+            disableClose: true,
+            data: options,
+        });
+        return new Promise(resolve => {
+            this.zone.run(() => {
+                let subscription;
+                subscription = ref.afterClosed().subscribe(value => {
+                    subscription.unsubscribe();
+                    resolve(value);
+                });
+            });
+        });
+    }
+    confirm(options, confirm, cancel) {
+        this.confirmAsync(options).then((success) => {
+            if (success && confirm) {
+                confirm();
+            }
+            else if (!success && cancel) {
+                cancel();
+            }
+        });
+    }
+    confirmAsync(options) {
+        const ref = this.dialog.open(confirm_component_1.ConfirmComponent, {
+            hasBackdrop: true,
+            disableClose: true,
+            data: options,
+            autoFocus: false,
+            minWidth: '400px',
+            minHeight: '100px'
+        });
+        return new Promise((resolve) => {
+            this.zone.run(() => {
+                let subscription;
+                subscription = ref.afterClosed().subscribe(value => {
+                    subscription.unsubscribe();
+                    resolve(value);
+                });
+            });
+        });
+    }
+    logInfo(message, stackTrace = false) {
+        this.log(message, 'info', stackTrace);
+    }
+    logWarning(message, stackTrace = false) {
+        this.log(message, 'warning', stackTrace);
+    }
+    logError(message, stackTrace = false) {
+        this.log(message, 'error', stackTrace);
+    }
+    log(message, type, stackTrace = false) {
+        const item = { message: this.parseMessage(message, stackTrace), type: type };
+        this.logs.push(item);
+        this.logAdded.next(item);
+        this.size++;
+    }
+    parseMessage(message, stackTrace) {
+        let output = message;
+        if (message instanceof http_1.HttpErrorResponse) {
+            const error = message;
+            output = error.error || error.message;
+        }
+        else {
+            if (typeof message !== 'string') {
+                output = message.error; // JavaScript Error Object
+                if (!output) {
+                    if (message.stack) {
+                        const trace = stackTrace ? message.stack.split('\n').join('<br/>') : '';
+                        output = message.message + trace;
+                    }
+                    else {
+                        output = JSON.stringify(message);
+                    }
+                }
+                else {
+                    output = JSON.stringify(message);
+                }
+            }
+        }
+        return output;
+    }
+};
+NotificationService.ctorParameters = () => [
+    { type: core_1.NgZone },
+    { type: material_1.MatDialog },
+    { type: ngx_toastr_1.ToastrService },
+    { type: material_1.MatSnackBar }
+];
+NotificationService = tslib_1.__decorate([
+    core_1.Injectable({
+        providedIn: 'root'
+    }),
+    tslib_1.__metadata("design:paramtypes", [core_1.NgZone,
+        material_1.MatDialog,
+        ngx_toastr_1.ToastrService,
+        material_1.MatSnackBar])
+], NotificationService);
+exports.NotificationService = NotificationService;
+
+
+/***/ }),
+
+/***/ "./src/app/shared/shared.module.ts":
+/*!*****************************************!*\
+  !*** ./src/app/shared/shared.module.ts ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const common_1 = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm2015/common.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const forms_1 = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm2015/forms.js");
+__webpack_require__(/*! rxjs-compat/Observable */ "./node_modules/rxjs-compat/Observable.js");
+__webpack_require__(/*! rxjs/add/operator/first */ "./node_modules/rxjs-compat/_esm2015/add/operator/first.js");
+__webpack_require__(/*! rxjs/add/operator/map */ "./node_modules/rxjs-compat/_esm2015/add/operator/map.js");
+__webpack_require__(/*! rxjs/add/operator/share */ "./node_modules/rxjs-compat/_esm2015/add/operator/share.js");
+__webpack_require__(/*! rxjs/add/operator/startWith */ "./node_modules/rxjs-compat/_esm2015/add/operator/startWith.js");
+__webpack_require__(/*! rxjs/add/operator/take */ "./node_modules/rxjs-compat/_esm2015/add/operator/take.js");
+const icon_pipe_1 = __webpack_require__(/*! src/app/pages/editor/shared/pipes/icon.pipe */ "./src/app/pages/editor/shared/pipes/icon.pipe.ts");
+const language_1 = __webpack_require__(/*! ../pages/editor/shared/languages/language */ "./src/app/pages/editor/shared/languages/language.ts");
+const premierlangage_1 = __webpack_require__(/*! ../pages/editor/shared/languages/premierlangage */ "./src/app/pages/editor/shared/languages/premierlangage.ts");
+const confirm_component_1 = __webpack_require__(/*! ./components/confirm/confirm.component */ "./src/app/shared/components/confirm/confirm.component.ts");
+const prompt_component_1 = __webpack_require__(/*! ./components/prompt/prompt.component */ "./src/app/shared/components/prompt/prompt.component.ts");
+const tree_component_1 = __webpack_require__(/*! ./components/tree/tree.component */ "./src/app/shared/components/tree/tree.component.ts");
+const autofocus_directive_1 = __webpack_require__(/*! ./directives/autofocus.directive */ "./src/app/shared/directives/autofocus.directive.ts");
+const dnd_directive_1 = __webpack_require__(/*! ./directives/dnd.directive */ "./src/app/shared/directives/dnd.directive.ts");
+const run_scripts_directive_1 = __webpack_require__(/*! ./directives/run-scripts.directive */ "./src/app/shared/directives/run-scripts.directive.ts");
+const tree_node_directive_1 = __webpack_require__(/*! ./directives/tree-node.directive */ "./src/app/shared/directives/tree-node.directive.ts");
+const material_module_1 = __webpack_require__(/*! ./material.module */ "./src/app/shared/material.module.ts");
+const trust_html_pipe_1 = __webpack_require__(/*! ./pipes/trust-html.pipe */ "./src/app/shared/pipes/trust-html.pipe.ts");
+const trust_resource_url_pipe_1 = __webpack_require__(/*! ./pipes/trust-resource-url.pipe */ "./src/app/shared/pipes/trust-resource-url.pipe.ts");
+const trust_script_pipe_1 = __webpack_require__(/*! ./pipes/trust-script.pipe */ "./src/app/shared/pipes/trust-script.pipe.ts");
+const trust_style_pipe_1 = __webpack_require__(/*! ./pipes/trust-style.pipe */ "./src/app/shared/pipes/trust-style.pipe.ts");
+const trust_url_pipe_1 = __webpack_require__(/*! ./pipes/trust-url.pipe */ "./src/app/shared/pipes/trust-url.pipe.ts");
+const theme_1 = __webpack_require__(/*! ./themes/theme */ "./src/app/shared/themes/theme.ts");
+const theme_dark_1 = __webpack_require__(/*! ./themes/theme.dark */ "./src/app/shared/themes/theme.dark.ts");
+const theme_light_1 = __webpack_require__(/*! ./themes/theme.light */ "./src/app/shared/themes/theme.light.ts");
+const angular_split_1 = __webpack_require__(/*! angular-split */ "./node_modules/angular-split/fesm2015/angular-split.js");
+const ngx_monaco_editor_1 = __webpack_require__(/*! ngx-monaco-editor */ "./node_modules/ngx-monaco-editor/fesm2015/ngx-monaco-editor.js");
+const angular2_markdown_1 = __webpack_require__(/*! angular2-markdown */ "./node_modules/angular2-markdown/index.js");
+const loading_component_1 = __webpack_require__(/*! ./components/loading/loading.component */ "./src/app/shared/components/loading/loading.component.ts");
+let SharedModule = class SharedModule {
+};
+SharedModule = tslib_1.__decorate([
+    core_1.NgModule({
+        declarations: [
+            tree_component_1.TreeComponent,
+            prompt_component_1.PromptComponent,
+            confirm_component_1.ConfirmComponent,
+            loading_component_1.LoadingComponent,
+            dnd_directive_1.DndDirective,
+            autofocus_directive_1.AutofocusDirective,
+            run_scripts_directive_1.RunScriptsDirective,
+            tree_node_directive_1.TreeNodeDirective,
+            trust_html_pipe_1.TrustHtmlPipe,
+            trust_url_pipe_1.TrustUrlPipe,
+            trust_script_pipe_1.TrustScriptPipe,
+            trust_style_pipe_1.TrustStylePipe,
+            trust_resource_url_pipe_1.TrustResourceUrlPipe,
+            icon_pipe_1.IconPipe
+        ],
+        imports: [
+            common_1.CommonModule,
+            forms_1.FormsModule,
+            forms_1.ReactiveFormsModule,
+            material_module_1.MaterialModule,
+            angular_split_1.AngularSplitModule,
+            ngx_monaco_editor_1.MonacoEditorModule,
+            angular2_markdown_1.MarkdownModule,
+        ],
+        exports: [
+            common_1.CommonModule,
+            forms_1.FormsModule,
+            forms_1.ReactiveFormsModule,
+            material_module_1.MaterialModule,
+            angular_split_1.AngularSplitModule,
+            ngx_monaco_editor_1.MonacoEditorModule,
+            angular2_markdown_1.MarkdownModule,
+            tree_component_1.TreeComponent,
+            prompt_component_1.PromptComponent,
+            confirm_component_1.ConfirmComponent,
+            loading_component_1.LoadingComponent,
+            autofocus_directive_1.AutofocusDirective,
+            dnd_directive_1.DndDirective,
+            run_scripts_directive_1.RunScriptsDirective,
+            tree_node_directive_1.TreeNodeDirective,
+            trust_html_pipe_1.TrustHtmlPipe,
+            trust_url_pipe_1.TrustUrlPipe,
+            trust_script_pipe_1.TrustScriptPipe,
+            trust_style_pipe_1.TrustStylePipe,
+            trust_resource_url_pipe_1.TrustResourceUrlPipe,
+            icon_pipe_1.IconPipe
+        ],
+        providers: [
+            { provide: language_1.LANGUAGE_PROVIDERS, multi: true, useClass: premierlangage_1.PremierLangage },
+            { provide: theme_1.THEME_PROVIDERS, multi: true, useClass: theme_dark_1.DarkTheme },
+            { provide: theme_1.THEME_PROVIDERS, multi: true, useClass: theme_light_1.LightTheme }
+        ],
+        entryComponents: [prompt_component_1.PromptComponent, confirm_component_1.ConfirmComponent]
+    })
+], SharedModule);
+exports.SharedModule = SharedModule;
+
+
+/***/ }),
+
+/***/ "./src/app/shared/themes/theme.dark.ts":
+/*!*********************************************!*\
+  !*** ./src/app/shared/themes/theme.dark.ts ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+class DarkTheme {
+    constructor() {
         this.id = 'dark-theme';
         this.base = 'vs-dark';
         this.inherit = true;
@@ -6887,38 +9413,34 @@ var DarkTheme = /** @class */ (function () {
             'titleBar.activeForeground': '#9da5b4',
             'titleBar.inactiveBackground': '#21252b',
             'titleBar.inactiveForeground': '#6b717d',
-            'textLink.foreground': '#61afef'
+            'textLink.foreground': '#61afef',
         };
     }
-    return DarkTheme;
-}());
-
+}
+exports.DarkTheme = DarkTheme;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/themes/file-icons.ts":
-/*!****************************************************!*\
-  !*** ./src/app/editor/shared/themes/file-icons.ts ***!
-  \****************************************************/
-/*! exports provided: FileIcons, fileIcons */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/shared/themes/theme.files.ts":
+/*!**********************************************!*\
+  !*** ./src/app/shared/themes/theme.files.ts ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FileIcons", function() { return FileIcons; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "fileIcons", function() { return fileIcons; });
-// tslint:disable: max-line-length
-var FileIcons = /** @class */ (function () {
-    function FileIcons() {
-    }
-    return FileIcons;
-}());
 
+// tslint:disable: max-line-length
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+class FileIcons {
+}
+exports.FileIcons = FileIcons;
 /**
  * Defines file icons
  */
-var fileIcons = {
+exports.fileIcons = {
     defaultIcon: { name: 'file' },
     icons: [
         { name: 'pl', fileExtensions: ['pl'] },
@@ -7687,21 +10209,22 @@ var fileIcons = {
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/themes/folder-icons.ts":
-/*!******************************************************!*\
-  !*** ./src/app/editor/shared/themes/folder-icons.ts ***!
-  \******************************************************/
-/*! exports provided: folderIcons */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/shared/themes/theme.folders.ts":
+/*!************************************************!*\
+  !*** ./src/app/shared/themes/theme.folders.ts ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "folderIcons", function() { return folderIcons; });
+
 // tslint:disable: max-line-length
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /**
  * Defines folder icons
  */
-var folderIcons = [
+exports.folderIcons = [
     {
         name: 'specific',
         defaultIcon: { name: 'folder' },
@@ -7870,38 +10393,34 @@ var folderIcons = [
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/themes/icons.ts":
-/*!***********************************************!*\
-  !*** ./src/app/editor/shared/themes/icons.ts ***!
-  \***********************************************/
-/*! exports provided: iconPath */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/shared/themes/theme.icons.ts":
+/*!**********************************************!*\
+  !*** ./src/app/shared/themes/theme.icons.ts ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "iconPath", function() { return iconPath; });
-/* harmony import */ var _models_resource__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../models/resource */ "./src/app/editor/shared/models/resource.ts");
-/* harmony import */ var _folder_icons__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./folder-icons */ "./src/app/editor/shared/themes/folder-icons.ts");
-/* harmony import */ var _models_filters__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../models/filters */ "./src/app/editor/shared/models/filters.ts");
-/* harmony import */ var _file_icons__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./file-icons */ "./src/app/editor/shared/themes/file-icons.ts");
-/* harmony import */ var src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! src/app/shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
 
-
-
-
-
-var BASE_DIR = 'static/editor/assets/icons/explorer/';
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const paths_model_1 = __webpack_require__(/*! src/app/shared/models/paths.model */ "./src/app/shared/models/paths.model.ts");
+const filters_1 = __webpack_require__(/*! ../../pages/editor/shared/models/filters */ "./src/app/pages/editor/shared/models/filters.ts");
+const resource_1 = __webpack_require__(/*! ../../pages/editor/shared/models/resource */ "./src/app/pages/editor/shared/models/resource.ts");
+const theme_files_1 = __webpack_require__(/*! ./theme.files */ "./src/app/shared/themes/theme.files.ts");
+const theme_folders_1 = __webpack_require__(/*! ./theme.folders */ "./src/app/shared/themes/theme.folders.ts");
+const BASE_DIR = 'static/editor/assets/icons/explorer/';
 function iconPath(input) {
-    var path = '';
+    let path = '';
     if (input) {
-        if (input.type === _models_resource__WEBPACK_IMPORTED_MODULE_0__["ResourceTypes"].Folder) {
-            var theme = _folder_icons__WEBPACK_IMPORTED_MODULE_1__["folderIcons"][0];
+        if (input.type === resource_1.ResourceTypes.Folder) {
+            const theme = theme_folders_1.folderIcons[0];
             path = BASE_DIR + theme.defaultIcon.name;
-            if (Object(_models_filters__WEBPACK_IMPORTED_MODULE_2__["isRoot"])(input)) {
+            if (filters_1.isRoot(input)) {
                 path = BASE_DIR + theme.rootFolder.name;
             }
             else {
-                var icon = theme.icons.find(function (item) { return item.folderNames.includes(input.name.toLowerCase()); });
+                const icon = theme.icons.find(item => item.folderNames.includes(input.name.toLowerCase()));
                 if (icon) {
                     path = BASE_DIR + icon.name;
                 }
@@ -7912,32 +10431,34 @@ function iconPath(input) {
             path += '.svg';
         }
         else {
-            var extension_1 = Object(src_app_shared_models_paths_model__WEBPACK_IMPORTED_MODULE_4__["extname"])(input.path);
-            var icon = _file_icons__WEBPACK_IMPORTED_MODULE_3__["fileIcons"].icons.find(function (item) {
-                return (item.fileExtensions || []).includes(extension_1);
-            }) || _file_icons__WEBPACK_IMPORTED_MODULE_3__["fileIcons"].defaultIcon;
+            const extension = paths_model_1.extname(input.path);
+            const icon = theme_files_1.fileIcons.icons.find(item => {
+                return (item.fileExtensions || []).includes(extension);
+            }) || theme_files_1.fileIcons.defaultIcon;
             path = BASE_DIR + icon.name + '.svg';
         }
         return path;
     }
     return '';
 }
+exports.iconPath = iconPath;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/themes/light-theme.ts":
-/*!*****************************************************!*\
-  !*** ./src/app/editor/shared/themes/light-theme.ts ***!
-  \*****************************************************/
-/*! exports provided: LightTheme */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/shared/themes/theme.light.ts":
+/*!**********************************************!*\
+  !*** ./src/app/shared/themes/theme.light.ts ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "LightTheme", function() { return LightTheme; });
-var LightTheme = /** @class */ (function () {
-    function LightTheme() {
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+class LightTheme {
+    constructor() {
         this.id = 'light-theme';
         this.base = 'vs';
         this.inherit = true;
@@ -7947,2251 +10468,26 @@ var LightTheme = /** @class */ (function () {
         ];
         this.colors = {};
     }
-    return LightTheme;
-}());
-
+}
+exports.LightTheme = LightTheme;
 
 
 /***/ }),
 
-/***/ "./src/app/editor/shared/themes/theme.ts":
-/*!***********************************************!*\
-  !*** ./src/app/editor/shared/themes/theme.ts ***!
-  \***********************************************/
-/*! exports provided: THEME_PROVIDERS */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ "./src/app/shared/themes/theme.ts":
+/*!****************************************!*\
+  !*** ./src/app/shared/themes/theme.ts ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "THEME_PROVIDERS", function() { return THEME_PROVIDERS; });
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 
-// tslint:disable: max-line-length
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
 /** InjectionToken to provides new theme to the editor */
-var THEME_PROVIDERS = new _angular_core__WEBPACK_IMPORTED_MODULE_0__["InjectionToken"]('Theme Provider');
-
-
-/***/ }),
-
-/***/ "./src/app/editor/status-bar/status-bar.component.html":
-/*!*************************************************************!*\
-  !*** ./src/app/editor/status-bar/status-bar.component.html ***!
-  \*************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<ng-container *ngIf=\"inRepo()\">\n    <span class=\"status-bar-item remote\">\n        <i class='remote-icon {{repoHost()}} fa-1x'></i>\n        <a href=\"{{repoUrl()}}\" target=\"_blank\">{{repoUrl()}}</a>\n        <i> - {{repoBranch()}} </i>\n    </span>\n</ng-container>\n<div class=\"spacer\"></div>\n<span class=\"status-bar-item\" *ngIf='cursor'>Ln {{cursor.lineNumber}}, Col {{cursor.column}}</span>\n\n<ng-container *ngIf='querying()'>\n    <mat-progress-spinner mode='indeterminate' color='warn' strokeWidth='2' diameter='16'></mat-progress-spinner>\n</ng-container>\n"
-
-/***/ }),
-
-/***/ "./src/app/editor/status-bar/status-bar.component.scss":
-/*!*************************************************************!*\
-  !*** ./src/app/editor/status-bar/status-bar.component.scss ***!
-  \*************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = ":host {\n  display: -webkit-box;\n  display: flex;\n  align-content: center;\n  -webkit-box-align: center;\n          align-items: center;\n  height: 20px;\n  background-color: var(--statusBar-background);\n  color: var(--statusBar-foreground);\n  font-size: 12px;\n  padding: 0 8px; }\n\n.status-bar-item {\n  margin-right: 8px; }\n\n.status-bar-item:hover {\n  background-color: var(--statusBarItem-hoverBackground); }\n\n.remote .remote-icon {\n  margin: 0 4px; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL2VkaXRvci9zdGF0dXMtYmFyL3N0YXR1cy1iYXIuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxxQkFBYTtFQUFiLGNBQWE7RUFDYixzQkFBcUI7RUFDckIsMEJBQW1CO1VBQW5CLG9CQUFtQjtFQUNuQixhQUFZO0VBQ1osOENBQTZDO0VBQzdDLG1DQUFrQztFQUNsQyxnQkFBZTtFQUNmLGVBQWMsRUFDakI7O0FBRUQ7RUFDSSxrQkFBaUIsRUFDcEI7O0FBRUQ7RUFDSSx1REFBc0QsRUFDekQ7O0FBRUQ7RUFDb0IsY0FBYSxFQUFJIiwiZmlsZSI6InNyYy9hcHAvZWRpdG9yL3N0YXR1cy1iYXIvc3RhdHVzLWJhci5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIjpob3N0IHtcbiAgICBkaXNwbGF5OiBmbGV4O1xuICAgIGFsaWduLWNvbnRlbnQ6IGNlbnRlcjtcbiAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgIGhlaWdodDogMjBweDtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1zdGF0dXNCYXItYmFja2dyb3VuZCk7XG4gICAgY29sb3I6IHZhcigtLXN0YXR1c0Jhci1mb3JlZ3JvdW5kKTtcbiAgICBmb250LXNpemU6IDEycHg7XG4gICAgcGFkZGluZzogMCA4cHg7XG59XG5cbi5zdGF0dXMtYmFyLWl0ZW0ge1xuICAgIG1hcmdpbi1yaWdodDogOHB4O1xufVxuXG4uc3RhdHVzLWJhci1pdGVtOmhvdmVyIHtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1zdGF0dXNCYXJJdGVtLWhvdmVyQmFja2dyb3VuZCk7XG59XG5cbi5yZW1vdGUge1xuICAgIC5yZW1vdGUtaWNvbiB7ICBtYXJnaW46IDAgNHB4OyB9XG59XG5cbiJdfQ== */"
-
-/***/ }),
-
-/***/ "./src/app/editor/status-bar/status-bar.component.ts":
-/*!***********************************************************!*\
-  !*** ./src/app/editor/status-bar/status-bar.component.ts ***!
-  \***********************************************************/
-/*! exports provided: FooterComponent */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "FooterComponent", function() { return FooterComponent; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _shared_services_task_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/services/task.service */ "./src/app/editor/shared/services/task.service.ts");
-/* harmony import */ var _shared_services_resource_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../shared/services/resource.service */ "./src/app/editor/shared/services/resource.service.ts");
-/* harmony import */ var _shared_services_monaco_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../shared/services/monaco.service */ "./src/app/editor/shared/services/monaco.service.ts");
-/* harmony import */ var _shared_models_filters__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../shared/models/filters */ "./src/app/editor/shared/models/filters.ts");
-/* harmony import */ var _shared_services_editor_service__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../shared/services/editor.service */ "./src/app/editor/shared/services/editor.service.ts");
-
-
-
-
-
-
-
-var FooterComponent = /** @class */ (function () {
-    function FooterComponent(task, editor, monaco, resources) {
-        this.task = task;
-        this.editor = editor;
-        this.monaco = monaco;
-        this.resources = resources;
-        this.subscriptions = [];
-    }
-    FooterComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        this.subscriptions.push(this.monaco.cursorChanged.subscribe(function (cursor) {
-            _this.cursor = cursor;
-        }));
-        this.subscriptions.push(this.resources.focused.subscribe(function (resource) {
-            _this.focused = resource;
-        }));
-    };
-    FooterComponent.prototype.ngOnDestroy = function () {
-        this.subscriptions.forEach(function (s) { return s.unsubscribe(); });
-    };
-    FooterComponent.prototype.querying = function () {
-        return this.task.running;
-    };
-    FooterComponent.prototype.taskName = function () {
-        return this.task.taskName;
-    };
-    FooterComponent.prototype.inRepo = function () {
-        return !!this.focused && Object(_shared_models_filters__WEBPACK_IMPORTED_MODULE_5__["isRepo"])(this.focused);
-    };
-    FooterComponent.prototype.repoHost = function () {
-        return !!this.focused && this.focused.repo.host;
-    };
-    FooterComponent.prototype.repoUrl = function () {
-        return !!this.focused && this.focused.repo.url;
-    };
-    FooterComponent.prototype.repoBranch = function () {
-        return !!this.focused && this.focused.repo.branch;
-    };
-    FooterComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-            // tslint:disable-next-line: component-selector
-            selector: 'status-bar',
-            template: __webpack_require__(/*! ./status-bar.component.html */ "./src/app/editor/status-bar/status-bar.component.html"),
-            styles: [__webpack_require__(/*! ./status-bar.component.scss */ "./src/app/editor/status-bar/status-bar.component.scss")]
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_task_service__WEBPACK_IMPORTED_MODULE_2__["TaskService"],
-            _shared_services_editor_service__WEBPACK_IMPORTED_MODULE_6__["EditorService"],
-            _shared_services_monaco_service__WEBPACK_IMPORTED_MODULE_4__["MonacoService"],
-            _shared_services_resource_service__WEBPACK_IMPORTED_MODULE_3__["ResourceService"]])
-    ], FooterComponent);
-    return FooterComponent;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/editor/workspace/code-editor/code-editor.component.html":
-/*!*************************************************************************!*\
-  !*** ./src/app/editor/workspace/code-editor/code-editor.component.html ***!
-  \*************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<span class='blame' *ngIf='enabledBlames()'>\n    {{blame.email}}, \n    {{blame.day | timeAgo}} \n    <ng-container *ngIf='blame.commit'>- {{blame.commit}}</ng-container>\n </span>\n<ngx-monaco-editor [hidden]='editor.diffEditing' class='code-editor' [ngClass]='{\"with-blame\": blame}' [options]=\"{}\" [model]='{}' (onInit)=\"codeEditorLoaded($event)\"></ngx-monaco-editor>\n<ngx-monaco-diff-editor [hidden]='!editor.diffEditing' class='code-editor' [ngClass]='{\"with-blame\": blame}' [options]=\"{}\" [originalModel]=\"{}\" [modifiedModel]=\"{}\" (onInit)=\"diffEditorLoaded($event)\"></ngx-monaco-diff-editor>\n\n\n"
-
-/***/ }),
-
-/***/ "./src/app/editor/workspace/code-editor/code-editor.component.scss":
-/*!*************************************************************************!*\
-  !*** ./src/app/editor/workspace/code-editor/code-editor.component.scss ***!
-  \*************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = ".code-editor {\n  height: calc(100% - 36px); }\n\n.code-editor.with-blame {\n  height: calc(100% - (36px + 16px)); }\n\n.blame {\n  color: #999999;\n  overflow: hidden;\n  display: inline-block;\n  text-overflow: ellipsis;\n  width: 100%;\n  height: 16px;\n  padding: 0 61px;\n  font-family: Menlo, Monaco, \"Courier New\", monospace;\n  font-weight: normal;\n  font-size: 12px;\n  line-height: 18px;\n  letter-spacing: 0px; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL2VkaXRvci93b3Jrc3BhY2UvY29kZS1lZGl0b3IvY29kZS1lZGl0b3IuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSwwQkFBeUIsRUFDNUI7O0FBRUQ7RUFDSSxtQ0FBa0MsRUFDckM7O0FBRUQ7RUFDSSxlQUFjO0VBQ2QsaUJBQWdCO0VBQ2hCLHNCQUFxQjtFQUNyQix3QkFBdUI7RUFDdkIsWUFBVztFQUNYLGFBQVk7RUFDWixnQkFBZTtFQUNmLHFEQUFvRDtFQUNwRCxvQkFBbUI7RUFDbkIsZ0JBQWU7RUFDZixrQkFBaUI7RUFDakIsb0JBQW1CLEVBQ3RCIiwiZmlsZSI6InNyYy9hcHAvZWRpdG9yL3dvcmtzcGFjZS9jb2RlLWVkaXRvci9jb2RlLWVkaXRvci5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5jb2RlLWVkaXRvciB7XG4gICAgaGVpZ2h0OiBjYWxjKDEwMCUgLSAzNnB4KTsgLy8gMzYgPSB0YWIgaGVpZ2h0IDE2ID0gYmxhbWUgaGVpZ2h0XG59XG5cbi5jb2RlLWVkaXRvci53aXRoLWJsYW1lIHtcbiAgICBoZWlnaHQ6IGNhbGMoMTAwJSAtICgzNnB4ICsgMTZweCkpOyAvLyAzNiA9IHRhYiBoZWlnaHQgMTYgPSBibGFtZSBoZWlnaHRcbn1cblxuLmJsYW1lIHtcbiAgICBjb2xvcjogIzk5OTk5OTtcbiAgICBvdmVyZmxvdzogaGlkZGVuO1xuICAgIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgICB0ZXh0LW92ZXJmbG93OiBlbGxpcHNpcztcbiAgICB3aWR0aDogMTAwJTtcbiAgICBoZWlnaHQ6IDE2cHg7XG4gICAgcGFkZGluZzogMCA2MXB4O1xuICAgIGZvbnQtZmFtaWx5OiBNZW5sbywgTW9uYWNvLCBcIkNvdXJpZXIgTmV3XCIsIG1vbm9zcGFjZTtcbiAgICBmb250LXdlaWdodDogbm9ybWFsO1xuICAgIGZvbnQtc2l6ZTogMTJweDtcbiAgICBsaW5lLWhlaWdodDogMThweDtcbiAgICBsZXR0ZXItc3BhY2luZzogMHB4O1xufSJdfQ== */"
-
-/***/ }),
-
-/***/ "./src/app/editor/workspace/code-editor/code-editor.component.ts":
-/*!***********************************************************************!*\
-  !*** ./src/app/editor/workspace/code-editor/code-editor.component.ts ***!
-  \***********************************************************************/
-/*! exports provided: CodeEditorComponent */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CodeEditorComponent", function() { return CodeEditorComponent; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _shared_models_editors__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../shared/models/editors */ "./src/app/editor/shared/models/editors.ts");
-/* harmony import */ var src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/app/shared/services/notification.service */ "./src/app/shared/services/notification.service.ts");
-/* harmony import */ var _shared_services_monaco_service__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../shared/services/monaco.service */ "./src/app/editor/shared/services/monaco.service.ts");
-/* harmony import */ var _shared_services_git_service__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../shared/services/git.service */ "./src/app/editor/shared/services/git.service.ts");
-/* harmony import */ var _shared_models_filters__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../shared/models/filters */ "./src/app/editor/shared/models/filters.ts");
-/* harmony import */ var _shared_services_editor_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../shared/services/editor.service */ "./src/app/editor/shared/services/editor.service.ts");
-/* harmony import */ var _shared_services_preview_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../shared/services/preview.service */ "./src/app/editor/shared/services/preview.service.ts");
-
-
-
-
-
-
-
-
-
-var CodeEditorComponent = /** @class */ (function () {
-    function CodeEditorComponent(git, preview, notification, editorService, monacoService) {
-        this.git = git;
-        this.preview = preview;
-        this.notification = notification;
-        this.editorService = editorService;
-        this.monacoService = monacoService;
-        this.subscriptions = [];
-    }
-    CodeEditorComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        this.subscriptions.push(this.editor.opened.subscribe(function (uri) {
-            _this.open(uri);
-        }));
-        this.subscriptions.push(this.editor.previewRequested.subscribe(function (item) {
-            _this.didPreview(item);
-        }));
-        this.subscriptions.push(this.editor.diffRequested.subscribe(function () {
-            _this.open(_this.editor.resource());
-        }));
-        this.subscriptions.push(this.monacoService.blameChanged.subscribe(function (e) {
-            if (e.blame && e.modelId === _this.editor.codeEditor.getModel().id) {
-                _this.blame = e.blame;
-            }
-        }));
-    };
-    CodeEditorComponent.prototype.ngOnDestroy = function () {
-        this.subscriptions.forEach(function (item) { return item.unsubscribe(); });
-        this.editorChanges.dispose();
-        this.monacoService.onEditorDisposed(this.editor.codeEditor);
-        this.monacoService.onEditorDisposed(this.editor.diffEditor.getModifiedEditor());
-    };
-    CodeEditorComponent.prototype.codeEditorLoaded = function (codeEditor) {
-        this.monacoService.onEditorCreated(codeEditor);
-        this.editor.codeEditor = codeEditor;
-        this.addCommands(codeEditor);
-        this.open(this.editor.resource());
-    };
-    CodeEditorComponent.prototype.diffEditorLoaded = function (diffEditor) {
-        this.monacoService.onEditorCreated(diffEditor.getModifiedEditor());
-        this.editor.diffEditor = diffEditor;
-        this.addCommands(this.editor.diffEditor.getModifiedEditor());
-        this.open(this.editor.resource());
-    };
-    CodeEditorComponent.prototype.enabledBlames = function () {
-        return this.monacoService.enabledBlames() && !!this.blame;
-    };
-    CodeEditorComponent.prototype.addCommands = function (editor) {
-        var _this = this;
-        this.editorChanges = editor.onDidChangeModelContent(function () {
-            _this.didContentChanged(editor);
-        });
-        var empty = '';
-        // tslint:disable: no-bitwise
-        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, function () {
-            _this.didSave();
-        }, empty);
-        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_S, function () {
-            _this.editor.group().saveAll().catch(function (error) {
-                _this.notification.logError(error);
-            });
-        }, empty);
-        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_K, function () {
-            _this.editor.group().close(_this.editor.resource(), true).catch(function (error) {
-                _this.notification.logError(error);
-            });
-        }, empty);
-        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_K, function () {
-            _this.editor.group().closeAll(true).catch(function (error) {
-                _this.notification.logError(error);
-            });
-        }, empty);
-        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.KEY_U, function () {
-            _this.editor.group().closeSaved().catch(function (error) {
-                _this.notification.logError(error);
-            });
-        }, empty);
-        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, function () {
-            if (Object(_shared_models_filters__WEBPACK_IMPORTED_MODULE_6__["canBePreviewed"])(_this.active)) {
-                _this.didPreview(_this.active);
-            }
-        }, empty);
-        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Alt | monaco.KeyCode.Enter, function () {
-            _this.editorService.closePreview();
-        }, empty);
-        editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.RightArrow, function () {
-            _this.editor.split();
-        }, empty);
-        // tslint:enable: no-bitwise
-    };
-    CodeEditorComponent.prototype.didSave = function () {
-        var _this = this;
-        this.editor.group().save(this.editor.resource()).then(function (success) {
-            if (success) {
-                _this.monacoService.refreshBlames(_this.active, _this.editor.codeEditor.getModel());
-            }
-        }).catch(function (error) {
-            _this.notification.logError(error);
-        });
-    };
-    CodeEditorComponent.prototype.didContentChanged = function (editor) {
-        if (!this.readonly) {
-            var model = editor.getModel();
-            this.active.content = model.getValue();
-            this.active.changed = this.active.savedContent !== this.active.content;
-        }
-    };
-    CodeEditorComponent.prototype.didPreview = function (item) {
-        var _this = this;
-        this.preview.preview(item).then(function () {
-            _this.editorService.open(item);
-        }).catch(function (error) {
-            _this.notification.logError(error);
-        });
-    };
-    CodeEditorComponent.prototype.open = function (resource, options) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var context, monaco, uri, language, model;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        this.blame = null;
-                        context = {
-                            resource: this.active,
-                            viewState: this.editor.codeEditor.saveViewState(),
-                        };
-                        this.active = resource;
-                        monaco = window.monaco;
-                        uri = monaco.Uri.parse(resource.path);
-                        language = this.monacoService.findLanguage(this.active);
-                        model = monaco.editor.getModel(uri) || monaco.editor.createModel(this.active.content, language, uri);
-                        if (model.getValue() !== this.active.content) {
-                            model.setValue(this.active.content);
-                            this.active.changed = false;
-                            this.active.savedContent = this.active.content;
-                        }
-                        this.readonly = this.editor.diffEditing || !this.active.write;
-                        this.editor.codeEditor.setModel(model);
-                        this.editor.codeEditor.updateOptions({ readOnly: this.readonly });
-                        this.editor.codeEditor.focus();
-                        return [4 /*yield*/, this.checkDiffOptions(monaco, language)];
-                    case 1:
-                        _a.sent();
-                        return [4 /*yield*/, this.checkCodeOptions(monaco, resource, options)];
-                    case 2:
-                        _a.sent();
-                        this.monacoService.onOpened(context, this.active, model, this.editor.codeEditor);
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    CodeEditorComponent.prototype.checkCodeOptions = function (monaco, resource, options) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                if (options) {
-                    if (options.position) {
-                        this.editor.codeEditor.setPosition({
-                            lineNumber: options.position.line, column: options.position.line
-                        });
-                        this.editor.codeEditor.revealLineInCenter(options.position.line, monaco.editor.ScrollType.Smooth);
-                    }
-                }
-                return [2 /*return*/];
-            });
-        });
-    };
-    CodeEditorComponent.prototype.checkDiffOptions = function (monaco, language) {
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-            var diff, _1;
-            return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!this.editor.diffEditing) return [3 /*break*/, 5];
-                        diff = '';
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, this.git.show(this.active)];
-                    case 2:
-                        diff = (_a.sent()) || '';
-                        return [3 /*break*/, 4];
-                    case 3:
-                        _1 = _a.sent();
-                        return [3 /*break*/, 4];
-                    case 4:
-                        this.editor.diffEditor.setModel({
-                            original: monaco.editor.createModel(diff, language),
-                            modified: monaco.editor.createModel(this.active.content, language),
-                        });
-                        this.editor.diffEditor.getModifiedEditor().updateOptions({ readOnly: this.readonly });
-                        this.editor.diffEditor.getModifiedEditor().focus();
-                        _a.label = 5;
-                    case 5: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", _shared_models_editors__WEBPACK_IMPORTED_MODULE_2__["CodeEditor"])
-    ], CodeEditorComponent.prototype, "editor", void 0);
-    CodeEditorComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-            // tslint:disable-next-line: component-selector
-            selector: 'code-editor',
-            template: __webpack_require__(/*! ./code-editor.component.html */ "./src/app/editor/workspace/code-editor/code-editor.component.html"),
-            styles: [__webpack_require__(/*! ./code-editor.component.scss */ "./src/app/editor/workspace/code-editor/code-editor.component.scss")]
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_git_service__WEBPACK_IMPORTED_MODULE_5__["GitService"],
-            _shared_services_preview_service__WEBPACK_IMPORTED_MODULE_8__["PreviewService"],
-            src_app_shared_services_notification_service__WEBPACK_IMPORTED_MODULE_3__["NotificationService"],
-            _shared_services_editor_service__WEBPACK_IMPORTED_MODULE_7__["EditorService"],
-            _shared_services_monaco_service__WEBPACK_IMPORTED_MODULE_4__["MonacoService"]])
-    ], CodeEditorComponent);
-    return CodeEditorComponent;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/editor/workspace/image-editor/image-editor.component.html":
-/*!***************************************************************************!*\
-  !*** ./src/app/editor/workspace/image-editor/image-editor.component.html ***!
-  \***************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<div class='image-editor'>\n    <div *ngIf='isSVG; else notSVG' [innerHTML]='svg | trustHtml' [ngStyle]='{zoom: editor.zoom}'></div>\n    <ng-template #notSVG>\n        <img [src]='url'  [ngStyle]='{zoom: editor.zoom}' />\n    </ng-template>\n</div>\n"
-
-/***/ }),
-
-/***/ "./src/app/editor/workspace/image-editor/image-editor.component.scss":
-/*!***************************************************************************!*\
-  !*** ./src/app/editor/workspace/image-editor/image-editor.component.scss ***!
-  \***************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = ".image-editor {\n  height: calc(100% - 36px);\n  position: relative;\n  background-position: 0px 0px, 10px 10px;\n  background-size: 20px 20px;\n  background-image: linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee 100%), linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee 100%);\n  text-align: center; }\n  .image-editor img {\n    text-align: center;\n    display: block;\n    position: absolute;\n    top: 0px;\n    right: 0px;\n    bottom: 0px;\n    left: 0px;\n    max-width: 100%;\n    height: auto;\n    margin: auto;\n    border-radius: 16px;\n    background-color: transparent; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL2VkaXRvci93b3Jrc3BhY2UvaW1hZ2UtZWRpdG9yL2ltYWdlLWVkaXRvci5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLDBCQUF5QjtFQUN6QixtQkFBa0I7RUFDbEIsd0NBQXVDO0VBQ3ZDLDJCQUEwQjtFQUMxQixtTUFFMkY7RUFDM0YsbUJBQWtCLEVBaUJyQjtFQXpCRDtJQVdRLG1CQUFrQjtJQUNsQixlQUFjO0lBQ2QsbUJBQWtCO0lBQ2xCLFNBQVE7SUFDUixXQUFVO0lBQ1YsWUFBVztJQUNYLFVBQVM7SUFDVCxnQkFBZTtJQUNmLGFBQVk7SUFDWixhQUFZO0lBQ1osb0JBQW1CO0lBQ25CLDhCQUE2QixFQUNoQyIsImZpbGUiOiJzcmMvYXBwL2VkaXRvci93b3Jrc3BhY2UvaW1hZ2UtZWRpdG9yL2ltYWdlLWVkaXRvci5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5pbWFnZS1lZGl0b3Ige1xuICAgIGhlaWdodDogY2FsYygxMDAlIC0gMzZweCk7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgIGJhY2tncm91bmQtcG9zaXRpb246IDBweCAwcHgsIDEwcHggMTBweDtcbiAgICBiYWNrZ3JvdW5kLXNpemU6IDIwcHggMjBweDtcbiAgICBiYWNrZ3JvdW5kLWltYWdlOlxuICAgICAgICBsaW5lYXItZ3JhZGllbnQoNDVkZWcsICNlZWUgMjUlLCB0cmFuc3BhcmVudCAyNSUsIHRyYW5zcGFyZW50IDc1JSwgI2VlZSA3NSUsICNlZWUgMTAwJSksXG4gICAgICAgIGxpbmVhci1ncmFkaWVudCg0NWRlZywgI2VlZSAyNSUsIHRyYW5zcGFyZW50IDI1JSwgdHJhbnNwYXJlbnQgNzUlLCAjZWVlIDc1JSwgI2VlZSAxMDAlKTtcbiAgICB0ZXh0LWFsaWduOiBjZW50ZXI7XG5cbiAgICBpbWcge1xuICAgICAgICB0ZXh0LWFsaWduOiBjZW50ZXI7XG4gICAgICAgIGRpc3BsYXk6IGJsb2NrO1xuICAgICAgICBwb3NpdGlvbjogYWJzb2x1dGU7XG4gICAgICAgIHRvcDogMHB4O1xuICAgICAgICByaWdodDogMHB4O1xuICAgICAgICBib3R0b206IDBweDtcbiAgICAgICAgbGVmdDogMHB4O1xuICAgICAgICBtYXgtd2lkdGg6IDEwMCU7XG4gICAgICAgIGhlaWdodDogYXV0bztcbiAgICAgICAgbWFyZ2luOiBhdXRvO1xuICAgICAgICBib3JkZXItcmFkaXVzOiAxNnB4O1xuICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiB0cmFuc3BhcmVudDtcbiAgICB9XG5cbn1cbiJdfQ== */"
-
-/***/ }),
-
-/***/ "./src/app/editor/workspace/image-editor/image-editor.component.ts":
-/*!*************************************************************************!*\
-  !*** ./src/app/editor/workspace/image-editor/image-editor.component.ts ***!
-  \*************************************************************************/
-/*! exports provided: ImageEditorComponent */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ImageEditorComponent", function() { return ImageEditorComponent; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _shared_models_editors__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../shared/models/editors */ "./src/app/editor/shared/models/editors.ts");
-/* harmony import */ var _shared_models_filters__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../shared/models/filters */ "./src/app/editor/shared/models/filters.ts");
-
-
-
-
-var ImageEditorComponent = /** @class */ (function () {
-    function ImageEditorComponent() {
-    }
-    ImageEditorComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        this.open(this.editor.resource());
-        this.openSubscription = this.editor.opened.subscribe(function (document) {
-            _this.open(document);
-        });
-    };
-    ImageEditorComponent.prototype.ngOnDestroy = function () {
-        this.openSubscription.unsubscribe();
-    };
-    ImageEditorComponent.prototype.open = function (resource) {
-        this.svg = resource.content;
-        this.url = resource.meta.downloadUrl;
-        this.isSVG = Object(_shared_models_filters__WEBPACK_IMPORTED_MODULE_3__["isSVG"])(resource);
-    };
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", _shared_models_editors__WEBPACK_IMPORTED_MODULE_2__["ImageEditor"])
-    ], ImageEditorComponent.prototype, "editor", void 0);
-    ImageEditorComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-            // tslint:disable-next-line: component-selector
-            selector: 'image-editor',
-            template: __webpack_require__(/*! ./image-editor.component.html */ "./src/app/editor/workspace/image-editor/image-editor.component.html"),
-            styles: [__webpack_require__(/*! ./image-editor.component.scss */ "./src/app/editor/workspace/image-editor/image-editor.component.scss")]
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
-    ], ImageEditorComponent);
-    return ImageEditorComponent;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/editor/workspace/preview-editor/preview-editor.component.html":
-/*!*******************************************************************************!*\
-  !*** ./src/app/editor/workspace/preview-editor/preview-editor.component.html ***!
-  \*******************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<mat-progress-bar *ngIf='loading' color=\"warn\" mode=\"indeterminate\"></mat-progress-bar>\n<iframe *ngIf='isURL' class=\"preview-editor\" [srcdoc]=\"content | trustHtml\" frameborder=\"0\" (load)='didFrameLoaded()'></iframe>\n<div *ngIf='isHTML' class='preview-editor' [innerHTML]='content | trustHtml' runScripts></div>\n<div *ngIf='isMarkdown' class='preview-editor'><markdown [data]=\"content\"></markdown></div>\n"
-
-/***/ }),
-
-/***/ "./src/app/editor/workspace/preview-editor/preview-editor.component.scss":
-/*!*******************************************************************************!*\
-  !*** ./src/app/editor/workspace/preview-editor/preview-editor.component.scss ***!
-  \*******************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = ".preview-editor {\n  height: calc(100% - 36px);\n  overflow: auto;\n  padding: 8px; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL2VkaXRvci93b3Jrc3BhY2UvcHJldmlldy1lZGl0b3IvcHJldmlldy1lZGl0b3IuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSwwQkFBeUI7RUFDekIsZUFBYztFQUNkLGFBQVksRUFDZiIsImZpbGUiOiJzcmMvYXBwL2VkaXRvci93b3Jrc3BhY2UvcHJldmlldy1lZGl0b3IvcHJldmlldy1lZGl0b3IuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIucHJldmlldy1lZGl0b3Ige1xuICAgIGhlaWdodDogY2FsYygxMDAlIC0gMzZweCk7XG4gICAgb3ZlcmZsb3c6IGF1dG87XG4gICAgcGFkZGluZzogOHB4O1xufSJdfQ== */"
-
-/***/ }),
-
-/***/ "./src/app/editor/workspace/preview-editor/preview-editor.component.ts":
-/*!*****************************************************************************!*\
-  !*** ./src/app/editor/workspace/preview-editor/preview-editor.component.ts ***!
-  \*****************************************************************************/
-/*! exports provided: PreviewEditorComponent */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PreviewEditorComponent", function() { return PreviewEditorComponent; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _shared_models_editors__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../shared/models/editors */ "./src/app/editor/shared/models/editors.ts");
-/* harmony import */ var src_app_shared_directives_run_scripts_directive__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! src/app/shared/directives/run-scripts.directive */ "./src/app/shared/directives/run-scripts.directive.ts");
-/* harmony import */ var _shared_models_filters__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../shared/models/filters */ "./src/app/editor/shared/models/filters.ts");
-
-
-
-
-
-var PreviewEditorComponent = /** @class */ (function () {
-    function PreviewEditorComponent() {
-    }
-    PreviewEditorComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        this.open(this.editor.resource());
-        this.openSubscription = this.editor.opened.subscribe(function (document) {
-            _this.open(document);
-        });
-    };
-    PreviewEditorComponent.prototype.ngOnDestroy = function () {
-        this.openSubscription.unsubscribe();
-    };
-    PreviewEditorComponent.prototype.didFrameLoaded = function () {
-        this.counter++;
-        // for some reason onload of iframe is called twice
-        this.loading = this.counter % 2 === 0;
-    };
-    PreviewEditorComponent.prototype.open = function (resource) {
-        this.content = resource.meta.previewData;
-        this.isMarkdown = Object(_shared_models_filters__WEBPACK_IMPORTED_MODULE_4__["isMarkdown"])(resource);
-        this.isHTML = Object(_shared_models_filters__WEBPACK_IMPORTED_MODULE_4__["isSVG"])(resource);
-        this.isURL = Object(_shared_models_filters__WEBPACK_IMPORTED_MODULE_4__["isPL"])(resource);
-        this.loading = this.isURL;
-        if (this.isHTML && this.scripts) {
-            this.scripts.runScripts();
-        }
-    };
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", _shared_models_editors__WEBPACK_IMPORTED_MODULE_2__["PreviewEditor"])
-    ], PreviewEditorComponent.prototype, "editor", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ViewChild"])(src_app_shared_directives_run_scripts_directive__WEBPACK_IMPORTED_MODULE_3__["RunScriptsDirective"]),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", src_app_shared_directives_run_scripts_directive__WEBPACK_IMPORTED_MODULE_3__["RunScriptsDirective"])
-    ], PreviewEditorComponent.prototype, "scripts", void 0);
-    PreviewEditorComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-            // tslint:disable-next-line: component-selector
-            selector: 'preview-editor',
-            template: __webpack_require__(/*! ./preview-editor.component.html */ "./src/app/editor/workspace/preview-editor/preview-editor.component.html"),
-            styles: [__webpack_require__(/*! ./preview-editor.component.scss */ "./src/app/editor/workspace/preview-editor/preview-editor.component.scss")]
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
-    ], PreviewEditorComponent);
-    return PreviewEditorComponent;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/editor/workspace/setting-editor/setting-editor.component.html":
-/*!*******************************************************************************!*\
-  !*** ./src/app/editor/workspace/setting-editor/setting-editor.component.html ***!
-  \*******************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<div class='tab-bar'>\n    <div class=\"tab-item active\">\n        <i class=\"tab-icon fa fa-cog\"></i>&nbsp;\n        <span>Settings</span>\n        <span class='tab-close' (click)='didClose()'>&nbsp;&times;</span>\n    </div>\n</div>\n<div class='setting-editor'>\n    <mat-list class='list-groups'>\n        <mat-list-item *ngFor='let item of groups' (click)='didSelect(item)'>\n            <span class='setting-item' [ngClass]='{ active: selection.title === item.title}'>{{item.name|nicifyName}}</span>\n        </mat-list-item>\n    </mat-list>\n    <mat-list>\n        <ng-container *ngFor=\"let setting of selection.settings\">\n           <mat-list-item>\n                <span mat-line class='setting-item active'>{{setting.name|nicifyName:true}}</span>\n                <p mat-line *ngIf='setting.type !== \"Checkbox\"'>{{setting.comment}}</p>\n                <div mat-line>\n                    <ng-container [ngSwitch]=\"setting.type\">\n                        <mat-checkbox  color='primary' *ngSwitchCase=\"'Checkbox'\" [(ngModel)]='setting.value' (change)='didChange()'>{{setting.comment}}</mat-checkbox>\n                        <mat-form-field *ngSwitchCase=\"'Number'\">\n                            <input matInput type='number' placeholder=\"\" [(ngModel)]=\"setting.value\" (change)='didChange()'>\n                        </mat-form-field>\n                        <mat-form-field *ngSwitchCase=\"'Input'\">\n                            <input matInput type='text' placeholder=\"\" [(ngModel)]=\"setting.value\" (keyup)='didChange()'>\n                        </mat-form-field>\n                        <mat-form-field *ngSwitchCase=\"'Dropdown'\">\n                            <mat-select [(value)]='setting.value' (selectionChange)='didChange()'>\n                                <mat-option *ngFor=\"let choice of setting.choices\" [value]=\"choice\">\n                                    {{choice}}\n                                </mat-option>\n                            </mat-select>\n                        </mat-form-field>\n                    </ng-container>\n                </div>\n            </mat-list-item>\n        </ng-container>\n    </mat-list>\n</div>\n"
-
-/***/ }),
-
-/***/ "./src/app/editor/workspace/setting-editor/setting-editor.component.scss":
-/*!*******************************************************************************!*\
-  !*** ./src/app/editor/workspace/setting-editor/setting-editor.component.scss ***!
-  \*******************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = ".setting-editor {\n  height: calc(100% - 36px);\n  display: -webkit-box;\n  display: flex; }\n\n.mat-form-field {\n  width: 75%; }\n\n.tab-bar {\n  padding: 0; }\n\n.mat-list {\n  height: 100%;\n  width: 100%;\n  overflow: auto; }\n\n.mat-list.mat-list-base {\n    margin-bottom: 8px; }\n\n.mat-list.list-groups {\n  width: 180px;\n  padding: 0 12px;\n  overflow: auto; }\n\n.setting-item {\n  cursor: pointer; }\n\n.setting-item.active, .setting-item:hover {\n    color: #007bff; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL2VkaXRvci93b3Jrc3BhY2Uvc2V0dGluZy1lZGl0b3Ivc2V0dGluZy1lZGl0b3IuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSwwQkFBeUI7RUFDekIscUJBQWE7RUFBYixjQUFhLEVBQ2hCOztBQUdEO0VBQ0ksV0FBVSxFQUNiOztBQUVEO0VBQ0ksV0FBVSxFQUNiOztBQUVEO0VBQ0ksYUFBWTtFQUNaLFlBQVc7RUFDWCxlQUFjLEVBSWpCOztBQVBEO0lBS1EsbUJBQWtCLEVBQ3JCOztBQUdMO0VBQ0ksYUFBWTtFQUNaLGdCQUFlO0VBQ2YsZUFBYyxFQUNqQjs7QUFFRDtFQUNJLGdCQUFlLEVBSWxCOztBQUxEO0lBR1EsZUFBYyxFQUNqQiIsImZpbGUiOiJzcmMvYXBwL2VkaXRvci93b3Jrc3BhY2Uvc2V0dGluZy1lZGl0b3Ivc2V0dGluZy1lZGl0b3IuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIuc2V0dGluZy1lZGl0b3Ige1xuICAgIGhlaWdodDogY2FsYygxMDAlIC0gMzZweCk7XG4gICAgZGlzcGxheTogZmxleDtcbn1cblxuXG4ubWF0LWZvcm0tZmllbGQge1xuICAgIHdpZHRoOiA3NSU7XG59XG5cbi50YWItYmFyIHtcbiAgICBwYWRkaW5nOiAwO1xufVxuXG4ubWF0LWxpc3Qge1xuICAgIGhlaWdodDogMTAwJTtcbiAgICB3aWR0aDogMTAwJTtcbiAgICBvdmVyZmxvdzogYXV0bztcbiAgICAmLm1hdC1saXN0LWJhc2Uge1xuICAgICAgICBtYXJnaW4tYm90dG9tOiA4cHg7XG4gICAgfVxufVxuXG4ubWF0LWxpc3QubGlzdC1ncm91cHMge1xuICAgIHdpZHRoOiAxODBweDtcbiAgICBwYWRkaW5nOiAwIDEycHg7XG4gICAgb3ZlcmZsb3c6IGF1dG87XG59XG5cbi5zZXR0aW5nLWl0ZW0ge1xuICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICAmLmFjdGl2ZSwgJjpob3ZlciB7XG4gICAgICAgIGNvbG9yOiAjMDA3YmZmO1xuICAgIH1cbn1cbiJdfQ== */"
-
-/***/ }),
-
-/***/ "./src/app/editor/workspace/setting-editor/setting-editor.component.ts":
-/*!*****************************************************************************!*\
-  !*** ./src/app/editor/workspace/setting-editor/setting-editor.component.ts ***!
-  \*****************************************************************************/
-/*! exports provided: SettingEditorComponent */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SettingEditorComponent", function() { return SettingEditorComponent; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _navigation_navigation_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../navigation/navigation.service */ "./src/app/editor/navigation/navigation.service.ts");
-/* harmony import */ var _shared_services_settings_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../shared/services/settings.service */ "./src/app/editor/shared/services/settings.service.ts");
-
-// tslint:disable: max-line-length
-
-
-
-var SettingEditorComponent = /** @class */ (function () {
-    function SettingEditorComponent(settings, navigation) {
-        this.settings = settings;
-        this.navigation = navigation;
-        /** setting groups */
-        this.groups = [];
-    }
-    SettingEditorComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        var settings = this.settings.getAll();
-        var groups = Object.keys(settings).sort(function (a, b) {
-            return a.split('.').pop().toLowerCase() < b.split('.').pop().toLowerCase() ? -1 : 1;
-        });
-        this.groups = groups.reduce(function (acc, groupName) {
-            if (!acc.some(function (item) { return item.name === groupName; })) {
-                acc.push({
-                    name: groupName,
-                    settings: _this.settings.ofGroup(groupName).filter(function (setting) {
-                        return !setting.hidden;
-                    })
-                });
-            }
-            return acc;
-        }, []);
-        if (this.groups.length > 0) {
-            this.selection = this.groups[0];
-        }
-    };
-    /** Handles close button click event */
-    SettingEditorComponent.prototype.didClose = function () {
-        this.navigation.settings.next();
-    };
-    /** Handles settings change event */
-    SettingEditorComponent.prototype.didChange = function () {
-        this.settings.update(this.groups);
-    };
-    /**
-     * Handles click event on setting group inside the template.
-     * @param group the selected group.
-     */
-    SettingEditorComponent.prototype.didSelect = function (group) {
-        this.selection = group;
-    };
-    SettingEditorComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-            // tslint:disable-next-line: component-selector
-            selector: 'setting-editor',
-            template: __webpack_require__(/*! ./setting-editor.component.html */ "./src/app/editor/workspace/setting-editor/setting-editor.component.html"),
-            styles: [__webpack_require__(/*! ./setting-editor.component.scss */ "./src/app/editor/workspace/setting-editor/setting-editor.component.scss")]
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_settings_service__WEBPACK_IMPORTED_MODULE_3__["SettingsService"],
-            _navigation_navigation_service__WEBPACK_IMPORTED_MODULE_2__["NavigationService"]])
-    ], SettingEditorComponent);
-    return SettingEditorComponent;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/editor/workspace/welcome/welcome.component.html":
-/*!*****************************************************************!*\
-  !*** ./src/app/editor/workspace/welcome/welcome.component.html ***!
-  \*****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = " <h3 class='welcome-title'>PL Editor</h3>\n<div class='welcome-section'>\n    <h3>User Interface</h3>\n    <img src=\"static/editor/assets/images/interface.png\" alt=\"interface\"> <br/> <br/>\n    <p>\n        PL Editor comes with a simple and intuitive layout that maximizes the space provided for the editor while leaving ample room to browse and access the full context of your project.\n        The UI is divided into four areas:\n    </p>\n    <mat-list>\n        <mat-list-item>\n            <p>A)&nbsp; <b>Side Bar</b> Contains different views like the Explorer to assist you while working on your project.</p>\n        </mat-list-item>\n\n        <mat-list-item>\n            <p>B)&nbsp; <b>Editor</b> The main area to edit your files. You can open as many editors as you like side by side.</p>\n        </mat-list-item>\n\n        <mat-list-item>\n            <p>C)&nbsp; <b>Debugging</b> Display different debugging information below the editor region for output or debug informations.</p>\n        </mat-list-item>\n\n        <mat-list-item>\n            <p>D)&nbsp; <b>Status Bar</b> Gives you additional context-specific indicators like the repository of the focused file/folder.</p>\n        </mat-list-item>\n    </mat-list>\n</div>\n\n<div class='welcome-section'>\n    <h3>Side by side editing</h3>\n    <mat-divider></mat-divider>\n    <p>\n        You can open as many editors as you like side by side horizontally.\n        If you already have one editor open, there are multiple ways of opening another editor to the side of the existing one:\n    </p>\n    <mat-list>\n        <mat-list-item>\n            <p>Click on a file in the Explorer.</p>\n        </mat-list-item>\n        <mat-list-item>\n            <p>Press <b> ⌘ →</b> (<b>Ctrl →</b> on Windows/Linux) inside a code editor will split the editor.</p>\n        </mat-list-item>\n        <mat-list-item>\n            <p>Click the <b>Split Editor</b> button in the upper right of an editor.</p>\n        </mat-list-item>\n        <mat-list-item>\n            <p>Press <b>Ctrl + O</b> to open the <b>Quick Open</b> dialog.</p>\n        </mat-list-item>\n    </mat-list>\n    <p>\n        Whenever you open another file, the editor that is active will display the content of that file.\n        So if you have two editors side by side and you want to open file into the right hand editor,\n        make sure that editor is active (by clicking inside it) before opening your file.\n    </p>\n    <p class='welcome-tip'>\n        Tip: You can resize editors and reorder them. Drag and drop the editor title area to reposition or resize the editor.\n    </p>\n</div>\n\n<div class='welcome-section'>\n    <h3>Explorer</h3>\n    <mat-divider></mat-divider>\n    <p>\n        The Explorer is used to browse, open, and manage all of the files and folders in your project.\n        You can do many things from here:\n    </p>\n    <mat-list>\n        <mat-list-item>\n            <p>Create, delete, and rename files and folders.</p>\n        </mat-list-item>\n        <mat-list-item>\n            <p>Move files and folders with drag and drop.</p>\n        </mat-list-item>\n        <mat-list-item>\n            <p>Load, reload, and test pl files </p>\n        </mat-list-item>\n    </mat-list>\n    <p class='welcome-tip'>Tip: You can open quickly a file with <b>Ctrl + O</b></p>\n    <p class='welcome-tip'>Tip: You can drag and drop files (Single file) into the Explorer from outside to copy them</p>\n</div>\n\n<div class='welcome-section'>\n    <h3>Code colorization</h3>\n    <mat-divider></mat-divider>\n    <p>The editor provides a syntax colorization for the following extensions:</p>\n    <mat-list>\n        <mat-list-item *ngFor='let language of languages'> {{language}} </mat-list-item>\n    </mat-list>\n    <p>\n        There is also a special feature for files with <b>.pl</b> and <b>.pltp</b> extensions that allow you to embed a colorization of all the other languages inside a multiline key like in the following image. <br/>\n    </p>\n    <img src=\"static/editor/assets/images/embed-style.png\" alt=\"embed style\"> <br/>\n</div>\n\n<div>\n    <h3>Shorcuts</h3>\n    <mat-divider></mat-divider>\n    <table mat-table [dataSource]=\"shorcuts\" class=\"mat-elevation-z1\" style='width: 100%'>\n        <!-- Command -->\n        <ng-container matColumnDef=\"command\">\n            <th mat-header-cell *matHeaderCellDef> Command </th>\n            <td mat-cell *matCellDef=\"let element\"> {{element.command}} </td>\n        </ng-container>\n\n        <!-- Action -->\n        <ng-container matColumnDef=\"action\">\n            <th mat-header-cell *matHeaderCellDef> Action </th>\n            <td mat-cell *matCellDef=\"let element\"> {{element.action}} </td>\n        </ng-container>\n\n        <tr mat-header-row *matHeaderRowDef=\"displayedColumns\"></tr>\n        <tr mat-row *matRowDef=\"let row; columns: displayedColumns;\"></tr>\n    </table>\n</div>\n"
-
-/***/ }),
-
-/***/ "./src/app/editor/workspace/welcome/welcome.component.scss":
-/*!*****************************************************************!*\
-  !*** ./src/app/editor/workspace/welcome/welcome.component.scss ***!
-  \*****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = ":host {\n  width: 100%;\n  padding: 4rem 8rem;\n  display: -webkit-box;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n          flex-direction: column;\n  overflow: auto; }\n\n.welcome-title {\n  align-self: center; }\n\n.welcome-section {\n  width: 100%; }\n\n.welcome-tip {\n  border-left: .25em solid #dfe2e5;\n  color: #6a737d;\n  padding: 0 1em; }\n\nimg {\n  display: block;\n  width: 50%;\n  height: auto;\n  margin: auto; }\n\n.mat-list-base .mat-list-item, .mat-list-base .mat-list-option {\n  height: 32px; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL2VkaXRvci93b3Jrc3BhY2Uvd2VsY29tZS93ZWxjb21lLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUNBO0VBQ0ksWUFBVztFQUNYLG1CQUFrQjtFQUNsQixxQkFBYTtFQUFiLGNBQWE7RUFDYiw2QkFBc0I7RUFBdEIsOEJBQXNCO1VBQXRCLHVCQUFzQjtFQUN0QixlQUFjLEVBQ2pCOztBQUVEO0VBQ0ksbUJBQWtCLEVBQ3JCOztBQUVEO0VBQ0ksWUFBVyxFQUNkOztBQUVEO0VBQ0ksaUNBQWdDO0VBQ2hDLGVBQWM7RUFDZCxlQUFjLEVBQ2pCOztBQUNEO0VBQ0ksZUFBYztFQUNkLFdBQVU7RUFDVixhQUFZO0VBQ1osYUFBWSxFQUNmOztBQUVEO0VBQ0ksYUFBWSxFQUNmIiwiZmlsZSI6InNyYy9hcHAvZWRpdG9yL3dvcmtzcGFjZS93ZWxjb21lL3dlbGNvbWUuY29tcG9uZW50LnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyJcbjpob3N0IHtcbiAgICB3aWR0aDogMTAwJTtcbiAgICBwYWRkaW5nOiA0cmVtIDhyZW07XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuICAgIG92ZXJmbG93OiBhdXRvO1xufVxuXG4ud2VsY29tZS10aXRsZSB7XG4gICAgYWxpZ24tc2VsZjogY2VudGVyO1xufVxuXG4ud2VsY29tZS1zZWN0aW9uIHtcbiAgICB3aWR0aDogMTAwJTtcbn1cblxuLndlbGNvbWUtdGlwIHtcbiAgICBib3JkZXItbGVmdDogLjI1ZW0gc29saWQgI2RmZTJlNTtcbiAgICBjb2xvcjogIzZhNzM3ZDtcbiAgICBwYWRkaW5nOiAwIDFlbTtcbn1cbmltZyB7XG4gICAgZGlzcGxheTogYmxvY2s7XG4gICAgd2lkdGg6IDUwJTtcbiAgICBoZWlnaHQ6IGF1dG87XG4gICAgbWFyZ2luOiBhdXRvO1xufVxuXG4ubWF0LWxpc3QtYmFzZSAubWF0LWxpc3QtaXRlbSwgLm1hdC1saXN0LWJhc2UgLm1hdC1saXN0LW9wdGlvbiB7XG4gICAgaGVpZ2h0OiAzMnB4O1xufSJdfQ== */"
-
-/***/ }),
-
-/***/ "./src/app/editor/workspace/welcome/welcome.component.ts":
-/*!***************************************************************!*\
-  !*** ./src/app/editor/workspace/welcome/welcome.component.ts ***!
-  \***************************************************************/
-/*! exports provided: WelcomeComponent */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WelcomeComponent", function() { return WelcomeComponent; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _shared_languages_language__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../shared/languages/language */ "./src/app/editor/shared/languages/language.ts");
-
-
-
-var WelcomeComponent = /** @class */ (function () {
-    function WelcomeComponent() {
-        this.displayedColumns = ['command', 'action'];
-        this.shorcuts = [
-            { command: 'F1', action: 'Show all commands (inside a code editor)' },
-            { command: 'Ctrl + O', action: 'Quick open a file' },
-            { command: 'Ctrl|⌘ + Space', action: 'Trigger suggestion (inside a code editor)' },
-            { command: 'Ctrl|⌘ Right Arrow', action: 'Split editor (inside a code editor)' },
-            { command: 'Ctrl|⌘ + Enter', action: 'Open preview (inside a code editor)' },
-            { command: 'Ctrl|⌘ + Alt + Enter', action: 'Hide preview (inside a code editor)' },
-            { command: 'Ctrl|⌘ + S', action: 'Save focused file (inside a code editor)' },
-            { command: 'Ctrl|⌘ + Alt + S', action: 'Save all files (inside a code editor)' },
-            { command: 'Ctrl|⌘ + K', action: 'Close focused file (inside a code editor)' },
-            { command: 'Ctrl|⌘ + Alt + K', action: 'Close all files (inside a code editor)' },
-        ];
-        this.languages = _shared_languages_language__WEBPACK_IMPORTED_MODULE_2__["LANGUAGES"].reduce(function (p, c, i, a) {
-            if (!p.includes(c.id)) {
-                p.push(c.id);
-            }
-            return p;
-        }, []);
-    }
-    WelcomeComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-            // tslint:disable-next-line: component-selector
-            selector: 'welcome',
-            template: __webpack_require__(/*! ./welcome.component.html */ "./src/app/editor/workspace/welcome/welcome.component.html"),
-            styles: [__webpack_require__(/*! ./welcome.component.scss */ "./src/app/editor/workspace/welcome/welcome.component.scss")]
-        })
-    ], WelcomeComponent);
-    return WelcomeComponent;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/editor/workspace/workspace.component.html":
-/*!***********************************************************!*\
-  !*** ./src/app/editor/workspace/workspace.component.html ***!
-  \***********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<as-split class='h100' direction='horizontal' gutterSize='2' useTransition='true' cdkDropListGroup>\n    <ng-container *ngFor='let group of groups'>\n        <as-split-area class='editor-group h100' style='overflow: hidden;'>\n            <div class='tab-bar'>\n                <div [id]='group.id()' class='tab-group' cdkDropList [cdkDropListData]=\"group.resources\" (cdkDropListDropped)=\"group.drop($event)\">\n                    <div *ngFor='let resource of group.resources; trackBy: group.trackResource' [matTooltip]=\"resource.path | path\"\n                        [ngClass]=\"{'tab-item': true, active: group.isActive(resource), changed: resource.changed}\"\n                        (click)='group.reopen(resource)' cdkDragAxis='x' cdkDrag>\n                        <img [icon]=\"resource\"/>\n                        <ng-container *ngIf='group.isPreviewGroup()'>\n                            <span>'Preview'</span>&nbsp;\n                        </ng-container>\n                        <span>{{resource.name}}</span>\n                        <span class='tab-close' (click)='group.close(resource, true)'>&nbsp;&times;</span>\n                    </div>\n                </div>\n                <div class=\"spacer\"></div>\n                <ng-container *ngIf='group.hasAction();'>\n                    <ng-container *ngIf='group.focused()'>\n                        <ng-container *ngFor='let action of group.actions()'>\n                            <div class='tab-item' [id]=\"action.id\" [matTooltip]='action.tooltip' *ngIf='action.condition(group.activeResource())' (click)='action.invoke(group.activeResource())'>\n                                <i class=\"{{ action.icon }}\"></i>\n                            </div>\n                        </ng-container>\n                    </ng-container>\n                    <div class='tab-item' id=\"editorGroup-action-more\" matTooltip='More Options' [matMenuTriggerFor]=\"editorMenu\">\n                        <i class=\"fas fa-ellipsis-h\"></i>\n                    </div>\n                    <mat-menu #editorMenu=\"matMenu\">\n                        <button id=\"editorGroup-action-save\" mat-menu-item (click)='group.save(group.activeResource())'>Save ⌘S</button>\n                        <button id=\"editorGroup-action-saveAll\" mat-menu-item (click)='group.saveAll()'>Save All ⌘Alt S</button>\n                        <button id=\"editorGroup-action-close\" mat-menu-item (click)='group.close(group.activeResource(), true)'>Close ⌘K</button>\n                        <button id=\"editorGroup-action-closeAll\" mat-menu-item (click)='group.closeAll(true)'>Close All ⌘Alt K</button>\n                        <button id=\"editorGroup-action-closeSaved\" mat-menu-item (click)='group.closeSaved()'>Close Saved ⌘Alt U</button>\n                    </mat-menu>\n                </ng-container>\n            </div>\n            <ng-container *ngFor='let editor of group.editors; trackBy: group.trackEditor'>\n                <ng-container [ngSwitch]=\"editor.type()\">\n                    <code-editor [hidden]='!group.activeEditorIs(\"code\")' *ngSwitchCase=\"'code'\" [editor]='editor'></code-editor>\n                    <image-editor [hidden]='!group.activeEditorIs(\"image\")' *ngSwitchCase=\"'image'\" [editor]='editor'></image-editor>\n                    <preview-editor [hidden]='!group.activeEditorIs(\"preview\")' *ngSwitchCase=\"'preview'\" [editor]='editor'></preview-editor>\n                </ng-container>\n            </ng-container>\n        </as-split-area>\n    </ng-container>\n    <as-split-area class='editor-group h100' style='overflow: hidden;' *ngIf='showSettings'>\n        <setting-editor></setting-editor>\n    </as-split-area>\n    <welcome *ngIf='!hasGroup'></welcome>\n</as-split>\n"
-
-/***/ }),
-
-/***/ "./src/app/editor/workspace/workspace.component.scss":
-/*!***********************************************************!*\
-  !*** ./src/app/editor/workspace/workspace.component.scss ***!
-  \***********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = ".editor-group {\n  position: relative;\n  overflow: hidden; }\n\n.tab-bar {\n  padding: 0; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL2VkaXRvci93b3Jrc3BhY2Uvd29ya3NwYWNlLmNvbXBvbmVudC5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0ksbUJBQWtCO0VBQ2xCLGlCQUFnQixFQUNuQjs7QUFFRDtFQUNJLFdBQVUsRUFDYiIsImZpbGUiOiJzcmMvYXBwL2VkaXRvci93b3Jrc3BhY2Uvd29ya3NwYWNlLmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLmVkaXRvci1ncm91cCB7XG4gICAgcG9zaXRpb246IHJlbGF0aXZlO1xuICAgIG92ZXJmbG93OiBoaWRkZW47XG59XG5cbi50YWItYmFyIHtcbiAgICBwYWRkaW5nOiAwO1xufVxuIl19 */"
-
-/***/ }),
-
-/***/ "./src/app/editor/workspace/workspace.component.ts":
-/*!*********************************************************!*\
-  !*** ./src/app/editor/workspace/workspace.component.ts ***!
-  \*********************************************************/
-/*! exports provided: WorkspaceComponent */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "WorkspaceComponent", function() { return WorkspaceComponent; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _shared_services_editor_service__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/services/editor.service */ "./src/app/editor/shared/services/editor.service.ts");
-/* harmony import */ var _navigation_navigation_service__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../navigation/navigation.service */ "./src/app/editor/navigation/navigation.service.ts");
-
-
-
-
-var WorkspaceComponent = /** @class */ (function () {
-    function WorkspaceComponent(editor, changes, navigation) {
-        this.editor = editor;
-        this.changes = changes;
-        this.navigation = navigation;
-        this.subscriptions = [];
-        this.groups = [];
-    }
-    WorkspaceComponent.prototype.ngOnInit = function () {
-        var _this = this;
-        this.hasGroup = false;
-        this.groups = this.editor.listGroups();
-        this.subscriptions.push(this.editor.changed.subscribe(function (groups) {
-            _this.groups = groups;
-            _this.hasGroup = groups.length > 0;
-            _this.changes.detectChanges();
-        }));
-        this.subscriptions.push(this.navigation.settings.subscribe(function () {
-            _this.showSettings = !_this.showSettings;
-        }));
-    };
-    WorkspaceComponent.prototype.ngOnDestroy = function () {
-        this.subscriptions.forEach(function (item) { return item.unsubscribe(); });
-    };
-    WorkspaceComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-            // tslint:disable-next-line: component-selector
-            selector: 'workspace',
-            template: __webpack_require__(/*! ./workspace.component.html */ "./src/app/editor/workspace/workspace.component.html"),
-            styles: [__webpack_require__(/*! ./workspace.component.scss */ "./src/app/editor/workspace/workspace.component.scss")]
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_shared_services_editor_service__WEBPACK_IMPORTED_MODULE_2__["EditorService"],
-            _angular_core__WEBPACK_IMPORTED_MODULE_1__["ChangeDetectorRef"],
-            _navigation_navigation_service__WEBPACK_IMPORTED_MODULE_3__["NavigationService"]])
-    ], WorkspaceComponent);
-    return WorkspaceComponent;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/shared/components/confirm/confirm.component.html":
-/*!******************************************************************!*\
-  !*** ./src/app/shared/components/confirm/confirm.component.html ***!
-  \******************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<h4 mat-dialog-title>{{data?.title}}</h4>\n<p mat-dialog-content>{{data?.message}}</p>\n<div mat-dialog-actions>\n    <button mat-button [mat-dialog-close]=\"true\">{{data?.okTitle}}</button>\n    <button mat-button [mat-dialog-close]=\"false\">{{data?.noTitle}}</button>\n</div>"
-
-/***/ }),
-
-/***/ "./src/app/shared/components/confirm/confirm.component.scss":
-/*!******************************************************************!*\
-  !*** ./src/app/shared/components/confirm/confirm.component.scss ***!
-  \******************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL3NoYXJlZC9jb21wb25lbnRzL2NvbmZpcm0vY29uZmlybS5jb21wb25lbnQuc2NzcyJ9 */"
-
-/***/ }),
-
-/***/ "./src/app/shared/components/confirm/confirm.component.ts":
-/*!****************************************************************!*\
-  !*** ./src/app/shared/components/confirm/confirm.component.ts ***!
-  \****************************************************************/
-/*! exports provided: ConfirmComponent */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ConfirmComponent", function() { return ConfirmComponent; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_material__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm5/material.es5.js");
-
-
-
-var ConfirmComponent = /** @class */ (function () {
-    function ConfirmComponent(dialog, data, changes) {
-        this.dialog = dialog;
-        this.data = data;
-        data.okTitle = data.okTitle || 'OK';
-        data.noTitle = data.noTitle || 'CANCEL';
-        setTimeout(function () {
-            changes.detectChanges();
-        }, 1);
-    }
-    ConfirmComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-            selector: 'app-confirm',
-            template: __webpack_require__(/*! ./confirm.component.html */ "./src/app/shared/components/confirm/confirm.component.html"),
-            styles: [__webpack_require__(/*! ./confirm.component.scss */ "./src/app/shared/components/confirm/confirm.component.scss")]
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__param"](1, Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"])(_angular_material__WEBPACK_IMPORTED_MODULE_2__["MAT_DIALOG_DATA"])),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_material__WEBPACK_IMPORTED_MODULE_2__["MatDialogRef"], Object, _angular_core__WEBPACK_IMPORTED_MODULE_1__["ChangeDetectorRef"]])
-    ], ConfirmComponent);
-    return ConfirmComponent;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/shared/components/prompt/prompt.component.html":
-/*!****************************************************************!*\
-  !*** ./src/app/shared/components/prompt/prompt.component.html ***!
-  \****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<h4 mat-dialog-title>{{data?.title}}</h4>\n<div mat-dialog-content>\n\t<p [innerHTML]='data?.message'></p>\n\t<form>\n\t\t<mat-form-field class='full-width' *ngFor='let field of data.fields'>\n\t\t\t<input matInput name='field.value' autocomplete=\"on\" [type]='field.type' [placeholder]=\"field?.placeholder\" [(ngModel)]='field.value' >\n\t\t</mat-form-field>\n\t</form>\n</div>\n\n<div mat-dialog-actions>\n    <button mat-button [mat-dialog-close]=\"data\">{{data.okTitle}}</button>\n    <button mat-button [mat-dialog-close]=\"false\">{{data.noTitle}}</button>\n</div>"
-
-/***/ }),
-
-/***/ "./src/app/shared/components/prompt/prompt.component.scss":
-/*!****************************************************************!*\
-  !*** ./src/app/shared/components/prompt/prompt.component.scss ***!
-  \****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "form {\n  display: -webkit-box;\n  display: flex;\n  -webkit-box-orient: vertical;\n  -webkit-box-direction: normal;\n          flex-direction: column;\n  min-width: 300px; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL3NoYXJlZC9jb21wb25lbnRzL3Byb21wdC9wcm9tcHQuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxxQkFBYTtFQUFiLGNBQWE7RUFDYiw2QkFBc0I7RUFBdEIsOEJBQXNCO1VBQXRCLHVCQUFzQjtFQUN0QixpQkFBZ0IsRUFDbkIiLCJmaWxlIjoic3JjL2FwcC9zaGFyZWQvY29tcG9uZW50cy9wcm9tcHQvcHJvbXB0LmNvbXBvbmVudC5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiZm9ybSB7XG4gICAgZGlzcGxheTogZmxleDtcbiAgICBmbGV4LWRpcmVjdGlvbjogY29sdW1uO1xuICAgIG1pbi13aWR0aDogMzAwcHg7XG59ICJdfQ== */"
-
-/***/ }),
-
-/***/ "./src/app/shared/components/prompt/prompt.component.ts":
-/*!**************************************************************!*\
-  !*** ./src/app/shared/components/prompt/prompt.component.ts ***!
-  \**************************************************************/
-/*! exports provided: PromptComponent */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PromptComponent", function() { return PromptComponent; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_material__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm5/material.es5.js");
-
-
-
-var PromptComponent = /** @class */ (function () {
-    function PromptComponent(dialog, data) {
-        this.dialog = dialog;
-        this.data = data;
-        data.okTitle = data.okTitle || 'OK';
-        data.noTitle = data.noTitle || 'CANCEL';
-    }
-    PromptComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-            selector: 'app-prompt',
-            template: __webpack_require__(/*! ./prompt.component.html */ "./src/app/shared/components/prompt/prompt.component.html"),
-            styles: [__webpack_require__(/*! ./prompt.component.scss */ "./src/app/shared/components/prompt/prompt.component.scss")]
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__param"](1, Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Inject"])(_angular_material__WEBPACK_IMPORTED_MODULE_2__["MAT_DIALOG_DATA"])),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_material__WEBPACK_IMPORTED_MODULE_2__["MatDialogRef"], Object])
-    ], PromptComponent);
-    return PromptComponent;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/shared/components/tree/tree.component.html":
-/*!************************************************************!*\
-  !*** ./src/app/shared/components/tree/tree.component.html ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "<div class=\"tree-component\">\n  <mat-tree #tree [dataSource]=\"dataSource\" [treeControl]=\"treeControl\">\n    <!-- DEFAULT NODE -->\n    <mat-tree-node\n      *matTreeNodeDef=\"let node\" matTreeNodePadding matTreeNodePaddingIndent=\"16\"\n      id=\"tree-node-{{node.id}}\" [ngClass]=\"{ focused: node.focused, editing: node.editing }\" tabindex=\"0\">\n      <ng-container *ngTemplateOutlet=\"defaultNodeTemplate; context: { $implicit: node }\"></ng-container>\n      <ng-container *ngIf=\"node.creating\">\n        <ng-container *ngTemplateOutlet=\"editingState\"></ng-container>\n      </ng-container>\n    </mat-tree-node>\n    <!-- EXPANDABLE NODE -->\n    <mat-tree-node\n      *matTreeNodeDef=\"let node; when: expandable\" matTreeNodePadding matTreeNodePaddingIndent=\"16\" matTreeNodeToggle\n      id=\"tree-node-{{node.id}}\" [ngClass]=\"{ focused: node.focused }\" tabindex=\"0\">\n      <ng-container *ngTemplateOutlet=\"defaultNodeTemplate; context: { $implicit: node }\"></ng-container>\n      <ng-container *ngIf=\"node.creating\">\n        <ng-container *ngTemplateOutlet=\"editingState\"></ng-container>\n      </ng-container>\n    </mat-tree-node>\n  </mat-tree>\n</div>\n<!-- DEFAULT TEMPLATE -->\n<ng-template #defaultNodeTemplate let-node>\n  <ng-container *ngIf=\"!node.renaming; else renaming\">\n    <div class=\"node-content\" (click)=\"onClick(node, $event)\" (contextmenu)=\"onContextMenu(node, $event)\">\n      <ng-container *ngIf=\"template; else default\">\n        <ng-container *ngTemplateOutlet=\"template; context: { $implicit: node }\"></ng-container>\n      </ng-container>\n      <ng-template #default>\n        {{node.name}}\n      </ng-template>\n    </div>\n  </ng-container>\n  <ng-template #renaming>\n    <ng-container *ngTemplateOutlet=\"editingState\"></ng-container>\n  </ng-template>\n</ng-template>\n<!-- EDITING STATE -->\n<ng-template #editingState>\n  <div class=\"node-content\">\n    <span class=\"input-wrapper\">\n      <input autofocus\n              type='text'\n              placeholder='Press Enter to create ESC to cancel...'\n              [(ngModel)]=\"editedName\"\n              (keydown)='onEdit($event)'\n              (blur)='onEdit($event)'/>\n      </span>\n  </div>\n</ng-template>\n"
-
-/***/ }),
-
-/***/ "./src/app/shared/components/tree/tree.component.scss":
-/*!************************************************************!*\
-  !*** ./src/app/shared/components/tree/tree.component.scss ***!
-  \************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = ".tree-component {\n  height: 100%; }\n  .tree-component .mat-tree-node {\n    display: -webkit-box;\n    display: flex;\n    -webkit-box-orient: vertical;\n    -webkit-box-direction: normal;\n            flex-direction: column;\n    width: 100%;\n    min-height: 32px;\n    overflow: hidden; }\n  .tree-component .mat-tree-node:hover, .tree-component .mat-tree-node.focused {\n      background-color: rgba(66, 66, 66, 0.1); }\n  .tree-component .mat-tree-node .node-content {\n      cursor: pointer;\n      display: -webkit-box;\n      display: flex;\n      position: relative;\n      -webkit-box-align: center;\n              align-items: center;\n      -webkit-box-pack: justify;\n              justify-content: space-between;\n      width: 100%;\n      min-height: 32px;\n      padding: 0 16px;\n      overflow: hidden; }\n  .tree-component .mat-tree-node .input-wrapper {\n      display: -webkit-box;\n      display: flex;\n      -webkit-box-align: center;\n              align-items: center;\n      width: 100%;\n      margin-right: 4px; }\n  .tree-component .mat-tree-node input {\n      width: 100%;\n      margin: 0 0 0 16px;\n      padding: 0.1rem 0.3rem;\n      font-size: 1rem;\n      line-height: 1.5;\n      background-clip: padding-box;\n      border: 1px solid #ced4da;\n      border-radius: 0.15rem;\n      -webkit-transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;\n      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }\n  .tree-component .mat-tree-node input:focus {\n        border-color: #80bdff;\n        outline: 0;\n        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); }\n  .tree-component .dnd-drag {\n    opacity: 0.5; }\n  .tree-component .dnd-over {\n    box-shadow: inset 0px 0px 0px 2px #CCC;\n    background: rgba(66, 66, 66, 0.1); }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL3BhdmVsbC9BbHRlcm5hbmNlL2VkaXRvci9zcmMvYXBwL3NoYXJlZC9jb21wb25lbnRzL3RyZWUvdHJlZS5jb21wb25lbnQuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLGFBQVksRUF5RGY7RUExREQ7SUFHUSxxQkFBYTtJQUFiLGNBQWE7SUFDYiw2QkFBc0I7SUFBdEIsOEJBQXNCO1lBQXRCLHVCQUFzQjtJQUN0QixZQUFXO0lBQ1gsaUJBQWdCO0lBQ2hCLGlCQUFnQixFQXlDbkI7RUFoREw7TUFVWSx3Q0FBb0MsRUFDdkM7RUFYVDtNQWFZLGdCQUFlO01BQ2YscUJBQWE7TUFBYixjQUFhO01BQ2IsbUJBQWtCO01BQ2xCLDBCQUFtQjtjQUFuQixvQkFBbUI7TUFDbkIsMEJBQThCO2NBQTlCLCtCQUE4QjtNQUM5QixZQUFXO01BQ1gsaUJBQWdCO01BQ2hCLGdCQUFlO01BQ2YsaUJBQWdCLEVBQ25CO0VBdEJUO01BeUJZLHFCQUFhO01BQWIsY0FBYTtNQUNiLDBCQUFtQjtjQUFuQixvQkFBbUI7TUFDbkIsWUFBVztNQUNYLGtCQUFpQixFQUNwQjtFQTdCVDtNQWdDWSxZQUFXO01BQ1gsbUJBQWtCO01BQ2xCLHVCQUFzQjtNQUN0QixnQkFBZTtNQUNmLGlCQUFnQjtNQUNoQiw2QkFBNEI7TUFDNUIsMEJBQXlCO01BQ3pCLHVCQUFzQjtNQUN0QixpRkFBd0U7TUFBeEUseUVBQXdFLEVBTzNFO0VBL0NUO1FBMkNnQixzQkFBcUI7UUFDckIsV0FBVTtRQUNWLGlEQUFnRCxFQUNuRDtFQTlDYjtJQW1EUSxhQUFZLEVBQ2Y7RUFwREw7SUF1RFEsdUNBQXNDO0lBQ3RDLGtDQUE4QixFQUNqQyIsImZpbGUiOiJzcmMvYXBwL3NoYXJlZC9jb21wb25lbnRzL3RyZWUvdHJlZS5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi50cmVlLWNvbXBvbmVudCB7XG4gICAgaGVpZ2h0OiAxMDAlO1xuICAgIC5tYXQtdHJlZS1ub2RlIHtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgZmxleC1kaXJlY3Rpb246IGNvbHVtbjtcbiAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgIG1pbi1oZWlnaHQ6IDMycHg7XG4gICAgICAgIG92ZXJmbG93OiBoaWRkZW47XG5cbiAgICAgICAgJjpob3ZlciwgJi5mb2N1c2VkIHtcbiAgICAgICAgICAgIGJhY2tncm91bmQtY29sb3I6IHJnYmEoNjYsNjYsNjYsMC4xKTtcbiAgICAgICAgfVxuICAgICAgICAubm9kZS1jb250ZW50IHtcbiAgICAgICAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICAgICAgICAgIGRpc3BsYXk6IGZsZXg7XG4gICAgICAgICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICAgICAgICBhbGlnbi1pdGVtczogY2VudGVyO1xuICAgICAgICAgICAganVzdGlmeS1jb250ZW50OiBzcGFjZS1iZXR3ZWVuO1xuICAgICAgICAgICAgd2lkdGg6IDEwMCU7XG4gICAgICAgICAgICBtaW4taGVpZ2h0OiAzMnB4O1xuICAgICAgICAgICAgcGFkZGluZzogMCAxNnB4O1xuICAgICAgICAgICAgb3ZlcmZsb3c6IGhpZGRlbjtcbiAgICAgICAgfVxuXG4gICAgICAgIC5pbnB1dC13cmFwcGVyICB7XG4gICAgICAgICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAgICAgIHdpZHRoOiAxMDAlO1xuICAgICAgICAgICAgbWFyZ2luLXJpZ2h0OiA0cHg7XG4gICAgICAgIH1cblxuICAgICAgICBpbnB1dCB7XG4gICAgICAgICAgICB3aWR0aDogMTAwJTtcbiAgICAgICAgICAgIG1hcmdpbjogMCAwIDAgMTZweDtcbiAgICAgICAgICAgIHBhZGRpbmc6IDAuMXJlbSAwLjNyZW07XG4gICAgICAgICAgICBmb250LXNpemU6IDFyZW07XG4gICAgICAgICAgICBsaW5lLWhlaWdodDogMS41O1xuICAgICAgICAgICAgYmFja2dyb3VuZC1jbGlwOiBwYWRkaW5nLWJveDtcbiAgICAgICAgICAgIGJvcmRlcjogMXB4IHNvbGlkICNjZWQ0ZGE7XG4gICAgICAgICAgICBib3JkZXItcmFkaXVzOiAwLjE1cmVtO1xuICAgICAgICAgICAgdHJhbnNpdGlvbjogYm9yZGVyLWNvbG9yIDAuMTVzIGVhc2UtaW4tb3V0LCBib3gtc2hhZG93IDAuMTVzIGVhc2UtaW4tb3V0O1xuXG4gICAgICAgICAgICAmOmZvY3VzIHtcbiAgICAgICAgICAgICAgICBib3JkZXItY29sb3I6ICM4MGJkZmY7XG4gICAgICAgICAgICAgICAgb3V0bGluZTogMDtcbiAgICAgICAgICAgICAgICBib3gtc2hhZG93OiAwIDAgMCAwLjJyZW0gcmdiYSgwLCAxMjMsIDI1NSwgMC4yNSk7XG4gICAgICAgICAgICB9XG4gICAgICAgIH1cbiAgICB9XG5cbiAgICAuZG5kLWRyYWcge1xuICAgICAgICBvcGFjaXR5OiAwLjU7XG4gICAgfVxuXG4gICAgLmRuZC1vdmVyIHtcbiAgICAgICAgYm94LXNoYWRvdzogaW5zZXQgMHB4IDBweCAwcHggMnB4ICNDQ0M7XG4gICAgICAgIGJhY2tncm91bmQ6IHJnYmEoNjYsNjYsNjYsMC4xKTtcbiAgICB9XG59XG4iXX0= */"
-
-/***/ }),
-
-/***/ "./src/app/shared/components/tree/tree.component.ts":
-/*!**********************************************************!*\
-  !*** ./src/app/shared/components/tree/tree.component.ts ***!
-  \**********************************************************/
-/*! exports provided: TreeComponent */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TreeComponent", function() { return TreeComponent; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_cdk_tree__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/cdk/tree */ "./node_modules/@angular/cdk/esm5/tree.es5.js");
-/* harmony import */ var _angular_material_tree__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/material/tree */ "./node_modules/@angular/material/esm5/tree.es5.js");
-/* harmony import */ var _directives_tree_node_directive__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../directives/tree-node.directive */ "./src/app/shared/directives/tree-node.directive.ts");
-
-
-
-
-
-/** Renders a recursive tree */
-var TreeComponent = /** @class */ (function () {
-    function TreeComponent() {
-        this.options = {
-            idField: ''
-        };
-    }
-    Object.defineProperty(TreeComponent.prototype, "nodes", {
-        set: function (nodes) {
-            this._nodes = nodes;
-            this.build();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    TreeComponent.prototype.ngOnInit = function () {
-        this.build();
-    };
-    /**
-     * Checks if the `node`is expandable
-     */
-    TreeComponent.prototype.expandable = function (_, node) {
-        return node.expanded || node.expandable;
-    };
-    /**
-     * Expands the passed node and recursively expand all its parents.
-     */
-    TreeComponent.prototype.expand = function (e) {
-        var node = this.findNode(e);
-        if (node) {
-            if (this.options.expanded) {
-                this.options.expanded(node);
-            }
-            var parent_1 = this.findParent(node);
-            this.treeControl.expand(parent_1);
-            if (parent_1) {
-                parent_1.expanded = true;
-                if (this.options.expanded) {
-                    this.options.expanded(parent_1);
-                }
-            }
-            if (parent_1 && parent_1.level > 0) {
-                this.expand(parent_1);
-            }
-        }
-    };
-    TreeComponent.prototype.collapse = function (e) {
-        var node = this.findNode(e);
-        if (node) {
-            this.treeControl.collapse(node);
-        }
-    };
-    /**
-     * Adds `node` to the children of `parent`
-     * and sets the parent in a editing state.
-     * @param parent the parent of the node to add.
-     * @param node the node to add.
-     */
-    TreeComponent.prototype.pushNode = function (parent, node) {
-        parent.creating = true;
-        parent.renaming = false;
-        parent.expanded = true;
-        this.editedName = '';
-        this.editing = this.transformer(node);
-        this.editing.creating = true;
-        this.editing.renaming = false;
-        this.editingParent = parent;
-        this.treeControl.expand(parent);
-    };
-    TreeComponent.prototype.renameNode = function (node) {
-        node.renaming = true;
-        this.editedName = node.name;
-        this.editing = node;
-        this.editing.creating = false;
-        this.editing.renaming = true;
-    };
-    TreeComponent.prototype.endEdit = function () {
-        if (this.editingParent) {
-            this.editingParent.creating = this.editingParent.renaming = false;
-        }
-        this.editing.creating = this.editing.renaming = false;
-        this.editing = this.editingParent = null;
-        // TODO fix throw exception after renaming
-    };
-    /**
-     * Emits `editing` event with the original
-     * KeyboardEvent `event`
-     * @param event the original event.
-     */
-    TreeComponent.prototype.onEdit = function (event) {
-        if (this.options.edited) {
-            this.options.edited({
-                node: this.editing,
-                event: event,
-                editedText: this.editedName,
-            });
-        }
-    };
-    TreeComponent.prototype.onTrack = function (_, item) {
-        return item.id;
-    };
-    /**
-     * Focus the node `e` inside the tree, expand all its parents
-     * and moves the scroller to make the node visible.
-     * @param e A node id or a reference to a node.
-     */
-    TreeComponent.prototype.onFocus = function (e) {
-        if (this.focused) {
-            this.focused.focused = false;
-            this.focused = null;
-        }
-        this.focused = this.findNode(e);
-        if (this.focused) {
-            this.focused.focused = true;
-            this.focused.expanded = this.focused.expandable && !this.focused.expanded;
-            this.expand(this.focused);
-            var node = document.getElementById('tree-node-' + this.focused.id);
-            if (node) {
-                node.focus();
-            }
-        }
-    };
-    /**
-     * Focus the `node` and emits `clicked` event.
-     * @param node the node.
-     * @param event original event.
-     */
-    TreeComponent.prototype.onClick = function (node, event) {
-        if (this.options.selected) {
-            this.options.selected({ node: node, event: event });
-        }
-    };
-    TreeComponent.prototype.onContextMenu = function (node, event) {
-        if (this.options.contextmenu) {
-            this.options.contextmenu({ node: node, event: event });
-        }
-    };
-    TreeComponent.prototype.build = function () {
-        var _this = this;
-        this.treeControl = new _angular_cdk_tree__WEBPACK_IMPORTED_MODULE_2__["FlatTreeControl"](function (node) { return node.level; }, function (node) { return node.expandable; });
-        this.treeFlattener = new _angular_material_tree__WEBPACK_IMPORTED_MODULE_3__["MatTreeFlattener"](function (node, level) { return _this.transformer(node, level); }, function (node) { return node.level; }, function (node) { return node.expandable; }, function (node) { return node.children; });
-        this.dataSource = new _angular_material_tree__WEBPACK_IMPORTED_MODULE_3__["MatTreeFlatDataSource"](this.treeControl, this.treeFlattener);
-        this.connect();
-    };
-    TreeComponent.prototype.findNode = function (e) {
-        if (e && typeof (e) === 'string') {
-            return this.treeControl.dataNodes.find(function (n) { return n.id === e; });
-        }
-        return e;
-    };
-    /**
-    * Iterates over each node in reverse order and return the first node
-    * that has a lower level than the passed node.
-    */
-    TreeComponent.prototype.findParent = function (node) {
-        var currentLevel = this.treeControl.getLevel(node);
-        if (currentLevel < 1) {
-            return null;
-        }
-        var startIndex = this.treeControl.dataNodes.indexOf(node) - 1;
-        for (var i = startIndex; i >= 0; i--) {
-            var currentNode = this.treeControl.dataNodes[i];
-            if (this.treeControl.getLevel(currentNode) < currentLevel) {
-                return currentNode;
-            }
-        }
-    };
-    TreeComponent.prototype.connect = function () {
-        var _this = this;
-        if (this.options.idField && this.dataSource) {
-            this.dataSource.data = this._nodes;
-            this.treeControl.dataNodes.forEach(function (node) {
-                if (node.expanded) {
-                    _this.treeControl.expand(node);
-                }
-            });
-        }
-    };
-    TreeComponent.prototype.transformer = function (node, level) {
-        node.level = level;
-        node.expandable = !!node.children && node.children.length > 0;
-        if (!this.options.idField) {
-            throw new Error('@Input() idField must be provided');
-        }
-        if (!(this.options.idField in node)) {
-            throw new Error("property '" + this.options.idField + "' must be present in the nodes");
-        }
-        node.id = node[this.options.idField];
-        return node;
-    };
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ContentChild"])(_directives_tree_node_directive__WEBPACK_IMPORTED_MODULE_4__["TreeNodeDirective"], { read: _angular_core__WEBPACK_IMPORTED_MODULE_1__["TemplateRef"] }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", Object)
-    ], TreeComponent.prototype, "template", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", Object)
-    ], TreeComponent.prototype, "options", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", Array),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [Array])
-    ], TreeComponent.prototype, "nodes", null);
-    TreeComponent = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Component"])({
-            selector: 'app-tree',
-            template: __webpack_require__(/*! ./tree.component.html */ "./src/app/shared/components/tree/tree.component.html"),
-            styles: [__webpack_require__(/*! ./tree.component.scss */ "./src/app/shared/components/tree/tree.component.scss")]
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
-    ], TreeComponent);
-    return TreeComponent;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/shared/directives/autofocus.directive.ts":
-/*!**********************************************************!*\
-  !*** ./src/app/shared/directives/autofocus.directive.ts ***!
-  \**********************************************************/
-/*! exports provided: AutofocusDirective */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AutofocusDirective", function() { return AutofocusDirective; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-
-
-/**
- * Input element that can be autofocused.
- */
-var AutofocusDirective = /** @class */ (function () {
-    function AutofocusDirective(el) {
-        this.el = el;
-    }
-    AutofocusDirective.prototype.ngAfterContentInit = function () {
-        var _this = this;
-        setTimeout(function () {
-            _this.el.nativeElement.focus();
-        }, 500);
-    };
-    AutofocusDirective = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"])({
-            // tslint:disable-next-line: directive-selector
-            selector: 'input[autofocus]'
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"]])
-    ], AutofocusDirective);
-    return AutofocusDirective;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/shared/directives/dnd.directive.ts":
-/*!****************************************************!*\
-  !*** ./src/app/shared/directives/dnd.directive.ts ***!
-  \****************************************************/
-/*! exports provided: DndDirective */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DndDirective", function() { return DndDirective; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-
-
-/**
- * Element that can share or accept a data of dragged dom element.
-
- * - the class `dnd-over` is added to the element when a dragged data hover the element.
- * - the class `dnd-drag` is added to the element when the element is dragged.
- */
-var DndDirective = /** @class */ (function () {
-    function DndDirective(el) {
-        this.el = el;
-        /**
-         * A value indicating whether the element can share a data or not
-         */
-        this.draggable = true;
-        /**  A value indicating whether a data can be dropped to this element */
-        this.droppable = true;
-        /** emits after a data is dropped */
-        this.dropped = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"]();
-        /** emits after a data hover the element */
-        this.hovered = new _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"]();
-    }
-    DndDirective.prototype.ngAfterContentInit = function () {
-        this.setDraggable();
-        this.setDroppable();
-    };
-    DndDirective.prototype.setDraggable = function () {
-        var _this = this;
-        var node = this.el.nativeElement;
-        node.draggable = true;
-        var dragstart = function (e) {
-            if (!_this.draggable) {
-                e.preventDefault();
-                return;
-            }
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('dnd-data', _this.dndData);
-            node.classList.add('dnd-drag');
-            return false;
-        };
-        node.addEventListener('dragstart', dragstart, false);
-        var dragend = function (e) {
-            node.classList.remove('dnd-drag');
-            return false;
-        };
-        node.addEventListener('dragend', dragend, false);
-    };
-    DndDirective.prototype.setDroppable = function () {
-        var _this = this;
-        if (!this.droppable) {
-            return;
-        }
-        var node = this.el.nativeElement;
-        node.draggable = true;
-        var dragover = function (e) {
-            e.dataTransfer.dropEffect = 'move';
-            if (e.preventDefault) {
-                e.preventDefault();
-            }
-            node.classList.add('dnd-over');
-            _this.hovered.emit(true);
-            return false;
-        };
-        node.addEventListener('dragover', dragover, false);
-        var dragenter = function (e) {
-            node.classList.add('dnd-over');
-            _this.hovered.emit(true);
-            return false;
-        };
-        node.addEventListener('dragenter', dragenter, false);
-        var dragleave = function (e) {
-            node.classList.remove('dnd-over');
-            _this.hovered.emit(false);
-            return false;
-        };
-        node.addEventListener('dragleave', dragleave, false);
-        var drop = function (e) {
-            e.preventDefault();
-            var file;
-            if (e.dataTransfer.items.length > 0) {
-                for (var i = 0; i < e.dataTransfer.items.length; i++) {
-                    var item = e.dataTransfer.items[i];
-                    if (item.kind === 'file') {
-                        file = item.getAsFile();
-                    }
-                }
-            }
-            else if (e.dataTransfer.files.length > 0) {
-                file = e.dataTransfer.files[0];
-            }
-            if (e.stopPropagation) {
-                e.stopPropagation();
-            }
-            node.classList.remove('dnd-over');
-            var dst = _this.dndData;
-            var src = e.dataTransfer.getData('dnd-data');
-            if ((src || file)) {
-                _this.dropped.emit({ src: src, file: file, dst: dst });
-            }
-            return false;
-        };
-        node.addEventListener('drop', drop, false);
-    };
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", Object)
-    ], DndDirective.prototype, "draggable", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", Object)
-    ], DndDirective.prototype, "droppable", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Output"])(),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"])
-    ], DndDirective.prototype, "dropped", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Output"])(),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", _angular_core__WEBPACK_IMPORTED_MODULE_1__["EventEmitter"])
-    ], DndDirective.prototype, "hovered", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Input"])(),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:type", Object)
-    ], DndDirective.prototype, "dndData", void 0);
-    DndDirective = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"])({
-            // tslint:disable-next-line: directive-selector
-            selector: '[dnd]'
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"]])
-    ], DndDirective);
-    return DndDirective;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/shared/directives/run-scripts.directive.ts":
-/*!************************************************************!*\
-  !*** ./src/app/shared/directives/run-scripts.directive.ts ***!
-  \************************************************************/
-/*! exports provided: RunScriptsDirective */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RunScriptsDirective", function() { return RunScriptsDirective; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-
-
-/**
- * Directives that allows to reload scripts tags of a dom element.
- */
-// tslint:disable-next-line: directive-selector
-var RunScriptsDirective = /** @class */ (function () {
-    function RunScriptsDirective(elementRef) {
-        this.elementRef = elementRef;
-    }
-    RunScriptsDirective.prototype.ngOnInit = function () {
-        var _this = this;
-        setTimeout(function () {
-            _this.runScripts();
-        });
-    };
-    /**
-     * Reloads the scripts elements of the dom element.
-     */
-    RunScriptsDirective.prototype.runScripts = function () {
-        var scripts = this.elementRef.nativeElement.getElementsByTagName('script');
-        var scriptsInitialLength = scripts.length;
-        for (var i = 0; i < scriptsInitialLength; i++) {
-            var script = scripts[i];
-            var scriptCopy = document.createElement('script');
-            scriptCopy.type = script.type ? script.type : 'text/javascript';
-            if (script.innerHTML) {
-                scriptCopy.innerHTML = "" + script.innerHTML;
-            }
-            else if (script.src) {
-                scriptCopy.src = script.src;
-            }
-            scriptCopy.async = false;
-            script.parentNode.replaceChild(scriptCopy, script);
-        }
-    };
-    RunScriptsDirective = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"])({ selector: '[runScripts]', exportAs: 'runScripts' }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_core__WEBPACK_IMPORTED_MODULE_1__["ElementRef"]])
-    ], RunScriptsDirective);
-    return RunScriptsDirective;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/shared/directives/tree-node.directive.ts":
-/*!**********************************************************!*\
-  !*** ./src/app/shared/directives/tree-node.directive.ts ***!
-  \**********************************************************/
-/*! exports provided: TreeNodeDirective */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TreeNodeDirective", function() { return TreeNodeDirective; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-
-
-/** Element that can be used as a template for a `TreeComponent`  */
-var TreeNodeDirective = /** @class */ (function () {
-    function TreeNodeDirective() {
-    }
-    TreeNodeDirective = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Directive"])({
-            // tslint:disable-next-line: directive-selector
-            selector: '[treeNode]'
-        })
-    ], TreeNodeDirective);
-    return TreeNodeDirective;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/shared/models/assert.model.ts":
-/*!***********************************************!*\
-  !*** ./src/app/shared/models/assert.model.ts ***!
-  \***********************************************/
-/*! exports provided: Asserts */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Asserts", function() { return Asserts; });
-var Asserts;
-(function (Asserts) {
-    Asserts.DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&'];
-    /**
-     * Throws an exception if obj is null or empty (expected for boolean and number)
-     * @param obj - the object to evaluate
-     * @param message - an optional error message
-     * @throws {ReferenceError} if obj is null or undefined
-     * @return the object itself.
-     */
-    function requireNonNull(obj, message) {
-        if (obj == null) {
-            message = message || 'requireNonNull';
-            throw new ReferenceError(message);
-        }
-        return obj;
-    }
-    Asserts.requireNonNull = requireNonNull;
-    function requireNonNullArray(array, message) {
-        var _this = this;
-        this.requireNonNull(array, message);
-        array.forEach(function (item) { return _this.requireNonNull(item); }, message);
-        return array;
-    }
-    Asserts.requireNonNullArray = requireNonNullArray;
-    function requireNonNullString(input, message) {
-        if (input == null || input.trim().length === 0) {
-            message = message || "'require non null or empty";
-            throw new ReferenceError(message);
-        }
-        return input;
-    }
-    Asserts.requireNonNullString = requireNonNullString;
-    /**
-     * Throws an exception if condition if false.
-     * @param condition - the condition
-     * @param message - an optional error message
-     * @throws {Error} if condition is false
-     */
-    function assert(condition, message) {
-        if (!condition) {
-            throw new Error(message);
-        }
-    }
-    Asserts.assert = assert;
-    /**
-     * Throws an exception if `name` cannot be used a file name.
-     * @param name the name to evaluate
-     */
-    function checkName(name) {
-        if (!name) {
-            throw new ReferenceError('name should not be null or empty');
-        }
-        if (!Asserts.DISALLOWED_CHAR.every(function (e) { return !name.includes(e); })) {
-            throw new Error(name + 'should not contains any of ' + Asserts.DISALLOWED_CHAR);
-        }
-    }
-    Asserts.checkName = checkName;
-})(Asserts || (Asserts = {}));
-
-
-/***/ }),
-
-/***/ "./src/app/shared/models/paths.model.ts":
-/*!**********************************************!*\
-  !*** ./src/app/shared/models/paths.model.ts ***!
-  \**********************************************/
-/*! exports provided: basename, dirname, extname */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "basename", function() { return basename; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "dirname", function() { return dirname; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "extname", function() { return extname; });
-/**
- * Returns the last portion of a path. Similar to the Unix basename command.
- * Often used to extract the file name from a fully qualified path.
- * @param the path to evaluate.
- */
-function basename(path) {
-    if (!path) {
-        return path;
-    }
-    path = path.replace(/\\/g, '/');
-    return path.slice(path.lastIndexOf('/') + 1, path.length);
-}
-/**
- * Returns the directory name of a path. Similar to the Unix dirname command.
- * @param path the path to evaluate
- */
-function dirname(path) {
-    if (!path) {
-        return path;
-    }
-    path = path.replace(/\\/g, '/');
-    var head = path.slice(0, path.lastIndexOf('/') + 1);
-    if (head && !head.match(/^\/*$/g)) {
-        head = head.replace(/\/*$/g, '');
-    }
-    return head;
-}
-/**
- * Returns the extension of the path (in lowercase), from the last '.' to end of string in the last portion of the path.
- * If there is no '.' in the last portion of the path or the first character of it is '.', then it returns an empty string
- * @param path the path to evaluate
- * @returns the extension in lowercase or an empty string.
- */
-function extname(path) {
-    var base = basename(path);
-    if (!base) {
-        return base;
-    }
-    if (base.startsWith('.')) {
-        return '';
-    }
-    var dotIndex = base.lastIndexOf('.');
-    if (dotIndex === -1) {
-        return '';
-    }
-    return base.substring(dotIndex + 1).toLowerCase();
-}
-
-
-/***/ }),
-
-/***/ "./src/app/shared/modules/shared.module.ts":
-/*!*************************************************!*\
-  !*** ./src/app/shared/modules/shared.module.ts ***!
-  \*************************************************/
-/*! exports provided: SharedModule */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SharedModule", function() { return SharedModule; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
-/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/common */ "./node_modules/@angular/common/fesm5/common.js");
-/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/forms */ "./node_modules/@angular/forms/fesm5/forms.js");
-/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
-/* harmony import */ var _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/platform-browser/animations */ "./node_modules/@angular/platform-browser/fesm5/animations.js");
-/* harmony import */ var _angular_material_tooltip__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @angular/material/tooltip */ "./node_modules/@angular/material/esm5/tooltip.es5.js");
-/* harmony import */ var _angular_material_core__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @angular/material/core */ "./node_modules/@angular/material/esm5/core.es5.js");
-/* harmony import */ var _angular_material_progress_bar__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @angular/material/progress-bar */ "./node_modules/@angular/material/esm5/progress-bar.es5.js");
-/* harmony import */ var _angular_material_progress_spinner__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @angular/material/progress-spinner */ "./node_modules/@angular/material/esm5/progress-spinner.es5.js");
-/* harmony import */ var _angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @angular/cdk/drag-drop */ "./node_modules/@angular/cdk/esm5/drag-drop.es5.js");
-/* harmony import */ var _angular_material_menu__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @angular/material/menu */ "./node_modules/@angular/material/esm5/menu.es5.js");
-/* harmony import */ var _angular_material_button__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @angular/material/button */ "./node_modules/@angular/material/esm5/button.es5.js");
-/* harmony import */ var _angular_material_dialog__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @angular/material/dialog */ "./node_modules/@angular/material/esm5/dialog.es5.js");
-/* harmony import */ var _angular_material_form_field__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @angular/material/form-field */ "./node_modules/@angular/material/esm5/form-field.es5.js");
-/* harmony import */ var _angular_material_input__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @angular/material/input */ "./node_modules/@angular/material/esm5/input.es5.js");
-/* harmony import */ var _angular_material_list__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @angular/material/list */ "./node_modules/@angular/material/esm5/list.es5.js");
-/* harmony import */ var _angular_material_icon__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! @angular/material/icon */ "./node_modules/@angular/material/esm5/icon.es5.js");
-/* harmony import */ var _angular_material_divider__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! @angular/material/divider */ "./node_modules/@angular/material/esm5/divider.es5.js");
-/* harmony import */ var _angular_material_expansion__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! @angular/material/expansion */ "./node_modules/@angular/material/esm5/expansion.es5.js");
-/* harmony import */ var _angular_material_chips__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! @angular/material/chips */ "./node_modules/@angular/material/esm5/chips.es5.js");
-/* harmony import */ var _angular_material_badge__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! @angular/material/badge */ "./node_modules/@angular/material/esm5/badge.es5.js");
-/* harmony import */ var _angular_material_autocomplete__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! @angular/material/autocomplete */ "./node_modules/@angular/material/esm5/autocomplete.es5.js");
-/* harmony import */ var _angular_material_table__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! @angular/material/table */ "./node_modules/@angular/material/esm5/table.es5.js");
-/* harmony import */ var _angular_cdk_scrolling__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! @angular/cdk/scrolling */ "./node_modules/@angular/cdk/esm5/scrolling.es5.js");
-/* harmony import */ var _angular_material_tree__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! @angular/material/tree */ "./node_modules/@angular/material/esm5/tree.es5.js");
-/* harmony import */ var _angular_material_checkbox__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! @angular/material/checkbox */ "./node_modules/@angular/material/esm5/checkbox.es5.js");
-/* harmony import */ var _angular_material_select__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! @angular/material/select */ "./node_modules/@angular/material/esm5/select.es5.js");
-/* harmony import */ var _angular_material_snack_bar__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! @angular/material/snack-bar */ "./node_modules/@angular/material/esm5/snack-bar.es5.js");
-/* harmony import */ var _angular_cdk_overlay__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! @angular/cdk/overlay */ "./node_modules/@angular/cdk/esm5/overlay.es5.js");
-/* harmony import */ var ngx_toastr__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ngx-toastr */ "./node_modules/ngx-toastr/fesm5/ngx-toastr.js");
-/* harmony import */ var ng_inline_svg__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ng-inline-svg */ "./node_modules/ng-inline-svg/lib/index.js");
-/* harmony import */ var ng_inline_svg__WEBPACK_IMPORTED_MODULE_32___default = /*#__PURE__*/__webpack_require__.n(ng_inline_svg__WEBPACK_IMPORTED_MODULE_32__);
-/* harmony import */ var _pipes_trust_html_pipe__WEBPACK_IMPORTED_MODULE_33__ = __webpack_require__(/*! ../pipes/trust-html.pipe */ "./src/app/shared/pipes/trust-html.pipe.ts");
-/* harmony import */ var _pipes_trust_url_pipe__WEBPACK_IMPORTED_MODULE_34__ = __webpack_require__(/*! ../pipes/trust-url.pipe */ "./src/app/shared/pipes/trust-url.pipe.ts");
-/* harmony import */ var _pipes_trust_script_pipe__WEBPACK_IMPORTED_MODULE_35__ = __webpack_require__(/*! ../pipes/trust-script.pipe */ "./src/app/shared/pipes/trust-script.pipe.ts");
-/* harmony import */ var _pipes_trust_style_pipe__WEBPACK_IMPORTED_MODULE_36__ = __webpack_require__(/*! ../pipes/trust-style.pipe */ "./src/app/shared/pipes/trust-style.pipe.ts");
-/* harmony import */ var _pipes_trust_resource_url_pipe__WEBPACK_IMPORTED_MODULE_37__ = __webpack_require__(/*! ../pipes/trust-resource-url.pipe */ "./src/app/shared/pipes/trust-resource-url.pipe.ts");
-/* harmony import */ var src_app_editor_shared_pipes_icon_pipe__WEBPACK_IMPORTED_MODULE_38__ = __webpack_require__(/*! src/app/editor/shared/pipes/icon.pipe */ "./src/app/editor/shared/pipes/icon.pipe.ts");
-/* harmony import */ var _directives_autofocus_directive__WEBPACK_IMPORTED_MODULE_39__ = __webpack_require__(/*! ../directives/autofocus.directive */ "./src/app/shared/directives/autofocus.directive.ts");
-/* harmony import */ var _directives_run_scripts_directive__WEBPACK_IMPORTED_MODULE_40__ = __webpack_require__(/*! ../directives/run-scripts.directive */ "./src/app/shared/directives/run-scripts.directive.ts");
-/* harmony import */ var _directives_dnd_directive__WEBPACK_IMPORTED_MODULE_41__ = __webpack_require__(/*! ../directives/dnd.directive */ "./src/app/shared/directives/dnd.directive.ts");
-/* harmony import */ var _directives_tree_node_directive__WEBPACK_IMPORTED_MODULE_42__ = __webpack_require__(/*! ../directives/tree-node.directive */ "./src/app/shared/directives/tree-node.directive.ts");
-/* harmony import */ var _components_prompt_prompt_component__WEBPACK_IMPORTED_MODULE_43__ = __webpack_require__(/*! ../components/prompt/prompt.component */ "./src/app/shared/components/prompt/prompt.component.ts");
-/* harmony import */ var _components_confirm_confirm_component__WEBPACK_IMPORTED_MODULE_44__ = __webpack_require__(/*! ../components/confirm/confirm.component */ "./src/app/shared/components/confirm/confirm.component.ts");
-/* harmony import */ var _components_tree_tree_component__WEBPACK_IMPORTED_MODULE_45__ = __webpack_require__(/*! ../components/tree/tree.component */ "./src/app/shared/components/tree/tree.component.ts");
-
-/* CORE  */
-
-
-
-
-
-
-/* MATERIAL  */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// LIBS
-
-
-// PIPES
-
-
-
-
-
-
-// DIRECTIVES
-
-
-
-
-// COMPONENT
-
-
-
-var SharedModule = /** @class */ (function () {
-    function SharedModule() {
-    }
-    SharedModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"])({
-            declarations: [
-                // COMPONENTS
-                _components_tree_tree_component__WEBPACK_IMPORTED_MODULE_45__["TreeComponent"],
-                _components_prompt_prompt_component__WEBPACK_IMPORTED_MODULE_43__["PromptComponent"],
-                _components_confirm_confirm_component__WEBPACK_IMPORTED_MODULE_44__["ConfirmComponent"],
-                // DIRECTIVES
-                _directives_dnd_directive__WEBPACK_IMPORTED_MODULE_41__["DndDirective"],
-                _directives_autofocus_directive__WEBPACK_IMPORTED_MODULE_39__["AutofocusDirective"],
-                _directives_run_scripts_directive__WEBPACK_IMPORTED_MODULE_40__["RunScriptsDirective"],
-                _directives_tree_node_directive__WEBPACK_IMPORTED_MODULE_42__["TreeNodeDirective"],
-                // PIPES
-                _pipes_trust_html_pipe__WEBPACK_IMPORTED_MODULE_33__["TrustHtmlPipe"],
-                _pipes_trust_url_pipe__WEBPACK_IMPORTED_MODULE_34__["TrustUrlPipe"],
-                _pipes_trust_script_pipe__WEBPACK_IMPORTED_MODULE_35__["TrustScriptPipe"],
-                _pipes_trust_style_pipe__WEBPACK_IMPORTED_MODULE_36__["TrustStylePipe"],
-                _pipes_trust_resource_url_pipe__WEBPACK_IMPORTED_MODULE_37__["TrustResourceUrlPipe"],
-                src_app_editor_shared_pipes_icon_pipe__WEBPACK_IMPORTED_MODULE_38__["IconPipe"],
-            ],
-            imports: [
-                // CORE
-                _angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__["BrowserModule"],
-                _angular_common__WEBPACK_IMPORTED_MODULE_3__["CommonModule"],
-                _angular_forms__WEBPACK_IMPORTED_MODULE_4__["FormsModule"],
-                _angular_forms__WEBPACK_IMPORTED_MODULE_4__["ReactiveFormsModule"],
-                _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_6__["BrowserAnimationsModule"],
-                _angular_common_http__WEBPACK_IMPORTED_MODULE_5__["HttpClientModule"],
-                _angular_common_http__WEBPACK_IMPORTED_MODULE_5__["HttpClientXsrfModule"].withOptions({
-                    cookieName: 'csrftoken',
-                    headerName: 'X-CSRFToken'
-                }),
-                // MATERIAL
-                _angular_material_dialog__WEBPACK_IMPORTED_MODULE_14__["MatDialogModule"],
-                _angular_material_tooltip__WEBPACK_IMPORTED_MODULE_7__["MatTooltipModule"],
-                _angular_material_button__WEBPACK_IMPORTED_MODULE_13__["MatButtonModule"],
-                _angular_material_progress_spinner__WEBPACK_IMPORTED_MODULE_10__["MatProgressSpinnerModule"],
-                _angular_material_progress_bar__WEBPACK_IMPORTED_MODULE_9__["MatProgressBarModule"],
-                _angular_material_form_field__WEBPACK_IMPORTED_MODULE_15__["MatFormFieldModule"],
-                _angular_material_input__WEBPACK_IMPORTED_MODULE_16__["MatInputModule"],
-                _angular_material_core__WEBPACK_IMPORTED_MODULE_8__["MatRippleModule"],
-                _angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_11__["DragDropModule"],
-                _angular_material_menu__WEBPACK_IMPORTED_MODULE_12__["MatMenuModule"],
-                _angular_material_icon__WEBPACK_IMPORTED_MODULE_18__["MatIconModule"],
-                _angular_material_list__WEBPACK_IMPORTED_MODULE_17__["MatListModule"],
-                _angular_material_expansion__WEBPACK_IMPORTED_MODULE_20__["MatExpansionModule"],
-                _angular_material_chips__WEBPACK_IMPORTED_MODULE_21__["MatChipsModule"],
-                _angular_material_divider__WEBPACK_IMPORTED_MODULE_19__["MatDividerModule"],
-                _angular_material_badge__WEBPACK_IMPORTED_MODULE_22__["MatBadgeModule"],
-                _angular_material_autocomplete__WEBPACK_IMPORTED_MODULE_23__["MatAutocompleteModule"],
-                _angular_cdk_scrolling__WEBPACK_IMPORTED_MODULE_25__["ScrollingModule"],
-                _angular_material_tree__WEBPACK_IMPORTED_MODULE_26__["MatTreeModule"],
-                _angular_material_checkbox__WEBPACK_IMPORTED_MODULE_27__["MatCheckboxModule"],
-                _angular_material_select__WEBPACK_IMPORTED_MODULE_28__["MatSelectModule"],
-                _angular_material_snack_bar__WEBPACK_IMPORTED_MODULE_29__["MatSnackBarModule"],
-                _angular_cdk_overlay__WEBPACK_IMPORTED_MODULE_30__["OverlayModule"],
-                // LIBS
-                ngx_toastr__WEBPACK_IMPORTED_MODULE_31__["ToastrModule"].forRoot({
-                    preventDuplicates: true,
-                }),
-                ng_inline_svg__WEBPACK_IMPORTED_MODULE_32__["InlineSVGModule"].forRoot(),
-            ],
-            exports: [
-                // CORE
-                _angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__["BrowserModule"],
-                _angular_common__WEBPACK_IMPORTED_MODULE_3__["CommonModule"],
-                _angular_forms__WEBPACK_IMPORTED_MODULE_4__["FormsModule"],
-                _angular_forms__WEBPACK_IMPORTED_MODULE_4__["ReactiveFormsModule"],
-                _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_6__["BrowserAnimationsModule"],
-                _angular_common_http__WEBPACK_IMPORTED_MODULE_5__["HttpClientModule"],
-                // MATERIAL
-                _angular_material_dialog__WEBPACK_IMPORTED_MODULE_14__["MatDialogModule"],
-                _angular_material_tooltip__WEBPACK_IMPORTED_MODULE_7__["MatTooltipModule"],
-                _angular_material_button__WEBPACK_IMPORTED_MODULE_13__["MatButtonModule"],
-                _angular_material_progress_spinner__WEBPACK_IMPORTED_MODULE_10__["MatProgressSpinnerModule"],
-                _angular_material_progress_bar__WEBPACK_IMPORTED_MODULE_9__["MatProgressBarModule"],
-                _angular_material_form_field__WEBPACK_IMPORTED_MODULE_15__["MatFormFieldModule"],
-                _angular_material_input__WEBPACK_IMPORTED_MODULE_16__["MatInputModule"],
-                _angular_material_core__WEBPACK_IMPORTED_MODULE_8__["MatRippleModule"],
-                _angular_cdk_drag_drop__WEBPACK_IMPORTED_MODULE_11__["DragDropModule"],
-                _angular_material_menu__WEBPACK_IMPORTED_MODULE_12__["MatMenuModule"],
-                _angular_material_icon__WEBPACK_IMPORTED_MODULE_18__["MatIconModule"],
-                _angular_material_list__WEBPACK_IMPORTED_MODULE_17__["MatListModule"],
-                _angular_material_expansion__WEBPACK_IMPORTED_MODULE_20__["MatExpansionModule"],
-                _angular_material_chips__WEBPACK_IMPORTED_MODULE_21__["MatChipsModule"],
-                _angular_material_divider__WEBPACK_IMPORTED_MODULE_19__["MatDividerModule"],
-                _angular_material_badge__WEBPACK_IMPORTED_MODULE_22__["MatBadgeModule"],
-                _angular_material_autocomplete__WEBPACK_IMPORTED_MODULE_23__["MatAutocompleteModule"],
-                _angular_material_table__WEBPACK_IMPORTED_MODULE_24__["MatTableModule"],
-                _angular_cdk_scrolling__WEBPACK_IMPORTED_MODULE_25__["ScrollingModule"],
-                _angular_material_tree__WEBPACK_IMPORTED_MODULE_26__["MatTreeModule"],
-                _angular_material_checkbox__WEBPACK_IMPORTED_MODULE_27__["MatCheckboxModule"],
-                _angular_material_select__WEBPACK_IMPORTED_MODULE_28__["MatSelectModule"],
-                // TOAST
-                ngx_toastr__WEBPACK_IMPORTED_MODULE_31__["ToastrModule"],
-                ng_inline_svg__WEBPACK_IMPORTED_MODULE_32__["InlineSVGModule"],
-                // COMPONENTS
-                _components_tree_tree_component__WEBPACK_IMPORTED_MODULE_45__["TreeComponent"],
-                _components_prompt_prompt_component__WEBPACK_IMPORTED_MODULE_43__["PromptComponent"],
-                _components_confirm_confirm_component__WEBPACK_IMPORTED_MODULE_44__["ConfirmComponent"],
-                // DIRECTIVES
-                _directives_autofocus_directive__WEBPACK_IMPORTED_MODULE_39__["AutofocusDirective"],
-                _directives_dnd_directive__WEBPACK_IMPORTED_MODULE_41__["DndDirective"],
-                _directives_run_scripts_directive__WEBPACK_IMPORTED_MODULE_40__["RunScriptsDirective"],
-                _directives_tree_node_directive__WEBPACK_IMPORTED_MODULE_42__["TreeNodeDirective"],
-                // PIPES
-                _pipes_trust_html_pipe__WEBPACK_IMPORTED_MODULE_33__["TrustHtmlPipe"],
-                _pipes_trust_url_pipe__WEBPACK_IMPORTED_MODULE_34__["TrustUrlPipe"],
-                _pipes_trust_script_pipe__WEBPACK_IMPORTED_MODULE_35__["TrustScriptPipe"],
-                _pipes_trust_style_pipe__WEBPACK_IMPORTED_MODULE_36__["TrustStylePipe"],
-                _pipes_trust_resource_url_pipe__WEBPACK_IMPORTED_MODULE_37__["TrustResourceUrlPipe"],
-                src_app_editor_shared_pipes_icon_pipe__WEBPACK_IMPORTED_MODULE_38__["IconPipe"],
-            ],
-            entryComponents: [
-                _components_prompt_prompt_component__WEBPACK_IMPORTED_MODULE_43__["PromptComponent"],
-                _components_confirm_confirm_component__WEBPACK_IMPORTED_MODULE_44__["ConfirmComponent"],
-            ],
-        })
-    ], SharedModule);
-    return SharedModule;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/shared/pipes/trust-html.pipe.ts":
-/*!*************************************************!*\
-  !*** ./src/app/shared/pipes/trust-html.pipe.ts ***!
-  \*************************************************/
-/*! exports provided: TrustHtmlPipe */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TrustHtmlPipe", function() { return TrustHtmlPipe; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
-
-
-
-var TrustHtmlPipe = /** @class */ (function () {
-    function TrustHtmlPipe(domSanitizer) {
-        this.domSanitizer = domSanitizer;
-    }
-    TrustHtmlPipe.prototype.transform = function (value) {
-        return this.domSanitizer.bypassSecurityTrustHtml(value);
-    };
-    TrustHtmlPipe = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Pipe"])({
-            name: 'trustHtml'
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__["DomSanitizer"]])
-    ], TrustHtmlPipe);
-    return TrustHtmlPipe;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/shared/pipes/trust-resource-url.pipe.ts":
-/*!*********************************************************!*\
-  !*** ./src/app/shared/pipes/trust-resource-url.pipe.ts ***!
-  \*********************************************************/
-/*! exports provided: TrustResourceUrlPipe */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TrustResourceUrlPipe", function() { return TrustResourceUrlPipe; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
-
-
-
-var TrustResourceUrlPipe = /** @class */ (function () {
-    function TrustResourceUrlPipe(domSanitizer) {
-        this.domSanitizer = domSanitizer;
-    }
-    TrustResourceUrlPipe.prototype.transform = function (value) {
-        return this.domSanitizer.bypassSecurityTrustResourceUrl(value);
-    };
-    TrustResourceUrlPipe = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Pipe"])({
-            name: 'trustResourceUrl'
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__["DomSanitizer"]])
-    ], TrustResourceUrlPipe);
-    return TrustResourceUrlPipe;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/shared/pipes/trust-script.pipe.ts":
-/*!***************************************************!*\
-  !*** ./src/app/shared/pipes/trust-script.pipe.ts ***!
-  \***************************************************/
-/*! exports provided: TrustScriptPipe */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TrustScriptPipe", function() { return TrustScriptPipe; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
-
-
-
-var TrustScriptPipe = /** @class */ (function () {
-    function TrustScriptPipe(domSanitizer) {
-        this.domSanitizer = domSanitizer;
-    }
-    TrustScriptPipe.prototype.transform = function (value) {
-        return this.domSanitizer.bypassSecurityTrustScript(value);
-    };
-    TrustScriptPipe = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Pipe"])({
-            name: 'trustScript'
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__["DomSanitizer"]])
-    ], TrustScriptPipe);
-    return TrustScriptPipe;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/shared/pipes/trust-style.pipe.ts":
-/*!**************************************************!*\
-  !*** ./src/app/shared/pipes/trust-style.pipe.ts ***!
-  \**************************************************/
-/*! exports provided: TrustStylePipe */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TrustStylePipe", function() { return TrustStylePipe; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
-
-
-
-var TrustStylePipe = /** @class */ (function () {
-    function TrustStylePipe(domSanitizer) {
-        this.domSanitizer = domSanitizer;
-    }
-    TrustStylePipe.prototype.transform = function (value) {
-        return this.domSanitizer.bypassSecurityTrustStyle(value);
-    };
-    TrustStylePipe = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Pipe"])({
-            name: 'trustStyle'
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__["DomSanitizer"]])
-    ], TrustStylePipe);
-    return TrustStylePipe;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/shared/pipes/trust-url.pipe.ts":
-/*!************************************************!*\
-  !*** ./src/app/shared/pipes/trust-url.pipe.ts ***!
-  \************************************************/
-/*! exports provided: TrustUrlPipe */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TrustUrlPipe", function() { return TrustUrlPipe; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
-
-
-
-var TrustUrlPipe = /** @class */ (function () {
-    function TrustUrlPipe(domSanitizer) {
-        this.domSanitizer = domSanitizer;
-    }
-    TrustUrlPipe.prototype.transform = function (value, args) {
-        return this.domSanitizer.bypassSecurityTrustUrl(value);
-    };
-    TrustUrlPipe = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Pipe"])({
-            name: 'trustUrl'
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_platform_browser__WEBPACK_IMPORTED_MODULE_2__["DomSanitizer"]])
-    ], TrustUrlPipe);
-    return TrustUrlPipe;
-}());
-
-
-
-/***/ }),
-
-/***/ "./src/app/shared/services/notification.service.ts":
-/*!*********************************************************!*\
-  !*** ./src/app/shared/services/notification.service.ts ***!
-  \*********************************************************/
-/*! exports provided: AbstractNotificationService, NotificationService */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AbstractNotificationService", function() { return AbstractNotificationService; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "NotificationService", function() { return NotificationService; });
-/* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var ngx_toastr__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ngx-toastr */ "./node_modules/ngx-toastr/fesm5/ngx-toastr.js");
-/* harmony import */ var rxjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! rxjs */ "./node_modules/rxjs/_esm5/index.js");
-/* harmony import */ var _angular_material__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/material */ "./node_modules/@angular/material/esm5/material.es5.js");
-/* harmony import */ var _components_prompt_prompt_component__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/prompt/prompt.component */ "./src/app/shared/components/prompt/prompt.component.ts");
-/* harmony import */ var _components_confirm_confirm_component__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/confirm/confirm.component */ "./src/app/shared/components/confirm/confirm.component.ts");
-/* harmony import */ var _angular_common_http__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @angular/common/http */ "./node_modules/@angular/common/fesm5/http.js");
-
-
-
-
-
-
-
-
-var AbstractNotificationService = /** @class */ (function () {
-    function AbstractNotificationService() {
-        this.logAdded = new rxjs__WEBPACK_IMPORTED_MODULE_3__["Subject"]();
-        this.size = 0;
-    }
-    AbstractNotificationService.prototype.clear = function () {
-        this.size = 0;
-    };
-    AbstractNotificationService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])(),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [])
-    ], AbstractNotificationService);
-    return AbstractNotificationService;
-}());
-
-var NotificationService = /** @class */ (function (_super) {
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](NotificationService, _super);
-    function NotificationService(zone, dialog, toastr, snackbar) {
-        var _this = _super.call(this) || this;
-        _this.zone = zone;
-        _this.dialog = dialog;
-        _this.toastr = toastr;
-        _this.snackbar = snackbar;
-        return _this;
-    }
-    NotificationService.prototype.snack = function (message, config) {
-        var _this = this;
-        this.zone.run(function () {
-            _this.snackbar.open(message, '', config);
-        });
-    };
-    NotificationService.prototype.success = function (message, title) {
-        var _this = this;
-        if (title === void 0) { title = ''; }
-        this.zone.run(function () {
-            _this.toastr.success(_this.parseMessage(message, false), title, {
-                enableHtml: true,
-                onActivateTick: true,
-            });
-        });
-    };
-    NotificationService.prototype.warning = function (message, title) {
-        var _this = this;
-        if (title === void 0) { title = ''; }
-        this.zone.run(function () {
-            _this.toastr.warning(_this.parseMessage(message, false), title, {
-                enableHtml: true,
-                onActivateTick: true,
-            });
-        });
-    };
-    NotificationService.prototype.error = function (message, title) {
-        var _this = this;
-        if (title === void 0) { title = ''; }
-        this.zone.run(function () {
-            _this.toastr.error(_this.parseMessage(message, false), title, {
-                enableHtml: true,
-                onActivateTick: true,
-            });
-        });
-    };
-    NotificationService.prototype.prompt = function (options, completion) {
-        this.promptAsync(options).then(function (data) {
-            completion(data);
-        });
-    };
-    NotificationService.prototype.promptAsync = function (options) {
-        var _this = this;
-        var ref = this.dialog.open(_components_prompt_prompt_component__WEBPACK_IMPORTED_MODULE_5__["PromptComponent"], {
-            hasBackdrop: true,
-            disableClose: true,
-            data: options,
-        });
-        return new Promise(function (resolve) {
-            _this.zone.run(function () {
-                var subscription;
-                subscription = ref.afterClosed().subscribe(function (value) {
-                    subscription.unsubscribe();
-                    resolve(value);
-                });
-            });
-        });
-    };
-    NotificationService.prototype.confirm = function (options, confirm, cancel) {
-        this.confirmAsync(options).then(function (success) {
-            if (success && confirm) {
-                confirm();
-            }
-            else if (!success && cancel) {
-                cancel();
-            }
-        });
-    };
-    NotificationService.prototype.confirmAsync = function (options) {
-        var _this = this;
-        var ref = this.dialog.open(_components_confirm_confirm_component__WEBPACK_IMPORTED_MODULE_6__["ConfirmComponent"], {
-            hasBackdrop: true,
-            disableClose: true,
-            data: options,
-            autoFocus: false,
-            minWidth: '400px',
-            minHeight: '100px'
-        });
-        return new Promise(function (resolve) {
-            _this.zone.run(function () {
-                var subscription;
-                subscription = ref.afterClosed().subscribe(function (value) {
-                    subscription.unsubscribe();
-                    resolve(value);
-                });
-            });
-        });
-    };
-    NotificationService.prototype.logInfo = function (message, stackTrace) {
-        if (stackTrace === void 0) { stackTrace = false; }
-        this.log(message, 'info', stackTrace);
-    };
-    NotificationService.prototype.logWarning = function (message, stackTrace) {
-        if (stackTrace === void 0) { stackTrace = false; }
-        this.log(message, 'warning', stackTrace);
-    };
-    NotificationService.prototype.logError = function (message, stackTrace) {
-        if (stackTrace === void 0) { stackTrace = false; }
-        this.log(message, 'error', stackTrace);
-    };
-    NotificationService.prototype.log = function (message, type, stackTrace) {
-        if (stackTrace === void 0) { stackTrace = false; }
-        var item = { message: this.parseMessage(message, stackTrace), type: type };
-        this.logAdded.next(item);
-        this.size++;
-    };
-    NotificationService.prototype.parseMessage = function (message, stackTrace) {
-        var output = message;
-        if (message instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_7__["HttpErrorResponse"]) {
-            var error = message;
-            output = error.error || error.message;
-        }
-        else {
-            if (typeof message !== 'string') {
-                output = message.error; // JavaScript Error Object
-                if (!output) {
-                    if (message.stack) {
-                        var trace = stackTrace ? message.stack.split('\n').join('<br/>') : '';
-                        output = message.message + trace;
-                    }
-                    else {
-                        output = JSON.stringify(message);
-                    }
-                }
-                else {
-                    output = JSON.stringify(message);
-                }
-            }
-        }
-        return output;
-    };
-    NotificationService = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
-            providedIn: 'root'
-        }),
-        tslib__WEBPACK_IMPORTED_MODULE_0__["__metadata"]("design:paramtypes", [_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgZone"],
-            _angular_material__WEBPACK_IMPORTED_MODULE_4__["MatDialog"],
-            ngx_toastr__WEBPACK_IMPORTED_MODULE_2__["ToastrService"],
-            _angular_material__WEBPACK_IMPORTED_MODULE_4__["MatSnackBar"]])
-    ], NotificationService);
-    return NotificationService;
-}(AbstractNotificationService));
-
+exports.THEME_PROVIDERS = new core_1.InjectionToken('Theme Provider');
 
 
 /***/ }),
@@ -10200,16 +10496,17 @@ var NotificationService = /** @class */ (function (_super) {
 /*!*****************************************!*\
   !*** ./src/environments/environment.ts ***!
   \*****************************************/
-/*! exports provided: environment */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "environment", function() { return environment; });
+
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
-var environment = {
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+exports.environment = {
     production: false
 };
 /*
@@ -10228,27 +10525,23 @@ var environment = {
 /*!*********************!*\
   !*** ./src/main.ts ***!
   \*********************/
-/*! no exports provided */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
-/* harmony import */ var _angular_platform_browser_dynamic__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/platform-browser-dynamic */ "./node_modules/@angular/platform-browser-dynamic/fesm5/platform-browser-dynamic.js");
-/* harmony import */ var _app_app_module__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./app/app.module */ "./src/app/app.module.ts");
-/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./environments/environment */ "./src/environments/environment.ts");
-/* harmony import */ var hammerjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! hammerjs */ "./node_modules/hammerjs/hammer.js");
-/* harmony import */ var hammerjs__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(hammerjs__WEBPACK_IMPORTED_MODULE_4__);
 
-
-
-
-
-if (_environments_environment__WEBPACK_IMPORTED_MODULE_3__["environment"].production) {
-    Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["enableProdMode"])();
+Object.defineProperty(exports, "__esModule", { value: true });
+const tslib_1 = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
+const core_1 = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm2015/core.js");
+const platform_browser_dynamic_1 = __webpack_require__(/*! @angular/platform-browser-dynamic */ "./node_modules/@angular/platform-browser-dynamic/fesm2015/platform-browser-dynamic.js");
+const app_module_1 = __webpack_require__(/*! ./app/app.module */ "./src/app/app.module.ts");
+const environment_1 = __webpack_require__(/*! ./environments/environment */ "./src/environments/environment.ts");
+__webpack_require__(/*! hammerjs */ "./node_modules/hammerjs/hammer.js");
+if (environment_1.environment.production) {
+    core_1.enableProdMode();
 }
-Object(_angular_platform_browser_dynamic__WEBPACK_IMPORTED_MODULE_1__["platformBrowserDynamic"])().bootstrapModule(_app_app_module__WEBPACK_IMPORTED_MODULE_2__["AppModule"])
-    .catch(function (err) { return console.error(err); });
+platform_browser_dynamic_1.platformBrowserDynamic().bootstrapModule(app_module_1.AppModule)
+    .catch(err => console.error(err));
 
 
 /***/ }),

@@ -46,6 +46,12 @@ FAKE_CREDENTIALS = {
 @override_settings(LTI_OAUTH_CREDENTIALS=FAKE_CREDENTIALS)
 class LTITestCase(ActivityBaseTestMixin):
     
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.activity = Activity.objects.create(name="test", activity_type="pltp")
+        
+        
     @patch('lti_app.middleware.logger')
     @patch('lti_app.backends.logger')
     def test_wrong_key(self, backends_logger, middleware_logger):
@@ -120,63 +126,6 @@ class LTITestCase(ActivityBaseTestMixin):
         self.assertEqual(user.profile.role, Role.LEARNER)
         self.assertEqual(user.profile.consumer_id, user_id)
         self.assertEqual(user.profile.consumer, 'provider1')
-    
-    
-    def test_create_course(self):
-        user_id = str(uuid.uuid4())
-        context_id = str(uuid.uuid4())
-        params = {
-            **REQUEST_LTI_1P1, **{
-                'resource_link_id':                 str(uuid.uuid4()),
-                'oauth_consumer_key':               'provider1',
-                'oauth_consumer_secret':            'secret1',
-                'lis_person_contact_email_primary': 'test@host.com',
-                'lis_person_name_family':           'lastname',
-                'lis_person_name_given':            'firstname',
-                'roles':                            ROLES['Learner'],
-                'user_id':                          user_id,
-                'context_id':                       context_id,
-                'context_title':                    "A Course",
-                'context_label':                    "LAB",
-            }
-        }
-        c = Client()
-        response = c.post('/', data=dict(params), follow=True)
-        self.assertEqual(response.status_code, 200)
-        user = User.objects.get(username='flastname')
-        """
-        course = Activity.objects.all().filter(activity_type="course")[0]
-        self.assertEqual(course.name, "A Course")
-        self.assertEqual(course.activity_data__label, 'LAB')
-        self.assertEqual(course.activity_data__consumer_id, context_id)
-        self.assertEqual(course.activity_data__consumer, 'provider1')
-        self.assertTrue(course.is_member(user))"""
-    
-    
-    def test_add_teacher_course(self):
-        user_id = str(uuid.uuid4())
-        context_id = str(uuid.uuid4())
-        params = {
-            **REQUEST_LTI_1P1, **{
-                'resource_link_id':                 str(uuid.uuid4()),
-                'oauth_consumer_key':               'provider1',
-                'oauth_consumer_secret':            'secret1',
-                'lis_person_contact_email_primary': 'test@host.com',
-                'lis_person_name_family':           'lastname',
-                'lis_person_name_given':            'firstname',
-                'roles':                            ROLES['Instructor'],
-                'user_id':                          user_id,
-                'context_id':                       context_id,
-                'context_title':                    "A Course",
-                'context_label':                    "LAB",
-            }
-        }
-        c = Client()
-        response = c.post('/', data=dict(params), follow=True)
-        self.assertEqual(response.status_code, 200)
-        user = User.objects.get(username='flastname')
-        course = Activity.objects.all()
-    
     
     def test_add_activity(self):
         user_id = str(uuid.uuid4())

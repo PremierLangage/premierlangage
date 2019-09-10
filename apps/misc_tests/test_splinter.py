@@ -9,6 +9,7 @@ from django.test import override_settings
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 
+from activity.models import Activity
 from filebrowser.models import Directory
 
 
@@ -48,6 +49,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     
     def setUp(self):
         super().setUp()
+        Activity.objects.create(id=0, name="Base", activity_type="base")
         self.u = User.objects.create_superuser("login", password="secret", email="test@test.test")
         self.dir = Directory.objects.create(name='Yggdrasil', owner=self.u).root
         self.lib = Directory.objects.create(name='lib', owner=self.u).root
