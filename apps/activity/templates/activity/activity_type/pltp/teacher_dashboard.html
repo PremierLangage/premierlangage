@@ -1,78 +1,50 @@
 {% extends "base.html" %}
-
-
-
 {% block css %}
-<link rel="stylesheet" href="{{ static('activity/css/block_chart.css') }}"/>
-<link rel="stylesheet" href="{{ static('activity/css/classmanagement.css') }}"/>
+<link rel="stylesheet" href="{{ static('activity/css/courses.css') }}"/>
 {% endblock %}
-
 {% block content %}
-<div class="container">
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <h4>{{course_name}}: {{activity_name}}</h4>
-            <hr>
-            <div class="course-instructor-action">
-                <a href="/activity/dashboard/{{ course_id }}/">Retour vers le tableau de bord supérieur</a><br><br>
-            </div>
-            <table class="table">
+<ion-card>
+    <ion-card-header>
+        <ion-card-title>{{course_name}}: {{activity_name}}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+        <section>
+            <table>
                 <thead>
-                    <tr style='display: flex;'>
-                        {% for item in state %}
-                        <th style='display: flex;'>
-                            <div class="block course-block {{item.template}}"
-                                 style="width: 20px; height: 20px;"></div>&emsp;{{item}}
-                        </th>
-                        {% endfor %}
+                    <tr>
+                        <th>Élève</th>
+                        <th colspan="100">Questions</th>
                     </tr>
                 </thead>
-            </table>
-            <div class="table-responsive table-hover summary-table">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th class="student-th">Élève</th>
-                            {% for i in range_tp %}
-                            <th>
-                                <center>{% if loop.counter < 10 %}&nbsp;{% endif %}{{
-                                    loop.counter }}{% if loop.counter < 10 %}&nbsp;{% endif %}
-                                </center>
-                            </th>
-                            {% endfor %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for elem in student %}
-                        <tr>
-                            <td class="summary-td">
-                                    <span class="mdl-chip mdl-chip--contact">
-                                        <span class="mdl-chip__contact mdl-color--blue mdl-color-text--white">
-                                        {{ firstof(elem.object.get_full_name()|capfirst|make_list|first, elem.object.username|capfirst|make_list|first) }}
-                                        </span>
-                                        <span class="mdl-chip__text">
-                                         <a class='text-dark'
-                                            href="/activity/dashboard/{{ activity.id }}/?studentid={{ elem.object.id }}">
-                                            {{ firstof(elem.object.get_full_name(), elem.object.username) }}
-                                         </a>
-                                        </span>
-                                    </span>
+                <tbody>
+                    {% for elem in student %}
+                    <tr>
+                        <td>
+                            <ion-chip color="primary" outline="true">
+                                <ion-icon name="contact"></ion-icon>
+                                <ion-label> {{ firstof(elem.object.get_full_name(), elem.object.username) }}</ion-label>
+                            </ion-chip>
+                        </td>
+                        {% for item in elem.question %}
+                            <td>
+                                <div class="block {{item.state.template}}"><p>{{ item.name }}</p></div>
                             </td>
-                            {% for item in elem.question %}
-                            <center>
-                                <td class="summary-pl">
-                                    <div class="block course-block {{item.state.template}}"><p>{{
-                                        item.name }}</p></div>
-                                </td>
-                            </center>
-                            {% endfor %}
-                        </tr>
                         {% endfor %}
-                        <tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                </tbody>
+            </table>
+        </section>
+        <section>
+            <h2>Légende</h2>
+            {% for item in state %}
+                <div style="display: flex">
+                    <div class="block {{ item.template }}" style="width: 20px; height: 20px;"></div>
+                    <span>{{ item }}</span>
+                </div>
+            {% endfor %}
+        </section>
+    </ion-card-content>
+</ion-card>
 {% endblock %}

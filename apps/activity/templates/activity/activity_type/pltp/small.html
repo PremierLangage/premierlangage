@@ -1,37 +1,30 @@
-<div class="{% if not open %}disabled{% endif %} mdl-card card-activity mdl-shadow--2dp mdl-cell mdl-cell--3-col mdl-cell--6-col-phone mdl-cell--6-col-tablet">
-    <a href="{{ url('activity:play', id) }}">
-    <div class="mdl-card__title">
-        <span class="mdl-card__title-text">{{ title }}</span>
-    </div>
-    <div class="mdl-card__supporting-text">
-        <div class="grid-exos">
-            {% for elem in pl %}
-                <div class="block block-chart {{ elem.state.template }}"><p>{{ elem.name }}</p>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
-    </a>
+<ion-card>
+    <ion-img src="{{ static('activity/images/pltp.png') }}"></ion-img>
+    <ion-card-header>
+        <ion-card-title>{{ title }}</ion-card-title>
+    </ion-card-header>
     {% if instructor %}
-        <div class="mdl-card__actions mdl-card--border">
-            <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
-               href="/activity/dashboard/{{ id }}/">
-                Statistiques
-            </a>
-            <a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect"
-               href="/activity/notes/{{ id }}/" download target="_blank">
-                Récupérer les notes
-            </a>
-            <div class="mdl-layout-spacer"></div>
-            <span class='toggle-activity'>
-                {% if not open %}
-                    <a href="{{ request.path }}?action=toggle_activity&id={{ id }}"><i
-                            class="fas fa-toggle-off"></i></a>
-                {% else %}
-                    <a href="{{ request.path }}?action=toggle_activity&id={{ id }}"><i
-                            class="fas fa-toggle-on"></i></a>
-                {% endif %}
-            </span>
-        </div>
+    <ion-card-content>
+        <ion-buttons slot="start">
+            <ion-button  href="/activity/dashboard/{{ id }}/" data-toggle="tooltip" data-placement="top" title="Statistiques">
+                <ion-icon slot="icon-only" name="stats"></ion-icon>
+            </ion-button>
+            <ion-button  href="/activity/notes/{{ id }}/" download target="_blank" data-toggle="tooltip" data-placement="top" title="Récupérer les notes">
+                <ion-icon slot="icon-only" name="download"></ion-icon>
+            </ion-button>
+            {% if not open %}
+            <ion-button href="{{ request.path }}?action=toggle_activity&id={{ id }}" data-toggle="tooltip" data-placement="top" title="Ouvrir">
+                    <ion-icon slot="icon-only" name="unlock"></ion-icon>
+            </ion-button>
+            {% else %}
+            <ion-button href="{{ request.path }}?action=toggle_activity&id={{ id }}" data-toggle="tooltip" data-placement="top" title="Fermer">
+                <ion-icon slot="icon-only" name="lock"></ion-icon>
+            </ion-button>
+            <ion-button href="{{ url('activity:play', id) }}" data-toggle="tooltip" data-placement="top" title="Lancer">
+                <ion-icon slot="icon-only" name="play"></ion-icon>
+            </ion-button>
+            {% endif %}
+        </ion-buttons>
+    </ion-card-content>
     {% endif %}
-</div>
+</ion-card>

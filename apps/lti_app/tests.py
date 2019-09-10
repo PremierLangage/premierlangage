@@ -156,7 +156,7 @@ class LTITestCase(ActivityBaseTestMixin):
         self.assertEqual(response.status_code, 200)
         
         course = Activity.objects.all().filter(activity_type="course")[0]
-        activity = Activity.objects.get(activity_data__consumer_id=activity_id)
+        activity = Activity.objects.get(consumer_id=activity_id)
         self.assertEqual(activity.name, "name")
         self.assertEqual(activity.parent, course)
     
@@ -188,7 +188,7 @@ class LTITestCase(ActivityBaseTestMixin):
                           follow=True)
         self.assertEqual(response.status_code, 404)
         with self.assertRaises(Activity.DoesNotExist):
-            Activity.objects.get(activity_data__consumer_id=activity_id)
+            Activity.objects.get(consumer_id=activity_id)
     
     
     def test_add_activity_outcome(self):
@@ -221,7 +221,7 @@ class LTITestCase(ActivityBaseTestMixin):
         self.assertEqual(response.status_code, 200)
         
         user = User.objects.get(username='flastname')
-        activity = Activity.objects.get(activity_data__consumer_id=activity_id)
+        activity = Activity.objects.get(consumer_id=activity_id)
         outcome = ActivityOutcome.objects.get(activity=activity, user=user)
         
         self.assertEqual(outcome.url, "url")

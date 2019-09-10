@@ -4,4 +4,8 @@
 {% csrf_token %}
 <app-root></app-root>
 {% include 'editor/statics.html' %}
+<script>
+    const content = document.querySelector('.app-content');
+    content.classList.add('no-padding');
+</script>
 {% endblock %}

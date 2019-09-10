@@ -1,12 +1,15 @@
-.page-content {
-    padding: 0;
+.app-content {
+    --padding-top: 0px !important;
+    --padding-bottom: 0px !important;
+    --padding-start: 0px !important;
+    --padding-end: 0px !important;
 }
 
 .navigation-container {
     z-index: 10;
     position: fixed;
     width: 200px;
-    height: calc(100% - 44px);
+    height: calc(100% - 64px);
     border: 0;
     overflow-y: auto !important; 
     box-shadow: 1px 1px 12px #555;
@@ -43,6 +46,12 @@
 
 .navigation a {
     font-size: 14px;
+    margin: 0px !important;
+    border-radius: unset !important;
+}
+
+.navigation a.active {
+    border-right: 4px solid white !important;
 }
 
 .exercise {
