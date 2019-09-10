@@ -8,7 +8,7 @@ from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from filebrowser.models import Directory
-from filebrowser.utils import missing_parameter
+from shared.utils import missing_parameter
 
 
 FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))

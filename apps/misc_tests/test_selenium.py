@@ -80,7 +80,7 @@ class SeleniumTestCase(BaseSeleniumTestCase):
         window_before = self.b.window_handles[0]
         window_after = self.b.window_handles[1]
         self.b.switch_to.window(window_after)
-        
+        sleep(WAIT_TIME)
         self.answer_pl("1")
         self.assertTrue(self.get_e_by_text("Mauvaise réponse") is not None)
         self.answer_pl("2")

@@ -37,3 +37,14 @@
 .light-theme ion-footer {
     border-top: 1px solid var(--ion-border-color);
 }
+
+.light-theme ion-header ion-toolbar {
+    --ion-toolbar-background: #282c34;
+    --ion-toolbar-color: #ffffff;
+    --ion-text-color: #ffffff;
+    --ion-text-color-rgb: 255,255,255;
+}
+
+.light-theme ion-header ion-toolbar {
+    color: #ffffff;
+}

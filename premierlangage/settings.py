@@ -155,8 +155,12 @@ WSGI_APPLICATION = 'premierlangage.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME':   os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE':   'django.db.backends.postgresql',
+        'NAME':     'django_premierlangage',
+        'USER':     'django',
+        'PASSWORD': 'django_password',
+        'HOST':     '127.0.0.1',
+        'PORT':     '5432',
     }
 }
 

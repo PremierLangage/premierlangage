@@ -1,16 +1,11 @@
-<a class='course-item' href='activity/play/{{course.id}}'>
-    <div class='course-figure'>
-        <figure style='background-image: url("{{ static("activity/images/course.png") }}");'></figure>
-    </div>
-    <div class='course-content'>
-
-        <span class='course-name'>{{course.name}}</span>
-        <p class='course-label'>
-            {% if not course.activity_data.label %}
-            Aucune description disponible pour ce cours.
-            {% else %}
+<ion-card href='activity/play/{{course.id}}'>
+    <ion-img src="{{ static('activity/images/course.png') }}"></ion-img>
+    <ion-card-header>
+        {% if course.activity_data.label %}
+        <ion-card-subtitle>
             {{course.activity_data.label}}
-            {% endif %}
-        </p>
-    </div>
-</a>
+        </ion-card-subtitle>
+        {% endif %}
+        <ion-card-title>{{ course.name }}</ion-card-title>
+    </ion-card-header>
+</ion-card>

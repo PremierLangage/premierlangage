@@ -64,17 +64,6 @@
 
 }
 
-ion-header ion-toolbar {
-    --ion-toolbar-background: #343A40;
-    --ion-toolbar-color: #ffffff;
-    --ion-text-color: #ffffff;
-    --ion-text-color-rgb: 255,255,255;
-}
-
-ion-header ion-toolbar * {
-    color: #ffffff;
-}
-
 
 /* TEXT */
 .text-primary {
