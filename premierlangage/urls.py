@@ -31,5 +31,6 @@ urlpatterns = [
                   url(r'^filebrowser/', include('apps.filebrowser.urls', namespace='filebrowser')),
                   url(r'^profile/', include('apps.user_profile.urls', namespace="profile")),
                   url(r'^ask/', include('apps.qa.urls', namespace='ask')),
+                  url(r'^api/git/', include("apps.git.urls", namespace='git')),
                   url(r'^admin/', admin.site.urls),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

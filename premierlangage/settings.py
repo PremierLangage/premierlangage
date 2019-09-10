@@ -55,6 +55,7 @@ PROJECT_APPS = [
     'editor',
     'components',
     'activity',
+    'git',
 ]
 
 INSTALLED_APPS = PROJECT_APPS + PREREQ_APPS
@@ -154,10 +155,13 @@ WSGI_APPLICATION = 'premierlangage.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME':   os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 134217728
+
 # Update database configuration with $DATABASE_URL.
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
