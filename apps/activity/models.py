@@ -101,6 +101,9 @@ class Activity(LTIModel):
     def is_student(self, user):
         return user in self.student.all()
     
+    def add_parent(self, id):
+        self.parent = Activity.objects.get(id=id)
+    
     
     @classmethod
     def get_or_create_course_from_lti(cls, user, lti_launch):
@@ -326,3 +329,9 @@ class Index(models.Model):
             i.save()
         self.index = 0
         self.save()
+
+
+def ActivityIndex(Index):
+    parent = models.ForeignKey(Activity, on_delete=models.CASCADE)
+    child = models.ForeignKey(Activity, on_delete=models.CASCADE)
+    index = models.PositiveSmallIntegerField(blank=True)

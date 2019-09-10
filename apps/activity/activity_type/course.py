@@ -101,7 +101,8 @@ class Course(AbstractActivityType):
                                                    parent=activity)
         smalls = list()
         for item in activities:
-            smalls.append(item.small(request))
+            if item.open() or activity.is_teacher(user):
+                smalls.append(item.small(request))
         
         return render(request, "activity/activity_type/course/index.html", {
             'name':       activity.name,

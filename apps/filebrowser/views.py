@@ -605,7 +605,7 @@ def reload_pltp(request):
         path_components = path.split('/')
         directory = Directory.objects.get(name=path_components[0])
         relative = os.path.join(*(path_components[1:]))
-        pltp, warnings = rp(directory, relative, activity.pltp)
+        pltp, warnings = rp(directory, relative, activity)
         
         if not pltp and not warnings:  # pragma: no cover
             return HttpResponse("This PLTP is already loaded")
@@ -747,7 +747,7 @@ def test_pl(request):
 @require_POST
 def preview_pl(request):
     """ Used by the PL editor to preview a PL"""
-
+    
     post = json.loads(request.body.decode())
     exists = True
     path = post.get('path')
@@ -755,7 +755,7 @@ def preview_pl(request):
         exists = False
         path = os.path.join(HOME_DIR, str(uuid.uuid4()))
         path += '.pl'
-
+    
     content = post.get('content', '')
     
     path_components = path.split('/')
@@ -764,10 +764,10 @@ def preview_pl(request):
         path = os.path.join(settings.FILEBROWSER_ROOT, path)
         if exists:
             shutil.copyfile(path, path + ".bk")
-
+        
         with open(path, 'w+') as f:  # Writting editor content into the file
             print(content, file=f)
-
+        
         directory = Directory.objects.get(name=directory)
         relative = os.path.join(*(path_components[1:]))
         pl, warnings = load_file(directory, relative)
@@ -792,7 +792,7 @@ def preview_pl(request):
             shutil.move(path + ".bk", path)
         else:
             os.remove(path)
-
+        
         preview = get_template("filebrowser/preview.html").render({'preview': preview}, request)
         return HttpResponse(
             json.dumps({'preview': preview}),
@@ -845,7 +845,6 @@ def resolve_path(request):  # TODO ADD TEST
         return HttpResponse(os.path.join(directory, path))
     
     except Exception as e:
-        print(e)
         msg = "Impossible to resolve the path '" + request.GET.get(
             'target') + "' : " + htmlprint.code(str(type(e)) + ' - ' + str(e))
         if settings.DEBUG:

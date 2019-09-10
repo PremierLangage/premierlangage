@@ -66,7 +66,6 @@ def load_pl(directory, rel_path):
 
 def load_pltp(directory, rel_path):
     pltp, warnings = load_pla(directory, rel_path, type="pltp")
-    print(pltp.activity_data["__pl"])
     if not pltp.activity_data["__pl"]:
         raise MissingPL("Your PLTP must include at least one PL")
     return pltp, warnings
@@ -95,7 +94,6 @@ def load_pla(directory, rel_path, type=None):
         pass"""
     
     dic, warnings = parse_file(directory, rel_path)
-    
     pl_list = list()
     for item in dic['__pl']:
         pl_directory = Directory.objects.get(name=item['directory_name'])
@@ -106,14 +104,14 @@ def load_pla(directory, rel_path, type=None):
     for pl in pl_list:
         pl.save()
         logger.info("PL '" + str(pl.id) + " (" + pl.name + ")' has been added to the database")
+
     activity_type = type if type else dic["type"]
     pla = Activity.objects.create(name=name, activity_type=activity_type, activity_data=dic)
     logger.info("PLA '" + name + "' has been added to the database")
     
     for pl in pl_list:
         Index.objects.create(activity=pla, pl=pl)
-    
-    print(pla.activity_data)
+
     return pla, [htmlprint.code(warning) for warning in warnings]
 
 
@@ -135,7 +133,7 @@ def reload_pltp(directory, rel_path, original):
             pl, pl_warnings = load_pl(pl_directory, item['path'])
             warnings += pl_warnings
             pl_list.append(pl)
-        
+            
         originals = list(original.indexed_pl())
         original.pl.clear()
         for pl in pl_list:
@@ -149,15 +147,14 @@ def reload_pltp(directory, rel_path, original):
                 logger.info(
                     "PL '" + str(
                         correspond.id) + " (" + correspond.name + ")' has been updated.")
-                Index.objects.create(pltp=original, pl=correspond)
+                Index.objects.create(activity=original, pl=correspond)
             else:
                 pl.save()
                 logger.info("PL '" + str(pl.id) + " (" + pl.name + ")' has been created.")
-                Index.objects.create(pltp=original, pl=pl)
-        
+                Index.objects.create(activity=original, pl=pl)
         original.json = dic
         original.save()
-        logger.info("PLTP '" + original.sha1 + " (" + original.name + ")' has been updated.")
+        logger.info("Activity '" + original.name + "' has been reloaded.")
         
         return original, [htmlprint.code(warning) for warning in warnings]
     except Exception as e:  # pragma: no cover

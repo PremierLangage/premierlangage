@@ -110,7 +110,6 @@ def get_type(directory, path):
     ext = '.pl' if not ext else ext
     if ext in parsers:
         return parsers[ext]['type']
-    
     raise UnknownExtension(path, join(directory.name, path))
 
 

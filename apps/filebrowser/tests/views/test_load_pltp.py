@@ -10,8 +10,8 @@ from django.urls import reverse
 from filebrowser.models import Directory
 from filebrowser.utils import missing_parameter
 from loader.loader import load_file
+from misc_tests.activity_base_test_mixin import ActivityBaseTestMixin
 from activity.models import Activity
-
 
 FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
 
@@ -20,10 +20,12 @@ RES_DIR = os.path.join(settings.APPS_DIR, "filebrowser/tests/ressources/fake_fil
 
 
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
-class LoadPLTPTestCase(TestCase):
+class LoadPLTPTestCase(ActivityBaseTestMixin, TestCase):
     
     @classmethod
     def setUpTestData(cls):
+        super().setUpTestData()
+        Activity.objects.get(id=0)
         if os.path.isdir(FAKE_FB_ROOT):
             shutil.rmtree(FAKE_FB_ROOT)
         
@@ -60,11 +62,10 @@ class LoadPLTPTestCase(TestCase):
     
     def test_reload_pltp(self):
         pltp = load_file(self.dir, "working.pltp")[0]
-        a = Activity.objects.create(name=pltp.name, pltp=pltp)
         response = self.c.post(reverse("filebrowser:option"), {
             'name':        'reload_pltp',
             'path':        'Yggdrasil/working.pltp',
-            'activity_id': a.pk,
+            'activity_id': pltp.pk,
         }, content_type='application/json')
         self.assertContains(response, "recharg", status_code=200)
     

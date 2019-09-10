@@ -62,7 +62,6 @@ def evaluate(request, activity_id, pl_id):
                 pl=pl,
                 seed=exercise.context['seed']
             )
-            a_type.validate(activity, session, a, action="save")
             return HttpResponse(json.dumps({
                 "exercise":   None,
                 "navigation": None,
