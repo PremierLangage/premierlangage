@@ -22,6 +22,7 @@ class LTIModel(models.Model):
     consumer_id = models.CharField(max_length=200, null=True, blank=True)
     consumer = models.CharField(max_length=200, choices=CONSUMER, null=True, blank=True)
     
+    
     class Meta:
         abstract = True
         unique_together = ("consumer", "consumer_id")
@@ -33,6 +34,7 @@ class LTIOutcome(models.Model):
     url = models.CharField(max_length=300)
     sourcedid = models.CharField(max_length=300)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
     
     class Meta:
         abstract = True
@@ -67,7 +69,8 @@ class ActivityOutcome(LTIOutcome):
         try:
             return cls.objects.get(url=outcome_url, sourcedid=sourcedid), False
         except ActivityOutcome.DoesNotExist:
-            activity = Activity.objects.get(activity_data__consumer_id=activity_id, activity_data__consumer=consumer)
+            activity = Activity.objects.get(activity_data__consumer_id=activity_id,
+                                            activity_data__consumer=consumer)
             outcome = cls.objects.create(url=outcome_url, sourcedid=sourcedid,
                                          activity=activity, user=user)
             return outcome, True

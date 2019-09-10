@@ -101,6 +101,7 @@ class Activity(LTIModel):
     def is_student(self, user):
         return user in self.student.all()
     
+    
     def add_parent(self, id):
         self.parent = Activity.objects.get(id=id)
     
@@ -164,7 +165,7 @@ class Activity(LTIModel):
             raise Http404("Could not create Activity: on of these parameters are missing:"
                           + "[context_id, resource_link_id, resource_link_title, "
                             "oauth_consumer_key]")
-
+        
         updated = False
         try:
             activity, updated = cls.objects.get(activity_data__consumer_id=activity_id,
@@ -329,9 +330,3 @@ class Index(models.Model):
             i.save()
         self.index = 0
         self.save()
-
-
-def ActivityIndex(Index):
-    parent = models.ForeignKey(Activity, on_delete=models.CASCADE)
-    child = models.ForeignKey(Activity, on_delete=models.CASCADE)
-    index = models.PositiveSmallIntegerField(blank=True)
