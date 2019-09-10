@@ -1,12 +1,10 @@
 import json
 import os
-import re
 import shutil
 import subprocess
 import uuid
 from wsgiref.util import FileWrapper
 
-import gitcmd
 import htmlprint
 import requests
 from django.conf import settings
@@ -20,15 +18,14 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from filebrowser.filter import in_repository, is_root
+from activity.models import Activity
+from filebrowser.filter import is_root
 from filebrowser.models import Directory
-from filebrowser.utils import (HOME_DIR, LIB_DIR, exec_git_cmd, get_content, get_meta,
-                               join_fb_root, missing_parameter, repository_branch, repository_url,
-                               rm_fb_root, walkalldirs)
+from filebrowser.utils import (HOME_DIR, LIB_DIR, get_content, get_meta,
+                               join_fb_root, missing_parameter, rm_fb_root, walkalldirs)
 from loader.loader import load_file, reload_pltp as rp
 from loader.utils import get_location
 from playexo.models import SessionTest
-from activity.models import Activity
 
 
 
