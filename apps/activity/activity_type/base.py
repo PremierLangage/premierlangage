@@ -29,7 +29,7 @@ class Base(AbstractActivityType):
     def small(self, request, activity):
         """
         This method can be called by any parent activity to display something from this activity.
-        :return: A rendered template of the teacher dashboard
+        :return: A rendered template of a small summary
         """
         raise PermissionDenied()
     
@@ -37,7 +37,7 @@ class Base(AbstractActivityType):
     def small_sd(self, activity, session_activity):
         """
         This method is called when the small dashboard of an activity is requested for a student.
-        :return: A rendered template of the teacher dashboard
+        :return: A rendered template of the student dashboard
         """
         raise PermissionDenied()
     
@@ -50,10 +50,6 @@ class Base(AbstractActivityType):
         raise PermissionDenied()
     
     
-    def grading(self, activity, session):
-        pass
-    
-    
     def template(self, request, activity, session):
         """
         This method is called when the play view is called.
@@ -62,7 +58,7 @@ class Base(AbstractActivityType):
         activity_model = apps.get_model("activity", "Activity")
         courses = activity_model.objects.filter(Q(student=request.user) | Q(teacher=request.user),
                                                 parent=activity,
-                                                activity_type="course")
+                                                activity_type="course").distinct()
         small_courses = list()
         for item in courses:
             small_courses.append(item.small(request))
@@ -102,6 +98,9 @@ class Base(AbstractActivityType):
     
     
     def validate(self, activity, session, answer, feedback, action=""):
+        """ Must return a tuple: (feedback, to_be_saved), where the feedback can be modified by
+        the activity, and to_be_saved is a boolean that decide whether the answer will be saved
+        in the database or not"""
         pass
     
     

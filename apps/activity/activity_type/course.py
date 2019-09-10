@@ -45,7 +45,7 @@ class Course(AbstractActivityType):
         :return: A rendered template of the teacher dashboard
         """
         user = request.user
-        if user not in activity.student.all() and user not in activity.teacher.all():
+        if not activity.is_member(user):
             logger.warning(
                 "User '" + user.username + "' denied to access course'" + activity.name + "'.")
             raise PermissionDenied("Vous n'êtes pas membre de cette classe.")
@@ -57,7 +57,7 @@ class Course(AbstractActivityType):
     def small_sd(self, activity, session_activity):
         """
         This method is called when the small dashboard of an activity is requested for a student.
-        :return: A rendered template of the teacher dashboard
+        :return: A rendered template of the student dashboard
         """
         raise PermissionDenied()
     
@@ -68,10 +68,6 @@ class Course(AbstractActivityType):
         :return: A rendered template of the teacher dashboard
         """
         raise PermissionDenied()
-    
-    
-    def grading(self):
-        pass
     
     
     def template(self, request, activity: "apps.activity.models.Activity",
@@ -98,10 +94,10 @@ class Course(AbstractActivityType):
                 return redirect(reverse("activity:play", args=[activity.id]))
         
         activities = activity_model.objects.filter(Q(student=user) | Q(teacher=user),
-                                                   parent=activity)
+                                                   parent=activity).distinct()
         smalls = list()
         for item in activities:
-            if item.open() or activity.is_teacher(user):
+            if item.open or activity.is_teacher(user):
                 smalls.append(item.small(request))
         
         return render(request, "activity/activity_type/course/index.html", {
@@ -146,6 +142,9 @@ class Course(AbstractActivityType):
     
     
     def validate(self, activity, session, answer, feedback, action=""):
+        """ Must return a tuple: (feedback, to_be_saved), where the feedback can be modified by
+        the activity, and to_be_saved is a boolean that decide whether the answer will be saved
+        in the database or not"""
         pass
     
     
@@ -187,7 +186,7 @@ class Course(AbstractActivityType):
         activities = activity_model.objects.filter(teacher=user, parent=activity)
         
         students = list()
-        for st in activity.student.all():
+        for st in activity.student.all().distinct():
             tp = list()
             for a in activities:
                 if a.is_student(st):
@@ -205,9 +204,9 @@ class Course(AbstractActivityType):
                         'id':            a.id,
                     })
             students.append({
-                'lastname':   user.last_name,
-                'object':     user,
-                'id':         user.id,
+                'lastname':   st.last_name,
+                'object':     st,
+                'id':         st.id,
                 'activities': tp,
             })
         students = sorted(students, key=lambda k: k['lastname'])

@@ -1,168 +1,135 @@
-.app-header * {
-    font-size: 1rem;
+.app-header {
+    font-size: .9em;
 }
 
-.app-header__title {
+.app-title {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     margin-left: 16px;
+    align-items: first baseline;
 }
 
-.app-header__nav {
+.app-version {
+    font-size: 10px;
+    margin: 0 4px;
+}
+
+.app-nav {
     display: flex;
     flex: 1;
     margin: 0 16px;
 }
 
-.app-version {
-    font-size: 10px;
+.app-nav--mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100vw;
+    height: 100vh;
+    margin-top: 0px;
+    margin-top: -100vh;
+    transition: all .3s;
+}
+
+.app-nav-link {
+    text-transform: none;
+}
+
+.app-nav-icon {
+    margin-right: 4px;
 }
 
 .app-content {
     position: relative;
-    --padding-top: 0px;
-    --padding-bottom: 0px;
-    --padding-start: 0px;
-    --padding-end: 0px;
-}
-
-.app-content--padding {
     --padding-top: 2rem;
     --padding-bottom: 2rem;
-    --padding-start: 8rem;
-    --padding-end: 8rem;
+    --padding-start: 6rem;
+    --padding-end: 6rem;
 }
+
+.app-content.no-padding {
+    --padding-top: 0px !important;
+    --padding-bottom: 0px !important;
+    --padding-start: 0px !important;
+    --padding-end: 0px !important;
+}
+
 .app-spacer {
     flex-grow: 1;
 }
 
-.app-navlink {
-    text-transform: none;
+.app-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
 }
 
-.app-avatar {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
+.app-center-x {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
 }
 
-/* ionic toolbar */
-.toolbar-content {
+.app-center-y {
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.app-empty {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%,-50%);
     display: flex;
-    overflow-x: auto;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
 }
 
-.pointer {
-    cursor: pointer;
+.app-empty--fixed {
+    position: relative;
+    margin: 0 auto;
+    transform: unset;
+    left: unset;
+    top: unset;
 }
 
-
-a {
-    text-decoration: none;
+.app-empty-icon {
+    font-size: 48px;
 }
-
-a:hover {
-    text-decoration: none;
-    color: initial;
-}
-
-.container-messages {
-    z-index: 10; 
-    position: absolute; 
-    top: 16px; 
-    right: 16px; 
-    width: 320px; 
-    height: 400px; 
-    overflow: auto;
-}
-
-/* override material design lite font size */
-body {
-    font-size: 100%;
-  }
-  
-body, h1, h2, h3, h4, h5, h6 {
-    font-size-adjust: 0.5;
-}
-
-h1 {
-    font-size: 2em;
-    /* 2x body copy size = 32px */
-    line-height: 1.25;
-    /* 45px / 36px */
-  }
-  
-@media (min-width: 43.75em) {
-    h1 {
-      font-size: 2.5em;
-      /* 2.5x body copy size = 40px */
-      line-height: 1.125;
-    }
-}
-
-h2 {
-    font-size: 1.625em;
-    /* 1.625x body copy size = 26px */
-    line-height: 1.15384615;
-    /* 30px / 26px */
-}
-
-@media (min-width: 43.75em) {
-    h2 {
-        font-size: 2em;
-        /* 2x body copy size = 32px */
-        line-height: 1.25;
-    }
-}
-h3 {
-    font-size: 1.375em;
-    /* 1.375x body copy size = 22px */
-    line-height: 1.13636364;
-    /* 25px / 22px */
-}
-  
-@media (min-width: 43.75em) {
-    h3 {
-      font-size: 1.5em;
-      /* 1.5x body copy size = 24px */
-      line-height: 1.25;
-    }
-}
-  
-@media (min-width: 56.25em) {
-    h3 {
-      font-size: 1.75em;
-      /* 1.75x body copy size = 28px */
-      line-height: 1.25;
-    }
-}
-  
-
-h4 {
-    font-size: 1.125em;
-    /* 1.125x body copy size = 18px */
-    line-height: 1.11111111;
-  }
-  
-@media (min-width: 43.75em) {
-    h4 {
-      line-height: 1.22222222;
-      /* (22px / 18px */
-    }
-}
-  
-h5 { font-size: 0.83em; }
-h6 { font-size: 0.75em; }
 
 /* fix bootstrap rendering on chrome and safari */
 button, html [type="button"], [type="reset"], [type="submit"] {
     -webkit-appearance: none;
 }
 
+
 @media (max-width: 768px) {
-   
-    .page-content {
-        padding: 2rem 1rem;
+    .app-content {
+        --padding-top: 8px !important;
+        --padding-bottom: 8px !important;
+        --padding-start: 8px !important;
+        --padding-end: 8px !important;
     }
 
+    .app-nav-link {
+        font-size: 1.5em;
+    }
+
+    .app-nav-icon {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+        margin-right: 8px;
+    }
+
+    .app-empty-icon {
+        font-size: 32px;
+    }
 }
+
+

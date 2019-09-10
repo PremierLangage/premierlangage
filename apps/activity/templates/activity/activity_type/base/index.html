@@ -1,13 +1,22 @@
 {% extends "base.html" %}
-
 {% block css %}
 <link rel="stylesheet" href="{{ static('activity/css/courses.css') }}"/>
 {% endblock %}
-
 {% block content %}
-<h4>Cours</h4>
-<hr/>
-{% for item in course %}
-    {{ item }}
-{% endfor %}
+{% if course and course|length > 0 %}
+    <ion-grid fixed>
+        <ion-row>
+            {% for item in course %}
+            <ion-col size="12"  size-sm="6" size-lg="4">
+                {{ item }}
+            </ion-col>
+            {% endfor %}
+        </ion-row>
+    </ion-grid>
+{% else %}
+    <div class="app-empty">
+        <i class="app-empty-icon fas fa-graduation-cap"></i>
+        <h1 class="app-empty-title">Aucun cours à afficher</h1>
+    </div>
+{% endif %}
 {% endblock %}

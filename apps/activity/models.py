@@ -83,7 +83,7 @@ class Activity(LTIModel):
     
     
     def toggle_open(self, request):
-        if request.user not in self.teacher.all():
+        if not self.is_teacher(request.user):
             logger.warning("User '" + request.user.username
                            + "' denied to toggle course state'" + self.name + "'.")
             raise PermissionDenied(
@@ -100,6 +100,7 @@ class Activity(LTIModel):
     
     def is_student(self, user):
         return user in self.student.all()
+    
     
     def is_member(self, user):
         return self.is_teacher(user) or self.is_student(user)
@@ -125,16 +126,13 @@ class Activity(LTIModel):
             return None, False
         
         try:
-            course = cls.objects.get(activity_data__consumer_id=course_id,
-                                     activity_data__consumer=consumer)
+            course = cls.objects.get(consumer_id=course_id, consumer=consumer)
             created = False
         except cls.DoesNotExist:
-            data = {
-                "consumer":    consumer,
-                "consumer_id": course_id,
-                "label":       course_label
-            }
-            course = cls.objects.create(name=course_name, activity_data=data,
+            course = cls.objects.create(consumer=consumer, consumer_id=course_id, name=course_name,
+                                        activity_data={
+                                            "label": course_label
+                                        },
                                         activity_type="course")
             logger.info("New course created: %d - '%s' (%s:%s)"
                         % (course.pk, course.name, consumer, course_id))
@@ -171,8 +169,7 @@ class Activity(LTIModel):
         
         updated = False
         try:
-            activity, updated = cls.objects.get(activity_data__consumer_id=activity_id,
-                                                activity_data__consumer=consumer), updated
+            activity, updated = cls.objects.get(consumer_id=activity_id, consumer=consumer), updated
         except Activity.DoesNotExist:
             match = resolve(request.path)
             if not match.app_name or not match.url_name:
@@ -184,11 +181,10 @@ class Activity(LTIModel):
                 raise Http404("Activity could not be found.")
             activity = get_object_or_404(Activity, id=match.kwargs['activity_id'])
             if activity.activity_type != "course":
-                activity.activity_data["consumer_id"] = activity_id
-                activity.activity_data["consumer"] = consumer
+                activity.consumer_id = activity_id
+                activity.consumer = consumer
                 if activity.parent.id == 0:
-                    activity.parent = cls.objects.get(activity_data__consumer_id=course_id,
-                                                      activity_data__consumer=consumer)
+                    activity.parent = cls.objects.get(consumer_id=course_id, consumer=consumer)
                 updated = True
         
         for role in lti_launch["roles"]:

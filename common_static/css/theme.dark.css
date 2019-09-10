@@ -6,7 +6,7 @@
     --ion-color-dark-shade: #717171;
     --ion-color-dark-tint: #8d8d8d;
     
-    --ion-background-color: #292d33;
+    --ion-background-color: #000000;
     --ion-background-color-rgb: 0,0,0;
 
     --ion-text-color: #ffffff;
@@ -56,4 +56,16 @@
 
 .dark-theme ion-card {
     box-shadow: 0 4px 16px var(--ion-box-shadow-color);
+}
+
+
+.dark-theme ion-header ion-toolbar {
+    --ion-toolbar-background: #000000;
+    --ion-toolbar-color: #ffffff;
+    --ion-text-color: #ffffff;
+    --ion-text-color-rgb: 255,255,255;
+}
+
+.dark-theme ion-header ion-toolbar {
+    color: #ffffff;
 }
