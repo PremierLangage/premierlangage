@@ -88,7 +88,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     
     def test_filebrowser_preview(self):
         self.connect_to_filebrowser()
-        self.get_e_by_text("lib").click()
+        self.b.find_element_by_id("tree-node-lib").click()
         self.get_e_by_text("demo").click()
         self.get_e_by_text("static_add.pl").click()
         
@@ -114,7 +114,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     
     def test_filebrowser_pl(self):
         self.connect_to_filebrowser()
-        self.get_e_by_text("lib").click()
+        self.b.find_element_by_id("tree-node-lib").click()
         self.get_e_by_text("demo").click()
         e = self.get_e_by_text("static_add.pl")
         ActionChains(self.b).move_to_element(e).perform()
@@ -145,7 +145,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     
     def test_filebrowser_activity(self):
         self.connect_to_filebrowser()
-        self.get_e_by_text("lib").click()
+        self.b.find_element_by_id("tree-node-lib").click()
         self.get_e_by_text("demo").click()
         self.get_e_by_text("static_add.pl").click()
         self.get_e_by_text("NOTIFICATIONS").click()
@@ -153,7 +153,7 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         ActionChains(self.b).move_to_element(e).perform()
         
         sleep(WAIT_TIME)
-        self.b.find_element_by_id("node-option-load-pl-lib/demo/random_all.pltp").click()
+        self.b.find_element_by_id("node-option-load-pla-lib/demo/random_all.pltp").click()
         self.get_e_by_text(" OPEN                    ").click()
         
         sleep(WAIT_TIME)

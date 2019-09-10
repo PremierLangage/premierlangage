@@ -101,6 +101,9 @@ class Activity(LTIModel):
     def is_student(self, user):
         return user in self.student.all()
     
+    def is_member(self, user):
+        return self.is_teacher(user) or self.is_student(user)
+    
     
     def add_parent(self, id):
         self.parent = Activity.objects.get(id=id)

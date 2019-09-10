@@ -288,6 +288,7 @@ class SessionExercise(SessionExerciseAbstract):
         return self.render('playexo/pl.html', dic, request)
 
 
+
 class SessionTest(SessionExerciseAbstract):
     """Class representing the state of a PL inside of a SessionActivity.
     
@@ -394,7 +395,7 @@ class Answer(models.Model):
     
     
     @staticmethod
-    def pltp_state(activity, user):
+    def activity_state(activity, user):
         """Return a list of tuples (pl_id, state) where state follow pl_state() rules."""
         return [(pl.id, Answer.pl_state(pl, user)) for pl in activity.indexed_pl()]
     
@@ -449,42 +450,7 @@ class Answer(models.Model):
             dct = dict()
             dct['user_id'] = user.id
             for activity in course.activity_set.all():
-                dct['pl'] = Answer.pltp_state(activity, user)
+                dct['pl'] = Answer.activity_state(activity, user)
             lst.append(dct)
         
         return lst
-    
-    
-    @staticmethod
-    def user_course_summary(course, user):
-        """Give information about the completion of every PL of this
-            user in course as a dict of 5 tuples:
-            {
-                'succeeded':   [ % succeeded, nbr succeeded],
-                'part_succ':   [ % part_succ, nbr part_succ],
-                'failed':      [ % failed, nbr failed],
-                'started:      [ % started, nbr started],
-                'not_started': [ % not started, nbr not started],
-                'error':       [ % error, nbr error],
-            }
-            
-            All data are strings."""
-        state = {
-            State.SUCCEEDED:   [0.0, 0],
-            State.PART_SUCC:   [0.0, 0],
-            State.FAILED:      [0.0, 0],
-            State.STARTED:     [0.0, 0],
-            State.NOT_STARTED: [0.0, 0],
-            State.ERROR:       [0.0, 0],
-        }
-        
-        for activity in course.activity_set.all():
-            summary = Answer.pltp_summary(activity, user)
-            for k in summary:
-                state[k][1] += int(summary[k][1])
-        
-        nb_pl = max(sum([state[k][1] for k in state]), 1)
-        for k, v in state.items():
-            state[k] = [str(state[k][1] * 100 / nb_pl), str(state[k][1])]
-        
-        return state

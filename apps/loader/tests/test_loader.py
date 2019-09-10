@@ -59,7 +59,6 @@ class LoaderTestCase(ActivityBaseTestMixin):
             self.assertEqual(res[1], [])
             
             res = loader.load_file(self.dir, "working.pla")
-            print(res)
             self.assertEqual(type(res[0]), Activity)
             self.assertEqual(res[1], [])
             

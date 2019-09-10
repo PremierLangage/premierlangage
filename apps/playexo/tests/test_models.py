@@ -4,19 +4,16 @@ import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.db import IntegrityError
-from django.http import Http404
-from django.test import TestCase, override_settings
+from django.test import override_settings
 from django.test.client import RequestFactory
 
-from activity.models import Activity
-from classmanagement.models import Course
+from activity.models import Activity, SessionActivity
 from filebrowser.models import Directory
 from loader.loader import load_file
-from loader.models import PL, PLTP
+from misc_tests.activity_base_test_mixin import ActivityBaseTestMixin
 from playexo.enums import State
 from playexo.exception import BuildScriptError, SandboxError
-from playexo.models import Answer, SessionActivity, SessionExercise, SessionTest
+from playexo.models import Answer, SessionExercise, SessionTest
 from user_profile.enums import Role
 
 
@@ -33,10 +30,11 @@ class R:
 
 
 @override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
-class ModelTestCase(TestCase):
+class ModelTestCase(ActivityBaseTestMixin):
     
     @classmethod
     def setUpTestData(cls):
+        super().setUpTestData()
         cls.user = User.objects.create_user(username='user', password='12345')
         cls.user.profile.role = Role.ADMINISTRATOR
         dir_name = os.path.join(FAKE_FB_ROOT, "dir1")
@@ -52,75 +50,13 @@ class ModelTestCase(TestCase):
         cls.pl2.json['seed'] = 2
         cls.pl2.save()
         cls.pltp = load_file(cls.dir, "random_all.pltp")[0]
-        cls.pltp.save()
         cls.factory = RequestFactory()
-    
-    
-    # Test Activity
-    
-    def test_create_activity(self):
-        course = Course.objects.create(name="test", label="bidon", consumer="bidon",
-                                       consumer_id="bidon")
-        params = {
-            'resource_link_id':    1,
-            'resource_link_title': "An Activity",
-            'oauth_consumer_key':  course.consumer,
-            'context_id':          course.consumer_id,
-        }
-        with self.assertRaises(Http404):
-            Activity.get_or_create_from_lti(R(), params)
-        
-        Activity.objects.create(name="test", pltp=self.pltp, id=1)
-        activity = Activity.get_or_create_from_lti(R("/activity/play/1/"), params)
-        self.assertEqual(activity, (Activity.objects.get(pk=activity[0].pk), True))
-        
-        activity = Activity.get_or_create_from_lti(R("/activity/play/1/"), params)
-        self.assertEqual(activity, (Activity.objects.get(pk=activity[0].pk), False))
-        
-        params['context_id'] = None
-        with self.assertRaises(Http404):
-            Activity.get_or_create_from_lti(R(), params)
-    
-    
-    def test_reload_activity(self):
-        activity1 = Activity.objects.create(name="test", pltp=self.pltp)
-        activity2 = Activity.objects.create(name="test", parent=activity1,
-                                            pltp=PLTP.objects.create(sha1="", name="pltp test"))
-        sessionactivity1 = SessionActivity.objects.create(user=self.user, activity=activity1)
-        sessionactivity2 = SessionActivity.objects.create(user=self.user, activity=activity2)
-        activity1.reload()
-        with self.assertRaises(SessionActivity.DoesNotExist):
-            SessionActivity.objects.get(pk=sessionactivity1.pk)
-        with self.assertRaises(SessionActivity.DoesNotExist):
-            SessionActivity.objects.get(pk=sessionactivity2.pk)
-    
-    
-    # Test SessionActivity
-    
-    def test_sessionactivity_exercise(self):
-        activity = Activity.objects.create(name="test", pltp=self.pltp)
-        sessionactivity = SessionActivity.objects.create(user=self.user, activity=activity)
-        self.assertIs(None, sessionactivity.exercise().pl)
-        with self.assertRaises(IntegrityError):
-            sessionactivity.exercise(pl=PL(name="test", rel_path="doesnotexist"))
-    
-    
-    def test_sessionexercise_add_get_context(self):
-        activity = Activity.objects.create(name="test", pltp=self.pltp)
-        sessionactivity = SessionActivity.objects.create(user=self.user, activity=activity)
-        sessionexercise = SessionExercise.objects.create(session_activity=sessionactivity)
-        sessionexercise.add_to_context("a.b.c", 4)
-        self.assertEqual(4, sessionexercise.get_from_context("a.b.c"))
-        self.assertEqual(False, sessionexercise.get_from_context("b"))
-        with self.assertRaises(KeyError):
-            sessionexercise.add_to_context("a.", False)
     
     
     # Test SessionExercise
     
     def test_sessionexercise_reroll(self):
-        activity = Activity.objects.create(name="test", pltp=self.pltp)
-        sessionactivity = SessionActivity.objects.create(user=self.user, activity=activity)
+        sessionactivity = SessionActivity.objects.create(user=self.user, activity=self.pltp)
         sessionexercise = SessionExercise.objects.create(session_activity=sessionactivity)
         self.assertEqual(sessionexercise.reroll(None), True)
         self.assertEqual(sessionexercise.reroll(1.), False)
@@ -132,8 +68,7 @@ class ModelTestCase(TestCase):
     
     
     def test_sessionexercise_build(self):
-        activity = Activity.objects.create(name="test", pltp=self.pltp)
-        s_activity = SessionActivity.objects.create(user=self.user, activity=activity)
+        s_activity = SessionActivity.objects.create(user=self.user, activity=self.pltp)
         
         s_exercise = SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         s_exercise.build(R())
@@ -154,8 +89,7 @@ class ModelTestCase(TestCase):
     
     
     def test_sessionexercise_eval(self):
-        activity = Activity.objects.create(name="test", pltp=self.pltp)
-        s_activity = SessionActivity.objects.create(user=self.user, activity=activity)
+        s_activity = SessionActivity.objects.create(user=self.user, activity=self.pltp)
         
         s_exercise = SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         e = s_exercise.evaluate(R(user=self.user),
@@ -182,48 +116,12 @@ class ModelTestCase(TestCase):
     
     
     def test_sessionexercice_get_pl(self):
-        activity = Activity.objects.create(name="test", pltp=self.pltp)
-        s_activity = SessionActivity.objects.create(user=self.user, activity=activity)
+        s_activity = SessionActivity.objects.create(user=self.user, activity=self.pltp)
         s_exercice = SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         Answer.objects.create(pl=self.pl, user=self.user, grade=10)
         
         res = s_exercice.get_pl(self.factory.get(""), {"test": "test"})
         self.assertIn("Quentin Coumes", res)
-    
-    
-    def test_sessionexercice_get_exercise(self):
-        activity = Activity.objects.create(name="test", pltp=self.pltp)
-        s_activity = SessionActivity.objects.create(user=self.user, activity=activity)
-        s_exercice = SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
-        
-        res = s_exercice.get_exercise(self.factory.get(""))
-        self.assertIn("Quentin Coumes", res)
-        
-        s_exercice = SessionExercise.objects.create(session_activity=s_activity)
-        
-        req = self.factory.get("")
-        req.user = self.user
-        res = s_exercice.get_exercise(req)
-        self.assertIn("Random add", res)
-    
-    
-    def test_sessionexercice_get_navigation(self):
-        activity = Activity.objects.create(name="test", pltp=self.pltp)
-        s_activity = SessionActivity.objects.create(user=self.user, activity=activity)
-        s_exercice = SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
-        
-        res = s_exercice.get_navigation(self.factory.get(""))
-        self.assertIn("navigation", res)
-    
-    
-    def test_sessionexercice_get_context(self):
-        activity = Activity.objects.create(name="test", pltp=self.pltp)
-        s_activity = SessionActivity.objects.create(user=self.user, activity=activity)
-        s_exercice = SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
-        
-        res = s_exercice.get_context(self.factory.get(""))
-        self.assertIn("exercise", res)
-        self.assertIs(type(res), dict)
     
     
     # Test Answer
@@ -246,38 +144,29 @@ class ModelTestCase(TestCase):
         self.assertIs(Answer.pl_state(self.pl, self.user), State.NOT_STARTED)
         Answer.objects.create(pl=self.pl, user=self.user, grade=10)
         self.assertEqual(Answer.pl_state(self.pl, self.user), State.PART_SUCC)
-    
-    
-    def test_pl_state(self):
-        self.assertEqual(Answer.pltp_state(self.pltp, self.user),
+        self.assertEqual(Answer.activity_state(self.pltp, self.user),
                          [(self.pltp.indexed_pl()[0].id, State.NOT_STARTED),
                           (self.pltp.indexed_pl()[1].id, State.NOT_STARTED)])
         Answer.objects.create(pl=self.pltp.indexed_pl()[0], user=self.user, grade=10)
-        self.assertEqual(Answer.pltp_state(self.pltp, self.user),
+        self.assertEqual(Answer.activity_state(self.pltp, self.user),
                          [(self.pltp.indexed_pl()[0].id, State.PART_SUCC),
                           (self.pltp.indexed_pl()[1].id, State.NOT_STARTED)])
     
     
-    def test_pltp_summary(self):
-        self.assertEqual(Answer.pltp_summary(self.pltp, self.user)[State.NOT_STARTED],
+    def test_activity_summary(self):
+        self.assertEqual(Answer.activity_summary(self.pltp, self.user)[State.NOT_STARTED],
                          ['100.0', '2'])
         Answer.objects.create(pl=self.pltp.indexed_pl()[0], user=self.user, grade=10)
-        self.assertEqual(Answer.pltp_summary(self.pltp, self.user)[State.PART_SUCC], ['50.0', '1'])
+        self.assertEqual(Answer.activity_summary(self.pltp, self.user)[State.PART_SUCC],
+                         ['50.0', '1'])
     
     
     def test_course_state(self):
-        course = Course.objects.create(name="test", label="test")
+        course = Activity.objects.create(name="test", activity_data={"label": "test"},
+                                         activity_type="course")
         course.student.add(self.user)
-        Activity.objects.create(name="test", pltp=self.pltp, course=course)
+        Activity.objects.create(name="test", activity_type="pltp", parent=course)
         self.assertEqual(Answer.course_state(course)[0]['user_id'], self.user.id)
-    
-    
-    def test_user_course_summary(self):
-        course = Course.objects.create(name="test", label="test")
-        course.student.add(self.user)
-        Activity.objects.create(name="test", pltp=self.pltp, course=course)
-        self.assertEqual(Answer.user_course_summary(course, self.user)[State.NOT_STARTED],
-                         ['100.0', '2'])
     
     
     # Test SessionTest
