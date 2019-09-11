@@ -98,7 +98,7 @@ class Course(AbstractActivityType):
                 return redirect(reverse("activity:play", args=[activity.id]))
         
         activities = activity_model.objects.filter(Q(student=user) | Q(teacher=user),
-                                                   parent=activity)
+                                                   parent=activity).distinct()
         smalls = list()
         for item in activities:
             if item.open or activity.is_teacher(user):

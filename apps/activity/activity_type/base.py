@@ -62,9 +62,10 @@ class Base(AbstractActivityType):
         activity_model = apps.get_model("activity", "Activity")
         courses = activity_model.objects.filter(Q(student=request.user) | Q(teacher=request.user),
                                                 parent=activity,
-                                                activity_type="course")
+                                                activity_type="course").distinct()
         small_courses = list()
         for item in courses:
+            print(item)
             small_courses.append(item.small(request))
         return render(request, "activity/activity_type/base/index.html", {"course": small_courses})
     
