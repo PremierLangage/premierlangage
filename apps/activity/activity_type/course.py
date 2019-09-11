@@ -186,7 +186,7 @@ class Course(AbstractActivityType):
         activities = activity_model.objects.filter(teacher=user, parent=activity)
         
         students = list()
-        for st in activity.student.all():
+        for st in activity.student.all().distinct():
             tp = list()
             for a in activities:
                 if a.is_student(st):
@@ -204,9 +204,9 @@ class Course(AbstractActivityType):
                         'id':            a.id,
                     })
             students.append({
-                'lastname':   user.last_name,
-                'object':     user,
-                'id':         user.id,
+                'lastname':   st.last_name,
+                'object':     st,
+                'id':         st.id,
                 'activities': tp,
             })
         students = sorted(students, key=lambda k: k['lastname'])
