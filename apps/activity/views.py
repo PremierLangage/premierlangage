@@ -26,6 +26,10 @@ def add_activity(request, activity_id):
     if not activity.is_teacher(request.user):
         raise PermissionDenied("Vous n'êtes pas enseignant de ce cours")
     to_add.add_parent(activity)
+    for student in activity.student.all():
+        to_add.student.add(student)
+    for teacher in activity.teacher.all():
+        to_add.teacher.add(teacher)
     return redirect(reverse("activity:play", args=[activity_id]))
     
 
