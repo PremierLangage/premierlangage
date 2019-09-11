@@ -1,0 +1,143 @@
+.app-header {
+    font-size: .9em;
+}
+
+.app-title {
+    display: flex;
+    flex-direction: row;
+    margin-left: 16px;
+    align-items: first baseline;
+}
+
+.app-version {
+    font-size: 10px;
+    margin: 0 4px;
+}
+
+.app-nav {
+    display: flex;
+    flex: 1;
+    margin: 0 16px;
+}
+
+.app-nav--mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100vw;
+    height: 100vh;
+    margin-top: 0px;
+    margin-top: -100vh;
+    transition: all .3s;
+}
+
+.app-nav-link {
+    text-transform: none;
+}
+
+.app-nav-icon {
+    margin-right: 4px;
+}
+
+.app-content {
+    position: relative;
+    --padding-top: 2rem;
+    --padding-bottom: 2rem;
+    --padding-start: 6rem;
+    --padding-end: 6rem;
+}
+
+.app-spacer {
+    flex-grow: 1;
+}
+
+.app-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.app-center-x {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.app-center-y {
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.app-empty {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 100%;
+    height: 100%;
+    transform: translate(-50%,-50%);
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.app-empty--fixed {
+    position: relative;
+    margin: 0 auto;
+    transform: unset;
+    left: unset;
+    top: unset;
+}
+
+.app-empty-icon {
+    font-size: 48px;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.container-messages {
+    z-index: 10; 
+    position: absolute; 
+    top: 16px; 
+    right: 16px; 
+    width: 320px; 
+    height: 400px; 
+    overflow: auto;
+}
+
+
+/* fix bootstrap rendering on chrome and safari */
+button, html [type="button"], [type="reset"], [type="submit"] {
+    -webkit-appearance: none;
+}
+
+
+@media (max-width: 768px) {
+    .app-content {
+        --padding-top: 8px !important;
+        --padding-bottom: 8px !important;
+        --padding-start: 8px !important;
+        --padding-end: 8px !important;
+    }
+
+    .app-nav-link {
+        font-size: 1.5em;
+    }
+
+    .app-nav-icon {
+        font-size: 24px;
+        width: 24px;
+        height: 24px;
+        margin-right: 8px;
+    }
+
+    .app-empty-icon {
+        font-size: 32px;
+    }
+}
+
+

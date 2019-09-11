@@ -1,54 +1,32 @@
 {% extends "base.html" %}
-
-
-
 {% block css %}
-<link rel="stylesheet" href="{{ static('activity/css/block_chart.css') }}"/>
-<link rel="stylesheet" href="{{ static('activity/css/classmanagement.css') }}"/>
+<link rel="stylesheet" href="{{ static('activity/css/courses.css') }}"/>
 {% endblock %}
-
 {% block content %}
-<div class="container">
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <h4>{{course_name}}: {{ firstof(student.get_full_name(), student.username) }}</h4>
-            <hr>
-            <div class="course-instructor-action">
-                <a href="/activity/dashboard/course_id/">Retour</a><br><br>
-            </div>
-            <table class="table">
-                <thead>
-                    <tr style='display: flex;'>
-                        {% for item in state %}
-                        <th style='display: flex;'>
-                            <div class="block course-block {{item.template}}"
-                                 style="width: 20px; height: 20px;"></div>&emsp;{{item}}
-                        </th>
-                        {% endfor %}
-                    </tr>
-                </thead>
-            </table>
+<ion-card>
+    <ion-card-header>
+        <ion-card-title>{{course_name}}: {{ firstof(student.get_full_name(), student.username) }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+        <section>
             <div class="table-responsive table-hover summary-table">
                 <table class="table">
                     <thead>
                         <tr>
-                            <th class="student-th">Activité</th>
-                            <th colspan='100'>
-                                <center>Questions</center>
-                            </th>
+                            <th>Activité</th>
+                            <th colspan='100'> <center>Questions</center> </th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for elem in activities %}
                         <tr>
-                            <td class="summary-td"><a
-                                    href="/courses/course/{{course_id}}/{{elem.id}}/summary/">{{
-                                elem.name }}</a></td>
+                            <td class="summary-td">
+                                <span>{{ elem.name }}</span>
+                            </td>
                             {% for item in elem.pl %}
                             <center>
-                                <td class="summary-pl">
-                                    <div class="block course-block {{item.state.template}}"><p>{{
-                                        item.name }}</p></div>
+                                <td>
+                                    <div class="block course-block {{item.state.template}}"><p>{{item.name }}</p></div>
                                 </td>
                             </center>
                             {% endfor %}
@@ -58,7 +36,16 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
-</div>
+        </section>
+        <section>
+            <h2>Légende</h2>
+            {% for item in state %}
+                <div  style="display: flex">
+                    <div class="block course-block {{ item.template }}" style="width: 20px; height: 20px;"></div>
+                    <span>{{ item }}</span>
+                </div>
+            {% endfor %}
+        </section>
+    </ion-card-content>
+</ion-card>
 {% endblock %}

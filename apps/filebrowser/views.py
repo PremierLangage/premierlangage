@@ -22,7 +22,8 @@ from activity.models import Activity
 from filebrowser.filter import is_root
 from filebrowser.models import Directory
 from filebrowser.utils import (HOME_DIR, LIB_DIR, get_content, get_meta,
-                               join_fb_root, missing_parameter, rm_fb_root, walkalldirs)
+                               join_fb_root, rm_fb_root, walkalldirs)
+from shared.utils import missing_parameter
 from loader.loader import load_file, reload_pltp as rp
 from loader.utils import get_location
 from playexo.models import SessionTest

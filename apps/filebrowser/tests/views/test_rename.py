@@ -8,7 +8,7 @@ from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
 from filebrowser.models import Directory
-from filebrowser.utils import missing_parameter
+from shared.utils import missing_parameter
 
 
 RES_DIR = os.path.join(settings.APPS_DIR, "filebrowser/tests/ressources/fake_filebrowser_data/")

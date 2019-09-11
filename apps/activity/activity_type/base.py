@@ -65,7 +65,6 @@ class Base(AbstractActivityType):
                                                 activity_type="course").distinct()
         small_courses = list()
         for item in courses:
-            print(item)
             small_courses.append(item.small(request))
         return render(request, "activity/activity_type/base/index.html", {"course": small_courses})
     
