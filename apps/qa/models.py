@@ -6,7 +6,6 @@ from django.db.models import F
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.utils.text import slugify
-from django_markdown.models import MarkdownField
 from hitcount.models import HitCountMixin
 from taggit.managers import TaggableManager
 
@@ -22,7 +21,7 @@ class QAQuestion(models.Model, HitCountMixin, DateMixin):
     """Model class to contain every question in the forum"""
     slug = models.SlugField(max_length=200)
     title = models.CharField(max_length=200, blank=False)
-    description = MarkdownField()
+    description = models.TextField()
     pub_date = models.DateTimeField('date published', auto_now_add=True)
     update_date = models.DateTimeField('date updated', null=True)
     update_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL,
@@ -71,7 +70,7 @@ class QAAnswer(models.Model, DateMixin):
     """Model class to contain every answer in the forum and to link it
     to the proper question."""
     question = models.ForeignKey(QAQuestion, on_delete=models.CASCADE)
-    answer_text = MarkdownField()
+    answer_text = models.TextField()
     pub_date = models.DateTimeField('date published', auto_now_add=True)
     update_date = models.DateTimeField('date updated', null=True)
     update_user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL,

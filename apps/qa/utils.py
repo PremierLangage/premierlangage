@@ -9,7 +9,7 @@ EPOCH = pytz.timezone(settings.TIME_ZONE).localize(datetime(1970, 1, 1))
 
 
 
-def epoch_seconds(date):
+def epoch_seconds(date:datetime) -> float:
     td = date - EPOCH
     return td.days * 86400 + td.seconds + (float(td.microseconds) / 1000000)
 

@@ -3,10 +3,10 @@ from functools import reduce
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.paginator import Paginator
 from django.db import models
 from django.db.models import Count, Q
-from django.http import Http404, HttpResponseBadRequest
+from django.forms import model_to_dict
+from django.http import Http404, HttpResponseBadRequest, JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -14,6 +14,7 @@ from django.views.generic import View
 from django_http_method import HttpMethodMixin
 from hitcount.models import HitCount
 from hitcount.views import HitCountMixin
+from django.core import serializers
 
 from qa.models import (QAAnswer, QAAnswerComment, QAAnswerVote, QAQuestion, QAQuestionComment,
                        QAQuestionVote)
@@ -33,7 +34,7 @@ class IndexView(View):
     
     def get(self, request):
         tag = request.GET.get('tag')
-        page = request.GET.get('page')
+        page = request.GET.get('page', 0)
         query = request.GET.get('query')
         active = request.GET.get('active', 'questions')
         
@@ -79,15 +80,12 @@ class IndexView(View):
         if request.user.is_authenticated:
             usersq = usersq.annotate(num_answers=Count('qaanswer', distinct=True))
         
-        return render(request, self.template_name, {
-            "questions": Paginator(questions, self.question_per_page).get_page(page if page else 1),
-            "noans":     Paginator(noans, self.question_per_page).get_page(page if page else 1),
-            "usersq":    Paginator(usersq, self.question_per_page).get_page(page if page else 1),
-            "popular":   Paginator(popular, self.question_per_page).get_page(page if page else 1),
-            "query":     query if query else "",
-            'rights':    settings.QA_SETTINGS['right'],
-            'active':    active,
-            'tag_q':     tag,
+        return JsonResponse( {
+            "questions": serializers.serialize("json", questions[20*page:20*page+20]),
+            "noans":     serializers.serialize("json", noans[20*page:20*page+20:]),
+            "usersq":    serializers.serialize("json", usersq[20*page:20*page+20]),
+            "popular":   serializers.serialize("json", popular[20*page:20*page+20]),
+        
         })
 
 
@@ -112,8 +110,9 @@ class QuestionView(HttpMethodMixin, View):
         question.save()
         question.tags.set(*tags)
         question.save()
+        return JsonResponse(model_to_dict(question))
         
-        return redirect(reverse('ask:question', args=[question.pk]))
+        #return redirect(reverse('ask:question', args=[question.pk]))
     
     
     def patch(self, request, pk):
@@ -133,14 +132,14 @@ class QuestionView(HttpMethodMixin, View):
         params['update_user'] = request.user
         question.update(**params)
         
-        return redirect(reverse('ask:question', args=[pk]))
+        return JsonResponse(model_to_dict(question))
     
     
     def delete(self, request, pk):
         """Delete a question"""
         question = get_object_or_404(QAQuestion, pk=pk)
         question.delete()
-        return redirect(reverse('ask:index'))
+        return HttpResponse()
     
     
     def get(self, request, pk):
@@ -149,12 +148,14 @@ class QuestionView(HttpMethodMixin, View):
         HitCountMixin.hit_count(request, HitCount.objects.get_for_object(question))
         answers = question.qaanswer_set.all().order_by('-points')
         
-        return render(request, self.template_name, {
-            'question':   question,
-            'answers':    answers,
-            'num_answer': len(answers),
-            'rights':     settings.QA_SETTINGS['right'],
+        return JsonResponse({
+            "question": model_to_dict(question),
+            "answers": serializers.serialize("json", answers),
+            "num_answer": len(answers),
+            "rigths": serializers.serialize("json", settings.QA_SETTINGS['right']),
+    
         })
+        
 
 
 
@@ -175,7 +176,7 @@ class AnswerView(HttpMethodMixin, View):
         answer = QAAnswer(question=question, answer_text=answer_text, user=request.user)
         answer.save()
         
-        return redirect(reverse('ask:question', args=[question.pk]))
+        return JsonResponse(model_to_dict(answer))
     
     
     def patch(self, request, pk):
@@ -202,7 +203,7 @@ class AnswerView(HttpMethodMixin, View):
                 answer[0].question.user.profile.mod_rep(-REPUTATION['ANSWER_ACCEPTED'] // 2)
                 answer[0].user.profile.mod_rep(-REPUTATION['ANSWER_ACCEPTED'])
         
-        return redirect(reverse('ask:question', args=[answer[0].question.pk]))
+        return JsonResponse(model_to_dict(answer))
     
     
     def delete(self, request, pk):
@@ -210,7 +211,7 @@ class AnswerView(HttpMethodMixin, View):
         answer = get_object_or_404(QAAnswer, pk=pk)
         question_pk = answer.question.pk
         answer.delete()
-        return redirect(reverse('ask:question', args=[question_pk]))
+        return HttpResponse()
 
 
 
@@ -238,13 +239,15 @@ class AbstractCommentView(HttpMethodMixin):
         if not comment_text:
             return HttpResponseBadRequest()
         
-        self.model(**{
+        comment = self.model(**{
             'user':                request.user,
             'comment_text':        comment_text,
             self.foreign_rel_name: foreign,
-        }).save()
+        })
         
-        return redirect(reverse('ask:question', args=[question_pk]))
+        comment.save()
+        
+        return JsonResponse(model_to_dict(comment))
     
     
     def patch(self, request, question_pk, pk):
@@ -266,14 +269,14 @@ class AbstractCommentView(HttpMethodMixin):
         params['update_user'] = request.user
         comment.update(**params)
         
-        return redirect(reverse('ask:question', args=[question_pk]))
+        return JsonResponse(model_to_dict(comment))
     
     
     def delete(self, request, question_pk, pk):
         """Delete a comment"""
         comment = get_object_or_404(self.model, pk=pk)
         comment.delete()
-        return redirect(reverse('ask:question', args=[question_pk]))
+        return HttpResponse()
 
 
 
@@ -303,8 +306,10 @@ class AbstractVoteView:
     foreign_rel_name = "foreign"
     
     
-    def get(self, request, question_pk, pk=None):
+    def post(self, request, question_pk, pk=None):
         """Create a vote.
+        
+        Returns true if vote is incremented, false otherwise
         
         Parameters:
             question_pk - Primary Key of the question to which the request will be redirected.
@@ -315,7 +320,7 @@ class AbstractVoteView:
         # TODO: 1) necessity for question_pk and improve user experience.
         # TODO: 2) Use POST method instead of GET
         """
-        vote = request.GET.get('vote')
+        vote = request.POST.get('vote')
         if not vote:
             return HttpResponseBadRequest()
         
@@ -335,7 +340,7 @@ class AbstractVoteView:
                 'value':               value,
             })
         
-        return redirect(reverse('ask:question', args=[question_pk]))
+        return JsonResponse(value,safe=False)
 
 
 
