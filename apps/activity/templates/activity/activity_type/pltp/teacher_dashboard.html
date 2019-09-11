@@ -9,46 +9,33 @@
     </ion-card-header>
     <ion-card-content>
         <section>
-            <div class="table-responsive table-hover summary-table">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th class="student-th">Élève</th>
-                            {% for i in range_tp %}
-                            <th>
-                                <center>{% if loop.counter < 10 %}&nbsp;{% endif %}{{
-                                    loop.counter }}{% if loop.counter < 10 %}&nbsp;{% endif %}
-                                </center>
-                            </th>
-                            {% endfor %}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for elem in student %}
-                        <tr>
+            <table>
+                <thead> <tr> <th>Élève</th> </tr> </thead>
+                <tbody>
+                    {% for elem in student %}
+                    <tr>
+                        <td>
+                            <ion-chip color="primary" outline="true">
+                                <ion-icon name="contact"></ion-icon>
+                                <ion-label> {{ firstof(elem.object.get_full_name(), elem.object.username) }}</ion-label>
+                            </ion-chip>
+                        </td>
+                        {% for item in elem.question %}
                             <td>
-                                <ion-chip outline="true">
-                                    <ion-icon name="contact"></ion-icon>
-                                    <ion-label> {{ firstof(elem.object.get_full_name(), elem.object.username) }}</ion-label>
-                                </ion-chip>
+                                <div class="block {{item.state.template}}"><p>{{ item.name }}</p></div>
                             </td>
-                            {% for item in elem.question %}
-                                <td>
-                                    <div class="block course-block {{item.state.template}}"><p>{{ item.name }}</p></div>
-                                </td>
-                            {% endfor %}
-                        </tr>
                         {% endfor %}
-                        <tr>
-                    </tbody>
-                </table>
-            </div>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                </tbody>
+            </table>
         </section>
         <section>
             <h2>Légende</h2>
             {% for item in state %}
-                <div  style="display: flex">
-                    <div class="block course-block {{ item.template }}" style="width: 20px; height: 20px;"></div>
+                <div style="display: flex">
+                    <div class="block {{ item.template }}" style="width: 20px; height: 20px;"></div>
                     <span>{{ item }}</span>
                 </div>
             {% endfor %}

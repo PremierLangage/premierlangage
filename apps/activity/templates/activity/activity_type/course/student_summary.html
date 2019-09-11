@@ -9,39 +9,37 @@
     </ion-card-header>
     <ion-card-content>
         <section>
-            <div class="table-responsive table-hover summary-table">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Activité</th>
-                            <th colspan='100'> <center>Questions</center> </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for elem in activities %}
-                        <tr>
-                            <td class="summary-td">
-                                <span>{{ elem.name }}</span>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Activité</th>
+                        <th colspan='100'>Questions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for elem in activities %}
+                    <tr>
+                        <td class="summary-td">
+                            <span>{{ elem.name }}</span>
+                        </td>
+                        {% for item in elem.pl %}
+                        <center>
+                            <td>
+                                <div class="block {{item.state.template}}"><p>{{item.name }}</p></div>
                             </td>
-                            {% for item in elem.pl %}
-                            <center>
-                                <td>
-                                    <div class="block course-block {{item.state.template}}"><p>{{item.name }}</p></div>
-                                </td>
-                            </center>
-                            {% endfor %}
-                        </tr>
+                        </center>
                         {% endfor %}
-                        <tr>
-                    </tbody>
-                </table>
-            </div>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                </tbody>
+            </table>
         </section>
         <section>
             <h2>Légende</h2>
             {% for item in state %}
                 <div  style="display: flex">
-                    <div class="block course-block {{ item.template }}" style="width: 20px; height: 20px;"></div>
+                    <div class="block {{ item.template }}" style="width: 20px; height: 20px;"></div>
                     <span>{{ item }}</span>
                 </div>
             {% endfor %}

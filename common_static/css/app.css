@@ -47,6 +47,13 @@
     --padding-end: 6rem;
 }
 
+.app-content.no-padding {
+    --padding-top: 0px !important;
+    --padding-bottom: 0px !important;
+    --padding-start: 0px !important;
+    --padding-end: 0px !important;
+}
+
 .app-spacer {
     flex-grow: 1;
 }
@@ -94,21 +101,6 @@
 .app-empty-icon {
     font-size: 48px;
 }
-
-.pointer {
-    cursor: pointer;
-}
-
-.container-messages {
-    z-index: 10; 
-    position: absolute; 
-    top: 16px; 
-    right: 16px; 
-    width: 320px; 
-    height: 400px; 
-    overflow: auto;
-}
-
 
 /* fix bootstrap rendering on chrome and safari */
 button, html [type="button"], [type="reset"], [type="submit"] {

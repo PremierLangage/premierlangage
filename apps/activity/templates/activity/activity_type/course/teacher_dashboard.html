@@ -9,57 +9,54 @@
     </ion-card-header>
     <ion-card-content>
         <section>
-            <div class="table-responsive table-hover">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th class="border border-0">Élève</th>
-                            <th colspan="100" class="border"><center>Activités</center></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for stud in student %}
-                        <tr>
-                            <td>
-                                <a href="/activity/dashboard/{{ course_id }}/?studentid={{ stud.id }}">
-                                    <ion-chip outline="true">
-                                        <ion-icon name="contact"></ion-icon>
-                                        <ion-label>
-                                            {{ firstof(stud.object.get_full_name(), stud.object.username) }}
-                                            {% if stud.object.email %} - &lt;{{ stud.object.email }}&gt; {% endif %}
-                                        </ion-label>
-                                    </ion-chip>
-                                </a>
-                            </td>
-                            {% for activity in stud.activities %}
-                            <td>
-                                <p>{{ activity.name }}</p>
-                                <a class="progress progress-summary"
-                                    href="/activity/dashboard/{{ activity.id }}/">
-                                    {% for item in activity.state %}
-                                        <div class="progress-bar {{ item.class }}"
-                                                role="progressbar"
-                                                style="width: {{ item.percent }}%"
-                                                aria-valuenow="{{ item.percent }}"
-                                                aria-valuemin="0"
-                                                aria-valuemax="100">{{ item.count }}
-                                        </div>
-                                    {% endfor %}
-                                </a>
-                            </td>
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
+            <table>
+                <thead>
                     <tr>
-                    </tbody>
-                </table>
-            </div>
+                        <th>Élève</th>
+                        <th colspan="100">Activités</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for stud in student %}
+                    <tr>
+                        <td>
+                            <a href="/activity/dashboard/{{ course_id }}/?studentid={{ stud.id }}">
+                                <ion-chip color="primary" outline="true" color="primary">
+                                    <ion-icon name="contact"></ion-icon>
+                                    <ion-label>
+                                        {{ firstof(stud.object.get_full_name(), stud.object.username) }}
+                                        {% if stud.object.email %} - &lt;{{ stud.object.email }}&gt; {% endif %}
+                                    </ion-label>
+                                </ion-chip>
+                            </a>
+                        </td>
+                        {% for activity in stud.activities %}
+                        <td>
+                            <p>{{ activity.name }}</p>
+                            <a class="progress progress-summary" href="/activity/dashboard/{{ activity.id }}/">
+                                {% for item in activity.state %}
+                                    <div class="progress-bar {{ item.class }}"
+                                            role="progressbar"
+                                            style="width: {{ item.percent }}%"
+                                            aria-valuenow="{{ item.percent }}"
+                                            aria-valuemin="0"
+                                            aria-valuemax="100">{{ item.count }}
+                                    </div>
+                                {% endfor %}
+                            </a>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                <tr>
+                </tbody>
+            </table>
         </section>
         <section>
             <h2>Légende</h2>
             {% for item in state %}
                 <div  style="display: flex">
-                    <div class="block course-block {{ item.template }}" style="width: 20px; height: 20px;"></div>
+                    <div class="block {{ item.template }}" style="width: 20px; height: 20px;"></div>
                     <span>{{ item }}</span>
                 </div>
             {% endfor %}

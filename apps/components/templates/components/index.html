@@ -6,20 +6,18 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" type="image/x-icon" href="{{ static('favicon.ico') }}"/>
-  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="{{ static('/components/styles.css') }}"/>
+</head>
 <body>
-    <app-root></app-root>
+    <c-root></c-root>
     <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
             tex2jax: {
-                inlineMath: [['$%','%$'],],
+                inlineMath: [['$%','%$'], ['$!', '!$']],
                 skipTags: ["script","noscript","style"],
             }
         });
     </script>
     <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-    <script type='text/javascript' src="{{ static('/components/scripts.js') }}"></script>
+    {% include "components/statics.html" %}
 </body>
 </html>

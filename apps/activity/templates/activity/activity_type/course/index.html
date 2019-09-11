@@ -16,7 +16,7 @@
         <section>
             <h2>Professeurs</h2>
                 {% for item in teacher %}
-                <ion-chip  outline="true">
+                <ion-chip color="primary" outline="true">
                     <ion-icon name="contact"></ion-icon>
                     <ion-label>
                         {{ firstof(item.get_full_name(), item.username) }}
@@ -26,8 +26,8 @@
                 {% endfor %}
         </section>
         <section>
-            <h2>Activités</h5>
             {% if smalls|length > 0 %}
+                <h2>Activités</h5>
                 <ion-grid fixed>
                     <ion-row>
                         {% for item in smalls %}
@@ -43,12 +43,46 @@
         </section>
         <section>
         {% if instructor %}
-        <ion-fab-button>
+        <ion-fab-button onclick="modal()">
             <ion-icon name="add"></ion-icon>
         </ion-fab-button>
         {% endif %}
         </section>
     </ion-card-content>
 </ion-card>
+<form method="POST" action="activity/add/{{course_id}}/" style="visibility: hidden">
+    <input id="new-activity-id" type="text" />
+</form>
+<script>
+    function modal() {
+        const alert = document.createElement('ion-alert');
+        alert.header = 'Ajouter une activité au cours';
+        alert.inputs = [
+            {
+                name: 'id',
+                type: 'number',
+                placeholder: 'Identifiant'
+            }
+        ];
+        alert.buttons = [
+            {
+                text: 'Annuler',
+                role: 'cancel',
+                cssClass: 'secondary'
+            },
+            {
+                text: 'Ajouter',
+                handler: (data) => {
+                    if (data.id) {
+                        const input = document.getElementById('new-activity-id');
+                        input.value = data.id;
+                        document.querySelector('form').submit();
+                    }
+                }
+            }
+        ];
+        document.body.appendChild(alert);
+        return alert.present();
+    }
+</script>
 {% endblock %}
-<!-- activity/add/course_id/input -->

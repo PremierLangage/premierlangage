@@ -4,6 +4,28 @@ ion-grid {
     width: 100%;
 }
 
+ion-card-title {
+    font-size: 1.2em;
+}
+
+table {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+table td, table th {
+    padding: .75rem;
+    vertical-align: top;
+}
+
+table tr {
+    border-top: 1px solid  var(--ion-border-color);
+}
+
+thead th {
+    border-right: 1px solid var(--ion-border-color);
+}
+
 ion-card {
     margin: 0 !important;
 }
@@ -15,7 +37,6 @@ section {
 }
 
 ion-grid ion-img {
-    height: 148px;
     width: 100%;
     object-fit: cover;
 }

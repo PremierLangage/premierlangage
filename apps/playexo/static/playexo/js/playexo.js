@@ -41,30 +41,21 @@ class Activity {
         this.nodes.actions.slideDown();
         this.components = options.components || {};
 
-        this.render();
-        this.addListeners();
+        this.deserializeComponents();
 
         MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
 
         if (window.onReadyPL) {
             window.onReadyPL(this.nodes);
         }
-    }
 
-    render() {
-        const nodes = document.querySelectorAll('[cid]');
-        const components = Object.keys(this.components).map(k => {
-            return this.components[k];
-        });
-        nodes.forEach(node => {
-            const cid = node.getAttribute('cid');
-            const component = components.find(c => {
-                return c.cid === cid;
-            });
-            if (component && node.deserialize) {
-                node.deserialize(component);
-            }
-        });
+        if (this.nodes.save) {
+            this.nodes.save.click(() => this.onSave());
+        }
+
+        if (this.nodes.submit) {
+            this.nodes.submit.click(() => this.onSubmit());
+        }
     }
 
     /**
@@ -128,19 +119,26 @@ class Activity {
         return result;
     }
 
-    /** Adds listeners to buttons */
-    addListeners() {
-        if (this.nodes.save) {
-            this.nodes.save.click(() => this.didTapSave());
-        }
 
-        if (this.nodes.submit) {
-            this.nodes.submit.click(() => this.didTapSubmit());
-        }
+    deserializeComponents() {
+        const nodes = document.querySelectorAll('[cid]');
+        const components = Object.keys(this.components).map(k => {
+            return this.components[k];
+        });
+        nodes.forEach(node => {
+            const cid = node.getAttribute('cid');
+            const component = components.find(c => {
+                return c.cid === cid;
+            });
+            if (component && node.deserialize) {
+                node.deserialize(component);
+            }
+        });
     }
 
+
     /** Handles save button click */
-    didTapSave() {
+    onSave() {
         this.nodes.actions.slideUp();
         this.nodes.spinner.slideDown();
         this.evaluate(this.options.url, {
@@ -150,7 +148,7 @@ class Activity {
     }
 
     /** Handles submit button click */
-    didTapSubmit() {
+    onSubmit() {
         if (!window.onBeforeSubmitPL || window.onBeforeSubmitPL(this.nodes) === true) {
             this.nodes.actions.slideUp();
             this.nodes.spinner.slideDown();
