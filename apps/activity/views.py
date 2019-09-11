@@ -7,6 +7,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 
 from activity.activity_type.utils import get_activity_type_class
 from activity.models import Activity, SessionActivity
@@ -18,6 +19,15 @@ from playexo.utils import render_feedback
 logger = logging.getLogger(__name__)
 
 
+@require_POST
+def add_activity(request, activity_id):
+    activity = get_object_or_404(Activity, id=activity_id)
+    to_add = get_object_or_404(Activity, id=request.body.decode())
+    if not activity.is_teacher(request.user):
+        raise PermissionDenied("Vous n'êtes pas enseignant de ce cours")
+    to_add.add_parent(activity)
+    return redirect(reverse("activity:play", args=[activity_id]))
+    
 
 @login_required
 @csrf_exempt
