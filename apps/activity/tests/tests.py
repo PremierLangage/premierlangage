@@ -1,6 +1,9 @@
-from django.test import TestCase
+from misc_tests.activity_base_test_mixin import ActivityBaseTestMixin
 
 
 
-def ActivityTestCase(TestCase):
-    pass
+class ActivityTestCase(ActivityBaseTestMixin):
+    
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
