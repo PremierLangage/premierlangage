@@ -25,8 +25,12 @@ def play(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
     session, _ = SessionActivity.objects.get_or_create(user=request.user, activity=activity)
     a_type = get_activity_type_class(activity.activity_type)()
+    
     if not activity.open:
-        return a_type.end(activity, session)
+        raise PermissionDenied("Cette activité est fermée")
+    if not activity.is_member(request.user) and activity_id != 0:
+        raise PermissionDenied("Vous n'appartenez pas à cette activité")
+    
     return a_type.template(request, activity, session)
 
 
@@ -38,8 +42,12 @@ def next(request, activity_id):
     session, _ = SessionActivity.objects.get_or_create(SessionActivity, user=request.user,
                                                        activity=activity)
     a_type = get_activity_type_class(activity.activity_type)()
+    
     if not activity.open:
-        return a_type.end(activity, session)
+        raise PermissionDenied("Cette activité est fermée")
+    if not activity.is_member(request.user):
+        raise PermissionDenied("Vous n'appartenez pas à cette activité")
+    
     return a_type.next(activity, session)
 
 
@@ -53,6 +61,11 @@ def evaluate(request, activity_id, pl_id):
     pl = get_object_or_404(PL, id=pl_id)
     exercise = session.session_exercise(pl)
     a_type = get_activity_type_class(activity.activity_type)()
+    
+    if not activity.open:
+        raise PermissionDenied("Cette activité est fermée")
+    if not activity.is_member(request.user):
+        raise PermissionDenied("Vous n'appartenez pas à cette activité")
     
     if 'requested_action' in status:
         if status['requested_action'] == 'save':
@@ -96,25 +109,24 @@ def dashboard(request, activity_id):
     session, _ = SessionActivity.objects.get_or_create(SessionActivity, user=request.user,
                                                        activity=activity)
     a_type = get_activity_type_class(activity.activity_type)()
-    if not activity.open:
-        return a_type.end(activity, session)
     
     if request.user in activity.teacher.all():
         return a_type.teacher_dashboard(request, activity, session)
-    
     elif request.user in activity.student.all():
         return a_type.student_dashboard(request, activity, session)
+    else:
+        raise PermissionDenied("Vous n'appartenez pas à cette activité")
 
 
 
 @login_required
 def notes(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
+    if not activity.is_teacher(request.user):
+        raise PermissionDenied("Vous devez être professeur pour récupérer les notes")
     session, _ = SessionActivity.objects.get_or_create(SessionActivity, user=request.user,
                                                        activity=activity)
     a_type = get_activity_type_class(activity.activity_type)()
-    if request.user not in activity.teacher.all():
-        raise PermissionDenied("Vous devez être professeur pour récupérer les notes")
     return a_type.notes(activity, request)
 
 

@@ -45,7 +45,7 @@ class Course(AbstractActivityType):
         :return: A rendered template of the teacher dashboard
         """
         user = request.user
-        if user not in activity.student.all() and user not in activity.teacher.all():
+        if not activity.is_member(user):
             logger.warning(
                 "User '" + user.username + "' denied to access course'" + activity.name + "'.")
             raise PermissionDenied("Vous n'êtes pas membre de cette classe.")
@@ -57,7 +57,7 @@ class Course(AbstractActivityType):
     def small_sd(self, activity, session_activity):
         """
         This method is called when the small dashboard of an activity is requested for a student.
-        :return: A rendered template of the teacher dashboard
+        :return: A rendered template of the student dashboard
         """
         raise PermissionDenied()
     
@@ -68,10 +68,6 @@ class Course(AbstractActivityType):
         :return: A rendered template of the teacher dashboard
         """
         raise PermissionDenied()
-    
-    
-    def grading(self):
-        pass
     
     
     def template(self, request, activity: "apps.activity.models.Activity",
@@ -146,6 +142,9 @@ class Course(AbstractActivityType):
     
     
     def validate(self, activity, session, answer, feedback, action=""):
+        """ Must return a tuple: (feedback, to_be_saved), where the feedback can be modified by
+        the activity, and to_be_saved is a boolean that decide whether the answer will be saved
+        in the database or not"""
         pass
     
     

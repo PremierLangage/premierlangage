@@ -41,6 +41,7 @@ class ViewsTestCase(ActivityBaseTestMixin):
         cls.pl.json['seed'] = 2
         cls.pl.save()
         cls.activity = load_file(cls.dir, "random_all.pltp")[0]
+        cls.activity.student.add(cls.user)
     
     
     @classmethod
