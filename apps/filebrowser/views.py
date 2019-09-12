@@ -300,6 +300,7 @@ def load_pltp(request):
             if warnings:  # pragma: no cover
                 for warning in warnings:
                     msg += str(warning)
+            pltp.teacher.add(request.user)
             url_lti = request.build_absolute_uri(reverse("activity:play", args=[pltp.pk]))
             
             msg += "L'activité <b>'" + pltp.name + "'</b> a bien été créée et a pour URL LTI: \

@@ -69,8 +69,7 @@ class ActivityOutcome(LTIOutcome):
         try:
             return cls.objects.get(url=outcome_url, sourcedid=sourcedid), False
         except ActivityOutcome.DoesNotExist:
-            activity = Activity.objects.get(activity_data__consumer_id=activity_id,
-                                            activity_data__consumer=consumer)
+            activity = Activity.objects.get(consumer_id=activity_id, consumer=consumer)
             outcome = cls.objects.create(url=outcome_url, sourcedid=sourcedid,
                                          activity=activity, user=user)
             return outcome, True

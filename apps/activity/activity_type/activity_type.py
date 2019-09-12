@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
+from django.template.loader import get_template
 from django.urls import reverse
 
 
@@ -15,7 +16,7 @@ class AbstractActivityType(ABC):
         This method is called when the dashboard of an activity is requested for a student.
         :return: A rendered template of the student dashboard
         """
-        return HttpResponseNotFound()
+        raise PermissionDenied()
     
     
     @abstractmethod
@@ -24,25 +25,27 @@ class AbstractActivityType(ABC):
         This method is called when the dashboard of an activity is requested for a teacher.
         :return: A rendered template of the teacher dashboard
         """
-        return HttpResponseNotFound()
+        raise PermissionDenied()
     
     
     @abstractmethod
     def small(self, request, activity):
         """
         This method can be called by any parent activity to display something from this activity.
-        :return: A rendered template of the teacher dashboard
+        :return: A rendered template of a small summary
         """
-        return None
+        return get_template("activity/activity_type/default_small.html").render({
+            "activity": activity
+        }, request)
     
     
     @abstractmethod
     def small_sd(self, activity, session_activity):
         """
         This method is called when the small dashboard of an activity is requested for a student.
-        :return: A rendered template of the teacher dashboard
+        :return: A rendered template of the student dashboard
         """
-        return None
+        raise PermissionDenied()
     
     
     @abstractmethod
@@ -51,12 +54,7 @@ class AbstractActivityType(ABC):
         This method is called when the small dashboard of an activity is requested for a teacher.
         :return: A rendered template of the teacher dashboard
         """
-        return None
-    
-    
-    @abstractmethod
-    def grading(self, activity, session):
-        pass
+        raise PermissionDenied()
     
     
     @abstractmethod
