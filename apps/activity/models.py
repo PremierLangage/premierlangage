@@ -274,7 +274,7 @@ def init_session(sender, instance, created, *args, **kwargs):
     if created:
         activity = instance.activity
         activity_type = get_activity_type_class(activity.activity_type)()
-        instance.session_data ={**instance.session_data, **activity_type.init(activity, instance)}
+        instance.session_data = {**instance.session_data, **activity_type.init(activity, instance)}
         instance.save()
 
 

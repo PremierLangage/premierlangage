@@ -61,3 +61,8 @@
 .exercise__header {
     border: none;
 }
+
+.exercise__body {
+    width: 100%;
+    overflow: auto;
+}
