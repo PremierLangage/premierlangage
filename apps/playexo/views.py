@@ -1,5 +1,4 @@
 import logging
-import logging
 import traceback
 
 import htmlprint

@@ -24,7 +24,6 @@ from activity.views import index
 
 urlpatterns = [
     url(r'^$', index),
-    url(r'^courses/', include('apps.classmanagement.urls', namespace='classmanagement')),
     url(r'^activity/', include('apps.activity.urls', namespace="activity")),
     url(r'^playexo/', include('apps.playexo.urls', namespace="playexo")),
     url(r'^editor/', include('apps.editor.urls', namespace="editor")),
