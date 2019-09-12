@@ -17,4 +17,5 @@ app_name = 'publisher'
 urlpatterns = [
     url(r'^$', views.edit_profile),
     url(r'^editor_preview/$', views.editor_preview),
+    url(r'auth/', views.get_user_info),
 ]
