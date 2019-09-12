@@ -20,9 +20,13 @@ logger = logging.getLogger(__name__)
 
 
 @require_POST
+@csrf_exempt
 def add_activity(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
-    to_add = get_object_or_404(Activity, id=request.body.decode())
+    new_id = int(request.POST.get('new-activity-id'))
+    to_add = get_object_or_404(Activity, id=new_id)
+    if to_add.activity_type == "course" or to_add.parent.id != 0:
+        raise PermissionDenied("Vous ne pouvez pas ajouter cette activité")
     if not activity.is_teacher(request.user):
         raise PermissionDenied("Vous n'êtes pas enseignant de ce cours")
     to_add.add_parent(activity)
@@ -30,6 +34,7 @@ def add_activity(request, activity_id):
         to_add.student.add(student)
     for teacher in activity.teacher.all():
         to_add.teacher.add(teacher)
+    to_add.save()
     return redirect(reverse("activity:play", args=[activity_id]))
     
 
