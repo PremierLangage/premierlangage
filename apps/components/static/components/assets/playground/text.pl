@@ -25,12 +25,12 @@ evaluator==
 score = 100
 indices = [2, 3, 5, 8]
 for e in component.selections:
-    e['state'] = "error-state"
+    e['css'] = "error-state"
     if e['index'] in indices:
-        e['state'] = "success-state"
+        e['css'] = "success-state"
         indices = [i for i in indices if i != e['index']]
     else:
-        indices.append(e['state'])
+        indices.append(e['css'])
 
 if len(indices) == 0:
     score = 100
