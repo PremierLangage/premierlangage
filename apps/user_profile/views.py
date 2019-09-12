@@ -8,7 +8,10 @@
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.forms import model_to_dict
+from django.http import JsonResponse
 from django.shortcuts import render
+from django.views.decorators.http import require_GET
 
 from user_profile.enums import EditorTheme
 from user_profile.forms import ProfileForm
@@ -94,3 +97,17 @@ def editor_preview(request):
         "sample_c":      sample_C,
         "sample_python": sample_python,
     })
+
+
+
+@require_GET
+def get_user_info(request):
+    if request.user.is_authenticated:
+        profile = model_to_dict(request.user)
+        del profile["password"]
+        authenticated = True
+    else:
+        profile = {}
+        authenticated = False
+    data = {"user": profile, "authenticated": authenticated}
+    return JsonResponse(data)
