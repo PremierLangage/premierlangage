@@ -17,6 +17,7 @@ from django.template.loader import get_template
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
+from gitcmd.gitcmd import add, commit
 
 from activity.models import Activity
 from filebrowser.filter import is_root
@@ -27,8 +28,6 @@ from loader.loader import load_file, reload_pltp as rp
 from loader.utils import get_location
 from playexo.models import SessionTest
 from shared.utils import missing_parameter
-from gitcmd.gitcmd import add, commit
-from  django.conf import settings
 
 
 

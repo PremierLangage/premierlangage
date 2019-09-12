@@ -9,7 +9,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.forms import model_to_dict
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_GET
 
@@ -97,6 +97,8 @@ def editor_preview(request):
         "sample_c":      sample_C,
         "sample_python": sample_python,
     })
+
+
 
 @require_GET
 def get_user_info(request):
