@@ -23,10 +23,12 @@ from filebrowser.filter import is_root
 from filebrowser.models import Directory
 from filebrowser.utils import (HOME_DIR, LIB_DIR, get_content, get_meta,
                                join_fb_root, rm_fb_root, walkalldirs)
-from shared.utils import missing_parameter
 from loader.loader import load_file, reload_pltp as rp
 from loader.utils import get_location
 from playexo.models import SessionTest
+from shared.utils import missing_parameter
+from gitcmd.gitcmd import add, commit
+from  django.conf import settings
 
 
 
@@ -108,6 +110,11 @@ def update_resource(request):
     try:
         with open(join_fb_root(path), 'w') as f:
             print(post.get('content', ''), file=f)
+        if not path.startswith("lib/"):
+            git_path = os.path.join(settings.FILEBROWSER_ROOT, path)
+            add(git_path)
+            commit(git_path, request.user.username + " " + path, request.user.get_full_name(),
+                   request.user.email)
         return JsonResponse({'success': True})
     except Exception as e:  # pragma: no cover
         return HttpResponseNotFound(str(e))

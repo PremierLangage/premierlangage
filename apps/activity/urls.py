@@ -29,3 +29,4 @@ urlpatterns = [
                                                 redirect_authenticated_user=True), name="login"),
     path(r'logout/', views.disconnect, name="logout"),
 ]
+()
