@@ -1,15 +1,10 @@
-<div class="card exercise">
-    <!-- HEADER -->
-    <div class="card-header exercise__header">
-        <div class="text-center">
-            <h2 class='exercise__title'>{% if title %}{{ title }}{% endif%}</h2>
-        </div>
-        <div class="text-left">
-            <span class='exercise__author'>{% if author %}{{ author }}{% endif %}</span>
-        </div>
-    </div>
+<ion-card class="exercise">
+    <ion-card-header class="exercise__header">
+        <ion-card-subtitle class='exercise__author'>{% if author %}{{ author }}{% endif %}</ion-card-subtitle>
+        <ion-card-title class='exercise__title'>{% if title %}{{ title }}{% endif%}</ion-card-title>
+    </ion-card-header>
     <!-- BODY -->
-    <div class="card-body exercise__body">
+    <ion-card-content class="exercise__body">
         <!-- INSTRUCTIONS -->
         <div class="exercise__instructions">
             {% if text %}
@@ -29,17 +24,22 @@
         <!-- ACTIONS -->
         <div class="exercise__actions text-center">
             <div class="btn-group" role="group" aria-label="actions">
-                <button class="btn btn-primary action-submit"><i class="fas fa-check"></i> Valider</button>
+                <button class="btn btn-primary action-submit">
+                    <i class="fas fa-check"></i> 
+                    <span class="ion-hide-md-down">Valider</span>
+                </button>
                 {% if tests %}
                 <a type="button" class="btn btn-primary action-test"
-                   href="{{ url('playexo:test_pl', pl_id__)}}"
-                   target="_blank" test>
-                    <i class="fas fa-angle-double-right"></i> Tester
+                href="{{ url('playexo:test_pl', pl_id__)}}"
+                target="_blank" test>
+                    <i class="fas fa-angle-double-right"></i>
+                    <span class="ion-hide-md-down">Tester</span>
                 </a>
                 {% endif %}
                 <a type="button" class="btn btn-secondary action-download-env"
-                   href="{{ url('filebrowser:dlenv', id__) }}" download>
-                    <i class="fas fa-download"></i> Télécharger l'Environnement
+                href="{{ url('filebrowser:dlenv', id__) }}" download>
+                    <i class="fas fa-download"></i>
+                    <span class="ion-hide-md-down">Télécharger l'Environnement</span>
                 </a>
             </div>
         </div>
@@ -49,9 +49,8 @@
                 <span class="sr-only">Loading...</span>
             </div>
         </div>
-        <br/>
-    </div>
-</div>
+    </ion-card-content>
+</ion-card>
 
 {% if extracss %}{{ extracss|safe }}{% endif %}
 {% if extrajs %}{{ extrajs|safe }}{% endif %}
