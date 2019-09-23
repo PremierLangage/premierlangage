@@ -79,10 +79,10 @@ def get_resource(request):
             'meta':    get_meta(path)
         })
     except Exception as e:  # pragma: no cover
-        msg = "Impossible to open '" + rm_fb_root(path) + "' : " + htmlprint.code(
-            str(type(e)) + ' - ' + str(e))
+        msg = f"Impossible to open '{rm_fb_root(path)}' : {htmlprint.code(str(e))}"
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
+            msg += f"{request} : DEBUG set to True: {htmlprint.html_exc()}"
         return HttpResponseNotFound(msg)
 
 
