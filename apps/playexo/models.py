@@ -26,7 +26,6 @@ def create_seed():
     return int(time.time() % 100)
 
 
-
 class SessionExerciseAbstract(models.Model):
     """Abstract class to represent the state of a PL for a given user.
     

@@ -110,6 +110,20 @@ class Activity(LTIModel):
         self.parent = activity
     
     
+    def add_student_to_all(self, student):
+        children = self.objects.all().filter(parent=self)
+        for a in children:
+            a.student.add(student)
+            a.add_student_to_all(student)
+    
+    
+    def add_teacher_to_all(self, teacher):
+        children = self.objects.all().filter(parent=self)
+        for a in children:
+            a.teacher.add(teacher)
+            a.add_teacher_to_all(teacher)
+    
+    
     @classmethod
     def get_or_create_course_from_lti(cls, user, lti_launch):
         """Create a Course Activity corresponding to the ressource in the LTI request.
@@ -189,8 +203,8 @@ class Activity(LTIModel):
         
         for role in lti_launch["roles"]:
             if role in ["urn:lti:role:ims/list/Instructor", "Instructor"]:
-                activity.teacher.add(user)
-        activity.student.add(user)
+                activity.add_teacher_to_all(user)
+        activity.add_student_to_all(user)
         activity.save()
         
         return activity, updated
@@ -217,8 +231,10 @@ class SessionActivity(models.Model):
     
     def session_exercise(self, pl=...):
         """Return the SessionExercice corresponding to self.current_pl.
+        
         If the optionnal parameter 'pl' is given (can be given as None for the PLTP), will instead
         return the SessionExercice corresponding to pl.
+        
         Raise IntegrityError if no session for either self.current_pl or pl (if given) was found."""
         try:
             return next(

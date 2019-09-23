@@ -1,44 +1,19 @@
 import os
 import shutil
-import time
+from time import sleep
 
-from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from django.test import override_settings
-from selenium import webdriver
+from django.urls import reverse
 from selenium.webdriver.common.action_chains import ActionChains
 
 from activity.models import Activity
 from filebrowser.models import Directory
-
-
-FAKE_FB_ROOT = os.path.join(settings.APPS_DIR, 'tests/tmp')
-
-HOME_DIR = os.path.join(settings.APPS_DIR, "misc_tests/resources/fake_filebrowser_data/")
-LIB_DIR = os.path.join(settings.APPS_DIR, "misc_tests/resources/lib/")
-
-WAIT_TIME = 1
+from misc_tests.utils import BaseSeleniumTestCase, FAKE_FB_ROOT, HOME_DIR, LIB_DIR, WAIT_TIME
+from user_profile.enums import Role
 
 
 
-def sleep(n):
-    if "TRAVIS" in os.environ:
-        time.sleep(n * 10)
-    else:
-        time.sleep(n)
-
-
-
-@override_settings(FILEBROWSER_ROOT=FAKE_FB_ROOT)
-class SeleniumTestCase(StaticLiveServerTestCase):
-    
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.b = webdriver.Firefox()
-        cls.b.implicitly_wait(10)
-    
+class SeleniumTestCase(BaseSeleniumTestCase):
     
     @classmethod
     def tearDownClass(cls):
@@ -51,6 +26,12 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         super().setUp()
         Activity.objects.create(id=0, name="Base", activity_type="base")
         self.u = User.objects.create_superuser("login", password="secret", email="test@test.test")
+        self.teacher = User.objects.create_user(username='teacher', password='12345')
+        self.teacher.profile.role = Role.INSTRUCTOR
+        self.teacher.save()
+        self.student = User.objects.create_user(username='student', password='12345')
+        self.student.profile.role = Role.LEARNER
+        self.student.save()
         self.dir = Directory.objects.create(name='Yggdrasil', owner=self.u).root
         self.lib = Directory.objects.create(name='lib', owner=self.u).root
         shutil.rmtree(os.path.join(self.dir))
@@ -59,38 +40,10 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         shutil.copytree(LIB_DIR, self.lib)
     
     
-    def get_e_by_text(self, text):
-        e = self.b.find_elements_by_xpath("//*[contains(text(), '" + text + "')]")
-        return e[0] if len(e) > 0 else None
-    
-    
-    def connect_to_filebrowser(self):
-        self.b.refresh()
-        self.visit("editor")
-        e = self.get_e_by_text("Se connecter")
-        if e is not None:
-            e = self.b.find_element_by_name("username")
-            e.send_keys("login")
-            e = self.b.find_element_by_name("password")
-            e.send_keys("secret")
-            self.get_e_by_text('Log-in').click()
-            sleep(3*WAIT_TIME)
-    
-    
-    def visit(self, url):
-        self.b.get(os.path.join(self.live_server_url, url))
-    
-    
-    def answer_pl(self, answer):
-        sleep(WAIT_TIME)
-        self.b.find_element_by_css_selector('input[name="answer"]').send_keys(answer)
-        self.b.find_element_by_xpath("//*[contains(text(), 'Valider')]").click()
-        sleep(WAIT_TIME)
-    
-    
     def test_filebrowser_preview(self):
-        self.connect_to_filebrowser()
-        self.b.find_element_by_id("tree-node-lib").click()
+        self.visit(reverse("editor:index"))
+        self.connect("login", "secret")
+        self.get_e_by_text("lib").click()
         self.get_e_by_text("demo").click()
         self.get_e_by_text("static_add.pl").click()
         
@@ -115,8 +68,9 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     
     
     def test_filebrowser_pl(self):
-        self.connect_to_filebrowser()
-        self.b.find_element_by_id("tree-node-lib").click()
+        self.visit(reverse("editor:index"))
+        self.connect("login", "secret")
+        self.get_e_by_text("lib").click()
         self.get_e_by_text("demo").click()
         e = self.get_e_by_text("static_add.pl")
         ActionChains(self.b).move_to_element(e).perform()
@@ -146,8 +100,9 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     
     
     def test_filebrowser_activity(self):
-        self.connect_to_filebrowser()
-        self.b.find_element_by_id("tree-node-lib").click()
+        self.visit(reverse("editor:index"))
+        self.connect("login", "secret")
+        self.get_e_by_text("lib").click()
         self.get_e_by_text("demo").click()
         self.get_e_by_text("static_add.pl").click()
         self.get_e_by_text("NOTIFICATIONS").click()
@@ -188,7 +143,8 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     
     
     def test_filebrowser_markdown_mathjax(self):
-        self.connect_to_filebrowser()
+        self.visit(reverse("editor:index"))
+        self.connect("login", "secret")
         self.get_e_by_text("home").click()
         self.get_e_by_text("cbank").click()
         self.get_e_by_text("recursion").click()
@@ -209,23 +165,26 @@ class SeleniumTestCase(StaticLiveServerTestCase):
             self.b.find_element_by_css_selector("span[class='MathJax_Preview']") is not None)
         self.b.close()
         self.b.switch_to.window(window_before)
-
-
+    
+    
     def test_filebrowser_theme(self):
-        self.connect_to_filebrowser()
+        self.visit(reverse("editor:index"))
+        self.connect("login", "secret")
         e = self.b.find_element_by_id("nav-action-theme")
         self.assertTrue(self.b.find_element_by_css_selector(".light-theme"))
         self.assertFalse(self.b.find_elements_by_css_selector(".dark-theme"))
         e.click()
         self.assertFalse(self.b.find_elements_by_css_selector(".light-theme"))
         self.assertTrue(self.b.find_element_by_css_selector(".dark-theme"))
-        
+    
+    
     def test_components_doc(self):
-        self.connect_to_filebrowser()
+        self.visit(reverse("editor:index"))
+        self.connect("login", "secret")
         self.b.find_element_by_id("nav-action-components").click()
-
+        
         sleep(WAIT_TIME)
-
+        
         window_before = self.b.window_handles[0]
         window_after = self.b.window_handles[1]
         self.b.switch_to.window(window_after)
@@ -234,3 +193,16 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         
         self.b.close()
         self.b.switch_to.window(window_before)
+    
+    
+    def test_teacher_editor_url(self):
+        self.visit("")
+        self.connect("teacher", "12345")
+        self.assertTrue(self.b.find_elements_by_id("header-editor"))
+    
+    
+    def test_student_editor_url(self):
+        self.visit("")
+        self.connect("student", "12345")
+        
+        self.assertListEqual([], self.b.find_elements_by_id("header-editor"))
