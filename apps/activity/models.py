@@ -113,7 +113,7 @@ class Activity(LTIModel):
     def add_student_to_all(self, student):
         self.student.add(student)
         self.save()
-        children = self.objects.all().filter(parent=self)
+        children = Activity.objects.all().filter(parent=self)
         for a in children:
             a.student.add(student)
             a.add_student_to_all(student)
@@ -122,7 +122,7 @@ class Activity(LTIModel):
     def add_teacher_to_all(self, teacher):
         self.teacher.add(teacher)
         self.save()
-        children = self.objects.all().filter(parent=self)
+        children = Activity.objects.all().filter(parent=self)
         for a in children:
             a.add_teacher_to_all(teacher)
     
