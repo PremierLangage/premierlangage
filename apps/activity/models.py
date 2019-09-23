@@ -110,6 +110,20 @@ class Activity(LTIModel):
         self.parent = activity
     
     
+    def add_student_to_all(self, student):
+        children = self.objects.all().filter(parent=self)
+        for a in children:
+            a.student.add(student)
+            a.add_student_to_all(student)
+    
+    
+    def add_teacher_to_all(self, teacher):
+        children = self.objects.all().filter(parent=self)
+        for a in children:
+            a.teacher.add(teacher)
+            a.add_teacher_to_all(teacher)
+    
+    
     @classmethod
     def get_or_create_course_from_lti(cls, user, lti_launch):
         """Create a Course Activity corresponding to the ressource in the LTI request.
@@ -189,8 +203,8 @@ class Activity(LTIModel):
         
         for role in lti_launch["roles"]:
             if role in ["urn:lti:role:ims/list/Instructor", "Instructor"]:
-                activity.teacher.add(user)
-        activity.student.add(user)
+                activity.add_teacher_to_all(user)
+        activity.add_student_to_all(user)
         activity.save()
         
         return activity, updated
