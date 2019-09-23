@@ -106,8 +106,6 @@ def get_meta(path):
     return {
         'text':        filter.is_text(path),
         'code':        filter.is_code(path) or filter.is_pl(path) or filter.is_pltp(path),
-        'archive':     filter.is_archive(path),
-        'application': filter.is_application(path),
         'image':       filter.is_image(path),
         'excel':       filter.is_excel(path),
         'downloadUrl': to_download_url(rm_fb_root(path))
