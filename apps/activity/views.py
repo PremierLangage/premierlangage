@@ -28,7 +28,7 @@ def add_activity(request, activity_id):
     if to_add.activity_type == "course" or to_add.parent.id != 0:
         raise PermissionDenied("Vous ne pouvez pas ajouter cette activité")
     if not activity.is_teacher(request.user):
-        raise PermissionDenied("Vous n'êtes pas enseignant de ce cours")
+        raise PermissionDenied("Vous n'êtes pas professeur de cette activité")
     to_add.add_parent(activity)
     for student in activity.student.all():
         to_add.student.add(student)
@@ -37,6 +37,13 @@ def add_activity(request, activity_id):
     to_add.save()
     return redirect(reverse("activity:play", args=[activity_id]))
     
+
+def remove(request, activity_id):
+    activity = get_object_or_404(Activity, id = activity_id)
+    if not activity.is_teacher(request.user):
+        raise PermissionDenied("Vous devez être professeur de cette activité")
+    activity.remove_parent()
+    return redirect(reverse("activity:play", args=[activity_id]))
 
 @login_required
 @csrf_exempt
