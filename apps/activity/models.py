@@ -111,6 +111,8 @@ class Activity(LTIModel):
     
     
     def add_student_to_all(self, student):
+        self.student.add(student)
+        self.save()
         children = self.objects.all().filter(parent=self)
         for a in children:
             a.student.add(student)
@@ -118,10 +120,20 @@ class Activity(LTIModel):
     
     
     def add_teacher_to_all(self, teacher):
+        self.teacher.add(teacher)
+        self.save()
         children = self.objects.all().filter(parent=self)
         for a in children:
-            a.teacher.add(teacher)
             a.add_teacher_to_all(teacher)
+    
+    
+    def get_first_parent_course(self):
+        course = self
+        while course.activity_type != "course" and course.id != 0:
+            course = course.parent
+        if course == self or course.id == 0:
+            return None
+        return course
     
     
     @classmethod
@@ -152,10 +164,10 @@ class Activity(LTIModel):
                         % (course.pk, course.name, consumer, course_id))
             created = True
         
-        course.student.add(user)
+        course.add_student_to_all(user)
         for role in lti_launch["roles"]:
             if role in ["urn:lti:role:ims/lis/Instructor", "Instructor"]:
-                course.teacher.add(user)
+                course.add_teacher_to_all(user)
         course.save()
         
         return course, created
@@ -201,10 +213,10 @@ class Activity(LTIModel):
                     activity.parent = cls.objects.get(consumer_id=course_id, consumer=consumer)
                 updated = True
         
+        activity.add_student_to_all(user)
         for role in lti_launch["roles"]:
             if role in ["urn:lti:role:ims/list/Instructor", "Instructor"]:
                 activity.add_teacher_to_all(user)
-        activity.add_student_to_all(user)
         activity.save()
         
         return activity, updated
