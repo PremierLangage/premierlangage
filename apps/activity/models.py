@@ -136,6 +136,10 @@ class Activity(LTIModel):
         return course
     
     
+    def remove_parent(self):
+        self.parent = Activity.objects.get(id=0)
+        self.save()
+    
     @classmethod
     def get_or_create_course_from_lti(cls, user, lti_launch):
         """Create a Course Activity corresponding to the ressource in the LTI request.

@@ -3,9 +3,12 @@
     <ion-card-header>
         <ion-card-title>{{ title }}</ion-card-title>
     </ion-card-header>
-    {% if instructor %}
     <ion-card-content>
         <ion-buttons slot="start">
+            <ion-button href="{{ url('activity:play', id) }}" data-toggle="tooltip" data-placement="top" title="Lancer">
+                <ion-icon slot="icon-only" name="play"></ion-icon>
+            </ion-button>
+            {% if instructor %}
             <ion-button  href="/activity/dashboard/{{ id }}/" data-toggle="tooltip" data-placement="top" title="Statistiques">
                 <ion-icon slot="icon-only" name="stats"></ion-icon>
             </ion-button>
@@ -20,11 +23,11 @@
             <ion-button href="{{ request.path }}?action=toggle_activity&id={{ id }}" data-toggle="tooltip" data-placement="top" title="Fermer">
                 <ion-icon slot="icon-only" name="lock"></ion-icon>
             </ion-button>
-            <ion-button href="{{ url('activity:play', id) }}" data-toggle="tooltip" data-placement="top" title="Lancer">
-                <ion-icon slot="icon-only" name="play"></ion-icon>
+            {% endif %}
+            <ion-button href="{{ url('activity:remove', id) }}" data-toggle="tooltip" data-placement="top" title="Supprimer">
+                <ion-icon slot="icon-only" name="trash"></ion-icon>
             </ion-button>
             {% endif %}
         </ion-buttons>
     </ion-card-content>
-    {% endif %}
 </ion-card>

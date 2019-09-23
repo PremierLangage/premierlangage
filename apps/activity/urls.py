@@ -20,6 +20,7 @@ app_name = 'activity'
 
 urlpatterns = [
     path(r'add/<int:activity_id>/', views.add_activity, name="add"),
+    path(r'remove/<int:activity_id>/', views.remove, name="remove"),
     path(r'play/<int:activity_id>/', views.play, name="play"),
     path(r'next/<int:activity_id>/', views.next, name="next"),
     path(r'evaluate/<int:activity_id>/<int:pl_id>', views.evaluate, name="evaluate"),
