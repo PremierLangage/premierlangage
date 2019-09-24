@@ -19,6 +19,7 @@ from playexo.utils import render_feedback
 logger = logging.getLogger(__name__)
 
 
+
 @require_POST
 @csrf_exempt
 def add_activity(request, activity_id):
@@ -36,14 +37,17 @@ def add_activity(request, activity_id):
         to_add.teacher.add(teacher)
     to_add.save()
     return redirect(reverse("activity:play", args=[activity_id]))
-    
+
+
 
 def remove(request, activity_id):
-    activity = get_object_or_404(Activity, id = activity_id)
+    activity = get_object_or_404(Activity, id=activity_id)
     if not activity.is_teacher(request.user):
         raise PermissionDenied("Vous devez être professeur de cette activité")
     activity.remove_parent()
     return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
 
 @login_required
 @csrf_exempt
