@@ -17,7 +17,8 @@ LIB_DIR = 'lib'
 def add_commit_path(request, path, action=""):
     git_path = os.path.join(settings.FILEBROWSER_ROOT, path)
     gitcmd.add(git_path)
-    gitcmd.commit(git_path, f"{request.user.username} {action} {path}", request.user.get_full_name(),
+    gitcmd.commit(git_path, f"{request.user.username} {action} {path}",
+                  request.user.get_full_name(),
                   request.user.email)
 
 
