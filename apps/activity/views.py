@@ -43,7 +43,7 @@ def remove(request, activity_id):
     if not activity.is_teacher(request.user):
         raise PermissionDenied("Vous devez être professeur de cette activité")
     activity.remove_parent()
-    return redirect(reverse("activity:play", args=[activity_id]))
+    return redirect(request.META.get('HTTP_REFERER', '/'))
 
 @login_required
 @csrf_exempt
