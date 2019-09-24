@@ -25,7 +25,7 @@ def add_activity(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
     new_id = int(request.POST.get('new-activity-id'))
     to_add = get_object_or_404(Activity, id=new_id)
-    if to_add.activity_type == "course" or to_add.parent.id != 0:
+    if to_add.activity_type == "course" or to_add.parent.id != 0 or to_add.id == 0:
         raise PermissionDenied("Vous ne pouvez pas ajouter cette activité")
     if not activity.is_teacher(request.user):
         raise PermissionDenied("Vous n'êtes pas professeur de cette activité")
