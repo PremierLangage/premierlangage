@@ -245,7 +245,13 @@ def move_resource(request):
                 return HttpResponseNotFound(
                     "{0} already exists inside {1}".format(os.path.basename(src), dst))
             else:
-                os.rename(src_path, destination)
+                if post.get('copy'):
+                    if os.path.isdir(src_path):
+                        shutil.copytree(src_path, destination)
+                    else:
+                        shutil.copyfile(src_path, destination)
+                else:
+                    os.rename(src_path, destination)
                 return JsonResponse({'path': os.path.join(dst, os.path.basename(src))})
     
     except Exception as e:  # pragma: no cover
