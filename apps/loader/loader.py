@@ -8,6 +8,7 @@ from os.path import basename, splitext
 import htmlprint
 from django.conf import settings
 
+from activity.activity_type.utils import get_activity_type_class
 from activity.models import Activity, Index
 from filebrowser.models import Directory
 from loader.exceptions import MissingPL
@@ -104,14 +105,14 @@ def load_pla(directory, rel_path, type=None):
     for pl in pl_list:
         pl.save()
         logger.info("PL '" + str(pl.id) + " (" + pl.name + ")' has been added to the database")
-
+    
     activity_type = type if type else dic["type"]
     pla = Activity.objects.create(name=name, activity_type=activity_type, activity_data=dic)
     logger.info("PLA '" + name + "' has been added to the database")
     
     for pl in pl_list:
         Index.objects.create(activity=pla, pl=pl)
-
+    
     return pla, [htmlprint.code(warning) for warning in warnings]
 
 
@@ -133,9 +134,11 @@ def reload_pltp(directory, rel_path, original):
             pl, pl_warnings = load_pl(pl_directory, item['path'])
             warnings += pl_warnings
             pl_list.append(pl)
-            
+        
         originals = list(original.indexed_pl())
         original.pl.clear()
+        original_type = get_activity_type_class(original.activity_type)()
+        original.activity_data = {**dic, **original_type.install(original)}
         for pl in pl_list:
             correspond = list(
                 filter(lambda i: i.directory == pl.directory and i.rel_path == pl.rel_path,
@@ -152,7 +155,6 @@ def reload_pltp(directory, rel_path, original):
                 pl.save()
                 logger.info("PL '" + str(pl.id) + " (" + pl.name + ")' has been created.")
                 Index.objects.create(activity=original, pl=pl)
-        original.json = dic
         original.save()
         logger.info("Activity '" + original.name + "' has been reloaded.")
         
@@ -160,6 +162,7 @@ def reload_pltp(directory, rel_path, original):
     except Exception as e:  # pragma: no cover
         if not settings.DEBUG:
             return None, htmlprint.code(str(e))
+        
         return (None, (htmlprint.code(str(e))
                        + '<br>DEBUG set to True - Showing Traceback :<br>'
                        + htmlprint.html_exc()))

@@ -341,6 +341,8 @@ def reload_pltp(request):
         return HttpResponseBadRequest(missing_parameter('activity_id'))
     try:
         activity = Activity.objects.get(id=activity_id)
+        if not activity.is_teacher(request.user):
+            return HttpResponse("Vous n'avez pas le droit de recharger cette activité")
         path_components = path.split('/')
         directory = Directory.objects.get(name=path_components[0])
         relative = os.path.join(*(path_components[1:]))
@@ -349,8 +351,7 @@ def reload_pltp(request):
         if not pltp and not warnings:  # pragma: no cover
             return HttpResponse("This PLTP is already loaded")
         elif not pltp:  # pragma: no cover
-            return HttpResponseNotFound("Failed to load '%s': \n%s"
-                                        % (os.path.basename(path), warnings.join("\n")))
+            return HttpResponseNotFound(f"Failed to load '{os.path.basename(path)}': \n{warnings}")
         else:
             activity.reload()
             msg = ''
