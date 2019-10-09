@@ -128,17 +128,23 @@ def reload_pltp(directory, rel_path, original):
     try:
         dic, warnings = parse_file(directory, rel_path)
         
+        original_type = get_activity_type_class(original.activity_type)()
+        if "type" in dic and original.activity_type != dic["type"]:
+            return None, f"Activity type must remain '{original.activity_type}'"
+        original.activity_data = {**dic, **original_type.install(original)}
+        
         pl_list = list()
         for item in dic['__pl']:
             pl_directory = Directory.objects.get(name=item['directory_name'])
             pl, pl_warnings = load_pl(pl_directory, item['path'])
+            if pl is None:
+                return None, pl_warnings
             warnings += pl_warnings
             pl_list.append(pl)
         
         originals = list(original.indexed_pl())
         original.pl.clear()
-        original_type = get_activity_type_class(original.activity_type)()
-        original.activity_data = {**dic, **original_type.install(original)}
+        
         for pl in pl_list:
             correspond = list(
                 filter(lambda i: i.directory == pl.directory and i.rel_path == pl.rel_path,
@@ -148,8 +154,7 @@ def reload_pltp(directory, rel_path, original):
                 correspond.json = pl.json
                 correspond.save()
                 logger.info(
-                    "PL '" + str(
-                        correspond.id) + " (" + correspond.name + ")' has been updated.")
+                    "PL '" + str(correspond.id) + " (" + correspond.name + ")' has been updated.")
                 Index.objects.create(activity=original, pl=correspond)
             else:
                 pl.save()
@@ -157,12 +162,10 @@ def reload_pltp(directory, rel_path, original):
                 Index.objects.create(activity=original, pl=pl)
         original.save()
         logger.info("Activity '" + original.name + "' has been reloaded.")
-        
         return original, [htmlprint.code(warning) for warning in warnings]
     except Exception as e:  # pragma: no cover
         if not settings.DEBUG:
             return None, htmlprint.code(str(e))
-        
         return (None, (htmlprint.code(str(e))
                        + '<br>DEBUG set to True - Showing Traceback :<br>'
                        + htmlprint.html_exc()))
