@@ -69,8 +69,7 @@ def play(request, activity_id):
 @csrf_exempt
 def next(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
-    session, _ = SessionActivity.objects.get_or_create(SessionActivity, user=request.user,
-                                                       activity=activity)
+    session, _ = SessionActivity.objects.get_or_create(user=request.user, activity=activity)
     a_type = get_activity_type_class(activity.activity_type)()
     
     if not activity.open:
@@ -136,8 +135,7 @@ def evaluate(request, activity_id, pl_id):
 @csrf_exempt
 def dashboard(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
-    session, _ = SessionActivity.objects.get_or_create(SessionActivity, user=request.user,
-                                                       activity=activity)
+    session, _ = SessionActivity.objects.get_or_create(user=request.user, activity=activity)
     a_type = get_activity_type_class(activity.activity_type)()
     
     if request.user in activity.teacher.all():
@@ -154,8 +152,7 @@ def notes(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
     if not activity.is_teacher(request.user):
         raise PermissionDenied("Vous devez être professeur pour récupérer les notes")
-    session, _ = SessionActivity.objects.get_or_create(SessionActivity, user=request.user,
-                                                       activity=activity)
+    session, _ = SessionActivity.objects.get_or_create(user=request.user, activity=activity)
     a_type = get_activity_type_class(activity.activity_type)()
     return a_type.notes(activity, request)
 
