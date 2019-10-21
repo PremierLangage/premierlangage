@@ -1,4 +1,5 @@
 import codecs
+import logging
 import os
 
 import gitcmd
@@ -11,6 +12,8 @@ from filebrowser.models import Directory
 
 HOME_DIR = 'Yggdrasil'
 LIB_DIR = 'lib'
+
+logger = logging.getLogger(__name__)
 
 
 
@@ -155,12 +158,16 @@ def walkdir(path, user, parent='', write=None, read=None, repo=None, sort=False)
         node['read'] = read
         node['write'] = write
         
-        if repo is None and filter.in_repository(path):
-            node['repo'] = repo = {
-                'url':    repository_url(path),
-                'branch': repository_branch(path),
-                'host':   fa_repository_host(path),
-            }
+        try:
+            if repo is None and filter.in_repository(path):
+                node['repo'] = repo = {
+                    'url':    repository_url(path),
+                    'branch': repository_branch(path),
+                    'host':   fa_repository_host(path),
+                }
+        except Exception as e:
+            logger.warning(f"Impossible to get repository for {node['name']}: {e}")
+        
         node['children'] = [
             walkdir(os.path.join(path, entry), user, node['path'], write, read, repo, sort)
             for entry in os.listdir(path)

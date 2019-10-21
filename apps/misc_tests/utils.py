@@ -12,9 +12,10 @@ from django.conf import settings
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test import override_settings
 from selenium import webdriver
+from apps.misc_tests.local_storage import LocalStorage
 
 
-FAKE_FB_ROOT = os.path.join(settings.APPS_DIR, 'tests/tmp')
+FAKE_FB_ROOT = os.path.join(settings.APPS_DIR, 'misc_tests/tmp')
 
 HOME_DIR = os.path.join(settings.APPS_DIR, "misc_tests/resources/fake_filebrowser_data/")
 LIB_DIR = os.path.join(settings.APPS_DIR, "misc_tests/resources/lib/")
@@ -39,14 +40,17 @@ class BaseSeleniumTestCase(StaticLiveServerTestCase):
         super().setUpClass()
         cls.b = webdriver.Firefox()
         cls.b.implicitly_wait(10)
-
-
+    
+    
     def get_e_by_text(self, text):
-        e = self.b.find_elements_by_xpath("//*[contains(text(), '" + text + "')]")
+        e = self.b.find_elements_by_xpath(f"//*[contains(text(), '{text}')]")
         return e[0] if len(e) > 0 else None
     
     
     def connect(self, login, passwd):
+        storage = LocalStorage(self.b)
+        for k in storage.keys():
+            storage.remove(k)
         e = self.get_e_by_text("Se connecter")
         if e is not None:
             e = self.b.find_element_by_name("username")
