@@ -7,9 +7,11 @@ from django.contrib.auth.models import User
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
+from apps.filebrowser.tests.test_utils import command
 from filebrowser.models import Directory
-from shared.utils import missing_parameter
 from filebrowser.utils import to_download_url
+from shared.utils import missing_parameter
+
 
 FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
 
@@ -33,6 +35,7 @@ class GetUpdateResourceTestCase(TestCase):
         
         shutil.rmtree(os.path.join(cls.dir))
         shutil.copytree(RES_DIR, cls.dir)
+        command('git init --bare ' + FAKE_FB_ROOT)
     
     
     @classmethod
