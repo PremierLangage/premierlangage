@@ -167,15 +167,15 @@ class SeleniumTestCase(BaseSeleniumTestCase):
         self.b.switch_to.window(window_before)
     
     
-#    def test_filebrowser_theme(self):
-#        self.visit(reverse("editor:index"))
-#        self.connect("login", "secret")
-#        e = self.b.find_element_by_id("nav-action-theme")
-#        self.assertTrue(self.b.find_element_by_css_selector('body[class="light-theme"]'))
-#        self.assertFalse(self.b.find_elements_by_css_selector('body[class="dark-theme"]'))
-#        e.click()
-#        self.assertFalse(self.b.find_elements_by_css_selector('body[class="light-theme"]'))
-#        self.assertTrue(self.b.find_element_by_css_selector('body[class="dark-theme"]'))
+    #    def test_filebrowser_theme(self):
+    #        self.visit(reverse("editor:index"))
+    #        self.connect("login", "secret")
+    #        e = self.b.find_element_by_id("nav-action-theme")
+    #        self.assertTrue(self.b.find_element_by_css_selector('body[class="light-theme"]'))
+    #        self.assertFalse(self.b.find_elements_by_css_selector('body[class="dark-theme"]'))
+    #        e.click()
+    #        self.assertFalse(self.b.find_elements_by_css_selector('body[class="light-theme"]'))
+    #        self.assertTrue(self.b.find_element_by_css_selector('body[class="dark-theme"]'))
     
     
     def test_components_doc(self):
