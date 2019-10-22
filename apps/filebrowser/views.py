@@ -10,9 +10,10 @@ import requests
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.http import (HttpResponse, HttpResponseBadRequest, HttpResponseNotAllowed,
                          HttpResponseNotFound, JsonResponse)
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.template.loader import get_template
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
@@ -22,8 +23,9 @@ from activity.models import Activity
 from filebrowser.filter import is_root
 from filebrowser.models import Directory
 from filebrowser.utils import (HOME_DIR, LIB_DIR, add_commit_path, get_content, get_meta,
-                               join_fb_root, rm_fb_root, walkalldirs)
-from loader.loader import load_file, reload_pltp as rp
+                               join_fb_root, reload_activity, rm_fb_root, walkalldirs)
+from loader.loader import load_file
+from loader.models import PL
 from loader.utils import get_location
 from playexo.models import SessionTest
 from shared.utils import missing_parameter
@@ -339,32 +341,10 @@ def reload_pltp(request):
     activity_id = post.get('activity_id')
     if not activity_id:
         return HttpResponseBadRequest(missing_parameter('activity_id'))
-    try:
-        activity = Activity.objects.get(id=activity_id)
-        if not activity.is_teacher(request.user):
-            return HttpResponse("Vous n'avez pas le droit de recharger cette activité")
-        path_components = path.split('/')
-        directory = Directory.objects.get(name=path_components[0])
-        relative = os.path.join(*(path_components[1:]))
-        pltp, warnings = rp(directory, relative, activity)
-        
-        if not pltp and not warnings:  # pragma: no cover
-            return HttpResponse("This PLTP is already loaded")
-        elif not pltp:  # pragma: no cover
-            return HttpResponseNotFound(f"Failed to load '{os.path.basename(path)}': \n{warnings}")
-        else:
-            activity.reload()
-            msg = ''
-            if warnings:  # pragma: no cover
-                for warning in warnings:
-                    msg += str(warning)
-            return HttpResponse(msg + "L'activité <b>'" + pltp.name + "'</b> a bien été rechargé.")
-    except Exception as e:  # pragma: no cover
-        msg = "Impossible to load '" + os.path.basename(path) + "' : " + htmlprint.code(
-            str(type(e)) + ' - ' + str(e))
-        if settings.DEBUG:
-            msg += ("DEBUG set to True: " + htmlprint.html_exc())
-        return HttpResponseNotFound(msg)
+    activity = Activity.objects.get(id=activity_id)
+    if not activity.is_teacher(request.user):
+        return HttpResponse("Vous n'avez pas le droit de recharger cette activité")
+    return reload_activity(path, activity)
 
 
 
@@ -474,6 +454,7 @@ def test_pl(request):
         
         return render(request, 'filebrowser/test.html', {
             'preview': preview,
+            'id': pl.id,
         })
     except Exception as e:  # pragma: no cover
         msg = ("Impossible to test '" + os.path.basename(path) + "' : " + htmlprint.code(
@@ -651,3 +632,16 @@ def option(request):
         return globals()[opt](request)
     except Exception as e:
         return HttpResponseBadRequest("Cannot use option %s: %s" % (opt, str(e)))
+
+
+
+def demo(request, pl_id):
+    pl = get_object_or_404(PL, id=pl_id)
+    request.user = User.objects.get(username="Anonymous")
+    
+    exercise = SessionTest.objects.create(pl=pl, user=request.user)
+    preview = exercise.get_exercise(request)
+    
+    return render(request, 'filebrowser/test.html', {
+        'preview': preview,
+    })
