@@ -94,7 +94,7 @@ class LoaderTestCase(ActivityBaseTestMixin):
     def test_reload_pltp(self):
         pltp, _ = loader.load_pltp(self.dir, "working.pltp")
         self.assertTrue(pltp is not None)
-        pltp, _ = loader.reload_pltp(self.dir, "working.pltp", pltp)
+        pltp, _ = loader.reload_pla(self.dir, "working.pltp", pltp)
         self.assertTrue(pltp is not None)
-        pltp, _ = loader.reload_pltp(self.dir, "working2.pltp", pltp)
+        pltp, _ = loader.reload_pla(self.dir, "working2.pltp", pltp)
         self.assertTrue(pltp is not None)

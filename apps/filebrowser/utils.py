@@ -3,11 +3,14 @@ import logging
 import os
 
 import gitcmd
+import htmlprint
 import magic
 from django.conf import settings
+from django.http import HttpResponse, HttpResponseNotFound
 
 from filebrowser import filter
 from filebrowser.models import Directory
+from loader.loader import reload_pla as rp
 
 
 HOME_DIR = 'Yggdrasil'
@@ -185,3 +188,30 @@ def walkalldirs(request):
     home = walkdir(join_fb_root(HOME_DIR), request.user)
     home["name"] = 'home'
     return [home, lib]
+
+
+
+def reload_activity(path, activity):
+    try:
+        path_components = path.split('/')
+        directory = Directory.objects.get(name=path_components[0])
+        relative = os.path.join(*(path_components[1:]))
+        pltp, warnings = rp(directory, relative, activity)
+        
+        if not pltp and not warnings:  # pragma: no cover
+            return HttpResponse("This PLTP is already loaded")
+        elif not pltp:  # pragma: no cover
+            return HttpResponseNotFound(f"Failed to load '{os.path.basename(path)}': \n{warnings}")
+        else:
+            activity.reload()
+            msg = ''
+            if warnings:  # pragma: no cover
+                for warning in warnings:
+                    msg += str(warning)
+            return HttpResponse(msg + "L'activité <b>'" + pltp.name + "'</b> a bien été rechargé.")
+    except Exception as e:  # pragma: no cover
+        msg = "Impossible to load '" + os.path.basename(path) + "' : " + htmlprint.code(
+            str(type(e)) + ' - ' + str(e))
+        if settings.DEBUG:
+            msg += ("DEBUG set to True: " + htmlprint.html_exc())
+        return HttpResponseNotFound(msg)
