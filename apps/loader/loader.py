@@ -3,6 +3,7 @@
 
 
 import logging
+import os
 from os.path import basename, splitext
 
 import htmlprint
@@ -107,6 +108,7 @@ def load_pla(directory, rel_path, type=None):
         logger.info("PL '" + str(pl.id) + " (" + pl.name + ")' has been added to the database")
     
     activity_type = type if type else dic["type"]
+    dic["__reload_path"] = os.path.join(directory.name, rel_path)
     pla = Activity.objects.create(name=name, activity_type=activity_type, activity_data=dic)
     logger.info("PLA '" + name + "' has been added to the database")
     
@@ -117,7 +119,7 @@ def load_pla(directory, rel_path, type=None):
 
 
 
-def reload_pltp(directory, rel_path, original):
+def reload_pla(directory, rel_path, original):
     """Reload the given file as a PLTP. Also reload its PL, but without modyfing their ID.
         original is a pltp returned by load_pltp or reload_pltp
         
@@ -131,7 +133,10 @@ def reload_pltp(directory, rel_path, original):
         original_type = get_activity_type_class(original.activity_type)()
         if "type" in dic and original.activity_type != dic["type"]:
             return None, f"Activity type must remain '{original.activity_type}'"
-        original.activity_data = {**dic, **original_type.install(original)}
+        original.activity_data = {
+            **dic, **original_type.install(original),
+            "__reload_path": os.path.join(directory.name, rel_path)
+        }
         
         pl_list = list()
         for item in dic['__pl']:

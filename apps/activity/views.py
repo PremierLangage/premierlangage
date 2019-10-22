@@ -11,6 +11,7 @@ from django.views.decorators.http import require_POST
 
 from activity.activity_type.utils import get_activity_type_class
 from activity.models import Activity, SessionActivity
+from filebrowser.utils import reload_activity
 from loader.models import PL
 from playexo.models import Answer
 from playexo.utils import render_feedback
@@ -37,6 +38,19 @@ def add_activity(request, activity_id):
         to_add.teacher.add(teacher)
     to_add.save()
     return redirect(reverse("activity:play", args=[activity_id]))
+
+
+
+@csrf_exempt
+def reload(request, activity_id):
+    activity = get_object_or_404(Activity, id=activity_id)
+    if activity.activity_type == "base" or not activity.is_teacher(request.user):
+        raise PermissionDenied("Vous ne pouvez pas reload cette activité")
+    if "__reload_path" not in activity.activity_data:
+        raise PermissionDenied(
+            "Cette activité a été créée avant la version 0.7.2 et n'est donc pas rechargeable")
+    path = activity.activity_data["__reload_path"]
+    return reload_activity(path, activity)
 
 
 
