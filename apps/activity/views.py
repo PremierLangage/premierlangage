@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 
+@login_required
 @require_POST
 @csrf_exempt
 def add_activity(request, activity_id):
@@ -41,6 +42,7 @@ def add_activity(request, activity_id):
 
 
 
+@login_required
 @csrf_exempt
 def reload(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
@@ -54,6 +56,7 @@ def reload(request, activity_id):
 
 
 
+@login_required
 def remove(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
     if not activity.is_teacher(request.user):
