@@ -9,11 +9,12 @@ import htmlprint
 import requests
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import (HttpResponse, HttpResponseBadRequest, HttpResponseNotAllowed,
                          HttpResponseNotFound, JsonResponse)
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.template.loader import get_template
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
@@ -454,7 +455,7 @@ def test_pl(request):
         
         return render(request, 'filebrowser/test.html', {
             'preview': preview,
-            'id': pl.id,
+            'id':      pl.id,
         })
     except Exception as e:  # pragma: no cover
         msg = ("Impossible to test '" + os.path.basename(path) + "' : " + htmlprint.code(
@@ -636,8 +637,12 @@ def option(request):
 
 
 def demo(request, pl_id):
+    if not request.user.is_authenticated:
+        login(request, User.objects.get(username="Anonymous"),
+              backend="django.contrib.auth.backends.ModelBackend")
+        return redirect(reverse("filebrowser:demo", args=[pl_id]))
+    
     pl = get_object_or_404(PL, id=pl_id)
-    request.user = User.objects.get(username="Anonymous")
     
     exercise = SessionTest.objects.create(pl=pl, user=request.user)
     preview = exercise.get_exercise(request)
