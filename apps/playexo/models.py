@@ -371,6 +371,8 @@ class Answer(models.Model):
     date = models.DateTimeField(default=timezone.now)
     grade = models.IntegerField(null=True)
     
+    class Meta:
+        index_together = ("pl", "user")
     
     @staticmethod
     def highest_grade(pl, user):
