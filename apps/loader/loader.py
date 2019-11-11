@@ -10,12 +10,12 @@ import htmlprint
 from django.conf import settings
 
 from activity.activity_type.utils import get_activity_type_class
-from activity.models import Activity, Index
+from activity.models import Activity
 from filebrowser.models import Directory
 from loader.exceptions import MissingPL
 from loader.models import PL
 from loader.parser import get_type, parse_file
-
+from activity.mixins import PLPosition
 
 logger = logging.getLogger(__name__)
 
@@ -113,7 +113,7 @@ def load_pla(directory, rel_path, type=None):
     logger.info("PLA '" + name + "' has been added to the database")
     
     for pl in pl_list:
-        Index.objects.create(activity=pla, pl=pl)
+        PLPosition.objects.create(parent=pla, pl=pl)
     
     return pla, [htmlprint.code(warning) for warning in warnings]
 
@@ -160,11 +160,11 @@ def reload_pla(directory, rel_path, original):
                 correspond.save()
                 logger.info(
                     "PL '" + str(correspond.id) + " (" + correspond.name + ")' has been updated.")
-                Index.objects.create(activity=original, pl=correspond)
+                PLPosition.objects.create(parent=original, pl=correspond)
             else:
                 pl.save()
                 logger.info("PL '" + str(pl.id) + " (" + pl.name + ")' has been created.")
-                Index.objects.create(activity=original, pl=pl)
+                PLPosition.objects.create(parent=original, pl=pl)
         original.save()
         logger.info("Activity '" + original.name + "' has been reloaded.")
         return original, [htmlprint.code(warning) for warning in warnings]
