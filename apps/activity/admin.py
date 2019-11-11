@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from activity.models import Activity, Index
+from activity.mixins import PLPosition
+from activity.models import Activity
 
 
 
@@ -10,6 +11,6 @@ class ActivityAdmin(admin.ModelAdmin):
 
 
 
-@admin.register(Index)
-class IndexAdmin(admin.ModelAdmin):
-    list_display = ('activity', 'pl', 'index')
+@admin.register(PLPosition)
+class PLPositionAdmin(admin.ModelAdmin):
+    list_display = ('parent', 'pl', 'position')
