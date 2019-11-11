@@ -8,12 +8,13 @@ from django.contrib.auth.models import User
 from django.test import Client, override_settings
 from django.urls import reverse
 
-from activity.models import Index, SessionActivity
+from activity.models import SessionActivity
 from filebrowser.models import Directory
 from loader.loader import load_file
 from misc_tests.activity_base_test_mixin import ActivityBaseTestMixin
 from playexo.models import SessionExercise
 from user_profile.enums import Role
+from activity.mixins import PLPosition
 
 
 FAKE_FB_ROOT = os.path.join("/tmp", str(uuid.uuid4()))
@@ -183,7 +184,7 @@ class ViewsTestCase(ActivityBaseTestMixin):
     
     def test_activity_view_next(self):
         s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity)
-        Index.objects.create(pl=self.pl, activity=self.activity)
+        PLPosition  .objects.create(pl=self.pl, parent=self.activity)
         s_activity.current_pl = self.pl
         s_activity.save()
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)

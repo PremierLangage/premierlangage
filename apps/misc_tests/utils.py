@@ -53,10 +53,11 @@ class BaseSeleniumTestCase(StaticLiveServerTestCase):
             storage.remove(k)
         e = self.get_e_by_text("Se connecter")
         if e is not None:
-            e = self.b.find_element_by_name("username")
-            e.send_keys(login)
-            e = self.b.find_element_by_name("password")
-            e.send_keys(passwd)
+            u = self.b.find_element_by_name("username")
+            p = self.b.find_element_by_name("password")
+            sleep(WAIT_TIME)
+            u.send_keys(login)
+            p.send_keys(passwd)
             self.get_e_by_text('Log-in').click()
             sleep(3 * WAIT_TIME)
     
@@ -65,8 +66,11 @@ class BaseSeleniumTestCase(StaticLiveServerTestCase):
         self.b.get(self.live_server_url + url)
     
     
-    def answer_pl(self, answer):
+    def answer_pl(self, answer, preview=False):
         sleep(WAIT_TIME)
         self.b.find_element_by_css_selector('input[name="answer"]').send_keys(answer)
-        self.b.find_element_by_xpath("//*[contains(text(), 'Valider')]").click()
+        if preview:
+            self.b.find_element_by_id("validate").click()
+        else:
+            self.b.find_element_by_xpath("//*[contains(text(), 'Valider')]").click()
         sleep(WAIT_TIME)

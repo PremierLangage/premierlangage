@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import PermissionDenied
 from django.db import IntegrityError, models
-from django.db.models import F
 from django.dispatch import receiver
 from django.http import Http404
 from django.shortcuts import get_object_or_404
@@ -14,6 +13,7 @@ from django.urls import resolve
 from django_jinja.backend import Jinja2
 
 from activity.activity_type.utils import get_activity_type_class, type_dict
+from activity.mixins import Position
 from loader.models import PL
 from lti_app.models import LTIModel
 
@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 
-class Activity(LTIModel):
+class Activity(LTIModel, Position):
     name = models.CharField(max_length=255, null=False)
     open = models.BooleanField(default=True)
     activity_type = models.CharField(max_length=30, null=False,
@@ -31,7 +31,7 @@ class Activity(LTIModel):
     parent = models.ForeignKey("self", on_delete=models.CASCADE, null=True)
     teacher = models.ManyToManyField(User, related_name="teaches", blank=True)
     student = models.ManyToManyField(User, related_name="learn", blank=True)
-    pl = models.ManyToManyField(PL, through="Index")
+    pl = models.ManyToManyField(PL, through="PLPosition")
     
     
     def delete(self, *args, **kwargs):
@@ -75,7 +75,11 @@ class Activity(LTIModel):
     
     
     def indexed_pl(self):
-        return [i.pl for i in sorted(self.index_set.all(), key=lambda i: i.index)]
+        return [i.pl for i in sorted(self.plposition_set.all(), key=lambda i: i.position)]
+    
+    
+    def indexed_activities(self):
+        return [a for a in sorted(self.objects.filter(parent=self), key=lambda i: i.position)]
     
     
     def small(self, request):
@@ -139,6 +143,7 @@ class Activity(LTIModel):
     def remove_parent(self):
         self.parent = Activity.objects.get(id=0)
         self.save()
+    
     
     @classmethod
     def get_or_create_course_from_lti(cls, user, lti_launch):
@@ -316,48 +321,3 @@ def install_activity(sender, instance, created, *args, **kwargs):
         instance.activity_data = {**instance.activity_data, **activity_type.install(instance)}
         instance.parent = Activity.objects.get(pk=0)
         instance.save()
-
-
-
-class Index(models.Model):
-    activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
-    pl = models.ForeignKey(PL, on_delete=models.CASCADE)
-    index = models.PositiveSmallIntegerField(blank=True)
-    
-    
-    class Meta:
-        unique_together = ('activity', 'index')
-        ordering = ['index']
-        verbose_name_plural = "Indexes"
-    
-    
-    def __str__(self):  # pragma: no cover
-        return "Activity - (" + str(self.activity) + ") | PL - (" + str(
-            self.pl) + ") | Pos - " + str(
-            self.index)
-    
-    
-    def save(self, *args, **kwargs):
-        if self.pk is None:
-            self.index = len(Index.objects.filter(activity=self.activity))
-        super(Index, self).save(*args, **kwargs)
-    
-    
-    def move_end(self):
-        index = self.index
-        self.index = len(Index.objects.filter(activity=self.activity))
-        self.save()
-        for i in Index.objects.filter(activity=self.activity, index__gt=index):
-            i.index = F('index') - 1
-            i.save()
-    
-    
-    def move_start(self):
-        index = self.index
-        self.index = 32766  # Max for PositiveSmallInteger
-        self.save()
-        for i in Index.objects.filter(activity=self.activity, index__lt=index).reverse():
-            i.index = F('index') + 1
-            i.save()
-        self.index = 0
-        self.save()
