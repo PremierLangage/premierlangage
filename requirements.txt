@@ -18,6 +18,7 @@ mock
 oauth2
 ply
 pydenticon
+pygiftparser
 pytest
 pytest-django
 python-magic
