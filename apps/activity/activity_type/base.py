@@ -1,8 +1,6 @@
-from django.apps import apps
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.shortcuts import render
-from django.db.models import Q
 
 from activity.activity_type.activity_type import AbstractActivityType
 
@@ -55,13 +53,12 @@ class Base(AbstractActivityType):
         This method is called when the play view is called.
         :return: A rendered template of the main page of the activity.
         """
-        activity_model = apps.get_model("activity", "Activity")
-        courses = activity_model.objects.filter(Q(student=request.user) | Q(teacher=request.user),
-                                                parent=activity,
-                                                activity_type="course").distinct()
+        courses = activity.indexed_activities()
+        user = request.user
         small_courses = list()
         for item in courses:
-            small_courses.append(item.small(request))
+            if item.activity_type == "course" and (item.is_teacher(user) or item.is_student(user)):
+                small_courses.append(item.small(request))
         return render(request, "activity/activity_type/base/index.html", {"course": small_courses})
     
     
