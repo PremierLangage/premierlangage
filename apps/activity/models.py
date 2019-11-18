@@ -32,7 +32,10 @@ class Activity(LTIModel, Position):
     teacher = models.ManyToManyField(User, related_name="teaches", blank=True)
     student = models.ManyToManyField(User, related_name="learn", blank=True)
     pl = models.ManyToManyField(PL, through="PLPosition")
-    
+
+    def save(self, *args, **kwargs):
+        super(Position, self).save()
+        super(LTIModel, self).save()
     
     def delete(self, *args, **kwargs):
         """ Overriding delete() to also delete his PL if they're not in
@@ -79,7 +82,7 @@ class Activity(LTIModel, Position):
     
     
     def indexed_activities(self):
-        return [a for a in sorted(self.objects.filter(parent=self), key=lambda i: i.position)]
+        return [a for a in sorted(Activity.objects.filter(parent=self), key=lambda i: i.position)]
     
     
     def small(self, request):

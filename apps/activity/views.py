@@ -185,3 +185,23 @@ def index(request):
 def disconnect(request):
     logout(request)
     return redirect(reverse('activity:login'))
+
+
+
+@login_required
+def moveprev(request, activity_id):
+    activity = get_object_or_404(Activity, id=activity_id)
+    if not activity.is_teacher(request.user):
+        raise PermissionDenied("Vous devez être professeur pour récupérer les notes")
+    activity.move_prev()
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+
+@login_required
+def movenext(request, activity_id):
+    activity = get_object_or_404(Activity, id=activity_id)
+    if not activity.is_teacher(request.user):
+        raise PermissionDenied("Vous devez être professeur pour récupérer les notes")
+    activity.move_next()
+    return redirect(request.META.get('HTTP_REFERER', '/'))

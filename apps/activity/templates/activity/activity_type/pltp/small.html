@@ -30,6 +30,12 @@
             <ion-button href="{{ url('activity:reload', id) }}" data-toggle="tooltip" data-placement="top" title="Reload">
                 <ion-icon slot="icon-only" name="sync"></ion-icon>
             </ion-button>
+            <ion-button href="{{ url('activity:moveprev', id) }}" data-toggle="tooltip" data-placement="top" title="Monter">
+                <ion-icon slot="icon-only" name="arrow-round-up"></ion-icon>
+            </ion-button>
+            <ion-button href="{{ url('activity:movenext', id) }}" data-toggle="tooltip" data-placement="top" title="Descendre">
+                <ion-icon slot="icon-only" name="arrow-round-down"></ion-icon>
+            </ion-button>
             {% endif %}
         </ion-buttons>
     </ion-card-content>

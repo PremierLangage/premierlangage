@@ -3,7 +3,6 @@ import logging
 from django.apps import apps
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
-from django.db.models import Q
 from django.http import Http404, HttpResponse, HttpResponseNotFound
 from django.shortcuts import redirect, render, reverse
 from django.template.loader import get_template
@@ -93,10 +92,8 @@ class Course(AbstractActivityType):
                         "L'activité d'ID '" + str(request.GET.get("id", None)) + "' introuvable.")
                 return redirect(reverse("activity:play", args=[activity.id]))
         
-        activities = activity_model.objects.filter(Q(student=user) | Q(teacher=user),
-                                                   parent=activity).distinct()
         smalls = list()
-        for item in activities:
+        for item in activity.indexed_activities():
             if item.open or activity.is_teacher(user):
                 smalls.append(item.small(request))
         
