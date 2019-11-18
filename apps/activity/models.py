@@ -32,10 +32,12 @@ class Activity(LTIModel, Position):
     teacher = models.ManyToManyField(User, related_name="teaches", blank=True)
     student = models.ManyToManyField(User, related_name="learn", blank=True)
     pl = models.ManyToManyField(PL, through="PLPosition")
-
+    
+    
     def save(self, *args, **kwargs):
         super(Position, self).save()
         super(LTIModel, self).save()
+    
     
     def delete(self, *args, **kwargs):
         """ Overriding delete() to also delete his PL if they're not in
@@ -118,6 +120,18 @@ class Activity(LTIModel, Position):
         self.position = MAX_POSITIVE_SMALL_INTEGER_VALUE
     
     
+    def remove_parent(self):
+        parent = self.parent
+        position = self.position
+        self.parent = Activity.objects.get(id=0)
+        self.position = MAX_POSITIVE_SMALL_INTEGER_VALUE
+        activities = Activity.objects.filter(parent=parent, position__gt=position)
+        for a in activities:
+            a.position -= 1
+            a.save()
+        self.save()
+    
+    
     def add_student_to_all(self, student):
         self.student.add(student)
         self.save()
@@ -142,11 +156,6 @@ class Activity(LTIModel, Position):
         if course == self or course.id == 0:
             return None
         return course
-    
-    
-    def remove_parent(self):
-        self.parent = Activity.objects.get(id=0)
-        self.save()
     
     
     @classmethod
