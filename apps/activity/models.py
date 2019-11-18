@@ -13,7 +13,7 @@ from django.urls import resolve
 from django_jinja.backend import Jinja2
 
 from activity.activity_type.utils import get_activity_type_class, type_dict
-from activity.mixins import Position
+from activity.mixins import Position, MAX_POSITIVE_SMALL_INTEGER_VALUE
 from loader.models import PL
 from lti_app.models import LTIModel
 
@@ -115,6 +115,7 @@ class Activity(LTIModel, Position):
     
     def add_parent(self, activity):
         self.parent = activity
+        self.position = MAX_POSITIVE_SMALL_INTEGER_VALUE
     
     
     def add_student_to_all(self, student):
