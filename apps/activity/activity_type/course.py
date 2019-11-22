@@ -69,8 +69,8 @@ class Course(AbstractActivityType):
         raise PermissionDenied()
     
     
-    def template(self, request, activity: "apps.activity.models.Activity",
-                 session: "apps.activity.models.SessionActivity"):
+    def template(self, request, activity: "activity.models.Activity",
+                 session: "activity.models.SessionActivity"):
         """
         This method is called when the play view is called.
         :return: A rendered template of the main page of the activity.
@@ -179,15 +179,14 @@ class Course(AbstractActivityType):
     def course_summary(self, request, activity):
         user = request.user
         
-        activity_model = apps.get_model("activity", "Activity")
-        activities = activity_model.objects.filter(teacher=user, parent=activity)
+        activities = activity.indexed_activities().filter(teacher=user)
         
         students = list()
-        for st in activity.student.all().distinct():
+        for st in (activity.student.all() | activity.teacher.all()).distinct():
             tp = list()
             for a in activities:
-                if a.is_student(st):
-                    summary = Answer.activity_summary(a, user)
+                if a.is_member(st):
+                    summary = Answer.activity_summary(a, st)
                     tp.append({
                         'state':         [{
                             'percent': summary[i][0],
@@ -207,6 +206,7 @@ class Course(AbstractActivityType):
                 'activities': tp,
             })
         students = sorted(students, key=lambda k: k['lastname'])
+        
         return render(request, 'activity/activity_type/course/teacher_dashboard.html', {
             'state':     [i for i in State if i != State.ERROR],
             'name':      activity.name,
@@ -222,11 +222,10 @@ class Course(AbstractActivityType):
         except User.DoesNotExist:
             return HttpResponseNotFound("Cet étudiant ne fait pas partie de ce cours")
         
-        if not activity.is_student(student):
+        if not activity.is_member(student):
             return HttpResponseNotFound("Cet étudiant ne fait pas partie de ce cours")
         
-        activity_model = apps.get_model("activity", "Activity")
-        activities = activity_model.objects.filter(teacher=request.user, parent=activity)
+        activities = activity.indexed_activities().filter(teacher=student)
         tp = list()
         for activity in activities:
             question = list()
