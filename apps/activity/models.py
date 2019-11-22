@@ -84,7 +84,7 @@ class Activity(LTIModel, Position):
     
     
     def indexed_activities(self):
-        return [a for a in sorted(Activity.objects.filter(parent=self), key=lambda i: i.position)]
+        return Activity.objects.filter(parent=self).order_by("position")
     
     
     def small(self, request):
@@ -137,7 +137,6 @@ class Activity(LTIModel, Position):
         self.save()
         children = Activity.objects.all().filter(parent=self)
         for a in children:
-            a.student.add(student)
             a.add_student_to_all(student)
     
     
