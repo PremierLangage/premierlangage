@@ -1,4 +1,4 @@
-#*****************************************************************************
+# ****************************************************************************
 #       Copyright (C) 2019 Nicolas Borie <nicolas.borie at u-pem dot fr>
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
@@ -11,7 +11,7 @@
 #  The full text of the GPL is available at:
 #
 #                  http://www.gnu.org/licenses/
-#*****************************************************************************
+# ****************************************************************************
 
 from django.urls import path
 
