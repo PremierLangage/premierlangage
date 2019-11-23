@@ -53,6 +53,7 @@ Such statistic request will return a Python list of tuple `[(x1, y1), (x2, y2), 
 
 """
 
+
 # Pattern of statistics request under all logs
 class StatOnAllAnswers(models.Model):
     
