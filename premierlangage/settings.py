@@ -56,6 +56,7 @@ PROJECT_APPS = [
     'components',
     'activity',
     'git',
+    'stats',
 ]
 
 INSTALLED_APPS = PROJECT_APPS + PREREQ_APPS

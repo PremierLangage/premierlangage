@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="{{ static('stats/css/courses.css') }}"/>
+{% endblock %}
+{% block content %}
+  <h1>Salut et bienvenue sur les stats</h1>
+{% endblock %}
