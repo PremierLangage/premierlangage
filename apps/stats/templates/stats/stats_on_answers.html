@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ static('stats/css/courses.css') }}"/>
+{% endblock %}
+
+{% block content %}
+  <h1>Statistique : {{ stats.statname }}</h1>
+
+  <u>Description de la requête :</u><br />
+  <p>{{ explain }}</p>
+  
+
+  <u>Données brute (dictionnaire python) :</u><br />
+  {{ brut_data }}
+
+{% endblock %}

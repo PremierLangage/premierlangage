@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block css %}
+  <link rel="stylesheet" href="{{ static('stats/css/courses.css') }}"/>
+{% endblock %}
+  
+{% block content %}
+  
+  <h1>Ajout d'une statistique sur l'ensemble des logs de la table Answer</h1>
+
+  <form action="" method="post">
+    {% csrf_token %}
+
+    Donnez un nom à votre statistique (200 caractères maximum) : <br />
+   <input name="statname" type="text" />
+    
+  <h3>Étape 1 : filtrer un sous-ensemble des logs</h3>
+
+  <input type="hidden" name="nb_filters" value="{{ nb_filters+1 }}">
+
+  {% if nb_filters == 0: %}
+  La statistique n'est pas filtrée, elle sera basée sur tous les logs de Answer.
+  {% else %}
+  Le calcul sera basé sur l'ensemble des logs qui valide(nt) le(s)
+  filtre(s) suivant(s) :<br />
+
+  <table>
+    <tr>
+      <td align="center">Critère</td>
+      <td align="center">opérateur</td>
+      <td align="center">Valeur</td>
+    </tr>
+    {% for item in filters_content %}
+    <tr>
+      <td>
+	<select name="{{ item[0] }}">
+	  <option value="pl">les exercices notés PL</option>
+	  <option value="grade">les notes</option>
+	  <option value="seed">les graines d'aléatoire</option>
+	  <option value="date">le temps</option>
+	</select>
+      </td>
+      <td>
+	<select name="{{ item[1] }}">
+	  <option value="=">est égal à</option>
+	  <option value="!=">est différent de</option>
+	  <option value=">">est supérieur à</option>
+	  <option value=">=">est supérieur ou égal à</option>
+	  <option value="<">est inférieur à</option>
+	  <option value="<">est inférieur ou égal à</option>
+	</select>
+      </td>
+      <td>
+	<input type="text" name="{{ item[2] }}" />
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+    
+  {% endif %}
+  
+  <input type="submit" value="Ajouter un filtre">
+  
+  
+  <h3>Étape 2 : désigner la quantité à compter</h3>
+
+    <p>
+      La quantité à compter est déterminée ici. Compter le nombre de
+      logs qui passent les filtres correspond à un comptage
+      d'occurrences. Cela consiste à partir de 0 et à rajouter 1 à
+      chaque log de Answer qui valident tous les filtres au dessus.
+    </p>
+  
+    <p>
+      Compter pour chacun de ses logs 
+      <select name="countedobject">
+	<option value="occurrences">leur nombre</option>
+      </select>
+    </p>
+  
+  <h3>Étape 3 : choisir un partitionnement</h3>
+
+    <p>
+      Le partitionnement concerne plutôt les représentations selon les
+      proportions (pensez diagrammes circulaires où la totalité du
+      camembert fait 100 pourcents). Pour un diagramme en bâtons ou une
+      courbe, ce champs va déterminer les abscisses.
+    </p>
+    
+    <p>
+      Votre statistique sera calculée /selon/en fonction
+      de/partitionné par/ ce dernier champs.
+    </p>
+  
+    <p>
+      Mettre en relief la statistique selon : 
+      <select name="partitioning">
+	<option value="pl">les exercices notés PL</option>
+	<option value="grade">les notes</option>
+	<option value="seed">les graines d'aléatoire</option>
+	<option value="date">le temps</option>
+      </select>
+    </p>
+  
+  <input type="submit" value="Créer nouvelle statistique">
+  </form>
+  
+  
+{% endblock %}

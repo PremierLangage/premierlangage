@@ -21,6 +21,11 @@ from . import views
 23 Nov 2019, nborie : original first implementation
 """
 
+
+app_name = 'stats'
+
 urlpatterns = [
-    path('', views.index, name='index'),
+    path(r'', views.index, name='index'),
+    path(r'stats_on_answers/<int:stats_id>/', views.stats_on_answers, name='stats_on_answers'),
+    path(r'new_stats_on_answers.html', views.new_stats_on_answers, name='new_stats_on_answers'),
 ]

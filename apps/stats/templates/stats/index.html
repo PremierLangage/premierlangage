@@ -1,7 +1,31 @@
 {% extends "base.html" %}
+
 {% block css %}
-<link rel="stylesheet" href="{{ static('stats/css/courses.css') }}"/>
+  <link rel="stylesheet" href="{{ static('stats/css/courses.css') }}"/>
 {% endblock %}
+  
 {% block content %}
-<h1>Bienvenue sur le module de statistique</h1>
+  <h1>Bienvenue sur le module de statistique</h1>
+
+  <p>Le module statique propose, pour le moment, un unique modèle de
+  requêtes RGPD-respectueuses sur la base complète des traces générées par
+  les apprenants lors du chargement et de l'évaluation des exercices
+  de la plateforme.</p>
+  
+  <h2>Modèle de requête sur toutes les traces (intégralité de la base Answers)</h2>
+
+  <a href="stats/new_stats_on_answers.html">Définir une nouvelle statistique</a><br />
+
+  <h3>Statistiques disponibles :</h3>
+  {% if all_stats_on_answers %}
+  <ul>
+    {% for stats in all_stats_on_answers %}
+    <li><a href="stats/stats_on_answers/{{ stats.id }}/">{{ stats.statname }}</a></li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <p>Aucune statistique sur tous les logs Answers disponible.</p>
+  {% endif %}
+
+  
 {% endblock %}
