@@ -44,7 +44,11 @@ def stats_on_answers(request, stats_id):
     stat_request = StatOnAllAnswersRequest(stats)
     explain = stat_request.explain()
     brut_data = stat_request.resolve()
-    return render(request, "stats/stats_on_answers.html", {'stats' : stats, 'explain' : explain, 'brut_data' : brut_data})
+    return render(request, "stats/stats_on_answers.html", {
+        'stats': stats,
+        'explain': explain,
+        'brut_data': brut_data
+    })
 
 
 @login_required
@@ -57,11 +61,11 @@ def new_stats_on_answers(request):
     if 'nb_filters' in request.POST:
         nb_filters = int(request.POST['nb_filters'])
         for i in range(nb_filters):
-            filters_content.append( ("criteria"+str(i), "operator"+str(i), "values"+str(i)) )
+            filters_content.append(("criteria"+str(i), "operator"+str(i), "values"+str(i)))
     else:
         nb_filters = 0
         
     return render(request, "stats/new_stats_on_answers.html", {
-        'nb_filters' : nb_filters,
-        'filters_content' : filters_content
+        'nb_filters': nb_filters,
+        'filters_content': filters_content
     })

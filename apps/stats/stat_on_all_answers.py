@@ -13,9 +13,10 @@
 #                  http://www.gnu.org/licenses/
 # ****************************************************************************
 
-from .models import StatOnAllAnswers, FilterItem
+from .models import FilterItem
 
 from playexo.models import Answer
+
 
 class StatOnAllAnswersRequest():
     """
@@ -40,7 +41,7 @@ class StatOnAllAnswersRequest():
         """
         filters = []
         for item in FilterItem.objects.filter(statonallanswers=self._stat.id):
-            filters.append( (item.criteria, item.operator, item.values) )
+            filters.append((item.criteria, item.operator, item.values))
         return filters
 
     def counted_objects(self):
