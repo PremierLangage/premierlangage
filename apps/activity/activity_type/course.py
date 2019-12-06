@@ -69,8 +69,7 @@ class Course(AbstractActivityType):
         raise PermissionDenied()
     
     
-    def template(self, request, activity: "activity.models.Activity",
-                 session: "activity.models.SessionActivity"):
+    def template(self, request, activity, session):
         """
         This method is called when the play view is called.
         :return: A rendered template of the main page of the activity.
