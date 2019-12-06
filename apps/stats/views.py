@@ -20,6 +20,10 @@ from django.shortcuts import get_object_or_404, render
 from .models import StatOnAllAnswers
 from .stat_on_all_answers import StatOnAllAnswersRequest
 
+import json
+from django.core.serializers.json import DjangoJSONEncoder
+
+
 """
 23 Nov 2019, nborie : original first implementation
 """
@@ -49,6 +53,18 @@ def stats_on_answers(request, stats_id):
         'explain': explain,
         'brut_data': brut_data
     })
+
+
+@login_required
+def json_on_answers(request, stats_id):
+    """
+    The page displaying a formated statistic request on all Answers.
+    """
+    stats = get_object_or_404(StatOnAllAnswers, pk=stats_id)
+    stat_request = StatOnAllAnswersRequest(stats)
+    brut_data = stat_request.resolve()
+    ans = json.dumps(brut_data, cls=DjangoJSONEncoder)
+    return render(request, "stats/json_on_answers.html", { 'ans': ans })
 
 
 @login_required
