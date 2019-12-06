@@ -6,7 +6,6 @@ from django.urls import reverse
 
 
 def index(request):
-    print(request.user)
     if not request.user.is_authenticated:
         login(request, User.objects.get(username="Anonymous"),
               backend="django.contrib.auth.backends.ModelBackend")
