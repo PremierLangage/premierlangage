@@ -45,7 +45,7 @@ Every module installed with pip while running a python environment will be insta
 
 - run `install_release.sh`
 - Create a super user for the server by entering informations when prompted
-- You can override settings (like SECRET_KEY, SANDBOX or ALLOWED_HOSTS), by creating a file `premierlangage/server/serverpl/serverpl/config.py` and declaring such settings.
+- You should override settings (like SECRET_KEY, SANDBOX or ALLOWED_HOSTS), by creating a file `premierlangage/server/serverpl/serverpl/config.py` and declaring such settings.
 - From `premierlangage/server/serverpl/`, run `python3 manage.py collectstatic`
 
 ## Sandbox
