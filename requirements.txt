@@ -1,5 +1,5 @@
 wheel
-django
+django<3.0.0
 django-annoying
 django-celery-results
 django-hitcount
