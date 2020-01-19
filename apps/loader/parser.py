@@ -21,7 +21,7 @@ from loader.utils import extends_dict
 
 logger = logging.getLogger(__name__)
 
-FILE_TYPE = ['pl', 'pltp', 'pla']
+FILE_TYPE = ['pl', 'pltp', 'pla', 'gift']
 PL_MANDATORY_KEY = ['title', 'text', 'form']
 PLTP_MANDATORY_KEY = ['title', '__pl', 'introduction']
 PLA_MANDATORY_KEY = ['title', 'type']
@@ -166,7 +166,7 @@ def parse_file(directory, path, extending=False):
         dic, ext_warnings = process_extends(dic)
         warnings += ext_warnings
         if not extending:
-            if parsers[ext]['type'] == 'pltp':
+            if parsers[ext]['type'] in ['pltp', 'gift']:
                 for key in PLTP_MANDATORY_KEY:
                     if key not in dic:
                         raise MissingKey(join(directory.root, path), key)

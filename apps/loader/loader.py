@@ -34,7 +34,7 @@ def load_file(directory, rel_path):
     
     try:
         typ = get_type(directory, rel_path)
-        if typ == 'pltp':
+        if typ in ['pltp', 'gift']:
             return load_pltp(directory, rel_path)
         elif typ == 'pl':
             return load_pl(directory, rel_path)

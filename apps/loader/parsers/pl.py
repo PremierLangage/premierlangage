@@ -13,11 +13,12 @@ from os.path import basename, dirname, join
 
 from django.conf import settings
 
-from filebrowser.utils import to_download_url
-from loader.exceptions import FileNotFound, SemanticError, SyntaxErrorPL, ComponentNotFound
-from loader.utils import get_location
 from components.components import SELECTORS
-
+from filebrowser.models import Directory
+from filebrowser.utils import to_download_url
+from loader.exceptions import (ComponentNotFound, FileNotFound, SemanticError,
+                               SyntaxErrorPL)
+from loader.utils import get_location
 
 BAD_CHAR = r''.join(settings.FILEBROWSER_DISALLOWED_CHAR)
 
@@ -46,17 +47,13 @@ class Parser:
     HTML_KEYS = ['title', 'teacher', 'introductionh', 'text', 'form']
     
     
-    def __init__(self, directory, rel_path):
+    def __init__(self, directory: Directory, rel_path: str):
         self.directory = directory
         self.path = rel_path
         self.path_parsed_file = join(directory.root, rel_path)
         self.lineno = 1
         self.dic = dict()
         self.warning = list()
-        
-        with open(self.path_parsed_file) as f:
-            self.lines = f.readlines()
-        
         self._multiline_dic = None
         self._multiline_key = None
         self._multiline_op = None
@@ -65,13 +62,13 @@ class Parser:
         self._multiline_json = False
     
     
-    def add_warning(self, message):
+    def add_warning(self, message: str):
         """Append a warning the self.warning list according to message."""
         f = (self.path_parsed_file, self.lineno, message, self.lines[self.lineno - 1])
         self.warning.append("%s:%d -- %s\n%s" % f)
     
     
-    def dic_add_key(self, key, value, append=False, prepend=False, replace=False):
+    def dic_add_key(self, key: str, value, append=False, prepend=False, replace=False):
         """Add the value to the key in the dictionnary, parse the key to create sub dictionnaries.
          Append the value if append is set to True.
          Prepend the value if prepend is set to True.
@@ -104,7 +101,7 @@ class Parser:
             current_dic[last_key] = value
     
     
-    def dic_get_subkeys_value(self, key):
+    def dic_get_subkeys_value(self, key: str):
         """Get the value of the key in the dictionary. Parse the key to find sub dictionnaries"""
         current_dic = self.dic
         sub_keys = key.split('.')
@@ -124,7 +121,7 @@ class Parser:
         self.dic['__extends'] = list()
     
     
-    def extends_line_match(self, match, line):
+    def extends_line_match(self, match, line: str):
         """ Appends file, line and lineno to self.dic['__extends'] so that it can be later processed
             by loader.parser.
 
@@ -149,7 +146,7 @@ class Parser:
         })
     
     
-    def from_file_line_match(self, match, line):
+    def from_file_line_match(self, match, line: str):
         """ Map (or append) the content if the file corresponding to file)
             to the key
 
@@ -180,7 +177,7 @@ class Parser:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
     
     
-    def one_line_match(self, match, line):
+    def one_line_match(self, match, line: str):
         """ Map value to key if operator is '=',
             Map json.loads(value) if operator is '%'
 
@@ -208,7 +205,7 @@ class Parser:
             self.dic_add_key(key, value, prepend=True)
     
     
-    def multi_line_match(self, match, line):
+    def multi_line_match(self, match, line: str):
         """ Set self._multiline_key and self._multiline_opened_lineno.
             Also set self._multiline_json if operator is '=%'"""
         
@@ -226,7 +223,7 @@ class Parser:
             self.dic_add_key(key, '')
     
     
-    def while_multi_line(self, line):
+    def while_multi_line(self, line: str):
         """ Append line to self.dic[self._multiline_key] if line does
             not match END_MULTI_LINE.
 
@@ -260,7 +257,7 @@ class Parser:
             self._multiline_value += line
     
     
-    def sandbox_file_line_match(self, match, line):
+    def sandbox_file_line_match(self, match, line: str):
         """ Map content of file to self.dic['__files'][name].
 
             Raise from loader.exceptions:
@@ -284,7 +281,7 @@ class Parser:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
     
     
-    def url_line_match(self, match, line):
+    def url_line_match(self, match, line: str):
         """ Map value to a download url of a resource.
 
             Raise from loader.exceptions:
@@ -306,7 +303,7 @@ class Parser:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
     
     
-    def component_line_match(self, match, line):
+    def component_line_match(self, match, line: str):
         """ Map value to a component.
 
             Raise from loader.exceptions:
@@ -327,11 +324,11 @@ class Parser:
             raise SyntaxErrorPL(self.path_parsed_file, line, self.lineno, str(e))
     
     
-    def parse_line(self, line):
+    def parse_line(self, line: str):
         """ Parse the given line by calling the appropriate function according to regex match.
 
             Raise loader.exceptions.SyntaxErrorPL if the line wasn't match by any regex."""
-        
+
         if self._multiline_key:
             self.while_multi_line(line)
         
@@ -371,7 +368,10 @@ class Parser:
                 - warning is a list (may be empty) containing every warning
 
             Raise SyntaxErrorPL if a multi line key is still open at the end of the file."""
-        
+
+        with open(self.path_parsed_file) as f:
+            self.lines = f.readlines()
+         
         self.fill_meta()
         
         for line in self.lines:
