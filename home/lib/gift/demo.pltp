@@ -1,0 +1,15 @@
+title==
+QCM
+==
+author==
+Mamadou Cisse
+==
+introduction==
+Un simple QCM
+==
+@ demo/Q1.pl
+@ demo/Q2.pl
+@ demo/Q3.pl
+@ demo/Q4.pl
+@ demo/Q5.pl
+@ demo/Q6.pl
