@@ -4,32 +4,34 @@
 @ /builder/before.py [builder.py]
 
 # DECLARATION
-component =: SortList
-component.items ==
+sortlist =: SortList
+sortlist.items ==
 Lorem ipsum A
 Lorem ipsum B
 Lorem ipsum C
 Lorem ipsum D
 ==
 
-component.text % 10
-
 # RANDOMIZATION
 before==
-component.parse_string('\n')
-component.remind()
+sortlist.parse_string('\n')
+sortlist.remind()
 ==
 
 # FORM
 title = Sort List Component
 text = *Drag and Drop the items to sort the list*
-form = {{ component|component }}
+form = {{ sortlist|component }}
 
 
 
 # EVALUATION
 evaluator==
-score = component.auto_grade()
-grade = (score, str(score))
+score = sortlist.auto_grade() * 100
+
+if score == 100:
+    grade = (100, '<span class="success-state">Good answer</span>')
+else:
+    grade = (0, f'<span class="error-state">Try again</span>')
 ==
 

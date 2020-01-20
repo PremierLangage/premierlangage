@@ -1,5 +1,5 @@
 import os
-import uuid
+import shutil
 from io import StringIO
 from typing import List
 
@@ -16,7 +16,7 @@ class TrueFalseSetGenerator:
         self.answers: answer.TrueFalseSet = question.answers
 
     def generate(self, f):
-        f.write("extends = /components/templates/qtruefalse.pl \n\n")
+        f.write("extends = /gift/templates/qtruefalse.pl \n\n")
         f.write("answer % " + str(self.answers.answer).lower() + "\n\n")
         f.write("feedbackCorrect==\n" + self.answers.feedbackCorrect + "\n==\n")
         f.write("feedbackWrong==\n" + self.answers.feedbackWrong + "\n==\n")
@@ -32,7 +32,7 @@ class SelectSetGenerator:
         self.answers: answer.SelectSet = question.answers
 
     def generate(self, f):
-        f.write("extends = /components/templates/qselectset.pl\n\n")
+        f.write("extends = /gift/templates/qselectset.pl\n\n")
         f.write("title==\n" + self.question.title + "\n==\n")
         f.write("text==\n" + self.question.text + "\n==\n")
         f.write("choices==\n")
@@ -58,7 +58,7 @@ class MatchingSetGenerator:
         # for e in self.answers.answers:
         #     if e.question == "" or e.answer == "":
         #         print("SyntaxError")
-        f.write("extends = /components/templates/qmatch.pl\n\n")
+        f.write("extends = /gift/templates/qmatch.pl\n\n")
         f.write("title==\n " + self.question.title + "\n==\n")
         f.write("text==\n" + self.question.text + "\n==\n")
         f.write("choices== \n")
@@ -77,7 +77,7 @@ class EssaySetGenerator:
 
     def generate(self, f):
         """ generate a pl file who contain information about the question """
-        f.write("extends = /components/templates/qessay.pl\n\n")
+        f.write("extends = /gift/templates/qessay.pl\n\n")
         f.write("title==\n " + self.question.title + "\n==\n")
         f.write("text==\n" + self.question.text + "\n==\n")
 
@@ -91,7 +91,7 @@ class NumericAnswerSetGenerator:
 
     def generate(self, f):
         """ generate a pl file who contain information about the question """
-        f.write("extends = /components/templates/qnumericset.pl\n\n")
+        f.write("extends = /gift/templates/qnumericset.pl\n\n")
         f.write("title==\n " + self.question.title + "\n==\n")
         f.write("text==\n" + self.question.text + "\n==\n")
         f.write("choices== \n")
@@ -117,7 +117,7 @@ class ShortSetGenerator:
 
     def generate(self, f):
         """ generate a pl file who contain information about the question """
-        f.write("extends = /components/templates/qshortset.pl\n\n")
+        f.write("extends = /gift/templates/qshortset.pl\n\n")
         f.write("title==\n " + self.question.title + "\n==\n")
         f.write("text==\n" + self.question.text + "\n==\n")
         f.write("choices== \n")
@@ -137,7 +137,7 @@ class MultipleChoicesSetGenerator:
 
     def generate(self, f):
         """ generate a pl file who contain information about the question """
-        f.write("extends = /components/templates/qmultichoice.pl\n\n")
+        f.write("extends = /gift/templates/qmultichoice.pl\n\n")
         f.write("title==\n " + self.question.title + "\n==\n")
         f.write("text==\n" + self.question.text + "\n==\n")
         f.write("choices== \n")
@@ -154,7 +154,7 @@ class MultipleChoicesSetGenerator:
         f.write("==")
 
 
-class Parser(ParserPLTP):
+class Parser:
 
     GENERATORS = {
         answer.TrueFalseSet.__name__: TrueFalseSetGenerator,
@@ -168,12 +168,15 @@ class Parser(ParserPLTP):
         answer.SelectSet.__name__: SelectSetGenerator
     }
 
+    def __init__(self, directory, path):
+        self.directory = directory
+        self.relpath = path
+        self.abspath = os.path.join(directory.root, path)
+
+
     def create_exercises(self):
         exercises = {}
-        content = ''
-        with open(self.path_parsed_file, 'r') as f:
-            content = f.read()
-            f.seek(0)
+        with open(self.abspath, 'r') as f:
             questions: List[question.Question] = parser.parseFile(f)
             q: question.Question
             for q in questions:
@@ -183,36 +186,61 @@ class Parser(ParserPLTP):
                         with (StringIO()) as io:
                             self.GENERATORS[name](q).generate(io)
                             exercises[q.title] = io.getvalue()
-        return content, exercises
+        return exercises
+
 
     def parse(self):
-        dirpath = os.path.dirname(self.path_parsed_file)
-        dirpath = os.path.join(dirpath, str(uuid.uuid4()))
-        dirname = os.path.basename(dirpath)
-        os.mkdir(dirpath)
-        content = None
-        try:
-            content, exercises = self.create_exercises()
-            pltp = [
-                'title=Title',
-                'author=Author',
-                'introduction=Introduction'
-            ]
-            for i, v in enumerate(exercises.values()):
-                path = os.path.join(dirpath, f'Q{i}.pl')
-                pltp.append(f'@ {dirname}/Q{i}.pl')
-                with open(path, 'w') as f:
-                    f.write(v)
-            with open(self.path_parsed_file, 'w') as f:
-                f.write('\n'.join(pltp))
-                print('\n'.join(pltp))
-            return super().parse()
+        filename = os.path.basename(
+            self.abspath
+        ).replace('.gift', '')
+        inpdir = os.path.dirname(self.abspath)
+        outdir = os.path.join(
+            inpdir,
+            filename,
+        )
 
-        finally:
-            if content:
-                with open(self.path_parsed_file, 'w') as f:
-                    f.write(content)
-            os.rmdir(dirpath)
+        if os.path.exists(outdir):
+            shutil.rmtree(outdir)
+        os.mkdir(outdir)
+
+        exercises = self.create_exercises()
+
+        pltp = []
+        
+        # generate pl files inside a subdir relative to the gift file
+        for i, v in enumerate(exercises.values()):
+            pltp.append(f'@ {filename}/Q{i + 1}.pl')
+            with open(os.path.join(outdir, f'Q{i + 1}.pl'), 'w') as f:
+                f.write(v)
+        
+        # path to the generated pltp file
+        path = os.path.join(
+            os.path.dirname(self.relpath),
+            filename + '.pltp'
+        )
+
+        title = 'TYPE YOUR TITLE HERE'
+        author = 'TYPE YOUR NAME HERE'
+        intro = 'TYPE YOUR INTRO TEXT HERE'
+        if os.path.exists(os.path.join(self.directory.root, path)):
+            parser = ParserPLTP(self.directory, path)
+            dic, _ = parser.parse()
+            title = dic.get('title', title)
+            author = dic.get('author', author)
+            intro = dic.get('introduction', intro)
+
+        pltp = [
+            'title==\n' + title + '\n==',
+            'author==\n' + author + '\n==',
+            'introduction==\n' + intro + '\n=='
+        ] + pltp
+        
+        # generate pltp aside of the gift file
+        with open(os.path.join(inpdir, filename + '.pltp'), 'w') as f:
+            f.write('\n'.join(pltp))
+
+        parser = ParserPLTP(self.directory, path)
+        return parser.parse()
 
 
 def get_parser():

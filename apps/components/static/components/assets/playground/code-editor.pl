@@ -2,13 +2,12 @@
 grader  =@ /grader/evaluator.py
 builder =@ /builder/before.py
 
-component =: CodeEditor
-
-component.code ==
-import os
+editor =: CodeEditor
+editor.theme = dark
+editor.language = python
+editor.code ==
+# write your code here
 ==
-component.theme = dark
-component.language = python
 
 before==
 ==
@@ -19,9 +18,9 @@ text==
 ==
 
 form==
-{{component|component }}
+{{ editor|component }}
 ==
 
 evaluator==
-grade = (100, "")
+grade = (100, f"student code:\n{editor.code}")
 ==
