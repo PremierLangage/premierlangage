@@ -152,7 +152,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<ngx-monaco-editor [hidden]='editor.options.diffMode' class='code-editor' [options]=\"{}\" [model]='{}' (onInit)=\"codeEditorLoaded($event)\"></ngx-monaco-editor>\n<ngx-monaco-diff-editor [hidden]='!editor.options.diffMode' class='code-editor' [options]=\"{}\" [originalModel]=\"{}\" [modifiedModel]=\"{}\" (onInit)=\"diffEditorLoaded($event)\"></ngx-monaco-diff-editor>\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<ngx-monaco-editor [hidden]='editor.options?.diffMode' class='code-editor' [options]=\"{}\" [model]='{}' (onInit)=\"codeEditorLoaded($event)\"></ngx-monaco-editor>\n<ngx-monaco-diff-editor [hidden]='!editor.options?.diffMode' class='code-editor' [options]=\"{}\" [originalModel]=\"{}\" [modifiedModel]=\"{}\" (onInit)=\"diffEditorLoaded($event)\"></ngx-monaco-diff-editor>\n");
 
 /***/ }),
 
@@ -3520,7 +3520,7 @@ class CodeEditor extends AbstractEditor {
         this.onDidPreview = new rxjs_1.Subject();
     }
     get options() {
-        return this._options;
+        return this._options || (this._options = {});
     }
     get type() {
         return EditorTypes.Code;
@@ -3532,8 +3532,7 @@ class CodeEditor extends AbstractEditor {
         ];
     }
     open(resource, options) {
-        this._options = options;
-        super.open(resource, options);
+        super.open(resource, this._options = options || {});
     }
     split() {
         this.group.openSide(this.resource);
@@ -6728,7 +6727,7 @@ let CodeEditorComponent = class CodeEditorComponent {
                 this.active.changed = false;
                 this.active.savedContent = this.active.content;
             }
-            this.readonly = options.diffMode || !this.active.write;
+            this.readonly = options && options.diffMode || !this.active.write;
             codeEditor.setModel(model);
             codeEditor.updateOptions({ readOnly: this.readonly });
             codeEditor.focus();
@@ -6740,18 +6739,16 @@ let CodeEditorComponent = class CodeEditorComponent {
     }
     checkCodeOptions(monaco, options) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            if (options) {
-                const { codeEditor } = this.editor;
-                const { position } = options;
-                if (position) {
-                    setTimeout(() => {
-                        codeEditor.setPosition({
-                            lineNumber: position.line,
-                            column: position.column
-                        });
-                        codeEditor.revealLineInCenter(position.line, monaco.editor.ScrollType.Smooth);
-                    }, 100);
-                }
+            const { codeEditor } = this.editor;
+            const { position } = options;
+            if (position) {
+                setTimeout(() => {
+                    codeEditor.setPosition({
+                        lineNumber: position.line,
+                        column: position.column
+                    });
+                    codeEditor.revealLineInCenter(position.line, monaco.editor.ScrollType.Smooth);
+                }, 100);
             }
         });
     }

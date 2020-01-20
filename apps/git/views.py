@@ -86,13 +86,13 @@ def changes(request):
 
     def changes_in_directory(directory):
         subdirs = os.listdir(join_fb_root(directory))
-
         for subdir in subdirs:
             abspath = join_fb_root(os.path.join(directory, subdir))
-            if not in_repository(abspath):
+            if not os.path.isdir(abspath) or not in_repository(abspath):
                 continue
 
             def parse_change(change):
+                # print(abspath + ' :: ' + change)
                 tmp = change.strip().split(' ')
                 ftype = tmp[0]
                 fpath = os.path.join(directory, subdir, tmp[-1])  # Yggdrasil + Repo + File

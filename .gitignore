@@ -1,6 +1,7 @@
 # Project
 home/**
-!/home/lib/
+!home/lib/**
+
 tmp/
 
 
