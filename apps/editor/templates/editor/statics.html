@@ -1,7 +1,5 @@
-<link rel="stylesheet" href="https://cdn.staticaly.com/gh/PremierLangage/editor/master/dist/styles.css?env=dev"/>
-<script src="https://cdn.staticaly.com/gh/PremierLangage/editor/master/dist/polyfills-es5.js?env=dev" nomodule defer></script>
-<script src="https://cdn.staticaly.com/gh/PremierLangage/editor/master/dist/polyfills-es2015.js?env=dev" type="module"></script>
-<script src="https://cdn.staticaly.com/gh/PremierLangage/editor/master/dist/runtime-es2015.js?env=dev" type="module"></script>
-<script src="https://cdn.staticaly.com/gh/PremierLangage/editor/master/dist/main-es2015.js?env=dev" type="module"></script>
-<script src="https://cdn.staticaly.com/gh/PremierLangage/editor/master/dist/runtime-es5.js?env=dev" nomodule defer></script>
-<script src="https://cdn.staticaly.com/gh/PremierLangage/editor/master/dist/main-es5.js?env=dev" nomodule defer></script>
+<script src="{{ static('/editor/runtime.js') }}" type="module"></script>
+<script src="{{ static('/editor/polyfills.js') }}" type="module"></script>
+<script src="{{ static('/editor/styles.js') }}" type="module"></script>
+<script src="{{ static('/editor/vendor.js') }}" type="module"></script>
+<script src="{{ static('/editor/main.js') }}" type="module"></script>
