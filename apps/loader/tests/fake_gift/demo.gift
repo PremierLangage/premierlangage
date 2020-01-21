@@ -1,0 +1,28 @@
+// true/false
+::Q1:: 1+1=2 {T}
+
+// Choix multiple avec rétroaction spécifique pour les bonnes et les mauvaises réponses
+::Q2:: Quelle couleur se trouve entre l'orange et le vert dans le spectre ? 
+{=jaune #Bonne réponse; bravo ! ~rouge #Mauvaise réponse, c'est jaune. ~bleu #Mauvaise réponse, c'est jaune.}
+
+// Texte troué
+::Q3:: Deux plus {=deux =2} égalent quatre.
+
+// Appariement
+::Q4:: Quel animal mange quoi ? {=Chat -> Nourriture pour chats =Chien -> Nourriture pour chiens}
+
+// Question à réponse numérique avec marge
+::Q5:: Nommez un chiffre de 1 à 5. {#3:2}
+
+// Question à réponse numérique avec marge (intervalle marqué par des points)
+::Q6:: Nommez un chiffre de 1 à 5. {#1..5}
+// Lors de l'importation, cette question devient la même que Q5, mais non disponible dans l'interface de questions de Moodle.
+
+// réponses numériques multiples avec points partiels et rétroaction
+::Q7:: En quelle année est né Ulysses S. Grant ? {#
+         =1822:0      # Bravo ! Tous les points.
+         =%50%1822:2  # Il est né en 1822. Votre réponse était proche, vous avez la moitié des points.
+}
+
+// Composition
+::Q8:: Comment allez-vous ? {}
