@@ -1,12 +1,15 @@
 extends = /gift/templates/qnumericset.pl
 
 title==
- Q6
+ Q5
 ==
 text==
 Nommez un chiffre de 1 à 5.
 ==
+feedbackGeneral==
+
+==
 choices== 
-/100->1-> 5
+:100->3.0->2.0#
 
 == 

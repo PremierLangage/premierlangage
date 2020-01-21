@@ -143,7 +143,7 @@ class ShortSetGenerator:
         """ generate a pl file who contain information about the question """
         f.write("extends = /gift/templates/qshortset.pl\n\n")
         f.write("title==\n " + self.question.title + "\n==\n")
-        f.write("text==\n" + self.question.text + "\n==\n")
+        f.write("text==\n" + self.question.text +  " __ "  + self.question.tail + "\n==\n")
         f.write("feedbackGeneral==\n" + self.question.generalFeedback + "\n==\n")
         f.write("choices== \n")
         for e in self.answers.answers:
@@ -189,12 +189,10 @@ class Parser:
         answer.TrueFalseSet.__name__:       TrueFalseSetGenerator,
         
         answer.MultipleChoicesSet.__name__: MultipleChoicesSetGenerator,
-        answer.MatchingSet.__name__:        MatchingSetGenerator,
-        answer.NumericAnswerSet.__name__:   NumericAnswerSetGenerator,
-        answer.Essay.__name__:              EssaySetGenerator,  # n'importe quoi attendu
-        
-        answer.ShortSet.__name__:           ShortSetGenerator,
-        answer.SelectSet.__name__:          SelectSetGenerator
+        answer.MatchingSet.__name__: MatchingSetGenerator,
+        answer.NumericAnswerSet.__name__: NumericAnswerSetGenerator,
+        answer.ShortSet.__name__: ShortSetGenerator,
+        answer.SelectSet.__name__: SelectSetGenerator
     }
     
     
@@ -205,7 +203,7 @@ class Parser:
     
     
     def create_exercises(self):
-        exercises = {}
+        exercises = []
         with open(self.abspath, 'r') as f:
             questions: List[question.Question] = parser.parseFile(f)
             q: question.Question
@@ -215,7 +213,7 @@ class Parser:
                     if name in self.GENERATORS:
                         with (StringIO()) as io:
                             self.GENERATORS[name](q).generate(io)
-                            exercises[q.title] = io.getvalue()
+                            exercises.append(io.getvalue())
         return exercises
     
     
@@ -238,7 +236,7 @@ class Parser:
         pltp = []
         
         # generate pl files inside a subdir relative to the gift file
-        for i, v in enumerate(exercises.values()):
+        for i, v in enumerate(exercises):
             pltp.append(f'@ {filename}/Q{i + 1}.pl')
             with open(os.path.join(outdir, f'Q{i + 1}.pl'), 'w') as f:
                 f.write(v)
@@ -254,6 +252,7 @@ class Parser:
         intro = 'TYPE YOUR INTRO TEXT HERE'
         if os.path.exists(os.path.join(self.directory.root, path)):
             parser = ParserPLTP(self.directory, path)
+            print('--------------------------')
             dic, _ = parser.parse()
             title = dic.get('title', title)
             author = dic.get('author', author)
@@ -271,8 +270,6 @@ class Parser:
         
         parser = ParserPLTP(self.directory, path)
         return parser.parse()
-
-
 
 def get_parser():
     """ Used to dynamicaly add parser to the loader. """
