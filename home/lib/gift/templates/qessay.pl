@@ -6,19 +6,25 @@ builder =@ /builder/before.py
 
 match =: Input
 match.type = text
-feedback =
+
 before==
 ==
 title==
 ==
 text==
 ==
+feedbackGeneral==
+==
+
 
 form==
 {{ match|component }}
 ==
 
 evaluator==
-grade = (100, '<span class="success-state">Good answser</span>')
+
+feedback = feedbackGeneral
+css = 'success-state anim-fade'
+grade = (100, f"<p class='{css}'>{feedback}</p>" )
 ==
 

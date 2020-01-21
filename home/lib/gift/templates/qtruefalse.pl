@@ -4,7 +4,7 @@
 @ /builder/before.py [builder.py] 
 @ /grader/evaluator.py [grader.py] 
 
-feedback = 
+
 textTrue = yes 
 textFalse = no 
 horizontal % false 
@@ -25,8 +25,10 @@ title==
 ==
 text==
 ==
-form==
+feedbackGeneral==
+==
 
+form==
 {{ radiobox|component }}
 ==
 
@@ -34,24 +36,27 @@ evaluator==
 score = 0
 radiobox.items[0]['css'] = ''
 radiobox.items[1]['css'] = ''
+feedback = ''
 if answer:
     if radiobox.selection == 'choice1':
         score = 100
         radiobox.items[0]['css'] = 'success-state anim-fade'
-        feedback = feedbackCorrect or feedback
+       
     else:
         radiobox.items[1]['css'] = 'error-state anim-fade'
-        feedback = feedbackWrong or feedback
+        
 else:
     if radiobox.selection == 'choice2':
         radiobox.items[1]['css'] = 'success-state anim-fade'
         score = 100
-        feedback = feedbackCorrect or feedback
+        
     else:
         radiobox.items[0]['css'] = 'error-state anim-fade'
-        feedback = feedbackWrong or feedback
-
+    
+feedback += feedbackWrong + feedbackCorrect
+feedback +=  "<br>" + feedbackGeneral
 grade = (score, feedback)
+
 ==
 
 
