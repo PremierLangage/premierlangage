@@ -43,7 +43,7 @@ class SeleniumTestCase(BaseSeleniumTestCase):
     def test_filebrowser_preview(self):
         self.visit(reverse("editor:index"))
         self.connect("login", "secret")
-        self.get_e_by_text("lib").click()
+        self.b.find_element_by_id("tree-node-lib").click()
         self.get_e_by_text("demo").click()
         self.get_e_by_text("static_add.pl").click()
         
@@ -70,7 +70,7 @@ class SeleniumTestCase(BaseSeleniumTestCase):
     def test_filebrowser_pl(self):
         self.visit(reverse("editor:index"))
         self.connect("login", "secret")
-        self.get_e_by_text("lib").click()
+        self.b.find_element_by_id("tree-node-lib").click()
         self.get_e_by_text("demo").click()
         e = self.get_e_by_text("static_add.pl")
         ActionChains(self.b).move_to_element(e).perform()
@@ -102,7 +102,7 @@ class SeleniumTestCase(BaseSeleniumTestCase):
     def test_filebrowser_activity(self):
         self.visit(reverse("editor:index"))
         self.connect("login", "secret")
-        self.get_e_by_text("lib").click()
+        self.b.find_element_by_id("tree-node-lib").click()
         self.get_e_by_text("demo").click()
         self.get_e_by_text("static_add.pl").click()
         self.get_e_by_text("NOTIFICATIONS").click()
