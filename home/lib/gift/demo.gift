@@ -5,8 +5,9 @@
 ::Q2:: Quelle couleur se trouve entre l'orange et le vert dans le spectre ? 
 {=jaune #Bonne réponse; bravo ! ~rouge #Mauvaise réponse, c'est jaune. ~bleu #Mauvaise réponse, c'est jaune.}
 
+
 // Texte troué
-// ::Q3:: Deux plus {=deux =2} égalent quatre.
+::Q3:: Deux plus égalent quatre  {=deux =2}.
 
 // Appariement
 ::Q4:: Quel animal mange quoi ? {=Chat -> Nourriture pour chats =Chien -> Nourriture pour chiens}
@@ -23,5 +24,8 @@
          =1822:0      # Bravo ! Tous les points.
          =%50%1822:2  # Il est né en 1822. Votre réponse était proche, vous avez la moitié des points.
 }
+
 // Composition
 ::Q8:: Comment allez-vous ? {}
+
+

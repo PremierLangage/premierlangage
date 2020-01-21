@@ -47,10 +47,13 @@ for index ,content in enumerate(choices) :
         feedback += "<br>" + choices[index]["feedback"]
         result = 1 
 feedback +=  "<br>" + feedbackGeneral
+css = 'error-state anim-fade'
+score = 0 
 if result == 1  :
-    grade = (100, f"{feedback}")
-else : 
-    grade = (0, f"{feedback}")
+    score = 100
+    css = 'success-state anim-fade' 
+    
+grade = (score, f"<p class='{css}'>{feedback}</p>")
     
 ==
 

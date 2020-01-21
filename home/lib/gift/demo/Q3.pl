@@ -1,13 +1,16 @@
-extends = /gift/templates/qmatch.pl
+extends = /gift/templates/qshortset.pl
+
 
 title==
- Q4
+ Q3
 ==
 text==
-Quel animal mange quoi ?
+Deux plus   deux égalent quatre __ .
 ==
-choices== 
-=Chat -> Nourriture pour chats
-=Chien -> Nourriture pour chiens
+feedbackGeneral==
 
 ==
+choices== 
+=vrai#
+== 
+
