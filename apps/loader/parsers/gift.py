@@ -22,6 +22,7 @@ class TrueFalseSetGenerator:
         f.write("feedbackWrong==\n" + self.answers.feedbackWrong + "\n==\n")
         f.write("title==\n" + self.question.title + "\n==\n")
         f.write("text==\n" + self.question.text + "\n==\n")
+        f.write("feedbackGeneral==\n" + self.question.generalFeedback + "\n==\n")
 
 
 class SelectSetGenerator:
@@ -35,6 +36,7 @@ class SelectSetGenerator:
         f.write("extends = /gift/templates/qselectset.pl\n\n")
         f.write("title==\n" + self.question.title + "\n==\n")
         f.write("text==\n" + self.question.text + "\n==\n")
+        f.write("feedbackGeneral==\n" + self.question.generalFeedback + "\n==\n")
         f.write("choices==\n")
         for e in self.answers.answers:
             if e.select is True:
@@ -61,6 +63,7 @@ class MatchingSetGenerator:
         f.write("extends = /gift/templates/qmatch.pl\n\n")
         f.write("title==\n " + self.question.title + "\n==\n")
         f.write("text==\n" + self.question.text + "\n==\n")
+        f.write("feedbackGeneral==\n" + self.question.generalFeedback + "\n==\n")
         f.write("choices== \n")
         for e in self.answers.answers:
             f.write("=" + e.question + "->" + e.answer)
@@ -80,6 +83,7 @@ class EssaySetGenerator:
         f.write("extends = /gift/templates/qessay.pl\n\n")
         f.write("title==\n " + self.question.title + "\n==\n")
         f.write("text==\n" + self.question.text + "\n==\n")
+        f.write("feedbackGeneral==\n" + self.question.generalFeedback + "\n==\n")
 
 
 class NumericAnswerSetGenerator:
@@ -94,17 +98,18 @@ class NumericAnswerSetGenerator:
         f.write("extends = /gift/templates/qnumericset.pl\n\n")
         f.write("title==\n " + self.question.title + "\n==\n")
         f.write("text==\n" + self.question.text + "\n==\n")
+        f.write("feedbackGeneral==\n" + self.question.generalFeedback + "\n==\n")
         f.write("choices== \n")
         for e in self.answers.answers:
             # two type of numeric answer
             lst = dir(e)
             if "maxi" in lst:
                 #  min <= value >= max
-                f.write("/"+str(e.fraction) + "->" + e.mini + "-> " + e.maxi + "\n\n")
+                f.write("/"+str(e.fraction) + "->" + e.mini + "-> " + e.maxi +"#"+ e.feedback + "\n\n")
             if "tolerance" in lst:
                 # value -tolerance <=  value >= value + tolerance
                 f.write(":" + str(e.fraction) + "->" + str(e.value) +
-                        "->" + str(e.tolerance) + "\n\n")
+                        "->" + str(e.tolerance) +"#"+ e.feedback + "\n\n")
         f.write("== \n")
 
 
@@ -120,6 +125,7 @@ class ShortSetGenerator:
         f.write("extends = /gift/templates/qshortset.pl\n\n")
         f.write("title==\n " + self.question.title + "\n==\n")
         f.write("text==\n" + self.question.text + "\n==\n")
+        f.write("feedbackGeneral==\n" + self.question.generalFeedback + "\n==\n")
         f.write("choices== \n")
         for e in self.answers.answers:
             f.write("=" + e.answer + "#")
@@ -140,6 +146,7 @@ class MultipleChoicesSetGenerator:
         f.write("extends = /gift/templates/qmultichoice.pl\n\n")
         f.write("title==\n " + self.question.title + "\n==\n")
         f.write("text==\n" + self.question.text + "\n==\n")
+        f.write("feedbackGeneral==\n" + self.question.generalFeedback + "\n==\n")
         f.write("choices== \n")
         for e in self.answers.answers:
             if e.fraction > 0:
