@@ -1,12 +1,16 @@
-extends = /gift/templates/qnumericset.pl
+extends = /gift/templates/qmatch.pl
 
 title==
- Q5
+ Q4
 ==
 text==
-Nommez un chiffre de 1 à 5.
+Quel animal mange quoi ?
+==
+feedbackGeneral==
+
 ==
 choices== 
-:100->3.0->2.0
+=Chat -> Nourriture pour chats
+=Chien -> Nourriture pour chiens
 
-== 
+==
