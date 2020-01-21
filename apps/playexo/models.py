@@ -26,6 +26,7 @@ def create_seed():
     return int(time.time() % 100)
 
 
+
 class SessionExerciseAbstract(models.Model):
     """Abstract class to represent the state of a PL for a given user.
     
@@ -371,15 +372,17 @@ class Answer(models.Model):
     date = models.DateTimeField(default=timezone.now)
     grade = models.IntegerField(null=True)
     
+    
     class Meta:
         index_together = ("pl", "user")
     
+    
     @staticmethod
     def highest_grade(pl, user):
-        null = list(Answer.objects.filter(pl=pl, user=user).filter(grade__isnull=True))
-        answers = list(Answer.objects.filter(pl=pl, user=user)
-                       .filter(grade__isnull=False).order_by("-grade"))
-        return (answers + null)[0] if (answers + null) else None
+        try:
+            return HighestGrade.objects.get(pl=pl, user=user)
+        except HighestGrade.DoesNotExist:
+            return None
     
     
     @staticmethod
@@ -424,13 +427,14 @@ class Answer(models.Model):
             State.ERROR:       [0.0, 0],
         }
         
+        start = time.time()
         for pl in activity.indexed_pl():
             state[Answer.pl_state(pl, user)][1] += 1
-        
+        print("summary 1 ", time.time() - start)
         nb_pl = max(sum([state[k][1] for k in state]), 1)
         for k, v in state.items():
             state[k] = [str(state[k][1] * 100 / nb_pl), str(state[k][1])]
-        
+        print("summary 2 ", time.time() - start)
         return state
     
     
@@ -455,3 +459,31 @@ class Answer(models.Model):
             lst.append(dct)
         
         return lst
+
+
+
+class HighestGrade(models.Model):
+    grade = models.IntegerField(null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    pl = models.ForeignKey(PL, on_delete=models.CASCADE)
+    activity = models.ForeignKey("activity.Activity", null=True, on_delete=models.CASCADE)
+    count = 0
+    
+    
+    class Meta:
+        index_together = ("pl", "user")
+        unique_together = ("pl", "user")
+
+
+
+@receiver(post_save, sender=Answer)
+def update_highest_grade(sender, instance, created, *args, **kwargs):
+    try:
+        prev = HighestGrade.objects.get(user=instance.user, pl=instance.pl)
+        if prev.grade is None or (instance.grade is not None and prev.grade < instance.grade):
+            prev.grade = instance.grade
+            prev.activity = instance.activity
+            prev.save()
+    except HighestGrade.DoesNotExist:
+        HighestGrade.objects.create(user=instance.user, pl=instance.pl, grade=instance.grade,
+                                    activity=instance.activity)

@@ -180,10 +180,4 @@ class UtilsTestCase(TestCase):
                 'repo':   None
             }]
         }
-        
-        try:
-            self.assertEqual(utils.walkdir(d, user, sort=True), expected)
-        except AssertionError:
-            print("\nExpected: \n", expected)
-            print("\nGot: \n", utils.walkdir(d, user, sort=True))
-            raise
+        self.assertEqual(utils.walkdir(d, user, sort=True), expected)
