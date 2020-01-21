@@ -4,13 +4,15 @@ grader  =@ /grader/evaluator.py
 builder =@ /builder/before.py
 
 choices= 
-feedback = 
 horizontal % false
+
+radioGroup =: RadioGroup
+
 
 before==
 import uuid
 import re
-radioGroup = RadioGroup()
+
 radioGroup.items = []
 lines = choices.split('\n')
 choices = []
@@ -38,6 +40,8 @@ title==
 ==
 text==
 ==
+feedbackGeneral==
+==
 
 form==
 {{ radioGroup|component }}
@@ -45,11 +49,13 @@ form==
 
 evaluator==
 score = 0
+feedback = ''
 selectedId = radioGroup.selection
 for index, item in enumerate(radioGroup.items):
     choice = choices[index]
+    item['css'] = ''
     if choice["id"] == selectedId:
-        feedback = choice["feedback"] or feedback
+        feedback =  choice["feedback"] +"<br>" +   feedbackGeneral
         if choice["right"]:
             item["css"] = "success-state"
             score = 100
@@ -57,10 +63,9 @@ for index, item in enumerate(radioGroup.items):
             item["css"] = "error-state"
             score = float(choice["fraction"])
             
-    elif choice["right"]:
-        item["css"] = "success-state"
 
-grade = (score, f"{feedback}: {score}")
+grade = (score, f"{feedback}")
+
 ==
 
 

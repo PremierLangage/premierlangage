@@ -4,7 +4,7 @@ grader  =@ /grader/evaluator.py
 builder =@ /builder/before.py
 checkGroup =: CheckboxGroup
 choices= 
-feedback = 
+
 
 before==
 import re
@@ -34,6 +34,9 @@ title ==
 text==
 ==
 
+feedbackGeneral==
+==
+
 form==
 {{ checkGroup|component }}
 ==
@@ -41,19 +44,24 @@ form==
 evaluator==
 right = 0
 total = 0
+feedback = ''
 for index, item in enumerate(checkGroup.items):
     checked = item['checked']
     choice = choices[index]
     if  item["type"] == "=":
+
         total += 1
-        item['css'] = 'success-border animated pulse infinite'
+        item['css'] = 'success-border'
         if checked:
+            feedback +=   "<br>" + choice["feedback"]
             right += 1
             item['css'] = 'success-border'
     elif checked:
+        feedback +=  "<br>" +  choice["feedback"] 
         item['css'] = 'error-border'
 
-grade = (right / total, f"{right} / {total}")
+feedback +=  "<br>" + feedbackGeneral
+grade = (right / total, f"{feedback}")
 ==
 
 

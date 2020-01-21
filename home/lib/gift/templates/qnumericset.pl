@@ -8,7 +8,6 @@ inputbox.type = text
 inputbox.appearance = outline
 
 choices= 
-feedback = 
 horizontal % false
 
 before==
@@ -39,6 +38,8 @@ title==
 ==
 text==
 ==
+feedbackGeneral==
+==
 
 form==
 {{ inputbox|component }}
@@ -47,35 +48,36 @@ form==
 evaluator== #|python|
 error =  1 
 score = 0
-feed = feedback
+feedback = ''
 try:
-    inputbox.value = float(inputbox.value)
+    valeur = float(inputbox.value)
     if mode == "tolerance":
         for index, content in enumerate(choices):
             choice = choices[index]
             mini = float(choice["left"])  - float(choice["right"])
             maxi =   float(choice["left"])  + float(choice["right"])
-            
-            if  inputbox.value >=  mini and inputbox.value <=  maxi :
+            if  valeur >=  mini and valeur <=  maxi :
                 error = 0
                 if score < float(choice["score"]):
                     score = float(choice["score"])
-                    feed = choice['feedback'] or feed or '👏👏👏'
+                    feedback += "<br>" +  choice['feedback']
     if mode == "range": 
         for index ,content in enumerate(choices) :
             mini = float(choices[index]["left"]) 
             maxi =   float(choices[index]["right"])  
-            if  inputbox.value >=  mini and inputbox.value <=  maxi :
+            if  valeur >=  mini and valeur <=  maxi :
                 error = 0
                 if score <float(choices[index]["score"]) :
                     score = float(choices[index]["score"])
-                    feed = choice['feedback'] or feed or '👎👎👎'
-    if  error == 0 :
-        grade = (score, f'<span class="success-state animated pulse infinite">{feed} {score} </span>')
-    else :
-        grade = (score, f'<span class="error-state animated pulse infinite">{feed} {score} </span>')
+                    feedback += "<br>" + choice['feedback'] 
+    feedback +=  "<br>" + feedbackGeneral
+    css = 'error-state anim-fade'
+    if  error == 0:
+         css = 'success-state anim-fade' 
 except:
-    grade = (-1, f'<span class="warning-state animated pulse infinite">You must enter a valid answer</span>')
+    score = -1
+
+grade = (score, f"<p class='{css}'>{feedback}</p>")
 ==
 
 

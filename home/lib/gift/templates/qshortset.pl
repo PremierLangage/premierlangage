@@ -30,6 +30,9 @@ title==
 ==
 text==
 ==
+feedbackGeneral==
+==
+
 
 form==
 {{ inputbox|component}}
@@ -37,14 +40,17 @@ form==
 
 evaluator==
 result = 0
+feedback = ''
 value = inputbox.value
 for index ,content in enumerate(choices) :
     if (choices[index]["right"]) == value:
+        feedback += "<br>" + choices[index]["feedback"]
         result = 1 
+feedback +=  "<br>" + feedbackGeneral
 if result == 1  :
-    grade = (100, '<span class="success-state">Good 👏👏👏</span>')
+    grade = (100, f"{feedback}")
 else : 
-    grade = (0, '<span class="error-state">Bad answer 👎👎👎</span>')
+    grade = (0, f"{feedback}")
     
 ==
 
