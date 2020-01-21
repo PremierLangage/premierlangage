@@ -143,7 +143,7 @@ class ShortSetGenerator:
         """ generate a pl file who contain information about the question """
         f.write("extends = /gift/templates/qshortset.pl\n\n")
         f.write("title==\n " + self.question.title + "\n==\n")
-        f.write("text==\n" + self.question.text +  " __ "  + self.question.tail + "\n==\n")
+        f.write("text==\n" + self.question.text + " __ " + self.question.tail + "\n==\n")
         f.write("feedbackGeneral==\n" + self.question.generalFeedback + "\n==\n")
         f.write("choices== \n")
         for e in self.answers.answers:
@@ -189,10 +189,10 @@ class Parser:
         answer.TrueFalseSet.__name__:       TrueFalseSetGenerator,
         
         answer.MultipleChoicesSet.__name__: MultipleChoicesSetGenerator,
-        answer.MatchingSet.__name__: MatchingSetGenerator,
-        answer.NumericAnswerSet.__name__: NumericAnswerSetGenerator,
-        answer.ShortSet.__name__: ShortSetGenerator,
-        answer.SelectSet.__name__: SelectSetGenerator
+        answer.MatchingSet.__name__:        MatchingSetGenerator,
+        answer.NumericAnswerSet.__name__:   NumericAnswerSetGenerator,
+        answer.ShortSet.__name__:           ShortSetGenerator,
+        answer.SelectSet.__name__:          SelectSetGenerator
     }
     
     
@@ -270,6 +270,8 @@ class Parser:
         
         parser = ParserPLTP(self.directory, path)
         return parser.parse()
+
+
 
 def get_parser():
     """ Used to dynamicaly add parser to the loader. """
