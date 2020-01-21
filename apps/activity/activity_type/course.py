@@ -184,36 +184,15 @@ class Course(AbstractActivityType):
         for st in (activity.student.all() | activity.teacher.all()).distinct():
             tp = list()
             for a in activities:
-                if not a.is_member(st):
-                    continue
-                summary = {
-                    State.SUCCEEDED:   [0.0, 0],
-                    State.PART_SUCC:   [0.0, 0],
-                    State.FAILED:      [0.0, 0],
-                    State.STARTED:     [0.0, 0],
-                    State.NOT_STARTED: [0.0, 0],
-                    State.ERROR:       [0.0, 0],
-                }
-                for pl in activity.indexed_pl():
-                    null = list(Answer.objects.filter(pl=pl, user=user).filter(grade__isnull=True))
-                    answers = list(Answer.objects.filter(pl=pl, user=user).filter(grade__isnull=False).order_by("-grade"))
-                    answer = (answers + null)[0] if (answers + null) else None
-                    answer = State.by_grade(answer.grade if answer else ...)
-                    summary[answer][1] += 1
-        
-                nb_pl = max(sum([summary[k][1] for k in summary]), 1)
-                for k, v in summary.items():
-                    summary[k] = [str(summary[k][1] * 100 / nb_pl), str(summary[k][1])]
-                
-                states = list()
-                for i in summary:
-                    states.append({
+                summary = Answer.activity_summary(a, st)
+                tp.append({
+                    'state':         [{
                         'percent': summary[i][0],
                         'count':   summary[i][1],
                         'class':   i.template
-                    })
-                tp.append({
-                    'state':         "",
+                    }
+                        for i in summary
+                    ],
                     'name':          a.activity_data['title'],
                     'activity_name': a.name,
                     'id':            a.id,
@@ -225,7 +204,6 @@ class Course(AbstractActivityType):
                 'activities': tp,
             })
         students = sorted(students, key=lambda k: k['lastname'])
-        
         return render(request, 'activity/activity_type/course/teacher_dashboard.html', {
             'state':     [i for i in State if i != State.ERROR],
             'name':      activity.name,
