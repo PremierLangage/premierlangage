@@ -1,59 +1,52 @@
-
 @ /utils/sandboxio.py
-grader  =@ /grader/evaluator.py
-builder =@ /builder/before.py
+@ /grader/evaluator.py [grader.py]
+@ /builder/before.py [builder.py]
 
-matchList =: MatchList
 choices= 
 horizontal % false
+general_feedback =
+ 
+match =: MatchList
 
-before==
+title = PLEASE OVERRIDE THE TITLE OF THE EXERCISE
+text  = PLEASE OVERRIDE THE TEXT OF THE EXERCISE
+form  = {{ match|component }}
+
+before== #|python|
 import uuid
 import random
 import re
 lines = choices.split('\n')
 choices = []
-matchList.nodes = []
+match.nodes = []
 expected = []
-pattern = re.compile(r'(\=|\~)(?P<left>.*)->(?P<right>(?:(?:\\\#)|[^\#])+)(?:\#(?P<feedback>.*))?')
-i = 0
-for line in lines:
+pattern = re.compile(r'(\=|\~)(?P<source>.*)->(?P<target>(?:(?:\\\#)|[^\#])+)(?:\#(?P<feedback>.*))?')
+for i, line in enumerate(lines):
     m = pattern.match(line)
     if not m:
         continue
-    a = m.group('left')
-    b = m.group('right')
-    c = m.group('feedback')
-    sourceId = "source" + str(i)
-    targetId = "target" + str(i)
-    matchList.nodes.append({
+
+    source = m.group('source')
+    target = m.group('target')
+    feedback = m.group('feedback')
+
+    sourceId = "source" + str(i + 1)
+    targetId = "target" + str(i + 1)
+
+    match.nodes.append({
         "id": sourceId,
-        "content": "%s" % a,
-        "source": True,
-        "feedback":c,
-    })
-    matchList.nodes.append({
-    "id": targetId,
-    "content": "%s" % b,
-    "target": True,
-    "feedback":c,
+        "content": source,
+        "source": True
     })
 
-    i = i + 1
-    expected.append({ "source": sourceId, "target": targetId, "feedback":c,})
-    random.shuffle(matchList.nodes)
-==
+    match.nodes.append({
+        "id": targetId,
+        "content": target,
+        "target": True
+    })
 
-title==
-==
-text==
-==
-
-feedbackGeneral==
-==
-
-form==
-{{ matchList|component }}
+    expected.append({ "source": sourceId, "target": targetId, "feedback": feedback })
+    random.shuffle(match.nodes)
 ==
 
 evaluator== #|python|
@@ -62,30 +55,23 @@ def in_links(conn, links):
         if link['source'] == conn["source"] and  link['target'] == conn["target"]:
             return True
     return False
+
 feedback = ''
 error = 0
-for links in expected:
-    if not in_links(links, matchList.links):
-        error = error + 1
-    elif links["feedback"] :
-        feedback +=  "<br>" + links["feedback"] 
+for link in expected:
+    if not in_links(link, match.links):
+        error += 1
+    elif link["feedback"] :
+        feedback += link["feedback"] + "<br/>" 
     
-for link in matchList.links:
+for link in match.links:
     link['css'] = 'error-state anim-fade'
     if in_links(link, expected):
-        link['css'] = 'success-state  anim-flip'
-feedback +=  "<br>" + feedbackGeneral
-if error == 0:
-    grade = (100, f"{feedback}")
-else:
-    grade = (0, f"{feedback}")
-feedback = ""
+        link['css'] = 'success-state anim-fade'
+
+feedback += general_feedback
+total = len(expected) 
+score = ((total - error) / total) * 100
+grade = (score, f"<p>{feedback}</p>")
 ==
-
-
-
-
-
-
-
 

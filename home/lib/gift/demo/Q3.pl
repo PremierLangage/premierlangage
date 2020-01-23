@@ -1,16 +1,13 @@
 extends = /gift/templates/qshortset.pl
 
-
 title==
- Q3
+Q3
 ==
+
 text==
-Deux plus   deux égalent quatre __ .
+2 plus <b>_____</b> égalent quatre  .
 ==
-feedbackGeneral==
 
-==
-choices== 
-=vrai#
+choices==
+=2 #Bravo
 == 
-

@@ -1,0 +1,6 @@
+// true/false
+::Q1:: 1+1=2 {T}
+
+// Choix multiple avec rétroaction spécifique pour les bonnes et les mauvaises réponses
+Quelle couleur se trouve entre l'orange et le vert dans le spectre ? 
+{=jaune #Bonne réponse; bravo ! ~rouge #Mauvaise réponse, c'est jaune. ~bleu #Mauvaise réponse, c'est jaune.}
