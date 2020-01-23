@@ -49,4 +49,16 @@ class GiftParserTestCase(TestCase):
     
     def test_parse(self):
         dic, _ = gift.Parser(self.dir, "demo.gift").parse()
-        self.assertEqual(7, len(dic["__pl"]))
+        self.assertEqual(8, len(dic["__pl"]))
+
+
+    def test_parse_missing_title(self):
+        dic, warn = gift.Parser(self.dir, "missing-title.gift").parse()
+        self.assertEqual(2, len(dic["__pl"]))
+        self.assertIn("You did not specify a question title", str(warn))
+
+
+    def test_parse_syntax_error(self):
+        dic, warn = gift.Parser(self.dir, "syntax-error.gift").parse()
+        self.assertEqual(1, len(dic["__pl"]))
+        self.assertIn("Syntax error", str(warn))

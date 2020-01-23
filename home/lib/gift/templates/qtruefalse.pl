@@ -1,71 +1,55 @@
-#! linter:require: answer::bool \n
+@ /utils/sandboxio.py
+@ /grader/evaluator.py [grader.py]
+@ /builder/before.py [builder.py]
 
-@ /utils/sandboxio.py 
-@ /builder/before.py [builder.py] 
-@ /grader/evaluator.py [grader.py] 
-
-
-textTrue = yes 
-textFalse = no 
+radio =: RadioGroup
 horizontal % false 
-feedbackCorrect % null 
-feedbackWrong % null 
+feedback_correct =  
+feedback_wrong =  
+general_feedback=
 
-before==
-radiobox = RadioGroup(
-    horizontal=horizontal,
-    items = [
-        { "id": 'choice1', "content": textTrue },
-        { "id": 'choice2', "content": textFalse },
-    ]
-)
-==
+title = PLEASE OVERRIDE THE TITLE OF THE EXERCISE
+text  = PLEASE OVERRIDE THE TEXT OF THE EXERCISE
+form  = {{ radio|component}}
 
-title==
-==
-text==
-==
-feedbackGeneral==
-==
+before== #|python|
+if answer != 'T' and answer != 'F':
+    raise Exception('you must define a variable "answer = T or F"')
 
-form==
-{{ radiobox|component }}
+radio.horizontal = horizontal
+radio.items = [
+    { "id": "choice1", "content": "<i class='fas fa-check'></i>" },
+    { "id": "choice2", "content": "<i class='fas fa-times'></i>" }
+]
 ==
 
-evaluator==
+
+evaluator== #|python|
 score = 0
-radiobox.items[0]['css'] = ''
-radiobox.items[1]['css'] = ''
-feedback = ''
-if answer:
-    if radiobox.selection == 'choice1':
+feedback = feedback_wrong
+radio.items[0]['css'] = ''
+radio.items[1]['css'] = ''
+if answer == 'T':
+    if radio.selection == 'choice1':
         score = 100
-        radiobox.items[0]['css'] = 'success-state anim-fade'
-       
+        radio.items[0]['css'] = 'success-border'
     else:
-        radiobox.items[1]['css'] = 'error-state anim-fade'
-        
+        radio.items[1]['css'] = 'error-border'
 else:
-    if radiobox.selection == 'choice2':
-        radiobox.items[1]['css'] = 'success-state anim-fade'
+    if radio.selection == 'choice2':
         score = 100
-        
+        radio.items[1]['css'] = 'success-border'
     else:
-        radiobox.items[0]['css'] = 'error-state anim-fade'
-    
-feedback += feedbackWrong + feedbackCorrect
-feedback +=  "<br>" + feedbackGeneral
-grade = (score, feedback)
+        radio.items[0]['css'] = 'error-border'
 
+if score == 100:
+    if feedback_correct:
+        feedback = feedback_correct + "<br/>"
+elif feedback_wrong:
+    feedback = feedback_wrong + "<br/>"
+
+feedback += general_feedback
+grade = (score, f"<p>{feedback}</p>")
 ==
-
-
-
-
-
-
-
-
-
 
 

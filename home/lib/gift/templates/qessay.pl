@@ -1,30 +1,19 @@
 @ /utils/sandboxio.py
-grader  =@ /grader/evaluator.py
-builder =@ /builder/before.py
+@ /grader/evaluator.py [grader.py]
+@ /builder/before.py [builder.py]
 
-# STEP 1
+inputbox =: Input
+inputbox.type = text
 
-match =: Input
-match.type = text
+general_feedback = 
 
-before==
-==
-title==
-==
-text==
-==
-feedbackGeneral==
-==
+title = PLEASE OVERRIDE THE TITLE OF THE EXERCISE
+text  = PLEASE OVERRIDE THE TEXT OF THE EXERCISE
+form  = {{ inputbox|component }}
 
-
-form==
-{{ match|component }}
-==
+before= 
 
 evaluator==
-
-feedback = feedbackGeneral
-css = 'success-state anim-fade'
-grade = (100, f"<p class='{css}'>{feedback}</p>" )
+grade = (100, general_feedback)
 ==
 

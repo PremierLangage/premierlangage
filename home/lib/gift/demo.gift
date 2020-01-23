@@ -1,5 +1,5 @@
 // true/false
-::Q1:: 1+1=2 {T}
+::Q1:: 1+1=3 {F # Non la réponse était 2 # Bonne réponse !}
 
 // Choix multiple avec rétroaction spécifique pour les bonnes et les mauvaises réponses
 ::Q2:: Quelle couleur se trouve entre l'orange et le vert dans le spectre ? 
@@ -7,7 +7,7 @@
 
 
 // Texte troué
-::Q3:: Deux plus égalent quatre  {=deux =2}.
+::Q3:: 2 plus {=2#Bravo} égalent quatre  .
 
 // Appariement
 ::Q4:: Quel animal mange quoi ? {=Chat -> Nourriture pour chats =Chien -> Nourriture pour chiens}
@@ -25,7 +25,21 @@
          =%50%1822:2  # Il est né en 1822. Votre réponse était proche, vous avez la moitié des points.
 }
 
+::Q8:: Parmi ces personnes, nommez-en deux qui sont enterrées dans la Grant's tomb. {
+   ~%-100%Personne
+   ~%50%Grant
+   ~%50%L'épouse de Grant
+   ~%-100%Le père de Grant
+}
+
 // Composition
-::Q8:: Comment allez-vous ? {}
+::Q9:: Comment allez-vous ? {}
+
+
+
+
+
+
+
 
 
