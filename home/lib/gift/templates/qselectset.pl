@@ -1,73 +1,60 @@
-
 @ /utils/sandboxio.py
-grader  =@ /grader/evaluator.py
-builder =@ /builder/before.py
+@ /grader/evaluator.py [grader.py]
+@ /builder/before.py [builder.py]
 
-choices= 
+radio =: RadioGroup
 horizontal % false
+choices = 
+general_feedback = 
 
-radioGroup =: RadioGroup
+title = PLEASE OVERRIDE THE TITLE OF THE EXERCISE
+text  = PLEASE OVERRIDE THE TEXT OF THE EXERCISE
+form  = {{ radio|component }}
 
-
-before==
+before== #|python|
 import uuid
 import re
 
-radioGroup.items = []
 lines = choices.split('\n')
 choices = []
-pattern = re.compile(r'(?P<type>\=|\~)%(?P<fraction>[0-9.]+)%(?P<content>(?:(?:\\\#)|[^\#])+)(?:\#(?P<feedback>.*))?')
+radio.items = []
+pattern = re.compile(r'(?P<type>\=|\~)(?P<content>(?:(?:\\\#)|[^\#])+)(?:\#(?P<feedback>.*))?')
 for line in lines:
     match = pattern.match(line)
     if not match:
         continue
-    randomid = uuid.uuid4()
+    id = str(uuid.uuid4())
     choice = {
-        "id": randomid,
-        "fraction": match.group('fraction'),
+        "id": id,
         "feedback": match.group('feedback') or '',
         "right": match.group('type') == '='
     }
     choices.append(choice)
-    radioGroup.items.append({
-        "id": randomid,
+    radio.items.append({
+        "id": id,
         "content": match.group('content')
     })
-
 ==
 
-title==
-==
-text==
-==
-feedbackGeneral==
-==
-
-form==
-{{ radioGroup|component }}
-==
-
-evaluator==
+evaluator== #|python|
 score = 0
 feedback = ''
-selectedId = radioGroup.selection
-for index, item in enumerate(radioGroup.items):
-    choice = choices[index]
+selectedId = radio.selection
+for index, item in enumerate(radio.items):
     item['css'] = ''
+    choice = choices[index]
+    if choice['right']:
+        item['css'] = 'success-border anim-pulse'
     if choice["id"] == selectedId:
-        feedback =  choice["feedback"] +"<br>" +   feedbackGeneral
+        if choice['feedback']:
+            feedback =  choice["feedback"] + "<br/>"
+        item["css"] = "error-border"
         if choice["right"]:
-            item["css"] = "success-state"
             score = 100
-        else:
-            item["css"] = "error-state"
-            score = float(choice["fraction"])
-            
-
-grade = (score, f"{feedback}")
-
+            item["css"] = "success-border"
+feedback += general_feedback
+grade = (score, f"<p>{feedback}</p>")
 ==
-
 
 
 

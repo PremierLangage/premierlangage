@@ -1,15 +1,14 @@
 extends = /gift/templates/qmatch.pl
 
 title==
- Q4
+Q4
 ==
+
 text==
 Quel animal mange quoi ?
 ==
-feedbackGeneral==
 
-==
-choices== 
+choices==
 =Chat -> Nourriture pour chats
 =Chien -> Nourriture pour chiens
 

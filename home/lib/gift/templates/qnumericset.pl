@@ -1,84 +1,82 @@
-
 @ /utils/sandboxio.py
-grader  =@ /grader/evaluator.py
-builder =@ /builder/before.py
+@ /grader/evaluator.py [grader.py]
+@ /builder/before.py [builder.py]
 
 inputbox =: Input
-inputbox.type = text
+inputbox.type = number
 inputbox.appearance = outline
 
 choices= 
 horizontal % false
+general_feedback = 
 
-before==
+title = PLEASE OVERRIDE THE TITLE OF THE EXERCISE
+text  = PLEASE OVERRIDE THE TEXT OF THE EXERCISE
+form  = {{ inputbox|component }}
+
+before== #|python|
 import re
 lines = choices.split('\n')
 choices = []
 liste = []
 mode = None
-pattern = re.compile(r'(?P<type>\=|\/|:)(?P<score>.*)->(?P<left>.*)->(?P<right>(?:(?:\\\#)|[^\#])+)(?:\#(?P<feedback>.*))?')
+pattern = re.compile(r'(?:%(?P<score>.*)%)?(?P<v1>.*)(?P<mode>\:|\.\.)(?P<v2>(?:(?:\\\#)|[^\#])+)(?:\#(?P<feedback>.*))?')
 for line in lines:
     match = pattern.match(line)
     if not match:
         continue
     choice = {
-        "feedback": match.group('feedback') or '',
-        "type": match.group('type'),
-        "left": match.group('left'),
-        "right": match.group('right'),
-        "score": match.group('score')
+        "score": match.group('score') or 100,
+        "v1": match.group('v1').strip(),
+        "mode": match.group('mode'),
+        "v2": match.group('v2').strip(),
+        "feedback": match.group('feedback') or ''
     }
-    mode = "tolerance"
-    if choice["type"] == "/":
-        mode = "range"
     choices.append(choice)
 ==
 
-title==
-==
-text==
-==
-feedbackGeneral==
-==
-
-form==
-{{ inputbox|component }}
-==
-
 evaluator== #|python|
-error =  1 
 score = 0
 feedback = ''
 try:
-    valeur = float(inputbox.value)
-    if mode == "tolerance":
-        for index, content in enumerate(choices):
-            choice = choices[index]
-            mini = float(choice["left"])  - float(choice["right"])
-            maxi =   float(choice["left"])  + float(choice["right"])
-            if  valeur >=  mini and valeur <=  maxi :
-                error = 0
-                if score < float(choice["score"]):
-                    score = float(choice["score"])
-                    feedback += "<br>" +  choice['feedback']
-    if mode == "range": 
-        for index ,content in enumerate(choices) :
-            mini = float(choices[index]["left"]) 
-            maxi =   float(choices[index]["right"])  
-            if  valeur >=  mini and valeur <=  maxi :
-                error = 0
-                if score <float(choices[index]["score"]) :
-                    score = float(choices[index]["score"])
-                    feedback += "<br>" + choice['feedback'] 
-    feedback +=  "<br>" + feedbackGeneral
-    css = 'error-state anim-fade'
-    if  error == 0:
-         css = 'success-state anim-fade' 
+    value = float(inputbox.value)
+    for i, e in enumerate(choices):
+        mode = e['mode']
+        if mode == ':': # margin mode
+            answer = float(e['v1'])
+            tolerance = float(e['v2'])
+            mini = answer - tolerance
+            maxi = answer + tolerance
+        else: # range mode
+            mini = float(e['v1'])
+            maxi = float(e['v2'])
+        if value >= mini and value <= maxi:
+            score = int(float(e['score']))
+            if e['feedback']:
+                feedback = e['feedback'] + "<br/>"
+            break
+    feedback += general_feedback
 except:
     score = -1
+    feedback = ''
 
-grade = (score, f"<p class='{css}'>{feedback}</p>")
+inputbox.suffix = '<i class="fas fa-times"></i>'
+if score > 0:
+    inputbox.suffix = '<i class="fas fa-check"></i>'
+grade = (score, f"<p>{feedback}</p>")
 ==
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
