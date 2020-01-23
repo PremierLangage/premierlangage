@@ -12,7 +12,7 @@ apps/editor/compilers/pl/lextab.py
 apps/editor/compilers/pl/parser.out
 staticfiles/
 static/*
-media/
+media/**
 documentation/templates/
 documentation/static/
 doc/
