@@ -9,7 +9,7 @@ from django.template.loader import get_template
 
 from activity.activity_type.activity_type import AbstractActivityType
 from playexo.enums import State
-from playexo.models import Answer
+from playexo.models import Answer, HighestGrade
 
 
 logger = logging.getLogger(__name__)
@@ -184,15 +184,34 @@ class Course(AbstractActivityType):
         for st in (activity.student.all() | activity.teacher.all()).distinct():
             tp = list()
             for a in activities:
-                summary = Answer.activity_summary(a, st)
-                tp.append({
-                    'state':         [{
+                if not a.is_member(st):
+                    continue
+                summary = {
+                    State.SUCCEEDED:   [0.0, 0],
+                    State.PART_SUCC:   [0.0, 0],
+                    State.FAILED:      [0.0, 0],
+                    State.STARTED:     [0.0, 0],
+                    State.NOT_STARTED: [0.0, 0],
+                    State.ERROR:       [0.0, 0],
+                }
+                for pl in activity.indexed_pl():
+                    answer = HighestGrade.objects.filter(pl=pl, user=user)
+                    answer = State.by_grade(answer.grade if answer else ...)
+                    summary[answer][1] += 1
+                
+                nb_pl = max(sum([summary[k][1] for k in summary]), 1)
+                for k, v in summary.items():
+                    summary[k] = [str(summary[k][1] * 100 / nb_pl), str(summary[k][1])]
+                
+                states = list()
+                for i in summary:
+                    states.append({
                         'percent': summary[i][0],
                         'count':   summary[i][1],
                         'class':   i.template
-                    }
-                        for i in summary
-                    ],
+                    })
+                tp.append({
+                    'state':         "",
                     'name':          a.activity_data['title'],
                     'activity_name': a.name,
                     'id':            a.id,
