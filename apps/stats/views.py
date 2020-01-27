@@ -63,7 +63,7 @@ def json_on_answers(request, stats_id):
     stats = get_object_or_404(StatOnAllAnswers, pk=stats_id)
     stat_request = StatOnAllAnswersRequest(stats)
     brut_data = stat_request.resolve()
-    ans = json.dumps(brut_data, cls=DjangoJSONEncoder)
+    ans = brut_data
     return render(request, "stats/json_on_answers.html", { 'ans': ans })
 
 

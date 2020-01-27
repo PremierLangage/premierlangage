@@ -1,7 +1,9 @@
 wheel
 django
+djangorestframework
 django-annoying
 django-celery-results
+django-filter
 django-hitcount
 django-http-method
 django-jinja

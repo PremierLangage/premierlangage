@@ -104,6 +104,4 @@ class StatOnAllAnswersRequest():
             else:
                 d[k] = 1
 
-        h = {}
-        h['data'] = [(k, d[k]) for k in d]
-        return h
+        return d

@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^ask/', include('apps.qa.urls', namespace='ask')),
     url(r'^api/git/', include("apps.git.urls", namespace='git')),
     url(r'^stats/', include('stats.urls', namespace="stats")),
+    url(r'^charts/', include('charts.urls', namespace="charts")),
     url(r'^admin/', admin.site.urls),
 ]
 
