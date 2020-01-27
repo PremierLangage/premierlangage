@@ -1,7 +1,7 @@
 import logging
-import time
 
 import htmlprint
+import time
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_save
@@ -427,14 +427,11 @@ class Answer(models.Model):
             State.ERROR:       [0.0, 0],
         }
         
-        start = time.time()
         for pl in activity.indexed_pl():
             state[Answer.pl_state(pl, user)][1] += 1
-        print("summary 1 ", time.time() - start)
         nb_pl = max(sum([state[k][1] for k in state]), 1)
         for k, v in state.items():
             state[k] = [str(state[k][1] * 100 / nb_pl), str(state[k][1])]
-        print("summary 2 ", time.time() - start)
         return state
     
     
