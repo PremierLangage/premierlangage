@@ -13,7 +13,6 @@ app_name = 'filebrowser'
 
 urlpatterns = [
     path(r'option', views.option, name='option'),
-    path(r'pl_tuto', views.pl_tuto, name='pl_tuto'),
     path(r'upload_resource', views.upload_resource, name='upload_resource'),
     path(r'download/env/<str:envid>/', views.download_env, name='dlenv'),
     path(r'demo/<int:pl_id>/', views.demo, name='demo'),
