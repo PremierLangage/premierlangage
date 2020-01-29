@@ -20,7 +20,7 @@
                 {% for stud in student %}
                     <tr>
                         <td>
-                            <a href="/activity/dashboard/{{ course_id }}/?studentid={{ stud.id }}">
+                            <a href="/activity/dashboard/{{ course_id }}/?studentid={{ stud.object.id }}">
                                 <ion-chip color="primary" outline="true" color="primary">
                                     <ion-icon name="contact"></ion-icon>
                                     <ion-label>

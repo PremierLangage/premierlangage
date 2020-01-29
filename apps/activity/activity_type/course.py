@@ -1,4 +1,5 @@
 import logging
+from time import time
 
 from django.apps import apps
 from django.contrib.auth.models import User
@@ -179,54 +180,59 @@ class Course(AbstractActivityType):
         user = request.user
         
         activities = activity.indexed_activities().filter(teacher=user)
+        lengths = {a: len(a.indexed_pl()) for a in activities}
         
-        students = list()
+        grades_query = HighestGrade.objects.filter(activity__in=activities)
+        
+        result = dict()
         for st in (activity.student.all() | activity.teacher.all()).distinct():
-            tp = list()
+            tp = dict()
             for a in activities:
-                summary = {
-                    State.SUCCEEDED:   [0.0, 0],
-                    State.PART_SUCC:   [0.0, 0],
-                    State.FAILED:      [0.0, 0],
-                    State.STARTED:     [0.0, 0],
-                    State.NOT_STARTED: [0.0, 0],
-                    State.ERROR:       [0.0, 0],
-                }
-                for pl in a.indexed_pl():
-                    try:
-                        answer = HighestGrade.objects.get(pl=pl, user=st)
-                    except HighestGrade.DoesNotExist:
-                        answer = None
-                    answer = State.by_grade(answer.grade if answer else ...)
-                    summary[answer][1] += 1
-                
-                nb_pl = max(sum([summary[k][1] for k in summary]), 1)
-                for k, v in summary.items():
-                    summary[k] = [str(summary[k][1] * 100 / nb_pl), str(summary[k][1])]
-                states = list()
-                for i in summary:
-                    states.append({
-                        'percent': summary[i][0],
-                        'count':   summary[i][1],
+                states = dict()
+                for i in State:
+                    states[i] = {
+                        'percent': None,
+                        'count':   0,
                         'class':   i.template
-                    })
-                tp.append({
-                    'state':         states,
-                    'name':          a.activity_data['title'],
-                    'activity_name': a.name,
-                    'id':            a.id,
-                })
-            students.append({
-                'lastname':   st.last_name,
+                    }
+                tp[a.id] = {
+                    'state': states,
+                    'name':  a.activity_data['title'],
+                    'id':    a.id,
+                    'total': lengths[a],
+                }
+            result[st.id] = {
                 'object':     st,
-                'id':         st.id,
                 'activities': tp,
-            })
-        students = sorted(students, key=lambda k: k['lastname'])
+            }
+        
+        for g in grades_query:
+            state = State.by_grade(g.grade)
+            result[g.user.id]["activities"][g.activity.id]["state"][state]["count"] += 1
+        result = sorted(result.values(), key=lambda k: k['object'].last_name)
+        
+        for r in result:
+            r["activities"] = list(r["activities"].values())
+            for tp in r["activities"]:
+                non_null_count = tp["total"]
+                for state in tp["state"]:
+                    state = tp["state"][state]
+                    if tp["total"] != 0:
+                        non_null_count -= state["count"]
+                        state["percent"] = (state["count"] / tp["total"]) * 100
+                if tp["total"] != 0:
+                    tp["state"][State.NOT_STARTED]["count"] = non_null_count
+                    tp["state"][State.NOT_STARTED]["percent"] = (non_null_count / tp["total"]) * 100
+                
+                states_to_del = [s for s in tp["state"] if tp["state"][s]["count"] == 0]
+                for state in states_to_del:
+                    del tp["state"][state]
+                tp["state"] = list(tp["state"].values())
+        
         return render(request, 'activity/activity_type/course/teacher_dashboard.html', {
             'state':     [i for i in State if i != State.ERROR],
             'name':      activity.name,
-            'student':   students,
+            'student':   result,
             'range_tp':  range(len(activities)),
             'course_id': activity.id,
         })
@@ -241,11 +247,11 @@ class Course(AbstractActivityType):
         if not activity.is_member(student):
             return HttpResponseNotFound("Cet étudiant ne fait pas partie de ce cours")
         
-        activities = activity.indexed_activities().filter(teacher=student)
+        activities = activity.indexed_activities().filter(teacher=request.user)
         tp = list()
-        for activity in activities:
+        for a in activities:
             question = list()
-            for pl in activity.indexed_pl():
+            for pl in a.indexed_pl():
                 state = Answer.pl_state(pl, student)
                 question.append({
                     'state': state,
@@ -253,9 +259,9 @@ class Course(AbstractActivityType):
                 })
             len_tp = len(question) if len(question) else 1
             tp.append({
-                'name':          activity.activity_data['title'],
-                'activity_name': activity.name,
-                'id':            activity.id,
+                'name':          a.activity_data['title'],
+                'activity_name': a.name,
+                'id':            a.id,
                 'width':         str(100 / len_tp),
                 'pl':            question,
             })
