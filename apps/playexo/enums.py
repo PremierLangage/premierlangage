@@ -13,6 +13,7 @@ class State(Enum):
     NOT_STARTED = 4
     ERROR = 5
     
+    
     class Label:
         SUCCEEDED = "Réussi"
         PART_SUCC = "Partiellement Réussi"
@@ -20,6 +21,7 @@ class State(Enum):
         STARTED = "Commencé"
         NOT_STARTED = "Non Commencé"
         ERROR = "Commencé"
+    
     
     class Template:
         SUCCEEDED = "state-succeded"
@@ -29,19 +31,18 @@ class State(Enum):
         NOT_STARTED = "state-unstarted"
         ERROR = "state-started"
     
+    
     @classmethod
     def by_grade(cls, grade=...):
         """Return the corresponding enum member according to grade."""
-        if grade is ...:
-            return cls.NOT_STARTED
-        if grade is None:
-            return cls.STARTED
-        if grade == 100:
-            return cls.SUCCEEDED
-        if 99 >= grade >= 1:
-            return cls.PART_SUCC
-        if grade == 0:
-            return cls.FAILED
-        if grade == -1:
-            return cls.ERROR
-        return cls.STARTED
+        return DICT.get(grade, cls.PART_SUCC)
+
+
+
+DICT = {
+    100:  State.SUCCEEDED,
+    None: State.STARTED,
+    0:    State.FAILED,
+    -1:   State.ERROR,
+    ...:  State.NOT_STARTED,
+}
