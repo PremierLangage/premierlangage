@@ -468,7 +468,6 @@ class HighestGrade(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     pl = models.ForeignKey(PL, on_delete=models.CASCADE)
     activity = models.ForeignKey("activity.Activity", null=True, on_delete=models.CASCADE)
-    count = 0
     
     
     class Meta:

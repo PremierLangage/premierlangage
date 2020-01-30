@@ -177,12 +177,13 @@ class Course(AbstractActivityType):
     
     
     def course_summary(self, request, activity):
-        user = request.user
+        activities = activity.indexed_activities()
+        indexed_pl = {a: a.indexed_pl() for a in activities}
+        all_pl = []
+        for indexed in indexed_pl.values():
+            all_pl += list(indexed)
         
-        activities = activity.indexed_activities().filter(teacher=user)
-        lengths = {a: len(a.indexed_pl()) for a in activities}
-        
-        grades_query = HighestGrade.objects.filter(activity__in=activities)
+        grades_query = HighestGrade.objects.filter(activity__in=activities, pl__in=all_pl)
         
         result = dict()
         for st in (activity.student.all() | activity.teacher.all()).distinct():
@@ -196,10 +197,11 @@ class Course(AbstractActivityType):
                         'class':   i.template
                     }
                 tp[a.id] = {
-                    'state': states,
-                    'name':  a.activity_data['title'],
-                    'id':    a.id,
-                    'total': lengths[a],
+                    'state':       states,
+                    'name':        a.activity_data['title'],
+                    'id':          a.id,
+                    'total':       len(indexed_pl[a]),
+                    'not_started': len(indexed_pl[a]),
                 }
             result[st.id] = {
                 'object':     st,
@@ -209,24 +211,26 @@ class Course(AbstractActivityType):
         for g in grades_query:
             state = State.by_grade(g.grade)
             result[g.user.id]["activities"][g.activity.id]["state"][state]["count"] += 1
+            result[g.user.id]["activities"][g.activity.id]["not_started"] -= 1
+        
         result = sorted(result.values(), key=lambda k: k['object'].last_name)
         
         for r in result:
             r["activities"] = list(r["activities"].values())
             for tp in r["activities"]:
-                non_null_count = tp["total"]
                 for state in tp["state"]:
                     state = tp["state"][state]
                     if tp["total"] != 0:
-                        non_null_count -= state["count"]
                         state["percent"] = (state["count"] / tp["total"]) * 100
-                if tp["total"] != 0:
-                    tp["state"][State.NOT_STARTED]["count"] = non_null_count
-                    tp["state"][State.NOT_STARTED]["percent"] = (non_null_count / tp["total"]) * 100
+                if tp["total"] != 0 and tp["not_started"] != 0:
+                    tp["state"][State.NOT_STARTED]["count"] = tp["not_started"]
+                    tp["state"][State.NOT_STARTED]["percent"] = (tp["not_started"] / tp[
+                        "total"]) * 100
                 
                 states_to_del = [s for s in tp["state"] if tp["state"][s]["count"] == 0]
                 for state in states_to_del:
                     del tp["state"][state]
+                
                 tp["state"] = list(tp["state"].values())
         
         return render(request, 'activity/activity_type/course/teacher_dashboard.html', {
