@@ -1,5 +1,4 @@
 import logging
-from time import time
 
 from django.apps import apps
 from django.contrib.auth.models import User
