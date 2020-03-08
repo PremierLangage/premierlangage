@@ -209,8 +209,13 @@ class Course(AbstractActivityType):
         
         for g in grades_query:
             state = State.by_grade(g.grade)
-            result[g.user.id]["activities"][g.activity.id]["state"][state]["count"] += 1
-            result[g.user.id]["activities"][g.activity.id]["not_started"] -= 1
+            try:
+                result[g.user.id]["activities"][g.activity.id]["state"][state]["count"] += 1
+                result[g.user.id]["activities"][g.activity.id]["not_started"] -= 1
+            except KeyError as e:
+                logger.warning(
+                    f"Can't add grade {e} <user : {g.user.id}> <activity: {g.activity.id}> "
+                    f"<state: {state}  ")
         
         result = sorted(result.values(), key=lambda k: k['object'].last_name)
         
