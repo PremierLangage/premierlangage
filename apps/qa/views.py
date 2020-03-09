@@ -41,7 +41,7 @@ class IndexView(View):
         try:
             int(page)
         except Exception:
-            page = None
+            page = 0
         
         questions = QAQuestion.objects.order_by("-pub_date")
         noans = QAQuestion.objects.order_by('-pub_date').filter(qaanswer__isnull=True)
@@ -80,12 +80,12 @@ class IndexView(View):
         if request.user.is_authenticated:
             usersq = usersq.annotate(num_answers=Count('qaanswer', distinct=True))
         
-        return JsonResponse( {
-            "questions": serializers.serialize("json", questions[20*page:20*page+20]),
-            "noans":     serializers.serialize("json", noans[20*page:20*page+20:]),
-            "usersq":    serializers.serialize("json", usersq[20*page:20*page+20]),
-            "popular":   serializers.serialize("json", popular[20*page:20*page+20]),
-        
+        return JsonResponse({
+            "questions": serializers.serialize("python", questions[20 * page:20 * page + 20]),
+            "noans": serializers.serialize("python", noans[20 * page:20 * page + 20:]),
+            "usersq": serializers.serialize("python", usersq[20 * page:20 * page + 20]),
+            "popular": serializers.serialize("python", popular[20 * page:20 * page + 20]),
+            
         })
 
 
@@ -111,8 +111,6 @@ class QuestionView(HttpMethodMixin, View):
         question.tags.set(*tags)
         question.save()
         return JsonResponse(model_to_dict(question))
-        
-        #return redirect(reverse('ask:question', args=[question.pk]))
     
     
     def patch(self, request, pk):
@@ -153,9 +151,8 @@ class QuestionView(HttpMethodMixin, View):
             "answers": serializers.serialize("json", answers),
             "num_answer": len(answers),
             "rigths": serializers.serialize("json", settings.QA_SETTINGS['right']),
-    
+            
         })
-        
 
 
 
@@ -184,7 +181,6 @@ class AnswerView(HttpMethodMixin, View):
         answer = QAAnswer.objects.filter(pk=pk)
         if not answer:
             raise Http404("Answer with ID '" + str(pk) + "' does not exists")
-        
         params = dict(request.PATCH.dict())
         del params['csrfmiddlewaretoken']
         if 'answer' in params:
@@ -203,7 +199,7 @@ class AnswerView(HttpMethodMixin, View):
                 answer[0].question.user.profile.mod_rep(-REPUTATION['ANSWER_ACCEPTED'] // 2)
                 answer[0].user.profile.mod_rep(-REPUTATION['ANSWER_ACCEPTED'])
         
-        return JsonResponse(model_to_dict(answer))
+        return JsonResponse(model_to_dict(answer.first()))
     
     
     def delete(self, request, pk):
@@ -240,8 +236,8 @@ class AbstractCommentView(HttpMethodMixin):
             return HttpResponseBadRequest()
         
         comment = self.model(**{
-            'user':                request.user,
-            'comment_text':        comment_text,
+            'user': request.user,
+            'comment_text': comment_text,
             self.foreign_rel_name: foreign,
         })
         
@@ -269,7 +265,7 @@ class AbstractCommentView(HttpMethodMixin):
         params['update_user'] = request.user
         comment.update(**params)
         
-        return JsonResponse(model_to_dict(comment))
+        return JsonResponse(model_to_dict(comment.first()))
     
     
     def delete(self, request, question_pk, pk):
@@ -335,12 +331,12 @@ class AbstractVoteView:
                 vote.delete()
         except ObjectDoesNotExist:
             self.model.objects.create(**{
-                'user':                request.user,
+                'user': request.user,
                 self.foreign_rel_name: foreign,
-                'value':               value,
+                'value': value,
             })
         
-        return JsonResponse(value,safe=False)
+        return JsonResponse(value, safe=False)
 
 
 

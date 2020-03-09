@@ -52,6 +52,7 @@ class ModelTestCase(TestCase):
         qaq.mod_points(5)
         self.assertEqual(qaq.points, 15)
         # str
+
         self.assertEqual(str(qaq), "tests_qaq")
         # save
         qaq.save()

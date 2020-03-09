@@ -62,7 +62,7 @@ class QAQuestion(models.Model, HitCountMixin, DateMixin):
     
     
     def __str__(self):
-        return self.title
+        return "{ " + self.title + ", " + self.description + ", " + str(self.tags) + ", " + str(self.user) + " }"
 
 
 
