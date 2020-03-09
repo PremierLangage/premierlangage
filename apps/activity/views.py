@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.core.mail import send_mail
+from django.core.mail import EmailMessage
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.views.decorators.csrf import csrf_exempt
@@ -16,7 +16,7 @@ from activity.models import Activity, SessionActivity
 from activity.utils import get_anonymous_uuid
 from filebrowser.utils import reload_activity
 from loader.models import PL
-from playexo.models import Answer, AnonymousAnswer
+from playexo.models import AnonymousAnswer, Answer
 from playexo.utils import render_feedback
 
 
@@ -261,17 +261,18 @@ def send_answers(request, activity_id):
             a = AnonymousAnswer.last(pl, uuid)
             if a:
                 answers[pl.name] = a.answers
-            grade_str += f"{pl.name} : {a.grade}\n"
-            
-        send_mail(
+                grade_str += f"{pl.name} : {a.grade}\n"
+            else:
+                grade_str += f"{pl.name} : Pas de réponse"
+        
+        content = f'Réponses de {request.POST["name"]} <{request.POST["mail"]}> :\n' \
+                  f'{grade_str}\n\nLes données json des réponses sont en pièce jointe.'
+        print(content)
+        mail = EmailMessage(
             f'[PremierLangage - activité {activity_id}]',
-            f'Réponse de {request.POST["name"]} <{request.POST["mail"]}> :\n'
-            f'{grade_str}\n'
-            'Données json des réponses :\n'
-            f'{json.dumps(answers)}',
-            settings.SERVER_EMAIL,
-            activity.activity_data["mail"].split(" "),
-            fail_silently=False,
+            content, settings.SERVER_EMAIL, activity.activity_data["mail"].split(" "),
         )
+        mail.attach('answers.json', str(json.dumps(answers)), 'application/json')
+        mail.send(fail_silently=False)
         request.session["sent_activities"].append(activity_id)
     return redirect(request.META.get('HTTP_REFERER', '/'))
