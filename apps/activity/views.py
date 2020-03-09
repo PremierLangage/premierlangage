@@ -1,6 +1,7 @@
 import json
 
 import logging
+from django.conf import settings
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -251,15 +252,24 @@ def send_answers(request, activity_id):
     uuid = get_anonymous_uuid(request)
     if "sent_activities" not in request.session:
         request.session["sent_activities"] = []
+    if "mail" not in activity.activity_data:
+        return HttpResponse("Activity is improperly configured: require 'mail' tag")
     if activity_id not in request.session["sent_activities"]:
         answers = {}
+        grade_str = ""
         for pl in activity.indexed_pl():
             a = AnonymousAnswer.last(pl, uuid)
-            answers[pl.id] = a.answers if a else None
+            if a:
+                answers[pl.name] = a.answers
+            grade_str += f"{pl.name} : {a.grade}\n"
+            
         send_mail(
             f'[PremierLangage - activité {activity_id}]',
-            f'Réponse de {request.POST["name"]}:\n{json.dumps(answers)}',
-            request.POST["mail"],
+            f'Réponse de {request.POST["name"]} <{request.POST["mail"]}> :\n'
+            f'{grade_str}\n'
+            'Données json des réponses :\n'
+            f'{json.dumps(answers)}',
+            settings.SERVER_EMAIL,
             activity.activity_data["mail"].split(" "),
             fail_silently=False,
         )

@@ -552,7 +552,5 @@ class AnonymousAnswer(models.Model):
     
     @staticmethod
     def pl_state(pl, uuid):
-        lasts = AnonymousAnswer.objects.filter(pl=pl, user_uuid=uuid)
-        if lasts:
-            return State.STARTED
-        return State.NOT_STARTED
+        last = AnonymousAnswer.last(pl, uuid)
+        return State.by_grade(last.grade if last else None)
