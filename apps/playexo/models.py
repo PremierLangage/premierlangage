@@ -1,7 +1,7 @@
-import logging
-
 import htmlprint
+import logging
 import time
+import uuid
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Index
@@ -120,7 +120,7 @@ class SessionExerciseAbstract(models.Model):
         
         if response['status'] < 0:  # Sandbox Error
             feedback = response['feedback']
-            if request.user.profile.can_load() and response['sandboxerr']:
+            if response['sandboxerr']:
                 feedback += "<br><hr>Sandbox error:<br>" + htmlprint.code(response['sandboxerr'])
                 feedback += "<br><hr>Received on stderr:<br>" + htmlprint.code(response['stderr'])
         
@@ -128,12 +128,11 @@ class SessionExerciseAbstract(models.Model):
             feedback = ("Une erreur s'est produite lors de l'exécution du grader "
                         + ("(exit code: %d, env: %s). Merci de prévenir votre professeur"
                            % (response['status'], response['id'])))
-            if request.user.profile.can_load():
-                feedback += "<br><hr>Received on stderr:<br>" + htmlprint.code(response['stderr'])
+            feedback += "<br><hr>Received on stderr:<br>" + htmlprint.code(response['stderr'])
         
         else:  # Success
             feedback = response['feedback']
-            if request.user.profile.can_load() and response['stderr']:
+            if response['stderr']:
                 feedback += "<br><br>Received on stderr:<br>" + htmlprint.code(response['stderr'])
         
         self.context.update(response['context'])
@@ -281,6 +280,51 @@ class SessionExercise(SessionExerciseAbstract):
                 'pl_id__':         pl.id,
                 'answers__':       last.answers if last else {},
                 'grade__':         highest_grade.grade if highest_grade else None,
+            },
+        }
+        if context:
+            dic = {**context, **dic}
+        
+        return self.render('playexo/pl.html', dic, request)
+
+
+
+class AnonymousSession(SessionExerciseAbstract):
+    user_uuid = models.UUIDField(null=False)
+    
+    
+    class Meta:
+        unique_together = ('pl', 'user_uuid')
+    
+    
+    def save(self, *args, **kwargs):
+        if not self.context:
+            self.context = dict(self.pl.json)
+        super().save(*args, **kwargs)
+    
+    
+    def get_pl(self, request, context, activity):
+        """Return a template of the PL rendered with context."""
+        pl = self.pl
+        if "anonymous" not in request.session:
+            request.session["anonymous"] = str(uuid.uuid4())
+        user_uuid = request.session["anonymous"]
+        last = AnonymousAnswer.last(pl, user_uuid)
+        
+        seed = (last.seed if last else
+                self.context['seed'] if 'seed' in self.context else
+                None)
+        self.add_to_context('seed', seed)
+        
+        if not self.built:
+            self.build(request)
+        
+        dic = {
+            **self.context,
+            **{
+                'pl_id__':   pl.id,
+                'answers__': last.answers if last else {},
+                'activity_id__': activity.id
             },
         }
         if context:
@@ -487,3 +531,28 @@ def update_highest_grade(sender, instance, created, *args, **kwargs):
     except HighestGrade.DoesNotExist:
         HighestGrade.objects.create(user=instance.user, pl=instance.pl, grade=instance.grade,
                                     activity=instance.activity)
+
+
+
+class AnonymousAnswer(models.Model):
+    user_uuid = models.UUIDField(null=False)
+    pl = models.ForeignKey(PL, null=False, on_delete=models.CASCADE)
+    activity = models.ForeignKey("activity.Activity", null=True, on_delete=models.CASCADE)
+    seed = models.CharField(max_length=100, default=create_seed)
+    date = models.DateTimeField(default=timezone.now)
+    grade = models.IntegerField(null=True)
+    answers = JSONField(default='{}')
+    
+    
+    @staticmethod
+    def last(pl, uuid):
+        answers = AnonymousAnswer.objects.filter(pl=pl, user_uuid=uuid).order_by("-date")
+        return None if not answers else answers[0]
+    
+    
+    @staticmethod
+    def pl_state(pl, uuid):
+        lasts = AnonymousAnswer.objects.filter(pl=pl, user_uuid=uuid)
+        if lasts:
+            return State.STARTED
+        return State.NOT_STARTED

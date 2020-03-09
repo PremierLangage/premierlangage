@@ -1,0 +1,15 @@
+<ion-card-content class="exercise__body">
+    {% if not sent %}
+        <form action="{{ url('activity:send', activity_id__) }}" method="post">
+            {% csrf_token %}
+            <label for="name">Votre nom:</label><br>
+            <input type="text" id="name" name="name"><br>
+            <label for="mail">Votre adresse email:</label><br>
+            <input type="email" id="mail" name="mail">
+            <input type="submit" value="Envoyer vos réponses">
+        </form>
+    {% else %}
+        <p> Vous avez déjà envoyé vos réponses </p>
+    {% endif %}
+
+</ion-card-content>

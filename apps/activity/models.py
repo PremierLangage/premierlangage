@@ -1,6 +1,5 @@
-import logging
-
 import htmlprint
+import logging
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import PermissionDenied
@@ -13,7 +12,7 @@ from django.urls import resolve
 from django_jinja.backend import Jinja2
 
 from activity.activity_type.utils import get_activity_type_class, type_dict
-from activity.mixins import Position, MAX_POSITIVE_SMALL_INTEGER_VALUE
+from activity.mixins import MAX_POSITIVE_SMALL_INTEGER_VALUE, Position
 from loader.models import PL
 from lti_app.models import LTIModel
 

@@ -1,9 +1,10 @@
 import json
-import logging
 
+import logging
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.core.mail import send_mail
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, reverse
 from django.views.decorators.csrf import csrf_exempt
@@ -11,9 +12,10 @@ from django.views.decorators.http import require_POST
 
 from activity.activity_type.utils import get_activity_type_class
 from activity.models import Activity, SessionActivity
+from activity.utils import get_anonymous_uuid
 from filebrowser.utils import reload_activity
 from loader.models import PL
-from playexo.models import Answer
+from playexo.models import Answer, AnonymousAnswer
 from playexo.utils import render_feedback
 
 
@@ -66,15 +68,27 @@ def remove(request, activity_id):
 
 
 
-@login_required
 @csrf_exempt
 def play(request, activity_id):
+    activity = get_object_or_404(Activity, id=activity_id)
+    if not activity.open:
+        raise PermissionDenied("Cette activité est fermée")
+    
+    if activity.activity_type == "mail_pltp":
+        session = request.session
+        a_type = get_activity_type_class("mail_pltp")()
+        return a_type.template(request, activity, session)
+    
+    return play_aux(request, activity_id)
+
+
+
+@login_required
+def play_aux(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
     session, _ = SessionActivity.objects.get_or_create(user=request.user, activity=activity)
     a_type = get_activity_type_class(activity.activity_type)()
     
-    if not activity.open:
-        raise PermissionDenied("Cette activité est fermée")
     if not activity.is_member(request.user) and activity_id != 0:
         raise PermissionDenied("Vous n'appartenez pas à cette activité")
     
@@ -82,15 +96,27 @@ def play(request, activity_id):
 
 
 
-@login_required
 @csrf_exempt
 def next(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
-    session, _ = SessionActivity.objects.get_or_create(user=request.user, activity=activity)
-    a_type = get_activity_type_class(activity.activity_type)()
     
     if not activity.open:
         raise PermissionDenied("Cette activité est fermée")
+    
+    if activity.activity_type == "mail_pltp":
+        session = request.session
+        a_type = get_activity_type_class("mail_pltp")()
+        return a_type.next(activity, session)
+    
+    return next_aux(request, activity_id)
+
+
+
+@login_required
+def next_aux(request, activity_id):
+    activity = get_object_or_404(Activity, id=activity_id)
+    session, _ = SessionActivity.objects.get_or_create(user=request.user, activity=activity)
+    a_type = get_activity_type_class(activity.activity_type)()
     if not activity.is_member(request.user):
         raise PermissionDenied("Vous n'appartenez pas à cette activité")
     
@@ -98,9 +124,21 @@ def next(request, activity_id):
 
 
 
-@login_required
 @csrf_exempt
 def evaluate(request, activity_id, pl_id):
+    activity = get_object_or_404(Activity, id=activity_id)
+    if not activity.open:
+        raise PermissionDenied("Cette activité est fermée")
+    if activity.activity_type == "mail_pltp":
+        activity = get_object_or_404(Activity, id=activity_id)
+        return get_activity_type_class("mail_pltp")().evaluate(request, activity, pl_id)
+    
+    return evaluate_aux(request, activity_id, pl_id)
+
+
+
+@login_required
+def evaluate_aux(request, activity_id, pl_id):
     status = json.loads(request.body.decode())
     activity = get_object_or_404(Activity, id=activity_id)
     session = get_object_or_404(SessionActivity, user=request.user, activity=activity)
@@ -108,8 +146,6 @@ def evaluate(request, activity_id, pl_id):
     exercise = session.session_exercise(pl)
     a_type = get_activity_type_class(activity.activity_type)()
     
-    if not activity.open:
-        raise PermissionDenied("Cette activité est fermée")
     if not activity.is_member(request.user):
         raise PermissionDenied("Vous n'appartenez pas à cette activité")
     
@@ -204,4 +240,28 @@ def movenext(request, activity_id):
     if not activity.is_teacher(request.user):
         raise PermissionDenied("Vous devez être professeur pour récupérer les notes")
     activity.move_next()
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+
+@require_POST
+@csrf_exempt
+def send_answers(request, activity_id):
+    activity = get_object_or_404(Activity, pk=activity_id)
+    uuid = get_anonymous_uuid(request)
+    if "sent_activities" not in request.session:
+        request.session["sent_activities"] = []
+    if activity_id not in request.session["sent_activities"]:
+        answers = {}
+        for pl in activity.indexed_pl():
+            a = AnonymousAnswer.last(pl, uuid)
+            answers[pl.id] = a.answers if a else None
+        send_mail(
+            f'[PremierLangage - activité {activity_id}]',
+            f'Réponse de {request.POST["name"]}:\n{json.dumps(answers)}',
+            request.POST["mail"],
+            activity.activity_data["mail"].split(" "),
+            fail_silently=False,
+        )
+        request.session["sent_activities"].append(activity_id)
     return redirect(request.META.get('HTTP_REFERER', '/'))
