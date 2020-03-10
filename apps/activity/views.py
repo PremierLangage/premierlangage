@@ -107,7 +107,7 @@ def next(request, activity_id):
     if activity.activity_type == "mail_pltp":
         session = request.session
         a_type = get_activity_type_class("mail_pltp")()
-        return a_type.next(activity, session)
+        return a_type.next(request, activity, session)
     
     return next_aux(request, activity_id)
 
@@ -261,13 +261,15 @@ def send_answers(request, activity_id):
             a = AnonymousAnswer.last(pl, uuid)
             if a:
                 answers[pl.name] = a.answers
-                grade_str += f"{pl.name} : {a.grade}\n"
+                if a.grade is None:
+                    grade_str += f"{pl.name} : Pas de réponse"
+                else:
+                    grade_str += f"{pl.name} : {a.grade}\n"
             else:
                 grade_str += f"{pl.name} : Pas de réponse"
         
         content = f'Réponses de {request.POST["name"]} <{request.POST["mail"]}> :\n' \
                   f'{grade_str}\n\nLes données json des réponses sont en pièce jointe.'
-        print(content)
         mail = EmailMessage(
             f'[PremierLangage - activité {activity_id}]',
             content, settings.SERVER_EMAIL, activity.activity_data["mail"].split(" "),

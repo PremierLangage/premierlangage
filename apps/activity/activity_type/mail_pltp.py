@@ -1,15 +1,16 @@
 import json
 
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponseBadRequest, HttpResponse, JsonResponse
-from django.shortcuts import redirect, render, reverse, get_object_or_404
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.template.loader import get_template
 
 from activity.activity_type.activity_type import AbstractActivityType
-from activity.utils import (anonymous_current_pl_template, get_anonymous_session_exercise,
-                            get_anonymous_uuid)
+from activity.utils import (anonymous_current_pl_template, get_anonymous_current_pl_id,
+                            get_anonymous_session_exercise, get_anonymous_uuid,
+                            set_anonymous_current_pl_id)
 from loader.models import PL
-from playexo.models import AnonymousAnswer, Answer
+from playexo.models import AnonymousAnswer
 from playexo.utils import render_feedback
 
 
@@ -40,7 +41,7 @@ class MailPltp(AbstractActivityType):
         pl = [
             {
                 'name':  activity.activity_data['title'],
-                'state': Answer.pl_state(elem, request.user)
+                'state': AnonymousAnswer.pl_state(elem, get_anonymous_uuid(request))
             }
             for elem in activity.indexed_pl()
         ]
@@ -76,8 +77,7 @@ class MailPltp(AbstractActivityType):
     
     def template(self, request, activity, session):
         uuid = get_anonymous_uuid(request)
-        
-        current_pl_id = session["current_pl"] if "current_pl" in session else None
+        current_pl_id = get_anonymous_current_pl_id(activity.id, request)
         if current_pl_id == -1:
             current_pl = -1
         elif current_pl_id is None:
@@ -96,16 +96,15 @@ class MailPltp(AbstractActivityType):
                     pl_id = int(request.GET.get("pl_id"))
                 except ValueError:
                     return HttpResponseBadRequest("Missing/invalid parameter 'pl_id'")
-                session["current_pl"] = pl_id
+                set_anonymous_current_pl_id(activity.id, request, pl_id)
             
             elif action == "home":
-                session["current_pl"] = None
+                set_anonymous_current_pl_id(activity.id, request, None)
             
             elif current_pl and action == "reset":
                 AnonymousAnswer.objects.create(user_uuid=uuid, pl=current_pl)
             
             if action:
-                # Remove get arguments from URL
                 return redirect(reverse("activity:play", args=[activity.id]))
         
         if current_pl and current_pl != -1:
@@ -155,7 +154,7 @@ class MailPltp(AbstractActivityType):
         return feedback, True
     
     
-    def next(self, activity, session):
+    def next(self, request, activity, session):
         """
         This method is called when the next button is clicked on an activity.
         :return: A redirection to the main page of the activity accordingly to the function.
@@ -163,10 +162,10 @@ class MailPltp(AbstractActivityType):
         pls = activity.indexed_pl()
         for previous, next in zip(pls, list(pls[1:]) + [None]):
             if previous == session.current_pl:
-                session["current_pl"] = next.id
+                set_anonymous_current_pl_id(activity.id, request, next.id)
                 break
         else:
-            session["current_pl"] = None
+            set_anonymous_current_pl_id(activity.id, request, None)
         return redirect(reverse("activity:play", args=[activity.id]))
     
     
@@ -184,7 +183,8 @@ class MailPltp(AbstractActivityType):
     
     def navigation(self, activity, session, request):
         """This method is called to get a rendered template of the navigation of this activity"""
-        exercise = get_anonymous_session_exercise(request)
+        current_pl_id = get_anonymous_current_pl_id(activity.id, request)
+        exercise = get_anonymous_session_exercise(request, current_pl_id)
         pl_list = [{
             'id':    None,
             'state': None,

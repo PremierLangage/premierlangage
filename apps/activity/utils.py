@@ -15,7 +15,7 @@ def get_anonymous_uuid(request):
 
 
 
-def get_anonymous_session_exercise(request, pl=None):
+def get_anonymous_session_exercise(request, pl_id=None):
     """Return the SessionExercice corresponding to self.current_pl.
 
     If the optionnal parameter 'pl' is given (can be given as None for the PLTP), will instead
@@ -24,9 +24,7 @@ def get_anonymous_session_exercise(request, pl=None):
     Raise IntegrityError if no session for either self.current_pl or pl (if given) was found."""
     
     try:
-        current_pl_id = request.session[
-            "current_pl"] if "current_pl" in request.session and not pl else pl
-        current_pl = PL.objects.get(id=current_pl_id)
+        current_pl = PL.objects.get(id=pl_id)
     except PL.DoesNotExist:
         current_pl = None
     if current_pl is None:
@@ -43,10 +41,11 @@ def anonymous_current_pl_template(request, activity, context=None):
     If given, will use context instead."""
     env = Jinja2.get_default()
     
-    if "current_pl" in request.session and request.session["current_pl"] == -1:
+    current_pl_id = get_anonymous_current_pl_id(activity.id, request)
+    if current_pl_id == -1:
         pl = -1
     else:
-        session_exercise = get_anonymous_session_exercise(request)
+        session_exercise = get_anonymous_session_exercise(request, current_pl_id)
         if session_exercise:
             pl = session_exercise.pl
         else:
@@ -79,3 +78,20 @@ def anonymous_current_pl_template(request, activity, context=None):
         error_msg = str(e)
         error_msg += "<br><br>" + htmlprint.html_exc()
         return get_template("playexo/error.html").render({"error_msg": error_msg})
+
+
+
+def get_anonymous_current_pl_id(activity_id, request):
+    activity_id = str(activity_id)
+    if activity_id not in request.session:
+        request.session[activity_id] = {}
+        request.session[activity_id]["current_pl"] = None
+    return request.session[activity_id]["current_pl"]
+
+
+
+def set_anonymous_current_pl_id(activity_id, request, pl_id):
+    activity_id = str(activity_id)
+    if activity_id not in request.session:
+        request.session[activity_id] = {}
+    request.session[activity_id]["current_pl"] = pl_id
