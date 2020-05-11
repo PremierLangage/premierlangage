@@ -1,3 +1,4 @@
+import json
 import logging
 import traceback
 
@@ -6,10 +7,11 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
+from django.views.decorators.http import require_GET
 
 from loader.models import PL
 from playexo.exception import BuildScriptError, SandboxError
-from playexo.models import SessionTest
+from playexo.models import Answer, SessionTest
 
 
 logger = logging.getLogger(__name__)
@@ -82,3 +84,42 @@ def test_pl(request, pl_id):
     
     except Exception:
         return HttpResponse(htmlprint.code("Error during testing:\n" + traceback.format_exc()))
+
+
+
+@login_required
+@require_GET
+def download_answers(request):
+    if not request.user.is_staff:
+        raise PermissionDenied
+    if "start" in request.GET or "end" in request.GET:
+        if "start" not in request.GET or request.GET["start"] == "":
+            if "end" not in request.GET or request.GET["start"] == "":
+                answers = Answer.objects.all()
+            else:
+                answers = Answer.objects.filter(date__lte=request.GET["end"])
+        elif "end" not in request.GET or request.GET["end"] == "":
+            if "start" in request.GET and request.GET["start"] != "":
+                answers = Answer.objects.filter(date__gte=request.GET["start"])
+        else:
+            answers = Answer.objects.filter(date__range=(request.GET["start"], request.GET["end"]))
+        
+        dic = {}
+        for a in answers:
+            dic[a.id] = {
+                "user":    a.user.get_username(),
+                "seed":    a.seed,
+                "date":    str(a.date),
+                "answer":  a.answers,
+                "grade":   a.grade,
+                "pl_id":   a.pl.id,
+                "pl_name": a.pl.name,
+            }
+            dic[a.id]["activity_id"] = a.activity.id if a.activity is not None else None
+            dic[a.id]["activity_name"] = a.activity.name if a.activity is not None else None
+        
+        response = HttpResponse(json.dumps(dic), content_type="application/json")
+        response['Content-Disposition'] = 'attachment;filename=answers.json'
+        return response
+    else:
+        return render(request, "playexo/download_answers.html", None)
