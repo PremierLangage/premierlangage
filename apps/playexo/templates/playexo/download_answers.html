@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+
+{% block alert %}{% endblock %}
+
+{% block content %}
+    <form method="get">
+        <label>
+            Début :
+            <input type="date" name="start"/>
+        </label>
+        <label>
+            Fin :
+            <input type="date" name="end"/>
+        </label>
+        <input type="submit" value="Télécharger" formtarget="_blank"/>
+    </form>
+{% endblock %}
