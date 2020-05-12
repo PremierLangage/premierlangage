@@ -5,7 +5,7 @@ import traceback
 import htmlprint
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_GET
 
@@ -105,18 +105,24 @@ def download_answers(request):
             answers = Answer.objects.filter(date__range=(request.GET["start"], request.GET["end"]))
         
         dic = {}
+        if "pl" in request.GET and request.GET["pl"].isnumeric():
+            try:
+                answers.filter(pl=PL.objects.get(id=request.GET["pl"]))
+            except PL.DoesNotExist:
+                return HttpResponseNotFound("PL does not exist")
         for a in answers:
             dic[a.id] = {
                 "user":    a.user.get_username(),
                 "seed":    a.seed,
                 "date":    str(a.date),
-                "answer":  a.answers,
                 "grade":   a.grade,
                 "pl_id":   a.pl.id,
                 "pl_name": a.pl.name,
             }
             dic[a.id]["activity_id"] = a.activity.id if a.activity is not None else None
             dic[a.id]["activity_name"] = a.activity.name if a.activity is not None else None
+            if "include_answers" in request.GET:
+                dic[a.id]["answers"] = a.answers
         
         response = HttpResponse(json.dumps(dic), content_type="application/json")
         response['Content-Disposition'] = 'attachment;filename=answers.json'
