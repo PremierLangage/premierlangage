@@ -95,14 +95,17 @@ def download_answers(request):
     if "start" in request.GET or "end" in request.GET:
         if "start" not in request.GET or request.GET["start"] == "":
             if "end" not in request.GET or request.GET["start"] == "":
-                answers = Answer.objects.all()
+                answers = Answer.objects.select_related("activity", "pl").all()
             else:
-                answers = Answer.objects.filter(date__lte=request.GET["end"])
+                answers = Answer.objects.select_related("activity", "pl").filter(
+                    date__lte=request.GET["end"])
         elif "end" not in request.GET or request.GET["end"] == "":
             if "start" in request.GET and request.GET["start"] != "":
-                answers = Answer.objects.filter(date__gte=request.GET["start"])
+                answers = Answer.objects.select_related("activity", "pl").filter(
+                    date__gte=request.GET["start"])
         else:
-            answers = Answer.objects.filter(date__range=(request.GET["start"], request.GET["end"]))
+            answers = Answer.objects.select_related("activity", "pl").filter(
+                date__range=(request.GET["start"], request.GET["end"]))
         
         dic = {}
         if "pl" in request.GET and request.GET["pl"].isnumeric():
