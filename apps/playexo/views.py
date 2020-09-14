@@ -113,19 +113,21 @@ def download_answers(request):
                 answers.filter(pl=PL.objects.get(id=request.GET["pl"]))
             except PL.DoesNotExist:
                 return HttpResponseNotFound("PL does not exist")
-        for a in answers:
-            dic[a.id] = {
-                "user":    a.user.get_username(),
-                "seed":    a.seed,
-                "date":    str(a.date),
-                "grade":   a.grade,
-                "pl_id":   a.pl.id,
-                "pl_name": a.pl.name,
-            }
-            dic[a.id]["activity_id"] = a.activity.id if a.activity is not None else None
-            dic[a.id]["activity_name"] = a.activity.name if a.activity is not None else None
-            if "include_answers" in request.GET:
-                dic[a.id]["answers"] = a.answers
+        slice_size = 1000
+        for i in range(0, answers.count(), slice_size):
+            for a in answers[i:i + slice_size]:
+                dic[a.id] = {
+                    "user":    a.user.get_username(),
+                    "seed":    a.seed,
+                    "date":    str(a.date),
+                    "grade":   a.grade,
+                    "pl_id":   a.pl.id,
+                    "pl_name": a.pl.name,
+                }
+                dic[a.id]["activity_id"] = a.activity.id if a.activity is not None else None
+                dic[a.id]["activity_name"] = a.activity.name if a.activity is not None else None
+                if "include_answers" in request.GET:
+                    dic[a.id]["answers"] = a.answers
         
         response = HttpResponse(json.dumps(dic), content_type="application/json")
         response['Content-Disposition'] = 'attachment;filename=answers.json'
