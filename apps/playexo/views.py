@@ -9,6 +9,7 @@ from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_GET
 
+from activity.models import Activity
 from loader.models import PL
 from playexo.exception import BuildScriptError, SandboxError
 from playexo.models import Answer, SessionTest
@@ -111,6 +112,11 @@ def download_answers(request):
         if "pl" in request.GET and request.GET["pl"].isnumeric():
             try:
                 answers.filter(pl=PL.objects.get(id=request.GET["pl"]))
+            except PL.DoesNotExist:
+                return HttpResponseNotFound("PL does not exist")
+        if "activity" in request.GET and request.GET["activity"].isnumeric():
+            try:
+                answers.filter(pl=Activity.objects.get(id=request.GET["activity"]))
             except PL.DoesNotExist:
                 return HttpResponseNotFound("PL does not exist")
         slice_size = 1000
