@@ -120,7 +120,7 @@ def download_answers(request):
                 return HttpResponseNotFound("PL does not exist")
         
         dic = {}
-        slice_size = 10000
+        slice_size = 1000
         for i in range(0, answers.count(), slice_size):
             for a in answers[i:i + slice_size]:
                 dic[a.id] = {
