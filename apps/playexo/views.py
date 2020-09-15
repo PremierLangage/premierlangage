@@ -91,7 +91,6 @@ def test_pl(request, pl_id):
 @login_required
 @require_GET
 def download_answers(request):
-    print(request.GET)
     if not request.user.is_staff:
         raise PermissionDenied
     if "start" in request.GET or "end" in request.GET:
