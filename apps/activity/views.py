@@ -155,9 +155,9 @@ def dashboard(request, activity_id):
     session, _ = SessionActivity.objects.get_or_create(user=request.user, activity=activity)
     a_type = get_activity_type_class(activity.activity_type)()
     
-    if request.user in activity.teacher.all():
+    if activity.teacher.filter(user=request.user):
         return a_type.teacher_dashboard(request, activity, session)
-    elif request.user in activity.student.all():
+    elif activity.student.filter(user=request.user):
         return a_type.student_dashboard(request, activity, session)
     else:
         raise PermissionDenied("Vous n'appartenez pas à cette activité")
