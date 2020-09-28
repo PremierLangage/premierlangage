@@ -5,11 +5,14 @@
 {% block content %}
 <ion-card>
     <ion-card-header>
-        {% if (instructor or request.user.profile.is_admin()) and smalls|length > 0 %}
         <ion-card-subtitle>
-            <a href="/activity/dashboard/{{ course_id }}/"> Tableau de bord </a>
-        </ion-card-subtitle>
+        <a href="/activity/dashboard/{{ course_id }}/">  Tableau de bord
+        {% if (instructor or request.user.profile.is_admin()) and smalls|length > 0 %}
+        ( Enseignant )
         {% endif %}
+        </a>
+        </ion-card-subtitle>
+         
         <ion-card-title>{{ name }}</ion-card-title>
     </ion-card-header>
     <ion-card-content>
