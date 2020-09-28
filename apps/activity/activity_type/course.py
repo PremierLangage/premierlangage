@@ -23,6 +23,8 @@ class Course(AbstractActivityType):
         This method is called when the dashboard of an activity is requested for a student.
         :return: A rendered template of the student dashboard
         """
+        return self.student_summary(request.user.id, request, activity)
+        
         raise PermissionDenied()
     
     
