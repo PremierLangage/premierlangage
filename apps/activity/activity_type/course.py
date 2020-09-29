@@ -6,6 +6,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import Http404, HttpResponse, HttpResponseNotFound
 from django.shortcuts import redirect, render, reverse
 from django.template.loader import get_template
+from django.db.models.functions import Greatest
 
 from activity.activity_type.activity_type import AbstractActivityType
 from playexo.enums import State
@@ -14,6 +15,8 @@ from playexo.models import Answer, HighestGrade
 
 logger = logging.getLogger(__name__)
 
+
+from django.db.models import Max
 
 
 class Course(AbstractActivityType):
@@ -252,15 +255,27 @@ class Course(AbstractActivityType):
         if not activity.is_member(student):
             return HttpResponseNotFound("Cet étudiant ne fait pas partie de ce cours")
         
-        activities = activity.indexed_activities().filter(teacher=request.user)
+        activities = activity.indexed_activities().filter(student=request.user)
         tp = list()
+        nba=0
+        suma=0
         for a in activities:
             question = list()
+            mean=0
+            nb=0
+            sum=0
             for pl in a.indexed_pl():
+                nb=nb+1
                 state = Answer.pl_state(pl, student)
+                # il faut un truc qui prend le greatest grade pour un filtre pl + user 
+                
+                grade = Answer.objects.filter(pl=pl, user=student).aggregate(highgrade=Max('grade'))['highgrade']
+                if grade :
+                    sum = sum + int(grade) 
                 question.append({
                     'state': state,
                     'name':  pl.json['title'],
+                    
                 })
             len_tp = len(question) if len(question) else 1
             tp.append({
@@ -269,12 +284,16 @@ class Course(AbstractActivityType):
                 'id':            a.id,
                 'width':         str(100 / len_tp),
                 'pl':            question,
+                'mean': sum//nb, 
             })
-        
+            nba=nba+1
+            suma=suma+ sum//nb
+    
         return render(request, 'activity/activity_type/course/student_summary.html', {
             'state':       [i for i in State if i != State.ERROR],
             'course_name': activity.name,
             'student':     student,
             'activities':  tp,
+            'mmean':suma//nba,
             'course_id':   activity.id,
         })
