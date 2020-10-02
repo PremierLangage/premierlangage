@@ -24,9 +24,9 @@ def first(it):
 
 
 
-def component(l):
-    selector = l["selector"]
-    cid = l["cid"]
+def component(dic):
+    selector = dic["selector"]
+    cid = dic["cid"]
     return SafeString("<%s cid='%s'></%s>" % (selector, cid, selector))
 
 
