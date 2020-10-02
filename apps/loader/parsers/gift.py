@@ -197,7 +197,7 @@ class Parser:
                         os.path.join(self.directory.name, self.relpath),
                         q.source,
                         i + 1,
-                        f"You did not specify a question title"
+                        "You did not specify a question title"
                     )))
                 if q.valid:
                     name = q.answers.__class__.__name__
