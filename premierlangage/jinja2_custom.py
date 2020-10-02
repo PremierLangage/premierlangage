@@ -19,8 +19,8 @@ def make_list(s):
 
 
 
-def first(l):
-    return l[0] if l else None
+def first(it):
+    return it[0] if it else None
 
 
 
