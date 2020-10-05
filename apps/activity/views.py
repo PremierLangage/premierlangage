@@ -1,8 +1,12 @@
 import json
 import logging
+import csv
+
+
 
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group, User
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, reverse
@@ -205,3 +209,16 @@ def movenext(request, activity_id):
         raise PermissionDenied("Vous devez être professeur pour récupérer les notes")
     activity.move_next()
     return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+def create_group_from_file(file):
+    """
+        Attribute an amphi, td and tp group for the student from a filled csv file .
+    """
+
+    spamreader = csv.DictReader(file, delimiter=',')
+    for row in spamreader:
+        user = User.objects.get_or_create(email = row['email'])
+        Group.objects.get_or_create(name='Amphi_' + row['amphi']).user_set.add(user)
+        Group.objects.get_or_create(name='Td_' + row['td']).user_set.add(user)
+        Group.objects.get_or_create(name='Tp_' + row['tp']).user_set.add(user)
