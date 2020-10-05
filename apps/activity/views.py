@@ -1,19 +1,17 @@
 import json
 import logging
-import csv
-
-
 
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse, HttpResponseBadRequest
-from django.shortcuts import get_object_or_404, redirect, reverse
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect, reverse, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from activity.activity_type.utils import get_activity_type_class
+from activity.forms import UploadFileForm
 from activity.models import Activity, SessionActivity
 from filebrowser.utils import reload_activity
 from loader.models import PL
@@ -159,9 +157,9 @@ def dashboard(request, activity_id):
     session, _ = SessionActivity.objects.get_or_create(user=request.user, activity=activity)
     a_type = get_activity_type_class(activity.activity_type)()
     
-    if request.user in activity.teacher.all():
+    if activity.teacher.filter(username=request.user.username):
         return a_type.teacher_dashboard(request, activity, session)
-    elif request.user in activity.student.all():
+    elif activity.student.filter(username=request.user.username):
         return a_type.student_dashboard(request, activity, session)
     else:
         raise PermissionDenied("Vous n'appartenez pas à cette activité")
@@ -211,14 +209,19 @@ def movenext(request, activity_id):
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
-def create_group_from_file(file):
-    """
-        Attribute an amphi, td and tp group for the student from a filled csv file .
-    """
+def handle_uploaded_file(f):
+    pass
 
-    spamreader = csv.DictReader(file, delimiter=',')
-    for row in spamreader:
-        user = User.objects.get_or_create(email = row['email'])
-        Group.objects.get_or_create(name='Amphi_' + row['amphi']).user_set.add(user)
-        Group.objects.get_or_create(name='Td_' + row['td']).user_set.add(user)
-        Group.objects.get_or_create(name='Tp_' + row['tp']).user_set.add(user)
+def upload_file(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            handle_uploaded_file(request.FILES['file'])
+            return HttpResponseRedirect('')
+    else:
+        form = UploadFileForm()
+    return render(request, 'activity/activity_type/course/load_csv.html', {'form': form})
+
+def passViews(request):
+    users = User.objects.all()
+    return render(request, 'activity/activity_type/course/list_csv.html', {'users': users})
