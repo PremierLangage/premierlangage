@@ -115,9 +115,10 @@ def download_answers(request):
                 return HttpResponseNotFound("PL does not exist")
         if "activity" in request.GET and request.GET["activity"].isnumeric():
             try:
-                answers = answers.filter(pl=Activity.objects.get(id=int(request.GET["activity"])))
-            except PL.DoesNotExist:
-                return HttpResponseNotFound("PL does not exist")
+                answers = answers.filter(
+                    activity=Activity.objects.get(id=int(request.GET["activity"])))
+            except Activity.DoesNotExist:
+                return HttpResponseNotFound("Activity does not exist")
         
         dic = {}
         slice_size = 1000
