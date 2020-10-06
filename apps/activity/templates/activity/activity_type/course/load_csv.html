@@ -2,19 +2,20 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Télécharger des fichiers avec Django </title>
+        <title>UPEM-PL</title>
     </head>
     <body>
+        {% if error %}
+            <p>Le fichier n'a pas pu être chargé correctement</p>
+        {% endif %}
         <!-- Upload form. Note enctype attribute! -->
-        <form action="list/" method="post" enctype="multipart/form-data">
+        <form  action="list/" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <p>
                 {{ form.docfile.errors }}
                 {{ form.file }}
             </p>
-
-            <p><input type="submit" value="Upload" /></p>
+            <input type="submit" value="Upload">
         </form>
-    <p>"../play/0/"</p>
     </body>
 </html>
