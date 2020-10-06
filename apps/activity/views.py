@@ -210,37 +210,48 @@ def movenext(request, activity_id):
     activity.move_next()
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
-
+@require_POST
 def create_group_from_csv_file(request):
     csv_file = request.FILES['file'].read().decode('UTF-8')
     csv_file = csv_file.split("\n")
+    nb_modif = 0
     del csv_file[0]
 
-
-   # spamreader = csv.DictReader(csv_file, delimiter=',')
     for row in csv_file:
         row = row.split(',')
         if row == ['']:
-            break;
-        email = row[0]
-        user = User.objects.get(email=email)
+            continue
+        nb_modif += 1
+        if (row[0] == '') or (row[1] == '') or (row[2] == '') or (row[3] == ''):
+            form = UploadFileForm()
+            return render(request, 'activity/activity_type/course/load_csv.html', {'form':form,
+                                                                                   'error':True})
+        user = User.objects.get(email=row[0])
+        groups = [user.groups.filter(name__contains='Amphi'),
+        user.groups.filter(name__contains='TD'),
+        user.groups.filter(name__contains='TP')]
+
+        for group in groups:
+            delete_groups_of_user(user, group)
         Group.objects.get_or_create(name='Amphi' + row[1])[0].user_set.add(user)
         Group.objects.get_or_create(name='TD' + row[2])[0].user_set.add(user)
         Group.objects.get_or_create(name='TP' + row[3])[0].user_set.add(user)
     users = User.objects.all()
-    return render(request, 'activity/activity_type/course/list_csv.html', {'users': users})
+    return render(request, 'activity/activity_type/course/list_csv.html', {'users': users,
+                                                                            'nb_modif':nb_modif})
+
+def delete_groups_of_user(user, list_groups):
+    if list_groups.count() != 0:
+        for group in list_groups:
+            user.groups.remove(group)
+
 
 def upload_file(request):
-    type = request.method
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             return create_group_from_csv_file(request)
     else:
         form = UploadFileForm()
-    return render(request, 'activity/activity_type/course/load_csv.html', {'form': form})
-
-def passViews(request):
-    users = User.objects.all()
-    val = request.FILES
-    return render(request, 'activity/activity_type/course/list_csv.html', {'users': users})
+    return render(request, 'activity/activity_type/course/load_csv.html', {'form': form,
+                                                                           'error': False})

@@ -4,10 +4,18 @@
     <ul>
     {% for user in users %}
         {% if user.groups.all().count() > 2 %}
-        <li>User : {{ user.username }}, email : {{ user.email }}, Amphi : {{ user.groups.all()[0] }}, TD : {{ user.groups.all()[1] }}, TP : {{ user.groups.all()[2] }}</li>
-
+            {% with groups = user.groups.all().order_by("name") %}
+        <li>User : {{ user.username }}, email : {{ user.email }}, Amphi : {{ groups[0].name }}, TD : {{ groups[1] }}, TP : {{ groups[2] }}</li>
+            {% endwith %}
         {% endif %}
     {% endfor %}
     </ul>
+    <form  action="../../play/0/" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p>Le fichier a été correctement chargé</p>
+            <p>Il y a eu {{ nb_modif }} modifications</p>
+
+            <p><input type="submit" value="Retour à l'accueil"/></p>
+        </form>
 </body>
 </html>
