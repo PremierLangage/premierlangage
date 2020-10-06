@@ -6,7 +6,7 @@
     </head>
     <body>
         <!-- Upload form. Note enctype attribute! -->
-        <form action="../play/0/" method="post" enctype="multipart/form-data">
+        <form action="list/" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <p>
                 {{ form.docfile.errors }}

@@ -33,6 +33,6 @@ urlpatterns = [
                                                 redirect_authenticated_user=True), name="login"),
     path(r'logout/', views.disconnect, name="logout"),
     path(r'load_csv/', views.upload_file, name="load_csv"),
-    path(r'load_csv/list/', views.passViews, name="list_csv"),
+    path(r'load_csv/list/', views.create_group_from_csv_file, name="list_csv"),
 ]
 ()
