@@ -16,7 +16,7 @@ from playexo.models import Answer, HighestGrade
 logger = logging.getLogger(__name__)
 
 
-from django.db.models import Max
+from django.db.models import Max, Avg
 
 
 class Course(AbstractActivityType):
@@ -259,19 +259,25 @@ class Course(AbstractActivityType):
         tp = list()
         nba=0
         suma=0
+        avgsuma=0
         for a in activities:
             question = list()
             mean=0
             nb=0
             sum=0
+            avgsum=0
             for pl in a.indexed_pl():
                 nb=nb+1
                 state = Answer.pl_state(pl, student)
                 # il faut un truc qui prend le greatest grade pour un filtre pl + user 
                 
-                grade = Answer.objects.filter(pl=pl, user=student).aggregate(highgrade=Max('grade'))['highgrade']
+                g = Answer.objects.filter(pl=pl, user=student).aggregate(Max('grade'),Avg('grade'))
+                grade= g['grade__max']
+                avg = g['grade__avg']
                 if grade :
                     sum = sum + int(grade) 
+                if avg :
+                    avgsum = avgsum + int(avg)
                 question.append({
                     'state': state,
                     'name':  pl.json['title'],
@@ -285,15 +291,24 @@ class Course(AbstractActivityType):
                 'width':         str(100 / len_tp),
                 'pl':            question,
                 'mean': sum//nb, 
+                'avg': avgsum//nb,
             })
             nba=nba+1
             suma=suma+ sum//nb
-    
+            avgsuma = avgsuma + avgsum//nb
         return render(request, 'activity/activity_type/course/student_summary.html', {
             'state':       [i for i in State if i != State.ERROR],
             'course_name': activity.name,
             'student':     student,
             'activities':  tp,
             'mmean':suma//nba,
+            'avg': avgsuma//nba,
             'course_id':   activity.id,
         })
+
+
+    def computeStats(self, activity):
+        """
+        Compute stats  inside the activity.stat_data field
+        """
+        pass

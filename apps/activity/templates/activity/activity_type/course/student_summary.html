@@ -14,7 +14,7 @@
                 <thead>
                     <tr>
                         <th>Activité</th>
-                        <th colspan='10'> Moyenne {{ mmean }}</th>
+                        <th colspan='10'> Moyenne {{ mmean }} | {{ avg }}</th>
                         <th colspan='100'>Questions</th>
                     </tr>
                 </thead>
@@ -24,7 +24,7 @@
                         <td class="summary-td">
                             <span>{{ elem.name }}</span>
                         </td>
-                        <td> {{ elem.mean }} </td>
+                        <td> {{ elem.mean }}|{{ elem.avg }} </td>
                         {% for item in elem.pl %}
                         <center>
                             <td>
