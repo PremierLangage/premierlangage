@@ -7,6 +7,18 @@
     <ion-card-header>
         <ion-card-title>{{ name }}</ion-card-title>
     </ion-card-header>
+    <form action="/activity/dashboard/{{ course_id }}/" method="post">
+        <select name="list_group" id="list_group">
+                <option value="">--Choose an option--</option>
+            {% for group in groups %}
+                <option type="checkbox" value="{{ group.name }}">{{ group.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Valider"/>
+    </form>
+
+
+
     <ion-card-content>
         <section>
             <table>

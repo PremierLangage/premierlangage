@@ -5,17 +5,25 @@
         <title>UPEM-PL</title>
     </head>
     <body>
-        {% if error %}
+        {% if succes %}
+             <form  action="../../play/0/" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <p>Le fichier a été correctement chargé</p>
+                <p>Il y a eu {{ nb_modif }} modifications</p>
+
+                <p><input type="submit" value="Retour à l'accueil"/></p>
+            </form>
+        {% elif error %}
             <p>Le fichier n'a pas pu être chargé correctement</p>
+        {% else %}
+            <form  action="list/" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <p>
+                    {{ form.docfile.errors }}
+                    {{ form.file }}
+                </p>
+                <input type="submit" value="Upload">
+            </form>
         {% endif %}
-        <!-- Upload form. Note enctype attribute! -->
-        <form  action="list/" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <p>
-                {{ form.docfile.errors }}
-                {{ form.file }}
-            </p>
-            <input type="submit" value="Upload">
-        </form>
     </body>
 </html>

@@ -237,8 +237,9 @@ def create_group_from_csv_file(request):
         Group.objects.get_or_create(name='TD' + row[2])[0].user_set.add(user)
         Group.objects.get_or_create(name='TP' + row[3])[0].user_set.add(user)
     users = User.objects.all()
-    return render(request, 'activity/activity_type/course/list_csv.html', {'users': users,
-                                                                            'nb_modif':nb_modif})
+    return render(request, 'activity/activity_type/course/load_csv.html', {'users': users,
+                                                                            'nb_modif':nb_modif,
+                                                                           'succes':True})
 
 def delete_groups_of_user(user, list_groups):
     if list_groups.count() != 0:
