@@ -17,8 +17,6 @@
         <input type="submit" value="Valider"/>
     </form>
 
-
-
     <ion-card-content>
         <section>
             <table>
@@ -26,10 +24,11 @@
                     <tr>
                         <th>Élève</th>
                         <th colspan="100">Activités</th>
+                        <th>Notes : {{ student[-1].succes }} / {{ student[-1].total }} = {{ student[-1].average }}</th>
                     </tr>
                 </thead>
                 <tbody>
-                {% for stud in student %}
+                {% for stud in student[0:-1] %}
                     <tr>
                         <td>
                             <a href="/activity/dashboard/{{ course_id }}/?studentid={{ stud.object.id }}">
@@ -58,6 +57,9 @@
                             </a>
                         </td>
                         {% endfor %}
+                        <td>
+                            <p>{{ stud.activities[-1]["succes"] }} / {{ stud.activities[-1]["total"] }} = {{ stud.activities[-1]["average"] }}</p>
+                        </td>
                     </tr>
                 {% endfor %}
                 <tr>
