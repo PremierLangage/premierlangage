@@ -1,8 +1,9 @@
 import logging
 
 from django.apps import apps
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 from django.http import Http404, HttpResponse, HttpResponseNotFound
 from django.shortcuts import redirect, render, reverse
 from django.template.loader import get_template
@@ -183,9 +184,18 @@ class Course(AbstractActivityType):
             all_pl += list(indexed)
         
         grades_query = HighestGrade.objects.filter(activity__in=activities, pl__in=all_pl)
-        
+        groups = Group.objects.filter(
+            Q(name__contains='Amphi') |
+            Q(name__contains='TD') |
+            Q(name__contains='TP')).order_by("name")
+
         result = dict()
-        for st in (activity.student.all() | activity.teacher.all()).distinct():
+        if len(request.POST) == 0 or request.POST['list_group'] == '':
+            student_list = activity.student.all()
+        else:
+            student_list = activity.student.filter(groups__name=request.POST['list_group'])
+
+        for st in (student_list | activity.teacher.all()).distinct():
             tp = dict()
             for a in activities:
                 states = dict()
@@ -210,8 +220,9 @@ class Course(AbstractActivityType):
         for g in grades_query:
             state = State.by_grade(g.grade)
             if g.user.id in result:
-                result[g.user.id]["activities"][g.activity.id]["state"][state]["count"] += 1
-                result[g.user.id]["activities"][g.activity.id]["not_started"] -= 1
+                if g.user.id in result:
+                    result[g.user.id]["activities"][g.activity.id]["state"][state]["count"] += 1
+                    result[g.user.id]["activities"][g.activity.id]["not_started"] -= 1
         
         result = sorted(result.values(), key=lambda k: k['object'].last_name)
         
@@ -232,13 +243,14 @@ class Course(AbstractActivityType):
                     del tp["state"][state]
                 
                 tp["state"] = list(tp["state"].values())
-        
+
         return render(request, 'activity/activity_type/course/teacher_dashboard.html', {
             'state':     [i for i in State if i != State.ERROR],
             'name':      activity.name,
             'student':   result,
             'range_tp':  range(len(activities)),
             'course_id': activity.id,
+            'groups':groups,
         })
     
     
