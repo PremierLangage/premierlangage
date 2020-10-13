@@ -23,9 +23,9 @@ before_install:
   - git clone https://github.com/PremierLangage/sandbox.git
   - cp test/config_test_pgsql.py premierlangage/config.py
   - cd sandbox/
-  - git checkout v1.0.13
+  - git checkout v1.0.12
   - pip install psycopg2
-  - ./bin/install.sh
+  - ./install.sh
   - python3 manage.py runserver 7000 &> /dev/null &
   - cd ..
   - yes n | ./script/install_release.sh
