@@ -235,7 +235,7 @@ class SessionExercise(SessionExerciseAbstract):
     
     @receiver(post_save, sender="activity.SessionActivity")
     def create_session_exercise(sender, instance, created, **kwargs):
-        """When an ActivitySession is created, automatically create a SessionExercise for the PLTP
+        """When an SessionActivity is created, automatically create a SessionExercise for the PLTP
         and every PL."""
         if created:
             for pl in instance.activity.indexed_pl():

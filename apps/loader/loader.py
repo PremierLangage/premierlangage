@@ -150,21 +150,25 @@ def reload_pla(directory, rel_path, original):
         originals = list(original.indexed_pl())
         original.pl.clear()
         
+        done = {pl.id: False for pl in originals}
         for pl in pl_list:
             correspond = list(
                 filter(lambda i: i.directory == pl.directory and i.rel_path == pl.rel_path,
                        originals))
             if correspond:
-                correspond = correspond[0]
-                correspond.json = pl.json
-                correspond.save()
-                logger.info(
-                    "PL '" + str(correspond.id) + " (" + correspond.name + ")' has been updated.")
-                PLPosition.objects.create(parent=original, pl=correspond)
+                for c in correspond:
+                    if not done[c.id]:
+                        c.json = pl.json
+                        c.save()
+                        logger.info(
+                            "PL '" + str(c.id) + " (" + c.name + ")' has been updated.")
+                        PLPosition.objects.create(parent=original, pl=c)
+                        done[c.id] = True
             else:
                 pl.save()
                 logger.info("PL '" + str(pl.id) + " (" + pl.name + ")' has been created.")
                 PLPosition.objects.create(parent=original, pl=pl)
+                
         original.save()
         logger.info("Activity '" + original.name + "' has been reloaded.")
         return original, [htmlprint.code(warning) for warning in warnings]
