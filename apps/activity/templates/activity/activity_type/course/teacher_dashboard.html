@@ -24,7 +24,7 @@
                     <tr>
                         <th>Élève</th>
                         <th colspan="100">Activités</th>
-                        <th>Notes : {{ student[-1].succes }} / {{ student[-1].total }} = {{ student[-1].average }}</th>
+                        <th>Notes : {{ student[-1].average }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,7 +58,7 @@
                         </td>
                         {% endfor %}
                         <td>
-                            <p>{{ stud.activities[-1]["succes"] }} / {{ stud.activities[-1]["total"] }} = {{ stud.activities[-1]["average"] }}</p>
+                            <p>{{ stud.activities[-1]["average"] }}</p>
                         </td>
                     </tr>
                 {% endfor %}

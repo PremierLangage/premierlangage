@@ -182,20 +182,22 @@ class Course(AbstractActivityType):
         all_pl = []
         for indexed in indexed_pl.values():
             all_pl += list(indexed)
-        
-        grades_query = HighestGrade.objects.filter(activity__in=activities, pl__in=all_pl)
+
         groups = Group.objects.filter(
             Q(name__contains='Amphi') |
             Q(name__contains='TD') |
             Q(name__contains='TP')).order_by("name")
 
         result = dict()
+        teacher_list = activity.teacher.all()
         if len(request.POST) == 0 or request.POST['list_group'] == '':
             student_list = activity.student.all()
         else:
             student_list = activity.student.filter(groups__name=request.POST['list_group'])
 
-        for st in (student_list | activity.teacher.all()).distinct():
+        grades_query = HighestGrade.objects.filter(activity__in=activities, pl__in=all_pl, user__in=(student_list | teacher_list).distinct())
+
+        for st in (student_list | teacher_list).distinct():
             tp = dict()
             for a in activities:
                 states = dict()
@@ -250,12 +252,12 @@ class Course(AbstractActivityType):
                     del tp["state"][state]
                 
                 tp["state"] = list(tp["state"].values())
-            average = {"succes" : succes, "total" : total, "average" : round((succes / total) * 20, 2)}
+            average = {"average" : round((succes / total) * 20, 2)}
             total_group += total
             succes_group += succes
             r["activities"].append(average)
 
-        average_group = {"succes" : succes_group, "total" : total_group, "average" : round((succes_group / total_group) * 20, 2)}
+        average_group = {"average" : round((succes_group / total_group) * 20, 2)}
         result.append(average_group)
 
         return render(request, 'activity/activity_type/course/teacher_dashboard.html', {

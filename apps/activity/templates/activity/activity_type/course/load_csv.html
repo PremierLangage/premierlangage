@@ -10,6 +10,14 @@
                 {% csrf_token %}
                 <p>Le fichier a été correctement chargé</p>
                 <p>Il y a eu {{ nb_modif }} modifications</p>
+                {% if no_modification %}
+                 <p>Ces élément n'ont pas pu être modifiés, non présent dans la base de données :</p>
+                 <ul>
+                     {% for email in no_modification %}
+                        <li>{{ email }}</li>
+                     {% endfor %}
+                 </ul>
+                {% endif %}
 
                 <p><input type="submit" value="Retour à l'accueil"/></p>
             </form>
