@@ -19,6 +19,5 @@ class PL(models.Model):
     directory = models.ForeignKey(Directory, on_delete=models.SET_NULL, null=True)
     rel_path = models.CharField(max_length=360, null=False)
     
-    
     def __str__(self):  # pragma: no cover
         return str(self.id) + " : " + str(self.name)
