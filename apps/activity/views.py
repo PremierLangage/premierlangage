@@ -24,7 +24,6 @@ from playexo.utils import render_feedback
 logger = logging.getLogger(__name__)
 
 
-
 @login_required
 @require_POST
 @csrf_exempt
@@ -45,7 +44,6 @@ def add_activity(request, activity_id):
     return redirect(reverse("activity:play", args=[activity_id]))
 
 
-
 @login_required
 @csrf_exempt
 def reload(request, activity_id):
@@ -59,7 +57,6 @@ def reload(request, activity_id):
     return reload_activity(path, activity)
 
 
-
 @login_required
 def remove(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
@@ -67,7 +64,6 @@ def remove(request, activity_id):
         raise PermissionDenied("Vous devez être professeur de cette activité")
     activity.remove_parent()
     return redirect(request.META.get('HTTP_REFERER', '/'))
-
 
 
 @login_required
@@ -85,7 +81,6 @@ def play(request, activity_id):
     return a_type.template(request, activity, session)
 
 
-
 @login_required
 @csrf_exempt
 def next(request, activity_id):
@@ -99,7 +94,6 @@ def next(request, activity_id):
         raise PermissionDenied("Vous n'appartenez pas à cette activité")
     
     return a_type.next(activity, session)
-
 
 
 @login_required
@@ -151,7 +145,6 @@ def evaluate(request, activity_id, pl_id):
         return HttpResponseBadRequest("Missing action")
 
 
-
 @login_required
 @csrf_exempt
 def dashboard(request, activity_id):
@@ -167,7 +160,6 @@ def dashboard(request, activity_id):
         raise PermissionDenied("Vous n'appartenez pas à cette activité")
 
 
-
 @login_required
 def notes(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
@@ -178,18 +170,15 @@ def notes(request, activity_id):
     return a_type.notes(activity, request)
 
 
-
 @login_required
 @csrf_exempt
 def index(request):
     return redirect(reverse("activity:play", args=[0]))
 
 
-
 def disconnect(request):
     logout(request)
     return redirect(reverse('activity:login'))
-
 
 
 @login_required
@@ -201,7 +190,6 @@ def moveprev(request, activity_id):
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
-
 @login_required
 def movenext(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
@@ -210,48 +198,56 @@ def movenext(request, activity_id):
     activity.move_next()
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
+
 @require_POST
-def create_group_from_csv_file(request):
+def create_group_from_csv_file(request, course_id):
     csv_file = request.FILES['file'].read().decode('UTF-8')
     csv_file = csv_file.split("\n")
     nb_modif = 0
+    no_modification = []
     del csv_file[0]
 
     for row in csv_file:
         row = row.split(',')
         if row == ['']:
             continue
-        nb_modif += 1
         if (row[0] == '') or (row[1] == '') or (row[2] == '') or (row[3] == ''):
             form = UploadFileForm()
-            return render(request, 'activity/activity_type/course/load_csv.html', {'form':form,
+            return render(request, 'activity/activity_type/course/load_csv.html/', {'form':form,
                                                                                    'error':True})
-        user = User.objects.get(email=row[0])
-        groups = [user.groups.filter(name__contains='Amphi'),
-        user.groups.filter(name__contains='TD'),
-        user.groups.filter(name__contains='TP')]
+        try:
+            user = User.objects.get(email=row[0])
+        except User.DoesNotExist:
+            no_modification.append(row[0])
+            continue
+
+        nb_modif += 1
+        groups = [user.groups.filter(name__contains=str(course_id) + '_Amphi'),
+                user.groups.filter(name__contains=str(course_id) + '_TD'),
+                user.groups.filter(name__contains=str(course_id) + '_TP')]
 
         for group in groups:
             delete_groups_of_user(user, group)
-        Group.objects.get_or_create(name='Amphi' + row[1])[0].user_set.add(user)
-        Group.objects.get_or_create(name='TD' + row[2])[0].user_set.add(user)
-        Group.objects.get_or_create(name='TP' + row[3])[0].user_set.add(user)
-    users = User.objects.all()
-    return render(request, 'activity/activity_type/course/load_csv.html', {'users': users,
-                                                                            'nb_modif':nb_modif,
-                                                                           'succes':True})
+
+        Group.objects.get_or_create(name=str(course_id) + '_Amphi' + row[1])[0].user_set.add(user)
+        Group.objects.get_or_create(name=str(course_id) + '_TD' + row[2])[0].user_set.add(user)
+        Group.objects.get_or_create(name=str(course_id) + '_TP' + row[3])[0].user_set.add(user)
+    return render(request, 'activity/activity_type/course/load_csv.html', {'nb_modif':nb_modif,
+                                                                           'succes':True,
+                                                                           'no_modification':no_modification,
+                                                                           'course_id':course_id})
+
 
 def delete_groups_of_user(user, list_groups):
-    if list_groups.count() != 0:
-        for group in list_groups:
-            user.groups.remove(group)
+    for group in list_groups:
+        user.groups.remove(group)
 
 
-def upload_file(request):
+def upload_file(request, course_id):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            return create_group_from_csv_file(request)
+            return create_group_from_csv_file(request, course_id)
     else:
         form = UploadFileForm()
     return render(request, 'activity/activity_type/course/load_csv.html', {'form': form,

@@ -182,20 +182,22 @@ class Course(AbstractActivityType):
         all_pl = []
         for indexed in indexed_pl.values():
             all_pl += list(indexed)
-        
-        grades_query = HighestGrade.objects.filter(activity__in=activities, pl__in=all_pl)
+
         groups = Group.objects.filter(
-            Q(name__contains='Amphi') |
-            Q(name__contains='TD') |
-            Q(name__contains='TP')).order_by("name")
+            Q(name__contains=str(activity.id) + '_Amphi') |
+            Q(name__contains=str(activity.id) + '_TD') |
+            Q(name__contains=str(activity.id) + '_TP')).order_by("name")
 
         result = dict()
+        teacher_list = activity.teacher.all()
         if len(request.POST) == 0 or request.POST['list_group'] == '':
             student_list = activity.student.all()
         else:
             student_list = activity.student.filter(groups__name=request.POST['list_group'])
 
-        for st in (student_list | activity.teacher.all()).distinct():
+        grades_query = HighestGrade.objects.filter(activity__in=activities, pl__in=all_pl, user__in=(student_list | teacher_list).distinct())
+
+        for st in (student_list | teacher_list).distinct():
             tp = dict()
             for a in activities:
                 states = dict()
@@ -223,26 +225,40 @@ class Course(AbstractActivityType):
                 if g.user.id in result:
                     result[g.user.id]["activities"][g.activity.id]["state"][state]["count"] += 1
                     result[g.user.id]["activities"][g.activity.id]["not_started"] -= 1
-        
+
         result = sorted(result.values(), key=lambda k: k['object'].last_name)
-        
+        succes_group = 0
+        total_group = 0
         for r in result:
             r["activities"] = list(r["activities"].values())
+            succes = 0
+            total = 0
             for tp in r["activities"]:
+                succes += tp["state"][State.SUCCEEDED]['count']
+                total += tp["total"]
                 for state in tp["state"]:
                     state = tp["state"][state]
+
                     if tp["total"] != 0:
                         state["percent"] = (state["count"] / tp["total"]) * 100
                 if tp["total"] != 0 and tp["not_started"] != 0:
                     tp["state"][State.NOT_STARTED]["count"] = tp["not_started"]
                     tp["state"][State.NOT_STARTED]["percent"] = (tp["not_started"] / tp[
                         "total"]) * 100
+
                 
                 states_to_del = [s for s in tp["state"] if tp["state"][s]["count"] == 0]
                 for state in states_to_del:
                     del tp["state"][state]
                 
                 tp["state"] = list(tp["state"].values())
+            average = {"average" : round((succes / total) * 20, 2)}
+            total_group += total
+            succes_group += succes
+            r["activities"].append(average)
+
+        average_group = {"average" : round((succes_group / total_group) * 20, 2)}
+        result.append(average_group)
 
         return render(request, 'activity/activity_type/course/teacher_dashboard.html', {
             'state':     [i for i in State if i != State.ERROR],
