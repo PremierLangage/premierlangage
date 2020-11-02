@@ -200,7 +200,7 @@ def movenext(request, activity_id):
 
 
 @require_POST
-def create_group_from_csv_file(request):
+def create_group_from_csv_file(request, course_id):
     csv_file = request.FILES['file'].read().decode('UTF-8')
     csv_file = csv_file.split("\n")
     nb_modif = 0
@@ -213,7 +213,7 @@ def create_group_from_csv_file(request):
             continue
         if (row[0] == '') or (row[1] == '') or (row[2] == '') or (row[3] == ''):
             form = UploadFileForm()
-            return render(request, 'activity/activity_type/course/load_csv.html', {'form':form,
+            return render(request, 'activity/activity_type/course/load_csv.html/', {'form':form,
                                                                                    'error':True})
         try:
             user = User.objects.get(email=row[0])
@@ -222,34 +222,32 @@ def create_group_from_csv_file(request):
             continue
 
         nb_modif += 1
-        groups = [user.groups.filter(name__contains='Amphi'),
-                user.groups.filter(name__contains='TD'),
-                user.groups.filter(name__contains='TP')]
+        groups = [user.groups.filter(name__contains=str(course_id) + '_Amphi'),
+                user.groups.filter(name__contains=str(course_id) + '_TD'),
+                user.groups.filter(name__contains=str(course_id) + '_TP')]
 
         for group in groups:
             delete_groups_of_user(user, group)
 
-        Group.objects.get_or_create(name='Amphi' + row[1])[0].user_set.add(user)
-        Group.objects.get_or_create(name='TD' + row[2])[0].user_set.add(user)
-        Group.objects.get_or_create(name='TP' + row[3])[0].user_set.add(user)
-    users = User.objects.all()
-    return render(request, 'activity/activity_type/course/load_csv.html', {'users': users,
-                                                                            'nb_modif':nb_modif,
+        Group.objects.get_or_create(name=str(course_id) + '_Amphi' + row[1])[0].user_set.add(user)
+        Group.objects.get_or_create(name=str(course_id) + '_TD' + row[2])[0].user_set.add(user)
+        Group.objects.get_or_create(name=str(course_id) + '_TP' + row[3])[0].user_set.add(user)
+    return render(request, 'activity/activity_type/course/load_csv.html', {'nb_modif':nb_modif,
                                                                            'succes':True,
-                                                                           'no_modification':no_modification,})
+                                                                           'no_modification':no_modification,
+                                                                           'course_id':course_id})
 
 
 def delete_groups_of_user(user, list_groups):
-    if list_groups.count() != 0:
-        for group in list_groups:
-            user.groups.remove(group)
+    for group in list_groups:
+        user.groups.remove(group)
 
 
-def upload_file(request):
+def upload_file(request, course_id):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            return create_group_from_csv_file(request)
+            return create_group_from_csv_file(request, course_id)
     else:
         form = UploadFileForm()
     return render(request, 'activity/activity_type/course/load_csv.html', {'form': form,

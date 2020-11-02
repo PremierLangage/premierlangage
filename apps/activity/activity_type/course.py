@@ -184,9 +184,9 @@ class Course(AbstractActivityType):
             all_pl += list(indexed)
 
         groups = Group.objects.filter(
-            Q(name__contains='Amphi') |
-            Q(name__contains='TD') |
-            Q(name__contains='TP')).order_by("name")
+            Q(name__contains=str(activity.id) + '_Amphi') |
+            Q(name__contains=str(activity.id) + '_TD') |
+            Q(name__contains=str(activity.id) + '_TP')).order_by("name")
 
         result = dict()
         teacher_list = activity.teacher.all()

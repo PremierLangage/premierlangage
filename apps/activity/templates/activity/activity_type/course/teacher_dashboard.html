@@ -11,7 +11,7 @@
         <select name="list_group" id="list_group">
                 <option value="">--Choose an option--</option>
             {% for group in groups %}
-                <option type="checkbox" value="{{ group.name }}">{{ group.name }}</option>
+                <option type="checkbox" value="{{ group.name }}">{{ group.name.split("_")[1] }}</option>
             {% endfor %}
         </select>
         <input type="submit" value="Valider"/>
