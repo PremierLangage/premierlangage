@@ -204,7 +204,9 @@ def create_group_from_csv_file(request, course_id):
     csv_file = request.FILES['file'].read().decode('UTF-8')
     csv_file = csv_file.split("\n")
     nb_modif = 0
-    no_modification = []
+    no_in_database = []
+    no_in_course = []
+    list_student = Activity.objects.get(pk=course_id).student.all()
     del csv_file[0]
 
     for row in csv_file:
@@ -217,8 +219,11 @@ def create_group_from_csv_file(request, course_id):
                                                                                    'error':True})
         try:
             user = User.objects.get(email=row[0])
+            if user not in list_student:
+                no_in_course.append(row[0])
+                continue
         except User.DoesNotExist:
-            no_modification.append(row[0])
+            no_in_database.append(row[0])
             continue
 
         nb_modif += 1
@@ -234,7 +239,8 @@ def create_group_from_csv_file(request, course_id):
         Group.objects.get_or_create(name=str(course_id) + '_TP' + row[3])[0].user_set.add(user)
     return render(request, 'activity/activity_type/course/load_csv.html', {'nb_modif':nb_modif,
                                                                            'succes':True,
-                                                                           'no_modification':no_modification,
+                                                                           'no_in_database':no_in_database,
+                                                                           'no_in_course':no_in_course,
                                                                            'course_id':course_id})
 
 

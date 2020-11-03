@@ -16,7 +16,6 @@ from playexo.models import Answer, HighestGrade
 logger = logging.getLogger(__name__)
 
 
-
 class Course(AbstractActivityType):
     
     def student_dashboard(self, request, activity, session):
@@ -25,7 +24,6 @@ class Course(AbstractActivityType):
         :return: A rendered template of the student dashboard
         """
         raise PermissionDenied()
-    
     
     def teacher_dashboard(self, request, activity, session):
         """
@@ -222,9 +220,8 @@ class Course(AbstractActivityType):
         for g in grades_query:
             state = State.by_grade(g.grade)
             if g.user.id in result:
-                if g.user.id in result:
-                    result[g.user.id]["activities"][g.activity.id]["state"][state]["count"] += 1
-                    result[g.user.id]["activities"][g.activity.id]["not_started"] -= 1
+                result[g.user.id]["activities"][g.activity.id]["state"][state]["count"] += 1
+                result[g.user.id]["activities"][g.activity.id]["not_started"] -= 1
 
         result = sorted(result.values(), key=lambda k: k['object'].last_name)
         succes_group = 0
