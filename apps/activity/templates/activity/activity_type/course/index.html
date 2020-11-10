@@ -5,17 +5,16 @@
 {% block content %}
 <ion-card>
     <ion-card-header>
-        {% if (instructor or request.user.profile.is_admin()) and smalls|length > 0 %}
+        {% if (instructor or request.user.profile.is_admin()) and smalls|length > 0 and user in teacher %}
         <ion-card-subtitle>
-            <a href="/activity/dashboard/{{ course_id }}/"> Tableau de bord </a>
+            <a href="/activity/dashboard/{{ course_id }}/"> Tableau de bord</a>
+            <p style="display: inline"> / </p>
+            <a href="/activity/load_csv/{{ course_id }}/">Load CSV</a>
+            <p style="display: inline"> / </p>
+            <a href="/activity/export_csv/{{ course_id }}/">Export CSV</a>
         </ion-card-subtitle>
-
-        <ion-card-subtitle>
-            <a href="/activity/load_csv/{{ course_id }}/"> Load CSV </a>
-        </ion-card-subtitle>
-
         {% endif %}
-        <ion-card-title>{{ name }}</ion-card-title>
+    <ion-card-title>{{ name }}</ion-card-title>
     </ion-card-header>
     <ion-card-content>
         <section>
@@ -32,7 +31,7 @@
         </section>
         <section>
             {% if smalls|length > 0 %}
-                <h2>Activités</h5>
+                <h5>Activités</h5>
                 <ion-grid fixed>
                     <ion-row>
                         {% for item in smalls %}
