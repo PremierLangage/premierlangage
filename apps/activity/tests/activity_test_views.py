@@ -22,7 +22,7 @@ class ViewsTestCase(TransactionTestCase):
         self.client.force_login(user=self.user)
         response = self.client.get('http://127.0.0.1:8000/activity/load_csv/10/')
         self.assertEquals(response.status_code, 200)
-        self.assertContains(response, '<form  action="list/" method="post" enctype="multipart/form-data">', count=1)
+        self.assertContains(response, '<form action="activity/load_csv/10/list/" method="post" enctype="multipart/form-data">', count=1)
 
     def test_create_group_from_csv_file(self):
         self.client.force_login(user=self.user)

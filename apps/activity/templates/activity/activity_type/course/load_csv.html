@@ -1,13 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>UPEM-PL</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="{{ static('activity/css/courses.css') }}"/>
+{% endblock %}
+{% block content %}
     {% if user in teachers %}
         {% if succes %}
-             <form  action="../../../play/{{ course_id }}/" method="post" enctype="multipart/form-data">
+             <form  action="activity/play/{{ course_id }}/" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <p>Le fichier a été correctement chargé</p>
                 <p>Il y a eu {{ nb_modif }} modifications</p>
@@ -32,10 +30,11 @@
 
                 <p><input type="submit" value="Retour au cours"/></p>
             </form>
-        {% elif error %}
-            <p>Le fichier n'a pas pu être chargé correctement, certains champs sont incomplets</p>
         {% else %}
-            <form  action="list/" method="post" enctype="multipart/form-data">
+            {% if fault %}
+                 <p>Le fichier n'a pas pu être chargé correctement, certains champs sont incomplets</p>
+            {% endif %}
+            <form action="activity/load_csv/{{ course_id }}/list/" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <p>
                     {{ form.docfile.errors }}
@@ -48,5 +47,4 @@
         <p>Acces non autorisé</p>
     {% endif %}
 
-</body>
-</html>
+{% endblock %}

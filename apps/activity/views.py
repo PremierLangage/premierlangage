@@ -7,6 +7,7 @@ from django.contrib.auth.models import User, Group
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, reverse, render
+from django.template.context_processors import static
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
@@ -213,8 +214,9 @@ def create_group_from_csv_file(request, course_id):
             continue
         if (row[0] == '') or (row[1] == '') or (row[2] == '') or (row[3] == ''):
             form = UploadFileForm()
-            return render(request, 'activity/activity_type/course/load_csv.html/', {'form': form,
-                                                                                    'error': True,
+            return render(request, 'activity/activity_type/course/load_csv.html', {'form': form,
+                                                                                    'fault': True,
+                                                                                    'course_id': course_id,
                                                                                     'teachers': teachers})
         try:
             user = User.objects.get(email=row[0])
@@ -258,7 +260,8 @@ def upload_file(request, course_id):
     teachers = Activity.objects.get(id=course_id).teacher.all()
     return render(request, 'activity/activity_type/course/load_csv.html', {'form': form,
                                                                            'error': False,
-                                                                           'teachers': teachers})
+                                                                           'teachers': teachers,
+                                                                           'course_id': course_id})
 
 
 def export_file(request, course_id):
