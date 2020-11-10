@@ -9,8 +9,8 @@ from activity.models import Activity
 
 @admin.register(Activity)
 class ActivityAdmin(admin.ModelAdmin):
-    list_display = ('__str__', 'id', 'name', 'open', 'activity_type', 'view_parents', 'view_students_number', 'view_teachers_number')
-    list_filter = ['activity_type',]
+    list_display = ('__str__', 'id', 'name', 'open', 'activity_type', 'view_parents', 'view_students_number', 'view_teachers_number', 'view_global')
+    list_filter = ['activity_type']
     search_fields = ['name', 'id', 'activity_type']
 
     def view_students_number(self, activity):
@@ -20,6 +20,8 @@ class ActivityAdmin(admin.ModelAdmin):
         return activity.teacher.count()
 
     def view_parents(self, activity):
+        if activity.id == 0:
+            return format_html('<a href="{}">{}</a>', reverse("admin:activity_activity_changelist"), "none")
         parent_name = activity.parent.name
         url = (
             reverse("admin:activity_activity_changelist")
@@ -27,6 +29,9 @@ class ActivityAdmin(admin.ModelAdmin):
             + urlencode({"parent__id": f"{activity.parent.id}"})
         )
         return format_html('<a href="{}">{}</a>', url, parent_name)
+
+    def view_global(self, activity):
+        return format_html('<a href="{}">{}</a>', reverse("admin:activity_activity_changelist"), "global")
 
     view_students_number.short_description = "Students"
     view_teachers_number.short_description = "Teachers"

@@ -1,5 +1,3 @@
-import csv
-import io
 import json
 import logging
 
@@ -7,7 +5,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, reverse, render
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -19,7 +17,6 @@ from filebrowser.utils import reload_activity
 from loader.models import PL
 from playexo.models import Answer
 from playexo.utils import render_feedback
-
 
 logger = logging.getLogger(__name__)
 
@@ -72,12 +69,12 @@ def play(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
     session, _ = SessionActivity.objects.get_or_create(user=request.user, activity=activity)
     a_type = get_activity_type_class(activity.activity_type)()
-    
+
     if not activity.open:
         raise PermissionDenied("Cette activité est fermée")
     if not activity.is_member(request.user) and activity_id != 0:
         raise PermissionDenied("Vous n'appartenez pas à cette activité")
-    
+
     return a_type.template(request, activity, session)
 
 
@@ -87,12 +84,12 @@ def next(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
     session, _ = SessionActivity.objects.get_or_create(user=request.user, activity=activity)
     a_type = get_activity_type_class(activity.activity_type)()
-    
+
     if not activity.open:
         raise PermissionDenied("Cette activité est fermée")
     if not activity.is_member(request.user):
         raise PermissionDenied("Vous n'appartenez pas à cette activité")
-    
+
     return a_type.next(activity, session)
 
 
@@ -105,12 +102,12 @@ def evaluate(request, activity_id, pl_id):
     pl = get_object_or_404(PL, id=pl_id)
     exercise = session.session_exercise(pl)
     a_type = get_activity_type_class(activity.activity_type)()
-    
+
     if not activity.open:
         raise PermissionDenied("Cette activité est fermée")
     if not activity.is_member(request.user):
         raise PermissionDenied("Vous n'appartenez pas à cette activité")
-    
+
     if 'requested_action' in status:
         if status['requested_action'] == 'save':
             Answer.objects.create(
@@ -120,11 +117,11 @@ def evaluate(request, activity_id, pl_id):
                 seed=exercise.context['seed']
             )
             return HttpResponse(json.dumps({
-                "exercise":   None,
+                "exercise": None,
                 "navigation": None,
-                "feedback":   "Réponse(s) sauvegardé.",
+                "feedback": "Réponse(s) sauvegardé.",
             }), content_type='application/json')
-        
+
         elif status['requested_action'] == 'submit':  # Validate
             answer, feedback = exercise.evaluate(request, status['inputs'])
             answer['activity'] = session.activity
@@ -135,8 +132,8 @@ def evaluate(request, activity_id, pl_id):
             return HttpResponse(
                 json.dumps({
                     "navigation": a_type.navigation(activity, session, request),
-                    "exercise":   session.current_pl_template(request),
-                    "feedback":   render_feedback(feedback),
+                    "exercise": session.current_pl_template(request),
+                    "feedback": render_feedback(feedback),
                 }),
                 content_type='application/json'
             )
@@ -151,7 +148,7 @@ def dashboard(request, activity_id):
     activity = get_object_or_404(Activity, id=activity_id)
     session, _ = SessionActivity.objects.get_or_create(user=request.user, activity=activity)
     a_type = get_activity_type_class(activity.activity_type)()
-    
+
     if activity.teacher.filter(username=request.user.username):
         return a_type.teacher_dashboard(request, activity, session)
     elif activity.student.filter(username=request.user.username):
@@ -207,6 +204,7 @@ def create_group_from_csv_file(request, course_id):
     no_in_database = []
     no_in_course = []
     list_student = Activity.objects.get(pk=course_id).student.all()
+    teachers = Activity.objects.get(id=course_id).teacher.all()
     del csv_file[0]
 
     for row in csv_file:
@@ -215,8 +213,9 @@ def create_group_from_csv_file(request, course_id):
             continue
         if (row[0] == '') or (row[1] == '') or (row[2] == '') or (row[3] == ''):
             form = UploadFileForm()
-            return render(request, 'activity/activity_type/course/load_csv.html/', {'form':form,
-                                                                                   'error':True})
+            return render(request, 'activity/activity_type/course/load_csv.html/', {'form': form,
+                                                                                    'error': True,
+                                                                                    'teachers': teachers})
         try:
             user = User.objects.get(email=row[0])
             if user not in list_student:
@@ -228,8 +227,8 @@ def create_group_from_csv_file(request, course_id):
 
         nb_modif += 1
         groups = [user.groups.filter(name__contains=str(course_id) + '_Amphi'),
-                user.groups.filter(name__contains=str(course_id) + '_TD'),
-                user.groups.filter(name__contains=str(course_id) + '_TP')]
+                  user.groups.filter(name__contains=str(course_id) + '_TD'),
+                  user.groups.filter(name__contains=str(course_id) + '_TP')]
 
         for group in groups:
             delete_groups_of_user(user, group)
@@ -237,11 +236,12 @@ def create_group_from_csv_file(request, course_id):
         Group.objects.get_or_create(name=str(course_id) + '_Amphi' + row[1])[0].user_set.add(user)
         Group.objects.get_or_create(name=str(course_id) + '_TD' + row[2])[0].user_set.add(user)
         Group.objects.get_or_create(name=str(course_id) + '_TP' + row[3])[0].user_set.add(user)
-    return render(request, 'activity/activity_type/course/load_csv.html', {'nb_modif':nb_modif,
-                                                                           'succes':True,
-                                                                           'no_in_database':no_in_database,
-                                                                           'no_in_course':no_in_course,
-                                                                           'course_id':course_id})
+    return render(request, 'activity/activity_type/course/load_csv.html', {'nb_modif': nb_modif,
+                                                                           'succes': True,
+                                                                           'no_in_database': no_in_database,
+                                                                           'no_in_course': no_in_course,
+                                                                           'course_id': course_id,
+                                                                           'teachers': teachers})
 
 
 def delete_groups_of_user(user, list_groups):
@@ -254,7 +254,32 @@ def upload_file(request, course_id):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             return create_group_from_csv_file(request, course_id)
-    else:
-        form = UploadFileForm()
+    form = UploadFileForm()
+    teachers = Activity.objects.get(id=course_id).teacher.all()
     return render(request, 'activity/activity_type/course/load_csv.html', {'form': form,
-                                                                           'error': False})
+                                                                           'error': False,
+                                                                           'teachers': teachers})
+
+
+def export_file(request, course_id):
+    if request.user not in Activity.objects.get(id=course_id).teacher.all():
+        return HttpResponse('Unauthorized', status=401)
+    name = "list_groups_cours_" + str(course_id) + ".csv"
+    path = "/tmp/" + name
+    with open(path, "w") as csvfile:
+        list_student = Activity.objects.get(id=course_id).student.all()
+        csvfile.write('email, Amphi, TD, TP\n')
+
+        for user in list_student:
+            groups = user.groups.all()
+            if groups.count() == 3:
+                amphi = groups[0].name.split("_")[1]
+                td = groups[1].name.split("_")[1]
+                tp = groups[2].name.split("_")[1]
+                line = user.email + ", " + amphi + ', ' + td + ", " + tp + '\n'
+                csvfile.write(line)
+    data = open(path, 'rb').read()
+
+    response = HttpResponse(data)
+    response["Content-Disposition"] = u"attachment; filename={0}".format(name)
+    return response

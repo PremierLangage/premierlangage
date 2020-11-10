@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>UPEM-PL</title>
-    </head>
-    <body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UPEM-PL</title>
+</head>
+<body>
+    {% if user in teachers %}
         {% if succes %}
              <form  action="../../../play/{{ course_id }}/" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -43,5 +44,9 @@
                 <input type="submit" value="Upload">
             </form>
         {% endif %}
-    </body>
+    {% else %}
+        <p>Acces non autorisé</p>
+    {% endif %}
+
+</body>
 </html>
