@@ -205,7 +205,6 @@ def create_group_from_csv_file(request, course_id):
     no_in_database = []
     no_in_course = []
     list_student = Activity.objects.get(pk=course_id).student.all()
-    teachers = Activity.objects.get(id=course_id).teacher.all()
     del csv_file[0]
 
     for row in csv_file:
@@ -216,8 +215,7 @@ def create_group_from_csv_file(request, course_id):
             form = UploadFileForm()
             return render(request, 'activity/activity_type/course/load_csv.html', {'form': form,
                                                                                     'fault': True,
-                                                                                    'course_id': course_id,
-                                                                                    'teachers': teachers})
+                                                                                    'course_id': course_id,})
         try:
             user = User.objects.get(email=row[0])
             if user not in list_student:
@@ -242,8 +240,7 @@ def create_group_from_csv_file(request, course_id):
                                                                            'succes': True,
                                                                            'no_in_database': no_in_database,
                                                                            'no_in_course': no_in_course,
-                                                                           'course_id': course_id,
-                                                                           'teachers': teachers})
+                                                                           'course_id': course_id,})
 
 
 def delete_groups_of_user(user, list_groups):
@@ -252,21 +249,21 @@ def delete_groups_of_user(user, list_groups):
 
 
 def upload_file(request, course_id):
+    if request.user not in Activity.objects.get(id=course_id).teacher.all():
+        raise PermissionDenied("Vous n'êtes pas professeur de cette activité")
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             return create_group_from_csv_file(request, course_id)
     form = UploadFileForm()
-    teachers = Activity.objects.get(id=course_id).teacher.all()
     return render(request, 'activity/activity_type/course/load_csv.html', {'form': form,
                                                                            'error': False,
-                                                                           'teachers': teachers,
                                                                            'course_id': course_id})
 
 
 def export_file(request, course_id):
     if request.user not in Activity.objects.get(id=course_id).teacher.all():
-        return HttpResponse('Unauthorized', status=401)
+        raise PermissionDenied("Vous n'êtes pas professeur de cette activité")
     name = "list_groups_cours_" + str(course_id) + ".csv"
     path = "/tmp/" + name
     with open(path, "w") as csvfile:
