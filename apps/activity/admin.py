@@ -12,15 +12,11 @@ from activity.models import Activity
 
 @admin.register(Activity)
 class ActivityAdmin(admin.ModelAdmin):
-<<<<<<< HEAD
-
     filter_horizontal = ('student','teacher')
     list_display = ('__str__', 'id', 'name', 'open', 'activity_type', 'view_parents', 'view_students_number', 'view_teachers_number')
     list_filter = ['activity_type',]
-=======
     list_display = ('__str__', 'id', 'name', 'open', 'activity_type', 'view_parents', 'view_students_number', 'view_teachers_number', 'view_global')
     list_filter = ['activity_type']
->>>>>>> 1b8aa930ad42407cfb10634fc457adee0d082c5a
     search_fields = ['name', 'id', 'activity_type']
 
     def view_students_number(self, activity):
