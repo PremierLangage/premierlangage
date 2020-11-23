@@ -24,7 +24,7 @@ pytest
 pytest-django
 python-magic
 pytz
-psycopg2
+psycopg2-binary
 recommonmark
 requests
 selenium
