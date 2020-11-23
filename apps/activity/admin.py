@@ -12,6 +12,10 @@ from activity.models import Activity
 
 @admin.register(Activity)
 class ActivityAdmin(admin.ModelAdmin):
+
+    filter_horizontal = ('student','teacher')
+    list_display = ('__str__', 'id', 'name', 'open', 'activity_type', 'view_parents', 'view_students_number', 'view_teachers_number')
+    list_filter = ['activity_type',]
     filter_horizontal = ('student','teacher')
     list_display = ('__str__', 'id', 'name', 'open', 'activity_type', 'view_parents', 'view_students_number', 'view_teachers_number')
     list_filter = ['activity_type',]
