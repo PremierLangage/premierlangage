@@ -16,6 +16,11 @@ class ActivityAdmin(admin.ModelAdmin):
     filter_horizontal = ('student','teacher')
     list_display = ('__str__', 'id', 'name', 'open', 'activity_type', 'view_parents', 'view_students_number', 'view_teachers_number')
     list_filter = ['activity_type',]
+    filter_horizontal = ('student','teacher')
+    list_display = ('__str__', 'id', 'name', 'open', 'activity_type', 'view_parents', 'view_students_number', 'view_teachers_number')
+    list_filter = ['activity_type',]
+    list_display = ('__str__', 'id', 'name', 'open', 'activity_type', 'view_parents', 'view_students_number', 'view_teachers_number', 'view_global')
+    list_filter = ['activity_type']
     search_fields = ['name', 'id', 'activity_type']
 
     def view_students_number(self, activity):

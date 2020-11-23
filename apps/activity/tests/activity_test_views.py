@@ -119,7 +119,7 @@ class ViewsTestCase(TransactionTestCase):
 
         response = self.client.get('http://127.0.0.1:8000/activity/export_csv/10/')
 
-        self.assertEquals(response.status_code, 401)
+        self.assertEquals(response.status_code, 403)
 
         self.client.force_login(user=self.user)
 
