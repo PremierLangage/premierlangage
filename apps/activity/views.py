@@ -7,7 +7,6 @@ from django.contrib.auth.models import User, Group
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, reverse, render
-from django.template.context_processors import static
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
@@ -213,9 +212,10 @@ def create_group_from_csv_file(request, course_id):
             continue
         if (row[0] == '') or (row[1] == '') or (row[2] == '') or (row[3] == ''):
             form = UploadFileForm()
-            return render(request, 'activity/activity_type/course/load_csv.html', {'form': form,
-                                                                                    'fault': True,
-                                                                                    'course_id': course_id,})
+            return render(request, 'activity/activity_type/course/load_csv.html',
+                          {'form': form,
+                           'fault': True,
+                           'course_id': course_id, })
         try:
             user = User.objects.get(email=row[0])
             if user not in list_student:
@@ -237,10 +237,7 @@ def create_group_from_csv_file(request, course_id):
         Group.objects.get_or_create(name=str(course_id) + '_TD' + row[2])[0].user_set.add(user)
         Group.objects.get_or_create(name=str(course_id) + '_TP' + row[3])[0].user_set.add(user)
     return render(request, 'activity/activity_type/course/load_csv.html', {'nb_modif': nb_modif,
-                                                                           'succes': True,
-                                                                           'no_in_database': no_in_database,
-                                                                           'no_in_course': no_in_course,
-                                                                           'course_id': course_id,})
+                                                                           'succes': True, })
 
 
 def delete_groups_of_user(user, list_groups):

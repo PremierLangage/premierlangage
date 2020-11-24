@@ -2,9 +2,6 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.html import format_html
-from django.contrib.auth.models import User
-from django.contrib.admin.widgets import FilteredSelectMultiple
-from django.forms import ModelMultipleChoiceField, ModelForm
 
 from activity.mixins import PLPosition
 from activity.models import Activity
@@ -13,13 +10,16 @@ from activity.models import Activity
 @admin.register(Activity)
 class ActivityAdmin(admin.ModelAdmin):
 
-    filter_horizontal = ('student','teacher')
-    list_display = ('__str__', 'id', 'name', 'open', 'activity_type', 'view_parents', 'view_students_number', 'view_teachers_number')
-    list_filter = ['activity_type',]
-    filter_horizontal = ('student','teacher')
-    list_display = ('__str__', 'id', 'name', 'open', 'activity_type', 'view_parents', 'view_students_number', 'view_teachers_number')
-    list_filter = ['activity_type',]
-    list_display = ('__str__', 'id', 'name', 'open', 'activity_type', 'view_parents', 'view_students_number', 'view_teachers_number', 'view_global')
+    filter_horizontal = ('student', 'teacher')
+    list_display = ('__str__', 'id', 'name', 'open',
+                    'activity_type', 'view_parents', 'view_students_number', 'view_teachers_number')
+    list_filter = ['activity_type', ]
+    filter_horizontal = ('student', 'teacher')
+    list_display = ('__str__', 'id', 'name', 'open', 'activity_type', 'view_parents',
+                    'view_students_number', 'view_teachers_number')
+    list_filter = ['activity_type', ]
+    list_display = ('__str__', 'id', 'name', 'open', 'activity_type', 'view_parents',
+                    'view_students_number', 'view_teachers_number', 'view_global')
     list_filter = ['activity_type']
     search_fields = ['name', 'id', 'activity_type']
 
@@ -31,7 +31,8 @@ class ActivityAdmin(admin.ModelAdmin):
 
     def view_parents(self, activity):
         if activity.id == 0:
-            return format_html('<a href="{}">{}</a>', reverse("admin:activity_activity_changelist"), "none")
+            return format_html('<a href="{}">{}</a>',
+                               reverse("admin:activity_activity_changelist"), "none")
         parent_name = activity.parent.name
         url = (
             reverse("admin:activity_activity_changelist")
@@ -40,18 +41,19 @@ class ActivityAdmin(admin.ModelAdmin):
         )
         return format_html('<a href="{}">{}</a>', url, parent_name)
 
-    def view_global(self, activity):
-        return format_html('<a href="{}">{}</a>', reverse("admin:activity_activity_changelist"), "global")
+    @staticmethod
+    def view_global():
+        return format_html('<a href="{}">{}</a>',
+                           reverse("admin:activity_activity_changelist"), "global")
 
     view_students_number.short_description = "Students"
     view_teachers_number.short_description = "Teachers"
     view_parents.short_description = "Parents"
 
+
 @admin.register(PLPosition)
 class PLPositionAdmin(admin.ModelAdmin):
     list_display = ('parent', 'pl', 'position')
-
-
 
 
 ''' def parcours_activity(activity, int):
@@ -99,7 +101,7 @@ class PLPositionAdmin(admin.ModelAdmin):
     def max_note(user):
         """
             from django.db.models import Max,
-            retourne un dictionnaire avecc la meilleure note. 
+            retourne un dictionnaire avecc la meilleure note.
             Dico peut être vide !
         """
         user.higestgrade_set.aggregate(Max('grade'))

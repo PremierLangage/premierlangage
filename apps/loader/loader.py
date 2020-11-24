@@ -59,7 +59,6 @@ def load_pl(directory, rel_path):
         This function return a PL object but does not save it in the database
     """
     dic, warnings = parse_file(directory, rel_path)
-    
     name = splitext(basename(rel_path))[0]
     pl = PL(name=name, json=dic, directory=directory, rel_path=rel_path)
     return pl, [htmlprint.code(warning) for warning in warnings]

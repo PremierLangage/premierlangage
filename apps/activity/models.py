@@ -16,7 +16,7 @@ from activity.activity_type.utils import get_activity_type_class, type_dict
 from activity.mixins import Position, MAX_POSITIVE_SMALL_INTEGER_VALUE
 from loader.models import PL
 from lti_app.models import LTIModel
-from user_profile.enums import Role 
+from user_profile.enums import Role
 
 
 logger = logging.getLogger(__name__)
@@ -29,8 +29,10 @@ class Activity(LTIModel, Position):
                                      choices=zip(type_dict.keys(), type_dict.keys()))
     activity_data = JSONField(default=dict)
     parent = models.ForeignKey("self", on_delete=models.CASCADE, null=True)
-    teacher = models.ManyToManyField(User, related_name="teaches", blank=True,limit_choices_to={'profile__role':Role.INSTRUCTOR})
-    student = models.ManyToManyField(User, related_name="learn", blank=True, limit_choices_to={'profile__role':Role.LEARNER})
+    teacher = models.ManyToManyField(User, related_name="teaches", blank=True,
+                                     limit_choices_to={'profile__role': Role.INSTRUCTOR})
+    student = models.ManyToManyField(User, related_name="learn", blank=True,
+                                     limit_choices_to={'profile__role': Role.LEARNER})
     pl = models.ManyToManyField(PL, through="PLPosition")
 
     def save(self, *args, **kwargs):
