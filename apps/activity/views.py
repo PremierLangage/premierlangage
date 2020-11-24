@@ -236,8 +236,12 @@ def create_group_from_csv_file(request, course_id):
         Group.objects.get_or_create(name=str(course_id) + '_Amphi' + row[1])[0].user_set.add(user)
         Group.objects.get_or_create(name=str(course_id) + '_TD' + row[2])[0].user_set.add(user)
         Group.objects.get_or_create(name=str(course_id) + '_TP' + row[3])[0].user_set.add(user)
-    return render(request, 'activity/activity_type/course/load_csv.html', {'nb_modif': nb_modif,
-                                                                           'succes': True, })
+    return render(request, 'activity/activity_type/course/load_csv.html',
+                  {'nb_modif': nb_modif,
+                   'succes': True,
+                   'no_in_course': no_in_course,
+                   'no_in_database': no_in_database,
+                   'course_id': course_id})
 
 
 def delete_groups_of_user(user, list_groups):

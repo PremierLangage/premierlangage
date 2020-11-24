@@ -157,7 +157,7 @@ class Course(AbstractActivityType):
         response['Content-Disposition'] = 'attachment;filename=notes.csv'
         return response
 
-    def course_summary(request, activity):
+    def course_summary(self, request, activity):
         activities = activity.indexed_activities()
         indexed_pl = {a: a.indexed_pl() for a in activities}
         all_pl = []
@@ -251,7 +251,7 @@ class Course(AbstractActivityType):
             'groups': groups,
         })
 
-    def student_summary(student_id, request, activity):
+    def student_summary(self, student_id, request, activity):
         try:
             student = User.objects.get(id=student_id)
         except User.DoesNotExist:
