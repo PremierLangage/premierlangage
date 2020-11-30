@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+
+{% block alert %}{% endblock %}
+
+{% block content %}
+    <form method="get">
+        <label>
+            Début :
+            <input type="date" name="start"/>
+        </label>
+        <label>
+            Fin :
+            <input type="date" name="end"/>
+        </label>
+        <br>
+        <label>
+            Inclure le champs answers :
+            <input type="checkbox" name="include_answers">
+        </label>
+        <label>
+            Inclure le champs tags :
+            <input type="checkbox" name="include_tag">
+        </label>
+        <br>
+        <label>
+            Choisir un PL spécifique :
+            <input type="number" name="pl">
+        </label>
+        <label>
+            Choisir une activité spécifique :
+            <input type="number" name="activity">
+        </label>
+        <br>
+        <input type="submit" value="Télécharger" formtarget="_blank"/>
+    </form>
+{% endblock %}

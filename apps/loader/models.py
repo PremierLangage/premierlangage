@@ -21,3 +21,8 @@ class PL(models.Model):
     
     def __str__(self):  # pragma: no cover
         return str(self.id) + " : " + str(self.name)
+    
+    
+    def duplicate(self):
+        return PL.objects.create(json=self.json, name=self.name, directory=self.directory,
+                                 rel_path=self.rel_path)

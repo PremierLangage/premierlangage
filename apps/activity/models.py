@@ -13,7 +13,7 @@ from django.urls import resolve
 from django_jinja.backend import Jinja2
 
 from activity.activity_type.utils import get_activity_type_class, type_dict
-from activity.mixins import Position, MAX_POSITIVE_SMALL_INTEGER_VALUE
+from activity.mixins import MAX_POSITIVE_SMALL_INTEGER_VALUE, PLPosition, Position
 from loader.models import PL
 from lti_app.models import LTIModel
 from user_profile.enums import Role
@@ -56,7 +56,14 @@ class Activity(LTIModel, Position):
         self.sessionactivity_set.all().delete()
         for i in Activity.objects.filter(parent=self):
             i.sessionactivity_set.all().delete()
-
+            
+    def duplicate(self):
+        act = Activity.objects.create(name=self.name, activity_type=self.activity_type,
+                                      activity_data=dict(self.activity_data))
+        for pl in self.indexed_pl():
+            PLPosition.objects.create(parent=act, pl=pl.duplicate())
+        return act
+    
     def __str__(self):  # pragma: no cover
         return str(self.id) + " " + self.name
 

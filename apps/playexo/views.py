@@ -1,15 +1,18 @@
+import io
+import json
 import logging
 import traceback
 
 import htmlprint
+from activity.models import Activity
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound, StreamingHttpResponse
 from django.shortcuts import get_object_or_404, render
-
+from django.views.decorators.http import require_GET
 from loader.models import PL
 from playexo.exception import BuildScriptError, SandboxError
-from playexo.models import SessionTest
+from playexo.models import Answer, SessionTest
 
 
 logger = logging.getLogger(__name__)
@@ -82,3 +85,66 @@ def test_pl(request, pl_id):
     
     except Exception:
         return HttpResponse(htmlprint.code("Error during testing:\n" + traceback.format_exc()))
+
+
+
+@login_required
+@require_GET
+def download_answers(request):
+    if not request.user.is_staff:
+        raise PermissionDenied
+    if "start" in request.GET or "end" in request.GET:
+        if "start" not in request.GET or request.GET["start"] == "":
+            if "end" not in request.GET or request.GET["start"] == "":
+                answers = Answer.objects.select_related("activity", "pl", "user").all()
+            else:
+                answers = Answer.objects.select_related("activity", "pl", "user").filter(
+                    date__lte=request.GET["end"])
+        elif "end" not in request.GET or request.GET["end"] == "":
+            if "start" in request.GET and request.GET["start"] != "":
+                answers = Answer.objects.select_related("activity", "pl", "user").filter(
+                    date__gte=request.GET["start"])
+        else:
+            answers = Answer.objects.select_related("activity", "pl", "user").filter(
+                date__range=(request.GET["start"], request.GET["end"]))
+        
+        if "pl" in request.GET and request.GET["pl"].isnumeric():
+            try:
+                answers = answers.filter(pl=PL.objects.get(id=int(request.GET["pl"])))
+            except PL.DoesNotExist:
+                return HttpResponseNotFound("PL does not exist")
+        if "activity" in request.GET and request.GET["activity"].isnumeric():
+            try:
+                answers = answers.filter(
+                    activity=Activity.objects.get(id=int(request.GET["activity"])))
+            except Activity.DoesNotExist:
+                return HttpResponseNotFound("Activity does not exist")
+        
+        dic = {}
+        slice_size = 1000
+        for i in range(0, answers.count(), slice_size):
+            for a in answers[i:i + slice_size]:
+                dic[a.id] = {
+                    "user":    a.user.get_username(),
+                    "seed":    a.seed,
+                    "date":    str(a.date),
+                    "grade":   a.grade,
+                    "pl_id":   a.pl.id,
+                    "pl_name": a.pl.name,
+                }
+                dic[a.id]["activity_id"] = a.activity.id if a.activity is not None else None
+                dic[a.id]["activity_name"] = a.activity.name if a.activity is not None else None
+                if "include_answers" in request.GET:
+                    dic[a.id]["answers"] = a.answers
+                if "include_tag" in request.GET:
+                    if "tag" in a.pl.json:
+                        dic[a.id]["tag"] = a.pl.json["tag"].split("|")
+                    else:
+                        dic[a.id]["tag"] = None
+        
+        stream = io.StringIO(json.dumps(dic))
+        response = StreamingHttpResponse(stream, content_type="application/json")
+        response['Content-Disposition'] = 'attachment;filename=answers.json'
+        return response
+    else:
+        return render(request, "playexo/download_answers.html", None)
