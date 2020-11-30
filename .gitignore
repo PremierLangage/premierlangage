@@ -19,6 +19,7 @@ doc/
 static/*
 apps/filebrowser/client/node_modules
 src/
+geckodriver
 
 ########################################
 # Byte-compiled / optimized / DLL files

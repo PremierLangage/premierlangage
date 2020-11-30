@@ -60,7 +60,7 @@ PROJECT_APPS = [
 
 INSTALLED_APPS = PROJECT_APPS + PREREQ_APPS
 
-INSTALLED_APPS += ('django_jinja',)
+INSTALLED_APPS += ('django_jinja','django_extensions')
 
 # Middleware definition
 MIDDLEWARE = [

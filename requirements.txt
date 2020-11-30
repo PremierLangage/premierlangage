@@ -2,6 +2,7 @@ wheel
 django<3.0.0
 django-annoying
 django-celery-results
+django-extensions
 django-hitcount
 django-http-method
 django-jinja
@@ -23,7 +24,7 @@ pytest
 pytest-django
 python-magic
 pytz
-psycopg2
+psycopg2-binary
 recommonmark
 requests
 selenium
