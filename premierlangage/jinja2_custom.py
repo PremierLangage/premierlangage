@@ -19,14 +19,14 @@ def make_list(s):
 
 
 
-def first(it):
-    return it[0] if it else None
+def first(list):
+    return list[0] if list else None
 
 
 
-def component(dic):
-    selector = dic["selector"]
-    cid = dic["cid"]
+def component(list):
+    selector = list["selector"]
+    cid = list["cid"]
     return SafeString("<%s cid='%s'></%s>" % (selector, cid, selector))
 
 

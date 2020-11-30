@@ -21,6 +21,7 @@ from django.contrib import admin
 
 from activity.views import index
 
+admin.site.site_header = 'Platon Administration'
 
 urlpatterns = [
     url(r'^$', index),

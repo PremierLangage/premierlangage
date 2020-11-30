@@ -84,6 +84,7 @@ class SessionExerciseAbstract(models.Model):
     def reroll(self, seed, grade=None):
         """Return whether the seed must be reroll (True) or not (False).
 
+
         Seed must be reroll if:
             - seed does not exists yet
             - oneshot is set, grade is provided and less than oneshot_threshold
