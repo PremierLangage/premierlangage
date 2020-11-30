@@ -146,5 +146,4 @@ def download_answers(request):
         response = StreamingHttpResponse(stream, content_type="application/json")
         response['Content-Disposition'] = 'attachment;filename=answers.json'
         return response
-    else:
-        return render(request, "playexo/download_answers.html", None)
+    return render(request, "playexo/download_answers.html", None)
