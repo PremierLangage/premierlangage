@@ -268,8 +268,8 @@ def export_file(request, course_id):
         raise PermissionDenied("Vous n'êtes pas professeur de cette activité")
 
     name = "list_groups_cours_" + str(course_id) + ".csv"
-    data = list()
     list_student = Activity.objects.get(id=course_id).student.all()
+    data = list()
     data.append('email, Amphi, TD, TP')
 
     for user in list_student:
