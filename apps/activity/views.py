@@ -151,10 +151,9 @@ def dashboard(request, activity_id):
 
     if activity.teacher.filter(username=request.user.username):
         return a_type.teacher_dashboard(request, activity, session)
-    elif activity.student.filter(username=request.user.username):
+    if activity.student.filter(username=request.user.username):
         return a_type.student_dashboard(request, activity, session)
-    else:
-        raise PermissionDenied("Vous n'appartenez pas à cette activité")
+    raise PermissionDenied("Vous n'appartenez pas à cette activité")
 
 
 @login_required
@@ -265,22 +264,21 @@ def upload_file(request, course_id):
 def export_file(request, course_id):
     if request.user not in Activity.objects.get(id=course_id).teacher.all():
         raise PermissionDenied("Vous n'êtes pas professeur de cette activité")
+
     name = "list_groups_cours_" + str(course_id) + ".csv"
-    path = "/tmp/" + name
-    with open(path, "w") as csvfile:
-        list_student = Activity.objects.get(id=course_id).student.all()
-        csvfile.write('email, Amphi, TD, TP\n')
+    data = list()
+    list_student = Activity.objects.get(id=course_id).student.all()
+    data.append('email, Amphi, TD, TP')
 
-        for user in list_student:
-            groups = user.groups.all()
-            if groups.count() == 3:
-                amphi = groups[0].name.split("_")[1]
-                td = groups[1].name.split("_")[1]
-                tp = groups[2].name.split("_")[1]
-                line = user.email + ", " + amphi + ', ' + td + ", " + tp + '\n'
-                csvfile.write(line)
-    data = open(path, 'rb').read()
+    for user in list_student:
+        groups = user.groups.all()
+        if groups.count() == 3:
+            amphi = groups[0].name.split("_")[1]
+            td = groups[1].name.split("_")[1]
+            tp = groups[2].name.split("_")[1]
+            line = user.email + ", " + amphi + ', ' + td + ", " + tp
+            data.append(line)
 
-    response = HttpResponse(data)
+    response = HttpResponse('\n'.join(data))
     response["Content-Disposition"] = u"attachment; filename={0}".format(name)
     return response
