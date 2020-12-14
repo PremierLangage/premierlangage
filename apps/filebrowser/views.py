@@ -110,7 +110,7 @@ def update_resource(request):
     
     try:
         with open(join_fb_root(path), 'w') as f:
-            print(post.get('content', ''), file=f)
+            print(post.get('content', ''), file=f, end='')
         if not path.startswith("lib/"):
             add_commit_path(request, path, action="modified")
         return JsonResponse({'success': True})

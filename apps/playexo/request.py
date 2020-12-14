@@ -51,7 +51,6 @@ class SandboxBuild:
         data = {'test': True} if self.test else {}
         logger.info("Building on sandbox '" + self.sandbox + "'.")
         url = os.path.join(self.sandbox, "build/")
-        
         try:
             response = requests.post(url, data=data, files=files, timeout=request_timeout)
             response = json.loads(response.text)
