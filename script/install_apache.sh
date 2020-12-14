@@ -149,7 +149,7 @@ echo -e "$Yellow \n Creating macro.conf in $PATH_DIR ... $Color_Off \n"
 cd $PATH_DIR
 rm premierlangage-auto.conf 2> /dev/null
 touch premierlangage-auto.conf
-BASDIR=/srv/local/pl/premierlangage/ echo -e "
+BASEDIR=/srv/local/pl/premierlangage/ echo -e "
 <VirtualHost *:$PORT>
         ServerName $URL
         ServerAdmin $EMAIL
