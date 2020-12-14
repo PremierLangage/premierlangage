@@ -13,13 +13,13 @@ from django.urls import resolve
 from django_jinja.backend import Jinja2
 
 from activity.activity_type.utils import get_activity_type_class, type_dict
-from activity.mixins import Position, MAX_POSITIVE_SMALL_INTEGER_VALUE
+from activity.mixins import MAX_POSITIVE_SMALL_INTEGER_VALUE, PLPosition, Position
 from loader.models import PL
 from lti_app.models import LTIModel
+from user_profile.enums import Role
 
 
 logger = logging.getLogger(__name__)
-
 
 
 class Activity(LTIModel, Position):
@@ -29,16 +29,16 @@ class Activity(LTIModel, Position):
                                      choices=zip(type_dict.keys(), type_dict.keys()))
     activity_data = JSONField(default=dict)
     parent = models.ForeignKey("self", on_delete=models.CASCADE, null=True)
-    teacher = models.ManyToManyField(User, related_name="teaches", blank=True)
-    student = models.ManyToManyField(User, related_name="learn", blank=True)
+    teacher = models.ManyToManyField(User, related_name="teaches", blank=True,
+                                     limit_choices_to={'profile__role': Role.INSTRUCTOR})
+    student = models.ManyToManyField(User, related_name="learn", blank=True,
+                                     limit_choices_to={'profile__role': Role.LEARNER})
     pl = models.ManyToManyField(PL, through="PLPosition")
-    
-    
+
     def save(self, *args, **kwargs):
         super(Position, self).save()
         super(LTIModel, self).save()
-    
-    
+
     def delete(self, *args, **kwargs):
         """ Overriding delete() to also delete his PL if they're not in
         relation with any other activity """
@@ -50,24 +50,27 @@ class Activity(LTIModel, Position):
                             + ")' has been deleted since it wasn't link to any PLTPs")
                 pl.delete()
         super(Activity, self).delete(*args, **kwargs)
-    
-    
+
     def reload(self):
         """Reload every session using this activity."""
         self.sessionactivity_set.all().delete()
         for i in Activity.objects.filter(parent=self):
             i.sessionactivity_set.all().delete()
-    
+            
+    def duplicate(self):
+        act = Activity.objects.create(name=self.name, activity_type=self.activity_type,
+                                      activity_data=dict(self.activity_data))
+        for pl in self.indexed_pl():
+            PLPosition.objects.create(parent=act, pl=pl.duplicate())
+        return act
     
     def __str__(self):  # pragma: no cover
         return str(self.id) + " " + self.name
-    
-    
+
     def fetch(self):
         a_type = get_activity_type_class(self.activity_type)
         return a_type.fetch(self)
-    
-    
+
     def get_parent_list(self):
         activity = self
         res = list()
@@ -77,20 +80,16 @@ class Activity(LTIModel, Position):
             activity = activity.parent
         
         return reversed(res)
-    
-    
+
     def indexed_pl(self):
         return [i.pl for i in sorted(self.plposition_set.all(), key=lambda i: i.position)]
-    
-    
+
     def indexed_activities(self):
         return Activity.objects.filter(parent=self).order_by("position")
-    
-    
+
     def small(self, request):
         return get_activity_type_class(self.activity_type)().small(request, self)
-    
-    
+
     def toggle_open(self, request):
         if not self.is_teacher(request.user):
             logger.warning("User '" + request.user.username
@@ -101,25 +100,20 @@ class Activity(LTIModel, Position):
         self.save()
         logger.info("User '%s' set activity '%s' 'open' attribute to '%s' in '%s'."
                     % (request.user.username, self.name, str(self.open), self.parent.name))
-    
-    
+
     def is_teacher(self, user):
         return user in self.teacher.all()
-    
-    
+
     def is_student(self, user):
         return user in self.student.all()
-    
-    
+
     def is_member(self, user):
         return self.is_teacher(user) or self.is_student(user)
-    
-    
+
     def add_parent(self, activity):
         self.parent = activity
         self.position = MAX_POSITIVE_SMALL_INTEGER_VALUE
-    
-    
+
     def remove_parent(self):
         parent = self.parent
         position = self.position
@@ -130,24 +124,21 @@ class Activity(LTIModel, Position):
             a.position -= 1
             a.save()
         self.save()
-    
-    
+
     def add_student_to_all(self, student):
         self.student.add(student)
         self.save()
         children = Activity.objects.all().filter(parent=self)
         for a in children:
             a.add_student_to_all(student)
-    
-    
+
     def add_teacher_to_all(self, teacher):
         self.teacher.add(teacher)
         self.save()
         children = Activity.objects.all().filter(parent=self)
         for a in children:
             a.add_teacher_to_all(teacher)
-    
-    
+
     def get_first_parent_course(self):
         course = self
         while course.activity_type != "course" and course.id != 0:
@@ -156,7 +147,9 @@ class Activity(LTIModel, Position):
             return None
         return course
     
-    
+    def get_student_number(self):
+        return self.student.all().count()
+
     @classmethod
     def get_or_create_course_from_lti(cls, user, lti_launch):
         """Create a Course Activity corresponding to the ressource in the LTI request.
@@ -192,8 +185,7 @@ class Activity(LTIModel, Position):
         course.save()
         
         return course, created
-    
-    
+
     @classmethod
     def get_or_update_from_lti(cls, request, lti_launch):
         """Update and retrieve an Activity corresponding to ID in the url and sets its course
@@ -243,7 +235,6 @@ class Activity(LTIModel, Position):
         return activity, updated
 
 
-
 class SessionActivity(models.Model):
     """Represents the state of an activity for a given user.
 
@@ -256,12 +247,10 @@ class SessionActivity(models.Model):
     activity = models.ForeignKey(Activity, on_delete=models.CASCADE)
     session_data = JSONField(default=dict)
     current_pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=True)
-    
-    
+
     class Meta:
         unique_together = ('user', 'activity')
-    
-    
+
     def session_exercise(self, pl=...):
         """Return the SessionExercice corresponding to self.current_pl.
         
@@ -277,15 +266,12 @@ class SessionActivity(models.Model):
         except StopIteration:
             raise IntegrityError("'current_pl' of SessionActivity does not have a corresponding "
                                  + "SessionExercise.")
-    
-    
+
     def small_td(self):
         return get_activity_type_class(self.activity.activity_type)().small_td(self.activity, self)
-    
-    
+
     def small_sd(self):
         return get_activity_type_class(self.activity.activity_type)().small_sd(self.activity, self)
-    
     
     def current_pl_template(self, request, context=None):
         """Return a template of the PL with the session exercise context.
@@ -315,7 +301,6 @@ class SessionActivity(models.Model):
             return get_template("playexo/error.html").render({"error_msg": error_msg})
 
 
-
 @receiver(models.signals.post_save, sender=SessionActivity)
 def init_session(sender, instance, created, *args, **kwargs):
     if created:
@@ -323,7 +308,6 @@ def init_session(sender, instance, created, *args, **kwargs):
         activity_type = get_activity_type_class(activity.activity_type)()
         instance.session_data = {**instance.session_data, **activity_type.init(activity, instance)}
         instance.save()
-
 
 
 @receiver(models.signals.post_save, sender=Activity)

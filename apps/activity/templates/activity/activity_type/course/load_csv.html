@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="{{ static('activity/css/courses.css') }}"/>
+{% endblock %}
+{% block content %}
+    {% if succes %}
+         <form  action="activity/play/{{ course_id }}/" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p>Le fichier a été correctement chargé</p>
+            <p>Il y a eu {{ nb_modif }} modifications</p>
+
+            {% if no_in_database %}
+             <p>Ces élément n'ont pas pu être modifiés, non présent dans la base de données :</p>
+             <ul>
+                 {% for email in no_in_database %}
+                    <li>{{ email }}</li>
+                 {% endfor %}
+             </ul>
+            {% endif %}
+
+            {% if no_in_course %}
+                 <p>Ces élément n'ont pas pu être modifiés, non présent dans ce cours :</p>
+                 <ul>
+                     {% for email in no_in_course %}
+                        <li>{{ email }}</li>
+                     {% endfor %}
+                 </ul>
+            {% endif %}
+
+            <p><input type="submit" value="Retour au cours"/></p>
+        </form>
+    {% else %}
+        {% if fault %}
+             <p>Le fichier n'a pas pu être chargé correctement, certains champs sont incomplets</p>
+        {% endif %}
+        <form action="activity/load_csv/{{ course_id }}/list/" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p>
+                {{ form.docfile.errors }}
+                {{ form.file }}
+            </p>
+            <input type="submit" value="Upload">
+        </form>
+    {% endif %}
+{% endblock %}
