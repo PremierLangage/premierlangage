@@ -215,9 +215,12 @@ class Examen(AbstractActivityType):
             'title': activity.activity_data['title'],
         }]
         for pl in activity.indexed_pl():
+	    state = Answer.pl_state(pl, user)
+	    if state in [State.SUCCEEDED, State.PART_SUCC, State.FAILED, State.ERROR]:
+                    state=State.SUCCEEDED
             pl_list.append({
                 'id':    pl.id,
-                'state': Answer.pl_state(pl, session_activity.user),
+                'state': state,
                 'title': pl.json['title'],
             })
         context = dict(session_exercise.context)
