@@ -149,7 +149,7 @@ echo -e "$Yellow \n Creating macro.conf in $PATH_DIR ... $Color_Off \n"
 cd $PATH_DIR
 rm premierlangage-auto.conf 2> /dev/null
 touch premierlangage-auto.conf
-echo -e "
+BASDIR=/srv/local/pl/premierlangage/ echo -e "
 <VirtualHost *:$PORT>
         ServerName $URL
         ServerAdmin $EMAIL
@@ -157,21 +157,21 @@ echo -e "
 	ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
 
-    Alias /static /srv/local/pl/premierlangage/static/
-    <Directory /srv/local/pl/premierlangage/static/>
+    Alias /static ${BASEDIR}/static/
+    <Directory ${BASEDIR}/static/>
         Require all granted
     </Directory>
 
-    <Directory /srv/local/pl/premierlangage/premierlangage/>
+    <Directory ${BASEDIR}/premierlangage/>
         <Files wsgi.py>
             Require all granted
         </Files>
     </Directory>
 
     SetEnv PYTHONIOENCODING utf-8
-    WSGIDaemonProcess pl python-path=/srv/local/pl/premierlangage/
+    WSGIDaemonProcess pl python-path=${BASEDIR}
     WSGIProcessGroup  pl
-    WSGIScriptAlias / /srv/local/pl/premierlangage/premierlangage/wsgi.py
+    WSGIScriptAlias / ${BASEDIR}/wsgi.py
 </VirtualHost>
 
 " >> ./premierlangage-auto.conf
