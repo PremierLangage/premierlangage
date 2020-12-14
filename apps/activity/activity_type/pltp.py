@@ -9,6 +9,7 @@ from playexo.enums import State
 from playexo.models import Answer
 
 
+from django.db.models import Max, Avg
 
 class Pltp(AbstractActivityType):
     
@@ -241,13 +242,20 @@ class Pltp(AbstractActivityType):
         csv = "username,firstname,lastname,email," + ''.join(
             [str(i + 1) + ": " + p.name + "," for i, p in enumerate(pl)]) + "total\n"
         for u in users:
+            if u  in activity.teacher.all():
+                continue
             grades = []
             
             for i in pl:
-                answer = Answer.highest_grade(i, u)
-                grades.append(
-                    0 if answer is None else max(answer.grade,
-                                                 0) if answer.grade is not None else 0)
+                # answer = Answer.highest_grade(i, u) # FIXME with next line 
+                # grade= answer.grade
+                grade = Answer.objects.filter(pl=i,user=u).aggregate(Max('grade'))['grade__max']
+                if grade is not None :
+                    grade = max(grade,0)
+                else:
+                    grade=0
+                grades.append(grade)
+                    
             
             csv += ("%s,%s,%s,%s," % (u.username, u.first_name, u.last_name, u.email)
                     + ''.join([str(i) + "," for i in grades])
@@ -256,3 +264,11 @@ class Pltp(AbstractActivityType):
         response = HttpResponse(csv, content_type="text/csv")
         response['Content-Disposition'] = 'attachment;filename=notes.csv'
         return response
+
+
+    def computeStats(self, activity):
+        """
+        Compute stats for pltp inside the activity.stat_data field
+        """
+        users = activity.student.all()
+        pl = activity.pl.all()

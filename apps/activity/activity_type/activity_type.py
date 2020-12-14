@@ -7,9 +7,8 @@ from django.template.loader import get_template
 from django.urls import reverse
 
 
-
 class AbstractActivityType(ABC):
-    
+
     @abstractmethod
     def student_dashboard(self, request, activity, session):
         """
@@ -17,8 +16,7 @@ class AbstractActivityType(ABC):
         :return: A rendered template of the student dashboard
         """
         raise PermissionDenied()
-    
-    
+
     @abstractmethod
     def teacher_dashboard(self, request, activity, session):
         """
@@ -26,8 +24,7 @@ class AbstractActivityType(ABC):
         :return: A rendered template of the teacher dashboard
         """
         raise PermissionDenied()
-    
-    
+
     @abstractmethod
     def small(self, request, activity):
         """
@@ -37,8 +34,7 @@ class AbstractActivityType(ABC):
         return get_template("activity/activity_type/default_small.html").render({
             "activity": activity
         }, request)
-    
-    
+
     @abstractmethod
     def small_sd(self, activity, session_activity):
         """
@@ -46,8 +42,7 @@ class AbstractActivityType(ABC):
         :return: A rendered template of the student dashboard
         """
         raise PermissionDenied()
-    
-    
+
     @abstractmethod
     def small_td(self, activity, session_activity):
         """
@@ -55,8 +50,7 @@ class AbstractActivityType(ABC):
         :return: A rendered template of the teacher dashboard
         """
         raise PermissionDenied()
-    
-    
+
     @abstractmethod
     def template(self, request, activity, session):
         """
@@ -64,8 +58,7 @@ class AbstractActivityType(ABC):
         :return: A rendered template of the main page of the activity.
         """
         return render(request, "base.html", {})
-    
-    
+
     @abstractmethod
     def fetch(self, activity):
         """
@@ -73,8 +66,7 @@ class AbstractActivityType(ABC):
         :return: (PLs, Activities): a tuple of a list of pls and a list of activities.
         """
         return None, None
-    
-    
+
     @abstractmethod
     def install(self, activity):
         """
@@ -82,8 +74,7 @@ class AbstractActivityType(ABC):
         :return: A new dictionnary to initialize the activity_data of an activity
         """
         return {}
-    
-    
+
     @abstractmethod
     def init(self, activity, session):
         """
@@ -91,26 +82,22 @@ class AbstractActivityType(ABC):
         :return: A new dictionnary to initialize the session_data of a session_activity
         """
         return {}
-    
-    
+
     @abstractmethod
     def push(self):
         pass
-    
-    
+
     @abstractmethod
     def launch(self):
         pass
-    
-    
+
     @abstractmethod
     def validate(self, activity, session, answer, feedback, action=""):
         """ Must return a tuple: (feedback, to_be_saved), where the feedback can be modified by
         the activity, and to_be_saved is a boolean that decide whether the answer will be saved
         in the database or not"""
         pass
-    
-    
+
     @abstractmethod
     def next(self, activity, session):
         """
@@ -118,13 +105,11 @@ class AbstractActivityType(ABC):
         :return: A redirection to the main page of the activity accordingly to the function.
         """
         return redirect(reverse("activity:play", args=[activity.id]))
-    
-    
+
     @abstractmethod
     def pop(self, activity, session):
         pass
-    
-    
+
     @abstractmethod
     def end(self, activity, session):
         """
@@ -132,17 +117,22 @@ class AbstractActivityType(ABC):
         :return: A rendered template of the closed activity
         """
         raise PermissionDenied("Cette activité est fermée.")
-    
-    
+
     @abstractmethod
     def navigation(self, activity, session_activity, request):
         """This method is called to get a rendered template of the navigation of this activity"""
         return None
-    
-    
+
     def notes(self, activity, request):
         if not activity.is_teacher(request.user):
             raise PermissionDenied("Vous n'êtes pas un professeur pour cette activité")
         response = HttpResponse("", content_type="text/csv")
         response['Content-Disposition'] = 'attachment;filename=notes.csv'
         return response
+
+    @abstractmethod
+    def computeStats(self, activity):
+        """
+        Compute stats  inside the activity.stat_data field
+        """
+        pass

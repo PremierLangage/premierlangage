@@ -130,3 +130,9 @@ class Base(AbstractActivityType):
         response = HttpResponse("", content_type="text/csv")
         response['Content-Disposition'] = 'attachment;filename=notes.csv'
         return response
+
+    def computeStats(self, activity):
+        """
+        Compute stats  inside the activity.stat_data field
+        """
+        pass
