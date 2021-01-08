@@ -171,7 +171,7 @@ def download_answers_csv(request):
     if "start" in request.GET or "end" in request.GET:
         if "start" not in request.GET or request.GET["start"] == "":
             return HttpResponseNotFound("Vous devez absolument spécifier une date de début")
-        elif "end" not in request.GET or request.GET["end"] == "":
+        if "end" not in request.GET or request.GET["end"] == "":
             return HttpResponseNotFound("Vous devez absolument spécifier une date de fin")
         # we force request to be only a bounded range in this view....
         answers = Answer.objects.filter(date__range=(request.GET["start"], request.GET["end"]))
