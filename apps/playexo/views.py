@@ -173,9 +173,8 @@ def download_answers_csv(request):
             return HttpResponseNotFound("Vous devez absolument spécifier une date de début")
         elif "end" not in request.GET or request.GET["end"] == "":
             return HttpResponseNotFound("Vous devez absolument spécifier une date de fin")
-        else:
-            # we force request to be only a bounded range in this view....
-            answers = Answer.objects.filter(date__range=(request.GET["start"], request.GET["end"]))
+        # we force request to be only a bounded range in this view....
+        answers = Answer.objects.filter(date__range=(request.GET["start"], request.GET["end"]))
 
         if "pl" in request.GET and request.GET["pl"].isnumeric():
             try:
