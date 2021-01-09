@@ -150,7 +150,6 @@ def download_answers(request):
     return render(request, "playexo/download_answers.html", None)
 
 
-
 # The following hack is taken directly from the django documentation
 # https://docs.djangoproject.com/en/3.1/howto/outputting-csv/#streaming-csv-files
 class Echo:
@@ -162,10 +161,27 @@ class Echo:
         return value
 
 
+def csv_stream(rows):
+    """
+    Stream a csv file possibly very large from an iterable
+    `rows`. Each element of the iterable `rows` should be an iterable
+    over element of line data record.
+    """
+    pseudo_buffer = Echo()
+    writer = csv.writer(pseudo_buffer)
+    response = StreamingHttpResponse((writer.writerow(row) for row in rows),
+                                     content_type="text/csv")
+    response['Content-Disposition'] = 'attachment; filename="answers.csv"'
+    return response
+
 
 @login_required
 @require_GET
 def download_answers_csv(request):
+    """
+    Stream a csv file containing some answers log information on a
+    specified range of time.
+    """
     if not request.user.is_staff:
         raise PermissionDenied
     if "start" in request.GET or "end" in request.GET:
@@ -173,9 +189,7 @@ def download_answers_csv(request):
             return HttpResponseNotFound("Vous devez absolument spécifier une date de début")
         if "end" not in request.GET or request.GET["end"] == "":
             return HttpResponseNotFound("Vous devez absolument spécifier une date de fin")
-        # we force request to be only a bounded range in this view....
         answers = Answer.objects.filter(date__range=(request.GET["start"], request.GET["end"]))
-
         if "pl" in request.GET and request.GET["pl"].isnumeric():
             try:
                 answers = answers.filter(pl=int(request.GET["pl"]))
@@ -186,7 +200,6 @@ def download_answers_csv(request):
                 answers = answers.filter(activity=int(request.GET["activity"]))
             except Activity.DoesNotExist:
                 return HttpResponseNotFound("L'activité est introuvable")
-
         rows = ([a.user,
                  str(a.seed),
                  str(a.date),
@@ -197,10 +210,5 @@ def download_answers_csv(request):
                  a.activity.name if a.activity is not None else "",
                  a.pl.json["tag"] if ("include_tag" in request.GET and "tag" in a.pl.json) else "",
                  a.answers if "include_answers" in request.GET else ""] for a in answers)
-        pseudo_buffer = Echo()
-        writer = csv.writer(pseudo_buffer)
-        response = StreamingHttpResponse((writer.writerow(row) for row in rows),
-                                         content_type="text/csv")
-        response['Content-Disposition'] = 'attachment; filename="answers.csv"'
-        return response
+        return csv_stream(rows)
     return render(request, "playexo/download_answers.html", None)
