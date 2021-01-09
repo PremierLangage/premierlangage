@@ -153,7 +153,7 @@ class Pltp(AbstractActivityType):
             for elem in activity.indexed_pl()
         ]
 
-        # user_progression(request.user, activity)
+        # progr, quality = user_progression(request.user, activity)
 
         return get_template("activity/activity_type/pltp/small.html").render({
             'title':      activity.activity_data['title'],
