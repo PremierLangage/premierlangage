@@ -11,7 +11,8 @@ from playexo.models import Answer
 from shared.graphic_utils import graph_percent
 
 class Pltp(AbstractActivityType):
-    
+
+
     def student_dashboard(self, request, activity, session):
         """
         This method is called when the dashboard of an activity is requested for a student.
@@ -278,9 +279,9 @@ def user_progression(user, activity):
     exercices. Quality is zero if no exercice has been graded.
     """
     pl = activity.pl.all()
-    nb_pl_touched=0
-    nb_pl_graded=0
-    sum_grades=0
+    nb_pl_touched = 0
+    nb_pl_graded = 0
+    sum_grades = 0
         
     for i in pl:
         answer = Answer.highest_grade(i, user)
