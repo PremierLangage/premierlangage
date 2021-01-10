@@ -289,7 +289,6 @@ def user_progression(user, activity):
             if answer.grade is not None:
                 nb_pl_graded += 1
                 sum_grades += answer.grade
-    progr = (100*nb_pl_graded + 10*(nb_pl_touched - nb_pl_graded)) / len(pl) if len(pl) else 0
+    progr = (100*nb_pl_graded + 10*(nb_pl_touched - nb_pl_graded)) / len(pl) if pl else 0
     average = sum_grades / nb_pl_graded if nb_pl_graded else 0
     return (progr, average)
-
