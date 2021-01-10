@@ -8,8 +8,7 @@ from loader.models import PL
 from playexo.enums import State
 from playexo.models import Answer
 
-from random import randint
-
+from shared.graphic_utils import graph_percent
 
 class Pltp(AbstractActivityType):
     
@@ -265,9 +264,18 @@ class Pltp(AbstractActivityType):
 
 
 def user_progression(user, activity):
-    """Return a tuple of two integers `(progression, average)` where
-    `progression` is the percent of work done and `average` is the
-    percent of quality(grades) over touched exercices.
+    """Return a tuple of two integers `(progression, quality)` where
+    `progression` is the percent of work done and `quality` is the
+    mean of grades over graded exercices.
+    
+    All views using this utilitary function should check the
+    requesting user is allowed to access data.
+    
+    `progression` : percent of graded exercices plus 10% of percent of
+    only built exercices by the `user`.
+    
+    `quality` : average grade obtained by `user` over graded
+    exercices. Quality is zero if no exercice has been graded.
     """
     pl = activity.pl.all()
     nb_pl_touched=0
@@ -281,70 +289,7 @@ def user_progression(user, activity):
             if answer.grade is not None:
                 nb_pl_graded += 1
                 sum_grades += answer.grade
-    progr = (100*nb_pl_graded + 10*nb_pl_touched) / len(pl) if len(pl) else 0 # 10% for readed exercices
-    average = sum_grades / nb_pl_graded if nb_pl_graded else 0 # average highest grades over graded only exos
+    progr = (100*nb_pl_graded + 10*(nb_pl_touched - nb_pl_graded)) / len(pl) if len(pl) else 0
+    average = sum_grades / nb_pl_graded if nb_pl_graded else 0
     return (progr, average)
 
-def color(p):
-    """Return the adapted color for `p` percent 
-    achievement.
-    """
-    coef = 2.0 - (max([p-50, 50-p]) / 50.0)
-    #coef = 1
-    r = coef*180*(1 - (p/100.0))
-    g = coef*180*(p/100.0)
-    b = 0
-    return (int(r), int(g), int(b))
-
-def graph_percent(p):
-    """Return SVG code drawing a small graphical
-    percent.
-    """
-    p = int(p)
-    r,g,b = color(p)
-    ans='<svg height="80" width="80">'
-    ans+='<polygon points="0,0 80,0 80,80 0,80" style="fill:rgb(255,255,255)" />'
-    ans+='<circle cx="40" cy="40" r="40" fill="rgb({},{},{})" />'.format(r, g, b)
-    ans+='<circle cx="40" cy="40" r="30" fill="rgb(255,255,255)" />'
-    # all the following to hide the proper sector part of the circle
-    if p <= 25:
-        ans+='<polygon points="0,0 0,80 40,80 40,0" style="fill:rgb(255,255,255)" />'
-        ans+='<polygon points="40,40 40,80 80,80 80,40" style="fill:rgb(255,255,255)" />'
-        if p < 13:
-            ab = max([int(80 - 40*((12.5 - p)/12.5)), 44])
-            ans+='<polygon points="{},0 40,40 80,40 80,0" style="fill:rgb(255,255,255)" />'.format(ab)
-        else:
-            od = 40*((p-12.5)/12.5)
-            ans+='<polygon points="80,{} 40,40 80,40" style="fill:rgb(255,255,255)" />'.format(od)
-    elif p <= 50:
-        ans+='<polygon points="0,0 0,80 40,80 40,0" style="fill:rgb(255,255,255)" />'
-        if p < 38:
-            od = 80-40*((37.5-p)/12.5) 
-            ans+='<polygon points="40,40 40,80 80,80 80, {}" style="fill:rgb(255,255,255)" />'.format(od)
-        else:
-            ab = 40+40*((50-p)/12.5)
-            ans+='<polygon points="40,40 40,80 {},80" style="fill:rgb(255,255,255)" />'.format(ab)
-    elif p <= 75:
-        ans+='<polygon points="0,0 0,40 40,40 40,0" style="fill:rgb(255,255,255)" />'
-        if p < 63:
-            ab = 40*((62.5-p)/12.5)
-            ans+='<polygon points="40,40 0,40 0,80 {},80" style="fill:rgb(255,255,255)" />'.format(ab)
-        else:
-            od = 40+40*((75-p)/12.5)
-            ans+='<polygon points="40,40 0,40 0,{}" style="fill:rgb(255,255,255)" />'.format(od)
-    else:
-        if p < 88:
-            od = 40*((87.5-p)/12.5)
-            ans+='<polygon points="0,0 0,{} 40,40 40,0" style="fill:rgb(255,255,255)" />'.format(od)
-        else:
-            ab = 40 - 40*((100-p)/12.5)
-            ans+='<polygon points="{},0 40,40 40,0" style="fill:rgb(255,255,255)" />'.format(ab)
-    # To try to center the text correctly
-    if p <= 9:
-        ans+='<text x="24" y="46" font-size="20" fill="black">{}%</text>'.format(p)
-    elif p <= 99:
-        ans+='<text x="19" y="46" font-size="20" fill="black">{}%</text>'.format(p)
-    else:
-        ans+='<text x="12" y="46" font-size="20" fill="black">100%</text>'
-    ans+='</svg>'
-    return ans
