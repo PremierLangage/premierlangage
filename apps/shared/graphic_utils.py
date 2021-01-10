@@ -58,34 +58,42 @@ def graph_percent(p):
         ans += '<polygon points="0,0 0,80 40,80 40,0" style="fill:rgb(255,255,255)" />'
         ans += '<polygon points="40,40 40,80 80,80 80,40" style="fill:rgb(255,255,255)" />'
         if p < 13:
-            ab = max([int(80 - 40*((12.5 - p)/12.5)), 44])
-            ans += '<polygon points="{},0 40,40 80,40 80,0" style="fill:rgb(255,255,255)" />'.format(ab)
+            ab = max([int(80 - 40 * ((12.5 - p)/12.5)), 44])
+            ans += '<polygon points="'
+            ans += '{},0 40,40 80,40 80,0" style="fill:rgb(255,255,255)" />'.format(ab)
         else:
-            od = 40*((p-12.5)/12.5)
-            ans += '<polygon points="80,{} 40,40 80,40" style="fill:rgb(255,255,255)" />'.format(od)
+            od = 40 * ((p-12.5)/12.5)
+            ans += '<polygon points="'
+            ans += '80,{} 40,40 80,40" style="fill:rgb(255,255,255)" />'.format(od)
     elif p <= 50:
         ans += '<polygon points="0,0 0,80 40,80 40,0" style="fill:rgb(255,255,255)" />'
         if p < 38:
-            od = 80-40*((37.5-p)/12.5) 
-            ans +='<polygon points="40,40 40,80 80,80 80, {}" style="fill:rgb(255,255,255)" />'.format(od)
+            od = 80 - 40*((37.5-p)/12.5)
+            ans += '<polygon points="'
+            ans += '40,40 40,80 80,80 80, {}" style="fill:rgb(255,255,255)" />'.format(od)
         else:
-            ab = 40+40*((50-p)/12.5)
-            ans += '<polygon points="40,40 40,80 {},80" style="fill:rgb(255,255,255)" />'.format(ab)
+            ab = 40 + 40*((50-p)/12.5)
+            ans += '<polygon points="'
+            ans += '40,40 40,80 {},80" style="fill:rgb(255,255,255)" />'.format(ab)
     elif p <= 75:
-        ans+='<polygon points="0,0 0,40 40,40 40,0" style="fill:rgb(255,255,255)" />'
+        ans += '<polygon points="0,0 0,40 40,40 40,0" style="fill:rgb(255,255,255)" />'
         if p < 63:
-            ab = 40*((62.5-p)/12.5)
-            ans += '<polygon points="40,40 0,40 0,80 {},80" style="fill:rgb(255,255,255)" />'.format(ab)
+            ab = 40 * ((62.5-p)/12.5)
+            ans += '<polygon points="'
+            ans += '40,40 0,40 0,80 {},80" style="fill:rgb(255,255,255)" />'.format(ab)
         else:
-            od = 40+40*((75-p)/12.5)
-            ans += '<polygon points="40,40 0,40 0,{}" style="fill:rgb(255,255,255)" />'.format(od)
+            od = 40 + 40*((75-p)/12.5)
+            ans += '<polygon points="'
+            ans += '40,40 0,40 0,{}" style="fill:rgb(255,255,255)" />'.format(od)
     else:
         if p < 88:
-            od = 40*((87.5-p)/12.5)
-            ans += '<polygon points="0,0 0,{} 40,40 40,0" style="fill:rgb(255,255,255)" />'.format(od)
+            od = 40 * ((87.5-p)/12.5)
+            ans += '<polygon points="'
+            ans += '0,0 0,{} 40,40 40,0" style="fill:rgb(255,255,255)" />'.format(od)
         else:
             ab = 40 - 40*((100-p)/12.5)
-            ans += '<polygon points="{},0 40,40 40,0" style="fill:rgb(255,255,255)" />'.format(ab)
+            ans += '<polygon points="'
+            ans += '{},0 40,40 40,0" style="fill:rgb(255,255,255)" />'.format(ab)
     # To center the text (nice display on firefox, bad centered on chrome-like)
     if p <= 9:
         ans += '<text x="24" y="46" font-size="20" fill="black">{}%</text>'.format(p)

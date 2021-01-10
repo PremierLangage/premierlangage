@@ -10,6 +10,7 @@ from playexo.models import Answer
 
 from shared.graphic_utils import graph_percent
 
+
 class Pltp(AbstractActivityType):
 
 
