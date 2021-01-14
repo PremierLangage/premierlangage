@@ -29,7 +29,7 @@ class Pltp(AbstractActivityType):
         """
         exos = []
         for pl in activity.indexed_pl():
-            exos.append({'name':pl.json['title'] , 'sum_grades': 0})
+            exos.append({'name': pl.json['title'], 'sum_grades': 0})
             for state in list(State)[0:-1]:
                 exos[-1][state] = 0
 
