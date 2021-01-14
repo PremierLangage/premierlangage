@@ -27,21 +27,35 @@ class Pltp(AbstractActivityType):
         This method is called when the dashboard of an activity is requested for a teacher.
         :return: A rendered template of the teacher dashboard
         """
+        exos = []
+        for pl in activity.indexed_pl():
+            exos.append({'name':pl.json['title'] , 'sum_grades': 0})
+            for state in list(State)[0:-1]:
+                exos[-1][state] = 0
+
         student = list()
         for user in activity.student.all():
             tp = list()
-            for pl in activity.indexed_pl():
+            for count, pl in enumerate(activity.indexed_pl()):
+                ans_grade = Answer.highest_grade(pl, user)
+                state = State.by_grade(ans_grade.grade if ans_grade else ...)
                 tp.append({
                     'name':  pl.json['title'],
-                    'state': Answer.pl_state(pl, user)
+                    'state': state
                 })
+                exos[count][state] += 1
+                if ans_grade and ans_grade.grade is not None:
+                    exos[count]['sum_grades'] += ans_grade.grade
             student.append({
                 'lastname': user.last_name,
                 'object':   user,
                 'id':       user.id,
                 'question': tp,
             })
-        
+
+        for exo in exos:
+            exo['mean'] = exo['sum_grades'] / len(student) if student else 0
+            exo.pop('sum_grades')
         # Sort list by student's name
         student = sorted(student, key=lambda k: k['lastname'])
         
@@ -52,6 +66,7 @@ class Pltp(AbstractActivityType):
             'student':       student,
             'range_tp':      range(len(activity.indexed_pl())),
             'course_id':     activity.parent.id,
+            'exos':          exos,
         })
     
     
