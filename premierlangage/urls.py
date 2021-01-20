@@ -25,6 +25,7 @@ admin.site.site_header = 'Platon Administration'
 
 urlpatterns = [
     url(r'^$', index),
+    url(r'^progress/', include('apps.progress.urls', namespace="progress")),
     url(r'^activity/', include('apps.activity.urls', namespace="activity")),
     url(r'^playexo/', include('apps.playexo.urls', namespace="playexo")),
     url(r'^editor/', include('apps.editor.urls', namespace="editor")),
