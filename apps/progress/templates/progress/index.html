@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block content %}
+<ion-card>
+    <ion-card-header>
+      <ion-card-title>Progression personnelle sur la plateforme</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <h1>{{ first_name }} {{ last_name }}</h1> <br>
+      <u>Volumes des travaux :</u>
+      <ul>
+	<li>Nombre d'actions nécessitant un environnement d'exécution sécurisé (sandbox) : <b>{{ nb_answer_user }}</b></li>
+	<li>Nombre total de tentatives effectives de résolution : <b>{{ nb_attempt }}</b></li>
+	<li>Nombre d'exercices travaillés sur la plateforme : <b>{{ nb_touched_exos }}</b></li>
+	<li>Points totaux d'apprentissages : <b>{{ total_point }} Pts</b></li>
+      </ul>
+      <u>Qualités des travaux :</u>
+      <ul>
+	<li>Note moyenne obtenue sur les exercices abordés : <b>{{ "%.2f %%"|format(mean_grade) }}</b></li>
+	<li>Nombre moyen de tentatives par exercice : <b>{{ "%.2f"|format(mean_attempt) }}</b></li>
+      </ul>
+      <u>Activités cette année :</u> {{ ybegin }}-{{ yend }}
+      <br><br>
+      <style>
+	td { border: 1px solid black; marging: 1px; }
+	td.actino {  width: 14px; height: 14px; border: 1px solid black; }
+	td.acti0 {   background: rgb(55, 55, 55); width: 14px; height: 14px; }
+	td.acti1 {   background: rgb(55, 77, 55); width: 14px; height: 14px; }
+	td.acti2 {   background: rgb(55, 99, 55); width: 14px; height: 14px; }
+	td.acti3 {   background: rgb(55, 121, 55); width: 14px; height: 14px; }
+	td.acti4 {   background: rgb(55, 144, 55); width: 14px; height: 14px; }
+	td.acti5 {   background: rgb(55, 166, 55); width: 14px; height: 14px; }
+	td.acti6 {   background: rgb(55, 188, 55); width: 14px; height: 14px; }
+	td.acti7 {   background: rgb(55, 211, 55); width: 14px; height: 14px; }
+	td.acti8 {   background: rgb(55, 233, 55); width: 14px; height: 14px; }
+	td.acti9 {   background: rgb(55, 255, 55); width: 14px; height: 14px; }
+	td.space {   width: 14px; height: 7px; }
+	td.day_title { border: 0px solid black; font-size: 0.6em; color: black; padding-right: 2px;}
+      </style>
+      <table>
+	<tr>
+	  <td class="day_title"></td>
+	  <td colspan="5" class="day_title">Sept</td>
+	  <td colspan="4" class="day_title">Oct</td>
+	  <td colspan="5" class="day_title">Nov</td>
+	  <td colspan="4" class="day_title">Dec</td>
+	  <td colspan="5" class="day_title">Jan</td>
+	  <td colspan="4" class="day_title">Fév</td>
+	  <td colspan="5" class="day_title">Mars</td>
+	  <td colspan="4" class="day_title">Avril</td>
+	  <td colspan="5" class="day_title">Mai</td>
+	  <td colspan="4" class="day_title">Juin</td>
+	  <td colspan="5" class="day_title">Jui</td>
+	  <td colspan="4" class="day_title">Aout</td>
+	</tr>
+	<tr>
+	  <td class="day_title">lundi</td>
+	  {% for actions, tenth, strdate in all_days[0] %}
+	  <td class="{{ tenth }}">
+	  </td>
+	  {% endfor %}
+	</tr>
+	<tr>
+	  <td class="day_title">mardi</td>
+	  {% for actions,tenth,strdate in all_days[1] %}
+	  <td class="{{ tenth }}">
+	  </td>
+	  {% endfor %}
+	</tr>
+	<tr>
+	  <td class="day_title">mercredi</td>
+	  {% for actions,tenth,strdate in all_days[2] %}
+	  <td class="{{ tenth }}">
+	  </td>
+	  {% endfor %}
+	</tr>
+	<tr>
+	  <td class="day_title">jeudi</td>
+	  {% for actions,tenth,strdate in all_days[3] %}
+	  <td class="{{ tenth }}">
+	  </td>
+	  {% endfor %}
+	</tr>
+	<tr>
+	  <td class="day_title">vendredi</td>
+	  {% for actions,tenth,strdate in all_days[4] %}
+	  <td class="{{ tenth }}">
+	  </td>
+	  {% endfor %}
+	</tr>
+
+	<tr>
+	  <td class="day_title"></td>
+	  <td class="space"></td>
+	</tr>
+
+	<tr>
+	  <td class="day_title">Samedi</td>
+	  {% for actions,tenth,strdate in all_days[5] %}
+	  <td class="{{ tenth }}">
+	  </td>
+	  {% endfor %}
+	</tr>
+	<tr>
+	  <td class="day_title">Dimanche</td>
+	  {% for actions,tenth,strdate in all_days[6] %}
+	  <td class="{{ tenth }}">
+	  </td>
+	  {% endfor %}
+	</tr>
+      </table>
+      <br>
+      <u>Notions travaillées :</u>
+      <table style="border: solid 1px back">
+	<tr>
+	  <th>Notions</th>
+	  <th>Points cumulés</th>
+	  <th>réussite moyenne</th>
+	</tr>
+	{% for tag, pt_tag, mean_tag in tags_info %}
+	<tr>
+	  <td>{{ tag }}</td>
+	  <td>{{ pt_tag }} Pts</td>
+	  <td>{{ "%.2f %%"|format(mean_tag) }}</td>
+	</tr>
+	{% endfor %}
+      </table>
+    </ion-card-content>
+</ion-card>
+{% endblock %}
