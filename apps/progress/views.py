@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
@@ -17,7 +16,7 @@ def index(request):
     for trace in all_answer_user:
         nb_answer_user += 1
         date_list.append(trace.date)
-        if trace.grade :
+        if trace.grade:
             nb_attempt += 1
             if trace.pl not in max_grades_exo:
                 max_grades_exo[trace.pl] = int(trace.grade)
@@ -36,7 +35,7 @@ def index(request):
     for tag in tags:
         pts_tag = sum(tags[tag])
         mean_tag = sum(tags[tag]) / len(tags[tag]) if tags[tag] else 0
-        tags_info.append( (tag, pts_tag, mean_tag) )
+        tags_info.append((tag, pts_tag, mean_tag))
     tags_info.sort(key=lambda tag: tag[1], reverse=True)
                     
     sum_grades = 0
@@ -44,19 +43,21 @@ def index(request):
         sum_grades += max_grades_exo[exo]
     mean_grade = sum_grades / len(max_grades_exo) if max_grades_exo else 0
     mean_attempt = nb_attempt / len(max_grades_exo) if max_grades_exo else 0
+    fr_days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
             
-    context = {'first_name' : request.user.first_name,
-               'last_name' : request.user.last_name,
-               'nb_answer_user' : nb_answer_user,
-               'nb_touched_exos' : len(max_grades_exo),
-               'total_point' : sum_grades,
-               'mean_grade' : mean_grade,
-               'nb_attempt' : nb_attempt,
-               'mean_attempt' : mean_attempt,
-               'tags_info' : tags_info,
-               'all_days' : all_days,
+    context = {'first_name': request.user.first_name,
+               'last_name': request.user.last_name,
+               'nb_answer_user': nb_answer_user,
+               'nb_touched_exos': len(max_grades_exo),
+               'total_point': sum_grades,
+               'mean_grade': mean_grade,
+               'nb_attempt': nb_attempt,
+               'mean_attempt': mean_attempt,
+               'tags_info': tags_info,
+               'all_days': all_days,
                'ybegin': ybegin,
-               'yend': yend,}
+               'yend': yend,
+               'fr_days': fr_days, }
     return render(request, 'progress/index.html', context)
 
 
@@ -88,7 +89,12 @@ def this_year_calendar_activity(date_list):
         w, d = day_index_education(dat, fy, fw, fd)
         if w != -1 and d != -1:
             if all_days[d][w][0] == -1:
-                all_days[d][w] = (1, 0, str(d).split(' ')[0])
+                strdat = str(dat.day)
+                strdat += [' None ', ' Jan ', ' Fév ', ' Mars ',
+                           ' Avril ', ' Mai ', ' Juin ', ' Jui ',
+                           ' Aout ', ' Sept ', ' Oct ' , ' Nov ', ' Déc '][dat.month]
+                strdat += str(dat.year)
+                all_days[d][w] = (1, 0, strdat)
             else:
                 all_days[d][w] = (all_days[d][w][0]+1,
                                   all_days[d][w][1],
@@ -129,9 +135,9 @@ def day_index_education(date, fy, fw, fd):
     """
     y, w, d = date.isocalendar()
     if y > fy:
-        return (52 + w - fw - int(d == 0), d - 1 + (7*int(d == 0)) )
+        return (52 + w - fw - int(d == 0), d - 1 + (7*int(d == 0)))
     if y == fy:
         if w >= fw:
             if d >= fd:
-                return (w - fw - int(d == 0), d - 1 + (7*int(d == 0)) )
+                return (w - fw - int(d == 0), d - 1 + (7*int(d == 0)))
     return (-1, -1)

@@ -7,34 +7,88 @@
     <ion-card-content>
       <h1>{{ first_name }} {{ last_name }}</h1> <br>
       <u>Volumes des travaux :</u>
+      <br><br>
       <ul>
-	<li>Nombre d'actions nécessitant un environnement d'exécution sécurisé (sandbox) : <b>{{ nb_answer_user }}</b></li>
-	<li>Nombre total de tentatives effectives de résolution : <b>{{ nb_attempt }}</b></li>
-	<li>Nombre d'exercices travaillés sur la plateforme : <b>{{ nb_touched_exos }}</b></li>
-	<li>Points totaux d'apprentissages : <b>{{ total_point }} Pts</b></li>
+	<li>
+	  <span style="color: black; font-size:1em" >
+	    Nombre d'actions en environnement sécurisé
+	  </span> : <b>{{ nb_answer_user }}</b></li>
+	<li>
+	  <span style="color: black; font-size:1em" >
+	    Nombre total de tentatives de réponse
+	  </span> : <b>{{ nb_attempt }}</b></li>
+	<li>
+	  <span style="color: black; font-size:1em" >
+	    Nombre d'exercices travaillés sur PLaTon
+	  </span> : <b>{{ nb_touched_exos }}</b></li>
+	<li>
+	  <span style="color: black; font-size:1em" >
+	    Points totaux d'apprentissages
+	  </span> : <b>{{ total_point }} Pts</b></li>
       </ul>
       <u>Qualités des travaux :</u>
+      <br><br>
       <ul>
-	<li>Note moyenne obtenue sur les exercices abordés : <b>{{ "%.2f %%"|format(mean_grade) }}</b></li>
-	<li>Nombre moyen de tentatives par exercice : <b>{{ "%.2f"|format(mean_attempt) }}</b></li>
+	<li>
+	  <span style="color: black; font-size:1em" >
+	    Note moyenne sur les exercices travaillés
+	  </span> : <b>{{ "%.2f %%"|format(mean_grade) }}</b></li>
+	<li>
+	  <span style="color: black; font-size:1em" >
+	    Nombre moyen de tentatives par exercices travaillés
+	  </span> : <b>{{ "%.2f"|format(mean_attempt) }}</b></li>
       </ul>
-      <u>Activités cette année :</u> {{ ybegin }}-{{ yend }}
+      <u>Mesures d'activité cette année :</u> <span style="color: black">année scolaire {{ ybegin }}-{{ yend }}</span>
       <br><br>
       <style>
-	td { border: 1px solid black; marging: 1px; }
-	td.actino {  width: 14px; height: 14px; border: 1px solid black; }
-	td.acti0 {   background: rgb(55, 55, 55); width: 14px; height: 14px; }
-	td.acti1 {   background: rgb(55, 77, 55); width: 14px; height: 14px; }
-	td.acti2 {   background: rgb(55, 99, 55); width: 14px; height: 14px; }
-	td.acti3 {   background: rgb(55, 121, 55); width: 14px; height: 14px; }
-	td.acti4 {   background: rgb(55, 144, 55); width: 14px; height: 14px; }
-	td.acti5 {   background: rgb(55, 166, 55); width: 14px; height: 14px; }
-	td.acti6 {   background: rgb(55, 188, 55); width: 14px; height: 14px; }
-	td.acti7 {   background: rgb(55, 211, 55); width: 14px; height: 14px; }
-	td.acti8 {   background: rgb(55, 233, 55); width: 14px; height: 14px; }
-	td.acti9 {   background: rgb(55, 255, 55); width: 14px; height: 14px; }
-	td.space {   width: 14px; height: 7px; }
-	td.day_title { border: 0px solid black; font-size: 0.6em; color: black; padding-right: 2px;}
+	rect.actino { border: 0px solid black; fill:rgb(255,255,255); stroke-width:1; stroke:rgb(95,95,95) }
+	rect.acti0 { border: 0px solid black; fill:rgb(205,205,205); stroke-width:1; stroke:rgb(95,95,95) }
+	rect.acti1 { border: 0px solid black; fill:rgb(184, 210, 184); stroke-width:1; stroke:rgb(95,95,95) }
+	rect.acti2 { border: 0px solid black; fill:rgb(164, 215, 164); stroke-width:1; stroke:rgb(95,95,95) }
+	rect.acti3 { border: 0px solid black; fill:rgb(143, 220, 143); stroke-width:1; stroke:rgb(95,95,95) }
+	rect.acti4 { border: 0px solid black; fill:rgb(123, 225, 123); stroke-width:1; stroke:rgb(95,95,95) }
+	rect.acti5 { border: 0px solid black; fill:rgb(102, 230, 102); stroke-width:1; stroke:rgb(95,95,95) }
+	rect.acti6 { border: 0px solid black; fill:rgb(82, 235, 82); stroke-width:1; stroke:rgb(95,95,95) }
+	rect.acti7 { border: 0px solid black; fill:rgb(61, 240, 61); stroke-width:1; stroke:rgb(95,95,95) }
+	rect.acti8 { border: 0px solid black; fill:rgb(30, 245, 30); stroke-width:1; stroke:rgb(95,95,95) }
+	rect.acti9 { border: 0px solid black; fill:rgb(0, 255, 0); stroke-width:1; stroke:rgb(95,95,95) }
+	td.space { height: 12px; border: 0px solid black; }
+	td.day_title { border: 0px solid black; font-size: 0.6em; color: black; padding-right: 2px; height: 15px}
+
+	.tooltip-wrap {
+	    position: relative;
+	}
+	.tooltip-wrap .tooltip-content {
+	    display: none;
+	    position: absolute;
+	    background-color: white;
+	    color: black
+	    padding: .5em;
+	    top: -35px;
+	}
+	.tooltip-wrap:hover .tooltip-content {
+	    display: block;
+	}
+
+	.notion_tag {
+	    color: rgb(0,0,155);
+	    background-color: rgb(220,220,255);
+	    padding: 3px;
+	    magin: 5px;
+	    border-radius: 8px;
+	    border: solid 1px rgb(0,0,155);
+	}
+
+	.notion_td {
+	    padding: 4px;
+	    magin: 6px;	    
+	}
+
+	.notion_td_2 {
+	    padding: 4px;
+	    magin: 6px;
+	    background-color: rgb(235,235,235);
+	}
       </style>
       <table>
 	<tr>
@@ -52,78 +106,127 @@
 	  <td colspan="5" class="day_title">Jui</td>
 	  <td colspan="4" class="day_title">Aout</td>
 	</tr>
+	{% for line in all_days[:-2] %}
 	<tr>
-	  <td class="day_title">lundi</td>
-	  {% for actions, tenth, strdate in all_days[0] %}
-	  <td class="{{ tenth }}">
+	  <td class="day_title">{{ fr_days[loop.index0] }}</td>
+	  {% for actions, tenth, strdate in line %}
+	  <td>
+	    <div class="tooltip-wrap">
+	      <svg width="15" height="15">
+		<rect class="{{ tenth }}" width="14" height="14" />
+	      </svg>
+	      {% if actions != -1 %}
+	      <div class="tooltip-content">
+		<svg height="30" width="200">
+		  <rect fill="white"  height="30" width="200" style="stroke-width:1; stroke:rgb(95,95,95)" />
+		  <text x="10" y="20" fill="black">{{ actions }} actions le {{ strdate }}</text>
+		</svg>
+	      </div>
+	      {% endif %}
+	    </div>
 	  </td>
 	  {% endfor %}
 	</tr>
-	<tr>
-	  <td class="day_title">mardi</td>
-	  {% for actions,tenth,strdate in all_days[1] %}
-	  <td class="{{ tenth }}">
-	  </td>
-	  {% endfor %}
-	</tr>
-	<tr>
-	  <td class="day_title">mercredi</td>
-	  {% for actions,tenth,strdate in all_days[2] %}
-	  <td class="{{ tenth }}">
-	  </td>
-	  {% endfor %}
-	</tr>
-	<tr>
-	  <td class="day_title">jeudi</td>
-	  {% for actions,tenth,strdate in all_days[3] %}
-	  <td class="{{ tenth }}">
-	  </td>
-	  {% endfor %}
-	</tr>
-	<tr>
-	  <td class="day_title">vendredi</td>
-	  {% for actions,tenth,strdate in all_days[4] %}
-	  <td class="{{ tenth }}">
-	  </td>
-	  {% endfor %}
-	</tr>
+	{% endfor %}
 
 	<tr>
 	  <td class="day_title"></td>
 	  <td class="space"></td>
 	</tr>
 
+	{% for line in all_days[-2:] %}
 	<tr>
-	  <td class="day_title">Samedi</td>
-	  {% for actions,tenth,strdate in all_days[5] %}
-	  <td class="{{ tenth }}">
+	  <td class="day_title">{{ fr_days[loop.index0+5] }}</td>
+	  {% for actions,tenth,strdate in line %}
+	  <td>
+	    <div class="tooltip-wrap">
+	      <svg width="15" height="15">
+		<rect class="{{ tenth }}" width="14" height="14" />
+	      </svg>
+	      {% if actions != -1 %}
+	      <div class="tooltip-content">
+		<svg height="30" width="200">
+		  <rect fill="white"  height="30" width="200" style="stroke-width:1; stroke:rgb(95,95,95)" />
+		  <text x="10" y="20" fill="black">{{ actions }} actions le {{ strdate }}</text>
+		</svg>
+	      </div>
+	      {% endif %}
+	    </div>
 	  </td>
 	  {% endfor %}
-	</tr>
-	<tr>
-	  <td class="day_title">Dimanche</td>
-	  {% for actions,tenth,strdate in all_days[6] %}
-	  <td class="{{ tenth }}">
-	  </td>
-	  {% endfor %}
-	</tr>
-      </table>
-      <br>
-      <u>Notions travaillées :</u>
-      <table style="border: solid 1px back">
-	<tr>
-	  <th>Notions</th>
-	  <th>Points cumulés</th>
-	  <th>réussite moyenne</th>
-	</tr>
-	{% for tag, pt_tag, mean_tag in tags_info %}
-	<tr>
-	  <td>{{ tag }}</td>
-	  <td>{{ pt_tag }} Pts</td>
-	  <td>{{ "%.2f %%"|format(mean_tag) }}</td>
 	</tr>
 	{% endfor %}
       </table>
+      <br>
+      <span style="color: black; font-size:1em" >Journée sans activité : </span>
+	<svg width="15" height="15">
+	  <rect class="actino" width="14" height="14" />
+	</svg> <br>
+	<span style="color: black; font-size:1em" >Activité faible </span> 
+	<svg width="15" height="15">
+	  <rect class="acti0" width="14" height="14" />
+	</svg> &nbsp;
+	<svg width="15" height="15">
+	  <rect class="acti1" width="14" height="14" />
+	</svg> &nbsp;
+	<svg width="15" height="15">
+	  <rect class="acti2" width="14" height="14" />
+	</svg> &nbsp;
+	<svg width="15" height="15">
+	  <rect class="acti3" width="14" height="14" />
+	</svg> &nbsp;
+	<svg width="15" height="15">
+	  <rect class="acti4" width="14" height="14" />
+	</svg> &nbsp;
+	<svg width="15" height="15">
+	  <rect class="acti5" width="14" height="14" />
+	</svg> &nbsp;
+	<svg width="15" height="15">
+	  <rect class="acti6" width="14" height="14" />
+	</svg> &nbsp;
+	<svg width="15" height="15">
+	  <rect class="acti7" width="14" height="14" />
+	</svg> &nbsp;
+	<svg width="15" height="15">
+	  <rect class="acti8" width="14" height="14" />
+	</svg> &nbsp;
+	<svg width="15" height="15">
+	  <rect class="acti9" width="14" height="14" />
+	</svg> &nbsp; <span style="color: black; font-size:1em" > Activité élevée </span><br>
+	<br>
+	<u>Notions travaillées :</u>
+	<br> <br>
+	<table style="border: solid 1px back">
+	  <tr>
+	    <th class="notion_td">Notions</th>
+	    <th class="notion_td">Points cumulés</th>
+	    <th class="notion_td">Points cette année</th>
+	    <th class="notion_td">Évolution</th>
+	    <th class="notion_td">réussite moyenne</th>
+	    <th class="notion_td">Évolution</th>
+	  </tr>
+	  {% for tag, pt_tag, mean_tag in tags_info %}
+	  {% if loop.index0 % 2 == 1 %}
+	  <tr>
+	    <td class="notion_td"><span class="notion_tag">{{ tag }}</span></td>
+	    <td class="notion_td">{{ pt_tag }} Pts</td>
+	    <td class="notion_td"> + TODO Pts</td>
+	    <td class="notion_td"> + TODO % </td>
+	    <td class="notion_td">{{ "%.2f %%"|format(mean_tag) }}</td>
+	    <td class="notion_td"> + - TODO % </td>
+	  </tr>
+	  {% else %}
+	  <tr>
+	    <td class="notion_td_2"><span class="notion_tag">{{ tag }}</span></td>
+	    <td class="notion_td_2">{{ pt_tag }} Pts</td>
+	    <td class="notion_td_2"> + TODO Pts</td>
+	    <td class="notion_td_2"> + TODO % </td>
+	    <td class="notion_td_2">{{ "%.2f %%"|format(mean_tag) }}</td>
+	    <td class="notion_td_2"> + - TODO % </td>
+	  </tr>	  
+	  {% endif %}
+	  {% endfor %}
+	</table>
     </ion-card-content>
 </ion-card>
 {% endblock %}
