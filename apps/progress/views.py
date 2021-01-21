@@ -74,14 +74,13 @@ def this_year_calendar_activity(date_list):
     this_year = today.year
     this_month = today.month
     first_semester = [1, 2, 3, 4, 5, 6, 7, 8]
-    last_semester = [9, 10, 11, 12]
+    # last_semester = [9, 10, 11, 12]
     if this_month in first_semester:
         begin = this_year - 1
         end = this_year
     else:
         begin = this_year
         end = this_year + 1
-    days_actions = {}
     # first september of the current education year
     fy, fw, fd = date(begin, 9, 1).isocalendar()
     all_days = [[(-1, -1, '')]*53 for i in range(7)]
@@ -92,7 +91,7 @@ def this_year_calendar_activity(date_list):
                 strdat = str(dat.day)
                 strdat += [' None ', ' Jan ', ' Fév ', ' Mars ',
                            ' Avril ', ' Mai ', ' Juin ', ' Jui ',
-                           ' Aout ', ' Sept ', ' Oct ' , ' Nov ', ' Déc '][dat.month]
+                           ' Aout ', ' Sept ', ' Oct ', ' Nov ', ' Déc '][dat.month]
                 strdat += str(dat.year)
                 all_days[d][w] = (1, 0, strdat)
             else:
@@ -114,6 +113,7 @@ def this_year_calendar_activity(date_list):
             else:
                 all_days[i][j] = (-1, "actino", '')
     return all_days, begin, end
+
 
 def day_index_education(date, fy, fw, fd):
     r"""Return a tuple `(weekday, week)` where `weekday` is the day
