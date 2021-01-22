@@ -5,6 +5,11 @@
 {% block content %}
 <ion-card>
     <ion-card-header>
+      {% if request.user.is_authenticated and request.user.profile.can_load() %}
+      <ion-card-subtitle>
+	<a href="progress/student_list/">Voir la progression de mes élèves</a>
+      </ion-card-subtitle>
+      {% endif %}
       <ion-card-title>Progression personnelle sur la plateforme</ion-card-title>
     </ion-card-header>
     <ion-card-content>

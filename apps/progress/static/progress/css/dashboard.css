@@ -21,7 +21,7 @@ td.day_title { border: 0px solid black; font-size: 0.6em; color: black; padding-
     background-color: white;
     color: black;
     padding: .5em;
-    top: -35px;
+    top: -45px;
 }
 .tooltip-wrap:hover .tooltip-content {
     display: block;
@@ -37,13 +37,19 @@ td.day_title { border: 0px solid black; font-size: 0.6em; color: black; padding-
 }
 
 .notion_td {
+    border-right: 1px solid rgb(95,95,95);
     padding: 4px;
+    padding-right: 10px;
+    padding-left: 10px;
     magin: 6px;
     text-align: center;
 }
 
 .notion_td_2 {
+    border-right: 1px solid rgb(95,95,95);
     padding: 4px;
+    padding-right: 10px;
+    padding-left: 10px;
     magin: 6px;
     background-color: rgb(242,242,242);
     text-align: center;
