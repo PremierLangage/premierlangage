@@ -1,14 +1,27 @@
+from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from playexo.models import Answer
 
 
 @login_required
 def index(request):
-    """Returns index page of personnal progression over PLaTon.
+    """Returns index page of personnal progression over PLaTon.  By
+    default, the index page is the progress page of requesting user.
     """
-    all_answer_user = Answer.objects.filter(user=request.user)
+    return progress_user(request, request.user.pk)
+
+
+@login_required
+def progress_user(request, user_id):
+    """Return the progress summary of `user` in argument.
+    """
+    user = get_object_or_404(User, pk=user_id)
+    if (request.user != user ) and not request.user.profile.can_load():
+        raise PermissionDenied("Vous ne pouvez pas visualiser la progression d'autres utilisateurs que vous même.")
+    all_answer_user = Answer.objects.filter(user=user)
     max_grades_exo = {}
     nb_answer_user = 0
     nb_attempt = 0
@@ -45,8 +58,8 @@ def index(request):
     mean_attempt = nb_attempt / len(max_grades_exo) if max_grades_exo else 0
     fr_days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
             
-    context = {'first_name': request.user.first_name,
-               'last_name': request.user.last_name,
+    context = {'first_name': user.first_name,
+               'last_name': user.last_name,
                'nb_answer_user': nb_answer_user,
                'nb_touched_exos': len(max_grades_exo),
                'total_point': sum_grades,
@@ -141,3 +154,13 @@ def day_index_education(date, fy, fw, fd):
             if d >= fd:
                 return (w - fw - int(d == 0), d - 1 + (7*int(d == 0)))
     return (-1, -1)
+
+
+@login_required
+def student_list(request):
+    """
+    """
+    if not request.user.profile.can_load():
+        raise PermissionDenied("Vous ne pouvez pas visualiser la progression d'autres utilisateurs que vous même.")
+    context = { }
+    return render(request, 'progress/student_list.html', context)
