@@ -27,14 +27,22 @@ def progress_user(request, user_id):
                                "d'autres utilisateurs que vous même.")
     all_answer_user = Answer.objects.filter(user=user)
     max_grades_exo = {}
+    old_grades_exo = {}
     nb_answer_user = 0
     nb_attempt = 0
     date_list = []
+    fy, fw, fd = begin_progress_date().isocalendar()
     for trace in all_answer_user:
         nb_answer_user += 1
         date_list.append(trace.date)
         if trace.grade:
             nb_attempt += 1
+            # if this happen before current educationnal year
+            if day_index_education(trace.date, fy, fw, fd) == (-1, -1):
+                if trace.pl not in old_grades_exo:
+                    old_grades_exo[trace.pl] = int(trace.grade)
+                else:
+                    old_grades_exo[trace.pl] = max(int(trace.grade), old_grades_exo[trace.pl])
             if trace.pl not in max_grades_exo:
                 max_grades_exo[trace.pl] = int(trace.grade)
             else:
@@ -45,14 +53,23 @@ def progress_user(request, user_id):
         if "tag" in exo.json:
             for tag in exo.json["tag"].split("|"):
                 if tag not in tags:
-                    tags[tag] = [max_grades_exo[exo]]
+                    if exo in old_grades_exo:
+                        tags[tag] = [[max_grades_exo[exo]], [old_grades_exo[exo]]]
+                    else:
+                        tags[tag] = [[max_grades_exo[exo]], []]
                 else:
-                    tags[tag].append(max_grades_exo[exo])
+                    if exo in old_grades_exo:
+                        tags[tag][1].append(old_grades_exo[exo])
+                    tags[tag][0].append(max_grades_exo[exo])
     tags_info = []
     for tag in tags:
-        pts_tag = sum(tags[tag])
-        mean_tag = sum(tags[tag]) / len(tags[tag]) if tags[tag] else 0
-        tags_info.append((tag, pts_tag, mean_tag))
+        pts_tag = sum(tags[tag][0])
+        dif = pts_tag - sum(tags[tag][1])
+        evo = (dif*100)/(pts_tag-dif) if pts_tag != dif else -1
+        mean_tag = pts_tag / len(tags[tag][0]) if tags[tag][0] else 0
+        old_mean_tag = sum(tags[tag][1]) / len(tags[tag][1]) if tags[tag][1] else 0
+        evo_mean = mean_tag - old_mean_tag
+        tags_info.append((tag, pts_tag, dif, evo, mean_tag, evo_mean))
     tags_info.sort(key=lambda tag: tag[1], reverse=True)
                     
     sum_grades = 0
@@ -90,10 +107,8 @@ def begin_progress_date():
     # last_semester = [9, 10, 11, 12]
     if this_month in first_semester:
         begin = this_year - 1
-        end = this_year
     else:
         begin = this_year
-        end = this_year + 1
     return date(begin, 9, 1)
 
 
