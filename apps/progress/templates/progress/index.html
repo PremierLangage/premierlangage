@@ -120,7 +120,7 @@
 	<svg width="15" height="15">
 	  <rect class="actino" width="14" height="14" />
 	</svg> <br>
-	<span style="color: black; font-size:1em" >Activité faible </span> 
+	<span style="color: black; font-size:1em" >Activité faible </span>
 	<svg width="15" height="15">
 	  <rect class="acti0" width="14" height="14" />
 	</svg> &nbsp;
@@ -172,26 +172,71 @@
 	    <th class="notion_td"><span style="color: black;">réussite moyenne</span></th>
 	    <th class="notion_td"><span style="color: black;">Évolution</span></th>
 	  </tr>
-	  {% for tag, pt_tag, mean_tag in tags_info %}
-	  {% if loop.index0 % 2 == 1 %}
+	  {% for tag, pt_tag, dif, evo, mean_tag, evo_mean in tags_info %}
 	  <tr>
-	    <td class="notion_td"><span class="notion_tag">{{ tag }}</span></td>
-	    <td class="notion_td">{{ pt_tag }} Pts</td>
-	    <td class="notion_td"> + TODO Pts</td>
-	    <td class="notion_td"> + TODO % </td>
-	    <td class="notion_td">{{ "%.2f %%"|format(mean_tag) }}</td>
-	    <td class="notion_td"> + - TODO % </td>
+	    {% if loop.index0 % 2 == 1 %}
+	    <td class="notion_td">
+	    {% else %}
+	    <td class="notion_td_2">
+	    {% endif %}
+	      <span class="notion_tag">
+		{{ tag }}
+	      </span>
+	    </td>
+	    {% if loop.index0 % 2 == 1 %}
+	    <td class="notion_td">
+	    {% else %}
+	    <td class="notion_td_2">
+	    {% endif %}
+	      <b>{{ pt_tag }} Pts</b>
+	    </td>
+	    {% if loop.index0 % 2 == 1 %}
+	    <td class="notion_td">
+	    {% else %}
+	    <td class="notion_td_2">
+	    {% endif %}
+	      {% if dif > 0 %}
+	      <span style="color:darkgreen">
+		+ {{ dif }} Pts
+	      </span>
+	      {% else %}
+	      + 0 Pt
+	      {% endif %}
+	    </td>
+	    {% if loop.index0 % 2 == 1 %}
+	    <td class="notion_td">
+	    {% else %}
+	    <td class="notion_td_2">
+	    {% endif %}
+	      {% if evo != 0 %}
+	      <span style="color:darkgreen">
+		+ {{ "%+.2f %%"|format(evo) if evo != -1 else "∞" }}
+	      </span>
+	      {% else %}
+	      + 0 %
+	      {% endif %}
+	    </td>
+	    {% if loop.index0 % 2 == 1 %}
+	    <td class="notion_td">
+	    {% else %}
+	    <td class="notion_td_2">
+	    {% endif %}
+	      <b>{{ "%.2f %%"|format(mean_tag) }}</b>
+	    </td>
+	    {% if loop.index0 % 2 == 1 %}
+	    <td class="notion_td">
+	    {% else %}
+	    <td class="notion_td_2">
+	    {% endif %}
+	      {% if evo_mean >= 0 %}
+	      <span style="color:darkgreen">
+	      {% else %}
+	      <span style="color:darkred">	      
+	      {% endif %}
+              {{ "%+.2f %%"|format(evo_mean) }}
+	      </span>
+	    </td>
 	  </tr>
-	  {% else %}
-	  <tr>
-	    <td class="notion_td_2"><span class="notion_tag">{{ tag }}</span></td>
-	    <td class="notion_td_2">{{ pt_tag }} Pts</td>
-	    <td class="notion_td_2"> + TODO Pts</td>
-	    <td class="notion_td_2"> + TODO % </td>
-	    <td class="notion_td_2">{{ "%.2f %%"|format(mean_tag) }}</td>
-	    <td class="notion_td_2"> + - TODO % </td>
-	  </tr>	  
-	  {% endif %}
 	  {% endfor %}
 	</table>
     </ion-card-content>
