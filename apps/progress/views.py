@@ -96,7 +96,9 @@ def progress_user(request, user_id):
 
 
 def begin_progress_date():
-    """Return the date from which will be calculated the
+    """
+    start_of_period()
+    Return the date from which will be calculated the
     progression evolution. This date is the last first day of
     september (the nearest first of september).
     """
@@ -121,6 +123,7 @@ def this_year_calendar_activity(date_list):
 
     """
     # first september of the current education year
+    # fy, fw, fd = start_of_period().isocalendar()
     fy, fw, fd = begin_progress_date().isocalendar()
     begin, end = fy, fy+1
     all_days = [[(-1, -1, '')]*53 for i in range(7)]
