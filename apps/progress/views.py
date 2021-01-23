@@ -6,6 +6,8 @@ from django.shortcuts import render, get_object_or_404
 from activity.models import Activity
 from playexo.models import Answer
 
+from datetime import date
+
 
 @login_required
 def index(request):
@@ -20,8 +22,9 @@ def progress_user(request, user_id):
     """Return the progress summary of `user` in argument.
     """
     user = get_object_or_404(User, pk=user_id)
-    if (request.user != user ) and not request.user.profile.can_load():
-        raise PermissionDenied("Vous ne pouvez pas visualiser la progression d'autres utilisateurs que vous même.")
+    if (request.user != user) and not request.user.profile.can_load():
+        raise PermissionDenied("Vous ne pouvez pas visualiser la progression "
+                               "d'autres utilisateurs que vous même.")
     all_answer_user = Answer.objects.filter(user=user)
     max_grades_exo = {}
     nb_answer_user = 0
@@ -75,15 +78,11 @@ def progress_user(request, user_id):
     return render(request, 'progress/index.html', context)
 
 
-def this_year_calendar_activity(date_list):
-    """Return a calandar of volume activity over the current
-    educationnal year (from first of Spetember until last day of
-    august).
-
-    [ [(action, fraction, str(day)] ]
-
+def begin_progress_date():
+    """Return the date from which will be calculated the
+    progression evolution. This date is the last first day of
+    september.
     """
-    from datetime import date
     today = date.today()
     this_year = today.year
     this_month = today.month
@@ -95,8 +94,20 @@ def this_year_calendar_activity(date_list):
     else:
         begin = this_year
         end = this_year + 1
+    return date(begin, 9, 1)
+
+
+def this_year_calendar_activity(date_list):
+    """Return a calandar of volume activity over the current
+    educationnal year (from first of Spetember until last day of
+    august).
+
+    [ [(action, fraction, str(day)] ]
+
+    """
     # first september of the current education year
-    fy, fw, fd = date(begin, 9, 1).isocalendar()
+    fy, fw, fd = begin_progress_date().isocalendar()
+    begin, end = fy, fy+1
     all_days = [[(-1, -1, '')]*53 for i in range(7)]
     for dat in date_list:
         w, d = day_index_education(dat, fy, fw, fd)
@@ -165,7 +176,8 @@ def student_list(request):
     progression.
     """
     if not request.user.profile.can_load():
-        raise PermissionDenied("Vous ne pouvez pas visualiser la progression d'autres utilisateurs que vous même.")
+        raise PermissionDenied("Vous ne pouvez pas visualiser la progression "
+                               "d'autres utilisateurs que vous même.")
     # Good as long as 0 hardcode base activity...
     base_0 = get_object_or_404(Activity, id=0)
     courses = list()
