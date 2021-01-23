@@ -5,11 +5,11 @@
 {% block content %}
 <ion-card>
     <ion-card-header>
-      <ion-card-title>Voir la progression personnelle de vos étudiants</ion-card-title>
+      <ion-card-title>Voir la progression personnelle de vos élèves</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <p>Ce panneau vous proposera l'accès à la progression personnel des
-	élèves pour les cours pour lesquels vous êtes enseignants.</p>
+      <p>Ce panneau vous proposera un accès à la progression personnelle des
+	élèves issus des cours pour lesquels vous êtes un enseignant.</p>
       <br>
       {% for course, students in student_list.items() %}
       <b style="color: black">{{ course }}: </b>
