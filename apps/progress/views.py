@@ -11,7 +11,7 @@ from datetime import date
 
 @login_required
 def index(request):
-    """Returns index page of personnal progression over PLaTon.  By
+    """Returns index page of personnal progression over PLaTon. By
     default, the index page is the progress page of requesting user.
     """
     return progress_user(request, request.user.pk)
@@ -97,9 +97,16 @@ def progress_user(request, user_id):
 
 def start_of_period():
     """
-    Return the date from which will be calculated the
-    progression evolution. This date is the last first day of
-    september (the nearest first of september).
+    Return the date from which will be calculated the progression
+    evolution. This date is the nearest passed first of september.
+
+    EXEMPLES::
+    >>> from datetime import date
+    >>> d = start_of_period()
+    >>> d.month
+    9
+    >>> d.day
+    1
     """
     today = date.today()
     this_year = today.year
@@ -118,8 +125,14 @@ def this_year_calendar_activity(date_list):
     educationnal year (from first of Spetember until last day of
     august).
 
-    [ [(action, fraction, str(day)] ]
-
+    it returns a list of lists of tuples of size 3. It contains 7
+    elements (dayweek in line). Each element is a list of 53 elements
+    (53 mondays, 53 tuesdays, etc...), thus each day is described with
+    3 values `(action, fraction, day_fr` where `action` is the number
+    of action requiring a secured execution environement. `fraction`
+    is an integer in `[0, 1, ..., 9]` which index the decile of the
+    quantity of actions among all days. finaly `day_fr` is a python
+    string in french describing the day.
     """
     # first september of the current education year
     # fy, fw, fd = start_of_period().isocalendar()
