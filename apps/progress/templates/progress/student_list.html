@@ -5,9 +5,34 @@
 {% block content %}
 <ion-card>
     <ion-card-header>
-      <ion-card-title>Progression personnelle de vos étudiants</ion-card-title>
+      <ion-card-title>Voir la progression personnelle de vos étudiants</ion-card-title>
     </ion-card-header>
     <ion-card-content>
+      <p>Ce panneau vous proposera l'accès à la progression personnel des
+	élèves pour les cours pour lesquels vous êtes enseignants.</p>
+      <br>
+      {% for course, students in student_list.items() %}
+      <b style="color: black">{{ course }}: </b>
+      <table>
+	{% for line in students %}
+	<tr>
+	  {% for id, firstname, lastname in line %}
+	  <td>
+	    <a href="/progress/progress/{{ id }}/">
+              <ion-chip color="primary" outline="true" color="primary">
+                <ion-icon name="contact"></ion-icon>
+                <ion-label>
+		  {{ firstname }} {{ lastname }}
+                </ion-label>
+              </ion-chip>
+            </a>
+	  </td>
+	  {% endfor %}
+	</tr>
+	{% endfor %}
+      </table>
+      <br>
+      {%  endfor %}
     </ion-card-content>
 </ion-card>
 {% endblock %}
