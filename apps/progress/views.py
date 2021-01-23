@@ -68,7 +68,7 @@ def progress_user(request, user_id):
         evo = (dif*100)/(pts_tag-dif) if pts_tag != dif else -1
         mean_tag = pts_tag / len(tags[tag][0]) if tags[tag][0] else 0
         old_mean_tag = sum(tags[tag][1]) / len(tags[tag][1]) if tags[tag][1] else 0
-        evo_mean = mean_tag - old_mean_tag
+        evo_mean = mean_tag - old_mean_tag if old_mean_tag else None
         tags_info.append((tag, pts_tag, dif, evo, mean_tag, evo_mean))
     tags_info.sort(key=lambda tag: tag[1], reverse=True)
                     

@@ -210,7 +210,7 @@
 	    {% endif %}
 	      {% if evo != 0 %}
 	      <span style="color:darkgreen">
-		+ {{ "%+.2f %%"|format(evo) if evo != -1 else "∞" }}
+		{{ "%+.2f %%"|format(evo) if evo != -1 else "∞" }}
 	      </span>
 	      {% else %}
 	      + 0 %
@@ -228,12 +228,16 @@
 	    {% else %}
 	    <td class="notion_td_2">
 	    {% endif %}
-	      {% if evo_mean >= 0 %}
-	      <span style="color:darkgreen">
+	      {% if evo_mean %}  
+	        {% if evo_mean >= 0 %}
+	        <span style="color:darkgreen">
+	        {% else %}
+	        <span style="color:darkred">	      
+	        {% endif %}
+                {{ "%+.2f %%"|format(evo_mean) }}
 	      {% else %}
-	      <span style="color:darkred">	      
+	        - %
 	      {% endif %}
-              {{ "%+.2f %%"|format(evo_mean) }}
 	      </span>
 	    </td>
 	  </tr>
