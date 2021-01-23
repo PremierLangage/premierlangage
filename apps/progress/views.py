@@ -3,6 +3,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 
+from activity.models import Activity
 from playexo.models import Answer
 
 
@@ -158,9 +159,30 @@ def day_index_education(date, fy, fw, fd):
 
 @login_required
 def student_list(request):
-    """
+    """Return the list of courses for which the requesting user is a
+    teacher and display a tableau of all students for these
+    courses. Element student will carry a link to their personnal
+    progression.
     """
     if not request.user.profile.can_load():
         raise PermissionDenied("Vous ne pouvez pas visualiser la progression d'autres utilisateurs que vous même.")
-    context = { }
+    # Good as long as 0 hardcode base activity...
+    base_0 = get_object_or_404(Activity, id=0)
+    courses = list()
+    for item in base_0.indexed_activities():
+        if item.activity_type == "course" and item.is_teacher(request.user):
+            courses.append(item)
+    student_list = {}
+    for activity in courses:
+        student_list[activity.name] = []
+        for student in activity.student.all():
+            data_st = (student.id, student.first_name, student.last_name)
+            student_list[activity.name].append(data_st)
+        student_list[activity.name].sort(key=lambda x: x[2])
+        grouped = []
+        nb_stud = len(student_list[activity.name])
+        for i in range(0, nb_stud, 4):
+            grouped.append(student_list[activity.name][i:min(i+4, nb_stud)])
+        student_list[activity.name] = grouped
+    context = {'student_list': student_list, }
     return render(request, 'progress/student_list.html', context)
