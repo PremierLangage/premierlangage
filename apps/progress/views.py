@@ -31,7 +31,7 @@ def progress_user(request, user_id):
     nb_answer_user = 0
     nb_attempt = 0
     date_list = []
-    fy, fw, fd = begin_progress_date().isocalendar()
+    fy, fw, fd = start_of_period().isocalendar()
     for trace in all_answer_user:
         nb_answer_user += 1
         date_list.append(trace.date)
@@ -95,9 +95,8 @@ def progress_user(request, user_id):
     return render(request, 'progress/index.html', context)
 
 
-def begin_progress_date():
+def start_of_period():
     """
-    start_of_period()
     Return the date from which will be calculated the
     progression evolution. This date is the last first day of
     september (the nearest first of september).
@@ -124,7 +123,7 @@ def this_year_calendar_activity(date_list):
     """
     # first september of the current education year
     # fy, fw, fd = start_of_period().isocalendar()
-    fy, fw, fd = begin_progress_date().isocalendar()
+    fy, fw, fd = start_of_period().isocalendar()
     begin, end = fy, fy+1
     all_days = [[(-1, -1, '')]*53 for i in range(7)]
     for dat in date_list:
