@@ -98,7 +98,7 @@ def progress_user(request, user_id):
 def begin_progress_date():
     """Return the date from which will be calculated the
     progression evolution. This date is the last first day of
-    september.
+    september (the nearest first of september).
     """
     today = date.today()
     this_year = today.year
