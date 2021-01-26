@@ -1,0 +1,98 @@
+<h1>Advanced Usage</h1>
+<mat-divider></mat-divider>
+<next-prev prevLink="/components/simple-usage" nextLink="/components/components"></next-prev>
+<section>
+    <p>
+        We will see in this chapiter advanced usage of the framework and how
+        to extend the functionalities of the components.
+    </p>
+</section>
+
+<section>
+    <h3>=: Operator</h3>
+    <p>
+        The =: operator is an shorthand syntax to create a JSON. As stated in the introduction,
+        a component outside of graders and builders is just a JSON object. When you use the =: operator,
+        the framework will generate a JSON for you. <br>
+        Example:
+    </p>
+    <p>
+        The line <code>sortlist =: SortList</code> is just a shorthand syntax changed at compile time to: <br />
+        <code>sortlist % {{'{'}} "cid": "RANDOM GENERATED CID", "selector": "c-sort-list" {{'}'}}</code><br/><br/>
+        So if you replace the =: operator by the generated code you will get the same result.
+    </p>
+</section>
+
+<section>
+    <h3>cid and selector properties</h3>
+    <div>
+        As you can see in the example above, the generated JSON contains two properties:
+        <ul>
+            <li>
+                <b>cid:</b>
+                <p>This is the unique identifier of the component used by the framework to keep a track of the component</p>
+             </li>
+            <li>
+                <b>selector</b>
+                <p>This is the html tag that the framework will insert when you use  <code>|component</code> filter.</p>
+            </li>
+        </ul>
+        So if you write <code> {{'{' }} sortlist|component {{ '}'}}</code> in the form of the PL the framework will replace it with :
+        <code> &lt;c-sort-list cid="THE GENERATED CID"&gt;  &lt;c-sort-list/&gt;</code>
+    </div>
+    <p>
+        =: operator is just a shorthand syntax but you can use the full syntax described here and you will get the same result.
+        You are free to give a custom cid.
+    </p>
+</section>
+
+<section>
+    <h3>Create a component inside a builder</h3>
+    <p>
+        The examples of this tutorial create the components outside of PL graders but if you want to create inside a grader
+        you can instantiate the class associated to the component. The class is the same name as the value you put after =: operator. <br/>
+        Example:
+    </p>
+    <p>
+
+    <code>before==</code> <br/>
+    <code>component1 = Component(cid="mycid1", selector= "c-sort-list") # a component with the base class</code> <br/>
+    <code>component2 = MatchList() # cid and selector will be set by the class itself.</code> <br/>
+    <code>globals()["component3"] = SortList() # create a component from a string.</code> <br/>
+    <code>==</code>
+    </p>
+</section>
+
+<section>
+    <h3>Additional notes</h3>
+
+    <p class="info">
+        Components are compatible only with the graders and builders that get
+        the context of the exercise by calling the function
+        <code>sandboxio.get_context()</code>. This is the case for the builder <code>before</code>
+        and the grader <code>evaluator</code>.
+    </p>
+    <p class="info">
+        You can instantiate the component classes without doing a python import
+        because they are added to the context and the sandbox by the framework.
+        So never put a file with the name <code>components.py</code> on the sandbox because it will be removed by the framework.
+    </p>
+    <p class="info">
+        A very important think to keep in mind when you use component is that
+        all the properties you define will be sent to the HTML the component
+        will use only the valid one but students also can see the properties
+        by opening the browser inspector. <br />
+        So NEVER PUT THE ANSWER or any other information that can help the
+        student to find the answer in the component. <br />
+        If you want to save a hidden property, use an another variable like in
+        this example or add the property to the component by prefixing the name
+        of the property by an underscore "_". In this way the framework will not
+        send the property the the browser and you can still use it inside your
+        grade and builder codes.
+    </p>
+    <p class="info">
+        You can sets the property <code>debug</code> of a component to
+        <code>true</code> to display the properties of a component in the HTML.
+    </p>
+</section>
+<next-prev prevLink="/components/simple-usage" nextLink="/components/components"></next-prev>

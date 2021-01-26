@@ -1,0 +1,85 @@
+// Libraries
+@import "../node_modules/@angular/material/prebuilt-themes/indigo-pink.css"; // @angular/material
+@import "../node_modules/prismjs/themes/prism-okaidia.css"; // ngx-markdown
+@import "../node_modules/animate.css/animate.min.css"; // animate.css
+
+// App
+@import "assets/styles/animations.scss";
+
+body {
+    margin: 0 !important;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+pre.debug {
+    img {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+.no-hover-effect.mat-button.mat-primary .mat-button-focus-overlay,
+.no-hover-effect.mat-button.mat-accent .mat-button-focus-overlay,
+.no-hover-effect.mat-button.mat-warn .mat-button-focus-overlay {
+    background-color: transparent;
+}
+
+.error-state {
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    color: #721c24 !important;
+    background-color: #f8d7da !important;
+    border-color: #f5c6cb !important;
+}
+
+.success-state {
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    color: #155724 !important;
+    background-color: #d4edda !important;
+    border-color: #c3e6cb !important;
+}
+
+.warning-state {
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+
+.error-border {
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    border-color: #f5c6cb !important;
+}
+
+.success-border {
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    border-color: #c3e6cb !important;
+}
+
+.warning-border {
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    border-color: #ffeeba;
+}
+
+.center {
+    position: absolute !important;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.mat-tab-header {
+    border: 1px solid #ccc !important;
+}
+
+.exercise__instructions,
+.exercise__feedback {
+    margin-bottom: 16px;
+}

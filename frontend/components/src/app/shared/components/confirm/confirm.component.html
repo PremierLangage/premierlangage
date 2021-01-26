@@ -1,0 +1,6 @@
+<h4 mat-dialog-title>{{data?.title}}</h4>
+<p mat-dialog-content>{{data?.message}}</p>
+<div mat-dialog-actions>
+    <button mat-button (click)="close(true)">{{data?.okTitle}}</button>
+    <button mat-button (click)="close(false)">{{data?.noTitle}}</button>
+</div>

@@ -1,0 +1,35 @@
+<div *ngIf="resizable; else notResizable"
+    class="math-matrix-component {{ css }}"
+    mwlResizable
+    [enableGhostResize]="true"
+    [resizeEdges]="{bottom: true, right: true}"
+    (resizeEnd)="onResizeEnd($event)">
+    <ng-container *ngTemplateOutlet="template"></ng-container>
+</div>
+
+<ng-template #notResizable>
+    <div class="math-matrix-component">
+        <ng-container *ngTemplateOutlet="template"></ng-container>
+    </div>
+</ng-template>
+
+<ng-template #template>
+    <div class="matrix-container">
+        <table class="matrix-table">
+            <tbody>
+                <tr *ngFor="let row of matrix">
+                    <td *ngFor="let cell of row" class="matrix-cell" [ngStyle]="{ width: cellWidth, height: cellHeight }">
+                        <input class="matrix-input {{ cell.css }}"
+                        [ngStyle]="{ width: cellWidth, height: cellHeight }"
+                        [disabled]="disabled || cell.disabled"
+                        tabindex="1" [(ngModel)]="cell.value">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</ng-template>
+
+<ng-container *ngIf="debug">
+    <pre class="debug"  [innerHTML]="serialize() | json"></pre>
+</ng-container>

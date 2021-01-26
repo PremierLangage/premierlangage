@@ -1,0 +1,4 @@
+<div [id]="id" class="jsxgraph-component {{ css }}"></div>
+<ng-container *ngIf="debug">
+    <pre class="debug"  [innerHTML]="serialize() | json"></pre>
+</ng-container>

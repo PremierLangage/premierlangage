@@ -1,0 +1,65 @@
+.navigation {
+    display: flex;
+    height: 100%;
+    width: 100%;
+
+    &.right {
+        flex-direction: row-reverse;
+    }
+}
+
+.activitybar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 0 0 0;
+    width: 36px;
+    min-width: 36px;
+    max-width: 36px;
+    user-select: none;
+    background-color: var(--activityBar-background);
+    color: var(--activityBar-foreground);
+}
+
+.sidebar {
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+    overflow: hidden;
+    user-select: none;
+    background-color: var(--sideBar-background);
+
+    .sidebar-content {
+        height: calc(100% - var(--tab-height));
+        margin: 0px;
+        padding: 0px !important;
+        overflow-x: hidden;
+        overflow-y: auto;
+        user-select: none;
+    }
+}
+
+.nav-action {
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    margin-bottom: 16px;
+    overflow: visible;
+    .fas, .fab {
+        width: 100%;
+        height: 100%;
+        font-size: 24px;
+        text-align: center;
+    }
+
+}
+
+.mat-badge-content {
+    width: unset !important;
+    height: unset !important;
+}
+
+.tab-bar {
+    font-size: .7rem;
+    padding: 0 0 0 8px;
+}

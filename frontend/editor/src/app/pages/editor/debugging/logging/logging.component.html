@@ -1,0 +1,14 @@
+<ul class='logging-content' #container>
+    <h4 class="logging-nothing" *ngIf='empty'>Nothing to display</h4>
+    <ng-container *ngFor="let item of items; let last = last; trackBy track">
+        <li class='log log--{{item.type}}'>
+        <ng-container [ngSwitch]="item.type">
+            <mat-icon *ngSwitchCase="'info'" mat-list-icon class='log-icon'>info</mat-icon>
+            <mat-icon *ngSwitchCase="'warning'" mat-list-icon class='log-icon'>warning</mat-icon>
+            <mat-icon *ngSwitchDefault mat-list-icon class='log-icon'>error</mat-icon>
+        </ng-container>
+        <p class='log-content' [innerHTML]='item.message | trustHtml'></p>
+        </li>
+        <mat-divider *ngIf='!last'></mat-divider>
+    </ng-container>
+</ul>

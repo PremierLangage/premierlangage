@@ -1,0 +1,22 @@
+<as-split direction="horizontal" gutterSize='2' useTransition='true' unit="pixel">
+    <as-split-area style='position: relative; overflow: hidden;' minSize="36" maxSize="720" [size]="navleft.size">
+        <editor-navigation #navleft></editor-navigation>
+    </as-split-area>
+    <as-split-area style='position: relative; overflow: hidden;' size="*">
+        <as-split direction='vertical' gutterSize='2' useTransition='true' (dragEnd)='debugging.dragEnd($event)'>
+            <as-split-area style='position: relative; overflow: hidden;' [size]='100 - debugging.size'>
+                <mat-progress-bar color="warn" mode="indeterminate" *ngIf="taskInProgress"></mat-progress-bar>
+                <editor-workspace class='workspace' #workspace></editor-workspace>
+            </as-split-area>
+            <as-split-area style='position: relative; overflow: hidden;' [size]='debugging.size'>
+                <editor-debugging class='editor-debugging' #debugging></editor-debugging>
+            </as-split-area>
+        </as-split>
+        <quick-open (closed)='showQuickOpen = false' *ngIf='showQuickOpen'></quick-open>
+    </as-split-area>
+<!--     <as-split-area style='position: relative; overflow: hidden;' minSize="36" maxSize="720" [size]="navright.size">
+        <editor-navigation #navright side="right"></editor-navigation>
+    </as-split-area> -->
+</as-split>
+<editor-status-bar></editor-status-bar>
+

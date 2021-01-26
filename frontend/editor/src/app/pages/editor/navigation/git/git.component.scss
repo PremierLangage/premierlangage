@@ -1,0 +1,40 @@
+.mat-accordion .mat-expansion-panel {
+    background-color: transparent;
+}
+
+.line {
+    display: flex;
+    height: 32px;
+    align-items: center;
+    padding-right: 8px;
+    overflow: visible;
+
+    &.selected {
+        border-right: 1px solid;
+    }
+    &.clickable .line-title {
+        cursor: pointer;
+    }
+}
+
+.line-title {
+    font-size: 1em;
+    margin-right: 8px;
+
+    &.mat-badge-medium.mat-badge-overlap.mat-badge-after .mat-badge-content {
+        right: -30px;
+    }
+
+    &.mat-badge-medium.mat-badge-above .mat-badge-content {
+        top: 0;
+    }
+}
+
+.line-subtitle {
+    margin-right: 8px;
+}
+
+.commit, .clone {
+    width: 100%;
+}
+

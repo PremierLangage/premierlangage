@@ -1,0 +1,14 @@
+.countdown-component {
+    border: 1px solid;
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    font-size: 24px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation-duration: 1s;
+    background-color: #007bff;
+    color: white;
+}

@@ -1,0 +1,8 @@
+<div id='editor-overlay-quickOpenWidget' #quickOpen>
+    <input #input type="text" placeholder="Quick Open" [matAutocomplete]="auto" (blur)='onBlured()' [formControl]="form">
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)='onSelected($event)' >
+        <mat-option *ngFor="let entry of $entries | async" [value]="entry">
+            <img [fileIcon]="entry"/><span class='entry-name'>{{entry.name}}</span> - <span class='entry-path'>{{entry.path|path}}</span>
+        </mat-option>
+    </mat-autocomplete>
+</div>

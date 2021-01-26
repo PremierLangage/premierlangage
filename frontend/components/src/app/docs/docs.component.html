@@ -1,0 +1,28 @@
+<mat-drawer-container autosize>
+    <mat-drawer mode="side" [opened]="sidebarOpened">
+    <mat-list>
+        <ng-container *ngFor="let guide of guides">
+            <mat-list-item class="nav-item">
+                <a mat-flat-button [routerLink]="guide.link">{{ guide.name }}</a>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+        </ng-container>
+        <ng-container *ngFor="let definition of api">
+            <mat-list-item class="nav-item">
+                <img [src]="('images/' + definition.icon)|assetPath" [alt]="definition.name">
+                <a class="no-hover-effect" mat-flat-button [routerLink]="definition.link">{{ definition.name }}</a>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+        </ng-container>
+    </mat-list>
+    </mat-drawer>
+    <mat-drawer-content>
+        <mat-toolbar>
+            <button mat-icon-button (click)="sidebarOpened = !sidebarOpened"><mat-icon>menu</mat-icon></button>
+            <span>Components Framework</span>
+        </mat-toolbar>
+        <div class="router-outlet">
+            <router-outlet></router-outlet>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>

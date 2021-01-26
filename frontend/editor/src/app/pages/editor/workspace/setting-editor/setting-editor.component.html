@@ -1,0 +1,42 @@
+<div class='tab-bar'>
+    <div class="tab-item active">
+        <i class="tab-icon fa fa-cog"></i>&nbsp;
+        <span>Settings</span>
+        <span class='tab-close' (click)='didClose()'>&nbsp;&times;</span>
+    </div>
+</div>
+<div class='setting-editor'>
+    <mat-list class='list-groups'>
+        <ng-container *ngFor='let item of groups'>
+            <mat-list-item  *ngIf="item.settings.length !== 0" (click)='didSelect(item)'>
+                <span class='setting-item' [ngClass]='{ active: selection.title === item.title}'>{{item.name|nicifyName}}</span>
+            </mat-list-item>
+        </ng-container>
+    </mat-list>
+    <mat-list>
+        <ng-container *ngFor="let setting of selection.settings">
+           <mat-list-item>
+                <span mat-line class='setting-item active'>{{setting.name|nicifyName:true}}</span>
+                <p mat-line *ngIf='setting.type !== "Checkbox"'>{{setting.comment}}</p>
+                <div mat-line>
+                    <ng-container [ngSwitch]="setting.type">
+                        <mat-checkbox  color='primary' *ngSwitchCase="'Checkbox'" [(ngModel)]='setting.value' (change)='didChange()'>{{setting.comment}}</mat-checkbox>
+                        <mat-form-field *ngSwitchCase="'Number'">
+                            <input matInput type='number' placeholder="" [(ngModel)]="setting.value" (change)='didChange()'>
+                        </mat-form-field>
+                        <mat-form-field *ngSwitchCase="'Input'">
+                            <input matInput type='text' placeholder="" [(ngModel)]="setting.value" (keyup)='didChange()'>
+                        </mat-form-field>
+                        <mat-form-field *ngSwitchCase="'Dropdown'">
+                            <mat-select [(value)]='setting.value' (selectionChange)='didChange()'>
+                                <mat-option *ngFor="let choice of setting.choices" [value]="choice">
+                                    {{choice}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </ng-container>
+                </div>
+            </mat-list-item>
+        </ng-container>
+    </mat-list>
+</div>

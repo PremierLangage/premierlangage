@@ -1,0 +1,4 @@
+<div #container class="math-input-component {{ css }}" [class.disabled]="disabled"></div>
+<ng-container *ngIf="debug">
+    <pre class="debug"  [innerHTML]="serialize() | json"></pre>
+</ng-container>

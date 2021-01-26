@@ -1,0 +1,62 @@
+.match-list-component {
+    display: flex;
+    justify-content: space-around;
+    position: relative;
+    min-height: 100px;
+
+    &.disabled {
+        pointer-events: none;
+        border: dashed 1px #ccc;
+        svg {
+            pointer-events: none;
+        }
+    }
+
+    .align-left {
+        float: left;
+        text-align: right;
+    }
+
+    .align-right {
+        float: right;
+        text-align: left;
+    }
+
+    .match-list-item {
+        position: relative;
+        padding: 8px;
+        margin-bottom:8px;
+        img {
+            width: 64px;
+            height: 64px;
+        }
+    }
+
+    svg.error-state, svg.warning-state, svg.success-state {
+        background-color: unset !important;
+        border: unset !important;
+        border-radius: unset !important;
+    }
+
+    svg.error-state path {
+        stroke: #721c24;
+    }
+
+    svg.warning-state path {
+        stroke: #856404;
+    }
+
+    svg.success-state path {
+        stroke: #155724;
+    }
+
+    img {
+        border-radius: 4px;
+        object-fit: cover;
+        &:hover {
+            box-shadow: 0 3px 10px rgba(0,0,0,0.16);
+        }
+    }
+
+}
+

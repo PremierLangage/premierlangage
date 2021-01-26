@@ -1,0 +1,40 @@
+.hint-component {
+    .hint-component-header {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .hint-component-icon {
+        font-size: 24px;
+        color: #856404;
+        margin-right: 8px;
+    }
+
+    .hint-items-container {
+        margin: 8px 0;
+    }
+
+    .hint-item {
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .hint-content {
+        border-left: 4px solid #f6f7f7;
+        padding-left: 16px;
+        position: relative;
+        flex: 1;
+    }
+
+    .hint-index {
+        color: #00457c;
+        font-weight: 600;
+        margin-right: 13px;
+        white-space: nowrap;
+    }
+
+    .hint-button-next {
+        color: #856404;
+    }
+}

@@ -1,0 +1,15 @@
+<ul class='problems-content' #container>
+    <h4 class="problems-nothing" *ngIf='empty'>No problems</h4>
+    <ng-container *ngFor="let item of items; let last = last; trackBy track">
+        <li class='problem problem--{{item.type}}'>
+            <img class="problem-file-icon" [src]="item.path|fileIcon" />
+            <span class="problem-path" matTooltip="Click to open" (click)="openOnEditor(item)"> {{ item.path }}: {{ item.lineno }}</span>
+            <ng-container [ngSwitch]="item.type">
+                <mat-icon *ngSwitchCase="'warning'" mat-list-icon class='problem-icon'>warning</mat-icon>
+                <mat-icon *ngSwitchDefault mat-list-icon class='problem-icon'>error</mat-icon>
+            </ng-container>
+            <p class='problem-content' [innerHTML]='item.message | trustHtml'></p>
+        </li>
+        <mat-divider *ngIf='!last'></mat-divider>
+    </ng-container>
+</ul>
