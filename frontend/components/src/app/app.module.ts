@@ -32,6 +32,7 @@ import { DefinitionService } from './shared/services/definition.service';
 // COMPONENTS
 import { AutomatonViewerComponent, AutomatonViewerComponentDefinition } from './components/automaton-viewer/automaton-viewer.component';
 import { AutomatonEditorComponent, AutomatonEditorComponentDefinition } from './components/automaton-editor/automaton-editor.component';
+import { ButtonsComponent,  ButtonsComponentDefinition } from './components/buttons/buttons.component';
 import { CheckboxGroupComponent, CheckboxGroupComponentDefinition } from './components/checkbox-group/checkbox-group.component';
 import { CodeEditorComponent, CodeEditorComponentDefinition } from './components/code-editor/code-editor.component';
 import { DragDropComponent, DragDropComponentDefinition } from './components/drag-drop/drag-drop.component';
@@ -58,6 +59,7 @@ import { PlaygroundComponent } from './docs/playground/playground.component';
 import { SimpleUsageComponent } from './docs/simple-usage/simple-usage.component';
 import { COMPONENT_DEFINITIONS } from './shared/models/definition.model';
 import { CssDocComponent } from './docs/css-doc/css-doc.component';
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
 
 
 @NgModule({
@@ -66,6 +68,7 @@ import { CssDocComponent } from './docs/css-doc/css-doc.component';
 
     AutomatonViewerComponent,
     AutomatonEditorComponent,
+    ButtonsComponent,
     CheckboxGroupComponent,
     CodeEditorComponent,
     CountDownComponent,
@@ -90,31 +93,33 @@ import { CssDocComponent } from './docs/css-doc/css-doc.component';
     SimpleUsageComponent,
     AdvancedUsageComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    HttpClientXsrfModule.withOptions({
-        cookieName: 'csrftoken',
-        headerName: 'X-CSRFToken'
-    }),
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        HttpClientXsrfModule.withOptions({
+            cookieName: 'csrftoken',
+            headerName: 'X-CSRFToken'
+        }),
 
-    ResizableModule,
-    MarkdownModule.forRoot(),
-    MonacoEditorModule.forRoot({
-        baseUrl: '/static/editor/assets',
-        defaultOptions: {
-            automaticLayout: true
-        },
-        onMonacoLoad: onMonacoLoaded
-    }),
-    SharedModule,
-  ],
+        ResizableModule,
+        MarkdownModule.forRoot(),
+        MonacoEditorModule.forRoot({
+            baseUrl: '/static/editor/assets',
+            defaultOptions: {
+                automaticLayout: true
+            },
+            onMonacoLoad: onMonacoLoaded
+        }),
+        SharedModule,
+        MatButtonToggleModule,
+    ],
   entryComponents: [
     AppComponent,
 
     AutomatonViewerComponent,
     AutomatonEditorComponent,
+    ButtonsComponent,
     CheckboxGroupComponent,
     CodeEditorComponent,
     CountDownComponent,
@@ -133,6 +138,7 @@ import { CssDocComponent } from './docs/css-doc/css-doc.component';
   providers: [
     { provide: COMPONENT_DEFINITIONS, multi: true, useClass: AutomatonViewerComponentDefinition },
     { provide: COMPONENT_DEFINITIONS, multi: true, useClass: AutomatonEditorComponentDefinition },
+    { provide: COMPONENT_DEFINITIONS, multi: true, useClass: ButtonsComponentDefinition },
     { provide: COMPONENT_DEFINITIONS, multi: true, useClass: CheckboxGroupComponentDefinition },
     { provide: COMPONENT_DEFINITIONS, multi: true, useClass: CodeEditorComponentDefinition },
     { provide: COMPONENT_DEFINITIONS, multi: true, useClass: CountDownComponentDefinition },

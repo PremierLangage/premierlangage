@@ -22,6 +22,15 @@ class AutomatonViewer(Component):
         super().__init__(**kwargs)
         self.selector = 'c-automaton-viewer'
 
+class Buttons(Component):
+
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.selector = 'c-buttons'
+
+
+
 
 
 class CheckboxGroup(Component):

@@ -3,7 +3,7 @@ class ComponentFramework {
     static createElement(component) {
         const selectors = {
             "AutomatonEditor": "c-automaton-editor",
-            "AutomatonDrawer": "c-automaton-drawer", // TODO deprecated
+            "Buttons": "c-buttons", // REMOVE a deprecated
             "AutomatonViewer": "c-automaton-viewer",
             "CheckboxGroup": "c-checkbox-group",
             "CodeEditor": "c-code-editor",

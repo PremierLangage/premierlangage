@@ -1,1 +1,35 @@
 <p>buttons works!</p>
+<mat-button-toggle-group
+    class="  {{ css }}">
+    <ng-container [ngSwitch]="type">
+        <ng-container *ngSwitchCase="'text'">
+
+    <ng-container *ngFor="let item of items; let i = index; trackBy: trackBy">
+        <button
+            class="{{ item.mattype  }}"
+                color="primary"
+                value="item.handle">
+                <div [innerHTML]="item.content | markdown | trustHtml"></div>
+        </button>
+        </ng-container>
+    </ng-container>
+    </ng-container>
+</mat-button-toggle-group>
+<ng-container *ngIf="debug">
+    <pre class="debug" [innerHTML]="serialize() | json"></pre>
+</ng-container>
+
+
+
+<!--
+<ng-container *ngSwitchCase="'multiline'">
+
+    </ng-container>
+
+
+    </ng-container>
+        <ng-container *ngSwitchCase="'icon'">
+
+    </ng-container>
+    </ng-container>
+-->

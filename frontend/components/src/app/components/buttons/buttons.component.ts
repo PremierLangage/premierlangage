@@ -1,41 +1,67 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnInit} from '@angular/core';
 import { ComponentDefinition } from 'src/app/shared/models/definition.model';
+import {RadioItem} from "../../shared/models/radio-item.model";
+import {AbstractComponent, Property} from "../../shared/models/abstract-component.model";
 
 
 @Component({
-  selector: 'app-buttons',
+  selector: 'buttons-component',
   templateUrl: './buttons.component.html',
   styleUrls: ['./buttons.component.css']
 })
-export class ButtonsComponent implements OnInit {
+export class ButtonsComponent extends AbstractComponent {
 
-  constructor() { }
+  readonly properties: Property[] = [
+        { name: 'disabled', default: false },
+        { name: 'horizontal', default: false },
+        { name: 'items', default: [] },
+        { name: 'type', default: 'text' },
+    ];
+    @Input()
+    type: 'svg' | 'text' | 'multiline' | 'icon' = 'text';
+
+    @Input()
+    css: '';
+
+
+    get items(): RadioItem[] {
+        return this.items || (this.items = []);
+    }
+
+    @Input()
+    set items(value: RadioItem[]) {
+        this.items = value || [];
+    }
+
+    constructor(changes: ChangeDetectorRef) {
+        super(changes);
+    }
 
   ngOnInit(): void {
   }
+
+
+
+
+
 
 }
 
 export class ButtonsComponentDefinition implements ComponentDefinition {
     component = ButtonsComponent;
     name = 'Buttons';
-    icon = 'input.svg';
+    icon = 'buttons.svg';
     selector = 'c-buttons';
     description = `Provide a fast answer interface. One click answer and validation.`;
     link = '/components/buttons';
     usages = [
         { label: 'Basic', path: 'playground/buttons.pl' },
-        { label: 'Autocompletion', path: 'playground/buttons-autocomplete.pl' },
+        { label:'icon', path:  'playground/buttons-icon.pl'}
     ];
     properties = [
-        { name: 'disabled', default: false, type: 'boolean', description: 'A value indicating whether the input is disabled or not' },
-        { name: 'maxlength', default: 0, type: 'number', description: 'The maximum number of characters allowed (0 for infinite) only for type = "text" | "multiline"' },
-        { name: 'type', default: 'text', type: '"text" | "number" | "multiline"', description: 'The type of the value returned by the component' },
-        { name: 'appearance', default: 'outline', type: '"legacy" | "standard" | "fill" | "outline"', description: 'Appearance' },
-        { name: 'value', default: null, type: 'string', description: 'The value of the input box' },
-        { name: 'width', default: '100%', type: 'string', description: 'The width of the input box in css units (%, px, rem...)' },
-        { name: 'placeholder', default: '', type: 'string', description: 'Text for the input placeholder' },
-        { name: 'autocomplete', default: [], type: 'string[]', description: 'Autocompletion source' },
+         { name: 'appearance', default: 'line', type: '"box" | "line" | "pile"', description: 'Appearance' },
+         { name: 'type', default: 'text', type: '"text" | "icon" | "multiline" | "svg"', description: 'The type of the value returned by the component' },
+          { name: 'buttons', default: [], type: 'ButtonItem[]', description: 'An array of items (described in <b>Representation</b> section)' },
 
     ];
 }

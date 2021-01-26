@@ -8,4 +8,13 @@ cat > ../../apps/components/templates/components/statics.html << ENDOFFILE
 <script src="{{ static('/components/vendor.js') }}" type="module"></script>
 <script src="{{ static('/components/main.js') }}" type="module"></script>
 ENDOFFILE
+
+cat > src/environments/environments.ts <<ENDOFILE
+export const environment = {
+  production: false,
+  assets: '/static/components/assets',
+  baseUrl: '/static/components'
+};
+ENDOFILE
+
 sudo npm run build:dev

@@ -4,8 +4,10 @@
     [(ngModel)]="selection"
     [disabled]="disabled"
     (change)="detectChanges()">
+
+
     <ng-container *ngFor="let item of items; let i = index; trackBy: trackBy">
-        <div
+            <a
             class="radio-item {{ item.css }}"
             (click)="selection = item.id"
             [class.selected]="selection === item.id">
@@ -15,7 +17,7 @@
                 [value]="item.id">
                 <div [innerHTML]="item.content | markdown | trustHtml"></div>
             </mat-radio-button>
-        </div>
+        </a>
     </ng-container>
 </mat-radio-group>
 <ng-container *ngIf="debug">

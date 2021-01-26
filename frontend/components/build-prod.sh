@@ -10,4 +10,14 @@ cat > ../../apps/components/templates/components/statics.html << ENDOFFILE
 <script src="https://cdn.staticaly.com/gh/PremierLangage/components/master/dist/runtime-es5.js?env=dev" nomodule defer></script>
 <script src="https://cdn.staticaly.com/gh/PremierLangage/components/master/dist/main-es5.js?env=dev" nomodule defer></script>
 ENDOFFILE
+
+cat > src/environments/environments.prod.ts <<ENDOFILE
+export const environment = {
+  production: true,
+  assets: '/static/components/assets',
+  baseUrl: '/static/components'
+};
+ENDOFILE
+
+
 sudo npm run build:prod
