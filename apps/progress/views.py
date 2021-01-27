@@ -25,7 +25,7 @@ def progress_user(request, user_id):
     if (request.user != user) and not request.user.profile.can_load():
         raise PermissionDenied("Vous ne pouvez pas visualiser la progression "
                                "d'autres utilisateurs que vous même.")
-    all_answer_user = Answer.objects.filter(user=user)
+    all_answer_user = Answer.objects.filter(user=user).select_related('pl')
     max_grades_exo = {}
     old_grades_exo = {}
     nb_answer_user = 0
