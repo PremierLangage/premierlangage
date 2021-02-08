@@ -10,6 +10,8 @@ from django.contrib.messages import constants as messages
 APP_DIRNAME = "apps"
 SETTINGS_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(SETTINGS_DIR)
+DOCKER_DEFAULT_FILES = os.path.join(BASE_DIR, 'default_file')
+DOCKER_MEM_LIMIT = "100m"
 APPS_DIR = os.path.realpath(os.path.join(BASE_DIR, APP_DIRNAME))
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -308,7 +310,7 @@ USE_L10N = True
 USE_TZ = True
 
 # Sandbox url:
-SANDBOX = 'http://127.0.0.1:7000/sandbox'
+SANDBOX = 'http://127.0.0.1:7000'
 
 # Static files (CSS, JavaScript, Images)
 STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'static'))
