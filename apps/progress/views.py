@@ -17,20 +17,9 @@ def index(request):
     return progress_user(request, request.user.pk)
 
 
-@login_required
-def progress_user(request, user_id):
-    """Return the progress summary of `user` in argument.
-    """
-    user = get_object_or_404(User, pk=user_id)
-    if (request.user != user) and not request.user.profile.can_load():
-        raise PermissionDenied("Vous ne pouvez pas visualiser la progression "
-                               "d'autres utilisateurs que vous même.")
-    all_answer_user = Answer.objects.filter(user=user).select_related('pl')
-    max_grades_exo = {}
-    old_grades_exo = {}
+def fill_grades_exo(all_answer_user, date_list, old_grades_exo, max_grades_exo):
     nb_answer_user = 0
     nb_attempt = 0
-    date_list = []
     fy, fw, fd = start_of_period().isocalendar()
     for trace in all_answer_user:
         nb_answer_user += 1
@@ -47,7 +36,9 @@ def progress_user(request, user_id):
                 max_grades_exo[trace.pl] = int(trace.grade)
             else:
                 max_grades_exo[trace.pl] = max(int(trace.grade), max_grades_exo[trace.pl])
-    all_days, ybegin, yend = this_year_calendar_activity(date_list)
+    return nb_answer_user, nb_attempt
+
+def fill_tags(max_grades_exo, old_grades_exo):
     tags = {}
     for exo in max_grades_exo:
         if "tag" in exo.json:
@@ -61,6 +52,9 @@ def progress_user(request, user_id):
                     if exo in old_grades_exo:
                         tags[tag][1].append(old_grades_exo[exo])
                     tags[tag][0].append(max_grades_exo[exo])
+    return tags
+
+def fill_tags_info():
     tags_info = []
     for tag in tags:
         pts_tag = sum(tags[tag][0])
@@ -71,12 +65,41 @@ def progress_user(request, user_id):
         evo_mean = mean_tag - old_mean_tag if old_mean_tag else None
         tags_info.append((tag, pts_tag, dif, evo, mean_tag, evo_mean))
     tags_info.sort(key=lambda tag: tag[1], reverse=True)
-                    
+    return tags_info
+
+def compute_user_stats(max_grades_exo, nb_attempt):
     sum_grades = 0
     for exo in max_grades_exo:
         sum_grades += max_grades_exo[exo]
     mean_grade = sum_grades / len(max_grades_exo) if max_grades_exo else 0
     mean_attempt = nb_attempt / len(max_grades_exo) if max_grades_exo else 0
+    return sum_grades, mean_grade, mean_attempt
+
+
+@login_required
+def progress_user(request, user_id):
+    """Return the progress summary of `user` in argument.
+    """
+    user = get_object_or_404(User, pk=user_id)
+    if (request.user != user) and not request.user.profile.can_load():
+        raise PermissionDenied("Vous ne pouvez pas visualiser la progression "
+                               "d'autres utilisateurs que vous même.")
+    all_answer_user = Answer.objects.filter(user=user).select_related('pl')
+    max_grades_exo = {}
+    old_grades_exo = {}
+    nb_answer_user = 0
+    nb_attempt = 0
+    date_list = []
+    nb_answer_user, nb_attempt = fill_grades_exo(all_answer_user, date_list, old_grades_exo, max_grades_exo)
+    all_days, ybegin, yend = this_year_calendar_activity(date_list)
+    tags = fill_tags(max_grades_exo, old_grades_exo)
+    tags_info = fill_tags_info()
+    sum_grades = 0
+    for exo in max_grades_exo:
+        sum_grades += max_grades_exo[exo]
+    mean_grade = sum_grades / len(max_grades_exo) if max_grades_exo else 0
+    mean_attempt = nb_attempt / len(max_grades_exo) if max_grades_exo else 0
+    sum_grades, mean_grade, mean_attempt = compute_user_stats(max_grades_exo, nb_attempt)
     fr_days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
             
     context = {'first_name': user.first_name,
