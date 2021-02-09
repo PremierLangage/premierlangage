@@ -50,7 +50,7 @@ jobs:
           ./bin/install.sh
           python3 manage.py runserver 7000 &> /dev/null &
           cd ..
-          
+
       - name: Install Premier Langage
         run: Y | ./script/install_release.sh
 

@@ -29,18 +29,22 @@
                     <span class="ion-hide-md-down">Valider</span>
                 </button>
                 {% if tests %}
-                <a type="button" class="btn btn-primary action-test"
-                href="{{ url('playexo:test_pl', pl_id__)}}"
-                target="_blank" test>
-                    <i class="fas fa-angle-double-right"></i>
-                    <span class="ion-hide-md-down">Tester</span>
-                </a>
+		  {% if '/demo/' not in request.path %}
+                  <a type="button" class="btn btn-primary action-test"
+                  href="{{ url('playexo:test_pl', pl_id__)}}"
+                  target="_blank" test>
+                      <i class="fas fa-angle-double-right"></i>
+                      <span class="ion-hide-md-down">Tester</span>
+                  </a>
+		  {% endif %}
                 {% endif %}
+		{% if '/demo/' not in request.path %}
                 <a type="button" class="btn btn-secondary action-download-env"
                 href="{{ url('filebrowser:dlenv', id__) }}" download>
                     <i class="fas fa-download"></i>
                     <span class="ion-hide-md-down">Télécharger l'Environnement</span>
                 </a>
+		{% endif %}
             </div>
         </div>
         <!-- SPINNER -->

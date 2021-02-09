@@ -1,0 +1,56 @@
+rect.actino { border: 0px solid black; fill:rgb(255,255,255); stroke-width:1; stroke:rgb(95,95,95) }
+rect.acti0 { border: 0px solid black; fill:rgb(205,205,205); stroke-width:1; stroke:rgb(95,95,95) }
+rect.acti1 { border: 0px solid black; fill:rgb(184, 210, 184); stroke-width:1; stroke:rgb(95,95,95) }
+rect.acti2 { border: 0px solid black; fill:rgb(164, 215, 164); stroke-width:1; stroke:rgb(95,95,95) }
+rect.acti3 { border: 0px solid black; fill:rgb(143, 220, 143); stroke-width:1; stroke:rgb(95,95,95) }
+rect.acti4 { border: 0px solid black; fill:rgb(123, 225, 123); stroke-width:1; stroke:rgb(95,95,95) }
+rect.acti5 { border: 0px solid black; fill:rgb(102, 230, 102); stroke-width:1; stroke:rgb(95,95,95) }
+rect.acti6 { border: 0px solid black; fill:rgb(82, 235, 82); stroke-width:1; stroke:rgb(95,95,95) }
+rect.acti7 { border: 0px solid black; fill:rgb(61, 240, 61); stroke-width:1; stroke:rgb(95,95,95) }
+rect.acti8 { border: 0px solid black; fill:rgb(30, 245, 30); stroke-width:1; stroke:rgb(95,95,95) }
+rect.acti9 { border: 0px solid black; fill:rgb(0, 255, 0); stroke-width:1; stroke:rgb(95,95,95) }
+td.space { height: 12px; border: 0px solid black; }
+td.day_title { border: 0px solid black; font-size: 0.6em; color: black; padding-right: 2px; height: 15px}
+
+.tooltip-wrap {
+    position: relative;
+}
+.tooltip-wrap .tooltip-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    color: black;
+    padding: .5em;
+    top: -45px;
+}
+.tooltip-wrap:hover .tooltip-content {
+    display: block;
+}
+
+.notion_tag {
+    color: rgb(0,0,155);
+    background-color: rgb(220,220,255);
+    padding: 3px;
+    magin: 5px;
+    border-radius: 8px;
+    border: solid 1px rgb(0,0,155);
+}
+
+.notion_td {
+    border-right: 1px solid rgb(95,95,95);
+    padding: 4px;
+    padding-right: 10px;
+    padding-left: 10px;
+    magin: 6px;
+    text-align: center;
+}
+
+.notion_td_2 {
+    border-right: 1px solid rgb(95,95,95);
+    padding: 4px;
+    padding-right: 10px;
+    padding-left: 10px;
+    magin: 6px;
+    background-color: rgb(242,242,242);
+    text-align: center;
+}

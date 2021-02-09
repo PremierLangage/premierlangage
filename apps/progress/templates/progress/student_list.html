@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="{{ static('progress/css/dashboard.css') }}"/>
+{% endblock %}
+{% block content %}
+<ion-card>
+    <ion-card-header>
+      <ion-card-title>Voir la progression personnelle de vos élèves</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>Ce panneau vous proposera un accès à la progression personnelle des
+	élèves issus des cours pour lesquels vous êtes un enseignant.</p>
+      <br>
+      {% for course, students in student_list.items() %}
+      <b style="color: black">{{ course }}: </b>
+      <table>
+	{% for line in students %}
+	<tr>
+	  {% for id, firstname, lastname in line %}
+	  <td>
+	    <a href="/progress/progress/{{ id }}/">
+              <ion-chip color="primary" outline="true" color="primary">
+                <ion-icon name="contact"></ion-icon>
+                <ion-label>
+		  {{ firstname }} {{ lastname }}
+                </ion-label>
+              </ion-chip>
+            </a>
+	  </td>
+	  {% endfor %}
+	</tr>
+	{% endfor %}
+      </table>
+      <br>
+      {%  endfor %}
+    </ion-card-content>
+</ion-card>
+{% endblock %}
