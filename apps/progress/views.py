@@ -100,11 +100,6 @@ def progress_user(request, user_id):
     all_days, ybegin, yend = this_year_calendar_activity(date_list)
     tags = fill_tags(max_grades_exo, old_grades_exo)
     tags_info = fill_tags_info(tags)
-    sum_grades = 0
-    for exo in max_grades_exo:
-        sum_grades += max_grades_exo[exo]
-    mean_grade = sum_grades / len(max_grades_exo) if max_grades_exo else 0
-    mean_attempt = nb_attempt / len(max_grades_exo) if max_grades_exo else 0
     sum_grades, mean_grade, mean_attempt = compute_user_stats(max_grades_exo, nb_attempt)
     fr_days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
             
