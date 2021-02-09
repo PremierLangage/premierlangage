@@ -9,6 +9,9 @@
                 <ion-button id="header-courses" class="app-nav-link" href="/">
                     <i class="app-nav-icon fas fa-graduation-cap"></i>Cours
                 </ion-button>
+		<ion-button id="header-courses" class="app-nav-link" href="/progress/index/">
+                    <i class="app-nav-icon fas fa-chart-line"></i>Progression
+                </ion-button>
                 {% if request.user.is_authenticated and request.user.profile.can_load() %}
                 <ion-button id="header-editor" class="app-nav-link" href="/editor/">
                     <i class="app-nav-icon fas fa-cloud"></i>Editeur
