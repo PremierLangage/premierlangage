@@ -165,7 +165,8 @@ class SessionExerciseAbstract(models.Model):
 
         if response['status'] < 0:
             msg = ("Une erreur s'est produit sur la sandbox (exit code: %d, env: %s)."
-                   + " Merci de prévenir votre professeur.") % (response['status'], response['environment'])
+                   + " Merci de prévenir votre professeur.") % \
+                  (response['status'], response['environment'])
             if request.user.profile.can_load():
                 msg += "<br><br>" + htmlprint.code(response['sandboxerr'])
             raise SandboxError(msg)
@@ -451,7 +452,8 @@ class HighestGrade(models.Model):
 def update_highest_grade(sender, instance, created, *args, **kwargs):
     try:
         prev = HighestGrade.objects.get(user=instance.user, pl=instance.pl)
-        if prev.grade is None or (instance.grade is not None and int(prev.grade) < int(instance.grade)):
+        if prev.grade is None or (instance.grade is not None and
+                                  int(prev.grade) < int(instance.grade)):
             prev.grade = instance.grade
             prev.activity = instance.activity
             prev.save()

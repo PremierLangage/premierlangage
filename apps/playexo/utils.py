@@ -44,7 +44,8 @@ def get_sandboxerr_build(status, timeout):
     if status == 0:
         return ""
     if status == -2:
-        return "Execution of the script build/before timed out after " + str(timeout) + " seconds."
+        return "Execution of the script build/before timed out after " + \
+               str(timeout) + " seconds."
     if status == -3:
         return "File 'processed.json' and 'pl.json' were not found in the environment " \
                "after the execution of the " \
@@ -56,13 +57,17 @@ def get_sandboxerr_eval(status, timeout):
     if status == 0:
         return ""
     if status == -1:
-        return "Execution of the evaluating script failed due to an unkwown error. Please contact your teacher."
+        return "Execution of the evaluating script failed " \
+               "due to an unkwown error. Please contact your teacher."
     if status == -2:
-        return "Execution of the grader timed out after " + str(timeout) + "seconds.\nThe RAM of the sandbox is " \
-                                                                           "currently limited to " + \
-               settings.DOCKER_MEM_LIMIT + ", using more will considerably slow the execution of \
-               your grader.\nDo not forget to close every open file or to use 'with' statement. "
-    return "Execution of the evaluating script returned an invalid value. Please contact your teacher."
+        return "Execution of the grader timed out after " + str(timeout) + \
+               "seconds.\nThe RAM of the sandbox is currently limited to " + \
+               settings.DOCKER_MEM_LIMIT + ", using more will considerably " \
+                                           "slow the execution of \
+               your grader.\nDo not forget to close every open file " \
+                                           "or to use 'with' statement. "
+    return "Execution of the evaluating script returned an invalid value. " \
+           "Please contact your teacher."
 
 
 def render_feedback(feedback):
