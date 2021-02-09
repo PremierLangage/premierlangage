@@ -1,0 +1,59 @@
+name: Python package
+
+on:
+  push:
+    branches:
+      - '*'
+      - '*/*'
+  pull_request:
+    branches:
+      - '*'
+      - '*/*'
+  schedule:
+    - cron:  '0 6 * * 1'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:10.8
+        env:
+          POSTGRES_USER: django
+          POSTGRES_PASSWORD: django_password
+          POSTGRES_DB: django_premierlangage
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    name: Python 3.7
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+          architecture: 'x64'
+
+      - name: Install geckodriver
+        run: |
+          wget https://github.com/mozilla/geckodriver/releases/download/v0.26.0/geckodriver-v0.26.0-linux64.tar.gz
+          mkdir geckodriver
+          tar -xzf geckodriver-v0.26.0-linux64.tar.gz -C geckodriver
+          export PATH=$PATH:$PWD/geckodriver
+
+      - name: Install Sandbox
+        run: |
+          git clone https://github.com/PremierLangage/sandbox.git
+          cd sandbox/
+          git checkout v1.0.14
+          ./install.sh
+          python3 manage.py runserver 7000 &> /dev/null &
+          cd ..
+
+      - name: Install Premier Langage
+        run: sudo Y | ./script/install_release.sh
+
+      - name: Run Tox
+        run: tox
