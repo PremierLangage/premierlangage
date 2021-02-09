@@ -5,7 +5,6 @@
 #
 #  Copyright 2017 Dominique Revuz <dr@univ-mlv.fr>
 #
-import io
 import json
 import logging
 import os
@@ -101,9 +100,11 @@ class SandboxEval:
             response["grade"] = command["stdout"] if not command["exit_code"] else -1
             response["stderr"] = command["stderr"]
             del response['execution']
-            feedback = requests.get(os.path.join(self.sandbox, "files/%s/feedback.html/") % str(response['environment']))
+            feedback = requests.get(os.path.join(self.sandbox,
+                                                 "files/%s/feedback.html/") % str(response['environment']))
             response["feedback"] = feedback.text
-            processed = requests.get(os.path.join(self.sandbox, "files/%s/processed.json/") % str(response['environment']))
+            processed = requests.get(os.path.join(self.sandbox,
+                                                  "files/%s/processed.json/") % str(response['environment']))
             response["context"] = json.loads(processed.text)
             response["sandboxerr"] = get_sandboxerr_eval(response["status"], request_timeout)
 

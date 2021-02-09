@@ -24,13 +24,6 @@ def tar_from_dic(files: Dict[str, str]):
 
             tar.add(env_dir, arcname=os.path.sep)
 
-        # with tarfile.open(tar_name, 'r:gz') as tar:
-        #   for member in tar.getmembers():
-        #      f = tar.extractfile(member)
-        #     if f is not None:
-        #        content = f.read()
-        #       print("\n\nmember =", member, "\ncontent =", content)
-
         with open(tar_name, 'rb') as tar:
             tar_stream = tar.read()
 
