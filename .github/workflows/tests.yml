@@ -53,7 +53,7 @@ jobs:
           cd ..
 
       - name: Install Premier Langage
-        run: sudo Y | ./script/install_release.sh
+        run: Y | ./script/install_release.sh
 
       - name: Run Tox
         run: tox
