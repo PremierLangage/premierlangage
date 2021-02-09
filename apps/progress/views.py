@@ -38,6 +38,7 @@ def fill_grades_exo(all_answer_user, date_list, old_grades_exo, max_grades_exo):
                 max_grades_exo[trace.pl] = max(int(trace.grade), max_grades_exo[trace.pl])
     return nb_answer_user, nb_attempt
 
+
 def fill_tags(max_grades_exo, old_grades_exo):
     tags = {}
     for exo in max_grades_exo:
@@ -54,6 +55,7 @@ def fill_tags(max_grades_exo, old_grades_exo):
                     tags[tag][0].append(max_grades_exo[exo])
     return tags
 
+
 def fill_tags_info(tags):
     tags_info = []
     for tag in tags:
@@ -66,6 +68,7 @@ def fill_tags_info(tags):
         tags_info.append((tag, pts_tag, dif, evo, mean_tag, evo_mean))
     tags_info.sort(key=lambda tag: tag[1], reverse=True)
     return tags_info
+
 
 def compute_user_stats(max_grades_exo, nb_attempt):
     sum_grades = 0
@@ -90,7 +93,10 @@ def progress_user(request, user_id):
     nb_answer_user = 0
     nb_attempt = 0
     date_list = []
-    nb_answer_user, nb_attempt = fill_grades_exo(all_answer_user, date_list, old_grades_exo, max_grades_exo)
+    nb_answer_user, nb_attempt = fill_grades_exo(all_answer_user,
+                                                 date_list,
+                                                 old_grades_exo,
+                                                 max_grades_exo)
     all_days, ybegin, yend = this_year_calendar_activity(date_list)
     tags = fill_tags(max_grades_exo, old_grades_exo)
     tags_info = fill_tags_info(tags)
