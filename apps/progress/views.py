@@ -54,7 +54,7 @@ def fill_tags(max_grades_exo, old_grades_exo):
                     tags[tag][0].append(max_grades_exo[exo])
     return tags
 
-def fill_tags_info():
+def fill_tags_info(tags):
     tags_info = []
     for tag in tags:
         pts_tag = sum(tags[tag][0])
@@ -93,7 +93,7 @@ def progress_user(request, user_id):
     nb_answer_user, nb_attempt = fill_grades_exo(all_answer_user, date_list, old_grades_exo, max_grades_exo)
     all_days, ybegin, yend = this_year_calendar_activity(date_list)
     tags = fill_tags(max_grades_exo, old_grades_exo)
-    tags_info = fill_tags_info()
+    tags_info = fill_tags_info(tags)
     sum_grades = 0
     for exo in max_grades_exo:
         sum_grades += max_grades_exo[exo]
