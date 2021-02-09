@@ -14,7 +14,7 @@ on:
 
 jobs:
   test:
-    runs-on: act-environments-ubuntu:18.04-full
+    runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres:10.8
