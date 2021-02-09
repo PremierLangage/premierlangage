@@ -120,7 +120,7 @@ class SessionExerciseAbstract(models.Model):
         elif response['status'] > 0:  # Grader Error
             feedback = ("Une erreur s'est produite lors de l'exécution du grader "
                         + ("(exit code: %d, env: %s). Merci de prévenir votre professeur"
-                           % (response['status'], response['environment'])))
+                           % (response['status'], response['id'])))
             if request.user.profile.can_load():
                 feedback += "<br><hr>Received on stderr:<br>" + htmlprint.code(response['stderr'])
 
@@ -131,7 +131,7 @@ class SessionExerciseAbstract(models.Model):
 
         self.context.update(response['context'])
         self.context['answers__'] = answers
-        self.envid = response["environment"]
+        self.envid = response["id"]
         self.save()
 
         return answer, feedback, response['status']
@@ -166,7 +166,7 @@ class SessionExerciseAbstract(models.Model):
         if response['status'] < 0:
             msg = ("Une erreur s'est produit sur la sandbox (exit code: %d, env: %s)."
                    + " Merci de prévenir votre professeur.") % \
-                  (response['status'], response['environment'])
+                  (response['status'], response['id'])
             if request.user.profile.can_load():
                 msg += "<br><br>" + htmlprint.code(response['sandboxerr'])
             raise SandboxError(msg)
@@ -188,7 +188,7 @@ class SessionExerciseAbstract(models.Model):
         del response['context__']
 
         context.update(response)
-        self.envid = response['environment__']
+        self.envid = response['id__']
         self.context.update(context)
         self.built = True
         self.save()

@@ -61,6 +61,8 @@ class SandboxBuild:
                 self.sandbox,
                 "files/%s/processed.json/") % response["environment"])
             response["context"] = json.loads(context.text)
+            response["id"] = response["environment"]
+            del response["environment"]
         except json.decoder.JSONDecodeError:  # pragma: no cover
             msg = "Sandbox '" + url + "' returned a non JSON response:\n" + response.text
             logger.critical(msg)
@@ -111,6 +113,8 @@ class SandboxEval:
                 "files/%s/processed.json/") % str(response['environment']))
             response["context"] = json.loads(processed.text)
             response["sandboxerr"] = get_sandboxerr_eval(response["status"], request_timeout)
+            response["id"] = response["environment"]
+            del response["environment"]
 
         except json.decoder.JSONDecodeError:  # pragma: no cover
             msg = "Sandbox '" + url + "' returned a non JSON response:\n" + response.text
