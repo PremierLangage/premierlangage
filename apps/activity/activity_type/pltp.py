@@ -43,7 +43,8 @@ class Pltp(AbstractActivityType):
                     'name':  pl.json['title'],
                     'state': state
                 })
-                exos[count][state] += 1
+                if state != State.ERROR:
+                    exos[count][state] += 1
                 if ans_grade and ans_grade.grade is not None:
                     exos[count]['sum_grades'] += ans_grade.grade
             student.append({

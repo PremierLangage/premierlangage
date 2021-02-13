@@ -63,11 +63,11 @@
                 <tbody>
                     {% for dico_exo in exos %}
                     <tr>
-		        {% for key, val in dico_exo.items() %}
-                        <td>
-                            <center>{{ val }}</center>
-                        </td>
-			{% endfor %}
+		      <td>{{ dico_exo['name'] }}</td>
+		      {% for item in state %}
+		        <td>{{ dico_exo[item] }}</td>
+		      {% endfor %}
+		      <td>{{ "%.2f"|format(dico_exo['mean']|float) }}</td>
                     </tr>
                     {% endfor %}
                     <tr>
