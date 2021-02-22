@@ -57,14 +57,17 @@ class SandboxBuild:
             response['stderr'] = response['execution'][1]['stderr']
             del response['execution']
             response['sandboxerr'] = get_sandboxerr_build(response['status'], request_timeout)
-            context = requests.get(os.path.join(
-                self.sandbox,
-                "files/%s/processed.json/") % response["environment"])
-            response["context"] = json.loads(context.text)
+            if (requests.head(os.path.join(
+                    self.sandbox,
+                    "files/%s/processed.json/") % response["environment"])):
+                context = requests.get(os.path.join(
+                    self.sandbox,
+                    "files/%s/processed.json/") % response["environment"])
+                response["context"] = json.loads(context.text)
             response["id"] = response["environment"]
             del response["environment"]
         except json.decoder.JSONDecodeError:  # pragma: no cover
-            msg = "Sandbox '" + url + "' returned a non JSON response:\n" + response.text
+            msg = "Sandbox '" + url + "' returned a non JSON response\n"
             logger.critical(msg)
             raise SandboxUnavailable(msg)
         except Exception:
@@ -76,10 +79,11 @@ class SandboxBuild:
 
 class SandboxEval:
 
-    def __init__(self, uuid, answers, sandbox=None):
+    def __init__(self, uuid, answers, dic=None, sandbox=None):
         self.uuid = uuid
         self.sandbox = settings.SANDBOX if sandbox is None else sandbox
         self.answers = answers
+        self.dic = dict(dic) if dic is not None else None
 
     def check(self):
         url = os.path.join(self.sandbox, "environments/%s/")
@@ -93,9 +97,13 @@ class SandboxEval:
 
     def call(self, request_timeout=10):
         logger.info("Evaluating on sandbox '" + self.sandbox + "'.")
-        files = {'environment': tar_from_dic({'answers.json': json.dumps(self.answers), })}
+        env = {'answers.json': json.dumps(self.answers)}
+        if self.dic is not None:
+            env['pl.json'] = json.dumps(self.dic)
+        files = {
+            'environment': tar_from_dic(env)}
         commands = ['chmod +x grader.sh', './grader.sh']
-        data = make_data(commands, True, self.uuid)
+        data = make_data(commands, True, str(self.uuid))
         url = os.path.join(self.sandbox, "execute/")
         try:
             response = requests.post(url, data=data, files=files, timeout=request_timeout)
@@ -104,20 +112,26 @@ class SandboxEval:
             response["grade"] = command["stdout"] if not command["exit_code"] else -1
             response["stderr"] = command["stderr"]
             del response['execution']
-            feedback = requests.get(os.path.join(
-                self.sandbox,
-                "files/%s/feedback.html/") % str(response['environment']))
-            response["feedback"] = feedback.text
-            processed = requests.get(os.path.join(
-                self.sandbox,
-                "files/%s/processed.json/") % str(response['environment']))
-            response["context"] = json.loads(processed.text)
+            if (requests.head(os.path.join(
+                    self.sandbox,
+                    "files/%s/feedback.html/") % str(response['environment']))):
+                feedback = requests.get(os.path.join(
+                    self.sandbox,
+                    "files/%s/feedback.html/") % str(response['environment']))
+                response["feedback"] = feedback.text
+            if (requests.head(os.path.join(
+                    self.sandbox,
+                    "files/%s/processed.json/") % str(response['environment']))):
+                processed = requests.get(os.path.join(
+                    self.sandbox,
+                    "files/%s/processed.json/") % str(response['environment']))
+                response["context"] = json.loads(processed.text)
             response["sandboxerr"] = get_sandboxerr_eval(response["status"], request_timeout)
             response["id"] = response["environment"]
             del response["environment"]
 
         except json.decoder.JSONDecodeError:  # pragma: no cover
-            msg = "Sandbox '" + url + "' returned a non JSON response:\n" + response.text
+            msg = "Sandbox '" + url + "' returned a non JSON response\n"
             logger.critical(msg)
             raise SandboxUnavailable(msg)
         except Exception:

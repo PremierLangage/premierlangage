@@ -100,7 +100,7 @@ class SessionExerciseAbstract(models.Model):
         evaluator = SandboxEval(self.envid, answers)
         if not evaluator.check():
             self.build(request, test=test)
-            evaluator = SandboxEval(self.envid, answers)
+            evaluator = SandboxEval(self.envid, answers, dict(self.pl.json))
 
         response = evaluator.call()
 
@@ -174,7 +174,7 @@ class SessionExerciseAbstract(models.Model):
         if response['status'] > 0:
             msg = ("Une erreur s'est produite lors de l'exécution du script before/build "
                    + ("(exit code: %d, env: %s). Merci de prévenir votre professeur"
-                      % (response['status'], response['environment'])))
+                      % (response['status'], response['id'])))
             if request.user.profile.can_load() and response['stderr']:
                 msg += "<br><br>Reçu sur stderr:<br>" + htmlprint.code(response['stderr'])
             raise BuildScriptError(msg)
@@ -186,7 +186,6 @@ class SessionExerciseAbstract(models.Model):
         for key in keys:
             del response[key]
         del response['context__']
-
         context.update(response)
         self.envid = response['id__']
         self.context.update(context)
