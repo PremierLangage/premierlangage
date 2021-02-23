@@ -58,8 +58,13 @@ class SandboxBuild:
             context = requests.get(os.path.join(
                 self.sandbox,
                 "files/%s/processed.json/") % response["environment"])
-            response = requests.post(url, data=make_data(commands, True, environment=response['environment']),
-                                     files={'environment': tar_from_dic({'pl.json': context.text})})
+            response = requests.post(url,
+                                     data=make_data(commands,
+                                                    True,
+                                                    environment=response['environment']),
+                                     files={'environment': tar_from_dic(
+                                         {'pl.json': context.text})}
+                                     )
             response = json.loads(response.text)
             del response['execution']
             response['sandboxerr'] = get_sandboxerr_build(response['status'], request_timeout)
