@@ -30,14 +30,30 @@ def tar_from_dic(files: Dict[str, str]):
     return tar_stream
 
 
-def make_data(list_commands: List[str], save: bool = False, environment=None):
-    return {
-        "config": json.dumps({
-            "commands": list_commands,
-            "save": save,
-            "environment": environment,
-        }),
+def make_data(list_commands: List[str], save: bool, environment=None, result_path=None):
+    commands = {
+        "commands": list_commands,
+        "save": save,
+        "environment": environment,
     }
+    if result_path is not None:
+        commands["result_path"] = result_path
+    return {
+        "config": json.dumps(commands),
+    }
+
+
+def get_file_from_env(requests, sandbox: str, file_name: str, env: str):
+    if requests.head(
+            os.path.join(
+                sandbox,
+                "files/%s/" + file_name + "/"
+            ) % env):
+        file = requests.get(os.path.join(
+            sandbox,
+            "files/%s/" + file_name + "/") % env)
+        return file.text
+    return None
 
 
 def get_sandboxerr_build(status, timeout):
