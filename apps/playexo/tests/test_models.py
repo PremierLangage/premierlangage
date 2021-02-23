@@ -104,7 +104,7 @@ class ModelTestCase(ActivityBaseTestMixin):
         s_exercise.build(R())
         e = s_exercise.evaluate(R(user=self.user),
                                 {'answer': s_exercise.context['op1'] + s_exercise.context['op2']})
-        self.assertTrue("Sandbox error:" in e[1])
+        self.assertTrue("Sandbox error:" not in e[1])
         
         broken_pl = load_file(self.dir, "broken_grader.pl")[0]
         broken_pl.save()

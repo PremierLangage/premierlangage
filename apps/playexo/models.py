@@ -100,7 +100,7 @@ class SessionExerciseAbstract(models.Model):
         evaluator = SandboxEval(self.envid, answers)
         if not evaluator.check():
             self.build(request, test=test)
-            evaluator = SandboxEval(self.envid, answers, dict(self.pl.json))
+            evaluator = SandboxEval(self.envid, answers)
 
         response = evaluator.call()
 
@@ -162,7 +162,6 @@ class SessionExerciseAbstract(models.Model):
         self.save()
 
         response = SandboxBuild(dict(self.context), test=test).call()
-
         if response['status'] < 0:
             msg = ("Une erreur s'est produit sur la sandbox (exit code: %d, env: %s)."
                    + " Merci de prévenir votre professeur.") % \

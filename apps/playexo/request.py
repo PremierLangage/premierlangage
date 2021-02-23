@@ -47,7 +47,7 @@ class SandboxBuild:
 
     def call(self, request_timeout=10):
         files = {'environment': tar_from_dic(self._build_env())}
-        commands = ['chmod +x builder.sh', './builder.sh']
+        commands = ['chmod +x builder.sh', './builder.sh', 'ls']
         data = make_data(commands, True)
         logger.info("Building on sandbox '" + self.sandbox + "'.")
         url = os.path.join(self.sandbox, "execute/")
@@ -55,17 +55,36 @@ class SandboxBuild:
             response = requests.post(url, data=data, files=files, timeout=request_timeout)
             response = json.loads(response.text)
             response['stderr'] = response['execution'][1]['stderr']
+            context = requests.get(os.path.join(
+                self.sandbox,
+                "files/%s/processed.json/") % response["environment"])
+            response = requests.post(url, data=make_data(commands, True, environment=response['environment']),
+                                     files={'environment': tar_from_dic({'pl.json': context.text})})
+            response = json.loads(response.text)
             del response['execution']
             response['sandboxerr'] = get_sandboxerr_build(response['status'], request_timeout)
-            if (requests.head(os.path.join(
-                    self.sandbox,
-                    "files/%s/processed.json/") % response["environment"])):
-                context = requests.get(os.path.join(
-                    self.sandbox,
-                    "files/%s/processed.json/") % response["environment"])
-                response["context"] = json.loads(context.text)
             response["id"] = response["environment"]
             del response["environment"]
+            if requests.head(os.path.join(
+                    self.sandbox,
+                    "files/%s/stderr.log/") % response["id"]):
+                stderr = requests.get(os.path.join(
+                    self.sandbox,
+                    "files/%s/stderr.log/") % response["id"])
+                response["stderr"] = stderr.text
+            if response['status'] != 0:
+                if "JSONDecodeError" in response['stderr']:
+                    response['status'] = -1
+                return response
+            if requests.head(os.path.join(
+                    self.sandbox,
+                    "files/%s/processed.json/") % response["id"]):
+                context = requests.get(os.path.join(
+                    self.sandbox,
+                    "files/%s/processed.json/") % response["id"])
+                response["context"] = json.loads(context.text)
+            else:
+                response['status'] = -1
         except json.decoder.JSONDecodeError:  # pragma: no cover
             msg = "Sandbox '" + url + "' returned a non JSON response\n"
             logger.critical(msg)
@@ -79,11 +98,10 @@ class SandboxBuild:
 
 class SandboxEval:
 
-    def __init__(self, uuid, answers, dic=None, sandbox=None):
+    def __init__(self, uuid, answers, sandbox=None):
         self.uuid = uuid
         self.sandbox = settings.SANDBOX if sandbox is None else sandbox
         self.answers = answers
-        self.dic = dict(dic) if dic is not None else None
 
     def check(self):
         url = os.path.join(self.sandbox, "environments/%s/")
@@ -97,11 +115,7 @@ class SandboxEval:
 
     def call(self, request_timeout=10):
         logger.info("Evaluating on sandbox '" + self.sandbox + "'.")
-        env = {'answers.json': json.dumps(self.answers)}
-        if self.dic is not None:
-            env['pl.json'] = json.dumps(self.dic)
-        files = {
-            'environment': tar_from_dic(env)}
+        files = {'environment': tar_from_dic({'answers.json': json.dumps(self.answers)})}
         commands = ['chmod +x grader.sh', './grader.sh']
         data = make_data(commands, True, str(self.uuid))
         url = os.path.join(self.sandbox, "execute/")
