@@ -52,7 +52,7 @@ class SandboxBuild:
     def call(self, request_timeout=10):
         env = self._build_env()
         files = {'environment': tar_from_dic(env)}
-        commands = ['chmod +x builder.sh', './builder.sh', 'ls']
+        commands = ['chmod +x builder.sh', './builder.sh']
         data = make_data(commands, True, )
         logger.info("Building on sandbox '" + self.sandbox + "'.")
         url = os.path.join(self.sandbox, "execute/")
@@ -72,20 +72,19 @@ class SandboxBuild:
             context = get_file_from_env(requests, self.sandbox, "processed.json", response["id"])
             if context is not None:
                 response["context"] = json.loads(context)
-                tmp = self.dic
+                """tmp = self.dic
                 tmp.update(response["context"])
                 for key in response["context"]:
                     if "test" in key or "soluce" in key:
                         tmp[key] = response["context"][key]
                     if key == "before":
-                        tmp["evaluator"] = response["context"][key] + "\n" + tmp["evaluator"]
+                        tmp["evaluator"] = response["context"][key] + "\n" + tmp["evaluator"]"""
                 response2 = requests.post(url,
-                                          data=make_data(['echo'],
-                                                         True,
-                                                         environment=response["environment"]),
-                                          files={'environment': tar_from_dic(
-                                              {'pl.json': json.dumps(tmp)}
-                                          )})
+                                          data=make_data(
+                                              ['rm pl.json', 'mv processed.json pl.json'],
+                                              True,
+                                              environment=response["environment"]
+                                          ))
                 response2 = json.loads(response2.text)
                 response["id"] = response2["environment"]
             else:
@@ -131,17 +130,31 @@ class SandboxEval:
             response = json.loads(response.text)
             response["id"] = response["environment"]
             command = response['execution'][1]
-            response["grade"] = command["stdout"] if not command["exit_code"] else -1
             stderr = get_file_from_env(requests, self.sandbox, "stderr.log", response["id"])
             if stderr is not None:
                 response["stderr"] = stderr
             response["sandboxerr"] = get_sandboxerr_eval(response["status"], request_timeout)
             feedback = get_file_from_env(requests, self.sandbox, "feedback.html", response["id"])
             if feedback is not None:
+                if feedback == '\n':
+                    feedback = ""
                 response["feedback"] = feedback
             context = get_file_from_env(requests, self.sandbox, "processed.json", response["id"])
             if context is not None:
                 response["context"] = json.loads(context)
+            else:
+                response["context"] = {}
+            try:
+                if not command["exit_code"]:
+                    stdout = int(command["stdout"])
+                    response["grade"] = stdout
+                else:
+                    response["grade"] = -1
+            except ValueError:
+                response["grade"] = -1
+                response['status'] = -4
+                response["feedback"] = "Sandbox error:" + response["sandboxerr"]
+
             del response["environment"]
             del response['execution']
         except json.decoder.JSONDecodeError:  # pragma: no cover
