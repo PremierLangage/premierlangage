@@ -284,3 +284,9 @@ def export_file(request, course_id):
     response = HttpResponse('\n'.join(data))
     response["Content-Disposition"] = u"attachment; filename={0}".format(name)
     return response
+
+def csv_template(request):
+    return render(request, 'activity/activity_type/course/template_csv.html', {"group_name": "nom du groupe",
+                            "group_index": "index de groupe",
+                            "student_id": "identifiant de l'étudiant",
+                            "other_columns": "autres colonnes optionnelles"})

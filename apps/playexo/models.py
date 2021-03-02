@@ -72,6 +72,7 @@ class SessionExerciseAbstract(models.Model):
         Does implement syntax of PL for nested dict. I.E.: 'dict1.dict2.[...].dictn.val' will return
         'context['dict1']['dict2']...['dictn']['val']"""
         current_dic = self.context
+
         sub_keys = key.split('.')
         try:
             for k in sub_keys[:-1]:
@@ -164,6 +165,7 @@ class SessionExerciseAbstract(models.Model):
             test    - (bool) Whether this exercise is in a testing session or not.
         """
         self.context = self.pl.json
+        print("build", self.context.keys())
         
         if 'components.py' not in self.context:
             self.context['__files']['components.py'] = components_source()

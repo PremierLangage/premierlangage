@@ -34,5 +34,6 @@ urlpatterns = [
     path(r'logout/', views.disconnect, name="logout"),
     path(r'load_csv/<int:course_id>/', views.upload_file, name="load_csv"),
     path(r'load_csv/<int:course_id>/list/', views.create_group_from_csv_file, name="list_csv"),
-    path(r'export_csv/<int:course_id>/', views.export_file, name="export_csv")
+    path(r'export_csv/<int:course_id>/', views.export_file, name="export_csv"),
+    path(r'csv_template/', views.csv_template, name="template_csv")
 ]
