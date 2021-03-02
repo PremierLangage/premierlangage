@@ -5,10 +5,10 @@
 
 {% block content %}
 <h1>Aide pour la gestion des groupes à partir d'un fichier csv</h1>
-<p>Dans premier langage, il est possible d'extraire la liste des élèves ainsi que leur groupe d'une activité.
+<p>Dans Premier Langage, il est possible d'extraire la liste des élèves ainsi que leur groupe d'une activité.
    Il est également possible de créer un groupe et ses sous-groupes avec les élèves associés à partir d'un fichier CSV à upload sur Premier Langage</p>
-<p>Ci-dessous, l'ordre des colonnes des csv admissibles dans Premier Langage:</p>
+<p>Ci-dessous, l'ordre des colonnes des CSV admissibles dans Premier Langage:</p>
 <p> {{group_name}},{{group_index}},{{student_id}},{{other_columns}} </p>
-<p>Attention, le séparateur "," est nécessaire.
-L'index de groupe peut être un chiffre ou une lettre.</p>
+<p>Attention, le séparateur "," est nécessaire, les autres types de séparateurs ne seront pas pris en compte.
+L'index de groupe peut être un chiffre ou bien une lettre.</p>
 {% endblock %}

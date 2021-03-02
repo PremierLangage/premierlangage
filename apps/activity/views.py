@@ -270,15 +270,15 @@ def export_file(request, course_id):
     name = "list_groups_cours_" + str(course_id) + ".csv"
     list_student = Activity.objects.get(id=course_id).student.all()
     data = list()
-    data.append('email, Amphi, TD, TP')
+    data.append('nom du groupe, indice de groupe, identifiant étudiant')
 
     for user in list_student:
         groups = user.groups.all()
         if groups.count() == 3:
-            amphi = groups[0].name.split("_")[1]
-            td = groups[1].name.split("_")[1]
-            tp = groups[2].name.split("_")[1]
-            line = user.email + ", " + amphi + ', ' + td + ", " + tp
+            group_name = groups[0].name.split("_")[1]
+            group_index = groups[1].name.split("_")[1]
+            #tp = groups[2].name.split("_")[1]
+            line = f"{group_name}, {group_index}, {user.email} "
             data.append(line)
 
     response = HttpResponse('\n'.join(data))
