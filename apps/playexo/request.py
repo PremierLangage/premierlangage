@@ -52,7 +52,7 @@ class SandboxBuild:
     def call(self, request_timeout=10):
         env = self._build_env()
         files = {'environment': tar_from_dic(env)}
-        commands = ['chmod +x builder.sh', './builder.sh']
+        commands = ['chmod +x clean.sh', './clean.sh', 'chmod +x builder.sh', './builder.sh']
         data = make_data(commands, True, )
         logger.info("Building on sandbox '" + self.sandbox + "'.")
         url = os.path.join(self.sandbox, "execute/")
@@ -60,7 +60,7 @@ class SandboxBuild:
             response = requests.post(url, data=data, files=files, timeout=request_timeout)
             response = json.loads(response.text)
             response["id"] = response["environment"]
-            response['stderr'] = response['execution'][1]['stderr']
+            response['stderr'] = response['execution'][-1]['stderr']
             response['sandboxerr'] = get_sandboxerr_build(response['status'], request_timeout)
             stderr = get_file_from_env(requests, self.sandbox, "stderr.log", response["id"])
             if stderr is not None:
@@ -72,14 +72,6 @@ class SandboxBuild:
             context = get_file_from_env(requests, self.sandbox, "processed.json", response["id"])
             if context is not None:
                 response["context"] = json.loads(context)
-                response2 = requests.post(url,
-                                          data=make_data(
-                                              ['rm pl.json', 'mv processed.json pl.json'],
-                                              True,
-                                              environment=response["environment"]
-                                          ))
-                response2 = json.loads(response2.text)
-                response["id"] = response2["environment"]
             else:
                 response['status'] = -1
             del response["environment"]
@@ -115,14 +107,14 @@ class SandboxEval:
     def call(self, request_timeout=10):
         logger.info("Evaluating on sandbox '" + self.sandbox + "'.")
         files = {'environment': tar_from_dic({'answers.json': json.dumps(self.answers)})}
-        commands = ['chmod +x grader.sh', './grader.sh']
+        commands = ['chmod +x clean.sh', './clean.sh', 'chmod +x grader.sh', './grader.sh']
         data = make_data(commands, True, environment=str(self.uuid))
         url = os.path.join(self.sandbox, "execute/")
         try:
             response = requests.post(url, data=data, files=files, timeout=request_timeout)
             response = json.loads(response.text)
             response["id"] = response["environment"]
-            command = response['execution'][1]
+            command = response['execution'][-1]
             stderr = get_file_from_env(requests, self.sandbox, "stderr.log", response["id"])
             if stderr is not None:
                 response["stderr"] = stderr
@@ -135,15 +127,6 @@ class SandboxEval:
             context = get_file_from_env(requests, self.sandbox, "processed.json", response["id"])
             if context is not None:
                 response["context"] = json.loads(context)
-                response["context"] = json.loads(context)
-                response2 = requests.post(url,
-                                          data=make_data(
-                                              ['rm pl.json', 'mv processed.json pl.json'],
-                                              True,
-                                              environment=response["environment"]
-                                          ))
-                response2 = json.loads(response2.text)
-                response["id"] = response2["environment"]
             else:
                 response["context"] = {}
             try:
