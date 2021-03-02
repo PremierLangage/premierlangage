@@ -526,7 +526,7 @@ def search_in_files(request):  # TODO ADD TEST
 @login_required
 @require_GET
 def download_env(request, envid):
-    r = requests.get(os.path.join(settings.SANDBOX, "env", envid, ""))
+    r = requests.get(os.path.join(settings.SANDBOX, "environments", envid, ""))
     response = HttpResponse(r)
     response['Content-Type'] = "application/gzip"
     response['Content-Disposition'] = r.headers['Content-Disposition']

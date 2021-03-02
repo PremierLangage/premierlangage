@@ -255,6 +255,6 @@ class ViewsTestCase(ActivityBaseTestMixin):
         pl.save()
         response = self.c.get(reverse("playexo:test_pl", args=[pl.id]))
         self.assertEquals(response.status_code, 200)
-        self.assertIn("Builder failed:", response.content.decode())
+        self.assertIn("failing_builder", response.content.decode())
         self.assertIn("Une erreur", response.content.decode())
         self.assertIn("Invalid test format", response.content.decode())

@@ -91,7 +91,6 @@ class PreviewTestCase(TestCase):
         }, content_type='application/json')
         self.assertContains(response, "navigation")
         self.assertContains(response, "Merci de rentrer un entier")
-        self.assertContains(response, "Quentin Coumes")
     
     
     def test_evaluate_pl_invalid_session_id(self):
