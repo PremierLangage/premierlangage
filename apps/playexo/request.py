@@ -72,13 +72,6 @@ class SandboxBuild:
             context = get_file_from_env(requests, self.sandbox, "processed.json", response["id"])
             if context is not None:
                 response["context"] = json.loads(context)
-                """tmp = self.dic
-                tmp.update(response["context"])
-                for key in response["context"]:
-                    if "test" in key or "soluce" in key:
-                        tmp[key] = response["context"][key]
-                    if key == "before":
-                        tmp["evaluator"] = response["context"][key] + "\n" + tmp["evaluator"]"""
                 response2 = requests.post(url,
                                           data=make_data(
                                               ['rm pl.json', 'mv processed.json pl.json'],
@@ -122,7 +115,7 @@ class SandboxEval:
     def call(self, request_timeout=10):
         logger.info("Evaluating on sandbox '" + self.sandbox + "'.")
         files = {'environment': tar_from_dic({'answers.json': json.dumps(self.answers)})}
-        commands = ['chmod +x grader.sh', './grader.sh']
+        commands = ['chmod +x grader.sh', './grader.sh', 'rm pl.json', 'mv processed.json pl.json']
         data = make_data(commands, True, environment=str(self.uuid))
         url = os.path.join(self.sandbox, "execute/")
         try:
