@@ -73,9 +73,12 @@ class SandboxBuild:
             if context is not None:
                 response["context"] = json.loads(context)
                 tmp = self.dic
+                tmp.update(response["context"])
                 for key in response["context"]:
-                    if "test" in key or "soluce" in key or "before" in key:
+                    if "test" in key or "soluce" in key:
                         tmp[key] = response["context"][key]
+                    if key == "before":
+                        tmp["evaluator"] = response["context"][key] + "\n" + tmp["evaluator"]
                 response2 = requests.post(url,
                                           data=make_data(['echo'],
                                                          True,
