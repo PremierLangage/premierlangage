@@ -115,7 +115,7 @@ class SandboxEval:
     def call(self, request_timeout=10):
         logger.info("Evaluating on sandbox '" + self.sandbox + "'.")
         files = {'environment': tar_from_dic({'answers.json': json.dumps(self.answers)})}
-        commands = ['chmod +x grader.sh', './grader.sh', 'rm pl.json', 'mv processed.json pl.json']
+        commands = ['chmod +x grader.sh', './grader.sh']
         data = make_data(commands, True, environment=str(self.uuid))
         url = os.path.join(self.sandbox, "execute/")
         try:
@@ -135,6 +135,15 @@ class SandboxEval:
             context = get_file_from_env(requests, self.sandbox, "processed.json", response["id"])
             if context is not None:
                 response["context"] = json.loads(context)
+                response["context"] = json.loads(context)
+                response2 = requests.post(url,
+                                          data=make_data(
+                                              ['rm pl.json', 'mv processed.json pl.json'],
+                                              True,
+                                              environment=response["environment"]
+                                          ))
+                response2 = json.loads(response2.text)
+                response["id"] = response2["environment"]
             else:
                 response["context"] = {}
             try:
