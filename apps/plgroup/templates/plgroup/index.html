@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<ion-card>
+    <ul>
+        {% for group in plgroups %}
+        <li>{{group.name}}</li>
+        {% endfor %}
+    </ul>
+</ion-card>
+{% endblock content %}

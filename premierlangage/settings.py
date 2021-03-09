@@ -57,6 +57,7 @@ PROJECT_APPS = [
     'activity',
     'git',
     'progress',
+    'plgroup',
 ]
 
 INSTALLED_APPS = PROJECT_APPS + PREREQ_APPS
