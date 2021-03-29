@@ -47,8 +47,8 @@ jobs:
         run: |
           git clone https://github.com/PremierLangage/sandbox.git
           cd sandbox/
-          git checkout v1.0.14
-          ./install.sh
+          git checkout v3.0.2
+          ./bin/install.sh
           python3 manage.py runserver 7000 &> /dev/null &
           cd ..
 
