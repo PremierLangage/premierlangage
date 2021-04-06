@@ -5,6 +5,6 @@ from django.http import HttpResponse
 from plgroup.models import PLGroup
 
 
-def index(request):
+def index(request): 
     plgroups = PLGroup.objects.all()
     return render(request, 'plgroup/index.html', {'plgroups': plgroups})
