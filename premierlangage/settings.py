@@ -10,18 +10,16 @@ from django.contrib.messages import constants as messages
 APP_DIRNAME = "apps"
 SETTINGS_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(SETTINGS_DIR)
-DOCKER_DEFAULT_FILES = os.path.join(BASE_DIR, 'default_file')
-DOCKER_MEM_LIMIT = "100m"
 APPS_DIR = os.path.realpath(os.path.join(BASE_DIR, APP_DIRNAME))
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "o!m$n&s4=kcftm1de1m+7!36a=8x38wrr)m9)i@ru7j-*c7vgm"
+SECRET_KEY = os.getenv('SECRET_KEY', 'defaultsecretkey')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
 # List of Allowed Hosts
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', '127.0.0.1')]
 
 # Used by mail_admins log handler,
 # set ENABLE_MAIL_ADMINS to True to use it (DEBUG should also be set to False)
@@ -58,12 +56,11 @@ PROJECT_APPS = [
     'components',
     'activity',
     'git',
-    'progress',
 ]
 
 INSTALLED_APPS = PROJECT_APPS + PREREQ_APPS
 
-INSTALLED_APPS += ('django_jinja','django_extensions')
+INSTALLED_APPS += ('django_jinja',)
 
 # Middleware definition
 MIDDLEWARE = [
@@ -159,11 +156,11 @@ WSGI_APPLICATION = 'premierlangage.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE':   'django.db.backends.postgresql',
-        'NAME':     'django_premierlangage',
-        'USER':     'django',
-        'PASSWORD': 'django_password',
-        'HOST':     '127.0.0.1',
-        'PORT':     '5432',
+        'NAME':     os.getenv('DATABASE_NAME', 'django_premierlangage'),
+        'USER':     os.getenv('DATABASE_USERNAME', 'django'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD', 'django_password'),
+        'HOST':     os.getenv('DATABASE_HOST', '127.0.0.1'),
+        'PORT':     os.getenv('DATABASE_PORT', '5432'),
     }
 }
 
@@ -311,7 +308,7 @@ USE_L10N = True
 USE_TZ = True
 
 # Sandbox url:
-SANDBOX = 'http://127.0.0.1:7000'
+SANDBOX = os.getenv('SANDBOX_URL', 'http://127.0.0.1:7000/sandbox')
 
 # Static files (CSS, JavaScript, Images)
 STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'static'))

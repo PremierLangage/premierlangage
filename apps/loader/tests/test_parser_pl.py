@@ -49,7 +49,7 @@ class PlParserTestCase(TestCase):
     def test_init_parser(self):
         pl.Parser(self.dir, "working.pl")
         with self.assertRaises(FileNotFoundError):
-            pl.Parser(self.dir, "unknown.pl").parse()
+            pl.Parser(self.dir, "unknown.pl")
     
     
     def test_get_parser(self):
@@ -73,7 +73,7 @@ class PlParserTestCase(TestCase):
         # extends
         self.assertIn({
             'directory_name': 'dir1', 'lineno': 18, 'line': 'extends=working.pl\n',
-            'path':           'working.pl'
+            'path'          : 'working.pl'
         }, dic["__extends"])
         # =@ +=@ -=@
         with open(os.path.join(FAKE_FB_ROOT, "dir1/working.pl")) as f:
@@ -86,16 +86,13 @@ class PlParserTestCase(TestCase):
         # Override % with a.a
         self.assertEqual({'a': '3', 'b': 2}, dic['a'])
     
-    
     def test_parse_url(self):
         dic, war = pl.Parser(self.dir, "image.pl").parse()
         self.assertEqual(to_download_url('dir1/image.png'), dic['img'])
     
-    
     def test_parse_component(self):
-        pass  # TODO
-    
-    
+        pass # TODO
+
     def test_parse_errors(self):
         with self.assertRaises(SyntaxErrorPL):
             pl.Parser(self.dir, "no_string_in_sub_key.pl").parse()

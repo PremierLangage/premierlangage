@@ -19,14 +19,14 @@ def make_list(s):
 
 
 
-def first(lst):
-    return lst[0] if lst else None
+def first(l):
+    return l[0] if l else None
 
 
 
-def component(lst):
-    selector = lst["selector"]
-    cid = lst["cid"]
+def component(l):
+    selector = l["selector"]
+    cid = l["cid"]
     return SafeString("<%s cid='%s'></%s>" % (selector, cid, selector))
 
 

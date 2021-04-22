@@ -1,0 +1,34 @@
+# Please, run docker-dev-prepare.sh before.
+version: '3'
+services:
+  pl:
+    image: docker_pl:0.7.1
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PL_FOLDER: ./
+    volumes:
+      - .:/usr/src/app
+    environment:
+      - PL_ENV_TYPE=local #local, release (docker-compose exec pl python3 manage.py createsuperuser), db
+      - PL_STATIC_FILES=true
+      - DATABASE_NAME=django_premierlangage
+      - DATABASE_HOST=pg
+      - DATABASE_PORT=5432
+      - DATABASE_USERNAME=pl
+      - DATABASE_PASSWORD=plpassword
+      - SANDBOX_URL=http://127.0.0.1:7000/sandbox
+      - ALLOWED_HOSTS=*
+      - SECRET_KEY=mygreatsupersecretkey
+    ports:
+      - 8000:8000
+    links:
+      - pg
+
+  pg:
+    image: postgres
+    environment:
+      - POSTGRES_USER=pl
+      - POSTGRES_PASSWORD=plpassword
+      - POSTGRES_DB=django_premierlangage

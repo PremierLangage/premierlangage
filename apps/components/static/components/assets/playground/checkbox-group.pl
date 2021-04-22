@@ -1,51 +1,27 @@
 @ /utils/sandboxio.py
-
 grader  =@ /grader/evaluator.py
 builder =@ /builder/before.py
 
-group =: CheckboxGroup
+component =: CheckboxGroup
 
-# GENERATE A RANDOM QUESTION
 before==
-import random
-group.items = []
-for i in range(4):
-    group.items.append({
-        "id": str(i),
-        "content": str(random.randint(0, 100))
-    })
+component.items = [
+    { "id": "Winter", "content": "Winter" },
+    { "id": "Spring", "content": "Spring", "css": "error-state" },
+    { "id": "Summer", "content": "Summer" },
+    { "id": "Autumn", "content": "<img src='https://htpratique.com/wp-content/uploads/2018/06/Les-meilleurs-outils-pour-créer-un-quiz-et-questionnaires-en-ligne.jpg'/>" }
+]
 ==
 
 title = Checkbox Group Component
 
 text==
-Select even numbers.
 ==
 
-# PRESENT THE QUESTION TO THE STUDENT
 form==
-{{ group|component }}
+{{ component|component }}
 ==
 
-# EVALUATE THE STUDENT ANSWER
 evaluator==
-right = 0
-total = 0
-for item in group.items:
-    checked = item['checked']
-    content = int(item['content'])
-    if content % 2 == 0:
-        total += 1
-        item['css'] = 'success-border animated pulse infinite'
-        if checked:
-            right += 1
-            item['css'] = 'success-border'
-    elif checked:
-        item['css'] = 'error-border'
-
-
-if total == 0:
-    grade = (100, 'Right')
-else:
-    grade = ((right / total) * 100, f"{right} / {total}")
+grade = (100, "")
 ==

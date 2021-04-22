@@ -1,10 +1,9 @@
 import logging
+import time
 
 import htmlprint
-import time
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import Index
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.template.loader import get_template
@@ -18,7 +17,9 @@ from playexo.enums import State
 from playexo.exception import BuildScriptError, SandboxError
 from playexo.request import SandboxBuild, SandboxEval
 
+
 logger = logging.getLogger(__name__)
+
 
 
 def create_seed():
@@ -27,24 +28,26 @@ def create_seed():
 
 class SessionExerciseAbstract(models.Model):
     """Abstract class to represent the state of a PL for a given user.
-
+    
     Parameters:
         pl      - PL corresponding to this session (None if it's the PLTP session).
         built   - Whether the session is built (True), or need to be built (False).
         envid   - Must contains the ID of the environment on the sandbox if the session is built.
         context - Dictionnary of the PL (or PLTP)."""
-
+    
     pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=True)
     built = models.BooleanField(default=False)
     envid = models.CharField(max_length=300, null=True)
     context = JSONField(null=True)
-
+    
+    
     class Meta:
         abstract = True
-
+    
+    
     def add_to_context(self, key, value):
         """Add value corresponding to key in the context."""
-
+        
         current_dic = self.context
         sub_keys = key.split(".")
         for k in sub_keys:
@@ -54,10 +57,11 @@ class SessionExerciseAbstract(models.Model):
             current_dic[k] = current_dic.get(k, dict())
             current_dic = current_dic[k]
         last_key = sub_keys[-1]
-
+        
         current_dic[last_key] = value
         self.save()
-
+    
+    
     def get_from_context(self, key):
         """Get key from context.
 
@@ -73,10 +77,10 @@ class SessionExerciseAbstract(models.Model):
             return current_dic[sub_keys[-1]]
         except KeyError:
             return False
-
+    
+    
     def reroll(self, seed, grade=None):
         """Return whether the seed must be reroll (True) or not (False).
-
 
         Seed must be reroll if:
             - seed does not exists yet
@@ -88,10 +92,11 @@ class SessionExerciseAbstract(models.Model):
                              if oneshot_threshold and oneshot_threshold.isdigit()
                              else 100)
         return not seed or (oneshot and grade is not None and grade < oneshot_threshold)
-
+    
+    
     def raw_evaluate(self, request, answers, test=False):
         """Evaluate the exercise with the given answers according to the current context.
-
+        
         Parameters:
             request - (django.http.request) Current Django request object.
             answers - (dict) Answers of the student.
@@ -101,44 +106,44 @@ class SessionExerciseAbstract(models.Model):
         if not evaluator.check():
             self.build(request, test=test)
             evaluator = SandboxEval(self.envid, answers)
-
+        
         response = evaluator.call()
-
+        
         answer = {
             "answers": answers,
-            "user": request.user,
-            "pl": self.pl,
-            "grade": response['grade'],
+            "user":    request.user,
+            "pl":      self.pl,
+            "grade":   response['grade'],
         }
-
+        
         if response['status'] < 0:  # Sandbox Error
             feedback = response['feedback']
             if request.user.profile.can_load() and response['sandboxerr']:
                 feedback += "<br><hr>Sandbox error:<br>" + htmlprint.code(response['sandboxerr'])
                 feedback += "<br><hr>Received on stderr:<br>" + htmlprint.code(response['stderr'])
-
+        
         elif response['status'] > 0:  # Grader Error
             feedback = ("Une erreur s'est produite lors de l'exécution du grader "
                         + ("(exit code: %d, env: %s). Merci de prévenir votre professeur"
                            % (response['status'], response['id'])))
             if request.user.profile.can_load():
                 feedback += "<br><hr>Received on stderr:<br>" + htmlprint.code(response['stderr'])
-
-        else:
+        
+        else:  # Success
             feedback = response['feedback']
             if request.user.profile.can_load() and response['stderr']:
                 feedback += "<br><br>Received on stderr:<br>" + htmlprint.code(response['stderr'])
-
+        
         self.context.update(response['context'])
         self.context['answers__'] = answers
-        self.envid = response["id"]
         self.save()
-
+        
         return answer, feedback, response['status']
-
+    
+    
     def evaluate(self, request, answers, test=False):
         """Evaluate the exercise with the given answers according to the current context.
-
+        
         Parameters:
             request - (django.http.request) Current Django request object.
             answers - (dict) Answers of the student.
@@ -146,30 +151,31 @@ class SessionExerciseAbstract(models.Model):
         """
         answer, feedback, status = self.raw_evaluate(request, answers, test)
         return answer, feedback
-
+    
+    
     def build(self, request, test=False, seed=None):
         """Build the exercise with the given according to the current context.
-
+        
         Parameters:
             request - (django.http.request) Current Django request object.
             test    - (bool) Whether this exercise is in a testing session or not.
         """
         self.context = self.pl.json
-
+        
         if 'components.py' not in self.context:
             self.context['__files']['components.py'] = components_source()
         self.context['seed'] = seed if seed else create_seed()
         self.save()
-
+        
         response = SandboxBuild(dict(self.context), test=test).call()
+        
         if response['status'] < 0:
             msg = ("Une erreur s'est produit sur la sandbox (exit code: %d, env: %s)."
-                   + " Merci de prévenir votre professeur.") % \
-                  (response['status'], response['id'])
+                   + " Merci de prévenir votre professeur.") % (response['status'], response['id'])
             if request.user.profile.can_load():
                 msg += "<br><br>" + htmlprint.code(response['sandboxerr'])
             raise SandboxError(msg)
-
+        
         if response['status'] > 0:
             msg = ("Une erreur s'est produite lors de l'exécution du script before/build "
                    + ("(exit code: %d, env: %s). Merci de prévenir votre professeur"
@@ -177,7 +183,7 @@ class SessionExerciseAbstract(models.Model):
             if request.user.profile.can_load() and response['stderr']:
                 msg += "<br><br>Reçu sur stderr:<br>" + htmlprint.code(response['stderr'])
             raise BuildScriptError(msg)
-
+        
         context = dict(response['context'])
         keys = list(response.keys())
         for key in keys:
@@ -185,12 +191,14 @@ class SessionExerciseAbstract(models.Model):
         for key in keys:
             del response[key]
         del response['context__']
+        
         context.update(response)
         self.envid = response['id__']
         self.context.update(context)
         self.built = True
         self.save()
-
+    
+    
     def render(self, template, context, request):
         env = Jinja2.get_default()
         for k, v in context.items():
@@ -199,16 +207,17 @@ class SessionExerciseAbstract(models.Model):
                     context=context,
                     request=request
                 )
-
+        
         return get_template(template).render({
             "__components": Component.from_context(context),
             **context
         }, request)
 
 
+
 class SessionExercise(SessionExerciseAbstract):
     """Class representing the state of a PL inside of a SessionActivity.
-
+    
     Parameters:
         pl      - PL corresponding to this session (None if it's the PLTP session).
         built   - Whether the session is built (True), or need to be built (False).
@@ -216,19 +225,22 @@ class SessionExercise(SessionExerciseAbstract):
         context - Dictionnary of the PL (or PLTP).
         session_activity - SessionActivity to which this SessionExercise belong."""
     session_activity = models.ForeignKey("activity.SessionActivity", on_delete=models.CASCADE)
-
+    
+    
     class Meta:
         unique_together = ('pl', 'session_activity')
-
+    
+    
     @receiver(post_save, sender="activity.SessionActivity")
     def create_session_exercise(sender, instance, created, **kwargs):
-        """When an SessionActivity is created, automatically create a SessionExercise for the PLTP
+        """When an ActivitySession is created, automatically create a SessionExercise for the PLTP
         and every PL."""
         if created:
             for pl in instance.activity.indexed_pl():
                 SessionExercise.objects.create(session_activity=instance, pl=pl)
             SessionExercise.objects.create(session_activity=instance)  # For the pltp
-
+    
+    
     def save(self, *args, **kwargs):
         """Automatically add the PL/PLTP json content to the context if context is empty when
         saving."""
@@ -240,13 +252,14 @@ class SessionExercise(SessionExerciseAbstract):
         if 'activity_id__' not in self.context:
             self.context['activity_id__'] = self.session_activity.activity.id
         super().save(*args, **kwargs)
-
+    
+    
     def get_pl(self, request, context):
         """Return a template of the PL rendered with context."""
         pl = self.pl
         highest_grade = Answer.highest_grade(pl, self.session_activity.user)
         last = Answer.last(pl, self.session_activity.user)
-
+        
         seed = (last.seed if last else
                 self.context['seed'] if 'seed' in self.context else
                 None)
@@ -254,29 +267,30 @@ class SessionExercise(SessionExerciseAbstract):
             seed = create_seed()
             self.built = False
         self.add_to_context('seed', seed)
-
+        
         if not self.built:
             self.build(request)
-
+        
         dic = {
             **self.context,
             **{
                 'user_settings__': self.session_activity.user.profile,
-                'user__': self.session_activity.user,
-                'pl_id__': pl.id,
-                'answers__': last.answers if last else {},
-                'grade__': highest_grade.grade if highest_grade else None,
+                'user__':          self.session_activity.user,
+                'pl_id__':         pl.id,
+                'answers__':       last.answers if last else {},
+                'grade__':         highest_grade.grade if highest_grade else None,
             },
         }
         if context:
             dic = {**context, **dic}
-
+        
         return self.render('playexo/pl.html', dic, request)
+
 
 
 class SessionTest(SessionExerciseAbstract):
     """Class representing the state of a PL inside of a SessionActivity.
-
+    
     Parameters:
         pl      - PL corresponding to this session.
         built   - Whether the session is built (True), or need to be built (False).
@@ -284,30 +298,32 @@ class SessionTest(SessionExerciseAbstract):
         context - Dictionnary of the PL (or PLTP).
         user    - User currently testing a PL.
         date    - Date of the creation of the session.
-
+        
     When the number of session for an user exceed MAX_SESSION_PER_USER, older session are deleted.
     """
     MAX_SESSION_PER_USER = 100
-
+    
     pl = models.ForeignKey(PL, on_delete=models.CASCADE, null=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
     date = models.DateTimeField(default=timezone.now, null=False)
-
+    
+    
     def save(self, *args, **kwargs):
         """Automatically add the PL's json content to the context if context is empty when
         saving. Will also delete outdated session."""
         if not self.context:
             self.context = dict(self.pl.json)
-
+        
         q = SessionTest.objects.filter(user=self.user).order_by("-date")
         if len(q) >= self.MAX_SESSION_PER_USER:
             q[0].delete()
-
+        
         super().save(*args, **kwargs)
-
+    
+    
     def get_pl(self, request, answer=None, template=None):
         """Return a template of the PL rendered with context.
-
+        
         If answer is given, will determine if the seed must be reroll base on its grade."""
         pl = self.pl
         seed = self.context['seed'] if 'seed' in self.context else None
@@ -315,23 +331,24 @@ class SessionTest(SessionExerciseAbstract):
             seed = create_seed()
             self.built = False
             self.add_to_context('seed', seed)
-
+        
         if not self.built:
             self.build(request, test=True)
-
+        
         dic = {
             **self.context,
             'user_settings__': self.user.profile,
-            'session__': self,
-            'user__': self.user,
-            'pl_id__': pl.id,
+            'session__':       self,
+            'user__':          self.user,
+            'pl_id__':         pl.id,
         }
         template = template if template else "playexo/preview.html"
         return self.render(template, dic, request)
-
+    
+    
     def get_exercise(self, request, answer=None):
         """Return a template of the PL.
-
+        
         If answer is given, will determine if the seed must be reroll base on its grade."""
         try:
             return self.get_pl(request, answer)
@@ -344,6 +361,7 @@ class SessionTest(SessionExerciseAbstract):
             })
 
 
+
 class Answer(models.Model):
     answers = JSONField(default='{}')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -352,36 +370,37 @@ class Answer(models.Model):
     seed = models.CharField(max_length=100, default=create_seed)
     date = models.DateTimeField(default=timezone.now)
     grade = models.IntegerField(null=True)
-
+    
     class Meta:
-        indexes = [
-            Index(fields=["activity"]),
-            Index(fields=["pl", "user"])
-        ]
-
+        index_together = ("pl", "user")
+    
     @staticmethod
     def highest_grade(pl, user):
-        try:
-            return HighestGrade.objects.get(pl=pl, user=user)
-        except HighestGrade.DoesNotExist:
-            return None
-
+        null = list(Answer.objects.filter(pl=pl, user=user).filter(grade__isnull=True))
+        answers = list(Answer.objects.filter(pl=pl, user=user)
+                       .filter(grade__isnull=False).order_by("-grade"))
+        return (answers + null)[0] if (answers + null) else None
+    
+    
     @staticmethod
     def last(pl, user):
         answers = Answer.objects.filter(pl=pl, user=user).order_by("-date")
         return None if not answers else answers[0]
-
+    
+    
     @staticmethod
     def pl_state(pl, user):
         """Return the state of the answer with the highest grade."""
         answer = Answer.highest_grade(pl, user)
         return State.by_grade(answer.grade if answer else ...)
-
+    
+    
     @staticmethod
     def activity_state(activity, user):
         """Return a list of tuples (pl_id, state) where state follow pl_state() rules."""
         return [(pl.id, Answer.pl_state(pl, user)) for pl in activity.indexed_pl()]
-
+    
+    
     @staticmethod
     def activity_summary(activity, user):
         """
@@ -394,24 +413,27 @@ class Answer(models.Model):
                 'not_started': [ % not started, nbr not started],
                 'error':       [ % error, nbr error],
             }
-
+            
             All data are strings."""
         state = {
-            State.SUCCEEDED: [0.0, 0],
-            State.PART_SUCC: [0.0, 0],
-            State.FAILED: [0.0, 0],
-            State.STARTED: [0.0, 0],
+            State.SUCCEEDED:   [0.0, 0],
+            State.PART_SUCC:   [0.0, 0],
+            State.FAILED:      [0.0, 0],
+            State.STARTED:     [0.0, 0],
             State.NOT_STARTED: [0.0, 0],
-            State.ERROR: [0.0, 0],
+            State.ERROR:       [0.0, 0],
         }
-
+        
         for pl in activity.indexed_pl():
             state[Answer.pl_state(pl, user)][1] += 1
+        
         nb_pl = max(sum([state[k][1] for k in state]), 1)
         for k, v in state.items():
             state[k] = [str(state[k][1] * 100 / nb_pl), str(state[k][1])]
+        
         return state
-
+    
+    
     @staticmethod
     def course_state(course):
         """
@@ -423,7 +445,7 @@ class Answer(models.Model):
             }
             where 'state' follow pl_state() rules.
         """
-
+        
         lst = list()
         for user in (list(course.student.all()) + list(course.teacher.all())):
             dct = dict()
@@ -431,30 +453,5 @@ class Answer(models.Model):
             for activity in course.activity_set.all():
                 dct['pl'] = Answer.activity_state(activity, user)
             lst.append(dct)
-
+        
         return lst
-
-
-class HighestGrade(models.Model):
-    grade = models.IntegerField(null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    pl = models.ForeignKey(PL, on_delete=models.CASCADE)
-    activity = models.ForeignKey("activity.Activity", null=True, on_delete=models.CASCADE)
-
-    class Meta:
-        index_together = ("pl", "user")
-        unique_together = ("pl", "user")
-
-
-@receiver(post_save, sender=Answer)
-def update_highest_grade(sender, instance, created, *args, **kwargs):
-    try:
-        prev = HighestGrade.objects.get(user=instance.user, pl=instance.pl)
-        if prev.grade is None or (instance.grade is not None and
-                                  int(prev.grade) < int(instance.grade)):
-            prev.grade = instance.grade
-            prev.activity = instance.activity
-            prev.save()
-    except HighestGrade.DoesNotExist:
-        HighestGrade.objects.create(user=instance.user, pl=instance.pl, grade=instance.grade,
-                                    activity=instance.activity)

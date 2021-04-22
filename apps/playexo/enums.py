@@ -32,16 +32,16 @@ class State(Enum):
     @classmethod
     def by_grade(cls, grade=...):
         """Return the corresponding enum member according to grade."""
-        if grade is None:
-            return cls.STARTED
         if grade is ...:
             return cls.NOT_STARTED
+        if grade is None:
+            return cls.STARTED
         if grade == 100:
             return cls.SUCCEEDED
-        if grade == 0:
-            return cls.FAILED
         if 99 >= grade >= 1:
             return cls.PART_SUCC
+        if grade == 0:
+            return cls.FAILED
         if grade == -1:
             return cls.ERROR
         return cls.STARTED

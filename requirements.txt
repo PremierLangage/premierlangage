@@ -1,8 +1,7 @@
 wheel
-django<3.0.0
+django>=2.0,<2.3
 django-annoying
 django-celery-results
-django-extensions
 django-hitcount
 django-http-method
 django-jinja
@@ -19,12 +18,11 @@ mock
 oauth2
 ply
 pydenticon
-pygiftparser
 pytest
 pytest-django
 python-magic
 pytz
-psycopg2-binary
+psycopg2
 recommonmark
 requests
 selenium

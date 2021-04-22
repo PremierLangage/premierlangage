@@ -8,12 +8,10 @@ from loader.models import PL
 from playexo.enums import State
 from playexo.models import Answer
 
-from shared.graphic_utils import graph_percent
 
 
 class Pltp(AbstractActivityType):
-
-
+    
     def student_dashboard(self, request, activity, session):
         """
         This method is called when the dashboard of an activity is requested for a student.
@@ -27,36 +25,21 @@ class Pltp(AbstractActivityType):
         This method is called when the dashboard of an activity is requested for a teacher.
         :return: A rendered template of the teacher dashboard
         """
-        exos = []
-        for pl in activity.indexed_pl():
-            exos.append({'name': pl.json['title'], 'sum_grades': 0})
-            for state in list(State)[0:-1]:
-                exos[-1][state] = 0
-
         student = list()
         for user in activity.student.all():
             tp = list()
-            for count, pl in enumerate(activity.indexed_pl()):
-                ans_grade = Answer.highest_grade(pl, user)
-                state = State.by_grade(ans_grade.grade if ans_grade else ...)
+            for pl in activity.indexed_pl():
                 tp.append({
                     'name':  pl.json['title'],
-                    'state': state
+                    'state': Answer.pl_state(pl, user)
                 })
-                if state != State.ERROR:
-                    exos[count][state] += 1
-                if ans_grade and ans_grade.grade is not None:
-                    exos[count]['sum_grades'] += ans_grade.grade
             student.append({
                 'lastname': user.last_name,
                 'object':   user,
                 'id':       user.id,
                 'question': tp,
             })
-
-        for exo in exos:
-            exo['mean'] = exo['sum_grades'] / len(student) if student else 0
-            exo.pop('sum_grades')
+        
         # Sort list by student's name
         student = sorted(student, key=lambda k: k['lastname'])
         
@@ -67,7 +50,6 @@ class Pltp(AbstractActivityType):
             'student':       student,
             'range_tp':      range(len(activity.indexed_pl())),
             'course_id':     activity.parent.id,
-            'exos':          exos,
         })
     
     
@@ -83,18 +65,13 @@ class Pltp(AbstractActivityType):
             }
             for elem in activity.indexed_pl()
         ]
-
-        progr, quality = user_progression(request.user, activity)
-
+        
         return get_template("activity/activity_type/pltp/small.html").render({
             'title':      activity.activity_data['title'],
             'pl':         pl,
             'id':         activity.id,
             'open':       activity.open,
-            'instructor': request.user in activity.teacher.all(),
-            'nb_exos':    len(pl),
-            'progr':      graph_percent(progr),
-            'quality':    graph_percent(quality),
+            'instructor': request.user in activity.teacher.all()
         }, request)
     
     
@@ -279,34 +256,3 @@ class Pltp(AbstractActivityType):
         response = HttpResponse(csv, content_type="text/csv")
         response['Content-Disposition'] = 'attachment;filename=notes.csv'
         return response
-
-
-def user_progression(user, activity):
-    """Return a tuple of two integers `(progression, quality)` where
-    `progression` is the percent of work done and `quality` is the
-    mean of grades over graded exercices.
-    
-    All views using this utilitary function should check the
-    requesting user is allowed to access data.
-    
-    `progression` : percent of graded exercices plus 10% of percent of
-    only built exercices by the `user`.
-    
-    `quality` : average grade obtained by `user` over graded
-    exercices. Quality is zero if no exercice has been graded.
-    """
-    pl = activity.pl.all()
-    nb_pl_touched = 0
-    nb_pl_graded = 0
-    sum_grades = 0
-        
-    for i in pl:
-        answer = Answer.highest_grade(i, user)
-        if answer is not None:
-            nb_pl_touched += 1
-            if answer.grade is not None:
-                nb_pl_graded += 1
-                sum_grades += answer.grade
-    progr = (100*nb_pl_graded + 10*(nb_pl_touched - nb_pl_graded)) / len(pl) if pl else 0
-    average = sum_grades / nb_pl_graded if nb_pl_graded else 0
-    return (progr, average)

@@ -2,7 +2,7 @@
 grader  =@ /grader/evaluator.py
 builder =@ /builder/before.py
 
-mathinput =: MathInput
+component =: MathInput
 
 before==
 ==
@@ -15,10 +15,10 @@ text==
 ==
 
 form==
-{{ mathinput|component}}
+{{ component|component}}
 ==
 
 evaluator==
-grade = (100, mathinput.value);
+grade = (100, component.value);
 ==
 

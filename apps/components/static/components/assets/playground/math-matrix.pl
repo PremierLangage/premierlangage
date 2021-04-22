@@ -2,14 +2,14 @@
 grader  =@ /grader/evaluator.py
 builder =@ /builder/before.py
 
-matrix =: MathMatrix
-matrix.resizable % true
+component =: MathMatrix
+component.resizable % true
 
 
 before==
-matrix.matrix = [
-    [{ "value": 0, "css": "success-state animated rotateIn" }, { "value": 0 },],
-    [{ "value": 0 }, { "value": 0, "css": "error-state animated pulse infinite" },]
+component.matrix = [
+    [{ "value": 0, "css": "success-state anim-flip" }, { "value": 0 },],
+    [{ "value": 0 }, { "value": 0, "css": "error-state anim-bounce" },]
 ]
 ==
 
@@ -21,10 +21,10 @@ text==
 ==
 
 form==
-{{ matrix|component}}
+{{ component|component}}
 ==
 
 evaluator==
-grade = (100, matrix.matrix);
+grade = (100, component.matrix);
 ==
 

@@ -1,26 +1,8 @@
 <ion-card>
-  <!-- <ion-img src="{{ static('activity/images/pltp.png') }}" width="10%"></ion-img> -->
-  <table>
-    <tr>
-      <td width="50%"><img src="{{ static('activity/images/pltp.png') }}" ></td>
-      <td width="50%" align="center" style="vertical-align:middle; font-size:1.5em"><b>Fiche de <br>{{ nb_exos }} exercices</b></td>
-    </tr>
-    <tr>
-      <td colspan="2">
-	<ion-card-header>
-          <ion-card-title>{{ title }}</ion-card-title>
-	</ion-card-header>
-      </td>
-    </tr>
-    <tr>
-      <td align="center"><b>Avancement<br>sur les exos</b></td>
-      <td align="center"><b>Réussite sur<br>exos traités</b></td>
-    </tr>
-    <tr>
-      <td align="center">{{ progr|safe }}</td><td align="center">{{ quality|safe }}</td>
-    </tr>
-  </table>
-    
+    <ion-img src="{{ static('activity/images/pltp.png') }}"></ion-img>
+    <ion-card-header>
+        <ion-card-title>{{ title }}</ion-card-title>
+    </ion-card-header>
     <ion-card-content>
         <ion-buttons slot="start">
             <ion-button href="{{ url('activity:play', id) }}" data-toggle="tooltip" data-placement="top" title="Lancer">

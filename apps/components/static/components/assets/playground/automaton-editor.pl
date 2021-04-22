@@ -2,7 +2,7 @@
 grader  =@ /grader/evaluator.py
 builder =@ /builder/before.py
 
-editor =: AutomatonEditor
+component =: AutomatonEditor
 
 before==
 ==
@@ -13,7 +13,7 @@ text==
 ==
 
 form==
-{{ editor|component }}
+{{ component|component }}
 ==
 
 evaluator==

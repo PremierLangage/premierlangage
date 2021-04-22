@@ -1,11 +1,16 @@
 @ /utils/sandboxio.py
-
 grader  =@ /grader/evaluator.py
 builder =@ /builder/before.py
 
 # STEP 1
 match =: MatchList
 
+# remove the comment of the next line to display the properties of the component
+# in realtime inside the form.
+
+# match.debug % true
+
+# STEP 2
 before==
 import random
 match.nodes = []
@@ -39,10 +44,12 @@ text==
 *Link each operation to the appropriate result.*
 ==
 
+# STEP 3
 form==
 {{ match|component }}
 ==
 
+# STEP 4
 evaluator== #|python|
 
 def in_links(conn, links):
@@ -57,12 +64,12 @@ for e in expected:
         error = error + 1
 
 for e in match.links:
-    e['css'] = 'error-state animated fadeIn'
+    e['css'] = 'error-state anim-fade'
     if in_links(e, expected):
-        e['css'] = 'success-state  animated rotateIn'
+        e['css'] = 'success-state  anim-flip'
 
 if error == 0:
-    grade = (100, '<span class="success-state animated pulse infinite">Good answser</span>')
+    grade = (100, 'Good answser')
 else:
-    grade = (0, '<span class="error-state animated pulse infinite">Bad answer, you made %d mistakes</span>' % error)
+    grade = (0, 'Bad answer, you made %d mistakes' % error)
 ==

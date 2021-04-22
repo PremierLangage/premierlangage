@@ -37,3 +37,5 @@ def compile(request):
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
+
+# 127.0.0.1:8000/editor/compile?path=Yggdrasil/pl-test/components/text.pl

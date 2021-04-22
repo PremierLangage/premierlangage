@@ -110,7 +110,7 @@ def update_resource(request):
     
     try:
         with open(join_fb_root(path), 'w') as f:
-            print(post.get('content', ''), file=f, end='')
+            print(post.get('content', ''), file=f)
         if not path.startswith("lib/"):
             add_commit_path(request, path, action="modified")
         return JsonResponse({'success': True})
@@ -349,6 +349,90 @@ def reload_pltp(request):
 
 
 
+# TODO TO REMOVE
+@csrf_exempt
+@require_POST
+def compile_pl(request):
+    """ Used by the PL editor to compile a PL"""
+    post = json.loads(request.body.decode())
+    path = post.get('path')
+    if not path:
+        return HttpResponseBadRequest(missing_parameter('path'))
+    
+    path_components = path.split('/')
+    directory = path_components[0]
+    response = {'compiled': True}
+    try:
+        path = join_fb_root(path)
+        with open(path, 'r') as f:
+            content = f.read()
+        shutil.copyfile(path, path + ".bk")
+        with open(path, 'w+') as f:  # Writting editor content into the file
+            print(content, file=f)
+        
+        directory = Directory.objects.get(name=directory)
+        relative = os.path.join(*(path_components[1:]))
+        pl, warnings = load_file(directory, relative)
+        if not pl:
+            response['compiled'] = False
+        else:
+            response['json'] = pl.json
+            response['warnings'] = warnings
+    except Exception:  # pragma: no cover
+        response['compiled'] = False
+    finally:
+        shutil.move(path + ".bk", path)
+        return HttpResponse(
+            json.dumps(response),
+            content_type='application/json',
+            status=200
+        )
+
+
+
+# TODO TO REMOVE
+@csrf_exempt
+@require_POST
+def pl_tuto(request):
+    post = json.loads(request.body.decode())
+    content = post.get('student')
+    if not content:
+        return HttpResponseBadRequest(missing_parameter('student'))
+    
+    path = post.get("path")
+    if not path:
+        path = 'Yggdrasil/conceptexo/pltuto.pl'
+    path_components = path.split('/')
+    directory = path_components[0]
+    try:
+        path = join_fb_root(path)
+        with open(path, 'w') as f:
+            print(content, file=f)
+        
+        directory = Directory.objects.get(name=directory)
+        relative = os.path.join(*(path_components[1:]))
+        pl, warnings = load_file(directory, relative)
+        response = {'compiled': True}
+        if not pl:
+            response['compiled'] = False
+            response['warnings'] = warnings
+        else:
+            response['json'] = pl.json
+            response['warnings'] = warnings
+    except Exception:  # pragma: no cover
+        response['compiled'] = False
+    finally:
+        os.remove(path)
+        return HttpResponse(
+            json.dumps(response),
+            content_type='application/json',
+            status=200
+        )
+    
+    return HttpResponseBadRequest(content="Couldn't resolve ajax request")
+
+
+
 @login_required
 @require_GET
 def test_pl(request):
@@ -526,7 +610,7 @@ def search_in_files(request):  # TODO ADD TEST
 @login_required
 @require_GET
 def download_env(request, envid):
-    r = requests.get(os.path.join(settings.SANDBOX, "environments", envid, ""))
+    r = requests.get(os.path.join(settings.SANDBOX, "env", envid, ""))
     response = HttpResponse(r)
     response['Content-Type'] = "application/gzip"
     response['Content-Disposition'] = r.headers['Content-Disposition']

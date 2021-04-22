@@ -2,15 +2,12 @@
     <ion-toolbar>
         <div class="app-title">
             <span>Premier Langage</span>
-            <span class='app-version'>0.7.5</span>
+            <span class='app-version'>0.7.3</span>
         </div>
         <nav class="app-nav ion-hide-sm-down">
             <ion-buttons>
                 <ion-button id="header-courses" class="app-nav-link" href="/">
                     <i class="app-nav-icon fas fa-graduation-cap"></i>Cours
-                </ion-button>
-		<ion-button id="header-courses" class="app-nav-link" href="/progress/index/">
-                    <i class="app-nav-icon fas fa-chart-line"></i>Progression
                 </ion-button>
                 {% if request.user.is_authenticated and request.user.profile.can_load() %}
                 <ion-button id="header-editor" class="app-nav-link" href="/editor/">

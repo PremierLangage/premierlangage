@@ -34,7 +34,7 @@ def load_file(directory, rel_path):
     
     try:
         typ = get_type(directory, rel_path)
-        if typ in ['pltp', 'gift']:
+        if typ == 'pltp':
             return load_pltp(directory, rel_path)
         elif typ == 'pl':
             return load_pl(directory, rel_path)
@@ -59,6 +59,7 @@ def load_pl(directory, rel_path):
         This function return a PL object but does not save it in the database
     """
     dic, warnings = parse_file(directory, rel_path)
+    
     name = splitext(basename(rel_path))[0]
     pl = PL(name=name, json=dic, directory=directory, rel_path=rel_path)
     return pl, [htmlprint.code(warning) for warning in warnings]
@@ -149,25 +150,21 @@ def reload_pla(directory, rel_path, original):
         originals = list(original.indexed_pl())
         original.pl.clear()
         
-        done = {pl.id: False for pl in originals}
         for pl in pl_list:
             correspond = list(
                 filter(lambda i: i.directory == pl.directory and i.rel_path == pl.rel_path,
                        originals))
             if correspond:
-                for c in correspond:
-                    if not done[c.id]:
-                        c.json = pl.json
-                        c.save()
-                        logger.info(
-                            "PL '" + str(c.id) + " (" + c.name + ")' has been updated.")
-                        PLPosition.objects.create(parent=original, pl=c)
-                        done[c.id] = True
+                correspond = correspond[0]
+                correspond.json = pl.json
+                correspond.save()
+                logger.info(
+                    "PL '" + str(correspond.id) + " (" + correspond.name + ")' has been updated.")
+                PLPosition.objects.create(parent=original, pl=correspond)
             else:
                 pl.save()
                 logger.info("PL '" + str(pl.id) + " (" + pl.name + ")' has been created.")
                 PLPosition.objects.create(parent=original, pl=pl)
-                
         original.save()
         logger.info("Activity '" + original.name + "' has been reloaded.")
         return original, [htmlprint.code(warning) for warning in warnings]

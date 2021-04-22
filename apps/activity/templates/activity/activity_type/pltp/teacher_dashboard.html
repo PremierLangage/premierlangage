@@ -8,7 +8,6 @@
         <ion-card-title>{{course_name}}: {{activity_name}}</ion-card-title>
     </ion-card-header>
     <ion-card-content>
-        <h1>Résultats par élèves</h1>
         <section>
             <table>
                 <thead>
@@ -45,34 +44,6 @@
                     <span>{{ item }}</span>
                 </div>
             {% endfor %}
-        </section>
-    </ion-card-content>
-    <ion-card-content>
-        <h1>Résultats par exercices</h1>
-        <section>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Exercices</th>
-		        {% for item in state %}
-		        <th>{{ item }}</th>
-		        {% endfor %}
-		        <th>Moyenne Note</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for dico_exo in exos %}
-                    <tr>
-		      <td>{{ dico_exo['name'] }}</td>
-		      {% for item in state %}
-		        <td>{{ dico_exo[item] }}</td>
-		      {% endfor %}
-		      <td>{{ "%.2f"|format(dico_exo['mean']|float) }}</td>
-                    </tr>
-                    {% endfor %}
-                    <tr>
-                </tbody>
-            </table>
         </section>
     </ion-card-content>
 </ion-card>

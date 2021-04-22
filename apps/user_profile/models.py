@@ -16,7 +16,7 @@ from user_profile.utils import avatar_path, generate_identicon
 class Profile(LTIModel):
     """Extends User to save more informations about an user."""
     
-    user = models.OneToOneField(User, on_delete=models.CASCADE,)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     student_id = models.PositiveIntegerField(unique=True, null=True, blank=True)
     editor_theme = EnumIntegerField(EditorTheme, default=EditorTheme.ECLIPSE)
     role = EnumIntegerField(Role, default=Role.LEARNER)
@@ -55,13 +55,6 @@ class Profile(LTIModel):
         """Returns whether the user is an administrator (Role or django su / staff)."""
         return self.role == Role.ADMINISTRATOR or self.user.is_superuser or self.user.is_staff
     
-    def is_teacher(self):
-        """Returns whether the user is an administrator (Role or django su / staff)."""
-        return self.role == Role.INSTRUCTOR
-    
-    def is_student(self):
-        """Returns whether the user is an administrator (Role or django su / staff)."""
-        return self.role == Role.LEARNER
     
     def can_load(self):
         """Returns True if the user is at least an Instructor, False if not."""

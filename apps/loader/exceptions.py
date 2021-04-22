@@ -149,19 +149,3 @@ class ComponentNotFound(Exception):
     def __str__(self):
         return 'ComponentNotFound: component "%s" is not defined' \
                % (self.component)
-
-
-class SyntaxErrorGift(Exception):
-    """Raised when a syntax error occured while parsing a gift file."""
-    
-    
-    def __init__(self, path, line, index, message="Syntax error"):
-        self.path = displayed_path(path)
-        self.line = line
-        self.message = message
-        self.index = str(index)
-    
-    
-    def __str__(self):
-        return normpath(self.path) + " - " + self.message + " at question " + str(
-            self.index) + ":\n" + self.line

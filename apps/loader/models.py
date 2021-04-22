@@ -19,10 +19,6 @@ class PL(models.Model):
     directory = models.ForeignKey(Directory, on_delete=models.SET_NULL, null=True)
     rel_path = models.CharField(max_length=360, null=False)
     
+    
     def __str__(self):  # pragma: no cover
         return str(self.id) + " : " + str(self.name)
-    
-    
-    def duplicate(self):
-        return PL.objects.create(json=self.json, name=self.name, directory=self.directory,
-                                 rel_path=self.rel_path)
