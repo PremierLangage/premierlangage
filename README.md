@@ -70,7 +70,7 @@ You are free to develop on the OS of your choice, it's does not matter thanks to
 1. First of all, you should clone this repository on your system using the      following command
 
     ```sh
-    git clone https://github.com/PremierLangage/premierlangage
+    git clone https://github.com/PremierLangage/premierlangage/tree/premierlanguagedocker
     ```
 2. Run the script `docker-dev-prepare.sh`which will download some librairies with `pip`
 
