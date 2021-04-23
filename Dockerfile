@@ -11,7 +11,7 @@ ENV PL_HOME=/usr/src/app
 WORKDIR ${PL_HOME}
 
 # Clone the conf files into the docker container    
-RUN git clone https://github.com/PremierLangage/premierlangage.git  ${PL_HOME}   
+RUN git clone https://github.com/PremierLangage/premierlangage/tree/premierlanguagedocker  ${PL_HOME}   
 
 RUN rm -f CONTAINER_ALREADY_STARTED_PLACEHOLDER
 
