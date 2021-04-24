@@ -83,6 +83,6 @@ you need to create an admin user with:
 	```
 	docker-compose exec pl python3 manage.py createsuperuser
 	``` 
-Then, go to http://localhost:8000 and use your user credentials. 
+Then, go to http://localhost:8021 and use your user credentials. 
 	
 
