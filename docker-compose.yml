@@ -22,7 +22,7 @@ services:
       - ALLOWED_HOSTS=*
       - SECRET_KEY=mygreatsupersecretkey
     ports:
-      - 8000:8000
+      - 8021:8021
     links:
       - pg
 
