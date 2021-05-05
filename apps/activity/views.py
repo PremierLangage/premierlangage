@@ -105,6 +105,13 @@ def evaluate(request, activity_id, pl_id):
     exercise = session.session_exercise(pl)
     a_type = get_activity_type_class(activity.activity_type)()
 
+    if session.current_pl_id != pl_id:
+        return HttpResponse(json.dumps({
+            "exercise": None,
+            "navigation": None,
+            "feedback": "Cet exercice PL n'est pas le plus recement ouvert. Veuillez vérifier vos onglets, ou bien réactualiser la page.",
+        }), content_type='application/json')
+
     if not activity.open:
         raise PermissionDenied("Cette activité est fermée")
     if not activity.is_member(request.user):
