@@ -1,5 +1,6 @@
 import io
 import json
+import csv
 import logging
 import traceback
 
@@ -146,4 +147,68 @@ def download_answers(request):
         response = StreamingHttpResponse(stream, content_type="application/json")
         response['Content-Disposition'] = 'attachment;filename=answers.json'
         return response
+    return render(request, "playexo/download_answers.html", None)
+
+
+# The following hack is taken directly from the django documentation
+# https://docs.djangoproject.com/en/3.1/howto/outputting-csv/#streaming-csv-files
+class Echo:
+    """An object that implements just the write method of the file-like
+    interface.
+    """
+    def write(self, value):
+        """Write the value by returning it, instead of storing in a buffer."""
+        return value
+
+
+def csv_stream(rows):
+    """
+    Stream a csv file possibly very large from an iterable
+    `rows`. Each element of the iterable `rows` should be an iterable
+    over element of line data record.
+    """
+    pseudo_buffer = Echo()
+    writer = csv.writer(pseudo_buffer)
+    response = StreamingHttpResponse((writer.writerow(row) for row in rows),
+                                     content_type="text/csv")
+    response['Content-Disposition'] = 'attachment; filename="answers.csv"'
+    return response
+
+
+@login_required
+@require_GET
+def download_answers_csv(request):
+    """
+    Stream a csv file containing some answers log information on a
+    specified range of time.
+    """
+    if not request.user.is_staff:
+        raise PermissionDenied
+    if "start" in request.GET or "end" in request.GET:
+        if "start" not in request.GET or request.GET["start"] == "":
+            return HttpResponseNotFound("Vous devez absolument spécifier une date de début")
+        if "end" not in request.GET or request.GET["end"] == "":
+            return HttpResponseNotFound("Vous devez absolument spécifier une date de fin")
+        answers = Answer.objects.filter(date__range=(request.GET["start"], request.GET["end"]))
+        if "pl" in request.GET and request.GET["pl"].isnumeric():
+            try:
+                answers = answers.filter(pl=int(request.GET["pl"]))
+            except PL.DoesNotExist:
+                return HttpResponseNotFound("L'exercice PL est introuvable")
+        if "activity" in request.GET and request.GET["activity"].isnumeric():
+            try:
+                answers = answers.filter(activity=int(request.GET["activity"]))
+            except Activity.DoesNotExist:
+                return HttpResponseNotFound("L'activité est introuvable")
+        rows = ([a.user,
+                 str(a.seed),
+                 str(a.date),
+                 a.grade,
+                 a.pl.id,
+                 a.pl.name,
+                 a.activity.id if a.activity is not None else "",
+                 a.activity.name if a.activity is not None else "",
+                 a.pl.json["tag"] if ("include_tag" in request.GET and "tag" in a.pl.json) else "",
+                 a.answers if "include_answers" in request.GET else ""] for a in answers)
+        return csv_stream(rows)
     return render(request, "playexo/download_answers.html", None)
