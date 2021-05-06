@@ -48,7 +48,7 @@ class ViewsTestCase(ActivityBaseTestMixin):
         super().tearDownClass()
 
     def test_evaluate_missing_action(self):
-        s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity)
+        s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity, current_pl_id=self.pl.id)
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.post(
             reverse("activity:evaluate", args=[self.activity.id, self.pl.id]),
@@ -60,7 +60,7 @@ class ViewsTestCase(ActivityBaseTestMixin):
         self.assertContains(response, "Missing action", status_code=400)
 
     def test_evaluate_save(self):
-        s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity)
+        s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity, current_pl_id=self.pl.id)
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.post(
             reverse("activity:evaluate", args=[self.activity.id, self.pl.id]),
@@ -76,7 +76,7 @@ class ViewsTestCase(ActivityBaseTestMixin):
         self.assertIn("R\\u00e9ponse(s) sauvegard\\u00e9", response.content.decode())
 
     def test_evaluate_submit(self):
-        s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity)
+        s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity, current_pl_id=self.pl.id)
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.post(
             reverse("activity:evaluate", args=[self.activity.id, self.pl.id]),
@@ -92,7 +92,7 @@ class ViewsTestCase(ActivityBaseTestMixin):
         self.assertIn("Merci de rentrer un entier", response.content.decode())
 
     def test_evaluate_unknown_action(self):
-        s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity)
+        s_activity = SessionActivity.objects.create(user=self.user, activity=self.activity, current_pl_id=self.pl.id)
         SessionExercise.objects.create(session_activity=s_activity, pl=self.pl)
         response = self.c.post(
             reverse("activity:evaluate", args=[self.activity.id, self.pl.id]),
