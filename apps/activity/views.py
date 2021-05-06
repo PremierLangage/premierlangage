@@ -109,7 +109,8 @@ def evaluate(request, activity_id, pl_id):
         return HttpResponse(json.dumps({
             "exercise": None,
             "navigation": None,
-            "feedback": "Cet exercice PL n'est pas le plus recement ouvert. Veuillez vérifier vos onglets, ou bien réactualiser la page.",
+            "feedback": "Cet exercice PL n'est pas le plus recement ouvert. \
+            Veuillez vérifier vos onglets, ou bien réactualiser la page.",
         }), content_type='application/json')
 
     if not activity.open:
