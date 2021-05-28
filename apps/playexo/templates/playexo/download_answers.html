@@ -4,7 +4,7 @@
 {% block alert %}{% endblock %}
 
 {% block content %}
-    <form method="get">
+    <form id="form" method="get">
         <label>
             Début :
             <input type="date" name="start"/>
@@ -19,19 +19,151 @@
             <input type="checkbox" name="include_answers">
         </label>
         <label>
-            Inclure le champs tags :
+            Inclure les tags :
             <input type="checkbox" name="include_tag">
         </label>
+        
+		<acronym title="Exercices dont les feuilles sont encore disponible">
+			<label>
+				Inclure cours actifs seulement :
+				<input type="checkbox" name="actif">
+			</label>
+        </acronym>
+        
         <br>
+        <acronym title="Personne n'ayant pas encore fait d'exercices">
+	        <label>
+				Exclure les non notés :
+				<input type="checkbox" name="exclude_grade">
+			</label>
+        </acronym>
+
+        
         <label>
-            Choisir un PL spécifique :
-            <input type="number" name="pl">
+            Note minimal :
+            <input type="number" name="min" min="0" max="100" placeholder=0>
         </label>
         <label>
-            Choisir une activité spécifique :
-            <input type="number" name="activity">
+            Note maximal :
+            <input type="number" name="max" min="0" max="100" placeholder=100>
         </label>
         <br>
+        
+        
+        <label>
+            Élèves uniquement :
+            <input type="radio" name="type" value="students">
+        </label>
+        <label>
+            Enseignants uniquement :
+            <input type="radio" name="type" value="teachers">
+        </label>
+        <br>
+		
+		
+		<input list="pls" name="pl[]" placeholder="Choisir un PL spécifique"/>
+		<datalist id="pls">
+			{% for pl in pls%}
+				<option value="{{ pl[1] }}">{{ pl[1] }} : {{ pl[0] }}</option>
+			{% endfor %}
+		</datalist>
+		
+		<input list="activities" name="activity[]" placeholder="Choisir une activité"/>
+		<datalist id="activities">
+			{% for activity in activities%}
+				<option value="{{ activity[1] }}">{{ activity[1] }} : {{ activity[0] }}</option>
+			{% endfor %}
+		</datalist>
+		
+		<select name="tag" id="tag-select">
+			<option value="">--Choisir un tag--</option>
+			{% for tag in tags%}
+				<option value="">{{ tag }} </option>
+			{% endfor %}
+		</select>
+
+        
+<!--
+        <select name="tag" id="activity-select">
+			<option value="">--Choisir une activité--</option>
+			{% for activity in activities%}
+				<option value="{{ activity[1] }}">{{ activity[1] }} : {{ activity[0] }}</option>
+			{% endfor %}
+		</select>
+-->
+		<br>
+<!--
+		<input type="email" list="emails" multiple name="test">
+		<datalist id="emails">
+			<option value="first@example.com">
+			<option value="second@example.com">
+			<option value="third@example.com">
+			<option value="last@example.com">
+		</datalist>
+-->
+		
+		<br>
+		<details>
+			<summary>Recherche Avancée</summary>
+					<label>
+						Choisir un PL spécifique :
+						<input type="number" name="pl[]">
+					</label>
+					<label>
+						Choisir une activité spécifique :
+						<input type="number" name="activity[]">
+					</label>
+					<br>
+					<select name="name" id="student-select">
+						<option value="">--Choisir un élève--</option>
+						{% for student in students%}
+							<option value="{{ student[0] }}">{{ student[1] }}</option>
+						{% endfor %}
+					</select>
+					
+					<select name="name" id="teacher-select">
+						<option value="">--Choisir un Professeur--</option>
+						{% for teacher in teachers%}
+							<option value="{{ teacher[0] }}">{{ teacher[1] }}</option>
+						{% endfor %}
+					</select>
+					
+		</details>
+
+<!--
+		<input type="text" name="test[]" 
+			   size="10">
+		<input type="text" name="test[]" 
+			    size="10">
+-->
+<!--
+		<br>
+		I'm here {{ tags[0] }}
+		<br> 
+-->
+		
+		<br>
         <input type="submit" value="Télécharger" formtarget="_blank"/>
+        <input type="reset"/>
     </form>
+ 
+{% endblock %}
+
+{% block end_script %}
+<script type="text/javascript">
+	
+const activities = {{activities|tojson|safe}};
+//~ console.log("coucou");
+const form = document.querySelector('#form');
+//~ document.location.href="https://mailetud.u-pem.fr/#1";
+
+form.addEventListener('change', e => {
+	console.log("coucou");
+	//~ const data = new FormData(form);
+	//~ for (const entry of data.entries()) {
+		//~ console.log(entry);
+	//~ }
+});
+
+</script>
 {% endblock %}

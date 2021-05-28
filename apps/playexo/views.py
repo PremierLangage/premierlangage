@@ -5,19 +5,46 @@ import traceback
 
 import htmlprint
 from activity.models import Activity
+from loader.models import PL
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.core.serializers import serialize
 from django.http import HttpResponse, HttpResponseNotFound, StreamingHttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_GET
 from loader.models import PL
 from playexo.exception import BuildScriptError, SandboxError
 from playexo.models import Answer, SessionTest
+from django.db.models import Q
+from user_profile.models import Profile
+from re import split
+from json import dumps
+# ~ from django.db.models.functions import JSONObject
+
 
 
 logger = logging.getLogger(__name__)
 
+activities_tmp = Answer.objects.all().values_list("activity_id")
+activities = Activity.objects.all().values_list("name", "id").filter(id__in = activities_tmp).order_by('id')
 
+pls_tmp = Answer.objects.all().values_list("pl_id")
+pls = PL.objects.all().values_list("name", "id").filter(id__in = pls_tmp).order_by('id')
+
+# ~ jsons = list(PL.objects.all().values_list('json'))
+# ~ tags=set()
+# ~ print(jsons[0])
+# ~ for tag in tags_tmp:
+	
+	# ~ for t in tag:
+		# ~ try:
+			# ~ print(t["tag"])
+			# ~ tags.update(t["tag"].split('|'))
+		# ~ except:
+			# ~ pass
+tags=[]
+students = list(map(lambda student: (student[0],split("[/_]",student[1])[1]), Profile.objects.filter(role = 4).values_list("user_id","avatar")))
+teachers = list(set(map(lambda teacher: (teacher[0],split("[/_]",teacher[1])[1]), Profile.objects.filter(role = 2).values_list("user_id","avatar"))))
 
 @login_required
 def test_pl(request, pl_id):
@@ -94,6 +121,7 @@ def download_answers(request):
     if not request.user.is_staff:
         raise PermissionDenied
     if "start" in request.GET or "end" in request.GET:
+        
         if "start" not in request.GET or request.GET["start"] == "":
             if "end" not in request.GET or request.GET["start"] == "":
                 answers = Answer.objects.select_related("activity", "pl", "user").all()
@@ -108,18 +136,67 @@ def download_answers(request):
             answers = Answer.objects.select_related("activity", "pl", "user").filter(
                 date__range=(request.GET["start"], request.GET["end"]))
         
-        if "pl" in request.GET and request.GET["pl"].isnumeric():
+        if "pl[]" in request.GET :
             try:
-                answers = answers.filter(pl=PL.objects.get(id=int(request.GET["pl"])))
-            except PL.DoesNotExist:
-                return HttpResponseNotFound("PL does not exist")
-        if "activity" in request.GET and request.GET["activity"].isnumeric():
+                pl_tmp = list(filter(lambda pl: pl != '', request.GET.getlist('pl[]')))[0]
+                pl_tmp = int(pl_tmp)     
+                try:
+                    answers = answers.filter(pl=PL.objects.get(id = pl_tmp))
+                except PL.DoesNotExist:
+                    return HttpResponseNotFound("PL does not exist")
+            except:
+                pass
+                
+        if "activity[]" in request.GET :
             try:
-                answers = answers.filter(
-                    activity=Activity.objects.get(id=int(request.GET["activity"])))
-            except Activity.DoesNotExist:
-                return HttpResponseNotFound("Activity does not exist")
+                activity_tmp = list(filter(lambda act: act != '', request.GET.getlist('activity[]')))[0]
+                activity_tmp = int(activity_tmp)
+                try:
+                    answers = answers.filter(
+                        activity=Activity.objects.get(id = activity_tmp))
+                    
+                except Activity.DoesNotExist:
+                    return HttpResponseNotFound("Activity does not exist")
+            except:
+                pass
         
+        if "type" in request.GET:
+            if request.GET["type"] == "teacher" :
+                tmp = Profile.objects.select_related().filter(role = 2).values_list("user_id",flat=True)
+                
+            elif request.GET["type"] == "students":
+                tmp = list(map(lambda student: student[0],students))
+            answers = answers.filter(user_id__in = tmp)
+            
+        elif "name" in request.GET and request.GET["name"].isnumeric():
+            answers = answers.filter( Q( user_id = int(request.GET["name"]) ))
+        
+        if "exclude_grade" in request.GET and request.GET["exclude_grade"] == "on":
+            answers = answers.filter( ~Q( grade = None))
+        
+            
+        
+        
+        if "max" in request.GET or "min" in request.GET:
+           
+            if "max" not in request.GET or not request.GET["max"].isnumeric():
+                if "min" in request.GET and request.GET["min"].isnumeric():
+                    answers = answers.filter( Q( grade = None) | Q( grade__gte = int( request.GET["min"])))
+                
+            elif "min" not in request.GET or request.GET["min"] == "":
+                if "max" in request.GET and request.GET["max"].isnumeric():
+                    answers = answers.filter( Q( grade = None) | Q( grade__lte = int( request.GET["max"])))
+           
+            else:
+                if request.GET["max"].isnumeric() and request.GET["min"].isnumeric():
+                    answers = answers.filter( Q( grade = None) | Q( grade__range = (int(request.GET["min"]), int(request.GET["max"]))))
+        
+        # ~ if "actif" in request.GET and request.GET["actif"]=="on":
+            # ~ print("test")
+            # ~ answers = answers.filter( Q( open = True))
+            # ~ print("test2")
+            
+                
         dic = {}
         slice_size = 1000
         for i in range(0, answers.count(), slice_size):
@@ -134,6 +211,10 @@ def download_answers(request):
                 }
                 dic[a.id]["activity_id"] = a.activity.id if a.activity is not None else None
                 dic[a.id]["activity_name"] = a.activity.name if a.activity is not None else None
+                dic[a.id]["open"] = a.activity.open if a.activity is not None else None
+                
+                if "min" in request.GET or "max" in request.GET:
+                    dic[a.id]["grade"] = a.grade 
                 if "include_answers" in request.GET:
                     dic[a.id]["answers"] = a.answers
                 if "include_tag" in request.GET:
@@ -142,8 +223,27 @@ def download_answers(request):
                     else:
                         dic[a.id]["tag"] = None
         
+        if "actif" in request.GET and request.GET["actif"]=="on":
+            dic = {key: value for key, value in dic.items() if value["open"] }
+        
+        if "test" in request.GET :
+            print(request.GET["test"],"salut")
+
+        
         stream = io.StringIO(json.dumps(dic))
         response = StreamingHttpResponse(stream, content_type="application/json")
         response['Content-Disposition'] = 'attachment;filename=answers.json'
         return response
-    return render(request, "playexo/download_answers.html", None)
+    
+    return render(
+        request,
+        "playexo/download_answers.html",
+        {
+            'activities': list(activities),
+            'pls': pls,
+            'students': students,
+            'teachers': teachers,
+            'tags' : tags
+        }
+    )
+
