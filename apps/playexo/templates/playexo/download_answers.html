@@ -25,7 +25,7 @@
         
 		<acronym title="Exercices dont les feuilles sont encore disponible">
 			<label>
-				Inclure cours actifs seulement :
+				Inclure pl actifs seulement :
 				<input type="checkbox" name="actif">
 			</label>
         </acronym>
@@ -61,57 +61,51 @@
         <br>
 		
 		
-		<input list="pls" name="pl[]" placeholder="Choisir un PL spécifique"/>
+		<input list="pls" name="pl" placeholder="Choisir un PL" size = "{{ sizeMaxPL }}"/>
 		<datalist id="pls">
 			{% for pl in pls%}
 				<option value="{{ pl[1] }}">{{ pl[1] }} : {{ pl[0] }}</option>
 			{% endfor %}
 		</datalist>
 		
-		<input list="activities" name="activity[]" placeholder="Choisir une activité"/>
+		<input list="activities" name="activity" placeholder="Choisir une activité" size = "{{ sizeMaxActivity }}"/>
 		<datalist id="activities">
 			{% for activity in activities%}
 				<option value="{{ activity[1] }}">{{ activity[1] }} : {{ activity[0] }}</option>
 			{% endfor %}
 		</datalist>
+	
 		
-		<select name="tag" id="tag-select">
-			<option value="">--Choisir un tag--</option>
-			{% for tag in tags%}
-				<option value="">{{ tag }} </option>
+		<input list="courses" name="courses" placeholder="Choisir un cours" size = "{{ sizeMaxCourse }}"/>
+		<datalist id="courses">
+			{% for cours in courses%}
+				<option value="{{ cours[1] }}">{{ cours[1] }} : {{ cours[0] }}</option>
 			{% endfor %}
-		</select>
-
-        
-<!--
-        <select name="tag" id="activity-select">
-			<option value="">--Choisir une activité--</option>
-			{% for activity in activities%}
-				<option value="{{ activity[1] }}">{{ activity[1] }} : {{ activity[0] }}</option>
-			{% endfor %}
-		</select>
--->
-		<br>
-<!--
-		<input type="email" list="emails" multiple name="test">
-		<datalist id="emails">
-			<option value="first@example.com">
-			<option value="second@example.com">
-			<option value="third@example.com">
-			<option value="last@example.com">
 		</datalist>
--->
+		<br>
+		<br>
+		
+		<label title="Restez appuyé sur Ctrl (Windows/Linux) ou Command (Mac) pour selectionner plusieurs options">
+			Choisir un ou plusieurs tags:
+			<br>
+			<select name="tags[]"  multiple >
+				{% for tag in tags%}
+					<option value="{{ tag }}">{{ tag }}</option>
+				{% endfor %}
+			</select>
+		</label>
+
 		
 		<br>
 		<details>
 			<summary>Recherche Avancée</summary>
 					<label>
 						Choisir un PL spécifique :
-						<input type="number" name="pl[]">
+						<input type="number" name="pl">
 					</label>
 					<label>
 						Choisir une activité spécifique :
-						<input type="number" name="activity[]">
+						<input type="number" name="activity">
 					</label>
 					<br>
 					<select name="name" id="student-select">
@@ -130,17 +124,13 @@
 					
 		</details>
 
-<!--
-		<input type="text" name="test[]" 
-			   size="10">
-		<input type="text" name="test[]" 
-			    size="10">
--->
-<!--
-		<br>
-		I'm here {{ tags[0] }}
-		<br> 
--->
+
+		<!-- <br>
+		I'm here {{ lengthCourse }}
+		<br>  -->
+
+		
+
 		
 		<br>
         <input type="submit" value="Télécharger" formtarget="_blank"/>
@@ -152,18 +142,18 @@
 {% block end_script %}
 <script type="text/javascript">
 	
-const activities = {{activities|tojson|safe}};
-//~ console.log("coucou");
-const form = document.querySelector('#form');
-//~ document.location.href="https://mailetud.u-pem.fr/#1";
+// const activities = {{activities|tojson|safe}};
+// console.log("coucou");
+// const form = document.querySelector('#form');
+// document.location.href="https://mailetud.u-pem.fr/#1";
 
-form.addEventListener('change', e => {
-	console.log("coucou");
-	//~ const data = new FormData(form);
-	//~ for (const entry of data.entries()) {
-		//~ console.log(entry);
-	//~ }
-});
+// form.addEventListener('change', e => {
+// 	console.log("coucou");
+// 	 const data = new FormData(form);
+// 	for (const entry of data.entries()) {
+// 		 console.log(entry);
+// 	 }
+// });
 
 </script>
 {% endblock %}
