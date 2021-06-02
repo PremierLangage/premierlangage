@@ -27,24 +27,31 @@ logger = logging.getLogger(__name__)
 
 activities_tmp = Answer.objects.all().values_list("activity_id")
 activities = Activity.objects.all().values_list("name", "id").filter(id__in = activities_tmp).order_by('id')
+sizeMaxActivity = max(map(lambda activity: len(activity[0]),activities))//1.3
+
 
 pls_tmp = Answer.objects.all().values_list("pl_id")
 pls = PL.objects.all().values_list("name", "id").filter(id__in = pls_tmp).order_by('id')
+sizeMaxPl = max(map(lambda pl: len(pl[0]),pls))//1.3
 
-# ~ jsons = list(PL.objects.all().values_list('json'))
-# ~ tags=set()
+
+courses = Activity.objects.all().values_list("name", "id").filter(activity_type="course").order_by('id')
+sizeMaxCourse = max(map(lambda course: len(course[0]),courses))//1.3
+
+# jsons = list(PL.objects.all().values_list('json'))
+tags=set()
+tags.update(['programmation', 'test', 'python', 'intégral'])
 # ~ print(jsons[0])
-# ~ for tag in tags_tmp:
-	
-	# ~ for t in tag:
-		# ~ try:
-			# ~ print(t["tag"])
-			# ~ tags.update(t["tag"].split('|'))
-		# ~ except:
-			# ~ pass
-tags=[]
+# for tag in tags_tmp:
+#     for t in tag:
+#             try:
+#                     print(t["tag"])
+#                     tags.update(t["tag"].split('|'))
+#             except:
+#                     pass
+# ~ tags=[]
 students = list(map(lambda student: (student[0],split("[/_]",student[1])[1]), Profile.objects.filter(role = 4).values_list("user_id","avatar")))
-teachers = list(set(map(lambda teacher: (teacher[0],split("[/_]",teacher[1])[1]), Profile.objects.filter(role = 2).values_list("user_id","avatar"))))
+teachers = list(map(lambda teacher: (teacher[0],split("[/_]",teacher[1])[1]), Profile.objects.filter(role = 2).values_list("user_id","avatar")))
 
 @login_required
 def test_pl(request, pl_id):
@@ -121,44 +128,52 @@ def download_answers(request):
     if not request.user.is_staff:
         raise PermissionDenied
     if "start" in request.GET or "end" in request.GET:
-        
+        # request = True
+        # print(request)
         if "start" not in request.GET or request.GET["start"] == "":
             if "end" not in request.GET or request.GET["start"] == "":
                 answers = Answer.objects.select_related("activity", "pl", "user").all()
+                
             else:
                 answers = Answer.objects.select_related("activity", "pl", "user").filter(
-                    date__lte=request.GET["end"])
+                    date__lte = request.GET["end"])
+                # request &= Q(date__lte=request.GET["end"])
+            
         elif "end" not in request.GET or request.GET["end"] == "":
             if "start" in request.GET and request.GET["start"] != "":
                 answers = Answer.objects.select_related("activity", "pl", "user").filter(
                     date__gte=request.GET["start"])
+                # request &= Q(date__gte=request.GET["start"])
         else:
             answers = Answer.objects.select_related("activity", "pl", "user").filter(
                 date__range=(request.GET["start"], request.GET["end"]))
+            # request &= Q(date__range=(request.GET["start"], request.GET["end"]))
         
-        if "pl[]" in request.GET :
+        
+        if "pl" in request.GET and request.GET['pl'].isnumeric():
             try:
-                pl_tmp = list(filter(lambda pl: pl != '', request.GET.getlist('pl[]')))[0]
-                pl_tmp = int(pl_tmp)     
-                try:
-                    answers = answers.filter(pl=PL.objects.get(id = pl_tmp))
-                except PL.DoesNotExist:
-                    return HttpResponseNotFound("PL does not exist")
-            except:
-                pass
                 
-        if "activity[]" in request.GET :
+                answers = answers.filter(pl=PL.objects.get(id = int(request.GET['pl'])))
+                # request &= Q(pl=PL.objects.get(id = int(request.GET['pl'])))
+            except PL.DoesNotExist:
+                return HttpResponseNotFound("PL does not exist")
+                
+        if "activity" in request.GET and request.GET['activity']:
             try:
-                activity_tmp = list(filter(lambda act: act != '', request.GET.getlist('activity[]')))[0]
-                activity_tmp = int(activity_tmp)
-                try:
-                    answers = answers.filter(
-                        activity=Activity.objects.get(id = activity_tmp))
-                    
-                except Activity.DoesNotExist:
-                    return HttpResponseNotFound("Activity does not exist")
-            except:
-                pass
+                answers = answers.filter(
+                    activity=Activity.objects.get(id = int(request.GET['activity'])))
+                # request &= Q(activity=Activity.objects.get(id = int(request.GET['activity'])))
+                                
+            except Activity.DoesNotExist:
+                return HttpResponseNotFound("Activity does not exist")
+           
+        if "courses" in request.GET and request.GET["courses"].isnumeric():
+            try:
+                tmp = Activity.objects.filter(parent= int(request.GET["courses"])).values_list("id",flat=True)
+                answers = answers.filter(activity__in = tmp)
+                # requets &= Q( activity__in = Activity.objects.filter(parent= int(request.GET["courses"])).values_list("id",flat=True))
+            except Activity.DoesNotExist:
+                return HttpResponseNotFound("Course does not exist")
         
         if "type" in request.GET:
             if request.GET["type"] == "teacher" :
@@ -167,36 +182,36 @@ def download_answers(request):
             elif request.GET["type"] == "students":
                 tmp = list(map(lambda student: student[0],students))
             answers = answers.filter(user_id__in = tmp)
+            # request &= Q(user_id__in = tmp) 
             
         elif "name" in request.GET and request.GET["name"].isnumeric():
             answers = answers.filter( Q( user_id = int(request.GET["name"]) ))
+            # request &= Q( user_id = int(request.GET["name"]) )
         
         if "exclude_grade" in request.GET and request.GET["exclude_grade"] == "on":
             answers = answers.filter( ~Q( grade = None))
-        
-            
-        
+            # request &= ~Q( grade = None)
+
+        # if "tags[]" in request.GET :
+            # answers = answers.filter( tag__in = request.GET.getlist("tags[]"))
         
         if "max" in request.GET or "min" in request.GET:
            
             if "max" not in request.GET or not request.GET["max"].isnumeric():
                 if "min" in request.GET and request.GET["min"].isnumeric():
                     answers = answers.filter( Q( grade = None) | Q( grade__gte = int( request.GET["min"])))
-                
+                    # request &= Q( grade = None) | Q( grade__gte = int( request.GET["min"]))
             elif "min" not in request.GET or request.GET["min"] == "":
                 if "max" in request.GET and request.GET["max"].isnumeric():
                     answers = answers.filter( Q( grade = None) | Q( grade__lte = int( request.GET["max"])))
-           
+                    # request &= Q( grade = None) |Q( grade__lte = int( request.GET["max"]))
             else:
                 if request.GET["max"].isnumeric() and request.GET["min"].isnumeric():
                     answers = answers.filter( Q( grade = None) | Q( grade__range = (int(request.GET["min"]), int(request.GET["max"]))))
-        
-        # ~ if "actif" in request.GET and request.GET["actif"]=="on":
-            # ~ print("test")
-            # ~ answers = answers.filter( Q( open = True))
-            # ~ print("test2")
-            
-                
+                    # request &= Q( grade = None) | Q( grade__range = (int(request.GET["min"]), int(request.GET["max"])))
+        if "actif" in request.GET and request.GET["actif"]=="on":
+            answers = answers.filter(activity_id__in = Activity.objects.all().filter(open=True).values_list("id",flat=True))  
+            # request &= Q(activity_id__in = Activity.objects.all().filter(open=True).values_list("id",flat=True))
         dic = {}
         slice_size = 1000
         for i in range(0, answers.count(), slice_size):
@@ -212,6 +227,15 @@ def download_answers(request):
                 dic[a.id]["activity_id"] = a.activity.id if a.activity is not None else None
                 dic[a.id]["activity_name"] = a.activity.name if a.activity is not None else None
                 dic[a.id]["open"] = a.activity.open if a.activity is not None else None
+                activity = Activity.objects.all().filter(id = dic[a.id]["activity_id"]).values_list("id","name").get() if dic[a.id]["activity_id"] is not None else None  
+                
+                if activity is not None:
+                    parent = activity[0] 
+                    while(parent != 0 ):
+                        dic[a.id]["chapitre"] = activity[1] 
+                        activity = Activity.objects.all().filter(id=parent).values_list("parent_id","name").get()
+                        parent = activity[0]
+                    dic[a.id]["cours"] = activity[1]
                 
                 if "min" in request.GET or "max" in request.GET:
                     dic[a.id]["grade"] = a.grade 
@@ -223,12 +247,12 @@ def download_answers(request):
                     else:
                         dic[a.id]["tag"] = None
         
-        if "actif" in request.GET and request.GET["actif"]=="on":
-            dic = {key: value for key, value in dic.items() if value["open"] }
+        # if "actif" in request.GET and request.GET["actif"]=="on":
+        #     dic = {key: value for key, value in dic.items() if value["open"] }
         
-        if "test" in request.GET :
-            print(request.GET["test"],"salut")
-
+        # ~ if "test" in request.GET :
+            # ~ print(request.GET["test"],"salut")
+        
         
         stream = io.StringIO(json.dumps(dic))
         response = StreamingHttpResponse(stream, content_type="application/json")
@@ -243,7 +267,11 @@ def download_answers(request):
             'pls': pls,
             'students': students,
             'teachers': teachers,
-            'tags' : tags
+            'tags' : tags,
+            'courses' : courses,
+            'sizeMaxActivity': sizeMaxActivity,
+            'sizeMaxCourse': sizeMaxCourse,
+            'sizeMaxPL': sizeMaxPl 
         }
     )
 
