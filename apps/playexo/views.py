@@ -51,15 +51,13 @@ students = list(map(lambda student: (student[0], split(
 teachers = list(map(lambda teacher: (teacher[0], split(
     "[/_]", teacher[1])[1]), Profile.objects.filter(role=2).values_list("user_id", "avatar")))
 
-def find_course_name(parents, id,name):
+def find_course_name(parents, id: int, name: str):
     while id != 0:
         tmp = parents[id]
         id,name = tmp[0], tmp[1]
-
     return name
 
 def filter_by_login_or_role(login: bool, request, sql_request: Q ):
-    # print(login)
     if login :
         try:
             if request.GET["studentLogin"].isnumeric():
@@ -183,7 +181,7 @@ def download_answers(request):
         raise PermissionDenied
     if "start" in request.GET or "end" in request.GET:
         sql_request = Q()
-        
+                
         answers = Answer.objects.select_related("activity", "pl", "user")
 
         startInRequest = "start" in request.GET and request.GET["start"]!=''
@@ -225,17 +223,17 @@ def download_answers(request):
             except (Activity.DoesNotExist, ValueError) as err:
                 return HttpResponseNotFound("Activity does not exist")
 
-        if "courses" in request.GET and request.GET["courses"].isnumeric():
+        if "course" in request.GET and request.GET["course"].isnumeric():
             try:
                 sql_request &= Q(activity__in = Activity.objects.filter(
                     parent = int(request.GET["course"])).values_list("id", flat=True))
             except (Activity.DoesNotExist, ValueError) as err:
                 return HttpResponseNotFound("Course does not exist")
-
+                
         sql_request = filter_by_login_or_role(login, request, sql_request)
         
         
-        
+                
 
         if "exclude_grade" in request.GET and request.GET["exclude_grade"] == "on":
             sql_request &= ~Q(grade = None)
@@ -252,13 +250,12 @@ def download_answers(request):
         answers = answers.filter(sql_request)
 
         if answers.count() == 0:
-            return HttpResponseBadRequest("Theire is no informations in our database linked to your request", status=400)
+            return HttpResponseBadRequest("There is no informations in our database linked to your request", status=400)
             
         if limit and request.GET["limit"].isnumeric():
             answers = answers[:int(request.GET["limit"])]
 
         slice_size = 1_000
-
         dic = {
             answer.id: {
                 "user": answer.user.get_username(),
