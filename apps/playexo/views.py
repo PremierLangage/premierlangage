@@ -43,7 +43,7 @@ sizeMaxCourse = max(map(lambda course: len(course[0]), courses))//1.3
 tags = set()
 tags.update(['tag1', 'tag2', 'tag3', 'tag4'])
 
-parents = {id : Activity.objects.values_list('parent_id','name').get(id = id) 
+parents = { id : Activity.objects.values_list('parent_id','name').get(id = id) 
                 for id in Activity.objects.values_list("parent_id", flat=True).distinct().filter(parent_id__isnull=False) }
 
 students = list(map(lambda student: (student[0], split(
@@ -286,7 +286,6 @@ def download_answers(request):
         response['Content-Disposition'] = 'attachment;filename=answers.json'
         return response
 
-    logger.info("test Ydris du 7 juin 2021")
     return render(
         request,
         "playexo/download_answers.html",
