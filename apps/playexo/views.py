@@ -272,12 +272,12 @@ def download_answers(request: HttpRequest):
             return HttpResponseNotFound("PL does not exist")
 
         try:
-            sql_request = filter_by_activity(plInRequest, request, sql_request)
+            sql_request = filter_by_activity(activityInRequest, request, sql_request)
         except (ValueError,Activity.DoesNotExist):
             return HttpResponseNotFound("Activity does not exist")
 
         try:
-            sql_request = filter_by_course(plInRequest, request, sql_request)
+            sql_request = filter_by_course(courseInRequest, request, sql_request)
         except (Activity.DoesNotExist, ValueError):
             return HttpResponseNotFound("Course does not exist")
 
