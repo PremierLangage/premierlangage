@@ -77,7 +77,7 @@
 			</datalist>
 		
 			
-			<input list="courses" name="courses" placeholder="Choisir un cours" size = "{{ sizeMaxCourse }}"/>
+			<input list="courses" name="course" placeholder="Choisir un cours" size = "{{ sizeMaxCourse }}"/>
 			<datalist id="courses">
 				{% for cours in courses%}
 					<option value="{{ cours[1] }}">{{ cours[1] }} : {{ cours[0] }}</option>
