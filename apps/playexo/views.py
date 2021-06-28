@@ -134,7 +134,6 @@ def filter_by_pl(plInRequest: bool, request: HttpRequest, sql_request: Q):
                 sql_request &= Q(pl = PL.objects.get(id = pl))
             except (PL.DoesNotExist, ValueError) as err:
                 raise err
-                return HttpResponseNotFound("PL does not exist")
     return sql_request
 
 def filter_by_activity(activityInRequest: bool, request: HttpRequest, sql_request: Q):
@@ -148,14 +147,17 @@ def filter_by_activity(activityInRequest: bool, request: HttpRequest, sql_reques
 
         except (Activity.DoesNotExist, ValueError) as err:
             raise err
-                # return HttpResponseNotFound("Activity does not exist")
     return sql_request
 
 def filter_by_course(courseInRequest:bool, request: HttpRequest, sql_request: Q):
     if courseInRequest:
         try:
-            sql_request &= Q(activity__in = Activity.objects.filter(
-                parent = int(request.GET["course"])).values_list("id", flat=True))
+            courseName = parents[int(request.GET["course"])][1]
+            activitiesLinkToCourse = filter((lambda activity: find_course_name(parents, activity[1], None) ==  courseName),
+            Activity.objects.filter(parent_id__isnull = False).values_list("id", "parent_id"))
+            activitiesId = map((lambda x: x[0]), activitiesLinkToCourse)
+            sql_request &= Q(activity__in = activitiesId)
+
         except (Activity.DoesNotExist, ValueError) as err:
             raise err
     return sql_request
