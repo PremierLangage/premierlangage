@@ -1,4 +1,10 @@
-<body>
+<style>
+div {
+  text-indent: 30px;
+}
+</style>
+
+<body id="reload">
 {% extends "base.html" %}
 
 
@@ -6,152 +12,237 @@
 
 	{% block content %}
 		<form id="form" method="get">
-			<label>
-				Début :
-				<input type="date" name="start"/>
-			</label>
-			<label>
-				Fin :
-				<input type="date" name="end"/>
-			</label>
-			<br>
-			<label>
-				Inclure le champs answers :
-				<input type="checkbox" name="include_answers">
-			</label>
-			<label>
-				Inclure les tags :
-				<input type="checkbox" name="include_tag">
-			</label>
-			
-			<acronym title="Exercices dont les feuilles sont encore disponible">
-				<label>
-					Inclure pl actifs seulement :
-					<input type="checkbox" name="actif">
+			<h1>Date:</h1>
+			<div>
+				<label text-indent: 30%>
+					Début :
+					<input type="date" name="start"/>
 				</label>
-			</acronym>
-			
-			<br>
-			<acronym title="Personne n'ayant pas encore fait d'exercices">
-				<label>
-					Exclure les non notés :
-					<input type="checkbox" name="exclude_grade">
+				<label hidden>
+					<input type="time" name="time-start"/>
+					<!-- la recherche avec le temps a été mise de coté car il faudrait connaitre le fuseau horaire de l ordinateur pour convertir en fonction de celui qui est stocké dans la bdd-->
 				</label>
-			</acronym>
+			</div>
+			<br>
+			<div>
+				
+				<label>
+					Fin :
+					<input type="date" name="end"/>
+				</label>
+				<label hidden>
+					<input type="time" name="time-end"/>
+					<!-- la recherche avec le temps a été mise de coté -->
+				</label>
+				
+			</div>
 
+			<h1>Détails:</h1>
+			<div>
+				<label>
+					Inclure les réponses des apprenants :
+					<input type="checkbox" name="include_answers">
+				</label><br>
+			</div>
+			<div>
+				<label>
+					Inclure les tags de l'exercice:
+					<input type="checkbox" name="include_tag">
+				</label><br>
+			</div>
+			<div>
+				<acronym title="Exercices dont les feuilles sont encore disponible">
+					<label>
+						Inclure exercices actifs seulement :
+						<input type="checkbox" name="actif">
+					</label>
+				</acronym><br>
+			</div>
+
+			<h1>Note:</h1>
+			<div>
+				<acronym title="Personne qui n'a pas encore saisi de réponse donc pas de note">
+					<label>
+						Exclure les ouvertures d'exercices :
+						<input type="checkbox" name="exclude_grade" onclick="displayGrade()" >
+					</label>
+				</acronym>
+			</div>
+
+			<div id="grade" style="display: none;">
+				<label>
+					Note minimal :
+					<input type="number" name="min" min="0" max="100" placeholder=0 >
+				</label>
+				<label>
+					Note maximal :
+					<input type="number" name="max" min="0" max="100" placeholder=100>
+				</label>
+			</div>
 			
-			<label>
-				Note minimal :
-				<input type="number" name="min" min="0" max="100" placeholder=0>
-			</label>
-			<label>
-				Note maximal :
-				<input type="number" name="max" min="0" max="100" placeholder=100>
-			</label>
-			<br>
-			
-			
-			<label>
-				Élèves uniquement :
-				<input type="radio" name="type" value="students">
-			</label>
-			<label>
-				Enseignants uniquement :
-				<input type="radio" name="type" value="teachers">
-			</label>
-			<br>
-			
-			
-			<input list="pls" name="pl" placeholder="Choisir un PL" size = "{{ sizeMaxPL }}"/>
-			<datalist id="pls">
-				{% for pl in pls%}
-					<option value="{{ pl[1] }}">{{ pl[1] }} : {{ pl[0] }}</option>
-				{% endfor %}
-			</datalist>
-			
-			<input list="activities" name="activity" placeholder="Choisir une activité" size = "{{ sizeMaxActivity }}"/>
-			<datalist id="activities">
-				{% for activity in activities%}
-					<option value="{{ activity[1] }}">{{ activity[1] }} : {{ activity[0] }}</option>
-				{% endfor %}
-			</datalist>
-		
-			
-			<input list="courses" name="course" placeholder="Choisir un cours" size = "{{ sizeMaxCourse }}"/>
-			<datalist id="courses">
-				{% for cours in courses%}
-					<option value="{{ cours[1] }}">{{ cours[1] }} : {{ cours[0] }}</option>
-				{% endfor %}
-			</datalist>
-			<br>
-			<br>
-			
-			<label title="Restez appuyé sur Ctrl (Windows/Linux) ou Command (Mac) pour selectionner plusieurs options">
-				Choisir un ou plusieurs tags:
-				<br>
-				<select name="tags[]"  multiple >
-					{% for tag in tags%}
-						<option value="{{ tag }}">{{ tag }}</option>
+			<h1>Rôle recherché:</h1>
+			<div>
+				<label>
+					Élèves uniquement :
+					<input type="radio" name="type" value="students" onchange='displaySelect("student-select", "teacher-select")' id='students'>
+				</label>
+				<label>
+					Enseignants uniquement :
+					<input type="radio" name="type" value="teachers" onchange='displaySelect("teacher-select", "student-select")' id='teachers'>
+				</label>
+			</div>
+			<h1>Formation: </h1>
+			<div>
+				<label for="course" ></label>
+				<select id="courses" name='course' onchange='selectCourseOrActivity()' >
+					<option value="" >-- Choisir un cours --</option>
+					{% for course in courses%}
+						<option value="{{ course[1] }}">{{ course[1] }} : {{ course[0] }}</option>
 					{% endfor %}
 				</select>
-			</label>
+			</div>
 
+			<div hidden>
+				<br>
+				<label title="Restez appuyé sur Ctrl (Windows/Linux) ou Command (Mac) pour selectionner plusieurs tags">
+					<select name="tags[]"  multiple >
+						{% for tag in tags%}
+							<option value="{{ tag }}">{{ tag }}</option>
+						{% endfor %}
+					</select>
+				</label>
+				<!-- la recherche par tag a été mise de côté car il n y avais pas de table tag dans la bdd
+				et recherché tous les tags disponible était une requête trop complexe  -->
+			</div>
+				
+			<div>
+				<label for="activity" ></label>
+				<select  id="activities" name="activity" onclick="selectCourseOrActivity()">
+					<option value="" >-- Choisir une activité (un chapitre) --</option>
+					{% for activity in activities%}
+						<option value="{{ activity[1] }}">{{ activity[1] }} : {{ activity[0] }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<br>
+
+			<div>
+				<label for="pl" ></label>
+				<select id="pls" name="pl">
+					<option value="" >-- Choisir un PL (un exercice) --</option>
+					{% for pl in pls%}
+						<option value="{{ pl[1] }}">{{ pl[1] }} : {{ pl[0] }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			
 			
 			<br>
 			<details>
 				<summary>Recherche Avancée</summary>
-						<input type="number" name="pl2" placeholder = "Choisir un PL spécifique">
-						<input type="number" name="activity2" placeholder = "Choisir une activité spécifique" size = 25>
+						<h1>Utilisateur:</h1>
+						<div>
+							<select name="studentLogin"  id="student-select">
+								<option value="">--Choisir un élève--</option>
+								{% for student in students%}
+									<option value="{{ student[0] }}">{{ student[1] }}</option>
+								{% endfor %}
+							</select>
+						</div>
 						<br>
-						<select name="studentLogin" id="student-select">
-							<option value="">--Choisir un élève--</option>
-							{% for student in students%}
-								<option value="{{ student[0] }}">{{ student[1] }}</option>
-							{% endfor %}
-						</select>
 						
-						<select name="teacherLogin" id="teacher-select">
-							<option value="">--Choisir un Professeur--</option>
-							{% for teacher in teachers%}
-								<option value="{{ teacher[0] }}">{{ teacher[1] }}</option>
-							{% endfor %}
-						</select>
-						<input type="number" name="limit" placeholder = "Limité le nombre de résultat" size = 23>
-
-
-
+						<div>
 						
+							<select name="teacherLogin"  id="teacher-select">
+								<option value="">--Choisir un Professeur--</option>
+								{% for teacher in teachers%}
+									<option value="{{ teacher[0] }}">{{ teacher[1] }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<br>
+	
+						<h1>Taille:</h1>
+						<div>
+							Limité le nombre de résultat dans le fichier JSON (si requête trop grosse):
+							<input type="number" name="limit">
+
+						</div>
+					
 			</details>
-
-
-			<!-- <br>
-			I'm here {{ lengthCourse }}
-			<br>  -->
-
-			
-
 			
 			<br>
 			<input type="submit" value="Télécharger" formtarget="_blank"/>
-			<input type="reset"/>
+			<label onclick="reset()"><input type="reset" /></label>
+			
 		</form>
 	
 	{% endblock %}
 {% block end_script %}
 <script type="text/javascript">
-	
-// const activities = {{activities|tojson|safe}};
-// console.log("coucou");
-// const form = document.querySelector('#form');
-// document.location.href="https://mailetud.u-pem.fr/#1";
+	function reset(){
+		document.getElementById("grade").style.display = 'none';
+		document.getElementById("teacher-select").disabled = false;
+		document.getElementById("student-select").disabled = false;
+	}
 
-// form.addEventListener('change', e => {
-// 	console.log("coucou");
-// 	 const data = new FormData(form);
-// 	for (const entry of data.entries()) {
-// 		 console.log(entry);
-// 	 }
-// });
+	function displayGrade(){
+		var grade = document.getElementById("grade");
+		if(grade.style.display == 'block'){
+			grade.style.display = 'none';
+		}
+		else{
+			grade.style.display = 'block';
+		}
+	}
+
+	function displaySelect(select, select2){
+		document.getElementById(select).disabled = true;
+		document.getElementById(select2).disabled = false;
+	}
+
+	
+
+function selectCourseOrActivity() {
+  try{
+ 	var course = document.getElementById("courses").value
+  }
+  catch{
+	  course = "";
+  }
+
+  try{
+	var activity = document.getElementById("activity").value
+
+  }
+  catch{
+	  activity = "";
+  }
+  
+  if(course != "" || activity!="")
+  {
+	
+	  const xhttp = new XMLHttpRequest();
+		
+		$(document).ready(function(){
+			$("#activities").empty();
+        	$("#activities").append($('<option>', {value: "",text: '-- Choisir une activité (un chapitre) --'}));
+			
+			// $('#dropdownlist').append($('<option>', { 
+			// 	value: val.value,
+			// 	text : val.text 
+        	// }));
+			
+        });
+		xhttp.open("GET", "playexo/download_answers/?course="+course);
+		xhttp.send();
+
+		// le but ici etait d'envoyer une requete ajax afin de récupérer la liste des activités en lien
+		// avec le cours selectionner ou les exercices en lien avec l'activité selectionné
+		// mais l'actualisation de la liste sur cette page n'a pas eu lieu 
+
+  }
+}
 
 </script>
 {% endblock %}

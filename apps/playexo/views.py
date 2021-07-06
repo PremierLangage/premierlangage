@@ -27,39 +27,18 @@ import time
 
 logger = logging.getLogger(__name__)
 
-#creation of the basic list to print in download_answers.html 
 
-activities = Activity.objects.values_list("name", "id").order_by('id')
-sizeMaxActivity = max( map( lambda activity: len(activity[0]), activities))//1.3
-
-
-pls = PL.objects.all().values_list("name", "id").order_by('id')
-sizeMaxPl = max(map(lambda pl: len(pl[0]), pls))//1.3
-
-
-courses = Activity.objects.all().values_list("name", "id").filter(activity_type="course").order_by('id')
-sizeMaxCourse = max( map( lambda course: len(course[0]), courses))//1.3
-
-tags = set()
-tags.update(['tag1', 'tag2', 'tag3', 'tag4'])
-
-parents = { id : Activity.objects.values_list('parent_id','name').get(id = id) 
-                for id in Activity.objects.values_list("parent_id", flat=True).distinct().filter(parent_id__isnull=False) }
-
-students = list(map(lambda student: (student[0], split(
-    "[/_]", student[1])[1]), Profile.objects.filter(role=4).values_list("user_id", "avatar")))
-teachers = list(map(lambda teacher: (teacher[0], split(
-    "[/_]", teacher[1])[1]), Profile.objects.filter(role=2).values_list("user_id", "avatar")))
-
-def find_course_name(parents: dict, id: int, name: str):
+def find_course(parents: dict, id: int, name: str = None):
     """
-        This function return the name of the course at the root of the activity_id: id
+        This function return the id and the name of the course at the root of the activity_id: id
     """
+    activityId = id
     while id != 0:
+        activityId = id
         id,name = parents[id][0], parents[id][1]
-    return name
+    return (activityId,name)
 
-def filter_by_login_or_role(login: bool, request: HttpRequest, sql_request: Q ):
+def filter_by_login_or_role(login: bool, request: HttpRequest, sql_request: Q, teachers: list, students: list):
     """
         This function return a new request which will filter our final request
         with a login in particular, or a role (student/teacher) 
@@ -67,20 +46,21 @@ def filter_by_login_or_role(login: bool, request: HttpRequest, sql_request: Q ):
     if login :
         try:
             if request.GET["studentLogin"].isnumeric():
-                name = int(request.GET["studentLogin"])
+                id = int(request.GET["studentLogin"])
             else:
-                name = int(request.GET["teacherLogin"])
-            sql_request &= Q(user_id = name)
+                id = int(request.GET["teacherLogin"])
+            sql_request &= Q(user_id = id)
             
         except (ValueError,Profile.DoesNotExist) as err :
             raise err
         
     elif "type" in request.GET:
-        tmp=[]
         if request.GET["type"] == "teacher":
             tmp = list(map(lambda teacher: teacher[0], teachers))
         elif request.GET["type"] == "students":
             tmp = list(map(lambda student: student[0], students))
+        else:
+            tmp = []
         sql_request &= Q(user_id__in = tmp)
     return sql_request
 
@@ -102,7 +82,6 @@ def filter_by_grade(minInRequest: bool, maxInRequest: bool, request: HttpRequest
             min, max = int(request.GET["min"]), int(request.GET["max"])
             sql_request &=  Q(grade__range = (min, max))
             
-    # rajouter si Q(grade = None) ? 
     return sql_request 
 
 def filter_by_date(startInRequest: bool, endInRequest: bool, request:HttpRequest, sql_request: Q):
@@ -149,11 +128,12 @@ def filter_by_activity(activityInRequest: bool, request: HttpRequest, sql_reques
             raise err
     return sql_request
 
-def filter_by_course(courseInRequest:bool, request: HttpRequest, sql_request: Q):
+def filter_by_course(courseInRequest:bool, request: HttpRequest, sql_request: Q, parents: dict):
     if courseInRequest:
         try:
-            courseName = parents[int(request.GET["course"])][1]
-            activitiesLinkToCourse = filter((lambda activity: find_course_name(parents, activity[1], None) ==  courseName),
+            # courseName = parents[int(request.GET["course"])][1]
+            courseId = int(request["course"])
+            activitiesLinkToCourse = filter((lambda activity: find_course(parents, activity[1])[0] ==  courseId),
             Activity.objects.filter(parent_id__isnull = False).values_list("id", "parent_id"))
             activitiesId = map((lambda x: x[0]), activitiesLinkToCourse)
             sql_request &= Q(activity__in = activitiesId)
@@ -237,6 +217,30 @@ def download_answers(request: HttpRequest):
         This function will parse the request to download all the informations
         necessary to get the JSON required
     """
+    #creation of the basic list to print in download_answers.html 
+
+    activities = Activity.objects.exclude(activity_type='course').filter(id__in = Answer.objects.values_list("activity_id",flat=True).distinct()).exclude(id= 0).values_list("name", "id","parent_id").order_by('id')
+    sizeMaxActivity = max( map( lambda activity: len(activity[0]), activities))//1.3
+
+
+    pls = PL.objects.filter(id__in = Answer.objects.values_list("pl_id",flat=True).distinct()).values_list("name", "id").order_by('id')
+    sizeMaxPl = max(map(lambda pl: len(pl[0]), pls))//1.3
+
+
+    courses = Activity.objects.values_list("name", "id").filter(activity_type="course").order_by('id')
+    sizeMaxCourse = max( map( lambda course: len(course[0]), courses))//1.3
+
+    tags = set()
+    tags.update(['tag1', 'tag2', 'tag3', 'tag4'])
+
+    parents = { id : Activity.objects.values_list('parent_id','name').get(id = id) 
+                    for id in Activity.objects.values_list("parent_id", flat=True).distinct().filter(parent_id__isnull=False) }
+
+    students = list(map(lambda student: (student[0], split(
+        "[/_]", student[1])[1]), Profile.objects.filter(role=4).values_list("user_id", "avatar")))
+    teachers = list(map(lambda teacher: (teacher[0], split(
+        "[/_]", teacher[1])[1]), Profile.objects.filter(role=2).values_list("user_id", "avatar")))
+
     if not request.user.is_staff:
         raise PermissionDenied
     if "start" in request.GET or "end" in request.GET:
@@ -279,14 +283,14 @@ def download_answers(request: HttpRequest):
             return HttpResponseNotFound("Activity does not exist")
 
         try:
-            sql_request = filter_by_course(courseInRequest, request, sql_request)
+            sql_request = filter_by_course(courseInRequest, request, sql_request, parents)
         except (Activity.DoesNotExist, ValueError):
             return HttpResponseNotFound("Course does not exist")
 
 
         
         try:
-            sql_request = filter_by_login_or_role(login, request, sql_request)
+            sql_request = filter_by_login_or_role(login, request, sql_request, teachers, students)
         except (ValueError,Profile.DoesNotExist):
             return HttpResponseNotFound("User does not exist")
         
@@ -295,6 +299,7 @@ def download_answers(request: HttpRequest):
         if "exclude_grade" in request.GET and request.GET["exclude_grade"] == "on":
             sql_request &= ~Q(grade = None)
 
+        # tags are complicated to retrieve so potentially to review with PLaTon
         # if "tags[]" in request.GET :
             # answers = answers.filter( tag__in = request.GET.getlist("tags[]"))
 
@@ -318,10 +323,6 @@ def download_answers(request: HttpRequest):
         # that he submits
         dic = dict()
         slice_size = 1_000
-
-        #just here to test the perfomance of the dictionnary's cretation
-        
-        # start_time = time.time()
 
 
         for i in range(0, answers.count(), slice_size):
@@ -348,37 +349,25 @@ def download_answers(request: HttpRequest):
                         dic[answer.id]["activity_id"] = answer.activity.id  
                         dic[answer.id]["activity_name"] = answer.activity.name 
                         dic[answer.id]["open"] = answer.activity.open 
-                        dic[answer.id]["cours"] = find_course_name(parents, answer.activity.parent_id, answer.activity.name )
-
-        
-        # dic = {
-        #     answer.id: {
-        #         "user": answer.user.get_username(),
-        #         "seed": answer.seed,
-        #         "date": str(answer.date),
-        #         "grade": answer.grade,
-        #         "pl_id": answer.pl.id,
-        #         "pl_name": answer.pl.name,
-        #         "activity_id" : answer.activity.id  if answer.activity is not None else Activity.objects.get(pl = answer.pl.id).name if answer is not None else None,
-        #         "activity_name" : answer.activity.name if answer.activity is not None else None, #print( Activity.objects.get(pl = answer.pl.id).name),
-        #         "open" : answer.activity.open if answer.activity is not None else None, #Activity.objects.get(pl = answer.pl.id).open,
-        #         "include_answers": answer.answers if "include_answers" in request.GET else None,
-        #         "enseignement": PL.objects.all().values_list("rel_path",flat=True).get(id = answer.pl.id).split('/')[0],
-        #         "tag": answer.pl.json["tag"].split("|") if "include_tag" in request.GET and "tag" in answer.pl.json else None,
-        #         "cours": find_course_name(parents, answer.activity.parent_id, answer.activity.name ) if answer.activity is not None else None
-        #             # else find_course_name(parents, Activity.objects.get(pl = answer.pl.id).parent_id, Activity.objects.get(pl = answer.pl.id).name )
-        #     } 
-        #     for i in range(0, answers.count(), slice_size)
-        #         for answer in answers[i: i + slice_size]
-        # }
-
-        # print("--- %s seconds ---" % (time.time() - start_time))
-
+                        course = find_course(parents, answer.activity.parent_id, answer.activity.name )
+                        dic[answer.id]["course"] = course[1]
+                        dic[answer.id]["course_id"] = course[0]
+                        
         stream = io.StringIO(json.dumps(dic))
         response = StreamingHttpResponse(stream, content_type="application/json")
         response['Content-Disposition'] = 'attachment;filename=answers.json'
         return response
+    elif("course" in request.GET):
+        # here receive of a requeste to filter the activity list if a course is selected  
+        if("course" in request.GET and request.GET['course'].isnumeric()):
+            course_id = int(request.GET['course'])
+            activities = filter((lambda activity:  find_course(parents, activity[2], activity[0])[0] == course_id if activity[2] is not None else False ), activities)
+            
+        elif("activity" in request.GET and request.GET['activity'].isnumeric()):
+            pass
 
+        
+    
     return render(
         request,
         "playexo/download_answers.html",
