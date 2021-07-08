@@ -124,7 +124,7 @@ div {
 					{% endfor %}
 				</select>
 			</div>
-			<br>
+			<!-- <br> -->
 
 			<div>
 				<label for="pl" ></label>
@@ -204,6 +204,10 @@ div {
 	
 
 function selectCourseOrActivity() {
+	return ;
+	// le but ici etait d'envoyer une requete ajax afin de récupérer la liste des activités en lien
+		// avec le cours selectionner ou les exercices en lien avec l'activité selectionné
+		// mais l'actualisation de la liste sur cette page n'a pas eu lieu 
   try{
  	var course = document.getElementById("courses").value
   }
@@ -237,9 +241,7 @@ function selectCourseOrActivity() {
 		xhttp.open("GET", "playexo/download_answers/?course="+course);
 		xhttp.send();
 
-		// le but ici etait d'envoyer une requete ajax afin de récupérer la liste des activités en lien
-		// avec le cours selectionner ou les exercices en lien avec l'activité selectionné
-		// mais l'actualisation de la liste sur cette page n'a pas eu lieu 
+		
 
   }
 }
