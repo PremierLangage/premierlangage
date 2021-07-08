@@ -84,11 +84,11 @@ div {
 			<div>
 				<label>
 					Élèves uniquement :
-					<input type="radio" name="type" value="students" onchange='displaySelect("student-select", "teacher-select")' id='students'>
+					<input type="radio" name="type" value="students" onchange='displaySelect("teacher-select", "student-select")' id='students'>
 				</label>
 				<label>
 					Enseignants uniquement :
-					<input type="radio" name="type" value="teachers" onchange='displaySelect("teacher-select", "student-select")' id='teachers'>
+					<input type="radio" name="type" value="teachers" onchange='displaySelect("student-select", "teacher-select")' id='teachers'>
 				</label>
 			</div>
 			<h1>Formation: </h1>
@@ -168,6 +168,8 @@ div {
 							<input type="number" name="limit">
 
 						</div>
+
+
 					
 			</details>
 			
