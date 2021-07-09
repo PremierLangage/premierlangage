@@ -22,14 +22,14 @@ from re import split
 logger = logging.getLogger(__name__)
 
 
-def find_course(parents: dict, id: int, name: str = None):
+def find_course(parents: dict, childId: int, name: str = None):
     """
         This function return the id and the name of the course at the root of the activity_id: id
     """
-    activityId = id
-    while id != 0:
-        activityId = id
-        id, name = parents[id][0], parents[id][1]
+    activityId = childId
+    while childId != 0:
+        activityId = childId
+        childId, name = parents[childId][0], parents[childId][1]
     return (activityId, name)
 
 
@@ -43,10 +43,10 @@ def filter_by_login_or_role(login: bool, request: HttpRequest,
     if login:
         try:
             if request.GET["studentLogin"].isnumeric():
-                id = int(request.GET["studentLogin"])
+                userId = int(request.GET["studentLogin"])
             else:
-                id = int(request.GET["teacherLogin"])
-            sql_request &= Q(user_id=id)
+                userId = int(request.GET["teacherLogin"])
+            sql_request &= Q(user_id=userId)
             
         except (ValueError, Profile.DoesNotExist) as err:
             raise err
@@ -71,15 +71,15 @@ def filter_by_grade(minInRequest: bool, maxInRequest: bool, request: HttpRequest
     if maxInRequest or minInRequest:
         if not maxInRequest:
             if minInRequest:
-                min = int(request.GET["min"])
-                sql_request &= Q(grade__gte=min)
+                minGrade = int(request.GET["min"])
+                sql_request &= Q(grade__gte=minGrade)
         elif not minInRequest:
             if maxInRequest:
-                max = int(request.GET["max"])
-                sql_request &= Q(grade__lte=max)
+                maxGrade = int(request.GET["max"])
+                sql_request &= Q(grade__lte=maxGrade)
         else:
-            min, max = int(request.GET["min"]), int(request.GET["max"])
-            sql_request &= Q(grade__range=(min, max))
+            minGrade, maxGrade = int(request.GET["min"]), int(request.GET["max"])
+            sql_request &= Q(grade__range=(minGrade, maxGrade))
             
     return sql_request
 
