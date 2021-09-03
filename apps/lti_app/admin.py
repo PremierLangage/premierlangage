@@ -1,6 +1,5 @@
 from django.contrib import admin
 
-from .models import ActivityOutcome, LTIModel
+from .models import ActivityOutcome
 
-admin.site.register(LTIModel)
 admin.site.register(ActivityOutcome)
