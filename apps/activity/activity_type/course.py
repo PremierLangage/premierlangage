@@ -87,7 +87,7 @@ class Course(AbstractActivityType):
 
         smalls = list()
         for item in activity.indexed_activities():
-            if item.open or activity.is_teacher(user):
+            if item.open:
                 smalls.append(item.small(request))
 
         return render(request, "activity/activity_type/course/index.html", {
