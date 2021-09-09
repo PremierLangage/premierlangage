@@ -85,7 +85,7 @@ class Activity(LTIModel, Position):
         return [i.pl for i in sorted(self.plposition_set.all(), key=lambda i: i.position)]
 
     def indexed_activities(self):
-        return Activity.objects.filter(parent=self).order_by("position")
+        return Activity.objects.filter(parent=self).order_by("-position")
 
     def small(self, request):
         return get_activity_type_class(self.activity_type)().small(request, self)
