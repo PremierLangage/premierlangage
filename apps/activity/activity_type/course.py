@@ -222,6 +222,7 @@ class Course(AbstractActivityType):
                     'id': a.id,
                     'total': len(indexed_pl[a]),
                     'not_started': len(indexed_pl[a]),
+                    'points': 0,
                 }
             result[st.id] = {
                 'object': st,
@@ -233,17 +234,21 @@ class Course(AbstractActivityType):
             if g.user.id in result:
                 result[g.user.id]["activities"][g.activity.id]["state"][state]["count"] += 1
                 result[g.user.id]["activities"][g.activity.id]["not_started"] -= 1
+                result[g.user.id]["activities"][g.activity.id]["points"] += g.grade if g.grade > 0 else 0
 
         result = sorted(result.values(), key=lambda k: k['object'].last_name)
         succes_group = 0
         total_group = 0
+        points_group = 0
         for r in result:
             r["activities"] = list(r["activities"].values())
             succes = 0
             total = 0
+            points = 0
             for tp in r["activities"]:
                 succes += tp["state"][State.SUCCEEDED]['count']
                 total += tp["total"]
+                points += tp["points"]
                 for state in tp["state"]:
                     state = tp["state"][state]
 
@@ -259,12 +264,13 @@ class Course(AbstractActivityType):
                     del tp["state"][state]
 
                 tp["state"] = list(tp["state"].values())
-            average = {"average": round((succes / total) * 20, 2)}
+            average = {"average": round((points / (5*total)), 2)}
             total_group += total
             succes_group += succes
+            points_group += points
             r["activities"].append(average)
 
-        average_group = {"average": round((succes_group / total_group) * 20, 2)}
+        average_group = {"average": round((points_group / (5*total_group)), 2)}
         result.append(average_group)
 
         return render(request, 'activity/activity_type/course/teacher_dashboard.html', {
