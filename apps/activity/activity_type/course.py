@@ -209,7 +209,8 @@ class Course(AbstractActivityType):
             if g.user.id in result:
                 result[g.user.id]["activities"][g.activity.id]["state"][state]["count"] += 1
                 result[g.user.id]["activities"][g.activity.id]["not_started"] -= 1
-                result[g.user.id]["activities"][g.activity.id]["points"] += g.grade if g.grade > 0 else 0
+                hg = g.grade if g.grade > 0 else 0
+                result[g.user.id]["activities"][g.activity.id]["points"] += hg
 
         result = sorted(result.values(), key=lambda k: k['object'].last_name)
         succes_group = 0
