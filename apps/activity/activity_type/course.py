@@ -153,7 +153,32 @@ class Course(AbstractActivityType):
         raise PermissionDenied()
 
     def notes(self, activity, request):
-        response = HttpResponse("", content_type="text/csv")
+        """
+        This method returns a csv file containing marks of the whole course.
+        """
+        activities = activity.indexed_activities()
+        indexed_pl = {a: a.indexed_pl() for a in activities}
+        all_pl = []
+        for indexed in indexed_pl.values():
+            all_pl += list(indexed)
+        user = request.user
+        users = activity.student.all()
+        pl = all_pl
+        if not user or user not in activity.teacher.all():
+            return HttpResponseForbidden("Not authorized")
+        csv = "username,firstname,lastname,email," + ''.join(
+            [str(i + 1) + ": " + p.name + "," for i, p in enumerate(pl)]) + "total\n"
+        for u in users:
+            grades = []
+            for i in pl:
+                answer = Answer.highest_grade(i, u)
+                grades.append(
+                    0 if answer is None else max(answer.grade,
+                                                 0) if answer.grade is not None else 0)
+            csv += ("%s,%s,%s,%s," % (u.username, u.first_name, u.last_name, u.email)
+                    + ''.join([str(i) + "," for i in grades])
+                    + str(sum(grades)) + "\n")
+        response = HttpResponse(csv, content_type="text/csv")
         response['Content-Disposition'] = 'attachment;filename=notes.csv'
         return response
 

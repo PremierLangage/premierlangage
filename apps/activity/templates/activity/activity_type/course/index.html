@@ -15,6 +15,11 @@
         </ion-card-subtitle>
         {% endif %}
     <ion-card-title>{{ name }}</ion-card-title>
+    {% if instructor %}
+        <ion-button  href="/activity/notes/{{ course_id }}/" download target="_blank" data-toggle="tooltip" data-placement="top" title="Récupérer les notes du cours">
+            <ion-icon slot="icon-only" name="download"></ion-icon>  &nbsp; &nbsp; Notes complètes du cours en CSV
+        </ion-button>
+    {% endif %}
     </ion-card-header>
     <ion-card-content>
         <section>
