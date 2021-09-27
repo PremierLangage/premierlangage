@@ -4,7 +4,7 @@ from django.apps import apps
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q
-from django.http import Http404, HttpResponse, HttpResponseNotFound
+from django.http import Http404, HttpResponse, HttpResponseNotFound, HttpResponseForbidden
 from django.shortcuts import redirect, render, reverse
 from django.template.loader import get_template
 
