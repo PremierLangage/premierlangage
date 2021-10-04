@@ -309,6 +309,7 @@ class Course(AbstractActivityType):
         for t in teacher_list:
             if t in student_list:
                 student_list.remove(t)
+        nb_student = len(student_list) if student_list else 1
         tp = list()
         for a in activities:
             question = list()
@@ -333,13 +334,13 @@ class Course(AbstractActivityType):
                     'name': pl.json['title'],
                     'all_mark': all_mark,
                     'mark': mark_student,
-                    'mean': sum(all_mark) / len(all_mark),
+                    'mean': sum(all_mark) / nb_student,
                     'min': min(all_mark),
                     'max': max(all_mark),
                 })
-            len_tp = len(question) if len(question) else 1
+            len_tp = len(question) if question else 1
             all_grouped_mark = list()
-            for i in range(len(student_list)):
+            for i in range(nb_student):
                 all_grouped_mark.append(sum([q['all_mark'][i] for q in question]) / len_tp)
             tp.append({
                 'name': a.activity_data['title'],
@@ -349,14 +350,14 @@ class Course(AbstractActivityType):
                 'pl': question,
                 'all_mark': all_grouped_mark,
                 'mark': sum([q['mark'] for q in question]) / len_tp,
-                'mean': sum(all_grouped_mark) / len(student_list),
+                'mean': sum(all_grouped_mark) / nb_student,
                 'min': min(all_grouped_mark),
                 'max': max(all_grouped_mark),
             })
 
-        len_act = len(tp) if len(tp) else 1
+        len_act = len(tp) if tp else 1
         all_act_mark = list()
-        for i in range(len(student_list)):
+        for i in range(nb_student):
             all_act_mark.append(sum([a['all_mark'][i] for a in tp]) / len_act)
         course_mark = sum([a['mark'] for a in tp]) / len_act
         return render(request, 'activity/activity_type/course/student_summary.html', {
@@ -366,7 +367,7 @@ class Course(AbstractActivityType):
             'activities': tp,
             'course_id': activity.id,
             'mark': course_mark,
-            'mean': sum(all_act_mark) / len(student_list),
+            'mean': sum(all_act_mark) / nb_student,
             'min': min(all_act_mark),
             'max': max(all_act_mark),
             'nb_more': sum([1 for m in all_act_mark if m > course_mark]),
