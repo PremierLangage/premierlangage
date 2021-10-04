@@ -13,6 +13,10 @@
             <p style="display: inline"> / </p>
             <a href="/activity/export_csv/{{ course_id }}/">Export CSV</a>
         </ion-card-subtitle>
+        {% else %}
+        <ion-card-subtitle>
+            <a href="/activity/dashboard/{{ course_id }}/?studentid={{ user.id }}"> Tableau de bord</a>
+        </ion-card-subtitle>
         {% endif %}
     <ion-card-title>{{ name }}</ion-card-title>
     {% if instructor %}
