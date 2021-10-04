@@ -22,6 +22,9 @@ class Course(AbstractActivityType):
         This method is called when the dashboard of an activity is requested for a student.
         :return: A rendered template of the student dashboard
         """
+        if request.method == "GET" and request.GET.get("studentid"):
+            if int(request.GET.get("studentid")) == request.user.id:
+                return self.student_summary(request.GET.get("studentid"), request, activity)
         raise PermissionDenied()
 
     def teacher_dashboard(self, request, activity, session):
@@ -284,6 +287,10 @@ class Course(AbstractActivityType):
         })
 
     def student_summary(self, student_id, request, activity):
+        """
+        This is a the dashboard of a whole course but focus on a student whose 
+        id is `student_id`.
+        """
         try:
             student = User.objects.get(id=student_id)
         except User.DoesNotExist:
@@ -292,29 +299,76 @@ class Course(AbstractActivityType):
         if not activity.is_member(student):
             return HttpResponseNotFound("Cet étudiant ne fait pas partie de ce cours")
 
-        activities = activity.indexed_activities().filter(teacher=request.user)
+        activities = [acti for acti in activity.indexed_activities() if acti.open]
+        indexed_pl = {a: a.indexed_pl() for a in activities}
+        all_pl = []
+        for indexed in indexed_pl.values():
+            all_pl += list(indexed)
+        student_list = activity.student.all()
+        teacher_list = activity.teacher.all()
+        for t in teacher_list:
+            if t in student_list:
+                student_list.remove(t)
         tp = list()
         for a in activities:
             question = list()
             for pl in a.indexed_pl():
+                all_mark = list()
+                for s in student_list:
+                    ms = Answer.highest_grade(pl, s)
+                    if ms is not None:
+                        ms = ms.grade
+                    if (ms is None) or (int(ms) < 0):
+                        ms = 0
+                    all_mark.append(ms)
+
+                mark_student = Answer.highest_grade(pl, student)
+                if mark_student is not None:
+                    mark_student = mark_student.grade
+                if (mark_student is None) or (int(mark_student) < 0):
+                    mark_student = 0
                 state = Answer.pl_state(pl, student)
                 question.append({
                     'state': state,
                     'name': pl.json['title'],
+                    'all_mark': all_mark,
+                    'mark': mark_student,
+                    'mean': sum(all_mark) / len(all_mark),
+                    'min': min(all_mark),
+                    'max': max(all_mark),
                 })
             len_tp = len(question) if len(question) else 1
+            all_grouped_mark = list()
+            for i in range(len(student_list)):
+                all_grouped_mark.append(sum([q['all_mark'][i] for q in question]) / len_tp)
             tp.append({
                 'name': a.activity_data['title'],
                 'activity_name': a.name,
                 'id': a.id,
                 'width': str(100 / len_tp),
                 'pl': question,
+                'all_mark': all_grouped_mark,
+                'mark': sum([q['mark'] for q in question]) / len_tp,
+                'mean': sum(all_grouped_mark) / len(student_list),
+                'min': min(all_grouped_mark),
+                'max': max(all_grouped_mark),
             })
 
+        len_act = len(tp) if len(tp) else 1
+        all_act_mark = list()
+        for i in range(len(student_list)):
+            all_act_mark.append(sum([a['all_mark'][i] for a in tp]) / len_act)
+        course_mark = sum([a['mark'] for a in tp]) / len_act
         return render(request, 'activity/activity_type/course/student_summary.html', {
             'state': [i for i in State if i != State.ERROR],
             'course_name': activity.name,
             'student': student,
             'activities': tp,
             'course_id': activity.id,
+            'mark': course_mark,
+            'mean': sum(all_act_mark) / len(student_list),
+            'min': min(all_act_mark),
+            'max': max(all_act_mark),
+            'nb_more': sum([1 for m in all_act_mark if m > course_mark]),
+            'nb_less': sum([1 for m in all_act_mark if m < course_mark]),
         })

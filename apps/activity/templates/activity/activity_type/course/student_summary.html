@@ -9,10 +9,28 @@
     </ion-card-header>
     <ion-card-content>
         <section>
+            <b>Votre moyenne sur l'ensemble du cours : {{ '%0.2g' % (mark/5) }} / 20</b><br>
+            <br>
+            moyenne la plus forte : {{ '%0.2g' % (max/5) }} / 20<br>
+            moyenne de tous les élèves : {{ '%0.2g' % (mean/5) }} / 20<br>
+            moyenne la plus faible : {{ '%0.2g' % (min/5) }} / 20<br>
+            <br>
+            {{ nb_more }}
+            {% if nb_more > 1 %}élèves ont {% else %}élève a {% endif %}
+            une meilleure moyenne que vous.<br>
+            {{ nb_less }}
+            {% if nb_less > 1 %}élèves ont {% else %}élève a{% endif %}
+            ont une moyenne plus faible que vous.<br>
+        </section>
+        <section>
             <table>
                 <thead>
                     <tr>
                         <th>Activité</th>
+                        <th>Note/20</th>
+                        <th>N -</th>
+                        <th>Moy</th>
+                        <th>N +</th>
                         <th colspan='100'>Questions</th>
                     </tr>
                 </thead>
@@ -21,6 +39,26 @@
                     <tr>
                         <td class="summary-td">
                             <span>{{ elem.name }}</span>
+                        </td>
+                        <td>
+                            <center>
+                            <b>{{ '%0.2g' % (elem.mark/5) }}</b>
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                            {{ '%0.2g' % (elem.min/5) }}
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                            {{ '%0.2g' % (elem.mean/5) }}
+                            </center>
+                        </td>
+                        <td>
+                            <center>
+                            {{ '%0.2g' % (elem.max/5) }}
+                            </center>
                         </td>
                         {% for item in elem.pl %}
                         <center>
