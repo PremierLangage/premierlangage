@@ -288,7 +288,7 @@ class Course(AbstractActivityType):
 
     def student_summary(self, student_id, request, activity):
         """
-        This is a the dashboard of a whole course but focus on a student whose 
+        This is a the dashboard of a whole course but focus on a student whose
         id is `student_id`.
         """
         try:
