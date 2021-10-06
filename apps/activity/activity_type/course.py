@@ -305,10 +305,6 @@ class Course(AbstractActivityType):
         for indexed in indexed_pl.values():
             all_pl += list(indexed)
         student_list = activity.student.all()
-        teacher_list = activity.teacher.all()
-        for t in teacher_list:
-            if t in student_list:
-                student_list.remove(t)
         nb_student = len(student_list) if student_list else 1
         tp = list()
         for a in activities:
