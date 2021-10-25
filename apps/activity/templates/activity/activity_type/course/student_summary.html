@@ -9,11 +9,11 @@
     </ion-card-header>
     <ion-card-content>
         <section>
-            <b>Votre moyenne sur l'ensemble du cours : {{ '%0.2g' % (mark/5) }} / 20</b><br>
+            <b>Votre moyenne sur l'ensemble du cours : {{ mark }} / 20</b><br>
             <br>
-            moyenne la plus forte : {{ '%0.2g' % (max/5) }} / 20<br>
-            moyenne de tous les élèves : {{ '%0.2g' % (mean/5) }} / 20<br>
-            moyenne la plus faible : {{ '%0.2g' % (min/5) }} / 20<br>
+            moyenne la plus forte : {{ max }} / 20<br>
+            moyenne de tous les élèves : {{ mean }} / 20<br>
+            moyenne la plus faible : {{ min }} / 20<br>
             <br>
             {{ nb_more }}
             {% if nb_more > 1 %}élèves ont {% else %}élève a {% endif %}
@@ -42,22 +42,22 @@
                         </td>
                         <td>
                             <center>
-                            <b>{{ '%0.2g' % (elem.mark/5) }}</b>
+                            <b>{{ elem.mark }}</b>
                             </center>
                         </td>
                         <td>
                             <center>
-                            {{ '%0.2g' % (elem.min/5) }}
+                            {{ elem.min }}
                             </center>
                         </td>
                         <td>
                             <center>
-                            {{ '%0.2g' % (elem.mean/5) }}
+                            {{ elem.mean }}
                             </center>
                         </td>
                         <td>
                             <center>
-                            {{ '%0.2g' % (elem.max/5) }}
+                            {{ elem.max }}
                             </center>
                         </td>
                         {% for item in elem.pl %}

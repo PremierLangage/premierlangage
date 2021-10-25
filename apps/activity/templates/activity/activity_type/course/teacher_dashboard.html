@@ -21,16 +21,26 @@
 
     <ion-card-content>
         <section>
+            <p>
+                Seulement les élèves apparaissent dans la table suivante. Les moyennes sont calculées ici en
+                faisant une somme des notes, pour chaque élève, sur tous les exercices finaux puis en divisant
+                par le nombre total d'exercices déployés sur la matière. Les PLTP n'ont donc pas tous un poids
+                équivalent : par exemple, un PLTP avec 10 exercices aura un poids deux fois plus important
+                qu'un PLTP contenant 5 exercices. Les notes des utilisateurs enseignants n'entrent pas dans la
+                moyenne totale sur tous les utilisateurs du cours.
+            </p>
+            <br>
             <table>
                 <thead>
                     <tr>
                         <th>Élève</th>
-                        <th colspan="100">Activités</th>
+                        <th colspan="{{student[0].activities|length }}">Activités</th>
                         <th>Notes : {{ student[-1].average }}</th>
                     </tr>
                 </thead>
                 <tbody>
-                {% for stud in student[0:-1] %}
+                {% for ind in indices_student %}
+                {% set stud=student[ind] %}
                     <tr>
                         <td>
                             <a href="/activity/dashboard/{{ course_id }}/?studentid={{ stud.object.id }}">

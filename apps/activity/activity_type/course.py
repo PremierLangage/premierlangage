@@ -199,17 +199,17 @@ class Course(AbstractActivityType):
 
         result = dict()
         teacher_list = activity.teacher.all()
+        tl_id = [t.id for t in teacher_list]
         if len(request.POST) == 0 or request.POST['list_group'] == '':
-            student_list = activity.student.all()
+            student_list = activity.student.exclude(id__in=tl_id)
         else:
-            student_list = activity.student.filter(groups__name=request.POST['list_group'])
+            student_list = activity.student.filter(groups__name=request.POST['list_group']).exclude(id__in=tl_id)
 
         grades_query = HighestGrade.objects.filter(activity__in=activities,
                                                    pl__in=all_pl,
-                                                   user__in=(student_list
-                                                             | teacher_list).distinct())
+                                                   user__in=student_list)
 
-        for st in (student_list | teacher_list).distinct():
+        for st in student_list:
             tp = dict()
             for a in activities:
                 states = dict()
@@ -276,11 +276,13 @@ class Course(AbstractActivityType):
 
         average_group = {"average": round((points_group / (5*total_group)), 2)}
         result.append(average_group)
+        indices_student = sorted(list(range(len(result)-1)), key=lambda k: result[k]['activities'][-1]['average'], reverse=True)
 
         return render(request, 'activity/activity_type/course/teacher_dashboard.html', {
             'state': [i for i in State if i != State.ERROR],
             'name': activity.name,
             'student': result,
+            'indices_student' : indices_student,
             'range_tp': range(len(activities)),
             'course_id': activity.id,
             'groups': groups,
@@ -304,35 +306,43 @@ class Course(AbstractActivityType):
         all_pl = []
         for indexed in indexed_pl.values():
             all_pl += list(indexed)
-        student_list = activity.student.all()
+        teacher_list = activity.teacher.all()
+        tl_id = [t.id for t in teacher_list]
+        student_list = activity.student.exclude(id__in=tl_id)
         nb_student = len(student_list) if student_list else 1
+
+        grades_query = HighestGrade.objects.filter(activity__in=activities,
+                                                   pl__in=all_pl,
+                                                   user__in=student_list)
+        d_grade = dict()
+        for g in grades_query:
+            if g.grade is not None:
+                d_grade[(g.user.id, g.pl.id)] = int(g.grade)
+
         tp = list()
         for a in activities:
             question = list()
             for pl in a.indexed_pl():
                 all_mark = list()
                 for s in student_list:
-                    ms = Answer.highest_grade(pl, s)
-                    if ms is not None:
-                        ms = ms.grade
-                    if (ms is None) or (int(ms) < 0):
+                    if (s.id, pl.id) in d_grade:
+                        ms = max([0, d_grade[(s.id, pl.id)]])
+                    else:
                         ms = 0
                     all_mark.append(ms)
-
-                mark_student = Answer.highest_grade(pl, student)
-                if mark_student is not None:
-                    mark_student = mark_student.grade
-                if (mark_student is None) or (int(mark_student) < 0):
+                if (student.id, pl.id) not in d_grade:
                     mark_student = 0
+                else:
+                    mark_student = max([0, d_grade[(student.id, pl.id)]])
                 state = Answer.pl_state(pl, student)
                 question.append({
                     'state': state,
                     'name': pl.json['title'],
                     'all_mark': all_mark,
                     'mark': mark_student,
-                    'mean': sum(all_mark) / nb_student,
-                    'min': min(all_mark),
-                    'max': max(all_mark),
+                    'mean': round(sum(all_mark) / (5*nb_student), 2),
+                    'min': round(min(all_mark) / 5, 2),
+                    'max': round(max(all_mark) / 5, 2),
                 })
             len_tp = len(question) if question else 1
             all_grouped_mark = list()
@@ -345,27 +355,30 @@ class Course(AbstractActivityType):
                 'width': str(100 / len_tp),
                 'pl': question,
                 'all_mark': all_grouped_mark,
-                'mark': sum([q['mark'] for q in question]) / len_tp,
-                'mean': sum(all_grouped_mark) / nb_student,
-                'min': min(all_grouped_mark),
-                'max': max(all_grouped_mark),
+                'mark': round(sum([q['mark'] for q in question]) / (5*len_tp), 2),
+                'mean': round(sum(all_grouped_mark) / (5*nb_student), 2),
+                'min': round(min(all_grouped_mark) / 5, 2),
+                'max': round(max(all_grouped_mark) / 5, 2),
             })
 
-        len_act = len(tp) if tp else 1
+        len_act = sum([len(t['pl']) for t in tp]) if [len(t['pl']) for t in tp] else 1
         all_act_mark = list()
         for i in range(nb_student):
-            all_act_mark.append(sum([a['all_mark'][i] for a in tp]) / len_act)
-        course_mark = sum([a['mark'] for a in tp]) / len_act
+            sum_mark = 0
+            for t in tp:
+                sum_mark += sum([e['all_mark'][i] for e in t['pl']])
+            all_act_mark.append(sum_mark / len_act)
+        course_mark = sum([sum([e['mark'] for e in t['pl']]) for t in tp]) / len_act
         return render(request, 'activity/activity_type/course/student_summary.html', {
             'state': [i for i in State if i != State.ERROR],
             'course_name': activity.name,
             'student': student,
             'activities': tp,
             'course_id': activity.id,
-            'mark': course_mark,
-            'mean': sum(all_act_mark) / nb_student,
-            'min': min(all_act_mark),
-            'max': max(all_act_mark),
+            'mark': round(course_mark / 5, 2),
+            'mean': round(sum(all_act_mark) / (5*nb_student), 2),
+            'min': round(min(all_act_mark) / 5, 2),
+            'max': round(max(all_act_mark) / 5, 2),
             'nb_more': sum([1 for m in all_act_mark if m > course_mark]),
             'nb_less': sum([1 for m in all_act_mark if m < course_mark]),
         })
