@@ -282,7 +282,7 @@ class Course(AbstractActivityType):
             'state': [i for i in State if i != State.ERROR],
             'name': activity.name,
             'student': result,
-            'indices_student' : indices_student,
+            'indices_student': indices_student,
             'range_tp': range(len(activities)),
             'course_id': activity.id,
             'groups': groups,
