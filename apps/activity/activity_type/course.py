@@ -203,7 +203,8 @@ class Course(AbstractActivityType):
         if len(request.POST) == 0 or request.POST['list_group'] == '':
             student_list = activity.student.exclude(id__in=tl_id)
         else:
-            student_list = activity.student.filter(groups__name=request.POST['list_group']).exclude(id__in=tl_id)
+            part_query = activity.student.filter(groups__name=request.POST['list_group'])
+            student_list = part_query.exclude(id__in=tl_id)
 
         grades_query = HighestGrade.objects.filter(activity__in=activities,
                                                    pl__in=all_pl,
@@ -276,7 +277,9 @@ class Course(AbstractActivityType):
 
         average_group = {"average": round((points_group / (5*total_group)), 2)}
         result.append(average_group)
-        indices_student = sorted(list(range(len(result)-1)), key=lambda k: result[k]['activities'][-1]['average'], reverse=True)
+        indices_student = sorted(list(range(len(result)-1)),
+                                 key=lambda k: result[k]['activities'][-1]['average'],
+                                 reverse=True)
 
         return render(request, 'activity/activity_type/course/teacher_dashboard.html', {
             'state': [i for i in State if i != State.ERROR],
