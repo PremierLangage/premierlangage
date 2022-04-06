@@ -5,16 +5,17 @@ django-celery-results
 django-extensions
 django-hitcount
 django-http-method
-django-jinja
+django-jinja ==2.6.0
 django-markdown-deux
 django-markdown-app
 django-taggit
 dj-database-url
 gunicorn
-jinja2
+Jinja2==2.10
 jsonfield
 markdown
-mkdocs
+markupsafe==2.0.1
+mkdocs<=1
 mock
 oauth2
 ply
@@ -24,7 +25,7 @@ pytest
 pytest-django
 python-magic
 pytz
-psycopg2>=2.8,<2.9
+psycopg2-binary>=2.8,<2.9
 recommonmark
 requests
 selenium
