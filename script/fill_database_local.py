@@ -20,8 +20,8 @@ try:
 except django.db.utils.IntegrityError:
     print("User 'admin' already created")
     user = User.objects.get(username='admin')
-    
-    
+
+
 # Create some users
 try:
     user = User.objects.create_user(username='test_user_1', password='password')
@@ -32,7 +32,7 @@ try:
 except django.db.utils.IntegrityError:
     print("User 'test_user_1' already created")
     user = User.objects.get(username='admin')
-    
+
 # Create admin
 try:
     user = User.objects.create_user(username='test_user_2', password='password')
@@ -54,8 +54,8 @@ try:
 except django.db.utils.IntegrityError:
     print("User 'test_user_3' already created")
     user = User.objects.get(username='admin')
-    
-    
+
+
 try:
     user = User.objects.create_user(username='test_user_4', password='password')
     user.is_staff = False
@@ -65,7 +65,7 @@ try:
 except django.db.utils.IntegrityError:
     print("User 'test_user_4' already created")
     user = User.objects.get(username='admin')
-    
+
 # Create admin
 try:
     user = User.objects.create_user(username='test_user_5', password='password')
@@ -87,7 +87,7 @@ try:
 except django.db.utils.IntegrityError:
     print("User 'test_user_6' already created")
     user = User.objects.get(username='admin')
-    
+
 try:
     user = User.objects.create_user(username='test_user_7', password='password')
     user.is_staff = False
@@ -97,7 +97,7 @@ try:
 except django.db.utils.IntegrityError:
     print("User 'test_user_7' already created")
     user = User.objects.get(username='admin')
-    
+
 # Create admin
 try:
     user = User.objects.create_user(username='test_user_8', password='password')
@@ -142,6 +142,27 @@ except django.db.utils.IntegrityError:
 
 # Create Base activity
 try:
-    Activity.objects.create(id=0, name="Base", activity_type="base", activity_data={})
+    base = Activity.objects.create(id=0, name="Base", activity_type="base", activity_data={})
 except django.db.utils.IntegrityError:
     print("Base activity already created")
+
+# Create Some Course 
+try:
+    Activity.objects.create(id=0, name="Python", activity_type="course", activity_data={}).add_parent(base)
+except django.db.utils.IntegrityError:
+    print("Python course already created")
+    
+try:
+    Activity.objects.create(id=0, name="Java", activity_type="course", activity_data={}).add_parent(base)
+except django.db.utils.IntegrityError:
+    print("Java course already created")
+    
+try:
+    Activity.objects.create(id=0, name="Javascript", activity_type="course", activity_data={}).add_parent(base)
+except django.db.utils.IntegrityError:
+    print("Javascript course already created")
+    
+try:
+    Activity.objects.create(id=0, name="C", activity_type="course", activity_data={}).add_parent(base)
+except django.db.utils.IntegrityError:
+    print("C course already created")
