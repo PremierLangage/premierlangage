@@ -16,6 +16,7 @@ if [ "$OS" = "Darwin" ]; then
         exit 1
     fi
     brew install libmagic
+    brew install openssl
 fi
 
 
@@ -69,8 +70,7 @@ pip3 install wheel  || { echo>&2 "ERROR: pip3 install wheel failed" ; exit 1; }
 pip3 install -r requirements.txt || { echo>&2 "ERROR: pip3 install -r requirements.txt failed" ; exit 1; }
 echo "Done !"
 
-#Installing la lib C ssl pour postgress sur mac OS
-brew install openssl
+
 
 
 #Creating needed directories
