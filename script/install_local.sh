@@ -33,7 +33,7 @@ if ! hash python3; then
     exit 1
 fi
 
-ver=$(python3 --version 2>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
+ver=$(python3 --version 2>&1 | sed 's/.* \([0-9]\).\([0-9]*\).*/\1\2/')
 if [ "$ver" -lt "35" ]; then
     echo "ERROR: Python >= 3.5 should be installed."
     exit 1
@@ -64,9 +64,13 @@ cd "$DIR/.."
 #Getting requirement
 echo ""
 echo "Installing requirements..."
+git config --global url."https://github.com/".insteadOf git://github.com/
 pip3 install wheel  || { echo>&2 "ERROR: pip3 install wheel failed" ; exit 1; }
 pip3 install -r requirements.txt || { echo>&2 "ERROR: pip3 install -r requirements.txt failed" ; exit 1; }
 echo "Done !"
+
+#Installing la lib C ssl pour postgress sur mac OS
+brew install openssl
 
 
 #Creating needed directories
