@@ -74,20 +74,51 @@ class SessionExerciseAbstract(models.Model):
         except KeyError:
             return False
 
+        # Conserver pour l'histpoire à jeter 
+#    def reroll(self, seed, grade=None):
+#        """Return whether the seed must be reroll (True) or not (False).#
+#
+#
+#        Seed must be reroll if:
+#           - seed does not exists yet
+#            - oneshot is set, grade is provided and less than oneshot_threshold
+#             (100 if not provided)"""
+#       oneshot = bool(self.get_from_context('settings.oneshot'))
+#        oneshot_threshold = self.get_from_context('settings.oneshot_threshold')
+#        oneshot_threshold = (int(oneshot_threshold)
+#                            if oneshot_threshold and oneshot_threshold.isdigit()
+#                            else 100)
+#        return not seed or (oneshot and grade is not None and grade < oneshot_threshold)
+
     def reroll(self, seed, grade=None):
         """Return whether the seed must be reroll (True) or not (False).
-
 
         Seed must be reroll if:
             - seed does not exists yet
             - oneshot is set, grade is provided and less than oneshot_threshold
-              (100 if not provided)"""
+              (100 if not provided)
+        """
         oneshot = bool(self.get_from_context('settings.oneshot'))
         oneshot_threshold = self.get_from_context('settings.oneshot_threshold')
         oneshot_threshold = (int(oneshot_threshold)
                              if oneshot_threshold and oneshot_threshold.isdigit()
                              else 100)
-        return not seed or (oneshot and grade is not None and grade < oneshot_threshold)
+        if seed is None:
+            return True
+        if grade is None:
+            return False
+        if not oneshot:  # pas oneshot garder la seed
+            return False
+        if not grade: # pas d'éval pas de reroll
+            return False
+        if grade < oneshot_threshold:  # pas atteint le point de reroll
+            return False
+        # Exo a reroll, le nombre de tentativea est atteint et le score est suffisant
+        return True
+
+
+
+
 
     def raw_evaluate(self, request, answers, test=False):
         """Evaluate the exercise with the given answers according to the current context.
