@@ -27,6 +27,13 @@ if ! hash zip; then
 fi
 echo "Zip >= 3.5: OK !"
 
+#Checking if postgres is installed
+if ! hash psql; then
+    echo "ERROR: zip should be installed. Try 'apt install postgresql' "
+    exit 1
+fi
+echo "Postgres OK !"
+
 
 #Checking if python >= 3.5 is installed
 if ! hash python3; then
@@ -86,9 +93,14 @@ fi
 #Building database
 echo ""
 echo "Configuring database..."
-python3 manage.py makemigrations || { echo>&2 "ERROR: python3 manage.py makemigrations failed" ; exit 1; }
-python3 manage.py migrate || { echo>&2 "ERROR: python3 manage.py migrate failed" ; exit 1; }
 
-#Filling database
-python3 manage.py shell < script/fill_database_local.py || { echo>&2 "ERROR: python3 manage.py shell < script/fill_database_local.py failed" ; exit 1; }
-echo "Done !"
+if psql -lqt | cut -d \| -f 1 | grep -qw django_premierlangage; then
+    python3 manage.py makemigrations || { echo>&2 "ERROR: python3 manage.py makemigrations failed" ; exit 1; }
+    python3 manage.py migrate || { echo>&2 "ERROR: python3 manage.py migrate failed" ; exit 1; }
+    #Filling database
+    python3 manage.py shell < script/fill_database_local.py || { echo>&2 "ERROR: python3 manage.py shell < script/fill_database_local.py failed" ; exit 1; }
+    echo "Done !"
+else
+    echo "Database 'django_premierlangage' does not exists. It must be created before."
+    exit1
+fi
