@@ -96,7 +96,7 @@ try:
     user_6.is_staff = False
     user_6.is_admin = False
     user_6.is_superuser = False
-    user_6.profile.role = Role.LEARNER    
+    user_6.profile.role = Role.LEARNER
     user_6.save()
     print("Create test_user_6")
 except django.db.utils.IntegrityError:
@@ -172,38 +172,37 @@ try:
 except django.db.utils.IntegrityError:
     print("Base activity already created")
 
-# Create Some Course 
+# Create Some Course
 try:
     python_course = Activity.objects.create(name="Python", activity_type="course", activity_data={})
     python_course.add_parent(base_course)
     print("Create 'Python' course")
 except django.db.utils.IntegrityError:
     print("Python course already created")
-    
+
 try:
     java_course = Activity.objects.create(name="Java", activity_type="course", activity_data={})
     java_course.add_parent(base_course)
     print("Create 'Java' course")
 except django.db.utils.IntegrityError:
     print("Java course already created")
-    
+
 try:
     js_course = Activity.objects.create(name="Javascript", activity_type="course", activity_data={})
     js_course.add_parent(base_course)
     print("Create 'Javascript' course")
 except django.db.utils.IntegrityError:
     print("Javascript course already created")
-    
+
 try:
     c_course = Activity.objects.create(name="C", activity_type="course", activity_data={})
     c_course.add_parent(base_course)
     print("Create 'C' course")
 except django.db.utils.IntegrityError:
     print("C course already created")
-    
+
 # Add teacher and students in course
 print("Fill course with teachers and students")
-#base_course.add_teacher_to_all(admin)
 
 # Python Course
 python_course.add_teacher_to_all(admin)
