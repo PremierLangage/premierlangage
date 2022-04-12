@@ -16,6 +16,7 @@ if [ "$OS" = "Darwin" ]; then
         exit 1
     fi
     brew install libmagic
+    brew install openssl
 fi
 
 
@@ -26,6 +27,13 @@ if ! hash zip; then
 fi
 echo "Zip >= 3.5: OK !"
 
+#Checking if postgres is installed
+if ! hash psql; then
+    echo "ERROR: zip should be installed. Try 'apt install postgresql' "
+    exit 1
+fi
+echo "Postgres OK !"
+
 
 #Checking if python >= 3.5 is installed
 if ! hash python3; then
@@ -33,7 +41,7 @@ if ! hash python3; then
     exit 1
 fi
 
-ver=$(python3 --version 2>&1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
+ver=$(python3 --version 2>&1 | sed 's/.* \([0-9]\).\([0-9]*\).*/\1\2/')
 if [ "$ver" -lt "35" ]; then
     echo "ERROR: Python >= 3.5 should be installed."
     exit 1
@@ -64,9 +72,12 @@ cd "$DIR/.."
 #Getting requirement
 echo ""
 echo "Installing requirements..."
+git config --global url."https://github.com/".insteadOf git://github.com/
 pip3 install wheel  || { echo>&2 "ERROR: pip3 install wheel failed" ; exit 1; }
 pip3 install -r requirements.txt || { echo>&2 "ERROR: pip3 install -r requirements.txt failed" ; exit 1; }
 echo "Done !"
+
+
 
 
 #Creating needed directories
@@ -82,9 +93,14 @@ fi
 #Building database
 echo ""
 echo "Configuring database..."
-python3 manage.py makemigrations || { echo>&2 "ERROR: python3 manage.py makemigrations failed" ; exit 1; }
-python3 manage.py migrate || { echo>&2 "ERROR: python3 manage.py migrate failed" ; exit 1; }
 
-#Filling database
-python3 manage.py shell < script/fill_database_local.py || { echo>&2 "ERROR: python3 manage.py shell < script/fill_database_local.py failed" ; exit 1; }
-echo "Done !"
+if psql -lqt | cut -d \| -f 1 | grep -qw django_premierlangage; then
+    python3 manage.py makemigrations || { echo>&2 "ERROR: python3 manage.py makemigrations failed" ; exit 1; }
+    python3 manage.py migrate || { echo>&2 "ERROR: python3 manage.py migrate failed" ; exit 1; }
+    #Filling database
+    python3 manage.py shell < script/fill_database_local.py || { echo>&2 "ERROR: python3 manage.py shell < script/fill_database_local.py failed" ; exit 1; }
+    echo "Done !"
+else
+    echo "Database 'django_premierlangage' does not exists. It must be created before."
+    exit1
+fi
