@@ -251,6 +251,7 @@ class Pltp(AbstractActivityType):
         return {
             "navigation": self.navigation(activity, session, request),
             "exercise":   session.current_pl_template(request),
+            "activity_id": activity.id
         }
     
     

@@ -18,6 +18,8 @@
 <script type='text/javascript'>
     (function () {
         navigationToggle();
-    })();
+        let activityId = {{ activity_id|tojson|safe }};
+        multiTabsChecking(activityId);
+    })();    
 </script>
 {% endblock %}

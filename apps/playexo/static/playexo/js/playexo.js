@@ -248,3 +248,19 @@ function navigationToggle() {
         }
     });
 }
+
+function multiTabsChecking(activityId) {
+    console.log("HELLO ACTIVITY " + activityId);
+        let bc = new BroadcastChannel('test_channel');
+        bc.postMessage('create_new_tab');
+        bc.onmessage = event => { 
+            console.log(event);
+            if(event.data == 'create_new_tab') {
+                alert('Vous avez ouvert cette activité sur un autre onglet, vous allez être redirigé.');
+                window.location.replace("activity/play/0/"); 
+            } 
+            else {
+                console.log('Unrecognize BroadcastChannel message');
+            }
+        }
+}
