@@ -8,4 +8,4 @@ sh script/install_local.sh
 
 # For other information 
 
-(information.md)[information.md]
+Le fichier [information.md](information.md)
