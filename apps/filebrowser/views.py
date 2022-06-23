@@ -1,7 +1,6 @@
 import json
 import os
 import shutil
-import subprocess
 import uuid
 from wsgiref.util import FileWrapper
 
@@ -31,7 +30,7 @@ from loader.utils import get_location
 from playexo.models import SessionTest
 from shared.utils import missing_parameter
 
-
+from elasticsearch import Elasticsearch
 
 @login_required
 @require_POST
@@ -501,26 +500,32 @@ def search_in_files(request):  # TODO ADD TEST
     if not query:
         return HttpResponseBadRequest(missing_parameter('query'))
     
-    cwd = os.getcwd()
-    try:
-        if (not path.startswith(HOME_DIR) and not path.startswith(LIB_DIR)):
-            return HttpResponseBadRequest('cannot search outside of root directories')
-        path = join_fb_root(path)
-        if not os.path.isdir(path):
-            return HttpResponseBadRequest('path should point to a directory')
-        os.chdir(path)
-        p = subprocess.Popen("grep -nr '{0}' .".format(query), stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE, shell=True)
-        out, err = p.communicate()
-    finally:
-        os.chdir(cwd)
-    
-    ret, out, err = p.returncode, out.decode().strip("\n"), err.decode()
-    if not ret:
-        return HttpResponse(out)
-    else:  # pragma: no cover
-        return HttpResponseNotFound(htmlprint.code(out + err))
+    #TODO
+    client = Elasticsearch("http://localhost:55001")
 
+    es_query = {
+        "match": { "data": query }
+    }
+
+    result = client.search(index="files", query=es_query, size=999)
+
+    ret = []
+
+    for doc in result['hits']['hits']:
+        source = doc['_source']
+        filepath, linenumber, data = source['filepath'], source['line-number'], source['data']
+        prefix = 'home/' + path
+        if not prefix.endswith('/'):
+            prefix += '/'
+        # Not very efficient...
+        if filepath.startswith(prefix):
+            filepath = './' + filepath[len(prefix):]
+            ret.append(filepath + ':' + str(linenumber) + ':' + data)
+        
+    if True:
+        return HttpResponse('\n'.join(ret))
+    else:  # pragma: no cover
+        return HttpResponseNotFound()
 
 
 @login_required
