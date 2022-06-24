@@ -22,15 +22,13 @@ from django.views.decorators.http import require_GET, require_POST
 from activity.models import Activity
 from filebrowser.filter import is_root
 from filebrowser.models import Directory
-from filebrowser.utils import (HOME_DIR, LIB_DIR, add_commit_path, get_content, get_meta,
+from filebrowser.utils import (HOME_DIR, LIB_DIR, add_commit_path, es_delete_file, es_index_file, es_search, get_content, get_meta,
                                join_fb_root, reload_activity, rm_fb_root, walkalldirs)
 from loader.loader import load_file
 from loader.models import PL
 from loader.utils import get_location
 from playexo.models import SessionTest
 from shared.utils import missing_parameter
-
-from elasticsearch import Elasticsearch
 
 @login_required
 @require_POST
@@ -48,17 +46,21 @@ def upload_resource(request):  # TODO ADD TEST
         return HttpResponseBadRequest(missing_parameter('path'))
     name = f.name
     try:
-        path = os.path.join(join_fb_root(path), name)
-        if os.path.exists(path):
+        relpath = os.path.join(path, name)
+        fullpath = os.path.join(join_fb_root(path), name)
+        if os.path.exists(fullpath):
             return HttpResponseBadRequest("This file's name is already used : " + name)
         else:
-            with open(path, 'wb+') as dest:
+            with open(fullpath, 'wb+') as dest:
                 for chunk in f.chunks():
                     dest.write(chunk)
+            
+            es_index_file(relpath)
+
             return HttpResponse()
     
     except Exception as e:  # pragma: no cover
-        msg = "Impossible to upload '" + path + "' : " + htmlprint.code(
+        msg = "Impossible to upload '" + fullpath + "' : " + htmlprint.code(
             str(type(e)) + ' - ' + str(e))
         if settings.DEBUG:
             messages.error(request, "DEBUG set to True: " + htmlprint.html_exc())
@@ -112,6 +114,10 @@ def update_resource(request):
             print(post.get('content', ''), file=f, end='')
         if not path.startswith("lib/"):
             add_commit_path(request, path, action="modified")
+
+        es_delete_file(path)
+        es_index_file(path)
+
         return JsonResponse({'success': True})
     except Exception as e:  # pragma: no cover
         return HttpResponseNotFound(str(e))
@@ -122,11 +128,11 @@ def update_resource(request):
 def create_resource(request):
     """Create a new file or folder """
     post = json.loads(request.body.decode())
-    path = post.get('path')
-    if not path:
+    relpath = post.get('path')
+    if not relpath:
         return HttpResponseBadRequest(missing_parameter('path'))
     
-    path = join_fb_root(path)
+    path = join_fb_root(relpath)
     name = os.path.basename(path)
     
     try:
@@ -139,6 +145,8 @@ def create_resource(request):
         if post.get('type', '') == 'file':
             with open(path, "w") as f:
                 print(post.get('content', ''), file=f)
+            
+            es_index_file(relpath)
             
             return JsonResponse({'path': rm_fb_root(path)})
         
@@ -168,10 +176,13 @@ def delete_resource(request):
         return HttpResponseBadRequest('cannot delete a root folder')
     
     try:
-        path = join_fb_root(path)
-        shutil.rmtree(path, ignore_errors=True) if os.path.isdir(path) else os.remove(path)
-        if not path.startswith("lib/"):
-            add_commit_path(request, path, action="deleted")
+        fullpath = join_fb_root(path)
+        shutil.rmtree(fullpath, ignore_errors=True) if os.path.isdir(fullpath) else os.remove(fullpath)
+        if not fullpath.startswith("lib/"):
+            add_commit_path(request, fullpath, action="deleted")
+
+        es_delete_file(path)
+
         return JsonResponse({'success': True})
     except Exception as e:  # pragma: no cover
         path = path.replace(settings.FILEBROWSER_ROOT, '')
@@ -188,14 +199,14 @@ def rename_resource(request):
     """Rename a  file or folder """
     post = json.loads(request.body.decode())
     
-    path = post.get('path')
+    relpath = post.get('path')
     target = post.get('target')
-    if not path:
+    if not relpath:
         return HttpResponseBadRequest(missing_parameter('path'))
     if not target:
         return HttpResponseBadRequest(missing_parameter('target'))
     
-    path = join_fb_root(path)
+    path = join_fb_root(relpath)
     name = os.path.basename(path)
     new_path = os.path.join(os.path.dirname(path), target)
     
@@ -209,6 +220,10 @@ def rename_resource(request):
             return HttpResponseBadRequest(msg)
         
         os.rename(path, new_path)
+
+        es_delete_file(relpath)
+        es_index_file(os.path.join(os.path.dirname(relpath), target))
+
         return JsonResponse(
             {'path': rm_fb_root(new_path), 'status': 200})
     except Exception as e:  # pragma: no cover
@@ -231,6 +246,7 @@ def move_resource(request):
     dst = post.get('dst')
     if not dst:
         return HttpResponseBadRequest(missing_parameter('dst'))
+
     try:
         src_path = join_fb_root(src)
         dst_path = join_fb_root(dst)
@@ -254,6 +270,10 @@ def move_resource(request):
                         shutil.copyfile(src_path, destination)
                 else:
                     os.rename(src_path, destination)
+
+                es_delete_file(src)
+                es_index_file(os.path.join(dst, os.path.basename(src)))
+
                 return JsonResponse({'path': os.path.join(dst, os.path.basename(src))})
     
     except Exception as e:  # pragma: no cover
@@ -499,35 +519,24 @@ def search_in_files(request):  # TODO ADD TEST
     query = request.GET.get('query')
     if not query:
         return HttpResponseBadRequest(missing_parameter('query'))
-    
-    #TODO
-    client = Elasticsearch("http://localhost:55001")
 
-    es_query = {
-        "match": { "data": query }
-    }
-
-    result = client.search(index="files", query=es_query, size=999)
-
-    ret = []
-
-    for doc in result['hits']['hits']:
-        source = doc['_source']
-        filepath, linenumber, data = source['filepath'], source['line-number'], source['data']
-        prefix = 'home/' + path
-        if not prefix.endswith('/'):
-            prefix += '/'
-        # Not very efficient...
-        if filepath.startswith(prefix):
-            filepath = './' + filepath[len(prefix):]
-            ret.append(filepath + ':' + str(linenumber) + ':' + data)
-        
-    if True:
-        return HttpResponse('\n'.join(ret))
-    else:  # pragma: no cover
+    result = es_search(query)
+    if result is None:
         return HttpResponseNotFound()
 
+    ret = []
+    for doc in result:
+        source = doc['_source']
+        filepath, linenumber, data = source['filepath'], source['line-number'], source['data']
+        
+        # Not very efficient...
+        if filepath.startswith(path):
+            filepath = './' + os.path.relpath(filepath, path)
+            ret.append(filepath + ':' + str(linenumber) + ':' + data)
 
+    return HttpResponse('\n'.join(ret))
+
+        
 @login_required
 @require_GET
 def download_env(request, envid):
