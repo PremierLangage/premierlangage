@@ -329,6 +329,13 @@ FILEBROWSER_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'home/'))
 # Filebrowser settings
 FILEBROWSER_DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&']
 
+# Elasticsearch settings
+ELASTICSEARCH = {
+    'host': 'http://127.0.0.1:55000',
+    'index_files': 'files',
+    'index_contents': 'contents'
+}
+
 # Path to directory containing parsers
 PARSERS_ROOT = os.path.abspath(os.path.join(APPS_DIR, 'loader/parsers/'))
 PARSERS_MODULE = 'loader.parsers'
