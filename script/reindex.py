@@ -82,10 +82,10 @@ if __name__ == '__main__':
 
     # Obtaining list of files on filesystem
     files = {}
-    for dirpath, _, filenames in os.walk(root):
-        # Ignore .git folder
-        if dirpath.endswith('.git'):
-            continue
+
+    exclude = ['.git']
+    for dirpath, dirs, filenames in os.walk(root, topdown=True):
+        dirs[:] = [dir for dir in dirs if dir not in exclude]
         for filename in filenames:
             filepath = os.path.join(dirpath, filename)
             filepath = os.path.relpath(filepath, root)
