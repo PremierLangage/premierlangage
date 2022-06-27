@@ -15,7 +15,7 @@ from elasticsearch import Elasticsearch, exceptions
 #####################
 
 domain = 'http://localhost'
-port = 55000
+port = 9200
 index_files = 'files'
 index_contents = 'contents'
 root = 'home/'
