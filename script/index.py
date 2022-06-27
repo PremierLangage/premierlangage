@@ -8,6 +8,7 @@ This creates the indexes and indexes all files in the folder indicated as root
 """
 
 import os, time, sys
+from re import M
 from datetime import datetime
 from elasticsearch import Elasticsearch, helpers, exceptions
 	
@@ -49,6 +50,9 @@ contents_mappings = {
 
 def gen_data(path):
     for dirpath, _, filenames in os.walk(path):
+        # Ignore .git folder
+        if dirpath.endswith('.git'):
+            continue
         for filename in filenames:
             filepath = os.path.join(dirpath, filename)
             relpath = os.path.relpath(filepath, root)
