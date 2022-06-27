@@ -1,4 +1,4 @@
-# PLATON-LIGHT
+# premierlangage
 
 The "premier langage" project aims to provide an easy-to-use, automatically correcting exercise platform.
 
