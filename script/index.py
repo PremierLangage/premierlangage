@@ -7,9 +7,9 @@ This creates the indexes and indexes all files in the folder indicated as root
 2 indexes are used : one for files, one for file contents (1 document per line)
 """
 
-import os, time
+import os, time, sys
 from datetime import datetime
-from elasticsearch import Elasticsearch, helpers
+from elasticsearch import Elasticsearch, helpers, exceptions
 	
 #####################
 
@@ -81,6 +81,14 @@ if __name__ == '__main__':
     # declare a client instance of the Python Elasticsearch library
     host = domain + ':' + str(port)
     es_client = Elasticsearch(host)
+
+    # CHeck connection
+    try:
+        es_client.info()
+    except exceptions.ConnectionError as err:
+        print(f'Connection to {host} impossible: invalid host or offline cluster')
+        print('\nDetails:\n' + str(err))
+        sys.exit(1)
 
     if es_client.indices.exists(index=index_files):
         print(f'index {index_files} already exists, deleting and recreating...')

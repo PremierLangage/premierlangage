@@ -109,11 +109,16 @@ fi
 
 # Indexing home folder for elastic search
 echo
-echo -p "Index home folder ? [y/n] " -n 1 -r
+read -p "Index home folder ? [y/n] " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
     echo "Indexing home folder..."
-    python3 scripts/index.py
-    echo "Done !"
+    python3 script/index.py
+    if [ $? -eq 0 ]
+    then
+        echo "Done !"
+    else
+        echo "Error while indexing"
+    fi
 fi

@@ -53,6 +53,8 @@ echo "Python >= 3.5: OK !"
 command -v pip3 >/dev/null 2>&1 || { echo >&2 "ERROR: pip3 should be installed"; exit 1; }
 echo "pip3: OK !"
 
+#Update pip3
+pip3 install --upgrade pip
 
 # Checking if inside a python venv
 if [ "$VIRTUAL_ENV" == "" ]; then
@@ -107,11 +109,16 @@ fi
 
 # Indexing home folder for elastic search
 echo
-echo -p "Index home folder ? [y/n] " -n 1 -r
+read -p "Index home folder ? [y/n] " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
     echo "Indexing home folder..."
-    python3 scripts/index.py
-    echo "Done !"
+    python3 script/index.py
+    if [ $? -eq 0 ]
+    then
+        echo "Done !"
+    else
+        echo "Error while indexing"
+    fi
 fi
