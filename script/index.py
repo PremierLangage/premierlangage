@@ -49,10 +49,11 @@ contents_mappings = {
 }
 
 def gen_data(path):
-    for dirpath, _, filenames in os.walk(path):
-        # Ignore .git folder
-        if dirpath.endswith('.git'):
-            continue
+    exclude = ['.git']
+
+    for dirpath, dirs, filenames in os.walk(path, topdown=True):
+        dirs[:] = [dir for dir in dirs if dir not in exclude]
+
         for filename in filenames:
             filepath = os.path.join(dirpath, filename)
             relpath = os.path.relpath(filepath, root)
