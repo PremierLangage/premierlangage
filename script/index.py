@@ -23,7 +23,7 @@ root = 'home/'
 
 #####################
 
-files_mappings =  {
+files_mappings = {
     'properties': {
         'filepath': {
             'type': 'keyword'
@@ -49,6 +49,7 @@ contents_mappings = {
 }
 
 def gen_data(path):
+    # Folder names to exclude
     exclude = ['.git']
 
     for dirpath, dirs, filenames in os.walk(path, topdown=True):
