@@ -115,10 +115,4 @@ if [[ $REPLY =~ ^[Yy]$ ]]
 then
     echo "Indexing home folder..."
     python3 script/index.py
-    if [ $? -eq 0 ]
-    then
-        echo "Done !"
-    else
-        echo "Error while indexing"
-    fi
 fi
