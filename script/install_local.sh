@@ -104,3 +104,14 @@ else
     echo "Database 'django_premierlangage' does not exists. It must be created before."
     exit1
 fi
+
+# Indexing home folder for elastic search
+echo
+echo -p "Index home folder ? [y/n] " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    echo "Indexing home folder..."
+    python3 scripts/index.py
+    echo "Done !"
+fi
