@@ -331,7 +331,7 @@ FILEBROWSER_DISALLOWED_CHAR = ['/', ' ', '\t', '\n', ';', '#', '+', '&']
 
 # Elasticsearch settings
 ELASTICSEARCH = {
-    'host': 'http://127.0.0.1:55000',
+    'host': 'http://127.0.0.1:9200',
     'index_files': 'files',
     'index_contents': 'contents'
 }
