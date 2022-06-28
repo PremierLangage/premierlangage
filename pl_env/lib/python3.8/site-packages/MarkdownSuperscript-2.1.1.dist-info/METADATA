@@ -1,0 +1,59 @@
+Metadata-Version: 2.1
+Name: MarkdownSuperscript
+Version: 2.1.1
+Summary: Python-Markdown extension to allow for superscript text.
+Home-page: https://github.com/jambonrose/markdown_superscript_extension
+Author: Andrew Pinkham
+Author-email: UNKNOWN
+License: Simplified BSD License
+Project-URL: Documentation, https://markdown-superscript-extension.rtfd.io/en/stable/
+Project-URL: Source, https://github.com/jambonrose/markdown_superscript_extension
+Project-URL: Tracker, https://github.com/jambonrose/markdown_superscript_extension/issues
+Keywords: text,filter,markdown,html,superscript
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Text Processing :: Filters
+Classifier: Topic :: Text Processing :: Markup :: HTML
+Requires-Dist: Markdown (<3.1,>=2.5)
+
+An extension to the `Python Markdown`_ project which adds the ability to
+superscript text. To do so, the character :code:`^` becomes a Markdown
+tag for text meant to be superscripted, and is replaced with the HTML
+:code:`sup` tag.
+
+For example, the extension transforms the text directly below into the
+HTML shown after it.
+
+.. code-block:: text
+
+    2^10^ is 1024.
+
+.. code-block:: html
+
+    <p>2<sup>10</sup> is 1024.</p>
+
+This project is provided under the `Simplified (2 Clause) BSD license`_,
+provided in full in the LICENSE file.
+
+Please read `the documentation`_ for more information.
+
+.. _`Python Markdown`: https://pypi.org/project/Markdown/
+.. _`Simplified (2 Clause) BSD license`: http://choosealicense.com/licenses/bsd-2-clause/
+.. _`the documentation`: https://markdown-superscript-extension.readthedocs.io/en/latest/
+
+
