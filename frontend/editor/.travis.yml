@@ -1,0 +1,21 @@
+dist: xenial
+
+sudo: true
+
+services:
+  - xvfb
+
+language: node_js
+
+node_js:
+    - "10"
+
+addons:
+  firefox: "63.0.1"
+
+before_install:
+  - git clone https://www.github.com/PremierLangage/editor
+  - cd editor
+  - npm install -g npm@6.10.0 --save-dev --unsafe-perm node-sass
+
+script: ng test --watch false
