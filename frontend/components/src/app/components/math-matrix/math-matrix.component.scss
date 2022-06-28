@@ -1,0 +1,59 @@
+.math-matrix-component {
+    display:inline-block;
+    position: relative;
+    margin: 5px;
+    vertical-align: middle;
+
+    .matrix-input {
+        border : none;
+        border-radius:4px;
+        text-align: center;
+        font-style: italic;
+        font-size: 12pt;
+        color:black;
+        background-color: LightGrey;
+        z-index:10;
+
+    }
+
+    .matrix-container {
+        display: inline-block;
+        overflow: hidden;
+    }
+
+    .matrix-table {
+        table-layout:fixed;
+        width: auto;
+    }
+
+    .matrix-cell {
+        margin:0;
+        position:relative;
+        height: 2em;
+        width: 3em;
+    }
+
+
+    mwlResizable {
+        box-sizing: border-box; // required for the enableGhostResize option to work
+    }
+}
+
+.math-matrix-component:before, .math-matrix-component:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    border: 2px solid #000;
+    width: 6px;
+    height: 100%;
+}
+
+.math-matrix-component:before {
+    left: -6px;
+    border-right: 0;
+}
+
+.math-matrix-component:after {
+    right: -6px;
+    border-left: 0;
+}

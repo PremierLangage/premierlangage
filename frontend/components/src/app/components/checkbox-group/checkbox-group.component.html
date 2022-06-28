@@ -1,0 +1,18 @@
+<div class="checkbox-group-component {{ css }}" [class.horizontal]="horizontal">
+    <ng-container *ngFor="let item of items; trackBy: trackBy">
+        <div
+            class="checkbox-item {{ item.css }}"
+            [class.checked]="item.checked"
+            (click)="onDidCheckboxChange($event, item)">
+            <mat-checkbox
+                color="primary"
+                [checked]="item.checked"
+                [disabled]="disabled">
+                <div [innerHTML]="item.content | markdown | trustHtml"></div>
+            </mat-checkbox>
+        </div>
+    </ng-container>
+</div>
+<ng-container *ngIf="debug">
+    <pre class="debug" [innerHTML]="serialize() | json"></pre>
+</ng-container>

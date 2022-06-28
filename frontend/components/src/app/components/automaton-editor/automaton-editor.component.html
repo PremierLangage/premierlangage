@@ -1,0 +1,14 @@
+<div class="automaton-editor-component {{ css }}" [style.height]="editorHeight">
+    <div class="actions">
+        <ng-container *ngFor="let action of actions">
+            <button mat-raised-button color="primary" (click)="action.action()">
+                {{ action.name }}
+            </button>
+        </ng-container>
+    </div>
+    <div class="canvas" #container></div>
+</div>
+<ng-container *ngIf="debug">
+<pre class="debug"  [innerHTML]="serialize() | json"></pre>
+</ng-container>
+

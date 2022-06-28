@@ -1,0 +1,31 @@
+.drag-drop-component {
+    cursor: pointer;
+    display: inline-flex;
+
+    min-width: 3em;
+    min-height: 2em;
+    vertical-align: middle;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid transparent;
+    border-radius: 6px;
+
+    margin: 8px;
+    background-color: AntiqueWhite;
+
+
+    &.droppable {
+        border: 1px solid black;
+
+        &.dnd-over, &:hover {
+            border: 2px solid black;
+        }
+    }
+
+    &.disabled {
+        border: 1px dashed;
+        pointer-events: none;
+    }
+
+}

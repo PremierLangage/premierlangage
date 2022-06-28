@@ -1,0 +1,56 @@
+<mat-grid-list [cols]="expanded ? 1 : 2" rowHeight="600px">
+    <mat-grid-tile>
+        <div class="leftside">
+            <div class="buttons" *ngIf="!empty && !loading">
+                <button
+                    [class.anim-pulse]="expanded"
+                    mat-icon-button
+                    (click)="tryIt()"
+                    aria-label="Preview the code">
+                    <mat-icon>play_circle_filled</mat-icon>
+                </button>
+                <button
+                    [class.anim-pulse]="!expanded"
+                    mat-icon-button
+                    aria-label="Expand or shrink the code"
+                    (click)="expanded = !expanded">
+                    <mat-icon>
+                        {{
+                            expanded ? "fullscreen_exit" : "fullscreen"
+                        }}
+                    </mat-icon
+                    >
+                </button>
+            </div>
+            <mat-tab-group
+                [dynamicHeight]="true"
+                (selectedTabChange)="onDidTabChanged($event)">
+                <mat-tab *ngFor="let tab of tabs" [label]="tab.label">
+                    <ngx-monaco-editor
+                        class="code-editor"
+                        [(ngModel)]="tab.code"
+                        [options]="options"
+                        (onInit)="onInit($event)">
+                    </ngx-monaco-editor>
+                </mat-tab>
+            </mat-tab-group>
+        </div>
+    </mat-grid-tile>
+    <mat-grid-tile *ngIf="!expanded">
+        <div class="rightside">
+            <iframe
+                *ngIf="focus?.preview"
+                class="preview-editor"
+                frameborder="0"
+                [srcdoc]="focus.preview | trustHtml"
+                (load)="onDidLoaded()">
+            </iframe>
+            <mat-spinner
+                class="center"
+                diameter="64"
+                strokeWidth="2"
+                *ngIf="loading">
+            </mat-spinner>
+        </div>
+    </mat-grid-tile>
+</mat-grid-list>

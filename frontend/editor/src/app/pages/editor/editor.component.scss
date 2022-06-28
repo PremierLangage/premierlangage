@@ -1,0 +1,237 @@
+.app-editor {
+    display: flex;
+    flex-flow: column;
+    position: relative;
+    height: calc(100vh - 60px);
+    width: 100vw;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+}
+
+.as-split {
+    position: relative;
+    height: 100%;
+}
+
+.as-split-area {
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.tab-bar {
+    z-index: 1;
+    display: flex;
+    position: relative;
+    height: var(--tab-height);
+    background-color: var(--tab-inactiveBackground);
+    align-items: center;
+    overflow: hidden;
+    padding: 0px;
+    margin: 0;
+    .tab-group {
+        display: flex;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .tab-item {
+        display: inline-flex;
+        height: 100%;
+        align-items: center;
+        position: relative;
+        font-size: 14px;
+        font-style: normal;
+        padding: 0px 12px;
+        cursor: pointer;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+
+        &:hover {
+            background-color: var(--tab-hoverBackground);
+        }
+
+        &.active {
+            background-color: var(--tab-activeBackground);
+            color: var(--tab-activeForeground);
+        }
+
+        &.changed {
+            border-bottom: 1px solid salmon;
+        }
+
+        .tab-icon {
+            margin-right: 4px;
+        }
+
+        .tab-close {
+            font-size: 18px;
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+}
+
+.node-content {
+    font-size: 12px;
+
+    .node-label {
+        display: inline-flex;
+        align-items: center;
+        width: 100%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        display: block;
+        overflow: hidden;
+
+        .highlight {
+            color: white;
+            background-color: #6c757d;
+        }
+    }
+
+    .node-option-group {
+        z-index: 10;
+        position: absolute;
+        right: 0;
+        visibility: hidden;
+        background-color: var(--sideBar-hoverBackground);
+        top: 0;
+        bottom: 0;
+        display: flex;
+        align-items: center;
+        padding: 0 16px 0 8px;
+        .node-option {
+            cursor: pointer;
+            padding: 0 0 0 2px;
+        }
+    }
+
+    &:hover .node-option-group {
+        visibility: visible;
+    }
+}
+
+.dnd-drag {
+    opacity: 0.5;
+}
+
+.dnd-over {
+    box-shadow: inset 0px 0px 0px 2px var(--sideBar-hoverBackground);
+    background: var(--sideBar-hoverBackground);
+}
+
+.tree-component {
+    .mat-tree {
+        background: transparent !important;
+        .mat-tree-node {
+            &:hover, &.active, &.selected {
+                background-color: var(--sideBar-hoverBackground) !important;
+            }
+        }
+    }
+}
+
+.mat-divider {
+    border-top-color: #333;
+}
+
+// Context Menu
+
+.context-menu {
+  background-color: #fafafa;
+  padding: 4pt;
+  font-size: 10pt;
+  z-index: 1000;
+  box-shadow: 0 0 12pt rgba(0, 0, 0, 0.25);
+  border-radius: 4pt;
+  padding: 0;
+  animation: fadeIn 0.1s ease-out;
+  opacity:1.0;
+  display:block;
+}
+
+.context-menu hr {
+  border: none;
+  border-bottom: 1px solid #eee;
+}
+
+.context-menu div {
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+  color: #333;
+  padding: 0.5em 2em 0.5em 0.75em;
+  max-width: 18em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.context-menu div:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+.context-menu div::before {
+  content: '';
+  margin-right: 0.75em;
+  width: 0.5em;
+  height: 1em;
+  display: inline-block;
+}
+
+/* Animatinons */
+@-webkit-keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1.0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1.0;
+  }
+}
+
+@-webkit-keyframes fadeOut {
+  from {
+    opacity: 1.0;
+  }
+  to {
+    opacity: 0.0;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1.0;
+  }
+  to {
+    opacity: 0.0;
+  }
+}
+
+.is-fadingIn {
+  -webkit-animation: fadeIn 0.1s ease-out;
+  animation: fadeIn 0.1s ease-out;
+  opacity: 1.0;
+  display: block;
+}
+
+.is-fadingOut {
+  -webkit-animation: fadeOut 0.1s ease-out;
+  animation: fadeOut 0.1s ease-out;
+  opacity: 0.0;
+  display: block;
+}

@@ -1,0 +1,23 @@
+:host {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    height: 20px;
+    background-color: var(--statusBar-background);
+    color: var(--statusBar-foreground);
+    font-size: 12px;
+    padding: 0 8px;
+}
+
+.status-bar-item {
+    margin-right: 8px;
+}
+
+.status-bar-item:hover {
+    background-color: var(--statusBarItem-hoverBackground);
+}
+
+.remote {
+    .remote-icon {  margin: 0 4px; }
+}
+

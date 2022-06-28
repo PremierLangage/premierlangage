@@ -1,0 +1,65 @@
+.tree-component {
+    height: 100%;
+    .mat-tree-node {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        min-height: 32px;
+        overflow: hidden;
+
+        &:hover, &.active, &.selected {
+            background-color: rgba(66, 66, 66, 0.05);
+        }
+
+        .node-content {
+            cursor: pointer;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            min-height: 32px;
+            padding: 0 8px;
+            align-items: center;
+            justify-content: space-between;
+        }
+    }
+}
+
+.tree-input  {
+    display: flex;
+    align-items: center;
+    width: calc(100% - 4px);
+    margin-right: 4px;
+    input {
+        width: 100%;
+        margin: 0 0 0 8px;
+        padding: 0.1rem 0.3rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.15rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+        &:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+    }
+
+    &.error {
+        input {
+            border: 1px solid #dc3545;
+        }
+    }
+}
+
+.tree-input--filter {
+    margin: 4px 4px 0 0;
+}
+
+
+mat-error {
+    margin-left: 8px;
+}

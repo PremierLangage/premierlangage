@@ -1,0 +1,60 @@
+.problems-content {
+    height: 100%;
+    padding: 0;
+}
+
+.problem {
+    position: relative;
+    list-style-type: none;
+    list-style-type: none;
+    display: grid;
+    grid-template-columns: 16px auto;
+    grid-gap: 0 8px;
+    align-items: center;
+    padding: 4px 8px;
+
+    &:hover {
+        background-color: var(--tab-hoverBackground);
+    }
+}
+
+.problems-nothing {
+    padding: 4px;
+}
+
+.problem-file-icon, .problem-icon {
+    width: 16px !important;
+    height: 16px !important;
+    font-size: 16px !important;
+}
+.problem-path {
+    cursor: pointer;
+    &:hover {
+        text-decoration: underline;
+    }
+}
+.problem-icon {
+    display: inline-table;
+}
+
+.problem--info {
+    .problem-icon {
+        color: #009688;
+    }
+}
+
+.problem--warning {
+    .problem-icon {
+        color: #FFEB3B;
+    }
+}
+
+.problem--error {
+      .problem-icon {
+        color:#F44336;
+    }
+}
+
+.problem-content {
+    display: contents;
+}

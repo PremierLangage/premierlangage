@@ -1,0 +1,69 @@
+<section>
+    <p>
+        Component framework comes with a full featured API to custom the css of all the components.
+        Everytime you see a property <code>css</code> on a component,
+        the value of this property should be a space separated list of css classes.<br/>
+    </p>
+
+    <p>
+        Example: <br/>
+        <code>sortlist.items[0]["css"] = "a b c"</code> will add the css classes a,
+        b and c to the items[0] of the Sort List component.
+    </p>
+
+    <p>
+        The framework provides 80+ css classes that you can use to customize the components. The classes
+        are listed in the section below.
+    </p>
+    <p>
+        You can click on an animation of <b>Animation</b> section to apply it to the elements
+        of the <b>Appearance</b> section. You can copy the css of the elements of <b>Appearance</b> section
+        by clicking on an element.
+    </p>
+</section>
+<section>
+    <h3>Appearance</h3>
+    <div class="appearances">
+        <div class="box-appearance {{ css }} animated {{ activeAnimation }} infinite"
+            *ngFor="let css of appearances;"
+            matTooltip="Click to copy"
+            (click)="copyCss(css)">
+            <div class="text">{{ css }}</div>
+        </div>
+    </div>
+</section>
+
+<section>
+<h3>Animations</h3>
+<div class="animations">
+    <div class="box-animation" *ngFor="let animation of animations; trackBy: trackBy" (click)="animate(animation)">
+        <div class="text animated {{ animation }}">{{ animation }}</div>
+    </div>
+</div>
+</section>
+
+<section>
+    <h3>Animation Options</h3>
+    <p> You can apply the following options to the animations:</p>
+    <ul>
+        <li>fast</li>
+        <li>faster</li>
+        <li>slow</li>
+        <li>slower</li>
+        <li>delay-1s</li>
+        <li>delay-2s</li>
+        <li>delay-3s</li>
+        <li>delay-4s</li>
+        <li>delay-5s</li>
+        <li>infinite</li>
+    </ul>
+</section>
+
+<section>
+    <h3>Usage</h3>
+    <p>
+        If the Css API is not enough for your needs, you can create your own css classes and add them to the components.
+    </p>
+    <playground [tabs]="usages"></playground>
+</section>
+

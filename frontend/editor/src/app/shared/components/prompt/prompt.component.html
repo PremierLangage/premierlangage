@@ -1,0 +1,14 @@
+<h4 mat-dialog-title>{{data?.title}}</h4>
+<div mat-dialog-content>
+	<p [innerHTML]='data?.message|trustHtml'></p>
+	<form>
+		<mat-form-field class='full-width' *ngFor='let field of data.fields'>
+			<input matInput name='field.value' autocomplete="on" [type]='field.type' [placeholder]="field?.placeholder" [(ngModel)]='field.value' >
+		</mat-form-field>
+	</form>
+</div>
+
+<div mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="data">{{data.okTitle}}</button>
+    <button mat-button [mat-dialog-close]="false">{{data.noTitle}}</button>
+</div>
