@@ -106,3 +106,13 @@ then
     echo "Creating super user account..."
     SECRET_KEY=$SECRET_KEY python3 manage.py createsuperuser || { echo>&2 "ERROR: python3 manage.py createsuperuser failed" ; exit 1; }
 fi
+
+# Indexing home folder for elastic search
+echo
+read -p "Index home folder ? [y/n] " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    echo "Indexing home folder..."
+    python3 script/index.py
+fi
