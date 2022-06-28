@@ -1,0 +1,19 @@
+<div class='tab-bar'>
+    <span id="editor-action-focus-notifs"  class='tab-item' [class.active]="index === 0" [matBadge]="problems" (click)='onFocus(0)'>PROBLEMS</span>
+    <span id="editor-action-focus-problems" class='tab-item' [class.active]="index === 1" [matBadge]="notifs" (click)='onFocus(1)'>NOTIFICATIONS</span>
+    <div class='spacer'></div>
+
+    <div *ngIf="index === 1" id="logging-action-clear" class='tab-item' matTooltip='Clear' (click)='onClearNotifs()'>
+        <i class="fas fa-trash-alt"></i>
+    </div>
+
+    <div id="debugging-action-hide" class='tab-item' matTooltip='Hide' (click)='onClose($event)'>
+        <i class="fas fa-times"></i>
+    </div>
+</div>
+<div class='debugging-content'>
+    <ng-container [ngSwitch]="index">
+     <problems *ngSwitchCase="0"></problems>
+     <logging *ngSwitchCase="1"></logging>
+    </ng-container>
+</div>

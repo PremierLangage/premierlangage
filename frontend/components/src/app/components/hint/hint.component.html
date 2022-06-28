@@ -1,0 +1,26 @@
+
+<div class="hint-component {{ css }}">
+    <div *ngIf="showIcon" class="hint-component-header" (click)="consume()">
+        <i class="far fa-lightbulb hint-component-icon"></i>
+        <div *ngIf="label" [innerHTML]="label|markdown|trustHtml"></div>
+    </div>
+    <div class="hint-items-container">
+        <ng-container *ngFor="let hint of items; let i=index; trackBy:trackBy">
+            <div *ngIf="hint.consumed" class="hint-item">
+                <div class="hint-index">
+                    {{ i + 1 }} / {{ items.length }}
+                </div>
+                <div class="hint-content {{ hint.css }}" [innerHTML]="hint.content|markdown|trustHtml"></div>
+            </div>
+        </ng-container>
+        <button
+            *ngIf="hasMore"
+            class="hint-button-next"
+            mat-button
+            (click)="consume()">{{ moreHintTitle }}
+        </button>
+    </div>
+</div>
+<ng-container *ngIf="debug">
+    <pre class="debug"  [innerHTML]="serialize() | json"></pre>
+</ng-container>

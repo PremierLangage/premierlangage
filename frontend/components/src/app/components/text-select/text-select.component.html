@@ -1,0 +1,18 @@
+<div
+    #container
+    *ngIf="mode === 'word'; else freeMode"
+    class="text-select-component words-mode {{ css }} {{ typo | typography }}"
+    (click)="didWordSelection($event)"
+    [innerHTML]="text | textSelectSplit:options | trustHtml">
+</div>
+<ng-template #freeMode>
+    <div
+        #container
+        class="text-select-component free-mode {{ css }} {{ typo | typography }}"
+        (mouseup)="didFreeSelection($event)"
+        [innerHTML]="text | textSelectSplit:options | trustHtml">
+    </div>
+</ng-template>
+<ng-container *ngIf="debug">
+    <pre class="debug" [innerHTML]="serialize() | json"></pre>
+</ng-container>

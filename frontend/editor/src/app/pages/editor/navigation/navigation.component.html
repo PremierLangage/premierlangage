@@ -1,0 +1,71 @@
+<div class="navigation" [class.right]="side === 'right'">
+    <ng-container *ngIf="side === 'left'; else: rightnav">
+        <div class="activitybar">
+            <img id="nav-action-explorer" class="nav-action" [src]="'icons/vscode/dark/files.svg' | asset" matTooltip="Explorer" (click)="toggleExplorer()"/>
+            <img id="nav-action-search" class="nav-action" [src]="'icons/vscode/dark/search.svg' | asset" matTooltip="Search" (click)='toggleSearch()'/>
+
+            <div id="nav-action-git" [matBadge]="gitBadge" matTooltip="Source Control" *ngIf="isAdmin">
+                <img class='nav-action' [src]="'icons/vscode/dark/source-control.svg' | asset" (click)='toggleGit()'/>
+            </div>
+
+            <div id="nav-action-components" class="nav-action" matTooltip="Components" (click)="openComponents()">
+                <i class="fab fa-uikit"></i>
+            </div>
+
+            <div class="spacer"></div>
+
+            <img id="nav-action-theme" class="nav-action" [src]="'icons/vscode/dark/color.svg' | asset"  matTooltip="Switch Theme" (click)='switchTheme()'/>
+            <img id="nav-action-settings" class="nav-action" [src]="'icons/vscode/dark/gear.svg' | asset" matTooltip="Settings" (click)='openSettings()'/>
+        </div>
+        <div class="sidebar">
+            <ng-container [ngSwitch]="index">
+                <ng-container *ngSwitchCase="0">
+                    <div class="tab-bar">
+                        <span>EXPLORER</span>
+                        <div class="spacer"></div>
+                        <div class="tab-item" (click)="explorer.refresh()" matTooltip="Refresh">
+                            <i class="fas fa-sync"></i>
+                        </div>
+                    </div>
+                    <div class="sidebar-content">
+                        <explorer #explorer remote="true"></explorer>
+                    </div>
+                </ng-container>
+                <ng-container *ngSwitchCase="1">
+                    <div class='tab-bar'>
+                        <span>SEARCH</span>
+                        <div class="spacer"></div>
+                    </div>
+                    <div class="sidebar-content">
+                        <search #search></search>
+                    </div>
+                </ng-container>
+                <ng-container *ngSwitchCase="2">
+                    <div class="sidebar-content">
+                        <git></git>
+                    </div>
+                </ng-container>
+            </ng-container>
+        </div>
+    </ng-container>
+    <ng-template #rightnav>
+        <div class="activitybar">
+            <div id="nav-action-structures" class="nav-action" matTooltip="Structure" (click)="toggleStructure()">
+                <i class="fas fa-list"></i>
+            </div>
+        </div>
+        <div class="sidebar">
+            <ng-container [ngSwitch]="index">
+                <ng-container *ngSwitchCase="0">
+                    <div class='tab-bar'>
+                        <span>STRUCTURE</span>
+                    </div>
+                    <div class="sidebar-content">
+                        No structure information available.
+                    </div>
+                </ng-container>
+            </ng-container>
+        </div>
+    </ng-template>
+</div>
+

@@ -1,0 +1,76 @@
+<h1>Simple Usage</h1>
+<mat-divider></mat-divider>
+<next-prev prevLink="/components/intro" nextLink="/components/advanced-usage" ></next-prev>
+
+<section>
+    <p>
+        The usage guide will based on the <code>Sort List</code> component
+        of the introduction page. This component allow to sort a list of items by dragging
+        them and we will see step by step how it works.
+    </p>
+    <p>
+        Each component documentation page comes with an interactive exercise
+        like the following. You can modify the code
+        inside the editor and click on the preview button to play with the
+        example.
+    </p>
+    <playground [tabs]="usages"></playground>
+</section>
+<section>
+    <h3>Usage explained</h3>
+    <div>
+        <ul>
+            <li>
+                # Step 1: Declaration
+                <p>
+                    This block of code represents the <b>declaration</b> of a component.
+                    Here we use operator <code>=:</code> to tell the framework to creates new SortList component.
+                    After that we specify the property items of the component that will be used to render
+                    the items inside the exercise.
+                </p>
+                <p>In the first example we use the JSON syntax to provides the items of the component. </p>
+                <p>In the second example we use a string syntax to provides the items of the component. </p>
+            </li>
+            <li>
+                # Step 2: Randomization.
+                <p>
+                    Once created we have to randomize the items of the list and keep track to the answer inside a grader.
+                </p>
+                <p>
+                    In the first example we just put the id of the items inside a list <code>answer</code> and call
+                    <code>random.shuffle()</code> on the items to randomize the list. <br/>
+                </p>
+                <p>
+                    In the second example we use the predefined functions <code>parse_string()</code> and
+                    <code>remind()</code> of SortList class to do the same thing. The first one will split the string <code>items</code> using the specified
+                    separator <code>\n</code> in this case and create a JSON object like in the first example with random id for the items.
+                </p>
+            </li>
+            <li>
+                # Step 3: Exercise form
+                <p>
+                    From this block of code, we define the layout of the exercise and
+                    we insert the component in the HTML using the
+                    <code>|component</code> filter on the variable that hold the component.
+                    This filter will write the html code needed to render the component and map the properties of the component
+                    to the HTML element.
+                </p>
+            </li>
+            <li>
+                # Step 5 Evaluation
+                <p>
+                    After the student submit the form to the server to get a
+                    grade, the framework will sync the state of the component
+                    with the actions of the student. For example in the case of the sort list,
+                    When a student reorder the items the component will update the ordering
+                    of the property <code>sortlist.items</code>. So we compare the id of the elements on the list send by the student
+                    with the saved list <code>answer</code> and update the css property of the items to provide a feedback.
+                </p>
+                <p>
+                    In the case of the second example, we just call the method <code>auto_grade()</code> on the component to auto
+                    evaluate the exercise.</p>
+            </li>
+        </ul>
+    </div>
+</section>
+<next-prev  prevLink="/components/intro"  nextLink="/components/advanced-usage"></next-prev>

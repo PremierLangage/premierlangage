@@ -1,0 +1,59 @@
+<mat-progress-bar mode="query" *ngIf='runningTask()'></mat-progress-bar>
+<mat-accordion class='accordion' multi='true'>
+    <mat-expansion-panel class='repositories mat-elevation-z0' expanded='true'>
+        <mat-expansion-panel-header collapsedHeight='48px' expandedHeight='48px'>
+        <mat-panel-title>
+            REPOSITORIES
+        </mat-panel-title>
+        </mat-expansion-panel-header>
+        <ng-container *ngFor="let repo of repositories(); trackBy trackRepo">
+            <div class='line pointer' [ngClass]='{ selected: isSelection(repo) }' (click)='changeSelection(repo)' [matTooltip]='repo.url'>
+                <span class='line-title' [matBadgeHidden]='repo.count === 0' [matBadge]="repo.count" matBadgePosition="after">{{repo.name}}</span>
+                <div class='spacer'></div>
+                <span class='line-subtitle'>{{repo.branch}}</span>
+                <span [matMenuTriggerFor]="options">
+                    <i class='fas fa-ellipsis-h'></i>
+                </span>
+            </div>
+            <mat-menu #options="matMenu">
+                <button mat-menu-item (click)='add(repo)' matTooltip='Add to git index'>Git Add</button>
+                <button mat-menu-item (click)='push(repo)' matTooltip='Push local changes to remote'>Git Push</button>
+                <button mat-menu-item (click)='pull(repo)' matTooltip='Pull changes from remote'>Git Pull</button>
+                <button mat-menu-item (click)='status(repo)' matTooltip='Show changes'>Git Status</button>
+                <button mat-menu-item (click)='checkout(repo)' matTooltip='Reset the repository to the last commit'>Git Checkout</button>
+            </mat-menu>
+        </ng-container>
+        <br/>
+        <button class='clone' mat-stroked-button matTooltip='Clone' (click)='clone()'>+</button>
+    </mat-expansion-panel>
+    <mat-divider></mat-divider>
+    <mat-expansion-panel class='changes mat-elevation-z0' *ngIf='selection' expanded='true'>
+        <mat-expansion-panel-header collapsedHeight='48px' expandedHeight='48px'>
+        <mat-panel-title>
+            CHANGES IN {{selection.name | uppercase}}
+        </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-form-field class='commit'>
+            <input matInput placeholder="Press enter to commit" (keydown)='commit($event)' [(ngModel)]='commitMessage'>
+        </mat-form-field>
+        <span *ngIf='selection.count === 0'>nothing to commit, working tree clean</span>
+        <ng-container *ngFor="let change of selection.changes; trackBy trackChange">
+            <div class='line' [ngClass]='{clickable: canOpen(change)}' [matTooltip]="change.path|path">
+                <span class='line-title' [matBadge]="change.type" matBadgePosition="after" (click)='open(change)'>{{change.name}}</span>
+                <div class='spacer'></div>
+                <ng-container *ngIf='hasOption(change)'>
+                    <span [matMenuTriggerFor]="menu">
+                        <i class='fas fa-ellipsis-h'></i>
+                        </span>
+                </ng-container>
+            </div>
+            <mat-menu #menu="matMenu">
+                <ng-container *ngFor='let option of options'>
+                    <button *ngIf='option.enabled(change)' (click)='option.action(change)' mat-menu-item>
+                    {{option.label}}
+                    </button>
+                </ng-container>
+            </mat-menu>
+        </ng-container>
+    </mat-expansion-panel>
+</mat-accordion>

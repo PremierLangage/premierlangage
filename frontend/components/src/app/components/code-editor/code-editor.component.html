@@ -1,0 +1,31 @@
+<div class="code-editor-component {{ css }}">
+    <div class="code-editor-component-toolbar">
+        <mat-form-field>
+            <mat-label>Language</mat-label>
+            <mat-select
+                (selectionChange)="onDidSelectLanguage($event)"
+                [value]="language">
+                <mat-option *ngFor="let code of codes" [value]="code.language">
+                    {{ code.language }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <div class="spacer"></div>
+        <button
+            mat-icon-button
+            aria-label="Reset the editor default code"
+            matTooltip="Reset the editor default code"
+            (click)="onDidResetEditorCode()">
+            <mat-icon>refresh</mat-icon>
+        </button>
+    </div>
+    <ngx-monaco-editor
+        [style.height]="height"
+        [options]="{}"
+        [model]="{}"
+        (onInit)="onDidLoadEditor($event)">
+    </ngx-monaco-editor>
+</div>
+<ng-container *ngIf="debug">
+    <pre class="debug" [innerHTML]="serialize() | json"></pre>
+</ng-container>

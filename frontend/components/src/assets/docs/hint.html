@@ -1,0 +1,34 @@
+<section>
+<h3>Representation</h3>
+<p>
+    Hint is made up of multiple rows of items which can contain html, markdown, MathJax or text content.
+    You specify the rows by initializing the property <code>items</code> of the component which is an array of <code>HintItem</code> objects.
+    A <code>HintItem</code> object has the following properties:
+</p>
+<pre>
+{
+    "content": string, // HTML, markdown, MathJax or textual content of the item.
+    "consumed": boolean, // A value indicating whether the hint is consumed by the student.
+    "css": string, // optional css classes of the component separated by a space.
+}
+</pre>
+</section>
+
+<section>
+    <h3>Dynamic Hinting</h3>
+    <p>
+        The default behavior of the component is not dynamic.
+        The component will present the next non consumed hint of <code>items</code> array
+        each time a student ask for a hint.
+    </p>
+    <p>
+        To create dynamic hints. The component provides the property <code>script</code>.
+        The value of this property should be a javascript script. You can create a very
+        complex and intelligent hinting mecanism using this property.
+    </p>
+
+    <p class="info">
+        Combined with <code>CountDown</code> component,
+        you can display hints to the student after a delay.
+    </p>
+</section>

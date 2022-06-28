@@ -1,0 +1,42 @@
+<app-tree [nodes]="nodes" [options]="treeOptions">
+    <ng-container *treeNode="let node">
+        <span class="node-label"
+              dnd (dropped)="onDropped($event)" [dndData]="node.id"
+              [draggable]="draggable(node.data)" [droppable]="droppable(node.data)">
+            <img [fileIcon]="node.data" [expanded]="node.expanded" />
+            <span *ngIf="node.filter; else: nofilter" matTooltip="{{ node.data.path | path }}"
+                highlightWords [words]="node.filter.query" [regex]="node.filter.pattern"
+                [text]="node.name" [highlightClass]="'highlight'">
+            </span>
+            <ng-template #nofilter>
+                <span matTooltip="{{ node.data.path | path }}">{{ node.name }}</span>
+            </ng-template>
+        </span>
+        <span class="node-option-group">
+            <ng-container *ngFor="let option of nodeOptions; let i = index">
+                <span *ngIf="!option.divider && !option.forContextMenu && option.enabled(node.data)"
+                    id="node-option-{{ option.id }}-{{ node.data.path }}" class="node-option"
+                    matTooltip="{{ option.label }}" (click)="option.action(node.data, $event)">
+                    <i [class]="option.icon"></i>&nbsp;
+                </span>
+            </ng-container>
+        </span>
+    </ng-container>
+</app-tree>
+<ng-template #contextmenu let-node>
+	<section class="context-menu">
+        <ng-container *ngFor="let option of nodeOptions">
+            <ng-container *ngIf="option.divider; else: notdivider">
+                <mat-divider></mat-divider>
+            </ng-container>
+            <ng-template #notdivider>
+                <ng-container *ngIf="!option.forHover && option.enabled(node);">
+                    <div (click)="option.action(node, $event);">
+                        <i [class]="option.icon"></i>&nbsp;
+                        <span> {{ option.label }}</span>
+                    </div>
+                </ng-container>
+            </ng-template>
+        </ng-container>
+	</section>
+</ng-template>

@@ -1,0 +1,51 @@
+<mat-form-field
+    class="input-component {{ css }}"
+    [style.width]="width"
+    [appearance]="appearance"
+    floatLabel="always">
+    <mat-label *ngIf="placeholder">{{ placeholder }}</mat-label>
+    <ng-container [ngSwitch]="type">
+        <!-- MULTI LINE -->
+        <ng-container *ngSwitchCase="'multiline'">
+            <textarea
+                matInput
+                matTextareaAutosize
+                type="multiline"
+                [maxLength]="maxlength > 0 ? maxlength : 1000000000"
+                [formControl]="form">
+            </textarea>
+        </ng-container>
+        <!-- NUMERIC -->
+        <ng-container *ngSwitchCase="'number'">
+            <input
+                matInput
+                type="text"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                numeric
+                [(ngModel)]="value"/>
+        </ng-container>
+        <!-- TEXT -->
+        <ng-container *ngSwitchDefault>
+            <input
+                matInput
+                type="text"
+                [maxLength]="maxlength > 0 ? maxlength : 1000000000"
+                [formControl]="form"
+                [matAutocomplete]="auto"/>
+            <mat-autocomplete #auto="matAutocomplete">
+                <mat-option
+                    *ngFor="let option of $autocomplete | async"
+                    [value]="option">
+                    {{ option }}
+                </mat-option>
+            </mat-autocomplete>
+        </ng-container>
+    </ng-container>
+    <mat-hint [align]="'start'" *ngIf="type !== 'number' && maxlength && maxlength > 0">
+        {{ value ? value.length : 0 }} / {{ maxlength }}
+    </mat-hint>
+</mat-form-field>
+<ng-container *ngIf="debug">
+    <pre class="debug" [innerHTML]="serialize() | json"></pre>
+</ng-container>

@@ -1,0 +1,4 @@
+<div class="graph-viewer-component {{ css }}" graphviz [graph]="graph"></div>
+<ng-container *ngIf="debug">
+    <pre class="debug" [innerHTML]="serialize() | json"></pre>
+</ng-container>
