@@ -2,6 +2,8 @@ import { Component, OnInit, Input, ViewEncapsulation, OnDestroy, ChangeDetectorR
 import { Property, AbstractComponent } from '../../shared/models/abstract-component.model';
 import { ComponentDefinition } from 'src/app/shared/models/definition.model';
 
+declare let MathQuill: any;
+
 @Component({
     // tslint:disable-next-line: component-selector
   selector: 'math-input-component',
@@ -12,7 +14,6 @@ import { ComponentDefinition } from 'src/app/shared/models/definition.model';
 export class MathInputComponent extends AbstractComponent implements OnInit, OnDestroy {
     private math: any;
     private configuration: {};
-    private readonly listeners: (() => void)[] = [];
 
     readonly properties: Property[] = [
         { name: 'disabled', default: false },
@@ -32,10 +33,6 @@ export class MathInputComponent extends AbstractComponent implements OnInit, OnD
     @Input()
     set config(value: any) {
         this.configuration = value;
-        if (this.math) {
-            this.math.$setConfig(value);
-        }
-        this.detectChanges();
     }
 
     get config() {
@@ -47,41 +44,25 @@ export class MathInputComponent extends AbstractComponent implements OnInit, OnD
     }
 
     ngOnInit(): void {
-        this.math = MathLive.makeMathField(this.container.nativeElement, {
-            onContentDidChange: (field: any) => {
-                this.value = field.$latex();
+        let MQ = MathQuill.getInterface(2);
+        
+        this.math = MQ.MathField(this.container.nativeElement, {
+            handlers: {
+                edit: () => {
+                    this.value = this.math.latex()
+                }
             },
-            virtualKeyboardTheme: 'material', // 'material' | 'apple'
-            smartFence: false,
-            smartSuperscript: true,
-            virtualKeyboardMode: 'manual', // 'manual' | 'off' | 'onfocus'
-            virtualKeyboards: 'all', // 'all' | 'numeric' | 'roman' | 'greek' | 'functions' | 'command'
+            charsThatBreakOutOfSupSub: '+-=<>',
+            autoCommands: 'pi theta sqrt sum infty infin emptyset',
+            autoOperatorNames: 'sin cos tan ln exp cup cap',
             ...(this.config || {})
-        });
-
-        const { textarea } = this.math;
-        const onBlur = () => this.math.$perform('hideVirtualKeyboard');
-        textarea.addEventListener('blur', onBlur, false);
-        this.listeners.push(() => {
-            textarea.removeEventListener('blur', onBlur, false);
-        });
-
-        const element = this.math.$el();
-        const toggle: HTMLElement = element.querySelector('.ML__virtual-keyboard-toggle');
-
-        const onFocus = () => textarea.focus();
-        toggle.addEventListener('click', onFocus, false);
-        this.listeners.push(() => {
-            toggle.removeEventListener('click', onFocus, false);
         });
     }
 
     ngOnDestroy(): void {
-        this.listeners.forEach(l => l());
     }
 
     onRender(): void {
-        this.math.$insert(this.value || '', '{format: "latex"}');
     }
 
 }
