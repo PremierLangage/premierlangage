@@ -1,2 +1,2 @@
-sudo rm -rf node_modules package-lock.json
-sudo npm i
+rm -rf node_modules package-lock.json
+npm i

@@ -11,4 +11,4 @@ cat > ../../apps/components/templates/components/statics.html << ENDOFFILE
 <script src="{{ static('/components/main-es5.js') }}" nomodule defer></script>
 
 ENDOFFILE
-sudo npm run build:prod
+npm run build:prod

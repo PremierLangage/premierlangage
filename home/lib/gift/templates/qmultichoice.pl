@@ -3,6 +3,19 @@
 @ /builder/before.py [builder.py]
 
 checkbox =: CheckboxGroup
+
+doc==
+il faut définir une balise choices qui contient des ligne de la forme :
+%80.0% valide a 80 pourcent 
+%100% valide à 100%
+%0% pas bon 
+
+et une balide general_feedback qui fait quelque chose .
+
+==
+
+
+
 choices= 
 general_feedback = 
 

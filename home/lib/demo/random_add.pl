@@ -8,9 +8,20 @@ title= Addition Aléatoire
 author = Quentin Coumes
 
 text==
-Combien <i>font</i> ***{{ op1 }} + {{ op2 }}*** ?
+Combien <i>font</i> ***{{ op1 }} * {{ op2 }}*** ?
 try count = {{ c }}
 ==
+
+
+before==
+import random
+random.seed(seed)
+op1 = random.randint(1, 10)
+op2 = random.randint(1, 10)
+c = 0
+==
+
+
 
 form==
 <div class="input-group">
@@ -38,13 +49,6 @@ except:
 ==
 
 
-before==
-import random
-random.seed(seed)
-op1 = random.randint(1, 10)
-op2 = random.randint(1, 10)
-c = 0
-==
 
 @ ~/utils/sandboxio.py
 @ ~/builder/before.py [builder.py]

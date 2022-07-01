@@ -8,4 +8,4 @@ cat > ../../apps/components/templates/components/statics.html << ENDOFFILE
 <script src="{{ static('/components/vendor.js') }}" type="module"></script>
 <script src="{{ static('/components/main.js') }}" type="module"></script>
 ENDOFFILE
-sudo npm run build:dev
+npm run build:dev

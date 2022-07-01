@@ -30,15 +30,15 @@
             "styles": [
               "src/styles.scss",
               "node_modules/jsxgraph/distrib/jsxgraph.css",
-              "node_modules/mathlive/dist/mathlive.core.css",
-              "node_modules/mathlive/dist/mathlive.css"
+              "node_modules/node-mathquill/build/mathquill.css"
             ],
             "scripts": [
               "src/assets/scripts/components.js",
               "node_modules/document-register-element/build/document-register-element.js",
               "node_modules/jsplumb/dist/js/jsplumb.min.js",
               "node_modules/jsxgraph/distrib/jsxgraphcore.js",
-              "node_modules/mathlive/dist/mathlive.js"
+              "node_modules/jquery/dist/jquery.js",
+              "node_modules/node-mathquill/build/mathquill.js"
             ]
           },
           "configurations": {
