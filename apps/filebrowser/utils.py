@@ -12,12 +12,13 @@ from filebrowser import filter
 from filebrowser.models import Directory
 from loader.loader import reload_pla as rp
 
+from datetime import datetime
+from elasticsearch import Elasticsearch, exceptions
 
 HOME_DIR = 'Yggdrasil'
 LIB_DIR = 'lib'
 
 logger = logging.getLogger(__name__)
-
 
 
 def add_commit_path(request, path, action=""):
@@ -215,3 +216,62 @@ def reload_activity(path, activity):
         if settings.DEBUG:
             msg += ("DEBUG set to True: " + htmlprint.html_exc())
         return HttpResponseNotFound(msg)
+
+
+def es_get_client():
+    """Returns a client to the elasticsearch server, or None if it fails to connect"""
+    es_client = Elasticsearch(settings.ELASTICSEARCH['host'])
+
+    try:
+        es_client.info()
+    except exceptions.ConnectionError as err:
+        return None
+    else:
+        return es_client
+
+def es_search(query):
+    es = es_get_client()
+    if not es: return None
+
+    es_query = {
+        "match": { "data": query }
+    }
+
+    result = es.search(index=settings.ELASTICSEARCH['index_contents'], query=es_query, size=1000)
+    return result['hits']['hits']
+
+
+def es_delete_file(filepath):
+    """Deletes a file and its content from the cluster
+    Filepath is a relative path to the file from the filebrowser root"""
+    es = es_get_client()
+    if not es: return False
+
+    query = {'term': { 'filepath': filepath }}
+    es.delete_by_query(index=settings.ELASTICSEARCH['index_files'], query=query)
+    es.delete_by_query(index=settings.ELASTICSEARCH['index_contents'], query=query)
+    return True
+
+
+def es_index_file(filepath, last_modified=None):
+    """Index a file and its content in a cluster
+    Filepath is a relative path to the file from the filebrowser root"""
+    es = es_get_client()
+    if not es: return False
+
+    fullpath = os.path.join(settings.FILEBROWSER_ROOT, filepath)
+    if last_modified is None:
+        timestamp = os.path.getmtime(fullpath)
+        last_modified = datetime.fromtimestamp(timestamp)
+    
+    es.index(index=settings.ELASTICSEARCH['index_files'], document={'filepath': filepath, 'last-modified': last_modified})
+    with open(fullpath, 'r', errors='ignore') as file:
+        for n, line in enumerate(file):
+            if line.strip():
+                es.index(index=settings.ELASTICSEARCH['index_contents'], document={
+                    'filepath': filepath,
+                    'line-number': n + 1,
+                    'data': line.strip()
+                })
+    
+    return True
