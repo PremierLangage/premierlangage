@@ -30,7 +30,9 @@
             "styles": [
               "src/styles.scss",
               "node_modules/jsxgraph/distrib/jsxgraph.css",
-              "node_modules/node-mathquill/build/mathquill.css"
+              "node_modules/node-mathquill/build/mathquill.css",
+              "node_modules/mathlive/dist/mathlive.core.css",
+              "node_modules/mathlive/dist/mathlive.css"
             ],
             "scripts": [
               "src/assets/scripts/components.js",
@@ -38,7 +40,8 @@
               "node_modules/jsplumb/dist/js/jsplumb.min.js",
               "node_modules/jsxgraph/distrib/jsxgraphcore.js",
               "node_modules/jquery/dist/jquery.js",
-              "node_modules/node-mathquill/build/mathquill.js"
+              "node_modules/node-mathquill/build/mathquill.js",
+              "node_modules/mathlive/dist/mathlive.js"
             ]
           },
           "configurations": {

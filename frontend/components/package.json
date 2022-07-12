@@ -36,6 +36,7 @@
     "jsxgraph": "^0.99.7",
     "ngx-markdown": "^8.1.1",
     "ngx-monaco-editor": "^6.0.0",
+    "mathlive": "^0.32.1",
     "node-mathquill": "^0.10.2",
     "node-sass": "^4.14.1",
     "rxjs": "~6.5.2",

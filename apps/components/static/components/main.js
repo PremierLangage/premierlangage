@@ -178,7 +178,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<div #container class=\"math-input-component\" [class.disabled]=\"disabled\"></div>\n<ng-container *ngIf=\"debug\">\n    <pre class=\"debug\"  [innerHTML]=\"serialize() | json\"></pre>\n</ng-container>\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<div #container class=\"math-input-component {{ css }}\" [class.disabled]=\"disabled\"></div>\n<ng-container *ngIf=\"debug\">\n    <pre class=\"debug\"  [innerHTML]=\"serialize() | json\"></pre>\n</ng-container>\n");
 
 /***/ }),
 
@@ -3184,7 +3184,7 @@ class MathInputQuillComponentDefinition {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = (".btn-xs {\n  font-size: 8px;\n  text-align: center; }\n\n.mq-disabled .mq-editable-field {\n  pointer-events: none;\n  background-color: #F5F5F5; }\n\n.mq-math-mode .mq-nonSymbola, .mq-math-mode .mq-text-mode, .mq-math-mode var {\n  font-family: 'MJXc-TeX-math-Iw';\n  line-height: 0.4; }\n\n.mathinput {\n  border-top-left-radius: 4px;\n  border-bottom-left-radius: 4px;\n  border-top-right-radius: 4px;\n  border-bottom-right-radius: 4px; }\n\n.btn-keypad {\n  padding: 0.3em;\n  border-left: none;\n  outline: none !important;\n  box-shadow: none; }\n\n.keypad {\n  min-width: unset;\n  padding: 0 0;\n  margin: .125rem 0 0;\n  font-size: 1rem;\n  color: #212529;\n  text-align: left;\n  list-style: none;\n  background-color: #fff;\n  background-clip: padding-box;\n  border: 1px solid rgba(0, 0, 0, 0.15); }\n\n.mq-editable-field {\n  min-width: 5em;\n  font-size: 14pt;\n  padding: 0.2em; }\n\n.right-border {\n  border-top-right-radius: 0px !important;\n  border-bottom-right-radius: 0px !important; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL2dhdWRldC9QTC9wbF9mcm9udGVuZC9wcmVtaWVybGFuZ2FnZS9mcm9udGVuZC9jb21wb25lbnRzL3NyYy9hcHAvY29tcG9uZW50cy9tYXRoLWlucHV0L21hdGgtaW5wdXQuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxjQUFjO0VBQ2Qsa0JBQWtCLEVBQUE7O0FBR3RCO0VBQ0ksb0JBQW9CO0VBQ3BCLHlCQUF5QixFQUFBOztBQUc3QjtFQUNJLCtCQUErQjtFQUMvQixnQkFBZ0IsRUFBQTs7QUFHcEI7RUFDRSwyQkFBMkI7RUFDM0IsOEJBQThCO0VBQzlCLDRCQUE0QjtFQUM1QiwrQkFBK0IsRUFBQTs7QUFHakM7RUFDRSxjQUFjO0VBQ2QsaUJBQWlCO0VBQ2pCLHdCQUF3QjtFQUN4QixnQkFBZ0IsRUFBQTs7QUFHbEI7RUFDSSxnQkFBZ0I7RUFDaEIsWUFBWTtFQUNaLG1CQUFtQjtFQUNuQixlQUFlO0VBQ2YsY0FBYztFQUNkLGdCQUFnQjtFQUNoQixnQkFBZ0I7RUFDaEIsc0JBQXNCO0VBQ3RCLDRCQUE0QjtFQUM1QixxQ0FBaUMsRUFBQTs7QUFHckM7RUFDRSxjQUFjO0VBQ2QsZUFBYztFQUNkLGNBQWMsRUFBQTs7QUFHaEI7RUFDRSx1Q0FBdUM7RUFDdkMsMENBQTBDLEVBQUEiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL21hdGgtaW5wdXQvbWF0aC1pbnB1dC5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5idG4teHMge1xuICAgIGZvbnQtc2l6ZTogOHB4O1xuICAgIHRleHQtYWxpZ246IGNlbnRlcjtcbn1cblxuLm1xLWRpc2FibGVkIC5tcS1lZGl0YWJsZS1maWVsZCB7XG4gICAgcG9pbnRlci1ldmVudHM6IG5vbmU7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogI0Y1RjVGNTtcbn1cblxuLm1xLW1hdGgtbW9kZSAubXEtbm9uU3ltYm9sYSwgLm1xLW1hdGgtbW9kZSAubXEtdGV4dC1tb2RlLCAubXEtbWF0aC1tb2RlIHZhciB7XG4gICAgZm9udC1mYW1pbHk6ICdNSlhjLVRlWC1tYXRoLUl3JztcbiAgICBsaW5lLWhlaWdodDogMC40O1xufVxuXG4ubWF0aGlucHV0IHtcbiAgYm9yZGVyLXRvcC1sZWZ0LXJhZGl1czogNHB4O1xuICBib3JkZXItYm90dG9tLWxlZnQtcmFkaXVzOiA0cHg7XG4gIGJvcmRlci10b3AtcmlnaHQtcmFkaXVzOiA0cHg7XG4gIGJvcmRlci1ib3R0b20tcmlnaHQtcmFkaXVzOiA0cHg7XG59XG5cbi5idG4ta2V5cGFkIHtcbiAgcGFkZGluZzogMC4zZW07XG4gIGJvcmRlci1sZWZ0OiBub25lO1xuICBvdXRsaW5lOiBub25lICFpbXBvcnRhbnQ7XG4gIGJveC1zaGFkb3c6IG5vbmU7XG59XG5cbi5rZXlwYWQge1xuICAgIG1pbi13aWR0aDogdW5zZXQ7XG4gICAgcGFkZGluZzogMCAwO1xuICAgIG1hcmdpbjogLjEyNXJlbSAwIDA7XG4gICAgZm9udC1zaXplOiAxcmVtO1xuICAgIGNvbG9yOiAjMjEyNTI5O1xuICAgIHRleHQtYWxpZ246IGxlZnQ7XG4gICAgbGlzdC1zdHlsZTogbm9uZTtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjZmZmO1xuICAgIGJhY2tncm91bmQtY2xpcDogcGFkZGluZy1ib3g7XG4gICAgYm9yZGVyOiAxcHggc29saWQgcmdiYSgwLDAsMCwuMTUpO1xufVxuXG4ubXEtZWRpdGFibGUtZmllbGQge1xuICBtaW4td2lkdGg6IDVlbTsgXG4gIGZvbnQtc2l6ZToxNHB0O1xuICBwYWRkaW5nOiAwLjJlbTtcbn1cblxuLnJpZ2h0LWJvcmRlciB7XG4gIGJvcmRlci10b3AtcmlnaHQtcmFkaXVzOiAwcHggIWltcG9ydGFudDtcbiAgYm9yZGVyLWJvdHRvbS1yaWdodC1yYWRpdXM6IDBweCAhaW1wb3J0YW50O1xufSJdfQ== */");
+/* harmony default export */ __webpack_exports__["default"] = (".math-input-component {\n  border: 1px solid #ddd;\n  padding: 5px;\n  margin: 10px 0 10px 0;\n  border-radius: 5px;\n  background-color: #fff;\n  font-size: large; }\n  .math-input-component .ML__fieldcontainer__field {\n    height: 24px; }\n  .math-input-component .ML__virtual-keyboard-toggle {\n    z-index: 100; }\n  .math-input-component.disabled {\n    pointer-events: none;\n    border: 1px dashed; }\n  .math-input-component .ML__fieldcontainer__field {\n    height: 100% !important; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9ob21lL2dhdWRldC9QTC9wbF9mcm9udGVuZC9wcmVtaWVybGFuZ2FnZS9mcm9udGVuZC9jb21wb25lbnRzL3NyYy9hcHAvY29tcG9uZW50cy9tYXRoLWlucHV0L21hdGgtaW5wdXQuY29tcG9uZW50LnNjc3MiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7RUFDSSxzQkFBc0I7RUFDdEIsWUFBVztFQUNYLHFCQUFxQjtFQUNyQixrQkFBaUI7RUFDakIsc0JBQXNCO0VBQ3RCLGdCQUFnQixFQUFBO0VBTnBCO0lBU1EsWUFBWSxFQUFBO0VBVHBCO0lBYVEsWUFBWSxFQUFBO0VBYnBCO0lBaUJRLG9CQUFvQjtJQUNwQixrQkFBa0IsRUFBQTtFQWxCMUI7SUFxQlEsdUJBQXVCLEVBQUEiLCJmaWxlIjoic3JjL2FwcC9jb21wb25lbnRzL21hdGgtaW5wdXQvbWF0aC1pbnB1dC5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIi5tYXRoLWlucHV0LWNvbXBvbmVudCB7XG4gICAgYm9yZGVyOiAxcHggc29saWQgI2RkZDtcbiAgICBwYWRkaW5nOjVweDtcbiAgICBtYXJnaW46IDEwcHggMCAxMHB4IDA7XG4gICAgYm9yZGVyLXJhZGl1czo1cHg7XG4gICAgYmFja2dyb3VuZC1jb2xvcjogI2ZmZjtcbiAgICBmb250LXNpemU6IGxhcmdlO1xuXG4gICAgLk1MX19maWVsZGNvbnRhaW5lcl9fZmllbGQge1xuICAgICAgICBoZWlnaHQ6IDI0cHg7XG4gICAgfVxuXG4gICAgLk1MX192aXJ0dWFsLWtleWJvYXJkLXRvZ2dsZSB7XG4gICAgICAgIHotaW5kZXg6IDEwMDtcbiAgICB9XG5cbiAgICAmLmRpc2FibGVkIHtcbiAgICAgICAgcG9pbnRlci1ldmVudHM6IG5vbmU7XG4gICAgICAgIGJvcmRlcjogMXB4IGRhc2hlZDtcbiAgICB9XG4gICAgLk1MX19maWVsZGNvbnRhaW5lcl9fZmllbGQge1xuICAgICAgICBoZWlnaHQ6IDEwMCUgIWltcG9ydGFudDtcbiAgICB9XG59XG4iXX0= */");
 
 /***/ }),
 
@@ -3208,6 +3208,7 @@ __webpack_require__.r(__webpack_exports__);
 let MathInputComponent = class MathInputComponent extends _shared_models_abstract_component_model__WEBPACK_IMPORTED_MODULE_2__["AbstractComponent"] {
     constructor(changes) {
         super(changes);
+        this.listeners = [];
         this.properties = [
             { name: 'disabled', default: false },
             { name: 'value', default: '' },
@@ -3216,21 +3217,37 @@ let MathInputComponent = class MathInputComponent extends _shared_models_abstrac
     }
     set config(value) {
         this.configuration = value;
+        if (this.math) {
+            this.math.$setConfig(value);
+        }
+        this.detectChanges();
     }
     get config() {
         return this.configuration || (this.configuration = {});
     }
     ngOnInit() {
-        let MQ = MathQuill.getInterface(2);
-        this.math = MQ.MathField(this.container.nativeElement, Object.assign({ handlers: {
-                edit: () => {
-                    this.value = this.math.latex();
-                }
-            }, charsThatBreakOutOfSupSub: '+-=<>', autoCommands: 'pi theta sqrt sum infty infin emptyset', autoOperatorNames: 'sin cos tan ln exp cup cap' }, (this.config || {})));
+        this.math = MathLive.makeMathField(this.container.nativeElement, Object.assign({ onContentDidChange: (field) => {
+                this.value = field.$latex();
+            }, virtualKeyboardTheme: 'material', smartFence: false, smartSuperscript: true, virtualKeyboardMode: 'manual', virtualKeyboards: 'all' }, (this.config || {})));
+        const { textarea } = this.math;
+        const onBlur = () => this.math.$perform('hideVirtualKeyboard');
+        textarea.addEventListener('blur', onBlur, false);
+        this.listeners.push(() => {
+            textarea.removeEventListener('blur', onBlur, false);
+        });
+        const element = this.math.$el();
+        const toggle = element.querySelector('.ML__virtual-keyboard-toggle');
+        const onFocus = () => textarea.focus();
+        toggle.addEventListener('click', onFocus, false);
+        this.listeners.push(() => {
+            toggle.removeEventListener('click', onFocus, false);
+        });
     }
     ngOnDestroy() {
+        this.listeners.forEach(l => l());
     }
     onRender() {
+        this.math.$insert(this.value || '', '{format: "latex"}');
     }
 };
 MathInputComponent.ctorParameters = () => [
