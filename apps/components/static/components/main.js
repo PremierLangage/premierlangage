@@ -165,7 +165,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<div #container class=\"math-input-quill-component\" [class.disabled]=\"disabled\"></div>\n<ng-container *ngIf=\"debug\">\n    <pre class=\"debug\"  [innerHTML]=\"serialize() | json\"></pre>\n</ng-container>\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<div #container class=\"math-input-quill-component\"></div>\n<ng-container *ngIf=\"debug\">\n    <pre class=\"debug\"  [innerHTML]=\"serialize() | json\"></pre>\n</ng-container>\n");
 
 /***/ }),
 
@@ -3107,6 +3107,10 @@ let MathInputQuillComponent = class MathInputQuillComponent extends _shared_mode
     }
     set config(value) {
         this.configuration = value;
+        if (this.math) {
+            this.math.config(value);
+        }
+        this.detectChanges();
     }
     get config() {
         return this.configuration || (this.configuration = {});
@@ -3117,11 +3121,18 @@ let MathInputQuillComponent = class MathInputQuillComponent extends _shared_mode
                 edit: () => {
                     this.value = this.math.latex();
                 }
-            }, charsThatBreakOutOfSupSub: '+-=<>', autoCommands: 'pi theta sqrt sum infty infin emptyset', autoOperatorNames: 'sin cos tan ln exp cup cap' }, (this.config || {})));
+            }, substituteTextarea: () => {
+                let textarea = document.createElement("textarea");
+                textarea.setAttribute("autocorrect", "off");
+                return textarea;
+            } }, (this.config || {})));
     }
     ngOnDestroy() {
     }
     onRender() {
+        if (this.disabled) {
+            this.container.nativeElement.setAttribute("disabled", "disabled");
+        }
     }
 };
 MathInputQuillComponent.ctorParameters = () => [
@@ -3162,8 +3173,8 @@ class MathInputQuillComponentDefinition {
         this.icon = 'math-input.svg';
         this.selector = 'c-math-input-quill';
         this.link = '/components/math-input-quill';
-        this.description = `Math inputs provides a way for users to enter mathematical expressions. This version uses MathQuill instead of MathLive.`;
-        this.usages = [{ label: 'Example', path: 'playground/math-input.pl' }];
+        this.description = `Math inputs provides a way for users to enter mathematical expressions. This version uses MathQuill instead of MathLive. Check out documentation for possibles settings at http://docs.mathquill.com/en/latest/Config/`;
+        this.usages = [{ label: 'Example', path: 'playground/math-input-quill.pl' }];
         this.properties = [
             { name: 'disabled', default: false, type: 'boolean', description: 'disabled state of the component' },
             { name: 'value', default: '', type: 'string', description: 'The typed text in latex format' },
