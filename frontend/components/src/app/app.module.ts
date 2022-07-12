@@ -46,6 +46,7 @@ import { SortListComponent, SortListComponentDefinition } from './components/sor
 import { TextSelectComponent, TextSelectComponentDefinition } from './components/text-select/text-select.component';
 import { HintComponent, HintComponentDefinition } from './components/hint/hint.component';
 import { CountDownComponent, CountDownComponentDefinition } from './components/countdown/countdown.component';
+import { MathInputQuillComponent, MathInputQuillComponentDefinition } from './components/math-input-quill/math-input-quill.component';
 
 
 // DOC
@@ -80,6 +81,7 @@ import { CssDocComponent } from './docs/css-doc/css-doc.component';
     RadioGroupComponent,
     SortListComponent,
     TextSelectComponent,
+    MathInputQuillComponent,
 
     DocsComponent,
     IntroComponent,
@@ -129,6 +131,7 @@ import { CssDocComponent } from './docs/css-doc/css-doc.component';
     RadioGroupComponent,
     SortListComponent,
     TextSelectComponent,
+    MathInputQuillComponent,
   ],
   providers: [
     { provide: COMPONENT_DEFINITIONS, multi: true, useClass: AutomatonViewerComponentDefinition },
@@ -147,6 +150,7 @@ import { CssDocComponent } from './docs/css-doc/css-doc.component';
     { provide: COMPONENT_DEFINITIONS, multi: true, useClass: RadioGroupComponentDefinition },
     { provide: COMPONENT_DEFINITIONS, multi: true, useClass: SortListComponentDefinition },
     { provide: COMPONENT_DEFINITIONS, multi: true, useClass: TextSelectComponentDefinition },
+    { provide: COMPONENT_DEFINITIONS, multi: true, useClass: MathInputQuillComponentDefinition },
   ],
 })
 export class AppModule {

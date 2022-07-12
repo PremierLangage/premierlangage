@@ -2,13 +2,8 @@
 #  Created: 2017-06-29
 #  Last Modified: 2017-06-29
 
-@ ~/grader/java.py [grader.py]
-@ ~/builder/before.py [builder.py]
-@ ~/utils/sandboxio.py
-
+type=direct
 title=<h1 style="color:pink">Pas de Titre </h1>
-
-text= L'empereur
 
 good==
 Napoleon, Oui c'est ca
