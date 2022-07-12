@@ -38,6 +38,7 @@ SELECTORS = {
     "MatchList":       "c-match-list",
     "MathDrawer":      "c-math-drawer",
     "MathInput":       "c-math-input",
+    "MathInputQuill":  "c-math-input-quill",
     "MathMatrix":      "c-math-matrix",
     "RadioGroup":      "c-radio-group",
     "SortList":        "c-sort-list",
@@ -301,6 +302,14 @@ class MathInput(Component):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.selector = 'c-math-input'
+
+
+
+class MathInputQuill(Component):
+    
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.selector = 'c-math-input-quill'
 
 
 
