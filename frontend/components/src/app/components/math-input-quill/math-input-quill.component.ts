@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ViewEncapsulation, OnDestroy, ChangeDetectorR
 import { Property, AbstractComponent } from '../../shared/models/abstract-component.model';
 import { ComponentDefinition } from 'src/app/shared/models/definition.model';
 
-declare let MathQuill: any;
+declare const MathQuill: any;
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -33,6 +33,10 @@ export class MathInputQuillComponent extends AbstractComponent implements OnInit
     @Input()
     set config(value: any) {
         this.configuration = value;
+        if (this.math) {
+            this.math.config(value);
+        }
+        this.detectChanges();
     }
 
     get config() {
@@ -52,17 +56,24 @@ export class MathInputQuillComponent extends AbstractComponent implements OnInit
                     this.value = this.math.latex()
                 }
             },
-            charsThatBreakOutOfSupSub: '+-=<>',
-            autoCommands: 'pi theta sqrt sum infty infin emptyset',
-            autoOperatorNames: 'sin cos tan ln exp cup cap',
+            substituteTextarea: () => {
+                let textarea = document.createElement("textarea");
+                textarea.setAttribute("autocorrect", "off");
+                return textarea;
+            },
             ...(this.config || {})
         });
+
+        
     }
 
     ngOnDestroy(): void {
     }
 
     onRender(): void {
+        if (this.disabled) {
+            this.container.nativeElement.setAttribute("disabled", "disabled");
+        }
     }
 
 }
@@ -73,8 +84,8 @@ export class MathInputQuillComponentDefinition implements ComponentDefinition {
     icon = 'math-input.svg';
     selector = 'c-math-input-quill';
     link = '/components/math-input-quill';
-    description = `Math inputs provides a way for users to enter mathematical expressions. This version uses MathQuill instead of MathLive.`;
-    usages = [{ label: 'Example', path: 'playground/math-input.pl' }];
+    description = `Math inputs provides a way for users to enter mathematical expressions. This version uses MathQuill instead of MathLive. Check out documentation for possibles settings at http://docs.mathquill.com/en/latest/Config/`;
+    usages = [{ label: 'Example', path: 'playground/math-input-quill.pl' }];
     properties = [
         { name: 'disabled', default: false, type: 'boolean', description: 'disabled state of the component' },
         { name: 'value', default: '', type: 'string', description: 'The typed text in latex format' },
