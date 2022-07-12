@@ -49,7 +49,7 @@ if __name__ == "__main__":
     else:
         print(missing_evaluator_stderr, file=sys.stderr)
         sys.exit(1)
-
+    
     if 'grade' not in dic:
         print(missing_grade_stderr, file=sys.stderr)
         sys.exit(1)

@@ -27,9 +27,9 @@ if __name__ == "__main__":
 
     if 'before' in dic:
         glob = {}
-        #dic['StopBeforeExec'] = StopBeforeExec
-        #exec(add_try_clause(dic['before'], StopBeforeExec), dic)
-        exec(dic['before'],dic)
+        dic['StopBeforeExec'] = StopBeforeExec
+        print(add_try_clause(dic['before'], StopBeforeExec), file=sys.stderr)
+        exec(add_try_clause(dic['before'], StopBeforeExec), dic)
         exec("", glob)
         for key in glob:
             if key in dic and dic[key] == glob[key]:

@@ -4,16 +4,14 @@ import sys, json, jsonpickle
 from components import Component
 
 def get_answers():
-    """Return a dictionnary containing all answers defined in the components."""
+    """Return a dictionnary containing every answer."""
     with open(sys.argv[2], "r") as f:
         answers = json.load(f)
     return answers
 
 
 def get_context():
-    """Return the dictionnary containing the context of the exercise.
-    every things in the exercice.
-    """
+    """Return the dictionnary containing the context of the exercise."""
     with open(sys.argv[1], "r") as f:
         context = json.load(f)
     Component.sync_context(context)
@@ -37,9 +35,6 @@ def output(grade, feedback, context=None):
     
     sys.exit(0)
 
-def buildsave(filename,dic):
-    with open(filename, "w+") as f:
-        f.write(jsonpickle.encode(dic, unpicklable=False))
 
 
 
