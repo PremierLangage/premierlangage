@@ -3104,6 +3104,9 @@ let MathInputQuillComponent = class MathInputQuillComponent extends _shared_mode
             { name: 'value', default: '' },
             { name: 'config', default: {} },
         ];
+        // Creating textarea for the MathQuill component
+        this.textarea = document.createElement("textarea");
+        this.textarea.setAttribute("autocorrect", "off");
     }
     set config(value) {
         this.configuration = value;
@@ -3122,16 +3125,14 @@ let MathInputQuillComponent = class MathInputQuillComponent extends _shared_mode
                     this.value = this.math.latex();
                 }
             }, substituteTextarea: () => {
-                let textarea = document.createElement("textarea");
-                textarea.setAttribute("autocorrect", "off");
-                return textarea;
+                return this.textarea;
             } }, (this.config || {})));
     }
     ngOnDestroy() {
     }
     onRender() {
         if (this.disabled) {
-            this.container.nativeElement.setAttribute("disabled", "disabled");
+            this.textarea.setAttribute("disabled", "disabled");
         }
     }
 };
