@@ -14,6 +14,7 @@ declare const MathQuill: any;
 export class MathInputQuillComponent extends AbstractComponent implements OnInit, OnDestroy {
     private math: any;
     private configuration: {};
+    private textarea: HTMLElement;
 
     readonly properties: Property[] = [
         { name: 'disabled', default: false },
@@ -45,9 +46,13 @@ export class MathInputQuillComponent extends AbstractComponent implements OnInit
 
     constructor(changes: ChangeDetectorRef) {
         super(changes);
+        // Creating textarea for the MathQuill component
+        this.textarea = document.createElement("textarea");
+        this.textarea.setAttribute("autocorrect", "off");
     }
 
     ngOnInit(): void {
+
         let MQ = MathQuill.getInterface(2);
         
         this.math = MQ.MathField(this.container.nativeElement, {
@@ -57,9 +62,7 @@ export class MathInputQuillComponent extends AbstractComponent implements OnInit
                 }
             },
             substituteTextarea: () => {
-                let textarea = document.createElement("textarea");
-                textarea.setAttribute("autocorrect", "off");
-                return textarea;
+                return this.textarea;
             },
             ...(this.config || {})
         });
@@ -72,7 +75,7 @@ export class MathInputQuillComponent extends AbstractComponent implements OnInit
 
     onRender(): void {
         if (this.disabled) {
-            this.container.nativeElement.setAttribute("disabled", "disabled");
+            this.textarea.setAttribute("disabled", "disabled");
         }
     }
 
