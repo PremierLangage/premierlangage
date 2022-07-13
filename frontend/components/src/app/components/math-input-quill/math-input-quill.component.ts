@@ -2,8 +2,6 @@ import { Component, OnInit, Input, ViewEncapsulation, OnDestroy, ChangeDetectorR
 import { Property, AbstractComponent } from '../../shared/models/abstract-component.model';
 import { ComponentDefinition } from 'src/app/shared/models/definition.model';
 
-declare const MathQuill: any;
-
 @Component({
     // tslint:disable-next-line: component-selector
   selector: 'math-input-quill-component',

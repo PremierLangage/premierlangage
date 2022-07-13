@@ -2,6 +2,10 @@ declare module MathLive {
     export function makeMathField(id: string | HTMLElement, options?: any): any;
 }
 
+declare module MathQuill {
+    export function getInterface(id: number): any;
+}
+
 declare module noam {
 
     export const fsm: {
