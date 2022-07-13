@@ -3,6 +3,13 @@ grader  =@ /grader/evaluator.py
 builder =@ /builder/before.py
 
 mathinput =: MathInputQuill
+mathinput.config %=
+{
+    "charsThatBreakOutOfSupSub": "+-=<>",
+    "autoCommands": "pi theta sum sqrt infty infin emptyset",
+    "autoOperatorNames": "sin cos tan ln exp cup cap"
+}
+==
 
 before==
 ==

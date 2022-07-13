@@ -85,7 +85,7 @@ export class MathInputQuillComponentDefinition implements ComponentDefinition {
     icon = 'math-input.svg';
     selector = 'c-math-input-quill';
     link = '/components/math-input-quill';
-    description = `Math inputs provides a way for users to enter mathematical expressions. This version uses MathQuill instead of MathLive. Check out documentation for possibles settings at http://docs.mathquill.com/en/latest/Config/`;
+    description = `Math inputs provides a way for users to enter mathematical expressions. This newer version uses MathQuill instead of MathLive. The old one is left for legacy compatibility`;
     usages = [{ label: 'Example', path: 'playground/math-input-quill.pl' }];
     properties = [
         { name: 'disabled', default: false, type: 'boolean', description: 'disabled state of the component' },
