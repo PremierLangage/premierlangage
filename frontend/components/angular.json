@@ -36,11 +36,11 @@
             ],
             "scripts": [
               "src/assets/scripts/components.js",
+              "node_modules/jquery/dist/jquery.js",
+              "node_modules/node-mathquill/build/mathquill.js",
               "node_modules/document-register-element/build/document-register-element.js",
               "node_modules/jsplumb/dist/js/jsplumb.min.js",
               "node_modules/jsxgraph/distrib/jsxgraphcore.js",
-              "node_modules/jquery/dist/jquery.js",
-              "node_modules/node-mathquill/build/mathquill.js",
               "node_modules/mathlive/dist/mathlive.js"
             ]
           },

@@ -1,0 +1,32 @@
+<section>
+<h3>Behavior</h3>
+<p>
+    The behavior of the component depend on the value of the property <code>type</code>:
+    <ul>
+        <li>
+            <code>number</code>:
+            <p>
+                The text entered by a student is converted to an int or float
+                before the grader is called. If the input box is empty then the value will be set to 0.
+            </p>
+            <p class="info">
+               In this mode the component ensures that the student cannot enter a non numeric value.
+            </p>
+            <b>Important:</b>
+            <p>If a student enter the number 0.0 it will be converted to 0.</p>
+        </li>
+        <li>
+            <code>text</code>:
+            <p>
+                In this mode the logic of converting and handling the value entered
+                by a student is delegated to the grader. You must cast the text to an int or a float
+                and handle the case where the input box is empty by yourself.
+            </p>
+        </li>
+        <li>
+            <code>multiline</code>: Behaves like for when the property <code>type</code> is defined to <code>text</code>.
+        </li>
+    </ul>
+
+</p>
+</section>

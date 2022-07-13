@@ -7,4 +7,4 @@ cat > ../../apps/editor/templates/editor/statics.html << ENDOFFILE
 <script src="{{ static('/editor/runtime-es5.js') }}" nomodule defer></script>
 <script src="{{ static('/editor/main-es5.js') }}" nomodule defer></script>
 ENDOFFILE
-sudo npm run build:prod
+npm run build:prod

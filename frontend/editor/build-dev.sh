@@ -5,4 +5,4 @@ cat > ../../apps/editor/templates/editor/statics.html << ENDOFFILE
 <script src="{{ static('/editor/vendor.js') }}" type="module"></script>
 <script src="{{ static('/editor/main.js') }}" type="module"></script>
 ENDOFFILE
-sudo npm run build:watch
+npm run build:watch
