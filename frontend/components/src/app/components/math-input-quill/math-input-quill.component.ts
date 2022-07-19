@@ -45,18 +45,18 @@ export class MathInputQuillComponent extends AbstractComponent implements OnInit
     constructor(changes: ChangeDetectorRef) {
         super(changes);
         // Creating textarea for the MathQuill component
-        this.textarea = document.createElement("textarea");
-        this.textarea.setAttribute("autocorrect", "off");
+        this.textarea = document.createElement('textarea');
+        this.textarea.setAttribute('autocorrect', 'off');
     }
 
     ngOnInit(): void {
 
-        let MQ = MathQuill.getInterface(2);
-        
+        const MQ = MathQuill.getInterface(2);
+
         this.math = MQ.MathField(this.container.nativeElement, {
             handlers: {
                 edit: () => {
-                    this.value = this.math.latex()
+                    this.value = this.math.latex();
                 }
             },
             substituteTextarea: () => {
@@ -65,7 +65,7 @@ export class MathInputQuillComponent extends AbstractComponent implements OnInit
             ...(this.config || {})
         });
 
-        
+
     }
 
     ngOnDestroy(): void {
@@ -73,7 +73,7 @@ export class MathInputQuillComponent extends AbstractComponent implements OnInit
 
     onRender(): void {
         if (this.disabled) {
-            this.textarea.setAttribute("disabled", "disabled");
+            this.textarea.setAttribute('disabled', 'disabled');
         }
     }
 
