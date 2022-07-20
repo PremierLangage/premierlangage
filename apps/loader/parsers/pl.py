@@ -10,7 +10,7 @@ import os
 import re
 import uuid
 from os.path import basename, dirname, join
-
+import ast
 from django.conf import settings
 
 from components.components import SELECTORS
@@ -190,7 +190,10 @@ class Parser:
         op = match.group('operator')
         
         if op == '=':
-            self.dic_add_key(key, value)
+            try:
+                self.dic_add_key(key, ast.literal_eval(value))
+            except :
+                self.dic_add_key(key, value)
         elif op == '%':
             try:
                 self.dic_add_key(key, json.loads(value))

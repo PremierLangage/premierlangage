@@ -43,6 +43,7 @@ class Parser(ParserPL):
                                str(e))
         
         self.dic['__pl'].append({
+            'id': 'pl'+str(len(self.dic['__pl'])),
             'path':           path,
             'line':           line,
             'lineno':         self.lineno,

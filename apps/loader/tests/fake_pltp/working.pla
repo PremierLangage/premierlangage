@@ -1,6 +1,6 @@
 title=Random pltp
 
-@ working.pl
+@ /fake.pl
 
 type = pltp
 
@@ -8,3 +8,9 @@ introduction==
 Des tests
 ==
 
+zorglub@@
+full.pl
+image.pl
+==
+
+@ full.pl

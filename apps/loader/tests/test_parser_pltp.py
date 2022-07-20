@@ -55,7 +55,7 @@ class PlParserTestCase(TestCase):
     def test_parse(self):
         dic, _ = pltp.Parser(self.dir, "full.pltp").parse()
         self.assertIn(
-            {'line': '@ /fake.pl\n', 'directory_name': 'dir2', 'lineno': 33, 'path': 'fake.pl'},
+            {'id':'pl0', 'line': '@ /fake.pl\n', 'directory_name': 'dir2', 'lineno': 33, 'path': 'fake.pl'},
             dic["__pl"])
     
     

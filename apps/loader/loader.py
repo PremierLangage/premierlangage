@@ -68,7 +68,7 @@ def load_pl(directory, rel_path):
 def load_pltp(directory, rel_path):
     pltp, warnings = load_pla(directory, rel_path, type="pltp")
     if not pltp.activity_data["__pl"]:
-        raise MissingPL("Your PLTP must include at least one PL")
+        raise MissingPL("Your activity must include at least one PL")
     return pltp, warnings
 
 
@@ -85,15 +85,6 @@ def load_pla(directory, rel_path, type=None):
     
     name = splitext(basename(rel_path))[0]
     
-    """sha1 = hashlib.sha1()
-    sha1.update((directory.name + ':' + rel_path + str(time.time())).encode('utf-8'))
-    sha1 = sha1.hexdigest()
-    
-    try:
-        Activity.objects.get(sha1=sha1).delete()  # Reloading the activity if it already exists
-    except Activity.DoesNotExist:  # If the activity does not exist, keep going
-        pass"""
-    
     dic, warnings = parse_file(directory, rel_path)
     pl_list = list()
     for item in dic['__pl']:
@@ -101,11 +92,19 @@ def load_pla(directory, rel_path, type=None):
         pl, pl_warnings = load_pl(pl_directory, item['path'])
         warnings += pl_warnings
         pl_list.append(pl)
+    if '__pa' in dic:
+        for item in dic['__pa']:
+            pl_directory = Directory.objects.get(name=item['directory_name'])
+            pl, pl_warnings = load_pl(pl_directory, item['path'])
+            warnings += pl_warnings
+            pl_list.append(pl)
+
+
     
     for pl in pl_list:
         pl.save()
         logger.info("PL '" + str(pl.id) + " (" + pl.name + ")' has been added to the database")
-    
+        
     activity_type = type if type else dic["type"]
     dic["__reload_path"] = os.path.join(directory.name, rel_path)
     pla = Activity.objects.create(name=name, activity_type=activity_type, activity_data=dic)

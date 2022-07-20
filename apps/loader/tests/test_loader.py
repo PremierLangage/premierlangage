@@ -69,7 +69,13 @@ class LoaderTestCase(ActivityBaseTestMixin):
             print(res[1])
             raise
     
-    
+    def test_load_pla_file(self):
+            res = loader.load_file(self.dir, "working.pla")
+            self.assertEqual(type(res[0]), Activity)
+            self.assertEqual(res[1], []) # no warnings
+            activity = res[0]
+            self.assertEqual(len(activity.indexed_pl()),3)
+
     @override_settings(DEBUG=True)
     @patch('loader.parser.logger')
     def test_load_file_debug(self, mock_logger):
