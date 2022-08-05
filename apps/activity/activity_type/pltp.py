@@ -1,3 +1,5 @@
+from operator import truediv
+from traceback import print_tb
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render, reverse
@@ -10,66 +12,71 @@ from playexo.models import Answer
 
 from shared.graphic_utils import graph_percent
 
+from activity.activity_type.survey_utils import get_possible_answers, get_answers, get_students, survey_dashboard
 
 class Pltp(AbstractActivityType):
-
 
     def student_dashboard(self, request, activity, session):
         """
         This method is called when the dashboard of an activity is requested for a student.
         :return: A rendered template of the student dashboard
         """
-        return PermissionDenied()
-    
-    
+        if activity.activity_data['student_dashboard'] == 'True':
+            if activity.name.endswith('_survey'):
+                return survey_dashboard(request,activity)
+        else:
+            return PermissionDenied()
+
     def teacher_dashboard(self, request, activity, session):
         """
         This method is called when the dashboard of an activity is requested for a teacher.
         :return: A rendered template of the teacher dashboard
         """
-        exos = []
-        for pl in activity.indexed_pl():
-            exos.append({'name': pl.json['title'], 'sum_grades': 0})
-            for state in list(State)[0:-1]:
-                exos[-1][state] = 0
+        if activity.name.endswith('_survey'):
+            return survey_dashboard(request,activity)
+        else :
+            exos = []
+            for pl in activity.indexed_pl():
+                exos.append({'name': pl.json['title'], 'sum_grades': 0})
+                for state in list(State)[0:-1]:
+                    exos[-1][state] = 0
 
-        student = list()
-        for user in activity.student.all():
-            tp = list()
-            for count, pl in enumerate(activity.indexed_pl()):
-                ans_grade = Answer.highest_grade(pl, user)
-                state = State.by_grade(ans_grade.grade if ans_grade else ...)
-                tp.append({
-                    'name':  pl.json['title'],
-                    'state': state
+            student = list()
+            for user in activity.student.all():
+                tp = list()
+                for count, pl in enumerate(activity.indexed_pl()):
+                    ans_grade = Answer.highest_grade(pl, user)
+                    state = State.by_grade(ans_grade.grade if ans_grade else ...)
+                    tp.append({
+                        'name':  pl.json['title'],
+                        'state': state
+                    })
+                    if state != State.ERROR:
+                        exos[count][state] += 1
+                    if ans_grade and ans_grade.grade is not None:
+                        exos[count]['sum_grades'] += ans_grade.grade
+                student.append({
+                    'lastname': user.last_name,
+                    'object':   user,
+                    'id':       user.id,
+                    'question': tp,
                 })
-                if state != State.ERROR:
-                    exos[count][state] += 1
-                if ans_grade and ans_grade.grade is not None:
-                    exos[count]['sum_grades'] += ans_grade.grade
-            student.append({
-                'lastname': user.last_name,
-                'object':   user,
-                'id':       user.id,
-                'question': tp,
-            })
 
-        for exo in exos:
-            exo['mean'] = exo['sum_grades'] / len(student) if student else 0
-            exo.pop('sum_grades')
-        # Sort list by student's name
-        student = sorted(student, key=lambda k: k['lastname'])
-        
-        return render(request, 'activity/activity_type/pltp/teacher_dashboard.html', {
-            'state':         [i for i in State if i != State.ERROR],
-            'course_name':   activity.parent.name,
-            'activity_name': activity.name,
-            'student':       student,
-            'range_tp':      range(len(activity.indexed_pl())),
-            'course_id':     activity.parent.id,
-            'exos':          exos,
-        })
-    
+            for exo in exos:
+                exo['mean'] = exo['sum_grades'] / len(student) if student else 0
+                exo.pop('sum_grades')
+            # Sort list by student's name
+            student = sorted(student, key=lambda k: k['lastname'])
+            
+            return render(request, 'activity/activity_type/pltp/teacher_dashboard.html', {
+                'state':         [i for i in State if i != State.ERROR],
+                'course_name':   activity.parent.name,
+                'activity_name': activity.name,
+                'student':       student,
+                'range_tp':      range(len(activity.indexed_pl())),
+                'course_id':     activity.parent.id,
+                'exos':          exos,
+            })
     
     def small(self, request, activity):
         """
@@ -86,15 +93,21 @@ class Pltp(AbstractActivityType):
 
         progr, quality = user_progression(request.user, activity)
 
+        # Enables the student dashboard
+        student_dashboard = False
+        if 'student_dashboard' in activity.activity_data and activity.activity_data['student_dashboard'] == 'True' and request.user in activity.student.all():
+            student_dashboard = True
+
         return get_template("activity/activity_type/pltp/small.html").render({
-            'title':      activity.activity_data['title'],
-            'pl':         pl,
-            'id':         activity.id,
-            'open':       activity.open,
-            'instructor': request.user in activity.teacher.all(),
-            'nb_exos':    len(pl),
-            'progr':      graph_percent(progr),
-            'quality':    graph_percent(quality),
+            'title':              activity.activity_data['title'],
+            'pl':                 pl,
+            'id':                 activity.id,
+            'open':               activity.open,
+            'instructor':         request.user in activity.teacher.all(),
+            'nb_exos':            len(pl),
+            'progr':              graph_percent(progr),
+            'quality':            graph_percent(quality),
+            'student_dashboard':  student_dashboard,
         }, request)
     
     
@@ -260,24 +273,43 @@ class Pltp(AbstractActivityType):
         pl = activity.pl.all()
         if not user or user not in activity.teacher.all():
             return HttpResponseForbidden("Not authorized")
-        
-        csv = "username,firstname,lastname,email," + ''.join(
-            [str(i + 1) + ": " + p.name + "," for i, p in enumerate(pl)]) + "total\n"
-        for u in users:
-            grades = []
+
+        if activity.name.endswith('_survey'):
+            if activity.activity_data['anonymous_vote'] == 'False':
+                csv = "username,firstname,lastname,email," + ''.join([p[0] + "," for p in get_possible_answers(activity).values()]) + '\n'
+                for student in get_students(activity):
+                    results = []
+                    for item in student['question']:
+                        results.append('/' if item['answer'] is None else item['answer'])
+                    u = student['object']
+                    csv += ("%s,%s,%s,%s," % (u.username, u.first_name, u.last_name, u.email) + ''.join([str(i) + "," for i in results]) + '\n')
+            else:
+                csv = ''
+                answers = get_answers(activity)
+                for cid, p in get_possible_answers(activity).items():
+                    csv += p[0] + ', ' + ', '.join(p[1]) + '\n'
+                    csv += '/, ' + ', '.join(map(str, answers[cid].values())) + '\n'         
             
-            for i in pl:
-                answer = Answer.highest_grade(i, u)
-                grades.append(
-                    0 if answer is None else max(answer.grade,
-                                                 0) if answer.grade is not None else 0)
+            response = HttpResponse(csv, content_type="text/csv")
+            response['Content-Disposition'] = 'attachment;filename=reponses.csv'
+        else:
+            csv = "username,firstname,lastname,email," + ''.join(
+                [str(i + 1) + ": " + p.name + "," for i, p in enumerate(pl)]) + "total\n"
+            for u in users:
+                grades = []
+                
+                for i in pl:
+                    answer = Answer.highest_grade(i, u)
+                    grades.append(
+                        0 if answer is None else max(answer.grade,
+                                                    0) if answer.grade is not None else 0)
+                
+                csv += ("%s,%s,%s,%s," % (u.username, u.first_name, u.last_name, u.email)
+                        + ''.join([str(i) + "," for i in grades])
+                        + str(sum(grades)) + "\n")
             
-            csv += ("%s,%s,%s,%s," % (u.username, u.first_name, u.last_name, u.email)
-                    + ''.join([str(i) + "," for i in grades])
-                    + str(sum(grades)) + "\n")
-        
-        response = HttpResponse(csv, content_type="text/csv")
-        response['Content-Disposition'] = 'attachment;filename=notes.csv'
+            response = HttpResponse(csv, content_type="text/csv")
+            response['Content-Disposition'] = 'attachment;filename=notes.csv'
         return response
 
 
