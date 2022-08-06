@@ -7,7 +7,7 @@ from playexo.models import Answer
 def get_possible_answers(activity):
     """
     This method is used to gather all the possible choices for each question (pl).
-    :return: A dictionary with all the choices for each question
+    it returns a dictionary with all the choices for each question.
     """
     possible_answers = dict()
     for pl in activity.indexed_pl():
@@ -18,8 +18,8 @@ def get_possible_answers(activity):
 
 def get_answers(activity):
     """
-    This method is used to gather the number of times each answer was chosen. It enables anonymous voting
-    :return: A dictionary with the number of answers for each choice
+    This method is used to gather the number of times each answer was chosen. It enables anonymous voting.
+    it returns a dictionary with the number of answers for each choice
     """
     answers = dict()
     for pl in activity.indexed_pl():
@@ -52,9 +52,9 @@ def get_students(activity):
                     cid = question[1]['cid']
                     answer = question[1]['selection']
             tp.append({
-                'name':    pl.json['title'],
-                'cid' :    cid,
-                'answer':  answer
+                'name':   pl.json['title'],
+                'cid':    cid,
+                'answer': answer
             })
         students.append({
             'lastname': user.last_name,
@@ -84,7 +84,7 @@ def survey_dashboard(request, activity):
 
     return render(request, 'activity/activity_type/pltp/survey_dashboard.html', {
         'possible_answers': possible_answers, 
-        'answers' :         answers,
+        'answers':          answers,
         'course_name':      activity.parent.name,
         'activity_name':    activity.name,
         'students':         get_students(activity),

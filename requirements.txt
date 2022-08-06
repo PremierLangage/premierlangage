@@ -58,7 +58,7 @@ pandas==1.4.3
 Pillow==9.1.1
 pluggy==1.0.0
 ply==3.11
-plotly_express=0.4.1
+plotly_express==0.4.1
 prompt-toolkit==3.0.29
 psycopg2-binary==2.8.6
 py==1.11.0
