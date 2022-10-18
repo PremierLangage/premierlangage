@@ -21,7 +21,7 @@ django-celery-results==2.3.1
 -e git+https://github.com/qcoumes/django-enumfields.git@6aa094ad1b6057b740fbf855ef50cf135e460ed9#egg=django_enumfields
 django-etc==1.3.1
 django-extensions==3.1.5
-django-hitcount==1.3.5
+django-hitcount==1.3.1
 django-http-method==1.2.1
 django-jinja==2.6.0
 -e git+https://github.com/qcoumes/django-markdown.git@f638a158f54e576b6c4d5357f45d882ad1504312#egg=django_markdown
