@@ -54,6 +54,10 @@
             <ion-button href="{{ url('activity:movenext', id) }}" data-toggle="tooltip" data-placement="top" title="Descendre">
                 <ion-icon slot="icon-only" name="arrow-round-down"></ion-icon>
             </ion-button>
+            {% elif student_dashboard %}
+            <ion-button  href="/activity/dashboard/{{ id }}/" data-toggle="tooltip" data-placement="top" title="Statistiques">
+              <ion-icon slot="icon-only" name="stats"></ion-icon>
+            </ion-button>
             {% endif %}
         </ion-buttons>
     </ion-card-content>
