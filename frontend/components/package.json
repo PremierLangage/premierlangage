@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build:dev": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng build --output-path=../../static/components/static/components --watch",
+    "build:dev": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng build --output-path=../../static/components --watch",
     "build:prod": "node --max_old_space_size=4096 ./node_modules/@angular/cli/bin/ng build --prod && node post-build.js",
     "test": "ng test",
     "lint": "ng lint",
