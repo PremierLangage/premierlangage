@@ -43,7 +43,8 @@ SELECTORS = {
     "RadioGroup":      "c-radio-group",
     "SortList":        "c-sort-list",
     "Text":            "c-text",
-    "TransfertList":   "c-transfert-list"
+    "TransfertList":   "c-transfert-list",
+    "EvalGrid":        "c-eval-grid"
 }
 
 
@@ -342,3 +343,11 @@ class TransfertList(Component):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.selector = 'c-transfert-list'
+
+
+
+class EvalGrid(Component):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.selector = 'c-eval-grid'
