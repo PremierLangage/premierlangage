@@ -47,6 +47,7 @@ import { TextSelectComponent, TextSelectComponentDefinition } from './components
 import { HintComponent, HintComponentDefinition } from './components/hint/hint.component';
 import { CountDownComponent, CountDownComponentDefinition } from './components/countdown/countdown.component';
 import { MathInputQuillComponent, MathInputQuillComponentDefinition } from './components/math-input-quill/math-input-quill.component';
+import { EvalGridComponent, EvalGridComponentDefinition } from './components/eval-grid/eval-grid.component';
 
 
 // DOC
@@ -82,6 +83,7 @@ import { CssDocComponent } from './docs/css-doc/css-doc.component';
     SortListComponent,
     TextSelectComponent,
     MathInputQuillComponent,
+    EvalGridComponent,
 
     DocsComponent,
     IntroComponent,
@@ -132,6 +134,7 @@ import { CssDocComponent } from './docs/css-doc/css-doc.component';
     SortListComponent,
     TextSelectComponent,
     MathInputQuillComponent,
+    EvalGridComponent
   ],
   providers: [
     { provide: COMPONENT_DEFINITIONS, multi: true, useClass: AutomatonViewerComponentDefinition },
@@ -151,6 +154,7 @@ import { CssDocComponent } from './docs/css-doc/css-doc.component';
     { provide: COMPONENT_DEFINITIONS, multi: true, useClass: SortListComponentDefinition },
     { provide: COMPONENT_DEFINITIONS, multi: true, useClass: TextSelectComponentDefinition },
     { provide: COMPONENT_DEFINITIONS, multi: true, useClass: MathInputQuillComponentDefinition },
+    { provide: COMPONENT_DEFINITIONS, multi: true, useClass: EvalGridComponentDefinition }
   ],
 })
 export class AppModule {
