@@ -9,7 +9,7 @@
 from enum import unique
 from functools import total_ordering
 
-from enumfields import Enum
+from shared.enumfields import Enum
 
 
 

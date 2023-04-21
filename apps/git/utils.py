@@ -1,7 +1,7 @@
 import os
 import subprocess
 
-import gitcmd
+from shared import gitcmd
 
 
 def exec_command(path, command):

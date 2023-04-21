@@ -6,7 +6,7 @@ import logging
 import os
 from os.path import basename, splitext
 
-import htmlprint
+from shared import htmlprint
 from django.conf import settings
 
 from activity.activity_type.utils import get_activity_type_class

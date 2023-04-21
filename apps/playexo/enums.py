@@ -1,6 +1,6 @@
 from enum import unique
 
-from enumfields import Enum
+from shared.enumfields import Enum
 
 
 
