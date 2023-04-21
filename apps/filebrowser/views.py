@@ -4,7 +4,7 @@ import shutil
 import uuid
 from wsgiref.util import FileWrapper
 
-import htmlprint
+from shared import htmlprint
 import requests
 from django.conf import settings
 from django.contrib import messages

@@ -4,7 +4,7 @@ from django.db import models
 from django.db.models import F
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from enumfields import EnumIntegerField
+from shared.enumfields import EnumIntegerField
 
 from lti_app.models import LTIModel
 from activity.models import Activity

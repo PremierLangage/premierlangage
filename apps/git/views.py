@@ -3,8 +3,8 @@ import os
 import re
 import shutil
 
-import gitcmd
-import htmlprint
+from shared import gitcmd
+from shared import htmlprint
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import (HttpResponse, HttpResponseBadRequest,

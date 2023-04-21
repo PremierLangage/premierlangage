@@ -4,7 +4,7 @@ import logging
 import traceback
 from django.http.request import HttpRequest
 
-import htmlprint
+from shared import htmlprint
 from activity.models import Activity
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied

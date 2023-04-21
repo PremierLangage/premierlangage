@@ -1,6 +1,6 @@
 import traceback
 
-import htmlprint
+from shared import htmlprint
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
