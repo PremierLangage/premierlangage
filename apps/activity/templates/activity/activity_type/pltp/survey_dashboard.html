@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block css %}
+<link rel="stylesheet" href="{{ static('activity/css/courses.css') }}"/>
+{% endblock %}
+{% block content %}
+<ion-card>
+    <ion-card-header>
+        <ion-card-title>{{course_name}}: {{activity_name}}</ion-card-title>
+    </ion-card-header>
+    {% if show_votes %}
+    <ion-card-content>
+        <h1>Résultats par élèves</h1>
+        <section>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Élève</th>
+                        <th colspan="100">Réponses</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td>
+                            <ion-chip color="primary" outline="true">
+                                <ion-icon name="contact"></ion-icon>
+                                <ion-label> {{ firstof(student.object.get_full_name(), student.object.username) }}</ion-label>
+                            </ion-chip>
+                        </td>
+                        {% for item in student.question %}
+                        <td>                  
+                            {{ possible_answers[item.cid][1][item.answer] }}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                </tbody>
+            </table>
+        </section>
+    </ion-card-content>
+    {% endif %}
+    <ion-card-content>
+        <h1>Histogrammes</h1>
+        <section>
+            <table>
+                <thead>
+                    <tr>
+                        <th width="33%">Exercice</th>
+                        <th width="66%">Histogramme</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for graph in graphs %}
+                    <tr>
+                        <td>
+                            <ion-chip color="primary" outline="true" data-subject="{{graph[0]}}" data-toggle="collapse" data-target="#graph{{ graph[0] }}">
+                                <ion-label> {{ graph[1] }}</ion-label>
+                            </ion-chip>
+                        </td>
+                        <td>
+                            <div class = "collapse" id = "graph{{ graph[0] }}">
+                                {{ graph[2]|safe }}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </ion-card-content>
+    <ion-card-content>
+        <h1>Résultats par exercices</h1>
+        <section>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Exercices</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for question, answer in answers.items() %}
+                    <tr>
+                        <th></th>
+                        {% for item in possible_answers[question][1] %}
+                            <th>{{ item }}</th>
+                        {% endfor %}
+                    </tr>
+                    <tr>                        
+                        <td>{{ possible_answers[question][0] }}</td>
+                        {% for item in answer.values() %}
+                        <td>{{ item }}</td>
+                        {% endfor %}
+                     </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </ion-card-content>
+</ion-card>
+{% endblock %}
