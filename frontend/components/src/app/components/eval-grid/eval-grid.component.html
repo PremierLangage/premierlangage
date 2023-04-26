@@ -1,4 +1,4 @@
-<mat-vertical-stepper [linear]="isLinear">
+<mat-vertical-stepper>
     <mat-step *ngFor="let item of _items; index as i">
         <ng-template matStepLabel>{{item.title}}</ng-template>
         <p>{{item.description}}</p>
