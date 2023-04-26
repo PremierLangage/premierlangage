@@ -36,6 +36,7 @@ class Pltp(AbstractActivityType):
         This method is called when the dashboard of an activity is requested for a teacher.
         :return: A rendered template of the teacher dashboard
         """
+        # Hook for survey dashboards
         if activity.name.endswith('_survey'):
             try:
                 return survey_dashboard(request, activity)
@@ -285,24 +286,33 @@ class Pltp(AbstractActivityType):
         if not user or user not in activity.teacher.all():
             return HttpResponseForbidden("Not authorized")
         
+        
         if activity.name.endswith('_survey'):
-            if activity.activity_data['anonymous_vote'] == 'False':
-                csv = "username,firstname,lastname,email," + ''.join([p[0] + "," for p in get_possible_answers(activity).values()]) + '\n'
-                for student in get_students(activity):
-                    results = []
-                    for item in student['question']:
-                        results.append('/' if item['answer'] is None else item['answer'])
-                    u = student['object']
-                    csv += ("%s,%s,%s,%s," % (u.username, u.first_name, u.last_name, u.email) + ''.join([str(i) + "," for i in results]) + '\n')
-            else:
-                csv = ''
-                answers = get_answers(activity)
-                for cid, p in get_possible_answers(activity).items():
-                    csv += p[0] + ', ' + ', '.join(p[1]) + '\n'
-                    csv += '/, ' + ', '.join(map(str, answers[cid].values())) + '\n' 
-            
-            response = HttpResponse(csv, content_type="text/csv")
-            response['Content-Disposition'] = 'attachment;filename=reponses.csv'
+            try:
+                if activity.activity_data.get('anonymous_vote', 'False') == 'False':
+                    csv = "username,firstname,lastname,email," + ''.join([p[0] + "," for p in get_possible_answers(activity).values()]) + '\n'
+                    for student in get_students(activity):
+                        results = []
+                        for item in student['question']:
+                            if not item['answers']: results.append('')
+                            else:
+                                for cid, answer in item['answers']:
+                                    results.append(answer)
+                        u = student['object']
+                        csv += ("%s,%s,%s,%s," % (u.username, u.first_name, u.last_name, u.email) + ''.join([str(i) + "," for i in results]) + '\n')
+                else:
+                    csv = ''
+                    answers = get_answers(activity)
+                    for cid, p in get_possible_answers(activity).items():
+                        csv += p[0] + ', ' + ', '.join(p[1]) + '\n'
+                        csv += '/, ' + ', '.join(map(str, answers[cid].values())) + '\n' 
+                
+                response = HttpResponse(csv, content_type="text/csv")
+                response['Content-Disposition'] = 'attachment;filename=reponses.csv'
+            except BaseException as e:
+                import traceback
+                print(traceback.format_exc())
+                raise e
         else:
             csv = "username,firstname,lastname,email," + ''.join(
                 [str(i + 1) + ": " + p.name + "," for i, p in enumerate(pl)]) + "total\n"

@@ -13,8 +13,10 @@ def get_possible_answers(activity):
     for pl in activity.indexed_pl():
         choices = pl.json['items'].splitlines()
 
-        possible_answers[pl.json['group']['cid']] = dict()
-        possible_answers[pl.json['group']['cid']] = (pl.json['title'], choices)
+        for key in pl.json:
+            if key.startswith('group'):
+                possible_answers[pl.json[key]['cid']] = dict()
+                possible_answers[pl.json[key]['cid']] = (pl.json['title'] + ':' + key, choices)
     return possible_answers
 
 def get_answers(activity):
@@ -23,18 +25,21 @@ def get_answers(activity):
     it returns a dictionary with the number of answers for each choice
     """
     answers = dict()
-    for pl in activity.indexed_pl():
-        answers[pl.json['group']['cid']] = dict()
-        for i in range(len(pl.json['items'].splitlines())):
-            answers[pl.json['group']['cid']][i] = 0
     
     for user in activity.student.all():
         for __, pl in enumerate(activity.indexed_pl()):
-            last_ans = Answer.last(pl, user)
-            if last_ans is not None:   
-                for question in last_ans.answers.values():
-                    if question['cid'] in answers:
-                        answers[question['cid']][question['selection']] += 1
+            last_answer = Answer.last(pl, user)
+            if last_answer:
+                for question in last_answer.answers.values():
+                    cid = question['cid']
+                    
+                    # If question not encountered yet, initialize the dictionary
+                    if cid not in answers:
+                        answers[cid] = dict()
+                        for item in question['items']:
+                            answers[cid][item['id']] = 0
+                    
+                    answers[question['cid']][question['selection']] += 1
     return answers
 
 def get_students(activity):
@@ -47,17 +52,14 @@ def get_students(activity):
         tp = list()
         for __, pl in enumerate(activity.indexed_pl()):
             last_ans = Answer.last(pl, user)
-            cid = None
-            answer = None
+            answers = []
             if last_ans is not None:   
                 # Only supports 1 question per pl for now, that's why cid and answer are not lists
-                for question in enumerate(last_ans.answers.values()):
-                    cid = question[1]['cid']
-                    answer = question[1]['selection']
+                for question in last_ans.answers.values():
+                    answers.append((question['cid'], question['selection']))
             tp.append({
                 'name':   pl.json['title'],
-                'cid':    cid,
-                'answer': answer
+                'answers': answers
             })
         students.append({
             'lastname': user.last_name,
@@ -65,6 +67,7 @@ def get_students(activity):
             'id':       user.id,
             'question': tp,
         })
+    
 
     # Sort list by students names
     students = sorted(students, key=lambda k: k['lastname'])
@@ -84,7 +87,12 @@ def survey_dashboard(request, activity):
         graphs.append((
             id, 
             possible_answers[key][0], 
-            px.bar(df1, x=df1.key, y=df1.ans, labels={"key": "Réponses", "ans": "Nombre de votes"}).to_html(full_html=False, default_height=500, default_width=700)
+            px.bar(
+                df1, 
+                x=df1.key, 
+                y=df1.ans, 
+                labels={"key": "Réponses", "ans": "Nombre de votes"}
+                ).to_html(full_html=False, default_height=500, default_width=700)
         ))
 
     return render(request, 'activity/activity_type/pltp/survey_dashboard.html', {

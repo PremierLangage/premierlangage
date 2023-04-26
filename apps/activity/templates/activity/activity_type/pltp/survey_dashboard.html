@@ -27,9 +27,12 @@
                                 <ion-label> {{ firstof(student.object.get_full_name(), student.object.username) }}</ion-label>
                             </ion-chip>
                         </td>
-                        {% for item in student.question %}
-                        <td>                  
-                            {{ possible_answers[item.cid][1][item.answer] }}
+                        {% for pl in student.question %}
+                        <td>
+                            <b>{{ pl.name }}:</b>
+                            {% for cid, answer in pl.answers %}
+                                {{ possible_answers[cid][1][answer] }}, 
+                            {% endfor %}
                         </td>
                         {% endfor %}
                     </tr>
