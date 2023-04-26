@@ -1,4 +1,18 @@
-<mat-radio-group aria-label="Select an option">
-    <mat-radio-button value="1">Option 1</mat-radio-button>
-    <mat-radio-button value="2">Option 2</mat-radio-button>
-</mat-radio-group>
+<mat-vertical-stepper [linear]="isLinear">
+    <mat-step *ngFor="let item of _items; index as i">
+        <ng-template matStepLabel>{{item.title}}</ng-template>
+        <p>{{item.description}}</p>
+        <br>
+        <mat-radio-group>
+            <mat-radio-button
+                *ngFor="let choice of item.choices; index as index"
+                [value]="index"
+                [checked]="(item.selected || -1) === index"
+                color="primary"
+                (change)="update($event, i)"
+            >
+                {{choice}}
+            </mat-radio-button>
+        </mat-radio-group>
+    </mat-step>
+</mat-vertical-stepper>
