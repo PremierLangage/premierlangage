@@ -36,6 +36,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatStepperModule } from '@angular/material';
 @NgModule({
     declarations: [
     ],
@@ -76,6 +77,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
         MatCardModule,
         MatTabsModule,
         MatSnackBarModule,
+        MatStepperModule
     ],
     exports: [
         // CORE
@@ -114,7 +116,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
         MatSidenavModule,
         MatCardModule,
         MatTabsModule,
-        MatSnackBarModule
+        MatSnackBarModule,
+        MatStepperModule
     ],
     entryComponents: [
     ],
