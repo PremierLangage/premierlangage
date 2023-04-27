@@ -54,7 +54,6 @@ def get_students(activity):
             last_ans = Answer.last(pl, user)
             answers = []
             if last_ans is not None:   
-                # Only supports 1 question per pl for now, that's why cid and answer are not lists
                 for question in last_ans.answers.values():
                     answers.append((question['cid'], question['selection']))
             tp.append({

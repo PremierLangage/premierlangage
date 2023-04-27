@@ -38,13 +38,7 @@ class Pltp(AbstractActivityType):
         """
         # Hook for survey dashboards
         if activity.name.endswith('_survey'):
-            try:
-                return survey_dashboard(request, activity)
-
-            except BaseException as e:
-                import traceback
-                print(traceback.format_exc())
-                raise e
+            return survey_dashboard(request, activity)
 
         exos = []
         for pl in activity.indexed_pl():
