@@ -84,15 +84,18 @@ def survey_dashboard(request, activity):
     graphs = []
     for id, (key, value) in enumerate(answers.items()):
         df1 = pd.DataFrame(dict(key=possible_answers[key][1], ans=value.values()))
-        graphs.append((
-            id, 
-            possible_answers[key][0], 
-            px.bar(
+        graph = px.bar(
                 df1, 
                 x=df1.key, 
                 y=df1.ans, 
+                color=px.colors.qualitative.Plotly[0:len(df1)],
                 labels={"key": "Réponses", "ans": "Nombre de votes"}
-                ).to_html(full_html=False, default_height=500, default_width=700)
+                )
+        graph.update_traces(showlegend=False)
+        graphs.append((
+            id, 
+            possible_answers[key][0], 
+            graph.to_html(full_html=False, default_height=500, default_width=700, include_plotlyjs=False)
         ))
 
     return render(request, 'activity/activity_type/pltp/survey_dashboard.html', {

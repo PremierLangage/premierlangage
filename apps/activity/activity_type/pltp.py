@@ -290,14 +290,15 @@ class Pltp(AbstractActivityType):
         if activity.name.endswith('_survey'):
             try:
                 if activity.activity_data.get('anonymous_vote', 'False') == 'False':
-                    csv = "username,firstname,lastname,email," + ''.join([p[0] + "," for p in get_possible_answers(activity).values()]) + '\n'
+                    possible_answers = get_possible_answers(activity)
+                    csv = "username,firstname,lastname,email," + ''.join([p[0] + "," for p in possible_answers.values()]) + '\n'
                     for student in get_students(activity):
                         results = []
                         for item in student['question']:
                             if not item['answers']: results.append('')
                             else:
                                 for cid, answer in item['answers']:
-                                    results.append(answer)
+                                    results.append(possible_answers[cid][1][answer])
                         u = student['object']
                         csv += ("%s,%s,%s,%s," % (u.username, u.first_name, u.last_name, u.email) + ''.join([str(i) + "," for i in results]) + '\n')
                 else:
