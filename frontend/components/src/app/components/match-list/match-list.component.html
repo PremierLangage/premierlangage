@@ -1,0 +1,29 @@
+<div #container class="match-list-component {{ css }}" [class.disabled]="disabled">
+    <div class="align-left">
+        <ng-container *ngFor="let node of nodes">
+            <ng-container *ngIf="node.source">
+                <ng-container *ngTemplateOutlet="nodeTemplate; context: { $implicit: node }"></ng-container>
+            </ng-container>
+        </ng-container>
+    </div>
+    <div class="align-right">
+        <ng-container *ngFor="let node of nodes">
+            <ng-container *ngIf="node.target">
+                <ng-container *ngTemplateOutlet="nodeTemplate; context: { $implicit: node }"></ng-container>
+            </ng-container>
+        </ng-container>
+    </div>
+</div>
+
+<ng-template #nodeTemplate let-node>
+    <div
+        [id]="node.id"
+        [innerHTML]="node.content | markdown | trustHtml"
+        class="match-list-item {{ node.css }}">
+    </div>
+</ng-template>
+
+<ng-container *ngIf="debug">
+    <pre class="debug" [innerHTML]="serialize() | json"></pre>
+</ng-container>
+

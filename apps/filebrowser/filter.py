@@ -1,6 +1,6 @@
 import os
 
-import gitcmd
+from shared import gitcmd
 import magic
 
 from loader.parser import get_parsers

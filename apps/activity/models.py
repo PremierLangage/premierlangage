@@ -1,6 +1,6 @@
 import logging
 
-import htmlprint
+from shared import htmlprint
 from django.contrib.auth.models import User
 from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import PermissionDenied

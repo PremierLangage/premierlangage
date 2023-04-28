@@ -1,0 +1,12 @@
+<div
+    dragNdrop
+    class="drag-drop-component {{ css }}"
+    [class.droppable]="droppable"
+    [class.disabled]="disabled"
+    (dropped)="dropped($event)"
+    [innerHTML]="content | markdown | trustHtml">
+</div>
+<ng-container *ngIf="debug">
+    <pre class="debug"  [innerHTML]="serialize() | json"></pre>
+</ng-container>
+

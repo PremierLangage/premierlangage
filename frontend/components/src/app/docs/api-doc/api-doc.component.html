@@ -1,0 +1,80 @@
+<ng-container *ngIf="component">
+    <h1>{{ component.name }}</h1>
+    <span class="selector">
+        <ng-container *ngFor="let selector of component.selector|split:'|'">
+            &lt;{{ selector }}&gt; &lt;/{{ selector }}&gt; <br/>
+        </ng-container>
+    </span>
+    <mat-divider></mat-divider>
+
+    <section>
+        <div [innerHTML]="component.description | trustHtml"></div>
+    </section>
+
+    <div
+        [innerHTML]="
+                docPage(component)
+                | assetData
+                | async
+                | trustHtml
+        "
+    ></div>
+
+    <section *ngIf="component.usages">
+        <h2>Usage</h2>
+        <playground [tabs]="component.usages"></playground>
+    </section>
+
+    <section *ngIf="component.css && component.css.length">
+        <h3>Appearance</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th><h3>css selector</h3></th>
+                    <th><h3>description</h3></th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let css of component.css">
+                    <tr>
+                        <th>{{ css.selector }}</th>
+                        <td>{{ css.description }}</td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </section>
+
+    <section *ngIf="component.properties && component.properties.length">
+        <h2>Properties</h2>
+        <table>
+            <ng-container *ngFor="let prop of component.properties">
+                <thead>
+                    <tr>
+                        <th colspan="2">
+                            <h3>{{ prop.name }}</h3>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Description</th>
+                        <td [innerHTML]="prop.description | trustHtml"></td>
+                    </tr>
+                    <tr>
+                        <th>Type</th>
+                        <td>
+                            <code>{{ prop.type }}</code>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Default</th>
+                        <td>
+                            <code>{{ prop.default | json }}</code>
+                        </td>
+                    </tr>
+                </tbody>
+            </ng-container>
+        </table>
+    </section>
+</ng-container>

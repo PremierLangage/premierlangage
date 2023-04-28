@@ -1,0 +1,2 @@
+<ngx-monaco-editor [hidden]='editor.options?.diffMode' class='code-editor' [options]="{}" [model]='{}' (onInit)="codeEditorLoaded($event)"></ngx-monaco-editor>
+<ngx-monaco-diff-editor [hidden]='!editor.options?.diffMode' class='code-editor' [options]="{}" [originalModel]="{}" [modifiedModel]="{}" (onInit)="diffEditorLoaded($event)"></ngx-monaco-diff-editor>

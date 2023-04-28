@@ -2,8 +2,8 @@ import codecs
 import logging
 import os
 
-import gitcmd
-import htmlprint
+from shared import gitcmd
+from shared import htmlprint
 import magic
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseNotFound

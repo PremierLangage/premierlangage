@@ -1,0 +1,13 @@
+<ng-container *ngIf="inRepo()">
+    <span class="status-bar-item remote">
+        <i class='remote-icon {{repoHost()}} fa-1x'></i>
+        <a href="{{repoUrl()}}" target="_blank">{{repoUrl()}}</a>
+        <i> - {{repoBranch()}} </i>
+    </span>
+</ng-container>
+<div class="spacer"></div>
+<span class="status-bar-item" *ngIf='cursor'>Ln {{cursor.lineNumber}}, Col {{cursor.column}}</span>
+
+<ng-container *ngIf='querying()'>
+    <mat-progress-spinner mode='indeterminate' color='warn' strokeWidth='2' diameter='16'></mat-progress-spinner>
+</ng-container>

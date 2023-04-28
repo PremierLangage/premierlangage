@@ -38,11 +38,13 @@ SELECTORS = {
     "MatchList":       "c-match-list",
     "MathDrawer":      "c-math-drawer",
     "MathInput":       "c-math-input",
+    "MathInputQuill":  "c-math-input-quill",
     "MathMatrix":      "c-math-matrix",
     "RadioGroup":      "c-radio-group",
     "SortList":        "c-sort-list",
     "Text":            "c-text",
-    "TransfertList":   "c-transfert-list"
+    "TransfertList":   "c-transfert-list",
+    "EvalGrid":        "c-eval-grid"
 }
 
 
@@ -304,6 +306,14 @@ class MathInput(Component):
 
 
 
+class MathInputQuill(Component):
+    
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.selector = 'c-math-input-quill'
+
+
+
 class MathMatrix(Component):
     
     def __init__(self, **kwargs):
@@ -333,3 +343,11 @@ class TransfertList(Component):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.selector = 'c-transfert-list'
+
+
+
+class EvalGrid(Component):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.selector = 'c-eval-grid'

@@ -1,0 +1,39 @@
+@import 'theme.editor';
+@import 'theme.loading';
+@import 'theme.material';
+
+.light-theme {
+    @include angular-material-theme($light-theme);
+
+    @extend %editor-light;
+
+    input:not(.mat-input-element) {
+        background-color: #ffffff;
+        color: #1d1f23;
+    }
+}
+
+.dark-theme {
+    @include angular-material-theme($dark-theme);
+
+    @extend %editor-dark;
+
+    .as-split-gutter {
+        // background: #4e5666 !important;
+        background: transparent !important;
+    }
+
+    input:not(.mat-input-element) {
+        background-color: #1d1f23;
+        color: white;
+    }
+}
+
+.cdk-overlay-container.dark-theme {
+    background-color: rgba(0, 0, 0, 0) !important;
+}
+
+:root {
+    --header-height: 64px;
+    --tab-height: 36px;
+}

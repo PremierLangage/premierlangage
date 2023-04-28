@@ -18,7 +18,6 @@ documentation/static/
 doc/
 static/*
 apps/filebrowser/client/node_modules
-src/
 geckodriver
 
 ########################################

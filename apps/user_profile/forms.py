@@ -7,7 +7,7 @@
 #
 
 from django import forms
-from enumfields import EnumIntegerField
+from shared.enumfields import EnumIntegerField
 
 from user_profile.enums import ColorBlindness, EditorTheme
 

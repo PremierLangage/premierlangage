@@ -1,0 +1,184 @@
+<h1>Introduction to components</h1>
+<mat-divider></mat-divider>
+<next-prev nextLink="/components/simple-usage" ></next-prev>
+<section>
+    <h3>Assumptions</h3>
+    <p>
+        These docs assume that you are already familiar with
+        <a href="https://www.w3schools.com/">HTML, CSS</a> and
+        <a href="https://documentationpl.readthedocs.io/fr/latest/"
+            >Premier Langage documentation</a
+        >. Some skills in JavaScript and Python may be useful also.
+    </p>
+</section>
+
+<mat-accordion displayMode="flat">
+    <mat-expansion-panel expanded="true">
+        <mat-expansion-panel-header>
+            <h3>What is Component Framework?</h3>
+        </mat-expansion-panel-header>
+        <p>
+            Component Framework is a UI toolkit for building performant, complex and
+            beautiful exercises.
+        </p>
+        <p>
+            A component implement and encapsulate complex behavior which then can be reused
+            in many places of an exercise.
+        </p>
+
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <h3>Goals</h3>
+        </mat-expansion-panel-header>
+        <ul>
+            <li>
+                <b>Web Standards-based</b>
+                <p>
+                    Components are built on top of the latest standardized web
+                    technologies. Because of this, components works accross all
+                    modern browsers.
+                </p>
+            </li>
+            <li>
+                <b>Encapsulation</b>
+                <p>
+                    An important aspect of components is encapsulation. The structure (HTML), the style (CSS) and behavior (JS)
+                    of a component is encapsulated and isolated from other code of the page so that different parts do not clash.
+                </p>
+            </li>
+            <li>
+                <b>Simplicity</b>
+                <p>
+                    Components are built with simplicity in mind, so that creating
+                    exercise is easy to learn, and accessible to anyone with a
+                    little knowledge in programming. Some components provide auto
+                    correction feature so you just specify your data and the
+                    component will evaluate itself and give a grade to the student
+                    without the need to write any grade code in python or html code
+                    to create the UI.
+                </p>
+            </li>
+            <li>
+                <b>Reusability</b>
+                <p>
+                    All the components are reusable you don't have to extends any file, you just provide your data
+                    and the component will render itself.
+                </p>
+            </li>
+            <li>
+                <b>Extensible</b>
+                <p>
+                    The framework is designed to be extensible so you can customize
+                    the styles, animations and properties of the components.
+                </p>
+            </li>
+        </ul>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <h3>How it works?</h3>
+        </mat-expansion-panel-header>
+        <section>
+            <p>
+                Generally, when a teacher wants to create an exercise, he thinks about the following questions:
+            </p>
+
+            <ul>
+                <li>What data he will present to the student?</li>
+                <li>What the student will see visually?</li>
+                <li>How he will create the complex UI?</li>
+                <li>How he will handle the actions of the student on the data to evaluate the answer?</li>
+            </ul>
+
+            <div>
+                Components Framework uses MVC design pattern to provide an answer to theses questions.
+                <ul>
+                    <li>
+                        <b>Model</b>
+                        <p>
+                            The model of a component is the properties (data) that define the component.
+                            The properties should be specified using <a href="https://www.w3schools.com/js/js_json_intro.asp">JSON format</a>. <br/>
+                            For example the model of the <a routerLink="/components/sort-list">SortList</a> component is an array of items that
+                            you want to sort.
+                        </p>
+                        <p matTooltip="JSON representation of the RadioGroup component">
+                            <code>mycomponent % {{ '{' }} {{ '}' }}</code> <br/>
+                            <code>mycomponent.cid = mycid </code><br/>
+                            <code>mycomponent.selector = c-radio-group </code><br/>
+                            <code>mycomponent.items %=</code><br/>
+                            <code>{{'['}}</code> <br/>
+                            <code>{{'{'}} "id": "1" "content": "A" {{'}'}},</code> <br/>
+                            <code>{{'{'}} "id": "2" "content": "B" {{'}'}},</code> <br/>
+                            <code>{{'{'}} "id": "3" "content": "C" {{'}'}},</code> <br/>
+                            <code>{{']'}}</code> <br/>
+                            <code>==</code>
+                        </p>
+                        <p>
+                            The difference between a simple JSON object and a component in PremierLangage is that the JSON of a component
+                            contains two special properties <code>cid</code> and <code>selector</code>.
+                            You can learn more about theses properties on the <a routerLink="/components/simple-usage">Simple Usage</a> page
+                            and you will see later that you can use the <code>=:</code> operator to automatically assign the properties.
+                        </p>
+                    </li>
+                    <li>
+                        <b>View</b>
+                        <p>
+                            The view of a component is the HTML <code>selector</code> (h1, div, span...) that allows to render it on the page.
+                            Each component has it's own HTML selector. All the selectors starts with the prefix <code>c-</code>
+                            For example <code>&lt;c-sort-list&gt;&lt;/c-sort-list&gt;</code> is the selector of SortList component.
+                        </p>
+                        <p>
+                            Once a component is added on the page, it will handle the interactions of the student on it and update it's properties
+                            according to the actions of the student. For example in  the case of <code>SortList</code>, if the user change the ordering
+                            of items, the array <code>mycomponent.items</code> will be reordered.
+                        </p>
+                    </li>
+                    <li>
+                        <b>Controler</b>
+                        <p>
+                            The controller of a component is the framework itself. During the lifecyle of
+                            an exercise, the framework keeps a track of the modifications the teacher made
+                            to a component (inside the builder and the grader) and the actions of a student
+                            on the component.
+                        </p>
+                        <p>
+                            The framework synchronize the state of the component to ensure that
+                            inside the grader, the properties of the component are up to date with
+                            the actions of a student and that inside the form of the page, the visual state of the component
+                            is set according to the model modified by the teacher.
+                        </p>
+                        <p>
+                            For example, as you can see there is no <code>selection</code> property on the JSON data,
+                            we specified above, but if you toggle the debug mode of the component below you will see
+                            that the <code>selection</code> property is defined according to your actions on the widget.
+                        </p>
+                    </li>
+                </ul>
+            </div>
+            <p>
+                The following widget is the result of the <a routerLink="/components/radio-group">RadioGroup</a> component described on this section.
+            </p>
+            <button mat-button (click)="debug = !debug">Toggle Debug Mode</button>
+            <radio-group-component [items]="radio" [debug]="debug" [horizontal]="true"></radio-group-component>
+        </section>
+
+    </mat-expansion-panel>
+</mat-accordion>
+
+<section>
+    <h3>Components</h3>
+    <div class="grid">
+        <ng-container *ngFor="let definition of api">
+            <a [routerLink]="definition.link">
+                <mat-card>
+                    <img class="card-icon" [src]="('images/' + definition.icon)|assetPath" [alt]="definition.name">
+                    <mat-card-header>
+                        <mat-card-title>{{ definition.name }}</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>{{ definition.description }}</mat-card-content>
+                </mat-card>
+            </a>
+        </ng-container>
+    </div>
+</section>

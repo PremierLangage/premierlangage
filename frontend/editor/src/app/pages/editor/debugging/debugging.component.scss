@@ -1,0 +1,30 @@
+:host {
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+}
+
+.tab-bar {
+    padding: 0px;
+}
+    .tab-item {
+        background: transparent;
+        color: var(--tab-foreground);
+        font-size: 10px !important;
+    }
+
+
+.debugging-content {
+    overflow: auto;
+    height: calc(100% - 36px);
+    padding: 0;
+}
+
+.mat-badge-medium .mat-badge-content {
+    right: 0px !important;
+    top: -4px !important;
+    right: -10px;
+    background: transparent;
+    font-size: 10px;
+    color: var(--tab-foreground);
+}

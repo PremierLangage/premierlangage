@@ -1,0 +1,18 @@
+<mat-vertical-stepper>
+    <mat-step *ngFor="let item of _items; index as i">
+        <ng-template matStepLabel>{{item.title}}</ng-template>
+        <p>{{item.description}}</p>
+        <br>
+        <mat-radio-group>
+            <mat-radio-button
+                *ngFor="let choice of item.choices; index as index"
+                [value]="index"
+                [checked]="(item.selected || -1) === index"
+                color="primary"
+                (change)="update($event, i)"
+            >
+                {{choice}}
+            </mat-radio-button>
+        </mat-radio-group>
+    </mat-step>
+</mat-vertical-stepper>

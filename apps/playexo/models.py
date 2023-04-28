@@ -1,7 +1,7 @@
 import logging
 
-import htmlprint
 import time
+from shared import htmlprint
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Index

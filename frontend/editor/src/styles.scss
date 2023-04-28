@@ -1,0 +1,64 @@
+@import '~ngx-toastr/toastr.css';
+@import 'prismjs/themes/prism-okaidia.css'; // required for ngx-markdown
+
+@import 'src/theme/theme.scss';
+
+body {
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+/* remove material design focus */
+*:focus {
+    outline: none !important;
+    border: 0 !important;
+}
+
+// fix toastr conflict with bootstrap .toast class
+#toast-container > div {
+    opacity: 1;
+}
+
+.spacer {
+    flex-grow: 1;
+}
+
+.h100 {
+    height: 100%;
+}
+
+.mat-badge-medium .mat-badge-content {
+    z-index: 1;
+    width: auto;
+    height: auto;
+    min-width: 22px !important;
+    min-height: 22px !important;
+    overflow: unset !important;
+    padding: 0 2px;
+}
+
+.mat-progress-bar {
+    height: 4px !important;
+}
+
+.error-glyph-margin {
+	background: red;
+    width: 4px !important;
+    height: 18px !important;
+    right: 0 !important;
+}
+
+.error-line-content {
+	border-bottom: 1px solid red;
+}
+
+.ng-scrollbar {
+    --scrollbar-size: 1px !important;
+    --scrollbar-hover-size: var(--scrollbar-size) !important;
+    --scrollbar-track-color: rgba(0, 0, 0, 0.15) !important;
+    --scrollbar-thumb-color: rgba(0, 0, 0, 0.2) !important;
+    --scrollbar-thumb-hover-color: rgba(0, 0, 0, 0.2) !important;
+    --scrollbar-padding: 0px !important;
+    --scrollbar-border-radius: 10px !important;
+}

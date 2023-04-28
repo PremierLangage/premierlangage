@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="136"
+   height="100"
+   version="1.1"
+   id="svg28"
+   sodipodi:docname="fsm.svg"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06">
+  <metadata
+     id="metadata34">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs32" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1440"
+     inkscape:window-height="788"
+     id="namedview30"
+     showgrid="false"
+     inkscape:zoom="2.2250293"
+     inkscape:cx="64.226098"
+     inkscape:cy="117.67188"
+     inkscape:window-x="0"
+     inkscape:window-y="1"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg28" />
+  <image
+     y="0"
+     x="0"
+     id="image870"
+     xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIkAAABkCAYAAACy/hOVAAAABHNCSVQICAgIfAhkiAAAA4xJREFU
+eJztmk1uFDEUhMuTAbacgAOwYcFBuApX4nhZsAApiCgZzCIzicex251MP0OV6pNa07jbzz+xqkqo
+08ebb/k6/8JV3gFIQE4A8PCb07ENxX3Rdvp32aeusVTzrF6rXz1Gq9+l43bWtlRzaZ5r9qtZbzTu
+a2outK3Yq9sD8OVDut9f5xt8398B98cBcfqtr0Z7TkAqJpyKBdR9ctH2bLH1fb3pvQOTFhfZr9V5
+d/R81cEu244XctH/9G4unp/eLfqd9a//sHVb4xCNDv7wsD7c/rjFbn+FBBzyw3W22blRoNXWeL6o
+Fr2NfsUBWXzeO4y9WkuHplN/9fyX5nTBH7erOivWtmaf0w67BOwQQXp203poLmXSVsYckjx+xWzA
+pH2OOSRGimC7MaFo2E1LD+1Fm0FtNw6uHTZeu4aSmHM23hhqJTFSOLgyo2E3WwVXn7om1HazeXB1
+yGmioSQmFGolMVKQBFdnkiYadrNVcLV/NaG2G/+P6xw0lMSEQq0kRgqS4GqaaNiNPxUIhdpuHFw7
++FOBJywWHfypgBHFwZUZDbtxcA2F2m4cXOegoSQmFGolMVI4uDKjYTcOrqFQ242D6xw0lMSEQq0k
+RgoHV2Y07MbBNRRqu3FwnYOGkphQqJXESOHgyoyG3Ti4hkJtNw6uHfyN6xMWiw7+xtWI4uDKjIbd
+OLiGQm03Dq5z0FASEwq1khgpHFyZ0bAbB9dQqO3GwXUOGkpiQqFWEiOFgyszGnbj4BoKtd04uM5B
+Q0lMKNRKYqRwcGVGw24cXEOhthsH1zloKIkJhVpJjBQOrsxo2I2DayjUduPgOgcNJTGhUCuJkcLB
+lRkNu3FwDYXabhxc56ChJCYUaiUxUji4MqNhNw6uoVDbzebB1dLURENJTCjUSrI5PnX/EgdXZjTs
+xsE1FGq7cXCdg4aS/LcFNaBWEiOFgyszGnbj4BoKtd34U4E5aCiJCYVaSYwUDq7MaNiNg2so1Hbj
+4DoHDSUxoVAriZHCwZUZ240ZMmmf97/TAXgDIKWngTMAJCAfL6Rje2q0V+90n+OF7YOxe3Wa46Oq
+t8W6Vvbrrmuw7mGNqr18nop1p+J5KsYu2x+vigTcHoD913ef8RN32L2tNuRx04vfpfaMhf5F22iM
+Z2Od7gdjvGgeK9ZR1z47MGvmf6rXq91oG85/NM9e/2JKZ2sq38nVuwl3f4BP73H4C0OV/9b0uSaN
+AAAAAElFTkSuQmCC
+"
+     preserveAspectRatio="none"
+     height="100"
+     width="137"
+     style="fill:#ffffff" />
+  <circle
+     style="fill:#ffffff;stroke:#000000;stroke-width:0.30489978"
+     r="9.1469936"
+     cx="52.568985"
+     cy="58.340378"
+     id="ellipse2" />
+  <text
+     style="font-size:6.09799576px;font-family:'Times New Roman';stroke-width:0.30489978"
+     x="49.215088"
+     y="60.169777"
+     font-size="20"
+     id="text4">S1</text>
+  <circle
+     style="fill:#ffffff;stroke:#000000;stroke-width:0.30489978"
+     r="9.1469936"
+     cx="100.13335"
+     cy="58.340378"
+     id="ellipse6" />
+  <circle
+     style="fill:#ffffff;stroke:#000000;stroke-width:0.30489978"
+     r="7.3175945"
+     cx="100.13335"
+     cy="58.340378"
+     id="ellipse10" />
+  <polygon
+     style="stroke:#000000;stroke-width:1;fill:#ffffff"
+     points="188.5,268.5 240.5,268.5 "
+     id="polygon12"
+     transform="matrix(0.30489978,0,0,0.30489978,-29.906404,-23.525212)" />
+  <polygon
+     style="fill:#000000;stroke-width:1"
+     points="232.5,273.5 240.5,268.5 232.5,263.5 "
+     id="polygon14"
+     transform="matrix(0.30489978,0,0,0.30489978,-29.906404,-23.525212)" />
+  <path
+     style="fill:none;stroke:#000000;stroke-width:0.30489978"
+     inkscape:connector-curvature="0"
+     d="m 48.536687,50.16998 a 6.860245,6.860245 0 1 1 8.064599,0"
+     id="path16" />
+  <text
+     style="font-size:6.09799576px;font-family:'Times New Roman';stroke-width:0.30489978"
+     x="51.349388"
+     y="35.167995"
+     font-size="20"
+     id="text18">a</text>
+  <polygon
+     style="fill:#000000;stroke-width:1"
+     points="284.382,232.292 283.725,241.703 292.473,238.17 "
+     id="polygon20"
+     transform="matrix(0.30489978,0,0,0.30489978,-29.906404,-23.525212)" />
+  <polygon
+     style="stroke:#000000;stroke-width:1"
+     points="300.5,268.5 396.5,268.5 "
+     id="polygon22"
+     transform="matrix(0.30489978,0,0,0.30489978,-29.906404,-23.525212)" />
+  <polygon
+     style="fill:#000000;stroke-width:1"
+     points="388.5,273.5 396.5,268.5 388.5,263.5 "
+     id="polygon24"
+     transform="matrix(0.30489978,0,0,0.30489978,-29.906404,-23.525212)" />
+  <text
+     style="font-size:6.09799576px;font-family:'Times New Roman';stroke-width:0.30489978"
+     x="74.826668"
+     y="64.743271"
+     font-size="20"
+     id="text26">b</text>
+  <text
+     style="font-size:6.09799576px;font-family:'Times New Roman';stroke-width:0.30489978"
+     x="96.779457"
+     y="60.169777"
+     font-size="20"
+     id="text8">S2</text>
+</svg>

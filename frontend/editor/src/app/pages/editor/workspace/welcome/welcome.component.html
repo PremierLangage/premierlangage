@@ -1,0 +1,20 @@
+<div>
+    <h3>Shorcuts</h3>
+    <mat-divider></mat-divider>
+    <table mat-table [dataSource]="shorcuts" class="mat-elevation-z1" style='width: 100%'>
+        <!-- Command -->
+        <ng-container matColumnDef="command">
+            <th mat-header-cell *matHeaderCellDef> Command </th>
+            <td mat-cell *matCellDef="let element"> {{element.command}} </td>
+        </ng-container>
+
+        <!-- Action -->
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> Action </th>
+            <td mat-cell *matCellDef="let element"> {{element.action}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>

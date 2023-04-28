@@ -1,0 +1,24 @@
+.code-editor-component {
+  .editor-container {
+    height: var(--height, auto);
+    border-bottom: 1px solid #DDD;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    -moz-box-shadow: 1px 1px 5px 0px #DDD;
+    -webkit-box-shadow: 1px 1px 5px 0px #DDD;
+    -o-box-shadow: 1px 1px 5px 0px #DDD;
+    box-shadow: 1px 1px 5px 0px #DDD;
+    filter:progid:DXImageTransform.Microsoft.Shadow(color=#DDD, Direction=134, Strength=5);
+  }
+
+  .code-editor-component-toolbar {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    padding: 0px 8px;
+  }
+
+  .spacer {
+      flex: 1;
+  }
+}

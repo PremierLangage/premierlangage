@@ -1,0 +1,47 @@
+<div class="tree-component">
+    <ng-container *ngIf="options.onDidFilter">
+        <span class="tree-input tree-input--filter" [class.error]="filterOptions.error">
+            <input
+                type="text"
+                placeholder="Press Enter to filter"
+                [(ngModel)]="filterOptions.query"
+                (keydown.enter)="filter(search.value)"
+                #search>
+        </span>
+        <mat-error *ngIf="filterOptions.error">
+            {{ filterOptions.error }}
+        </mat-error>
+    </ng-container>
+
+    <mat-tree #tree [dataSource]="dataSource" [treeControl]="treeControl">
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding matTreeNodePaddingIndent="16"
+            id="tree-node-{{node.id}}" tabindex="0" class="tree-node-level-{{ node.level }}" [ngClass]="{ active: node.active, selected: node.selected }"
+            (keydown)="onKeyDown(node, $event)" (focusin)="onFocus(node, $event)">
+            <ng-container *ngIf="!node.renaming; else editingTemplate">
+                <div class="node-content" (click)="onClick(node)" (contextmenu)="onContextMenu(node, $event)">
+                    <ng-container *ngIf="template; else defaultTemplate">
+                        <ng-container *ngTemplateOutlet="template; context: { $implicit: node }"></ng-container>
+                    </ng-container>
+                    <ng-template #defaultTemplate> {{node.name}} </ng-template>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="node.creating">
+                <ng-container *ngTemplateOutlet="editingTemplate"></ng-container>
+            </ng-container>
+        </mat-tree-node>
+    </mat-tree>
+</div>
+
+<!-- EDITING STATE -->
+<ng-template #editingTemplate>
+  <div class="node-content">
+    <span class="tree-input">
+      <input autofocus
+              type='text'
+              placeholder='Press Enter to create ESC to cancel...'
+              [(ngModel)]="editing.label"
+              (keydown)='onEdit($event)'
+              (blur)='onEdit($event)'/>
+      </span>
+  </div>
+</ng-template>

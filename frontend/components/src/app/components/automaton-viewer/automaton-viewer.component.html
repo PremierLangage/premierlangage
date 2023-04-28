@@ -1,0 +1,4 @@
+<div class="automation-viewer-component {{ css }}" graphviz></div>
+<ng-container *ngIf="debug">
+    <pre class="debug" [innerHTML]="serialize() | json"></pre>
+</ng-container>

@@ -1,0 +1,44 @@
+.checkbox-group-component {
+    display: flex;
+    flex-direction: column;
+
+    .mat-checkbox {
+        position: relative;
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+    }
+
+    .mat-checkbox-layout {
+        margin-bottom: 0px;
+    }
+
+    .checkbox-item {
+        transition: all .25s ease-in-out;
+        border-radius: 7px;
+        border: 2px solid #f4f4f4;
+        margin-bottom: 12px;
+        padding: 12px;
+        transition: border .25s ease-in-out;
+        position: relative;
+
+        &:hover, &.checked {
+            border: 2px solid #3f51b5;
+        }
+
+        img {
+            margin: 0 8px;
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+        }
+    }
+
+    &.horizontal {
+        flex-direction: row;
+        .checkbox-item {
+            margin-right: 12px;
+            margin-bottom: 0px;
+        }
+    }
+}

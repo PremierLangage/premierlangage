@@ -1,0 +1,16 @@
+.text-select-component.words-mode {
+    cursor: pointer;
+}
+
+.text-select-component.free-mode {
+    cursor: text;
+}
+
+.highlight-state {
+    border: 1px solid transparent;
+    border-radius: .25rem;
+    color: #004085;
+    background-color: #cce5ff;
+    border-color: #b8daff;
+}
+

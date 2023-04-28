@@ -1,0 +1,145 @@
+.automaton-editor-component {
+    height: 550px;
+    max-height: 700px;
+    border: 1px solid #CCC;
+    background-color:#CCC;
+    display: flex;
+    position: relative;
+
+    .actions {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        z-index: 100;
+        button {
+            margin-right: 4px;
+        }
+    }
+
+    .canvas {
+        flex: 1;
+        position: relative;
+        overflow: auto;
+    }
+
+    .automaton-state, .endpoint {
+        -webkit-touch-callout: none !important;
+        -webkit-user-select: none !important;
+        -khtml-user-select: none !important;
+        -moz-user-select: none !important;
+        -ms-user-select: none  !important;
+        user-select: none !important;
+    }
+
+    .automaton-state {
+        padding: 16px;
+        position: absolute;
+        z-index: 4;
+
+        opacity: 0.8;
+        cursor: move;
+        background-color: white;
+        font-size: 18px;
+
+        border: 1px solid #2e6f9a;
+        border-radius: 50%;
+
+        box-shadow: 2px 2px 19px #e0e0e0;
+        -o-box-shadow: 2px 2px 19px #e0e0e0;
+        -webkit-box-shadow: 2px 2px 19px #e0e0e0;
+        -moz-box-shadow: 2px 2px 19px #e0e0e0;
+        -moz-border-radius: 8px;
+
+        -webkit-transition: background-color 0.25s ease-in;
+        -moz-transition: background-color 0.25s ease-in;
+        transition: background-color 0.25s ease-in;
+
+        &.focused, &:hover {
+            background-color: #5c96bc;
+            color: white;
+        }
+
+        &.automaton-state--initial:before {
+            content: '→';
+            font-size: 48px;
+            position: absolute;
+            left: -48px;
+            top: 50%;
+            transform: translate(0, -50%);
+            color: black;
+        }
+
+        &.automaton-state--final:after {
+            content: " ";
+            position: absolute;
+            z-index: -1;
+            top: 3px;
+            left: 3px;
+            right: 3px;
+            bottom: 3px;
+            border: 3px solid #2e6f9a;
+            border-radius: 50%;
+        }
+    }
+
+    .endpoint {
+        position: absolute;
+        bottom: 37%;
+        right: -6px;
+        width: 1em;
+        height: 1em;
+        background-color: orange;
+        cursor: pointer;
+        box-shadow: 0 0 2px black;
+        -webkit-transition: -webkit-box-shadow 0.25s ease-in;
+        -moz-transition: -moz-box-shadow 0.25s ease-in;
+        transition: box-shadow 0.25s ease-in;
+        border-radius: 50%;
+
+        &:hover {
+            box-shadow: 0 0 6px black;
+        }
+    }
+
+    .jtk-endpoint {
+        z-index: 3;
+    }
+
+    path, .jtk-endpoint {
+        cursor:pointer;
+    }
+
+    .transition {
+        -webkit-transition: background-color 0.25s ease-in;
+        -moz-transition: background-color 0.25s ease-in;
+        transition: background-color 0.25s ease-in;
+
+        background-color: white;
+        opacity: 0.8;
+        padding: 0.3em;
+        border-radius: 0.5em;
+        border: 1px solid #346789;
+        cursor: pointer;
+    }
+
+    .jtk-connector.focused + .transition,  .transition.jtk-hover, .jtk-source-hover, .jtk-target-hover {
+        background-color: #1e8151;
+        color: white;
+    }
+
+
+    .jtk-connector.focused path {
+        stroke: #1e8151 !important;
+        stroke-width: 2;
+    }
+
+}
+
+@media (max-width: 600px) {
+    .automaton-editor-component {
+        margin-left: 0;
+        margin-top:10px;
+        width: 100%;
+        height: 364px;
+    }
+}

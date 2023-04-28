@@ -146,7 +146,7 @@
 .state-part-succ { background: linear-gradient(to right, #ffc107 -10%, #28a745 76%) !important; border-color: #28a745 !important; }
 .state-failed    { background-color: #dc3545 !important; border-color: #dc3545 !important; }
 .state-started   { background-color: #ffc107 !important; border-color: #ffc107 !important; }
-.state-unstarted { background-color: #6c757d !important; border-color: #6c757d !important; }
+.state-unstarted { background-color: #bdc3c7 !important; border-color: #bdc3c7 !important; }
 
 .deuteranopia {}
 .protanopia {}
