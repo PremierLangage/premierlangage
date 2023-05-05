@@ -54,6 +54,13 @@ if __name__ == "__main__":
         print(missing_grade_stderr, file=sys.stderr)
         sys.exit(1)
     
+    if 'after' in dic:
+        glob = {}
+        exec(dic['after'],dic)
+        exec("", glob)
+        for key in glob: # Cette boucle sert a supprimer les valeurs entrées par défaut par la fonction exec
+            if key in dic and dic[key] == glob[key]:
+                del dic[key]
+    
     output(dic['grade'][0], dic['grade'][1], dic)
-
 
