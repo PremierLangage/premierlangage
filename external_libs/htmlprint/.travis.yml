@@ -1,0 +1,17 @@
+sudo: false
+language: python
+matrix:
+  include:
+    - python: '3.4'
+      env: TOXENV=py34
+    - python: '3.5'
+      env: TOXENV=py35
+    - python: '3.6'
+      env: TOXENV=py36
+
+install:
+  - pip install -U pip wheel setuptools
+  - pip install tox tox-travis
+  - pip install coverage==4.0.3 py pytest pytest-cov python-coveralls
+  
+script: tox

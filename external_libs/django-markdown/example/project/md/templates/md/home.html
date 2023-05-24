@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+{% load django_markdown %}
+
+{% block title %}Django Markdown{% endblock %}
+
+{% block branding %} <h1 id="site-name">Django Markdown</h1> {% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block extrahead %}{{ block.super }}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+{% endblock %}
+
+{% block content %}
+    <h2>Render form</h2>
+    {{ form.media }}
+    {{ form.as_ul }}
+    <h2>Render template tag</h2>
+    <textarea name="test" id="new"></textarea>
+    {% markdown_editor "#new" %}
+    {% markdown_media %}
+{% endblock %}
+
