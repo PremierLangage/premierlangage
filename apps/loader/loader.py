@@ -97,10 +97,25 @@ def load_pla(directory, rel_path, type=None):
     dic, warnings = parse_file(directory, rel_path)
     pl_list = list()
     for item in dic['__pl']:
-        pl_directory = Directory.objects.get(name=item['directory_name'])
-        pl, pl_warnings = load_pl(pl_directory, item['path'])
-        warnings += pl_warnings
-        pl_list.append(pl)
+        if item['type'] == 'direct':
+            pl_directory = Directory.objects.get(name=item['directory_name'])
+            pl, pl_warnings = load_pl(pl_directory, item['path'])
+            warnings += pl_warnings
+            pl_list.append(pl)
+        elif item['type'] == 'model':
+            # maybe add uuid to temp file name
+            file_name = '__temp.pl'
+            path = os.path.join(os.path.dirname(rel_path), file_name)
+            full_path = os.path.join(directory.root, path)
+            with open(full_path, 'w') as temp_pl:
+                for file in reversed(item['files']):
+                    temp_pl.write('extends=' + file + '\n')
+            
+            pl, pl_warnings = load_pl(directory, path)
+            warnings += pl_warnings
+            pl_list.append(pl)
+                
+            os.remove(full_path)
     
     for pl in pl_list:
         pl.save()
