@@ -44,10 +44,10 @@ class Parser(ParserPL):
                                str(e))
         
         self.dic['__pl'].append({
-            'type':           'direct',
-            'path':           path,
-            'line':           line,
-            'lineno':         self.lineno,
+            'type': 'direct',
+            'path': path,
+            'line': line,
+            'lineno': self.lineno,
             'directory_name': directory
         })
 
@@ -58,10 +58,10 @@ class Parser(ParserPL):
             Raise loader.exceptions.SyntaxErrorPL if no group 'files' was found."""
         
         model = {
-            'type':           'model',
+            'type': 'model',
             'files': [],
-            'line':           line,
-            'lineno':         self.lineno,
+            'line': line,
+            'lineno': self.lineno,
         }
 
         for file_match in re.finditer(ParserPL.FILE, match['files']):
