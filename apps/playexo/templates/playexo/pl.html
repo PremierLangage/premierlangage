@@ -1,4 +1,9 @@
-<ion-card class="exercise">
+<ion-card class="exercise" id="fs" style="background-color: white;">
+    <span class="position-relative float-right" style="z-index: 1">
+        <button class="btn btn-light m-2" id="fullscreen">
+            <i class="fas fa-expand"></i>
+        </button>
+    </span>
     <ion-card-header class="exercise__header">
         <ion-card-subtitle class='exercise__author'>{% if author %}{{ author }}{% endif %}</ion-card-subtitle>
         <ion-card-title class=" exercise__header">{% if title %}{{ title }}{% endif %}</ion-card-title>
@@ -70,4 +75,41 @@
     $(function () {
         Activity.withEval("{{ url('activity:evaluate', activity_id__, pl_id__) }}", {{ __components|tojson|safe }});
     });
+    let doc = document.getElementById("fs");
+    let fullscreen = document.getElementById("fullscreen");
+
+    fullscreen.addEventListener("click", () => {
+        if (fullscreen.innerHTML == `<i class="fas fa-compress"></i>`) {
+            if (doc.exitFullscreen) {
+                doc.exitFullscreen();
+            }
+            else if (doc.msexitFullscreen) {
+                doc.msexitFullscreen();
+            }
+            else if (doc.mozexitFullscreen) {
+                doc.mozexitFullscreen();
+            }
+            else if (doc.webkitexitFullscreen) {
+                doc.webkitexitFullscreen();
+            }
+            //fs.style.background = 'none';
+            fullscreen.innerHTML = `<i class="fas fa-expand"></i>`;
+        } else {
+            if (doc.requestFullscreen) {
+                doc.requestFullscreen();
+            }
+            else if (doc.msRequestFullscreen) {
+                doc.msRequestFullscreen();
+            }
+            else if (doc.mozRequestFullscreen) {
+                doc.mozRequestFullscreen();
+            }
+            else if (doc.webkitRequestFullscreen) {
+                doc.webkitRequestFullscreen();
+            }
+            fs.style.background = 'white';
+            fullscreen.innerHTML = `<i class="fas fa-compress"></i>`;
+        }
+    });
+
 </script>
