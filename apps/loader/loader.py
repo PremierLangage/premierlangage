@@ -4,6 +4,7 @@
 
 import logging
 import os
+import uuid
 from os.path import basename, splitext
 
 from shared import htmlprint
@@ -103,8 +104,7 @@ def load_pla(directory, rel_path, type=None):
             warnings += pl_warnings
             pl_list.append(pl)
         elif item['type'] == 'model':
-            # maybe add uuid to temp file name
-            file_name = '__temp.pl'
+            file_name = '__temp' + str(uuid.uuid1()) + '.pl'
             path = os.path.join(os.path.dirname(rel_path), file_name)
             full_path = os.path.join(directory.root, path)
             with open(full_path, 'w') as temp_pl:
@@ -160,8 +160,7 @@ def reload_pla(directory, rel_path, original):
                 warnings += pl_warnings
                 pl_list.append(pl)
             elif item['type'] == 'model':
-                # maybe add uuid to temp file name
-                file_name = '__temp.pl'
+                file_name = '__temp' + str(uuid.uuid1()) + '.pl'
                 path = os.path.join(os.path.dirname(rel_path), file_name)
                 full_path = os.path.join(directory.root, path)
                 with open(full_path, 'w') as temp_pl:
