@@ -12,7 +12,5 @@ introduction==
 Des <i>additions</i> **aléatoires**
 ==
 
-
-
-
-
+learning_index = 0
+learning_path = [[0], [1], [2, 1, 0]]

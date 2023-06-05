@@ -97,6 +97,36 @@ def next(request, activity_id):
 
 @login_required
 @csrf_exempt
+def forward(request, activity_id):
+    activity = get_object_or_404(Activity, id=activity_id)
+    session, _ = SessionActivity.objects.get_or_create(user=request.user, activity=activity)
+    a_type = get_activity_type_class(activity.activity_type)()
+
+    if not activity.open:
+        raise PermissionDenied("Cette activité est fermée")
+    if not activity.is_teacher(request.user):
+        raise PermissionDenied("Vous devez être professeur pour avancer dans l'activité")
+    
+    return a_type.forward(activity, session)
+
+
+@login_required
+@csrf_exempt
+def backward(request, activity_id):
+    activity = get_object_or_404(Activity, id=activity_id)
+    session, _ = SessionActivity.objects.get_or_create(user=request.user, activity=activity)
+    a_type = get_activity_type_class(activity.activity_type)()
+
+    if not activity.open:
+        raise PermissionDenied("Cette activité est fermée")
+    if not activity.is_teacher(request.user):
+        raise PermissionDenied("Vous devez être professeur pour avancer dans l'activité")
+    
+    return a_type.backward(activity, session)
+
+
+@login_required
+@csrf_exempt
 def evaluate(request, activity_id, pl_id):
     status = json.loads(request.body.decode())
     activity = get_object_or_404(Activity, id=activity_id)
