@@ -35,14 +35,7 @@ def output(grade, feedback, context=None):
     
     sys.exit(0)
 
-
-
-
-
-
-
-
-
-
-
+def buildsave(filename,dic):
+    with open(filename, "w+") as f:
+        f.write(jsonpickle.encode(dic, unpicklable=False))
 

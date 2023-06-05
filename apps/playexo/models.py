@@ -161,6 +161,14 @@ class SessionExerciseAbstract(models.Model):
         self.context['seed'] = seed if seed else create_seed()
         self.save()
 
+        self.context["user__id"]         = request.user.id if request.user.username != "Anonymous" else 0
+        self.context["user__username"]   = request.user.username
+        self.context["user__firstname"]  = request.user.first_name
+        self.context["user__lastname"]   = request.user.last_name
+        self.context["user__email"]      = request.user.email
+        self.context["session__id"]      = self.id
+        self.context["activity__id"]     = self.pl.id
+        self.context["user__role"]       = "teacher" if request.user.profile.can_load() else "student"
         response = SandboxBuild(dict(self.context), test=test).call()
         if response['status'] < 0:
             msg = ("Une erreur s'est produit sur la sandbox (exit code: %d, env: %s)."

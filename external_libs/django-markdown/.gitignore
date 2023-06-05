@@ -1,0 +1,17 @@
+*.orig
+*.pyc
+*~
+.project
+.pydevproject
+.ropeproject
+.sass-cache
+build
+db.sqlite3
+dist
+docs/_*
+sitegen.egg-info
+todo.txt
+
+.coverage
+.tox/
+django_markdown.egg-info/

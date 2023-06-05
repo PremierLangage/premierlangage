@@ -1,0 +1,16 @@
+*.pyc
+*.egg
+.DS_Store
+/.env
+/build
+/dist
+/MANIFEST
+/venv*
+*.db
+*.egg-info
+htmlcov/
+.tox/
+.coverage
+.cache
+.idea
+.eggs
