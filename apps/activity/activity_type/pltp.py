@@ -222,7 +222,7 @@ class Pltp(AbstractActivityType):
         This method is called when the next button is clicked on an activity.
         :return: A redirection to the main page of the activity accordingly to the function.
         """
-        pls = activity.indexed_pl()
+        pls = activity.learning_path()
         for previous, next in zip(pls, list(pls[1:]) + [None]):
             if previous == session.current_pl:
                 session.current_pl = next
@@ -275,7 +275,7 @@ class Pltp(AbstractActivityType):
             'state': None,
             'title': activity.activity_data['title'],
         }]
-        for pl in activity.indexed_pl():
+        for pl in activity.learning_path():
             pl_list.append({
                 'id':    pl.id,
                 'state': Answer.pl_state(pl, session_activity.user),
@@ -288,17 +288,23 @@ class Pltp(AbstractActivityType):
         })
         return get_template("activity/activity_type/pltp/navigation.html").render(context, request)
     
-    def learning_path(self, activity, session, request):
+    def learning_path_dashboard(self, activity, session, request):
         if activity.is_teacher(request.user) and activity.activity_data.get('learning_index', False) and activity.activity_data.get('learning_path', False):
-            return get_template("activity/activity_type/pltp/learning_path.html").render({"activity": activity}, request)
+            return get_template("activity/activity_type/pltp/learning_path.html").render({
+                "id": activity.id,
+                "title": activity.activity_data["title"],
+                "index": int(activity.activity_data["learning_index"]) + 1,
+                "size": len(ast.literal_eval(activity.activity_data["learning_path"])),
+                "activity": activity
+            }, request)
         else:
             return None
-    
+
     def get_context(self, activity, session, request):
-        learning_path = self.learning_path(activity, session, request)
-        if learning_path:
+        lp_dashboard = self.learning_path_dashboard(activity, session, request)
+        if lp_dashboard:
             return {
-                "learning_path": learning_path,
+                "learning_path": lp_dashboard,
                 "navigation": self.navigation(activity, session, request),
                 "exercise":   session.current_pl_template(request),
             }

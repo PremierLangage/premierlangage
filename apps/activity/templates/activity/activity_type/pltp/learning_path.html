@@ -1,10 +1,10 @@
 <ion-card class="sc-ion-card-ios-h sc-ion-card-ios-s ios hydrated">
     <ion-card-header class="ios hydrated">
         <ion-card-subtitle class="ios hydrated">
-            Activity player
+            Activity player id: {{ id }}
         </ion-card-subtitle>
         <ion-card-title class="ios hydrated">
-            Dashboard of activity: {{ activity.id }}
+            Dashboard: "{{ title }}"
         </ion-card-title>
     </ion-card-header>
     <ion-card-content class="ios card-content-ios hydrated">
@@ -12,7 +12,7 @@
             <a type="button"
                 class="btn btn-primary"
                 style="color: white;"
-                href="{{ url('activity:backward', activity.id) }}">
+                href="{{ url('activity:backward', id) }}">
                 <i class="fas fa-arrow-left"></i>
                 <span class="ion-hide-md-down">Backward</span>
             </a>
@@ -20,11 +20,12 @@
             <a type="button"
                 class="btn btn-primary"
                 style="color: white;"
-                href="{{ url('activity:forward', activity.id) }}">
+                href="{{ url('activity:forward', id) }}">
                 <span class="ion-hide-md-down">Forward</span>
                 <i class="fas fa-arrow-right"></i>
             </a>
 
+            <p class="mt-4">Index {{ index }} of {{ size }}<p>
         </div>
     </ion-card-content>
 </ion-card>

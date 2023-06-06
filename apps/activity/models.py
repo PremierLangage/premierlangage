@@ -83,12 +83,14 @@ class Activity(LTIModel, Position):
         return reversed(res)
 
     def indexed_pl(self):
+        return [i.pl for i in sorted(self.plposition_set.all(), key=lambda i: i.position)]
+    
+    def learning_path(self):
         if self.activity_data.get('learning_path', False) and self.activity_data.get('learning_index', False):
             lst = ast.literal_eval(self.activity_data['learning_path'])
             sub_lst = lst[int(self.activity_data['learning_index'])]
             return [item.pl for pos, item in enumerate(sorted(self.plposition_set.all(), key=lambda i: i.position)) if pos in sub_lst]
-        else:
-            return [i.pl for i in sorted(self.plposition_set.all(), key=lambda i: i.position)]  
+        return [i.pl for i in sorted(self.plposition_set.all(), key=lambda i: i.position)]
 
     def indexed_activities(self):
         return Activity.objects.filter(parent=self).order_by("position")
