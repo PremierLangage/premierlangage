@@ -73,7 +73,7 @@
 
 <script type='text/javascript'>
     $(function () {
-        Activity.withEval("{{ url('activity:evaluate', activity_id__, pl_id__) }}", {{__components|tojson|safe }});
+        Activity.withEval("{{ url('activity:evaluate', activity_id__, pl_id__) }}", {{ __components|tojson|safe }});
     });
     var container = document.getElementById("fullscreen_container");
     var fullscreen = document.getElementById("fullscreen_button");
