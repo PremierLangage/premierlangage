@@ -1,10 +1,15 @@
-<ion-card class="exercise">
+<ion-card class="exercise d-flex flex-column" id="fs">
+    <span class="position-absolute" style="z-index: 1; right: 0 !important;">
+        <button class="btn btn-light m-2" id="fullscreen">
+            <i class="fas fa-expand"></i>
+        </button>
+    </span>
     <ion-card-header class="exercise__header">
         <ion-card-subtitle class='exercise__author'>{% if author %}{{ author }}{% endif %}</ion-card-subtitle>
         <ion-card-title class='exercise__title'>{% if title %}{{ title }}{% endif%}</ion-card-title>
     </ion-card-header>
     <!-- BODY -->
-    <ion-card-content class="exercise__body">
+    <ion-card-content class="exercise__body" style="height: 100%">
         <!-- INSTRUCTIONS -->
         <div class="exercise__instructions">
             {% if text %}
@@ -17,7 +22,7 @@
         </div>
         <!-- FORM -->
         {% csrf_token %}
-        <div class="exercise__form">
+        <div class="exercise__form d-flex flex-column">
             {% block form %}{{ form|safe }}{% endblock %}
         </div>
         <br/>
@@ -62,6 +67,31 @@
 <script type='text/javascript'>
     $(function () {
         Activity.withTest("{{id__}}", "{{session__.id}}", {{ __components|tojson|safe }});
+    });
+    let doc = document.getElementById("fs");
+    let fullscreen = document.getElementById("fullscreen");
+
+    fullscreen.addEventListener("click", () => {
+        if (fullscreen.innerHTML == `<i class="fas fa-compress"></i>`) {
+            document.exitFullscreen();
+            fs.style.background = 'none';
+            fullscreen.innerHTML = `<i class="fas fa-expand"></i>`;
+        } else {
+            if (doc.requestFullscreen) {
+                doc.requestFullscreen();
+            }
+            else if (doc.msRequestFullscreen) {
+                doc.msRequestFullscreen();
+            }
+            else if (doc.mozRequestFullscreen) {
+                doc.mozRequestFullscreen();
+            }
+            else if (doc.webkitRequestFullscreen) {
+                doc.webkitRequestFullscreen();
+            }
+            fs.style.background = 'white';
+            fullscreen.innerHTML = `<i class="fas fa-compress"></i>`;
+        }
     });
 </script>
 
