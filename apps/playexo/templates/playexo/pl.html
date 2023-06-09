@@ -73,10 +73,10 @@
 
 <script type='text/javascript'>
     $(function () {
-        Activity.withEval("{{ url('activity:evaluate', activity_id__, pl_id__) }}", {{ __components|tojson|safe }});
+        Activity.withTest("{{id__}}", "{{session__.id}}", {{ __components|tojson|safe }});
     });
-    let doc = document.getElementById("fs");
-    let fullscreen = document.getElementById("fullscreen");
+    var container = document.getElementById("fullscreen_container");
+    var fullscreen = document.getElementById("fullscreen_button");
 
     fullscreen.addEventListener("click", () => {
         if (fullscreen.innerHTML == `<i class="fas fa-compress"></i>`) {
@@ -84,21 +84,20 @@
             fs.style.background = 'none';
             fullscreen.innerHTML = `<i class="fas fa-expand"></i>`;
         } else {
-            if (doc.requestFullscreen) {
-                doc.requestFullscreen();
+            if (container.requestFullscreen) {
+                container.requestFullscreen();
             }
-            else if (doc.msRequestFullscreen) {
-                doc.msRequestFullscreen();
+            else if (container.msRequestFullscreen) {
+                container.msRequestFullscreen();
             }
-            else if (doc.mozRequestFullscreen) {
-                doc.mozRequestFullscreen();
+            else if (container.mozRequestFullscreen) {
+                container.mozRequestFullscreen();
             }
-            else if (doc.webkitRequestFullscreen) {
-                doc.webkitRequestFullscreen();
+            else if (container.webkitRequestFullscreen) {
+                container.webkitRequestFullscreen();
             }
             fs.style.background = 'white';
             fullscreen.innerHTML = `<i class="fas fa-compress"></i>`;
         }
     });
-
 </script>

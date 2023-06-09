@@ -1,6 +1,6 @@
-<ion-card class="exercise d-flex flex-column" id="fs">
+<ion-card class="exercise d-flex flex-column" id="fullscreen_container">
     <span class="position-absolute" style="z-index: 1; right: 0 !important;">
-        <button class="btn btn-light m-2" id="fullscreen">
+        <button class="btn btn-light m-2" id="fullscreen_button">
             <i class="fas fa-expand"></i>
         </button>
     </span>
@@ -68,8 +68,8 @@
     $(function () {
         Activity.withTest("{{id__}}", "{{session__.id}}", {{ __components|tojson|safe }});
     });
-    let doc = document.getElementById("fs");
-    let fullscreen = document.getElementById("fullscreen");
+    var container = document.getElementById("fullscreen_container");
+    var fullscreen = document.getElementById("fullscreen_button");
 
     fullscreen.addEventListener("click", () => {
         if (fullscreen.innerHTML == `<i class="fas fa-compress"></i>`) {
@@ -77,22 +77,20 @@
             fs.style.background = 'none';
             fullscreen.innerHTML = `<i class="fas fa-expand"></i>`;
         } else {
-            if (doc.requestFullscreen) {
-                doc.requestFullscreen();
+            if (container.requestFullscreen) {
+                container.requestFullscreen();
             }
-            else if (doc.msRequestFullscreen) {
-                doc.msRequestFullscreen();
+            else if (container.msRequestFullscreen) {
+                container.msRequestFullscreen();
             }
-            else if (doc.mozRequestFullscreen) {
-                doc.mozRequestFullscreen();
+            else if (container.mozRequestFullscreen) {
+                container.mozRequestFullscreen();
             }
-            else if (doc.webkitRequestFullscreen) {
-                doc.webkitRequestFullscreen();
+            else if (container.webkitRequestFullscreen) {
+                container.webkitRequestFullscreen();
             }
             fs.style.background = 'white';
             fullscreen.innerHTML = `<i class="fas fa-compress"></i>`;
         }
     });
 </script>
-
-
