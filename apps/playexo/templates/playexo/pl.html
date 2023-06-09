@@ -1,5 +1,5 @@
-<ion-card class="exercise" id="fs" style="background-color: white;">
-    <span class="position-relative float-right" style="z-index: 1">
+<ion-card class="exercise d-flex flex-column" id="fs">
+    <span class="position-absolute" style="z-index: 1; right: 0 !important;">
         <button class="btn btn-light m-2" id="fullscreen">
             <i class="fas fa-expand"></i>
         </button>
@@ -9,7 +9,7 @@
         <ion-card-title class=" exercise__header">{% if title %}{{ title }}{% endif %}</ion-card-title>
     </ion-card-header>
     <!-- BODY -->
-    <ion-card-content class="exercise__body">
+    <ion-card-content class="exercise__body" style="height: 100%">
         <!-- INSTRUCTIONS -->
         <div class="exercise__instructions">
             {% if text %}
@@ -22,7 +22,7 @@
         </div>
         <!-- FORM -->
         {% csrf_token %}
-        <div class="exercise__form">
+        <div class="exercise__form d-flex flex-column">
             {% block form %}{{ form|safe }}{% endblock %}
         </div>
         <br>
@@ -80,19 +80,8 @@
 
     fullscreen.addEventListener("click", () => {
         if (fullscreen.innerHTML == `<i class="fas fa-compress"></i>`) {
-            if (doc.exitFullscreen) {
-                doc.exitFullscreen();
-            }
-            else if (doc.msexitFullscreen) {
-                doc.msexitFullscreen();
-            }
-            else if (doc.mozexitFullscreen) {
-                doc.mozexitFullscreen();
-            }
-            else if (doc.webkitexitFullscreen) {
-                doc.webkitexitFullscreen();
-            }
-            //fs.style.background = 'none';
+            document.exitFullscreen();
+            fs.style.background = 'none';
             fullscreen.innerHTML = `<i class="fas fa-expand"></i>`;
         } else {
             if (doc.requestFullscreen) {
