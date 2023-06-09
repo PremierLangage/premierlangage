@@ -81,7 +81,7 @@
     fullscreen.addEventListener("click", () => {
         if (fullscreen.innerHTML == `<i class="fas fa-compress"></i>`) {
             document.exitFullscreen();
-            fs.style.background = 'none';
+            container.style.background = 'none';
             fullscreen.innerHTML = `<i class="fas fa-expand"></i>`;
         } else {
             if (container.requestFullscreen) {
@@ -96,7 +96,7 @@
             else if (container.webkitRequestFullscreen) {
                 container.webkitRequestFullscreen();
             }
-            fs.style.background = 'white';
+            container.style.background = 'white';
             fullscreen.innerHTML = `<i class="fas fa-compress"></i>`;
         }
     });
