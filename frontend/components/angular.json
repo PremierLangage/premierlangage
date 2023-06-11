@@ -25,14 +25,16 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              { "glob": "**/*",  "input": "./node_modules/ngx-monaco-editor/assets/monaco", "output": "./assets/monaco/" }
+              { "glob": "**/*",  "input": "./node_modules/ngx-monaco-editor/assets/monaco", "output": "./assets/monaco/" },
+              { "glob": "**/*", "input": "./node_modules/reveal.js/dist/theme", "output": "./assets/reveal/theme"}
             ],
             "styles": [
               "src/styles.scss",
               "node_modules/jsxgraph/distrib/jsxgraph.css",
               "node_modules/node-mathquill/build/mathquill.css",
               "node_modules/mathlive/dist/mathlive.core.css",
-              "node_modules/mathlive/dist/mathlive.css"
+              "node_modules/mathlive/dist/mathlive.css",
+              "node_modules/reveal.js/dist/reveal.css"
             ],
             "scripts": [
               "src/assets/scripts/components.js",

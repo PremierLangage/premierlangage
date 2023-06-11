@@ -44,7 +44,8 @@ SELECTORS = {
     "SortList":        "c-sort-list",
     "Text":            "c-text",
     "TransfertList":   "c-transfert-list",
-    "EvalGrid":        "c-eval-grid"
+    "EvalGrid":        "c-eval-grid",
+    "RevealViewer":    "c-reveal-viewer"
 }
 
 
@@ -351,3 +352,11 @@ class EvalGrid(Component):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.selector = 'c-eval-grid'
+
+
+
+class RevealViewer(Component):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.selector = 'c-reveal-viewer'

@@ -24,7 +24,8 @@ class ComponentFramework {
             "SortList": "c-sort-list",
             "Text": "c-text", // TODO deprecated
             "TextSelect": "c-text-select",
-            "EvalGrid": 'c-eval-grid'
+            "EvalGrid": "c-eval-grid",
+            "RevealViewer": "c-reveal-viewer"
         };
 
         const O = document.querySelector(`[cid="${component.cid}"]`);
