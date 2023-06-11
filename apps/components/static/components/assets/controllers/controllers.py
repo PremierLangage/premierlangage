@@ -227,3 +227,11 @@ class EvalGrid(Component):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.selector = 'c-eval-grid'
+
+
+class RevealViewer(Component):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.selector = 'c-reveal-grid'
+
