@@ -26,7 +26,8 @@
               "src/favicon.ico",
               "src/assets",
               { "glob": "**/*",  "input": "./node_modules/ngx-monaco-editor/assets/monaco", "output": "./assets/monaco/" },
-              { "glob": "**/*", "input": "./node_modules/reveal.js/dist/theme", "output": "./assets/reveal/theme"}
+              { "glob": "**/*", "input": "./node_modules/reveal.js/dist/theme", "output": "./assets/reveal/theme"},
+              { "glob": "**/*.css", "input": "./node_modules/reveal.js/plugin/highlight", "output": "./assets/highlight" }
             ],
             "styles": [
               "src/styles.scss",
@@ -67,7 +68,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "6mb"
+                  "maximumError": "8mb"
                 }
               ]
             }

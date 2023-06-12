@@ -1,4 +1,8 @@
 /*!
+   * reveal.js plugin that adds syntax highlight support.
+   */
+
+/*!
  * The reveal.js markdown plugin. Handles parsing of
  * markdown inside of presentations as well as loading
  * of external markdown documents.
