@@ -27,8 +27,8 @@ def get_answers(activity):
     answers = dict()
     
     for user in activity.student.all():
-        for __, pl in enumerate(activity.indexed_pl()):
-            last_answer = Answer.last(pl, user)
+        for pl in activity.indexed_pl():
+            last_answer = Answer.last_valid(pl, user)
             if last_answer:
                 for question in last_answer.answers.values():
                     cid = question['cid']
@@ -51,7 +51,7 @@ def get_students(activity):
     for user in activity.student.all():
         tp = list()
         for __, pl in enumerate(activity.indexed_pl()):
-            last_ans = Answer.last(pl, user)
+            last_ans = Answer.last_valid(pl, user)
             answers = []
             if last_ans is not None:   
                 for question in last_ans.answers.values():

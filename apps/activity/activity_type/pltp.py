@@ -16,7 +16,9 @@ from operator import truediv
 from traceback import print_tb
 
 from activity.activity_type.survey_utils import get_possible_answers, get_answers, get_students, survey_dashboard
+import logging
 
+logger = logging.getLogger(__name__)
 
 class Pltp(AbstractActivityType):
 
@@ -347,7 +349,7 @@ class Pltp(AbstractActivityType):
                 response['Content-Disposition'] = 'attachment;filename=reponses.csv'
             except BaseException as e:
                 import traceback
-                print(traceback.format_exc())
+                logger.error(traceback.format_exc())
                 raise e
         else:
             csv = "username,firstname,lastname,email," + ''.join(

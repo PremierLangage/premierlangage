@@ -378,6 +378,11 @@ class Answer(models.Model):
     def last(pl, user):
         answers = Answer.objects.filter(pl=pl, user=user).order_by("-date")
         return None if not answers else answers[0]
+    
+    @staticmethod
+    def last_valid(pl, user):
+        answers = Answer.objects.filter(pl=pl, user=user, grade__gte=0).order_by("-date")
+        return None if not answers else answers[0]
 
     @staticmethod
     def pl_state(pl, user):
