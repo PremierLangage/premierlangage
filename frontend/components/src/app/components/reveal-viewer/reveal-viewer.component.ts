@@ -5,6 +5,7 @@ import { DomSanitizer, SafeHtml } from "@angular/platform-browser";
 
 import Reveal from "reveal.js";
 import Markdown from 'reveal.js/plugin/markdown/markdown.esm.js';
+import Highlight from 'reveal.js/plugin/highlight/highlight.js';
 
 
 @Component({
@@ -30,7 +31,7 @@ export class RevaelViwerComponent extends AbstractComponent implements OnDestroy
             this.changeDetectorRef.markForCheck();
             if (!this.reveal) {
                 setTimeout(() => {
-                    this.reveal = new Reveal(document.querySelector('.r-container'), { plugins: [ Markdown ] });
+                    this.reveal = new Reveal(document.querySelector('.r-container'), { plugins: [ Markdown, Highlight ] });
                     this.reveal.initialize();
                 }, 100);
             }
