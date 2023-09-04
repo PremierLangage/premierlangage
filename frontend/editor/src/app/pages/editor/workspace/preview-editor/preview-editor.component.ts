@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { RunScriptsDirective } from 'src/app/shared/directives/run-scripts.directive';
 import { isMarkdown, isSVG, isPL } from '../../shared/models/filters.model';
 import { IResource } from '../../shared/models/resources.model';
+import { NotificationService } from 'src/app/core/notification.service';
 
 @Component({
     // tslint:disable-next-line: component-selector
@@ -26,9 +27,30 @@ export class PreviewEditorComponent implements OnInit, OnDestroy {
 
     private openSubscription: Subscription;
 
-    constructor() { }
+    constructor(
+        private readonly notification : NotificationService,
+    ) { }
 
     ngOnInit() {
+        let browserInfo = navigator.userAgent;
+        let browser : string;
+        if (browserInfo.includes('Opera') || browserInfo.includes('Opr')) {
+            browser = 'Opera';
+        } else if (browserInfo.includes('Edg')) {
+            browser = 'Edge';
+        } else if (browserInfo.includes('Chrome')) {
+            browser = 'Chrome';
+        } else if (browserInfo.includes('Safari')) {
+            browser = 'Safari';
+        } else if (browserInfo.includes('Firefox')) {
+            browser = 'Firefox'
+        } else {
+            browser = 'unknown'
+        }
+        
+        if (browser === 'Firefox') {
+            this.notification.warning('Attention, la fonction de prévisualisation est instable sur Firefox. Veuillez utiliser un autre navigateur.');
+        }
         this.open(this.editor.resource);
         this.openSubscription = this.editor.onDidOpen.subscribe(e => {
             this.open(e.resource);
