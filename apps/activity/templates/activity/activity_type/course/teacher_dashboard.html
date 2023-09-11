@@ -3,9 +3,15 @@
 <link rel="stylesheet" href="{{ static('activity/css/courses.css') }}"/>
 {% endblock %}
 {% block content %}
+{% if not indices_student %}
+<script>
+    sessionStorage.setItem("DisplayToastNoData", "1");
+    window.location.href = "/activity/play/{{ course_id }}/";
+</script>
+{% else %}
 <ion-card>
     <ion-card-header>
-        <ion-card-title>{{ name }}</ion-card-title>
+        <ion-card-title>{{ name }}</ion-card-title>
     </ion-card-header>
     {% if groups %}
     <form action="/activity/dashboard/{{ course_id }}/" method="post">
@@ -34,7 +40,7 @@
                 <thead>
                     <tr>
                         <th>Élève</th>
-                        <th colspan="{{student[0].activities|length }}">Activités</th>
+                        <th colspan="{{ student[0].activities|length - 1 }}">Activités</th>
                         <th>Notes : {{ student[-1].average }}</th>
                     </tr>
                 </thead>
@@ -54,6 +60,7 @@
                             </a>
                         </td>
                         {% for activity in stud.activities %}
+                        {% if activity.name %}
                         <td>
                             <p>{{ activity.name }}</p>
                             <a class="progress progress-summary" href="/activity/dashboard/{{ activity.id }}/">
@@ -68,6 +75,7 @@
                                 {% endfor %}
                             </a>
                         </td>
+                        {% endif %}
                         {% endfor %}
                         <td>
                             <p>{{ stud.activities[-1]["average"] }}</p>
@@ -89,4 +97,5 @@
         </section>
     </ion-card-content>
 </ion-card>
+{% endif %}
 {% endblock %}

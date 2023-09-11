@@ -3,6 +3,19 @@
 <link rel="stylesheet" href="{{ static('activity/css/courses.css') }}"/>
 {% endblock %}
 {% block content %}
+<script>
+    if (sessionStorage.getItem("DisplayToastNoData") === "1") {
+        sessionStorage.setItem("DisplayToastNoData", "0");
+        window.onload = function () {
+            const toast = document.createElement('ion-toast');
+            toast.message = 'Aucune donnée n\'est disponible pour ce cours';
+            toast.duration = 2000;
+            toast.color = 'danger';
+            document.body.appendChild(toast);
+            return toast.present();
+        }
+    }
+</script>
 <ion-card>
     <ion-card-header>
         {% if (instructor or request.user.profile.is_admin()) and smalls|length > 0 and user in teacher %}
