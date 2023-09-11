@@ -206,6 +206,15 @@ class Course(AbstractActivityType):
             part_query = activity.student.filter(groups__name=request.POST['list_group'])
             student_list = part_query.exclude(id__in=tl_id)
 
+        if not student_list:
+            return render(request, 'activity/activity_type/course/teacher_dashboard.html', {
+                'state': [i for i in State if i != State.ERROR],
+                'name': activity.name,
+                'student': None,
+                'range_tp': range(len(activities)),
+                'course_id': activity.id,
+                'groups': groups,
+            })
         grades_query = HighestGrade.objects.filter(activity__in=activities,
                                                    pl__in=all_pl,
                                                    user__in=student_list)
