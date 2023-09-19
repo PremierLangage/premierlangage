@@ -167,24 +167,40 @@ class Activity(LTIModel, Position):
 
         Return None, False if parameters are missing in lti_launch."""
         course_id = lti_launch["context_id"]
+        custom_course_name = lti_launch.get("custom_course_name")
         course_name = lti_launch.get("context_title")
         course_label = lti_launch.get("context_label")
         consumer = lti_launch['oauth_consumer_key']
         if not (course_id and course_name and course_label and consumer):
             return None, False
         
-        try:
-            course = cls.objects.get(consumer_id=course_id, consumer=consumer)
-            created = False
-        except cls.DoesNotExist:
-            course = cls.objects.create(consumer=consumer, consumer_id=course_id, name=course_name,
-                                        activity_data={
-                                            "label": course_label
-                                        },
-                                        activity_type="course")
-            logger.info("New course created: %d - '%s' (%s:%s)"
-                        % (course.pk, course.name, consumer, course_id))
-            created = True
+        if custom_course_name:
+            logger.warning("Course name was set manually to '%s' in LTI launch." % custom_course_name)
+            try:
+                course = cls.objects.get(consumer_id=course_id+custom_course_name, consumer=consumer)
+                created = False
+            except cls.DoesNotExist:
+                course = cls.objects.create(consumer=consumer, consumer_id=course_id+custom_course_name, name=custom_course_name,
+                                            activity_data={
+                                                "label": course_label
+                                            },
+                                            activity_type="course")
+                logger.info("New course created: %d - '%s' (%s:%s)"
+                            % (course.pk, course.name, consumer, course_id))
+                created = True
+        else:
+            try:
+                course = cls.objects.get(consumer_id=course_id, consumer=consumer)
+                created = False
+            except cls.DoesNotExist:
+                course = cls.objects.create(consumer=consumer, consumer_id=course_id, name=course_name,
+                                            activity_data={
+                                                "label": course_label
+                                            },
+                                            activity_type="course")
+                logger.info("New course created: %d - '%s' (%s:%s)"
+                            % (course.pk, course.name, consumer, course_id))
+                created = True
         
         course.add_student_to_all(user)
         for role in lti_launch["roles"]:

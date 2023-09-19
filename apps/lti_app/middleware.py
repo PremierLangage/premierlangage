@@ -70,85 +70,9 @@ class LTIAuthMiddleware(MiddlewareMixin):
                 request.user = user
                 auth.login(request, user)
                 
-                resource_link_id = request.POST.get('resource_link_id')
-                lti_launch = {
-                    'context_id':                             request.POST.get('context_id'),
-                    'context_label':                          request.POST.get('context_label'),
-                    'context_title':                          request.POST.get('context_title'),
-                    'context_type':                           request.POST.get('context_type'),
-                    'custom_canvas_account_id':               request.POST.get(
-                        'custom_canvas_account_id'),
-                    'custom_canvas_account_sis_id':           request.POST.get(
-                        'custom_canvas_account_sis_id'),
-                    'custom_canvas_api_domain':               request.POST.get(
-                        'custom_canvas_api_domain'),
-                    'custom_canvas_course_id':                request.POST.get(
-                        'custom_canvas_course_id'),
-                    'custom_canvas_enrollment_state':         request.POST.get(
-                        'custom_canvas_enrollment_state'),
-                    'custom_canvas_membership_roles':         request.POST.get(
-                        'custom_canvas_membership_roles', '').split(','),
-                    'custom_canvas_user_id':                  request.POST.get(
-                        'custom_canvas_user_id'),
-                    'custom_canvas_user_login_id':            request.POST.get(
-                        'custom_canvas_user_login_id'),
-                    'launch_presentation_css_url':            request.POST.get(
-                        'launch_presentation_css_url'),
-                    'launch_presentation_document_target':    request.POST.get(
-                        'launch_presentation_document_target'),
-                    'launch_presentation_height':             request.POST.get(
-                        'launch_presentation_height'),
-                    'launch_presentation_locale':             request.POST.get(
-                        'launch_presentation_locale'),
-                    'launch_presentation_return_url':         request.POST.get(
-                        'launch_presentation_return_url'),
-                    'launch_presentation_width':              request.POST.get(
-                        'launch_presentation_width'),
-                    'lis_course_offering_sourcedid':          request.POST.get(
-                        'lis_course_offering_sourcedid'),
-                    'lis_outcome_service_url':                request.POST.get(
-                        'lis_outcome_service_url'),
-                    'lis_result_sourcedid':                   request.POST.get(
-                        'lis_result_sourcedid'),
-                    'lis_person_contact_email_primary':       request.POST.get(
-                        'lis_person_contact_email_primary'),
-                    'lis_person_name_family':                 request.POST.get(
-                        'lis_person_name_family'),
-                    'lis_person_name_full':                   request.POST.get(
-                        'lis_person_name_full'),
-                    'lis_person_name_given':                  request.POST.get(
-                        'lis_person_name_given'),
-                    'lis_person_sourcedid':                   request.POST.get(
-                        'lis_person_sourcedid'),
-                    'lti_message_type':                       request.POST.get('lti_message_type'),
-                    'oauth_consumer_key':                     request.POST.get(
-                        'oauth_consumer_key'),
-                    'resource_link_description':              request.POST.get(
-                        'resource_link_description'),
-                    'resource_link_id':                       resource_link_id,
-                    'resource_link_title':                    request.POST.get(
-                        'resource_link_title'),
-                    'roles':                                  request.POST.get('roles', '').split(
-                        ','),
-                    'selection_directive':                    request.POST.get(
-                        'selection_directive'),
-                    'tool_consumer_info_product_family_code': request.POST.get(
-                        'tool_consumer_info_product_family_code'),
-                    'tool_consumer_info_version':             request.POST.get(
-                        'tool_consumer_info_version'),
-                    'tool_consumer_instance_contact_email':   request.POST.get(
-                        'tool_consumer_instance_contact_email'),
-                    'tool_consumer_instance_description':     request.POST.get(
-                        'tool_consumer_instance_description'),
-                    'tool_consumer_instance_guid':            request.POST.get(
-                        'tool_consumer_instance_guid'),
-                    'tool_consumer_instance_name':            request.POST.get(
-                        'tool_consumer_instance_name'),
-                    'tool_consumer_instance_url':             request.POST.get(
-                        'tool_consumer_instance_url'),
-                    'user_id':                                request.POST.get('user_id'),
-                    'user_image':                             request.POST.get('user_image'),
-                }
+                lti_launch = request.POST.copy()
+                lti_launch['roles'] = lti_launch.get('roles', '').split(',')
+                lti_launch['custom_canvas_membership_roles'] = lti_launch.get('custom_canvas_membership_roles', '').split(',')
                 
                 # Creating and updating data according to lti_launch
                 user.profile.set_role_lti(lti_launch)
