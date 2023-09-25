@@ -62,7 +62,7 @@ class ActivityOutcome(LTIOutcome):
         sourcedid = lti_launch["lis_result_sourcedid"]
         activity_id = lti_launch['resource_link_id']
         if not (sourcedid and outcome_url and activity_id and consumer):
-            raise Http404("Could not create ActivityOutcome: on of these parameters are missing:"
+            raise Http404("Could not create ActivityOutcome: one of these parameters are missing:"
                           + "[lis_result_sourcedid, lis_outcome_service_url, resource_link_id, "
                           + "oauth_consumer_key]")
         
