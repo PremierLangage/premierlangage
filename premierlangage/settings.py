@@ -18,7 +18,7 @@ APPS_DIR = os.path.realpath(os.path.join(BASE_DIR, APP_DIRNAME))
 SECRET_KEY = "o!m$n&s4=kcftm1de1m+7!36a=8x38wrr)m9)i@ru7j-*c7vgm"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # List of Allowed Hosts
 ALLOWED_HOSTS = ['127.0.0.1']
@@ -45,6 +45,7 @@ PREREQ_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_cas_ng',
 ]
 
 PROJECT_APPS = [
@@ -76,6 +77,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django_cas_ng.middleware.CASMiddleware',
 ]
 
 # Cookies settings
@@ -192,6 +194,7 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'lti_app.backends.LTIAuthBackend',
+    'django_cas_ng.backends.CASBackend',
 )
 
 LTI_OAUTH_CREDENTIALS = {
@@ -311,7 +314,7 @@ USE_L10N = True
 USE_TZ = True
 
 # Sandbox url:
-SANDBOX = 'http://127.0.0.1:7000'
+SANDBOX = 'https://pl-sandbox-preprod.u-pem.fr'
 
 # Static files (CSS, JavaScript, Images)
 STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, 'static'))
@@ -342,6 +345,14 @@ PARSERS_MODULE = 'loader.parsers'
 
 # Default home directory name for pl users
 HOME = "Yggdrasil"
+
+# Cas settings
+CAS_SERVER_URL = 'https://cas.univ-eiffel.fr/'
+CAS_LOGOUT_COMPLETELY = True
+CAS_REDIRECT_URL = '/activity/play/0/'
+CAS_RETRY_LOGIN = True
+CAS_VERSION = '3'
+LOGOUT = 'https://cas.univ-eiffel.fr/logout'
 
 # Allow a file '[PL_ROOT]/server/premierlangage/premierlangage/config.py' to override any of the
 # settings above.
