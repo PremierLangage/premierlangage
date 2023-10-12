@@ -349,8 +349,8 @@ HOME = "Yggdrasil"
 # Cas settings
 CAS_SERVER_URL = 'https://cas.univ-eiffel.fr/'
 CAS_LOGOUT_COMPLETELY = True
-CAS_REDIRECT_URL = '/activity/play/0/'
-CAS_RETRY_LOGIN = True
+CAS_REDIRECT_URL = '/'
+CAS_RETRY_LOGIN = False
 CAS_VERSION = '3'
 LOGOUT = 'https://cas.univ-eiffel.fr/logout'
 
