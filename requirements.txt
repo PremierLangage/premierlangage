@@ -36,6 +36,7 @@ elasticsearch
 urllib3<2,>=1.26.2
 plotly
 pandas
+django_cas_ng
 ./external_libs/django-enumfields
 ./external_libs/django-markdown
 ./external_libs/gitcmd
