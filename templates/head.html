@@ -2,9 +2,14 @@
 <link rel="shortcut icon" href="{{ static('favicon.ico') }}"/>
 
 <!-- Font Awesome http://www.fontawesome.com -->
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
-      integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+<link rel="stylesheet" href="{{ static('dependencies/fontawesome.css') }}"
+      integrity="sha384-a1X6GQQNAK9rmvj0YOgQy8UNOcW1L6tdsCkkM1AuZO2ZALTBvOKeZJGb9bwi8SOp"
       crossorigin="anonymous">
+
+<!-- JQuery https://jquery.com/ -->
+<script src="{{ static('dependencies/jquery-3.3.1.min.js') }}"
+integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+crossorigin="anonymous"></script>
 
 <!-- MathJax http://docs.mathjax.org/en/latest/start.html -->
 <script type="text/x-mathjax-config">
@@ -16,33 +21,31 @@
     });
 </script>
 <script type="text/javascript" 
-        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
+        src="{{ static('dependencies/mathjax.js') }}"
         async></script>
 
-<!-- JQuery https://jquery.com/ -->
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"
-        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
+<!-- Ionic -->
+<link rel="stylesheet" href="{{ static('dependencies/ionic.bundle.css') }}"/>
+<script type="module" src="{{ static('dependencies/ionic.esm.js') }}"></script>
+<script nomodule="" src="{{ static('dependencies/ionic.js') }}"></script>
+<script type="module" src="{{ static('dependencies/ionicons.esm.js') }}"></script>
+<script nomodule="" src="{{ static('dependencies/ionicons.js') }}"></script>
+<script src="{{ static('dependencies/custom-elements.min.js') }}"></script>
+
 
 <!-- Bootstrap https://getbootstrap.com/ -->
 <link rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      href="{{ static('dependencies/bootstrap.min.css') }}"
+      integrity="sha384-/9GfSlDRORIPLHkdKHRFRtpGWXiTttjD6m7RgZ9Og+5sDJk9ezOxnF+xoK019Bmf"
       crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+<script src="{{ static('dependencies/popper.min.js') }}"
+        integrity="sha384-A3H63AwP80inx0nFBQ16KVtjFgNRaA2QbKAwUARdd/L3XItjgKKYD1dUNYC+kV3e"
         crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+<script src="{{ static('dependencies/bootstrap.min.js') }}"
+        integrity="sha384-wfhJ+zf7x8Yo3h6wGOVyeWbW+Z62c1RDwPMSNqK4Y3RLGsiv2tIyPRwBa9CTTm8B"
         crossorigin="anonymous"></script>
 
-<!-- Ionic -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core@4.7.4/css/ionic.bundle.css"/>
-<script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core@4.7.4/dist/ionic/ionic.esm.js"></script>
-<script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core@4.7.4/dist/ionic/ionic.js"></script>
-<script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@4.6.3/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule="" src="https://cdn.jsdelivr.net/npm/ionicons@4.6.3/dist/ionicons/ionicons.js"></script>
-<script src="https://unpkg.com/@webcomponents/custom-elements"></script>
+
 
 <!-- APP -->
 <link rel="stylesheet" href="{{ static('css/theme.css') }}"/>
