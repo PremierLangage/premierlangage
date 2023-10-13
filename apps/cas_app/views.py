@@ -5,7 +5,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 @csrf_exempt
-def login(request, **kwargs):
+def login(request, activity_id, **kwargs):
+    request.session['attributes'] = {'activity_id': activity_id}
     return log_waths_happening(request, baseviews.LoginView.as_view()(request, **kwargs))
 
 
