@@ -38,6 +38,7 @@ class MyCASBackend(CASBackend):
         print(user.first_name)
         print(user.last_name)
         print(user.email)
+        user.save()
         return user
     
     def user_can_authenticate(self, user):
