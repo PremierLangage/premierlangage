@@ -7,10 +7,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 class MyCASBackend(CASBackend):
-    def user_can_authenticate(self, user):
-        print("--------------------------- user_can_authenticate --------------------------------")
-        print(user)
-        raise Exception("user_can_authenticate")
 
     def bad_attributes_reject(self, request, username, attributes):
         print("--------------------------- bad_attributes_reject --------------------------------")
@@ -33,4 +29,18 @@ class MyCASBackend(CASBackend):
 
     def configure_user(self, user: User) -> User:
         print("--------------------------- configure_user --------------------------------")
-        return super().configure_user(user)
+        firstname, lastname = ''.join(i for i in user.username if not i.isdigit()).split(".")
+        user.first_name = firstname
+        user.last_name = lastname
+        user.email = user.username + "@edu.univ-eiffel.fr"
+        print(user)
+        print(user.username)
+        print(user.first_name)
+        print(user.last_name)
+        print(user.email)
+        return user
+    
+    def user_can_authenticate(self, user):
+        print("--------------------------- user_can_authenticate --------------------------------")
+        print(user, "can authenticate")
+        raise Exception("user_can_authenticate")
