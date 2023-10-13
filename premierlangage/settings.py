@@ -195,7 +195,7 @@ AUTH_PASSWORD_VALIDATORS = [
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'lti_app.backends.LTIAuthBackend',
-    'django_cas_ng.backends.CASBackend',
+    'cas_app.backends.MyCASBackend',
 )
 
 LTI_OAUTH_CREDENTIALS = {
@@ -350,9 +350,10 @@ HOME = "Yggdrasil"
 # Cas settings
 CAS_SERVER_URL = 'https://cas.univ-eiffel.fr/'
 CAS_LOGOUT_COMPLETELY = True
-CAS_REDIRECT_URL = '/'
+CAS_REDIRECT_URL = '/activity/play/0/'
 CAS_RETRY_LOGIN = False
 CAS_VERSION = '3'
+CAS_CREATE_USER = True
 LOGOUT = 'https://cas.univ-eiffel.fr/logout'
 
 # Allow a file '[PL_ROOT]/server/premierlangage/premierlangage/config.py' to override any of the
