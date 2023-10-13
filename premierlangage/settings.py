@@ -60,6 +60,7 @@ PROJECT_APPS = [
     'activity',
     'git',
     'progress',
+    'cas_app',
 ]
 
 INSTALLED_APPS = PROJECT_APPS + PREREQ_APPS

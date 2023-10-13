@@ -18,7 +18,6 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
-import django_cas_ng.views
 
 from activity.views import index
 
@@ -36,8 +35,7 @@ urlpatterns = [
     url(r'^ask/', include('apps.qa.urls', namespace='ask')),
     url(r'^api/git/', include("apps.git.urls", namespace='git')),
     url(r'^admin/', admin.site.urls),
-    url(r'^accounts/login', django_cas_ng.views.LoginView.as_view(), name='cas_ng_login'),
-    url(r'^accounts/logout', django_cas_ng.views.LogoutView.as_view(), name='cas_ng_logout'),
+    url(r'^cas/', include('apps.cas_app.urls', namespace='cas')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
