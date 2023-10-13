@@ -11,24 +11,24 @@ class MyCASBackend(CASBackend):
         return True
 
     def bad_attributes_reject(self, request, username, attributes):
-        logger.debug("--------------------------- bad_attributes_reject --------------------------------")
-        logger.debug(attributes)
-        logger.debug(username)
-        logger.debug(request)
+        print("--------------------------- bad_attributes_reject --------------------------------")
+        print(attributes)
+        print(username)
+        print(request)
         return None
     
     def authenticate(self, request, ticket, service):
-        logger.debug("--------------------------- authenticate --------------------------------")
-        logger.debug(ticket)
-        logger.debug(service)
-        logger.debug(request)
+        print("--------------------------- authenticate --------------------------------")
+        print(ticket)
+        print(service)
+        print(request)
         user = super().authenticate(request, ticket, service)
-        logger.debug(user)
+        print(user)
         if user:
-            logger.debug("User is authenticated")
+            print("User is authenticated")
         return user
     
 
     def configure_user(self, user: User) -> User:
-        logger.debug("--------------------------- configure_user --------------------------------")
+        print("--------------------------- configure_user --------------------------------")
         return super().configure_user(user)
