@@ -35,6 +35,7 @@ class LTIAuthBackend(ModelBackend):
         if request_key is None:
             logger.warning("LTI Authentification aborted: Request doesn't contain an"
                            "oauth_consumer_key; can't continue.")
+            return None
             raise PermissionDenied("Request doesn't contain an oauth_consumer_key; can't continue.")
         
         if not settings.LTI_OAUTH_CREDENTIALS:

@@ -8,7 +8,9 @@ logger = logging.getLogger(__name__)
 
 class MyCASBackend(CASBackend):
     def user_can_authenticate(self, user):
-        return True
+        print("--------------------------- user_can_authenticate --------------------------------")
+        print(user)
+        raise Exception("user_can_authenticate")
 
     def bad_attributes_reject(self, request, username, attributes):
         print("--------------------------- bad_attributes_reject --------------------------------")
