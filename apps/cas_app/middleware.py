@@ -33,9 +33,11 @@ class CASAuthMiddleware(MiddlewareMixin):
 
         print("request.method: ", request.method)
         print("request.GET.get('tpnote', None): ", request.GET.get('tpnote', None))   
+        print("request.GET: ", request.GET)
         # These parameters should exist outside of session
         if request.method == 'GET' \
             and request.GET.get('tpnote', None) :
+            
 
             print("request.GET.get('tpnote', None): ", request.GET.get('tpnote', None))
             # authenticate and log the user in
