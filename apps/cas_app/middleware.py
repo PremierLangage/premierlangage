@@ -31,7 +31,8 @@ class CASAuthMiddleware(MiddlewareMixin):
                 " 'django.contrib.auth.middleware.AuthenticationMiddleware'"
                 " before the CASAuthMiddleware class.")
 
-        print("request.method: ", request.method)        
+        print("request.method: ", request.method)
+        print("request.GET.get('tpnote', None): ", request.GET.get('tpnote', None))   
         # These parameters should exist outside of session
         if request.method == 'GET' \
             and request.GET.get('tpnote', None) :
