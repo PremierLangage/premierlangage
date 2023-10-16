@@ -60,7 +60,7 @@ class CASAuthMiddleware(MiddlewareMixin):
                 print("logged in")
 
                 #get next url and remove all non digits characters
-                activity_id = [i for i in request.GET.get('next').replace('/tpnote/', '') if i.isdigit()]
+                activity_id = int(''.join([i for i in request.GET.get('next').replace('/tpnote/', '') if i.isdigit()]))
 
                 #activity_id = request.GET.get('tpnote', None)
                 print("activity_id: ", activity_id)
