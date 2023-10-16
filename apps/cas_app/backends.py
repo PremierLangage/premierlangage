@@ -7,6 +7,8 @@ from django_cas_ng.backends import CASBackend
 from django_cas_ng.utils import get_cas_client
 from django.contrib import messages
 from django.conf import settings
+from django.contrib import auth
+
 import logging
 
 from activity.models import Activity
@@ -147,6 +149,10 @@ class MyCASBackend(CASBackend):
                 activity.add_student_to_all(user)  # add student to all groups
 
         print("going through authenticate 3")
+
+        auth.login(request, user)
+
+        print("going through authenticate 4")
 
         if user:
             print(f"User ({user}) is authenticated")
