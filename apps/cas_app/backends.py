@@ -94,9 +94,13 @@ class MyCASBackend(CASBackend):
 
         if not self.user_can_authenticate(user):
             return None
+        
+        print("going through authenticate 0")
 
         if pgtiou and settings.CAS_PROXY_CALLBACK and request:
             request.session['pgtiou'] = pgtiou
+        
+        print("going through authenticate 1")
 
         if settings.CAS_APPLY_ATTRIBUTES_TO_USER and attributes:
             # If we are receiving None for any values which cannot be NULL
@@ -129,13 +133,18 @@ class MyCASBackend(CASBackend):
             # instance in the DB.
             if settings.CAS_CREATE_USER:
                 user.save()
-        if next.startswith("/activity/play/"):
+        
+        print("going through authenticate 2")
+
+        if next and next.startswith("/activity/play/"):
             # remove all non digit characters from next
             next = ''.join(i for i in next if i.isdigit())
             activity_id = int(next)
             activity = get_object_or_404(Activity, id=activity_id)
             if activity.activity_type == "course":
                 activity.add_student_to_all(user)  # add student to all groups
+
+        print("going through authenticate 3")
 
         if user:
             print(f"User ({user}) is authenticated")
