@@ -54,6 +54,8 @@ class CASAuthMiddleware(MiddlewareMixin):
                 
                 request.user = user
                 print("trying to login")
+                if user.is_active:
+                    print("user is active")
                 auth.login(request, user)
                 print("logged in")
 
