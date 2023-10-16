@@ -147,7 +147,7 @@ class MyCASBackend(CASBackend):
         
         print("going through authenticate 2")
 
-        if next and next.startswith("/activity/play/"):
+        if next and next.startswith("/tpnote/"):
             # remove all non digit characters from next
             next = ''.join(i for i in next if i.isdigit())
             activity_id = int(next)
