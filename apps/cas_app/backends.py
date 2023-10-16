@@ -9,7 +9,7 @@ from django.contrib import messages
 from django.conf import settings
 import logging
 
-from apps.activity.models import Activity
+from activity.models import Activity
 
 logger = logging.getLogger(__name__)
 
