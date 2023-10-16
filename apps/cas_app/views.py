@@ -18,8 +18,8 @@ def log_waths_happening(request, response):
     `locale` parameter to it (and return the modified response). If not, simply
     return the original response."""
 
-    print("log_waths_happening")
-    print(response)
-    print(request)
+    logger.debug("log_waths_happening")
+    logger.debug(response)
+    logger.debug(request)
 
     return response

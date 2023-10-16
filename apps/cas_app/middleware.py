@@ -18,9 +18,8 @@ class CASAuthMiddleware(MiddlewareMixin):
     Middleware for authenticating users via an CAS .
     """
     
-    
     def process_request(self, request):
-        print("CASAuthMiddleware.process_request")
+        logger.debug("CASAuthMiddleware.process_request")
         # AuthenticationMiddleware is required so that request.user exists.
         if not hasattr(request, 'user'):  # pragma: no cover
             logger.debug('improperly configured: request has no user attr')
@@ -31,39 +30,39 @@ class CASAuthMiddleware(MiddlewareMixin):
                 " 'django.contrib.auth.middleware.AuthenticationMiddleware'"
                 " before the CASAuthMiddleware class.")
 
-        print("request.method: ", request.method)
-        print("request.GET.get('tpnote', None): ", request.GET.get('tpnote', None))   
-        print("request.GET: ", request.GET)
+        logger.debug("request.method: ", request.method)
+        logger.debug("request.GET.get('tpnote', None): ", request.GET.get('tpnote', None))   
+        logger.debug("request.GET: ", request.GET)
         # These parameters should exist outside of session
         if request.method == 'GET' \
             and request.GET.get('next', None) \
             and request.GET.get('next').startswith('/tpnote/'):
 
-            print("request.GET.get('tpnote', None): ", request.GET.get('tpnote', None))
-            print("request.GET.get('next', None): ", request.GET.get('next', None))
+            logger.debug("request.GET.get('tpnote', None): ", request.GET.get('tpnote', None))
+            logger.debug("request.GET.get('next', None): ", request.GET.get('next', None))
             # authenticate and log the user in
             user = auth.authenticate(request=request)
             backend = MyCASBackend()
             user = backend.authenticate(request, request.GET.get('ticket', None), request.build_absolute_uri().split('&')[0])
-            print("is it a user ?", user)
+            logger.debug("is it a user ?", user)
 
             if user is not None:
                 # User is valid.  Set request.user and persist user in the session
                 # by logging the user in.
-                print("user: ", user)
+                logger.debug("user: ", user)
                 
                 request.user = user
-                print("trying to login")
+                logger.debug("trying to login")
                 if user.is_active:
-                    print("user is active")
+                    logger.debug("user is active")
                 auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-                print("logged in")
+                logger.debug("logged in")
 
                 #get next url and remove all non digits characters
                 activity_id = int(''.join([i for i in request.GET.get('next').replace('/tpnote/', '') if i.isdigit()]))
 
                 #activity_id = request.GET.get('tpnote', None)
-                print("activity_id: ", activity_id)
+                logger.debug("activity_id: ", activity_id)
                 if activity_id :
                     return redirect(reverse('activity:play', args=[activity_id]))
                 else :

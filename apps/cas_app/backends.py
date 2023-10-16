@@ -18,10 +18,10 @@ logger = logging.getLogger(__name__)
 class MyCASBackend(CASBackend):
 
     def bad_attributes_reject(self, request, username, attributes):
-        print("--------------------------- bad_attributes_reject --------------------------------")
-        print(attributes)
-        print(username)
-        print(request)
+        logger.debug("--------------------------- bad_attributes_reject --------------------------------")
+        logger.debug(attributes)
+        logger.debug(username)
+        logger.debug(request)
         return None
     
     def authenticate(self, request : HttpRequest, ticket : str, service : str):
@@ -30,22 +30,22 @@ class MyCASBackend(CASBackend):
 
         :returns: [User] Authenticated User object or None if authenticate failed.
         """
-        print("--------------------------- authenticate --------------------------------")
-        print(ticket)
-        print(service)
-        print(request)
+        logger.debug("--------------------------- authenticate --------------------------------")
+        logger.debug(ticket)
+        logger.debug(service)
+        logger.debug(request)
 
         next = request.GET.get('next', None)
 
         client = get_cas_client(service_url=service, request=request)
         username, attributes, pgtiou = client.verify_ticket(ticket)
 
-        print("ticket verified")
+        logger.debug("ticket verified")
         if attributes and request:
             request.session['attributes'] = attributes
 
-        print("attributes: ", attributes)
-        print("request: ", request)
+        logger.debug("attributes: ", attributes)
+        logger.debug("request: ", request)
         
         if settings.CAS_USERNAME_ATTRIBUTE != 'cas:user' and settings.CAS_VERSION != 'CAS_2_SAML_1_0':
             if attributes:
@@ -53,8 +53,8 @@ class MyCASBackend(CASBackend):
             else:
                 return None
 
-        print("not CAS_2_SAML_1_0")
-        print("username: ", username)
+        logger.debug("not CAS_2_SAML_1_0")
+        logger.debug("username: ", username)
         if not username:
             return None
         user = None
@@ -101,17 +101,17 @@ class MyCASBackend(CASBackend):
             except UserModel.DoesNotExist:
                 pass
 
-        print("can I authenticate ?")
+        logger.debug("can I authenticate ?")
 
         if not self.user_can_authenticate(user):
             return None
         
-        print("going through authenticate 0")
+        logger.debug("going through authenticate 0")
 
         if pgtiou and settings.CAS_PROXY_CALLBACK and request:
             request.session['pgtiou'] = pgtiou
         
-        print("going through authenticate 1")
+        logger.debug("going through authenticate 1")
 
         if settings.CAS_APPLY_ATTRIBUTES_TO_USER and attributes:
             # If we are receiving None for any values which cannot be NULL
@@ -145,7 +145,7 @@ class MyCASBackend(CASBackend):
             if settings.CAS_CREATE_USER:
                 user.save()
         
-        print("going through authenticate 2")
+        logger.debug("going through authenticate 2")
 
         if next and next.startswith("/tpnote/"):
             # remove all non digit characters from next
@@ -155,33 +155,33 @@ class MyCASBackend(CASBackend):
             if activity.activity_type == "course":
                 activity.add_student_to_all(user)  # add student to all groups
 
-        print("going through authenticate 3")
+        logger.debug("going through authenticate 3")
         # request.user = user
         # auth.login(request, user)
 
-        print("going through authenticate 4")
+        logger.debug("going through authenticate 4")
 
         if user:
-            print(f"User ({user}) is authenticated")
+            logger.debug(f"User ({user}) is authenticated")
         return user
     
 
     def configure_user(self, user: User) -> User:
-        print("--------------------------- configure_user --------------------------------")
+        logger.debug("--------------------------- configure_user --------------------------------")
         firstname, lastname = ''.join(i for i in user.username if not i.isdigit()).split(".")
         user.first_name = firstname
         user.last_name = lastname
         user.email = user.username + "@edu.univ-eiffel.fr"
-        print(user)
-        print(user.username)
-        print(user.first_name)
-        print(user.last_name)
-        print(user.email)
+        logger.debug(user)
+        logger.debug(user.username)
+        logger.debug(user.first_name)
+        logger.debug(user.last_name)
+        logger.debug(user.email)
         user.save()
         return user
     
     def user_can_authenticate(self, user):
-        print("--------------------------- user_can_authenticate --------------------------------")
-        print(user, "can authenticate")
+        logger.debug("--------------------------- user_can_authenticate --------------------------------")
+        logger.debug(user, "can authenticate")
         is_active = getattr(user, 'is_active', None)
         return is_active or is_active is None
