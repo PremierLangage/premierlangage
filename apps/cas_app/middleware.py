@@ -43,6 +43,8 @@ class CASAuthMiddleware(MiddlewareMixin):
             print("request.GET.get('next', None): ", request.GET.get('next', None))
             # authenticate and log the user in
             user = auth.authenticate(request=request)
+            print("is it a user ?", user)
+
             if user is not None:
                 # User is valid.  Set request.user and persist user in the session
                 # by logging the user in.
