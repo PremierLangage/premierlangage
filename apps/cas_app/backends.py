@@ -149,8 +149,8 @@ class MyCASBackend(CASBackend):
                 activity.add_student_to_all(user)  # add student to all groups
 
         print("going through authenticate 3")
-        request.user = user
-        auth.login(request, user)
+        # request.user = user
+        # auth.login(request, user)
 
         print("going through authenticate 4")
 
