@@ -44,7 +44,7 @@ class CASAuthMiddleware(MiddlewareMixin):
             # authenticate and log the user in
             user = auth.authenticate(request=request)
             backend = MyCASBackend()
-            user = backend.authenticate(request, request.GET.get('ticket', None), request.build_absolute_uri())
+            user = backend.authenticate(request, request.GET.get('ticket', None), request.build_absolute_uri().split('&')[0])
             print("is it a user ?", user)
 
             if user is not None:

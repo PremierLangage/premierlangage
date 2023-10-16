@@ -60,7 +60,6 @@ class MyCASBackend(CASBackend):
         user = None
         username = self.clean_username(username)
 
-
         if attributes:
             reject = self.bad_attributes_reject(request, username, attributes)
             if reject:
