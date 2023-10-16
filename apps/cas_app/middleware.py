@@ -6,7 +6,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import resolve, reverse
 from django.utils.deprecation import MiddlewareMixin
-
+from cas_app.backends import CASBackend
 from lti_app.models import ActivityOutcome
 from activity.models import Activity
 
@@ -43,6 +43,7 @@ class CASAuthMiddleware(MiddlewareMixin):
             print("request.GET.get('next', None): ", request.GET.get('next', None))
             # authenticate and log the user in
             user = auth.authenticate(request=request)
+            user = CASBackend.authenticate(request, request.GET.get('ticket', None), request.build_absolute_uri())
             print("is it a user ?", user)
 
             if user is not None:
