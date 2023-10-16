@@ -92,6 +92,8 @@ class MyCASBackend(CASBackend):
             except UserModel.DoesNotExist:
                 pass
 
+        print("can I authenticate ?")
+
         if not self.user_can_authenticate(user):
             return None
         
