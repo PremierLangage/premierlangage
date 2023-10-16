@@ -56,7 +56,7 @@ class CASAuthMiddleware(MiddlewareMixin):
                 print("trying to login")
                 if user.is_active:
                     print("user is active")
-                auth.login(request, user)
+                auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 print("logged in")
 
                 #get next url and remove all non digits characters
