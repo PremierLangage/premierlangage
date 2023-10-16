@@ -39,19 +39,27 @@ class MyCASBackend(CASBackend):
 
         client = get_cas_client(service_url=service, request=request)
         username, attributes, pgtiou = client.verify_ticket(ticket)
+
+        print("ticket verified")
         if attributes and request:
             request.session['attributes'] = attributes
 
+        print("attributes: ", attributes)
+        print("request: ", request)
+        
         if settings.CAS_USERNAME_ATTRIBUTE != 'cas:user' and settings.CAS_VERSION != 'CAS_2_SAML_1_0':
             if attributes:
                 username = attributes.get(settings.CAS_USERNAME_ATTRIBUTE)
             else:
                 return None
 
+        print("not CAS_2_SAML_1_0")
+        print("username: ", username)
         if not username:
             return None
         user = None
         username = self.clean_username(username)
+
 
         if attributes:
             reject = self.bad_attributes_reject(request, username, attributes)
