@@ -170,4 +170,5 @@ class MyCASBackend(CASBackend):
     def user_can_authenticate(self, user):
         print("--------------------------- user_can_authenticate --------------------------------")
         print(user, "can authenticate")
-        raise Exception("user_can_authenticate")
+        is_active = getattr(user, 'is_active', None)
+        return is_active or is_active is None
