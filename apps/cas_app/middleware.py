@@ -42,11 +42,12 @@ class CASAuthMiddleware(MiddlewareMixin):
             if user is not None:
                 # User is valid.  Set request.user and persist user in the session
                 # by logging the user in.
-                request.lti_authentication_successful = True
+                print("user: ", user)
                 
                 request.user = user
+                print("trying to login")
                 auth.login(request, user)
-                
+                print("logged in")
                 activity_id = request.GET.get('tpnote', None)
                 print("activity_id: ", activity_id)
                 if activity_id :
