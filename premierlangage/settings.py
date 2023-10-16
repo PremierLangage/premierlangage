@@ -195,7 +195,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
-#   'lti_app.backends.LTIAuthBackend',
+    'lti_app.backends.LTIAuthBackend',
     'cas_app.backends.MyCASBackend',
 )
 
