@@ -36,10 +36,11 @@ class CASAuthMiddleware(MiddlewareMixin):
         print("request.GET: ", request.GET)
         # These parameters should exist outside of session
         if request.method == 'GET' \
-            and request.GET.get('tpnote', None) :
-            
+            and request.GET.get('next', None) \
+            and request.GET.get('next').startswith('/tpnote/'):
 
             print("request.GET.get('tpnote', None): ", request.GET.get('tpnote', None))
+            print("request.GET.get('next', None): ", request.GET.get('next', None))
             # authenticate and log the user in
             user = auth.authenticate(request=request)
             if user is not None:
@@ -51,7 +52,11 @@ class CASAuthMiddleware(MiddlewareMixin):
                 print("trying to login")
                 auth.login(request, user)
                 print("logged in")
-                activity_id = request.GET.get('tpnote', None)
+
+                #get next url and remove all non digits characters
+                activity_id = [i for i in request.GET.get('next').replace('/tpnote/', '') if i.isdigit()]
+
+                #activity_id = request.GET.get('tpnote', None)
                 print("activity_id: ", activity_id)
                 if activity_id :
                     return redirect(reverse('activity:play', args=[activity_id]))
