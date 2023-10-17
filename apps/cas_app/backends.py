@@ -168,7 +168,15 @@ class MyCASBackend(CASBackend):
 
     def configure_user(self, user: User) -> User:
         logger.debug("--------------------------- configure_user --------------------------------")
-        firstname, lastname = ''.join(i for i in user.username if not i.isdigit()).split(".")
+
+        fullname = ''.join(i for i in user.username if not i.isdigit()).split(".")
+        if len(fullname) == 2: # if there is a firstname and a lastname
+            firstname = fullname[0].capitalize()
+            lastname = fullname[1].capitalize()
+        else: # if there is only a lastname
+            lastname = user.username.capitalize()
+            firstname = ""
+        
         user.first_name = firstname
         user.last_name = lastname
         user.email = user.username + "@edu.univ-eiffel.fr"
