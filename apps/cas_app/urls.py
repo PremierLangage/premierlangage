@@ -1,10 +1,3 @@
-#!/usr/bin/env python3#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-#
-#  urls.py
-#
-
-
 # -*- coding: utf-8 -*-
 #
 #  urls.py
@@ -13,7 +6,6 @@
 from django.urls import path
 from cas_app import views 
 from django_cas_ng import views as cas_views
-
 
 app_name = 'cas_app'
 

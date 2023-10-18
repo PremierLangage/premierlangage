@@ -74,7 +74,6 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'cas_app.middleware.CASAuthMiddleware',
     'lti_app.middleware.LTIAuthMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -354,7 +353,7 @@ CAS_LOGOUT_COMPLETELY = True
 CAS_REDIRECT_URL = '/'
 CAS_RETRY_LOGIN = True
 CAS_VERSION = '3'
-CAS_CREATE_USER = True
+CAS_CREATE_USER = False
 LOGOUT = 'https://cas.univ-eiffel.fr/logout'
 
 # Allow a file '[PL_ROOT]/server/premierlangage/premierlangage/config.py' to override any of the
