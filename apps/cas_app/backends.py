@@ -97,11 +97,16 @@ class MyCASBackend(CASBackend):
                     }
                     user = UserModel._default_manager.get(**user_kwargs)
                 else:
+                    print("-----------------COUCOU------------------")
+                    print("Récupération de l'utilisateur par son nom")
                     user = UserModel._default_manager.get_by_natural_key(username)
+                    print("ce message ne devrait pas s'afficher")
             except UserModel.DoesNotExist:
+                print("ce message va peut-être s'afficher")
                 pass
 
-        logger.debug("can I authenticate ?")
+        
+        print("can I authenticate ?")
 
         if not self.user_can_authenticate(user):
             return None
