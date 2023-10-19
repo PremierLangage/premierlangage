@@ -10,7 +10,7 @@ def login(request, **kwargs):
     try:
         return log_waths_happening(request, baseviews.LoginView.as_view()(request, **kwargs))
     except PermissionDenied:
-        raise PermissionDenied("S'il s'agit de votre première connexion veuillez vous connecter par LTI. (Moodle, E-Learning, etc.)")
+        raise PermissionDenied("S'il s'agit de votre première connexion veuillez vous connecter par votre LMS. (Moodle, E-Learning, etc.)")
 
 
 
