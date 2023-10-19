@@ -73,6 +73,9 @@ class LTIAuthMiddleware(MiddlewareMixin):
                 lti_launch = request.POST.copy()
                 lti_launch['roles'] = lti_launch.get('roles', '').split(',')
                 lti_launch['custom_canvas_membership_roles'] = lti_launch.get('custom_canvas_membership_roles', '').split(',')
+
+                print("---------------------- LTI LAUNCH ----------------------")
+                print(lti_launch)
                 
                 # Creating and updating data according to lti_launch
                 user.profile.set_role_lti(lti_launch)
