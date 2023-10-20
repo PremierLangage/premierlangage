@@ -97,7 +97,16 @@ class MyCASBackend(CASBackend):
                     }
                     user = UserModel._default_manager.get(**user_kwargs)
                 else:
-                    user = UserModel._default_manager.get_by_natural_key(username)
+                    user_kwargs = {
+                        UserModel.EMAIL_FIELD: username + "@univ-eiffel.fr"
+                    }
+                    user = UserModel._default_manager.get(**user_kwargs)
+                    if not user: 
+                        user_kwargs = {
+                            UserModel.EMAIL_FIELD: username + "@edu.univ-eiffel.fr"
+                        }
+                        user = UserModel._default_manager.get(**user_kwargs)
+
             except UserModel.DoesNotExist:
                 pass
 
