@@ -109,7 +109,7 @@ class MyCASBackend(CASBackend):
                     user_kwargs = {
                         UserModel.EMAIL_FIELD: username + "@univ-eiffel.fr"
                     }
-                    user = get_or_none(UserModel, user_kwargs)
+                    user = get_or_none(UserModel, **user_kwargs)
                     if not user: 
                         user_kwargs = {
                             UserModel.EMAIL_FIELD: username + "@edu.univ-eiffel.fr"
