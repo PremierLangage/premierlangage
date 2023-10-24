@@ -1,6 +1,7 @@
 import pandas as pd
 import plotly.express as px
 from django.shortcuts import render
+from .exceptions import ErrorInSurvey
 
 from playexo.models import Answer
 
@@ -11,10 +12,17 @@ def get_possible_answers(activity):
     """
     possible_answers = dict()
     for pl in activity.indexed_pl():
-        choices = pl.json['items'].splitlines()
 
         for key in pl.json:
+            choices = pl.json.get('items', None)
+            if choices is not None: choices = choices.splitlines() 
             if key.startswith('group'):
+                if choices is None:
+                    choices = pl.json.get('items' + key[5:], None)
+                    if choices is None: 
+                        raise ErrorInSurvey('No choices found for question ' + key)
+                    choices = choices.splitlines()
+
                 possible_answers[pl.json[key]['cid']] = dict()
                 possible_answers[pl.json[key]['cid']] = (pl.json['title'] + ':' + key, choices)
     return possible_answers
@@ -39,7 +47,18 @@ def get_answers(activity):
                         for item in question['items']:
                             answers[cid][item['id']] = 0
                     
-                    answers[question['cid']][question['selection']] += 1
+                    if question['selector'] == 'c-radio-group':
+                        answers[question['cid']][question['selection']] += 1
+                    
+                    elif question['selector'] == 'c-checkbox-group':
+                        for item in question['items']:
+                            if item['checked']:
+                                answers[question['cid']][item['id']] += 1
+                       
+                    else:
+                        raise ErrorInSurvey('Unknown component : ' + question['selector'])
+
+                    
     return answers
 
 def get_students(activity):
@@ -52,10 +71,13 @@ def get_students(activity):
         tp = list()
         for __, pl in enumerate(activity.indexed_pl()):
             last_ans = Answer.last_valid(pl, user)
-            answers = []
+            answers = {}
             if last_ans is not None:   
                 for question in last_ans.answers.values():
-                    answers.append((question['cid'], question['selection']))
+                    if question['selector'] == 'c-radio-group':
+                        answers[question['cid']] = [item.get('id') == question['selection'] for item in question['items']]
+                    elif question['selector'] == 'c-checkbox-group':
+                        answers[question['cid']] = [item['checked'] for item in question['items']]
             tp.append({
                 'name':   pl.json['title'],
                 'answers': answers
