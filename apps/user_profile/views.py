@@ -105,6 +105,7 @@ def get_user_info(request):
     if request.user.is_authenticated:
         profile = model_to_dict(request.user)
         del profile["password"]
+        del profile["user_permissions"]
         authenticated = True
     else:
         profile = {}
