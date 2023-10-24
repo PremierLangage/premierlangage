@@ -323,21 +323,49 @@ class Pltp(AbstractActivityType):
         if not user or user not in activity.teacher.all():
             return HttpResponseForbidden("Not authorized")
         
+        import io, csv
+        class CsvStringBuilder():
+            def __init__(self, labelsItems : list):
+                # Créez un objet StringIO
+                self.data = []
+                # Créez un objet writer pour écrire dans l'objet StringIO
+                self.addLine(labelsItems)
+                self.__result_str = None
+
+            def addLine(self, items : list):
+                self.data.append(items)
+                return self
+            
+            def __str__(self):
+                with io.StringIO() as __f:
+                    writer = csv.writer(__f, dialect="unix")
+                    for line in self.data:
+                        writer.writerow(line)
+                    result = __f.getvalue()
+                return result
+
+            def __repr__(self):
+                return self.__str()
+
         
         if activity.name.endswith('_survey'):
             try:
                 if activity.activity_data.get('anonymous_vote', 'False') == 'False':
                     possible_answers = get_possible_answers(activity)
-                    csv = "username,firstname,lastname,email," + ''.join([p[0] + "," for p in possible_answers.values()]) + '\n'
+                    csvBuilder = CsvStringBuilder(['username', 'firstname', 'lastname', 'email'] + [i for sublist in possible_answers.values() for i in [sublist[0]] + [''] * (len(sublist[1])-1)])
+                    csvBuilder.addLine([''] * 4 + [i for sublist in possible_answers.values() for i in sublist[1]])
+
                     for student in get_students(activity):
                         results = []
                         for item in student['question']:
-                            if not item['answers']: results.append('')
-                            else:
-                                for cid, answer in item['answers']:
-                                    results.append(possible_answers[cid][1][answer])
+                            for cid, (name, answers) in possible_answers.items():
+                                if cid not in item['answers']:
+                                    results += [''] * len(answers)
+                                else:
+                                    results += item['answers'][cid]
                         u = student['object']
-                        csv += ("%s,%s,%s,%s," % (u.username, u.first_name, u.last_name, u.email) + ''.join([str(i) + "," for i in results]) + '\n')
+                        csvBuilder.addLine([u.username, u.first_name, u.last_name, u.email] + results)
+                    csv = str(csvBuilder)
                 else:
                     csv = ''
                     answers = get_answers(activity)
