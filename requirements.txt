@@ -9,6 +9,7 @@ django-jinja ==2.6.0
 django-markdown-deux
 django-markdown-app
 django-taggit==2.1.0
+djangorestframework==3.12.4
 dj-database-url==0.5.0
 gunicorn
 Jinja2==3.0.2
