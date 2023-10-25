@@ -6,12 +6,15 @@
       integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
       crossorigin="anonymous">
 
-<!-- JQuery https://jquery.com/ -->
-<script src="{{ static('dependencies/jquery-3.3.1.min.js') }}"
-integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-crossorigin="anonymous"></script>
-
 <!-- MathJax http://docs.mathjax.org/en/latest/start.html -->
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [['$%','%$'], ['$!', '!$']],
+            skipTags: ["script", "noscript", "style"],
+        }
+    });
+</script>
 <script type="text/javascript" 
         src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
         async></script>
@@ -40,7 +43,6 @@ crossorigin="anonymous"></script>
 <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@4.6.3/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule="" src="https://cdn.jsdelivr.net/npm/ionicons@4.6.3/dist/ionicons/ionicons.js"></script>
 <script src="https://unpkg.com/@webcomponents/custom-elements"></script>
-
 
 <!-- APP -->
 <link rel="stylesheet" href="{{ static('css/theme.css') }}"/>
