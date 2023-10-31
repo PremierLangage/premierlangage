@@ -82,6 +82,13 @@ def get_sandboxerr_eval(status, timeout):
                                            "slow the execution of \
                your grader.\nDo not forget to close every open file " \
                                            "or to use 'with' statement. "
+    if status == -3:
+        return "Result file was not found in the environment " \
+               "after the execution of the " \
+               "evaluating script. "
+    if status == -4:
+        return "The result file was not encoded in UTF-8. " \
+                "Please contact your teacher."
     return "Execution of the evaluating script returned an invalid value. " \
            "Please contact your teacher."
 

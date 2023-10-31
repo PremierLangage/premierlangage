@@ -136,10 +136,14 @@ class SandboxEval:
                 else:
                     response["grade"] = -1
             except ValueError:
-                response["grade"] = -1
-                response['status'] = -4
-                response["feedback"] = "Sandbox error:" + response["sandboxerr"]
-
+                if response["status"] == 0:
+                    response["grade"] = -1
+                    response['status'] = -5
+                    response["feedback"] = "Sandbox error: Value error, it can happen when the grader does not return a number. Or if you print something in the grader."
+                else:
+                    response["grade"] = -1
+                    response["feedback"] = "Sandbox error:" + response["sandboxerr"]
+                    
             del response["environment"]
             del response['execution']
         except json.decoder.JSONDecodeError:  # pragma: no cover
