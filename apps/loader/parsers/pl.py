@@ -368,6 +368,7 @@ class Parser:
                 - warning is a list (may be empty) containing every warning
 
             Raise SyntaxErrorPL if a multi line key is still open at the end of the file."""
+        print("parsing " + self.path_parsed_file)
 
         with open(self.path_parsed_file) as f:
             self.lines = f.readlines()
