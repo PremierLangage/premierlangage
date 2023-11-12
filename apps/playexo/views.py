@@ -340,7 +340,7 @@ def download_answers(request: HttpRequest):
         for i in range(0, answers.count(), slice_size):
             for answer in answers[i: i + slice_size]:
                 dic[answer.id] = {
-                    "user": answer.user.get_username(),
+                    "user": answer.user.email,
                     "seed": answer.seed,
                     "date": str(answer.date),
                     "grade": answer.grade,
