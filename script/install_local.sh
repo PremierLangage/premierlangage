@@ -76,10 +76,8 @@ echo ""
 echo "Installing requirements..."
 git config --global url."https://github.com/".insteadOf git://github.com/
 pip3 install wheel  || { echo>&2 "ERROR: pip3 install wheel failed" ; exit 1; }
-pip3 install -r requirements.txt || { echo>&2 "ERROR: pip3 install -r requirements.txt failed" ; exit 1; }
+pip3 install -r requirements.txt || { echo>&2 "ERROR: pip3 install -r requirements.txt failed\nYou can try installing libpq-dev : apt-get install libpq-dev" ; exit 1; }
 echo "Done !"
-
-
 
 
 #Creating needed directories
@@ -96,7 +94,7 @@ fi
 echo ""
 echo "Configuring database..."
 
-if psql -lqt | cut -d \| -f 1 | grep -qw django_premierlangage; then
+if PGPASSWORD=django_password psql -U django -h localhost  -lqt | cut -d \| -f 1 | grep -qw django_premierlangage; then
     python3 manage.py makemigrations || { echo>&2 "ERROR: python3 manage.py makemigrations failed" ; exit 1; }
     python3 manage.py migrate || { echo>&2 "ERROR: python3 manage.py migrate failed" ; exit 1; }
     #Filling database
@@ -104,12 +102,12 @@ if psql -lqt | cut -d \| -f 1 | grep -qw django_premierlangage; then
     echo "Done !"
 else
     echo "Database 'django_premierlangage' does not exists. It must be created before."
-    exit1
+    exit 1
 fi
 
 # Indexing home folder for elastic search
 echo
-read -p "Index home folder ? [y/n] " -n 1 -r
+read -p "Index home folder for elastic search ? [y/n] " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
