@@ -19,6 +19,7 @@ doc/
 static/*
 apps/filebrowser/client/node_modules
 geckodriver
+common_static/dependencies/mathjax
 
 ########################################
 # Byte-compiled / optimized / DLL files
