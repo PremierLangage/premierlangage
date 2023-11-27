@@ -15,7 +15,16 @@ from activity.models import Activity
 
 logger = logging.getLogger(__name__)
 
+
+def get_or_none(model, **kwargs):
+        try:
+            return model.objects.get(**kwargs)
+        except model.DoesNotExist:
+            return None
+
 class MyCASBackend(CASBackend):
+
+    
 
     def bad_attributes_reject(self, request, username, attributes):
         logger.debug("--------------------------- bad_attributes_reject --------------------------------")
@@ -97,11 +106,18 @@ class MyCASBackend(CASBackend):
                     }
                     user = UserModel._default_manager.get(**user_kwargs)
                 else:
-                    user = UserModel._default_manager.get_by_natural_key(username)
+                    user_kwargs = {
+                        UserModel.EMAIL_FIELD: username + "@univ-eiffel.fr"
+                    }
+                    user = get_or_none(UserModel, **user_kwargs)
+                    if not user: 
+                        user_kwargs = {
+                            UserModel.EMAIL_FIELD: username + "@edu.univ-eiffel.fr"
+                        }
+                        user = UserModel._default_manager.get(**user_kwargs)
+
             except UserModel.DoesNotExist:
                 pass
-
-        logger.debug("can I authenticate ?")
 
         if not self.user_can_authenticate(user):
             return None
@@ -168,7 +184,15 @@ class MyCASBackend(CASBackend):
 
     def configure_user(self, user: User) -> User:
         logger.debug("--------------------------- configure_user --------------------------------")
-        firstname, lastname = ''.join(i for i in user.username if not i.isdigit()).split(".")
+
+        fullname = ''.join(i for i in user.username if not i.isdigit()).split(".")
+        if len(fullname) == 2: # if there is a firstname and a lastname
+            firstname = fullname[0].capitalize()
+            lastname = fullname[1].capitalize()
+        else: # if there is only a lastname
+            lastname = user.username.capitalize()
+            firstname = ""
+        
         user.first_name = firstname
         user.last_name = lastname
         user.email = user.username + "@edu.univ-eiffel.fr"
