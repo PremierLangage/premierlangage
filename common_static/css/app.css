@@ -107,6 +107,14 @@ button, html [type="button"], [type="reset"], [type="submit"] {
     -webkit-appearance: none;
 }
 
+.banner {
+    display: block;
+    padding: 8px;
+    background-color: #f8d7da;
+    color: #721c24;
+    text-align: center;
+}
+
 
 @media (max-width: 768px) {
     .app-content {
