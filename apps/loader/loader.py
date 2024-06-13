@@ -4,6 +4,7 @@
 
 import logging
 import os
+import uuid
 from os.path import basename, splitext
 
 from shared import htmlprint
@@ -72,6 +73,28 @@ def load_pltp(directory, rel_path):
     return pltp, warnings
 
 
+def load_pls_from_pla(pla_dic, warnings, directory, rel_path):
+    pl_list = list()
+    for item in pla_dic['__pl']:
+        if item['type'] == 'direct':
+            pl_directory = Directory.objects.get(name=item['directory_name'])
+            pl, pl_warnings = load_pl(pl_directory, item['path'])
+            warnings += pl_warnings
+            pl_list.append(pl)
+        elif item['type'] == 'model':
+            file_name = '__temp' + str(uuid.uuid1()) + '.pl'
+            path = os.path.join(os.path.dirname(rel_path), file_name)
+            full_path = os.path.join(directory.root, path)
+            with open(full_path, 'w') as temp_pl:
+                for file in reversed(item['files']):
+                    temp_pl.write('extends=' + file + '\n')
+            
+            pl, pl_warnings = load_pl(directory, path)
+            warnings += pl_warnings
+            pl_list.append(pl)
+                
+            os.remove(full_path)
+    return pl_list
 
 def load_pla(directory, rel_path, type=None):
     """ Load the given path as a PL Activity (pla)
@@ -95,12 +118,7 @@ def load_pla(directory, rel_path, type=None):
         pass"""
     
     dic, warnings = parse_file(directory, rel_path)
-    pl_list = list()
-    for item in dic['__pl']:
-        pl_directory = Directory.objects.get(name=item['directory_name'])
-        pl, pl_warnings = load_pl(pl_directory, item['path'])
-        warnings += pl_warnings
-        pl_list.append(pl)
+    pl_list = load_pls_from_pla(dic, warnings, directory, rel_path)
     
     for pl in pl_list:
         pl.save()
@@ -137,14 +155,7 @@ def reload_pla(directory, rel_path, original):
             "__reload_path": os.path.join(directory.name, rel_path)
         }
         
-        pl_list = list()
-        for item in dic['__pl']:
-            pl_directory = Directory.objects.get(name=item['directory_name'])
-            pl, pl_warnings = load_pl(pl_directory, item['path'])
-            if pl is None:
-                return None, pl_warnings
-            warnings += pl_warnings
-            pl_list.append(pl)
+        pl_list = load_pls_from_pla(dic, warnings, directory, rel_path)
         
         originals = list(original.indexed_pl())
         original.pl.clear()

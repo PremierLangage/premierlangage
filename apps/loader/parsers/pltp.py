@@ -10,6 +10,7 @@ from loader.utils import get_location
 
 class Parser(ParserPL):
     PL_FILE_LINE = re.compile(r'@\s*' + ParserPL.FILE + ParserPL.COMMENT + r'?$')
+    PL_MODEL_FILE_LINE = re.compile(r'@\s*(?P<files>(?:' + ParserPL.FILE + r')+)' + ParserPL.COMMENT + r'?$')
     
     
     def fill_meta(self):
@@ -43,11 +44,30 @@ class Parser(ParserPL):
                                str(e))
         
         self.dic['__pl'].append({
-            'path':           path,
-            'line':           line,
-            'lineno':         self.lineno,
+            'type': 'direct',
+            'path': path,
+            'line': line,
+            'lineno': self.lineno,
             'directory_name': directory
         })
+
+    def pl_model_file_line_match(self, match, line):
+        """ Appends a PL file to be dynamically generated based on given
+            model and data
+
+            Raise loader.exceptions.SyntaxErrorPL if no group 'files' was found."""
+        
+        model = {
+            'type': 'model',
+            'files': [],
+            'line': line,
+            'lineno': self.lineno,
+        }
+
+        for file_match in re.finditer(ParserPL.FILE, match['files']):
+            model['files'].append(file_match['file'])
+        
+        self.dic['__pl'].append(model)
     
     
     def parse_line(self, line):
@@ -69,6 +89,9 @@ class Parser(ParserPL):
         
         elif self.PL_FILE_LINE.match(line):
             self.pl_file_line_match(self.PL_FILE_LINE.match(line), line)
+
+        elif self.PL_MODEL_FILE_LINE.match(line):
+            self.pl_model_file_line_match(self.PL_MODEL_FILE_LINE.match(line), line)
         
         elif self.MULTI_LINE.match(line):
             self.multi_line_match(self.MULTI_LINE.match(line), line)
